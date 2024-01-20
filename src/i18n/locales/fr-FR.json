@@ -1,0 +1,34 @@
+{
+  "appname": "QuizBattle",
+  "description": "Quiz multijoueur en ligne",
+  "commun": {
+    "play": "Jouer",
+    "ranking": "Classement",
+    "game": "Partie",
+    "devine": "Devine la réponse !",
+    "question": "Question",
+    "startgame": "La partie va bientôt commencer",
+    "keyboardmessage": "À vos claviers !",
+    "noplayer": "Aucun joueur",
+    "player_one": "{{count}} joueur",
+    "player_other": "{{count}} joueurs",
+    "questions": "questions",
+    "wait": "En attente"
+  },
+  "pages": {
+    "home": {
+      "title": "Accueil"
+    },
+    "play": {
+      "title": "Jouer"
+    }
+  },
+  "enum": {
+    "difficulty": {
+      "FACILE": "Facile",
+      "MOYEN": "Moyen",
+      "DIFFICILE": "Difficile",
+      "IMPOSSIBLE": "Impossible"
+    }
+  }
+}
