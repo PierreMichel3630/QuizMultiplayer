@@ -10,4 +10,10 @@ export interface PlayerScore {
   username: string;
   uuid: string;
   score: number;
+  position?: number;
+}
+
+export interface PlayerResponse {
+  uuid: string;
+  position?: number;
 }

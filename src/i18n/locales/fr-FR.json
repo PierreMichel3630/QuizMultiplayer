@@ -2,6 +2,7 @@
   "appname": "QuizBattle",
   "description": "Quiz multijoueur en ligne",
   "commun": {
+    "chooseusername": "Choisissez votre pseudo",
     "play": "Jouer",
     "ranking": "Classement",
     "game": "Partie",
@@ -14,6 +15,11 @@
     "player_other": "{{count}} joueurs",
     "questions": "questions",
     "wait": "En attente"
+  },
+  "rules": {
+    "step1": "Choisissez un thème",
+    "step2": "Écris ta réponse le plus vite possible et valide avec 'Entrée'",
+    "step3": "Sois plus rapide que les autres pour marquer plus de points !"
   },
   "pages": {
     "home": {

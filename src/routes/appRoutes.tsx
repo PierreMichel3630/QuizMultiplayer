@@ -1,6 +1,6 @@
+import { AdminPage } from "src/pages/AdminPage";
 import { ThemePage } from "src/pages/ThemePage";
 import { PlayPage } from "../pages/PlayPage";
-import { AdminPage } from "src/pages/AdminPage";
 
 export const AppRoutes = [
   {
@@ -12,7 +12,7 @@ export const AppRoutes = [
     element: <PlayPage />,
   },
   {
-    path: "/admin",
+    path: "/admine",
     element: <AdminPage />,
   },
 ];

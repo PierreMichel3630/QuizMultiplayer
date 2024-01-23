@@ -17,6 +17,9 @@ const stopwords = [
   ":",
   "et",
   "and",
+  "/",
+  ",",
+  ";",
 ];
 
 const normalizeString = (value: string) =>
@@ -68,10 +71,17 @@ Deno.serve(async (req) => {
   const TIMEGAME =
     ((TIMEQUESTION + TIMERESPONSE) * NUMBERQUESTION + TIMEFINISHGAME) / 1000;
   const LIMIT = 0.2;
+  const POINTSANSWER = 5;
+  const POINTSFIRST = 3;
+  const POINTSSECOND = 2;
+  const POINTSTHIRD = 1;
+  const HEALTH = 3;
 
   let response = undefined;
   let time = undefined;
   let gameOn = false;
+  let responsePlayer: Array<{ uuid: string; username: string; time: any }> = [];
+  let healths: Array<{ uuid: string; value: number }> = [];
 
   const launchGame = async (channel, idtheme) => {
     await supabase.from("publicgameplayer").delete().eq("theme", idtheme);
@@ -126,8 +136,11 @@ Deno.serve(async (req) => {
         payload: {
           response: question.response,
           date: timeResponse,
+          players: responsePlayer,
         },
       });
+      responsePlayer = [];
+      healths = [];
       if (index + 1 < NUMBERQUESTION) {
         setTimeout(() => {
           launchQuestion(idtheme, questions, index + 1);
@@ -195,6 +208,7 @@ Deno.serve(async (req) => {
       let result = false;
       const responseuser: {
         uuid: string;
+        username: string;
         value: string;
         language: string;
       } = v.payload;
@@ -214,21 +228,66 @@ Deno.serve(async (req) => {
             LIMIT;
         }
       }
-      channel.send({
-        type: "broadcast",
-        event: responseuser.uuid,
-        payload: {
-          value: value,
-          response: result,
-          time: time ? moment().diff(moment(time), "milliseconds") : undefined,
-        },
-      });
-      if (result) {
+      const timeresponse = time
+        ? moment().diff(moment(time), "milliseconds")
+        : undefined;
+      // Gestion vie des joueurs
+      let healthPlayer = healths.find((el) => el.uuid === responseuser.uuid);
+      if (healthPlayer) {
+        healthPlayer = {
+          uuid: healthPlayer.uuid,
+          value: result ? healthPlayer.value : healthPlayer.value - 1,
+        };
+        healths = [
+          ...healths.filter((el) => el.uuid !== responseuser.uuid),
+          healthPlayer,
+        ];
+      } else {
+        healthPlayer = {
+          uuid: responseuser.uuid,
+          value: result ? HEALTH : HEALTH - 1,
+        };
+        healths = [...healths, healthPlayer];
+      }
+      // Gestion si reponse correcte
+      if (result && healthPlayer.value >= 0) {
+        responsePlayer = [
+          ...responsePlayer,
+          {
+            uuid: responseuser.uuid,
+            username: responseuser.username,
+            time: timeresponse,
+          },
+        ];
+        let pointsFastest = 0;
+        let position: undefined | number = undefined;
+        if (responsePlayer.length === 1) {
+          pointsFastest = POINTSFIRST;
+          position = 1;
+        } else if (responsePlayer.length === 2) {
+          pointsFastest = POINTSSECOND;
+          position = 2;
+        } else if (responsePlayer.length === 3) {
+          pointsFastest = POINTSTHIRD;
+          position = 3;
+        }
+
+        channel.send({
+          type: "broadcast",
+          event: responseuser.uuid,
+          payload: {
+            value: value,
+            response: result,
+            time: timeresponse,
+            position: position,
+            health: healthPlayer.value,
+          },
+        });
         supabase
           .rpc("addpoint", {
             useruuid: responseuser.uuid,
             themeid: theme.id,
-            points: 5,
+            points: POINTSANSWER + pointsFastest,
           })
           .then((res) => {
             const data = res.data;
@@ -236,10 +295,21 @@ Deno.serve(async (req) => {
               channel.send({
                 type: "broadcast",
                 event: "score",
-                payload: data,
+                payload: { ...data, position: position },
               });
             }
           });
+      } else if (healthPlayer.value >= 0) {
+        channel.send({
+          type: "broadcast",
+          event: responseuser.uuid,
+          payload: {
+            value: value,
+            response: result,
+            time: timeresponse,
+            health: healthPlayer.value,
+          },
+        });
       }
     })
     .subscribe(async (status) => {

@@ -1,25 +1,33 @@
 import { Avatar, Box, Divider, Paper, Typography } from "@mui/material";
 import { px } from "csx";
 import { useTranslation } from "react-i18next";
-import { Player } from "src/models/Player";
+import { Player, PlayerResponse } from "src/models/Player";
 import { Colors } from "src/style/Colors";
 import { style } from "typestyle";
+import { useUser } from "src/context/UserProvider";
+import { sortByScore } from "src/utils/sort";
 
 import rank1 from "src/assets/rank/rank1.png";
 import rank2 from "src/assets/rank/rank2.png";
 import rank3 from "src/assets/rank/rank3.png";
-import { useUser } from "src/context/UserProvider";
-import { sortByScore } from "src/utils/sort";
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 
 const imgCss = style({
   width: px(30),
 });
 
+const IconPosition: { [key: number]: string } = {
+  1: rank1,
+  2: rank2,
+  3: rank3,
+};
+
 interface Props {
   players: Array<Player>;
+  responses: Array<PlayerResponse>;
 }
 
-export const RankingGameBlock = ({ players }: Props) => {
+export const RankingGameBlock = ({ players, responses }: Props) => {
   const { t } = useTranslation();
   const { uuid } = useUser();
 
@@ -111,39 +119,73 @@ export const RankingGameBlock = ({ players }: Props) => {
               minHeight: 0,
             }}
           >
-            {players.sort(sortByScore).map((player, index) => (
-              <Box
-                key={player.uuid}
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                {getIcon(index)}
-                <Typography variant="body1" sx={{ fontSize: 20 }}>
-                  {player.username}
-                </Typography>
+            {players.sort(sortByScore).map((player, index) => {
+              const response = responses.find((el) => el.uuid === player.uuid);
+              return (
                 <Box
+                  key={player.uuid}
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
                 >
-                  <Typography
-                    variant="h2"
-                    sx={{ fontSize: 30 }}
-                    component="span"
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
                   >
-                    {player.score}
-                  </Typography>
-                  <Typography variant="body1" component="span">
-                    PTS
-                  </Typography>
+                    {getIcon(index)}
+                    <Typography variant="body1" sx={{ fontSize: 20 }}>
+                      {player.username}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    {response && (
+                      <Box>
+                        {response.position ? (
+                          <img
+                            src={IconPosition[response.position]}
+                            className={imgCss}
+                          />
+                        ) : (
+                          <CheckCircleRoundedIcon
+                            sx={{ color: Colors.green }}
+                          />
+                        )}
+                      </Box>
+                    )}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        minWidth: px(80),
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography
+                        variant="h2"
+                        sx={{ fontSize: 30 }}
+                        component="span"
+                      >
+                        {player.score}
+                      </Typography>
+                      <Typography variant="body1" component="span">
+                        PTS
+                      </Typography>
+                    </Box>
+                  </Box>
                 </Box>
-              </Box>
-            ))}
+              );
+            })}
           </Box>
         </Box>
       </Box>

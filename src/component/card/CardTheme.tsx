@@ -24,13 +24,15 @@ interface Props {
 
 export const CardTheme = ({ theme, game }: Props) => {
   const { t } = useTranslation();
-  const { language, username } = useUser();
+  const { language, username, setUsername } = useUser();
   const navigate = useNavigate();
 
   const name = theme.name[language.iso];
 
   const joinRoom = () => {
-    navigate(`/play/${theme.id}`, { state: { username } });
+    const newUsername = username !== "" ? username : "Player 1";
+    setUsername(newUsername);
+    navigate(`/play/${theme.id}`, { state: { username: newUsername } });
   };
 
   return (
@@ -39,7 +41,7 @@ export const CardTheme = ({ theme, game }: Props) => {
         borderRadius: px(10),
         overflow: "hidden",
         position: "relative",
-        height: px(300),
+        height: px(250),
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -55,6 +57,12 @@ export const CardTheme = ({ theme, game }: Props) => {
           {name}
         </Typography>
         <Typography
+          variant="h2"
+          sx={{ color: "white", textShadow: "2px 2px 4px black" }}
+        >
+          {`${theme.questions} ${t("commun.questions")}`}
+        </Typography>
+        <Typography
           variant="h4"
           sx={{ color: "white", textShadow: "2px 2px 4px black" }}
         >
@@ -67,7 +75,7 @@ export const CardTheme = ({ theme, game }: Props) => {
             variant="h4"
             sx={{ color: "white", textShadow: "2px 2px 4px black" }}
           >
-            {game && game.players > 0 && game.question !== null
+            {game && game.question !== null
               ? `${game.question} ${t("commun.questions")}`
               : t("commun.wait")}
           </Typography>

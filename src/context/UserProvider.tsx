@@ -64,7 +64,7 @@ export const UserProvider = ({ children }: Props) => {
   const [username, setUsername] = useState(
     localStorage.getItem("username") !== null
       ? (localStorage.getItem("username")! as string)
-      : "Player 1"
+      : ""
   );
 
   useEffect(() => {

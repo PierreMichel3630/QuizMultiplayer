@@ -37,4 +37,8 @@ export const Colors = {
   orange: orange[600],
   black: "#121f43",
   white: "#fff",
+
+  gold: yellow[700],
+  silver: grey[500],
+  bronze: "#CD7F32",
 };

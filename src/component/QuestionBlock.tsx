@@ -1,16 +1,11 @@
 import { Grid, Paper, Typography } from "@mui/material";
-import { percent, viewHeight } from "csx";
 import { useTranslation } from "react-i18next";
 import { Question } from "src/models/Question";
 import { NUMBERQUESTION } from "src/pages/PlayPage";
-import { style } from "typestyle";
 import { BadgeDifficulty } from "./Badge";
+import { ImageQuestionBlock } from "./ImageBlock";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
-
-const imageCss = style({
-  maxWidth: percent(100),
-  maxHeight: viewHeight(20),
-});
+import { CircularLoading } from "./Loading";
 
 interface Props {
   question?: Question;
@@ -42,7 +37,7 @@ export const QuestionBlock = ({ question }: Props) => {
             </Grid>
             {question.image && (
               <Grid item>
-                <img src={question.image} className={imageCss} />
+                <ImageQuestionBlock src={question.image} />
               </Grid>
             )}
             <Grid item xs={12}>
@@ -51,7 +46,7 @@ export const QuestionBlock = ({ question }: Props) => {
           </>
         ) : (
           <Grid item xs={12}>
-            <Typography variant="h2">Load</Typography>
+            <CircularLoading />
           </Grid>
         )}
       </Grid>

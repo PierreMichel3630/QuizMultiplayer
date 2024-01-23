@@ -33,7 +33,7 @@ export const NUMBERQUESTION = 10;
 export const PlayPage = () => {
   const { t } = useTranslation();
   const { state } = useLocation();
-  const { uuid, language } = useUser();
+  const { uuid, username, language } = useUser();
   const { id } = useParams();
 
   const [theme, setTheme] = useState<Theme | undefined>(undefined);
@@ -55,6 +55,10 @@ export const PlayPage = () => {
   const [timerNextGame, setTimerNextGame] = useState<undefined | number>(
     undefined
   );
+  const [playersResponse, setPlayersResponse] = useState<
+    Array<{ uuid: string; position?: number }>
+  >([]);
+  const [health, setHealth] = useState(3);
 
   useEffect(() => {
     const getTheme = () => {
@@ -113,6 +117,10 @@ export const PlayPage = () => {
         })
         .on("broadcast", { event: "score" }, (value) => {
           const score: PlayerScore = value.payload;
+          setPlayersResponse((prev) => [
+            ...prev,
+            { uuid: score.uuid, position: score.position },
+          ]);
           setScores((prev) => [
             ...prev.filter((el) => el.id !== score.id),
             score,
@@ -120,6 +128,8 @@ export const PlayPage = () => {
         })
         .on("broadcast", { event: "question" }, (value) => {
           const newQuestion = value.payload as Question;
+          setHealth(3);
+          setPlayersResponse([]);
           setTimerNewGame(undefined);
           setResponse(undefined);
           setEndGame(undefined);
@@ -131,11 +141,12 @@ export const PlayPage = () => {
           }
         })
         .on("broadcast", { event: "response" }, (value) => {
-          if (question) {
-            const hasAnswer = answers.reduce(
-              (acc, v) => acc || v.response,
-              false
-            );
+          const newAnswer = value.payload as Response;
+          const hasAnswer = answers.reduce(
+            (acc, v) => acc || v.response,
+            false
+          );
+          if (question && !hasAnswer) {
             setQuestionsPosition((prev) => [
               ...prev,
               {
@@ -144,7 +155,6 @@ export const PlayPage = () => {
               },
             ]);
           }
-          const newAnswer = value.payload as Response;
           setTimer(undefined);
           setTimerNextGame(30);
           setAnswers([]);
@@ -152,6 +162,17 @@ export const PlayPage = () => {
         })
         .on("broadcast", { event: uuid }, (value) => {
           const newAnswer = value.payload as Answer;
+          setHealth(newAnswer.health);
+          if (question && newAnswer.response) {
+            setQuestionsPosition((prev) => [
+              ...prev,
+              {
+                question: question.order,
+                isRight: newAnswer.response,
+                position: newAnswer.position,
+              },
+            ]);
+          }
           setAnswers((prev) => [...prev, newAnswer]);
         })
         .subscribe(async (status) => {
@@ -175,12 +196,20 @@ export const PlayPage = () => {
 
   const validateResponse = (value: string) => {
     const hasAnswer = answers.reduce((acc, v) => acc || v.response, false);
-    if (channel && uuid && language && response === undefined && !hasAnswer) {
+    if (
+      channel &&
+      uuid &&
+      language &&
+      response === undefined &&
+      !hasAnswer &&
+      health > 0
+    ) {
       channel.send({
         type: "broadcast",
         event: "responseuser",
         payload: {
           uuid: uuid,
+          username: username,
           value: value,
           language: language.iso,
         },
@@ -205,8 +234,11 @@ export const PlayPage = () => {
           sx={{ display: "flex", gap: 1, flexDirection: "column" }}
         >
           {theme && <ThemeBlock theme={theme} />}
-          <RankingGameBlock players={playersWithScore} />
-          <MyRankBlock players={playersWithScore} />
+          <RankingGameBlock
+            players={playersWithScore}
+            responses={playersResponse}
+          />
+          <MyRankBlock players={playersWithScore} responses={playersResponse} />
         </Grid>
         {endGame ? (
           <Grid
@@ -270,7 +302,7 @@ export const PlayPage = () => {
               </Grid>
             </Box>
             <ResultQuestionBlock questions={questionsPosition} />
-            <InputResponseBlock onSubmit={validateResponse} />
+            <InputResponseBlock onSubmit={validateResponse} health={health} />
           </Grid>
         )}
       </Grid>

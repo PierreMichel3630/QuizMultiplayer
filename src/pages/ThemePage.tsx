@@ -5,6 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { selectGames } from "src/api/game";
 import { selectThemes } from "src/api/theme";
+import { RuleBlock } from "src/component/RuleBlock";
 import { CardTheme } from "src/component/card/CardTheme";
 import { useUser } from "src/context/UserProvider";
 import { Game } from "src/models/Game";
@@ -53,6 +54,7 @@ export const ThemePage = () => {
         <InputBase
           fullWidth
           value={username}
+          placeholder={t("commun.chooseusername")}
           onChange={(event) => setUsername(event.target.value)}
           inputProps={{
             style: {
@@ -72,6 +74,9 @@ export const ThemePage = () => {
         />
       </Grid>
       <Grid item xs={12}>
+        <RuleBlock />
+      </Grid>
+      <Grid item xs={12}>
         <Grid container spacing={1} alignItems="stretch">
           {themes.map((theme) => {
             const game = games.find((el) => el.theme === theme.id);
@@ -83,6 +88,7 @@ export const ThemePage = () => {
           })}
         </Grid>
       </Grid>
+      <Grid item xs={12}></Grid>
     </Grid>
   );
 };
