@@ -1,8 +1,10 @@
-import { Box, Typography } from "@mui/material";
+import { Badge, Box, Typography, styled } from "@mui/material";
 import { padding, px } from "csx";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
+import { JsonLanguageBlock } from "./JsonLanguageBlock";
 
 interface Props {
   value: string;
@@ -29,6 +31,8 @@ export const BadgeDifficulty = ({ value }: Props) => {
         backgroundColor: getColor(),
         borderRadius: px(10),
         width: "fit-content",
+        display: "flex",
+        alignItems: "center",
       }}
     >
       <Typography variant="h4" sx={{ color: "white" }}>
@@ -37,3 +41,54 @@ export const BadgeDifficulty = ({ value }: Props) => {
     </Box>
   );
 };
+
+interface PropsTheme {
+  value: Theme;
+}
+export const BadgeTheme = ({ value }: PropsTheme) => {
+  return (
+    <Box
+      sx={{
+        p: padding(2, 8),
+        backgroundColor: Colors.purple,
+        borderRadius: px(10),
+        width: "fit-content",
+      }}
+    >
+      <JsonLanguageBlock
+        variant="h2"
+        sx={{ color: "white" }}
+        value={value.name}
+      />
+    </Box>
+  );
+};
+
+export const BadgeAccountActive = styled(Badge)(({ theme }) => ({
+  "& .MuiBadge-badge": {
+    backgroundColor: "#44b700",
+    color: "#44b700",
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    "&::after": {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "80%",
+      height: "80%",
+      borderRadius: "50%",
+      animation: "ripple 1.2s 3 ease-in-out",
+      border: "1px solid currentColor",
+      content: '""',
+    },
+  },
+  "@keyframes ripple": {
+    "0%": {
+      transform: "scale(.8)",
+      opacity: 1,
+    },
+    "100%": {
+      transform: "scale(2.4)",
+      opacity: 0,
+    },
+  },
+}));

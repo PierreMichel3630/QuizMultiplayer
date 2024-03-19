@@ -15,7 +15,7 @@ export const InputResponseBlock = ({ onSubmit, health }: Props) => {
   const [value, setValue] = useState("");
 
   return (
-    <Paper sx={{ p: 1, display: "flex" }}>
+    <Paper sx={{ p: 0.5, display: "flex" }}>
       <Grid container spacing={1}>
         <Grid item xs>
           <form
@@ -48,13 +48,16 @@ export const InputResponseBlock = ({ onSubmit, health }: Props) => {
                   borderRadius: px(15),
                   textAlign: "center",
                 }}
+                autoFocus
               />
             </FormControl>
           </form>
         </Grid>
-        <Grid item>
-          <HealthBlock health={health} />
-        </Grid>
+        {health !== undefined && (
+          <Grid item>
+            <HealthBlock health={health} />
+          </Grid>
+        )}
       </Grid>
     </Paper>
   );

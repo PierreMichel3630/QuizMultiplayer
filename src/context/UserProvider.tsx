@@ -9,6 +9,7 @@ type Props = {
 
 export const UserContext = createContext<{
   uuid: string;
+  setUuid: (uuid: string) => void;
   username: string;
   setUsername: (username: string) => void;
   language: Language;
@@ -21,6 +22,7 @@ export const UserContext = createContext<{
     localStorage.getItem("uuid") !== null
       ? (localStorage.getItem("uuid")! as string)
       : crypto.randomUUID(),
+  setUuid: (uuid: string) => {},
   username: "Player 1",
   setUsername: (username: string) => {},
   language:
@@ -36,10 +38,11 @@ export const UserContext = createContext<{
 export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }: Props) => {
-  const uuid =
+  const [uuid, setUuid] = useState(
     localStorage.getItem("uuid") !== null
       ? (localStorage.getItem("uuid")! as string)
-      : crypto.randomUUID();
+      : crypto.randomUUID()
+  );
   const getDefaultLanguage = () => {
     let result: undefined | Language = undefined;
     if (navigator.languages.length > 0) {
@@ -91,6 +94,7 @@ export const UserProvider = ({ children }: Props) => {
     <UserContext.Provider
       value={{
         uuid,
+        setUuid,
         username,
         setUsername,
         languages: LANGUAGES,

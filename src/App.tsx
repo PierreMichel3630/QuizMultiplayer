@@ -35,59 +35,35 @@ function App() {
             fontFamily: ["Bowlby One SC", "sans-serif"].join(","),
             fontSize: 50,
             fontWeight: 700,
-            "@media (max-width:600px)": {
-              fontSize: 30,
-            },
           },
           caption: {
             fontSize: 10,
             fontStyle: "italic",
             fontWeight: 500,
-            "@media (max-width:600px)": {
-              fontSize: 10,
-            },
           },
           body1: {
             fontSize: 13,
             fontWeight: 500,
-            "@media (max-width:600px)": {
-              fontSize: 12,
-            },
           },
           body2: {
             fontSize: 11,
             fontWeight: 700,
-            "@media (max-width:600px)": {
-              fontSize: 11,
-            },
           },
           h2: {
             fontSize: 22,
             fontWeight: 700,
-            "@media (max-width:600px)": {
-              fontSize: 20,
-            },
           },
           h3: {
             fontSize: 18,
             fontWeight: 700,
-            "@media (max-width:600px)": {
-              fontSize: 15,
-            },
           },
           h4: {
             fontSize: 16,
             fontWeight: 700,
-            "@media (max-width:600px)": {
-              fontSize: 14,
-            },
           },
           h6: {
             fontSize: 13,
             fontWeight: 600,
-            "@media (max-width:600px)": {
-              fontSize: 12,
-            },
           },
         },
       }),
@@ -95,8 +71,8 @@ function App() {
   );
 
   return (
-    <UserProvider>
-      <AuthProviderSupabase>
+    <AuthProviderSupabase>
+      <UserProvider>
         <Helmet
           htmlAttributes={{
             lang: language.iso,
@@ -110,8 +86,8 @@ function App() {
             </BrowserRouter>
           </MessageProvider>
         </ThemeProvider>
-      </AuthProviderSupabase>
-    </UserProvider>
+      </UserProvider>
+    </AuthProviderSupabase>
   );
 }
 

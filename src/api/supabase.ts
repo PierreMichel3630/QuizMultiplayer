@@ -17,8 +17,7 @@ export const signInWithGoogle = () =>
 export const signUpWithEmail = (
   email: string,
   password: string,
-  firstname: string,
-  lastname: string,
+  username: string,
   avatar: number
 ) =>
   supabase.auth.signUp({
@@ -26,8 +25,7 @@ export const signUpWithEmail = (
     password,
     options: {
       data: {
-        firstname,
-        lastname,
+        username,
         avatar,
       },
     },

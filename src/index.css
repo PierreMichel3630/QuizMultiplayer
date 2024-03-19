@@ -42,3 +42,7 @@ a {
 .rsm-svg > g > rect {
   stroke: transparent;
 }
+
+.MuiList-root {
+  padding: 0px !important;
+}

@@ -72,7 +72,7 @@ export const GenerateQuestionPage = () => {
     }
 
     console.log(result);
-  };
+  };*/
   const [abilities, setAbilities] = useState<
     Array<{
       id: number;
@@ -81,7 +81,7 @@ export const GenerateQuestionPage = () => {
       fr: string;
       de: string;
     }>
-  >([]);
+  >([]); /*
   const [types, setTypes] = useState<
     Array<{ id: number; es: string; en: string; fr: string; de: string }>
   >([]);
@@ -150,6 +150,10 @@ export const GenerateQuestionPage = () => {
 
     return questionType;
   };
+*/
+  const [responses, setResponses] = useState<
+    Array<{ type: string; value: string }>
+  >([]);
 
   const getAbilities = () => {
     fetch("https://pokeapi.co/api/v2/ability?offset=0&limit=400")
@@ -164,22 +168,19 @@ export const GenerateQuestionPage = () => {
               const nameES = res.names.find((el) => el.language.name === "es");
               const nameDE = res.names.find((el) => el.language.name === "de");
               if (nameFR && nameES && nameDE) {
-                setAbilities((prev) => [
-                  ...prev,
-                  {
-                    id: res.id,
-                    fr: nameFR.name,
-                    es: nameES.name,
-                    de: nameDE.name,
-                    en: nameEN,
-                  },
-                ]);
+                const response = {
+                  type: "ABILITYPOKEMON",
+                  value: `{"fr-FR" :  "${nameFR.name}", "en-US": "${nameEN}", "de-DE": "${nameDE.name}", "es-ES": "${nameES.name}"}`,
+                  usvalue: nameEN,
+                };
+                setResponses((prev) => [...prev, response]);
               }
             });
         });
       });
   };
-
+  console.log(responses);
+  /*
   const getPokemon = async (id: number) => {
     const t = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
     const pokemon = await t.json();
@@ -277,7 +278,7 @@ export const GenerateQuestionPage = () => {
       difficulty: "IMPOSSIBLE",
     };
     return [questionImage, questionType, questionGeneration, questionAbility];
-  };*/
+  };
 
   const getQuestionCountries = async () => {
     const t = await fetch(`https://restcountries.com/v3.1/all`);
@@ -298,7 +299,7 @@ export const GenerateQuestionPage = () => {
       questions = [...questions, question];
     });
     console.log(questions);
-  };
+  };*/
 
   return (
     <Grid container spacing={1}>
@@ -306,11 +307,7 @@ export const GenerateQuestionPage = () => {
         <Typography variant="h1">GenerateQuestionPage</Typography>
       </Grid>
       <Grid item xs={12}>
-        <Button
-          variant="contained"
-          fullWidth
-          onClick={() => getQuestionCountries()}
-        >
+        <Button variant="contained" fullWidth onClick={() => getAbilities()}>
           Generate
         </Button>
       </Grid>

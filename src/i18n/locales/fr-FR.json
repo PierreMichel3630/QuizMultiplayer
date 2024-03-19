@@ -2,6 +2,7 @@
   "appname": "QuizBattle",
   "description": "Quiz multijoueur en ligne",
   "commun": {
+    "all": "Tous",
     "chooseusername": "Choisissez votre pseudo",
     "play": "Jouer",
     "ranking": "Classement",
@@ -14,12 +15,49 @@
     "player_one": "{{count}} joueur",
     "player_other": "{{count}} joueurs",
     "questions": "questions",
-    "wait": "En attente"
+    "wait": "En attente",
+    "createprivategame": "Créer une partie privée",
+    "launchgame": "Lancer la partie",
+    "parameters": "Paramètres",
+    "players": "Joueurs",
+    "theme": "Thème",
+    "levelquestionmin": "Niveau des questions minimum",
+    "levelquestionmax": "Niveau des questions maximum",
+    "solo": "Solo",
+    "versus": "Duel",
+    "privategame": "Partie privée",
+    "goodresponse": "Bonne réponse",
+    "score": "Score",
+    "tryagain": "Réessayer",
+    "login": "Se Connecter",
+    "backhome": "Retour Accueil",
+    "error": "Oups une erreur est survenue. Veuillez ressayer",
+    "myfriends": "Mes amis",
+    "myparameter": "Mes paramètres",
+    "logout": "Se déconnecter",
+    "email": "Adresse email",
+    "avatar": "Avatar",
+    "myparameters": "Mes Paramètres",
+    "username": "Pseudonyme",
+    "addfriend": "Ajouter un amis",
+    "waitinvitation": "Invitations en attente",
+    "searchfriend": "Rechercher un ami via son nom d'utilisateur",
+    "noresult": "Aucun résultat ne correspond à votre recherche.",
+    "addtofriend": "Ajouter en ami",
+    "waitvalidation": "En attente de validation depuis le",
+    "myrequests": "Mes demandes",
+    "myinvitation": "Mes invitations",
+    "noresultinvitation": "Aucune invitation en attente.",
+    "noresultrequest": "Aucune demande d'ami en attente.",
+    "noresultfriends": "Aucun ami.",
+    "myrecord": "Best"
   },
   "rules": {
-    "step1": "Choisissez un thème",
-    "step2": "Écris ta réponse le plus vite possible et valide avec 'Entrée'",
-    "step3": "Sois plus rapide que les autres pour marquer plus de points !"
+    "step1": "Choisissez un thème et cliquez sur jouer",
+    "step2": "Faite la série de bonne réponse la plus longue"
+  },
+  "warning": {
+    "warning1": "Vous pouvez jouer sans vous connecter, mais vos scores ne seront pas sauvegardés."
   },
   "pages": {
     "home": {
@@ -27,6 +65,12 @@
     },
     "play": {
       "title": "Jouer"
+    },
+    "privategame": {
+      "title": "Partie privée"
+    },
+    "friend": {
+      "title": "Mes amis"
     }
   },
   "enum": {
@@ -36,5 +80,72 @@
       "DIFFICILE": "Difficile",
       "IMPOSSIBLE": "Impossible"
     }
+  },
+  "form": {
+    "login": {
+      "email": "Adresse email",
+      "password": "Mot de passe",
+      "rememberme": "Se souvenir de moi",
+      "createaccount": "Créer un compte",
+      "forgotpassword": "Mot de passe oublié ?",
+      "connect": "Se connecter",
+      "connectgoogle": "Se connecter via Google",
+      "connectmail": "Se connecter via adresse mail",
+      "haveaccount": "Vous n'avez pas de compte ?",
+      "requiredpassword": "Veuillez saisir un mot de passe",
+      "requiredmail": "Veuillez saisir une adresse mail",
+      "formatmail": "Veuillez saisir une adresse mail valide",
+      "errorconnect": "L'adresse email ou le mot de passe est erroné"
+    },
+    "register": {
+      "username": "Pseudonyme *",
+      "email": "Adresse email *",
+      "password": "Mot de passe *",
+      "createaccount": "Créer un compte",
+      "createaccountemail": "Créer un compte via adresse mail",
+      "createaccountgoogle": "Créer un compte via Google",
+      "continue": "Continuer",
+      "requiredusername": "Veuillez saisir un pseudonyme",
+      "requiredpassword": "Veuillez saisir un mot de passe",
+      "minpassword": "Veuillez saisir un mot de passe de plus de 6 caractères",
+      "requiredmail": "Veuillez saisir une adresse mail",
+      "formatmail": "Veuillez saisir une adresse mail valide",
+      "alreadyaccount": "Déjà un compte ?",
+      "connect": "Connectez-vous"
+    },
+    "forgotpassword": {
+      "forgotpassword": "Mot de passe oublié ?",
+      "email": "Adresse email *",
+      "createaccount": "Créer un compte",
+      "continue": "Continuer",
+      "requiredmail": "Veuillez saisir une adresse mail",
+      "formatmail": "Veuillez saisir une adresse mail valide",
+      "modality": "Veuillez saisir l'adresse e-mail utilisée lors de votre inscription. Vous recevrez un e-mail contenant les instructions à suivre pour réinitialiser votre mot de passe.",
+      "connection": "Connexion",
+      "notforget": "Se souvenir de votre mot de passe ?",
+      "successsendmail": "Email envoyé",
+      "limitsendemail": "Veuillez attendre 60s avant de renvoyer un email"
+    },
+    "resetpassword": {
+      "resetpassword": "Réinitialiser votre mot de passe",
+      "password": "Mot de passe *",
+      "confirmpassword": "Confirmation du mot de passe *",
+      "continue": "Continuer",
+      "passwordmatch": "Les mots de passe doivent correspondre",
+      "requiredpassword": "Veuillez saisir un mot de passe",
+      "minpassword": "Veuillez saisir un mot de passe de plus de 6 caractères"
+    }
+  },
+  "error": {
+    "selectatleast1theme": "Sélectionner au moins un thème"
+  },
+  "alert": {
+    "deletefriend": "Votre suppression a été pris en compte.",
+    "updateavatarsuccess": "Votre modification d'avatar à été pris en compte.",
+    "updateusernamesuccess": "Votre modification de pseudonyme à été pris en compte.",
+    "sendfriendrequest": "Votre demande d'ami a été envoyé.",
+    "validatefriendrequest": "Demande d'ami validée.",
+    "refusefriendrequest": "Demande d'ami refusée.",
+    "updateemailsuccess": "Votre modification d'addresse mail est en cours. Veuillez confirmer sur votre ancien et nouveau email."
   }
 }

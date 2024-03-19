@@ -1,24 +1,17 @@
 import {
+  Avatar,
   Box,
   IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
+  Typography,
 } from "@mui/material";
-import { percent } from "csx";
 import { useState } from "react";
 
 import { useUser } from "src/context/UserProvider";
 import { Language } from "src/models/Language";
-import { style } from "typestyle";
-
-const divFlagCss = style({
-  width: 40,
-  height: 40,
-  borderRadius: percent(50),
-  overflow: "hidden",
-});
 
 export const LanguagesMenu = () => {
   const { language, setLanguage, languages } = useUser();
@@ -47,7 +40,7 @@ export const LanguagesMenu = () => {
             color="inherit"
             onClick={handleOpenMenu}
           >
-            <img className={divFlagCss} src={language.icon} />
+            <Avatar src={language.icon} sx={{ width: 30, height: 30 }} />
           </IconButton>
           <Menu
             sx={{ mt: "45px" }}
@@ -55,12 +48,12 @@ export const LanguagesMenu = () => {
             anchorEl={anchor}
             anchorOrigin={{
               vertical: "top",
-              horizontal: "left",
+              horizontal: "right",
             }}
             keepMounted
             transformOrigin={{
               vertical: "top",
-              horizontal: "left",
+              horizontal: "right",
             }}
             open={Boolean(anchor)}
             onClose={handleCloseMenu}
@@ -69,11 +62,17 @@ export const LanguagesMenu = () => {
               <MenuItem
                 key={language.iso}
                 onClick={() => selectLanguage(language)}
+                sx={{ pl: 1, pr: 1 }}
               >
                 <ListItemIcon>
-                  <img className={divFlagCss} src={language.icon} />
+                  <Avatar
+                    src={language.icon}
+                    sx={{ width: 32, height: 32, mr: 1 }}
+                  />
                 </ListItemIcon>
-                <ListItemText>{language.name}</ListItemText>
+                <ListItemText>
+                  <Typography variant="h6">{language.name}</Typography>
+                </ListItemText>
               </MenuItem>
             ))}
           </Menu>

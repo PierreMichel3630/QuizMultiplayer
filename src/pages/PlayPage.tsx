@@ -4,20 +4,19 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useLocation, useParams } from "react-router-dom";
-import { launchGameByTheme, selectGameByTheme } from "src/api/game";
-import { selectPlayersByTheme } from "src/api/player";
+import { launchGameByGameId, selectGameByChannel } from "src/api/game";
+import { selectPlayersByGame } from "src/api/player";
 import { supabase } from "src/api/supabase";
-import { selectThemeById } from "src/api/theme";
 import { AnswersBlock } from "src/component/AnswersBlock";
 import { EndGameBlock } from "src/component/EndGameBlock";
+import { GameBlock } from "src/component/GameBlock";
 import { InputResponseBlock } from "src/component/InputResponseBlock";
 import { MyRankBlock } from "src/component/MyRankBlock";
 import { NewGameBlock } from "src/component/NewGameBlock";
 import { QuestionBlock } from "src/component/QuestionBlock";
 import { RankingGameBlock } from "src/component/RankingGameBlock";
-import { ResponseBlock } from "src/component/ResponseBlock";
+import { ResponsePlayerBlock } from "src/component/ResponseBlock";
 import { ResultQuestionBlock } from "src/component/ResultQuestionBlock";
-import { ThemeBlock } from "src/component/ThemeBlock";
 import { Timer } from "src/component/Timer";
 import { useUser } from "src/context/UserProvider";
 import { Answer } from "src/models/Answer";
@@ -26,7 +25,6 @@ import { Game } from "src/models/Game";
 import { Player, PlayerScore } from "src/models/Player";
 import { Question, QuestionPosition } from "src/models/Question";
 import { Response } from "src/models/Response";
-import { Theme } from "src/models/Theme";
 
 export const NUMBERQUESTION = 10;
 
@@ -34,9 +32,9 @@ export const PlayPage = () => {
   const { t } = useTranslation();
   const { state } = useLocation();
   const { uuid, username, language } = useUser();
-  const { id } = useParams();
+  const { channelid } = useParams();
 
-  const [theme, setTheme] = useState<Theme | undefined>(undefined);
+  const [game, setGame] = useState<Game | undefined>(undefined);
   const [channel, setChannel] = useState<RealtimeChannel | undefined>(
     undefined
   );
@@ -61,46 +59,36 @@ export const PlayPage = () => {
   const [health, setHealth] = useState(3);
 
   useEffect(() => {
-    const getTheme = () => {
-      if (id) {
-        selectThemeById(Number(id)).then((res) => {
-          if (res.data) setTheme(res.data as Theme);
-        });
-      }
-    };
-    getTheme();
-  }, [id]);
-
-  useEffect(() => {
     const getGame = () => {
-      if (theme) {
-        selectGameByTheme(theme.id).then(async ({ data }) => {
+      if (channelid) {
+        selectGameByChannel(channelid).then(async ({ data }) => {
           if (data) {
             const game = data as Game;
+            setGame(game);
             if (!game.in_progress) {
-              await launchGameByTheme(theme.id);
+              await launchGameByGameId(game.id);
             }
           }
         });
       }
     };
     getGame();
-  }, [theme]);
+  }, [channelid]);
 
   useEffect(() => {
     const getPlayers = () => {
-      if (theme) {
-        selectPlayersByTheme(theme.id).then((res) => {
+      if (game) {
+        selectPlayersByGame(game.id).then((res) => {
           setScores(res.data as Array<PlayerScore>);
         });
       }
     };
     getPlayers();
-  }, [theme]);
+  }, [game]);
 
   useEffect(() => {
-    if (state.username && uuid && theme) {
-      const channel = supabase.channel(theme.name["en-US"], {
+    if (state.username && uuid && channelid) {
+      const channel = supabase.channel(channelid, {
         config: {
           presence: { key: uuid },
         },
@@ -186,7 +174,7 @@ export const PlayPage = () => {
         });
       setChannel(channel);
     }
-  }, [state, uuid, theme, question, answers]);
+  }, [state, uuid, channelid, question, answers]);
 
   useEffect(() => {
     return () => {
@@ -233,7 +221,7 @@ export const PlayPage = () => {
           xs={4}
           sx={{ display: "flex", gap: 1, flexDirection: "column" }}
         >
-          {theme && <ThemeBlock theme={theme} />}
+          {game && <GameBlock game={game} />}
           <RankingGameBlock
             players={playersWithScore}
             responses={playersResponse}
@@ -293,7 +281,7 @@ export const PlayPage = () => {
               <Grid container spacing={1}>
                 {response && (
                   <Grid item xs={12}>
-                    <ResponseBlock response={response} />
+                    <ResponsePlayerBlock response={response} />
                   </Grid>
                 )}
                 <Grid item xs={12}>

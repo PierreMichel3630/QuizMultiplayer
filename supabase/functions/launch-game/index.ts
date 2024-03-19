@@ -2,6 +2,13 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js";
 import moment from "https://esm.sh/moment";
 import { distance } from "https://deno.land/x/fastest_levenshtein/mod.ts";
 
+enum Difficulty {
+  FACILE,
+  MOYEN,
+  DIFFICILE,
+  IMPOSSIBLE,
+}
+
 const stopwords = [
   "the",
   "of",
@@ -38,6 +45,38 @@ const compareString = (a: string, b: string) =>
     normalizeString(b.toString().toLowerCase())
   ) / a.length;
 
+const range = (start: number, end: number) =>
+  Array.from({ length: end - start }, (v, k) => k + start);
+
+const getDifficulty = (min: string, max: string) => {
+  const values = Object.values(Difficulty);
+  const indexmin = values.indexOf(min as unknown as Difficulty);
+  const indexmax = values.indexOf(max as unknown as Difficulty);
+  const result: Array<string> = range(indexmin, indexmax + 1).map(
+    (el) => Difficulty[el]
+  );
+  return result;
+};
+
+const getRandomTheme = (
+  themes: Array<{ id: number; difficultymax: string; difficultymin: string }>,
+  numberRandom: number
+) => {
+  const array: Array<{ theme: number; difficulties: Array<string> }> = Array(
+    numberRandom
+  )
+    .fill(undefined)
+    .map(() => {
+      const theme = themes[Math.floor(themes.length * Math.random())];
+      const difficulties = getDifficulty(
+        theme.difficultymin,
+        theme.difficultymax
+      );
+      return { theme: theme.id, difficulties };
+    });
+  return array;
+};
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -56,13 +95,9 @@ Deno.serve(async (req) => {
   );
 
   const body = await req.json();
-  const idtheme = body.theme;
-  const res = await supabase
-    .from("theme")
-    .select()
-    .eq("id", idtheme)
-    .maybeSingle();
-  const theme = res.data;
+  const id = body.game;
+  const res = await supabase.from("game").select().eq("id", id).maybeSingle();
+  const game = res.data;
 
   const NUMBERQUESTION = 10;
   const TIMEQUESTION = 15000;
@@ -83,34 +118,42 @@ Deno.serve(async (req) => {
   let responsePlayer: Array<{ uuid: string; username: string; time: any }> = [];
   let healths: Array<{ uuid: string; value: number }> = [];
 
-  const launchGame = async (channel, idtheme) => {
-    await supabase.from("publicgameplayer").delete().eq("theme", idtheme);
+  const launchGame = async (channel) => {
+    await supabase.from("gameplayer").delete().eq("game", id);
     const syncPlayers = Object.values(channel.presenceState()).map((el) => ({
       score: el[0].score,
       uuid: el[0].uuid,
       username: el[0].username,
-      theme: idtheme,
+      game: id,
     }));
     syncPlayers.forEach(async (el) => {
-      await supabase.from("publicgameplayer").insert(el);
+      await supabase.from("gameplayer").insert(el);
     });
 
-    const res = await supabase
-      .from("randomquestion")
-      .select("question, difficulty, response, image")
-      .eq("theme", idtheme)
-      .limit(NUMBERQUESTION);
-    launchQuestion(idtheme, res.data, 0);
+    const themes = getRandomTheme(game.themes, NUMBERQUESTION);
+    const promises = themes.map((el) => {
+      return supabase
+        .from("randomquestion")
+        .select("question, difficulty, response, image, theme(*)")
+        .eq("theme", el.theme)
+        .in("difficulty", el.difficulties)
+        .limit(1)
+        .maybeSingle();
+    });
+    Promise.all(promises).then((res) => {
+      const questions = res.map((el) => el.data);
+      launchQuestion(questions, 0);
+    });
   };
 
-  const launchQuestion = (idtheme, questions, index) => {
+  const launchQuestion = (questions, index) => {
     const question = questions[index];
     response = question.response;
     time = moment();
     supabase
-      .from("publicgame")
+      .from("game")
       .update({ question: `${index + 1}/${NUMBERQUESTION}` })
-      .eq("theme", theme.id)
+      .eq("id", id)
       .then((res) => {
         if (res.error) {
           console.error(res.error);
@@ -143,7 +186,7 @@ Deno.serve(async (req) => {
       healths = [];
       if (index + 1 < NUMBERQUESTION) {
         setTimeout(() => {
-          launchQuestion(idtheme, questions, index + 1);
+          launchQuestion(questions, index + 1);
         }, TIMERESPONSE);
       } else {
         response = undefined;
@@ -158,14 +201,17 @@ Deno.serve(async (req) => {
           channel.unsubscribe();
         }, TIMERESPONSE);
         setTimeout(async () => {
-          await supabase.from("publicgameplayer").delete().eq("theme", idtheme);
+          await supabase.from("gameplayer").delete().eq("game", id);
           await supabase
-            .from("publicgame")
+            .from("game")
             .update({ in_progress: false, question: null })
-            .eq("theme", idtheme);
-          if (Object.values(channel.presenceState()).length > 0) {
+            .eq("id", id);
+          if (
+            Object.values(channel.presenceState()).length > 0 &&
+            game.type === "PUBLIC"
+          ) {
             await supabase.functions.invoke("launch-game", {
-              body: { theme: idtheme },
+              body: { game: id },
             });
           }
         }, 20000);
@@ -173,13 +219,13 @@ Deno.serve(async (req) => {
     }, TIMEQUESTION);
   };
 
-  const channel = supabase.channel(theme.name["en-US"]);
+  const channel = supabase.channel(game.channel);
   channel
     .on("presence", { event: "sync" }, () => {
       supabase
-        .from("publicgame")
+        .from("game")
         .update({ players: Object.values(channel.presenceState()).length })
-        .eq("theme", theme.id)
+        .eq("id", id)
         .then((res) => {
           if (res.error) {
             console.error(res.error);
@@ -188,20 +234,20 @@ Deno.serve(async (req) => {
     })
     .on("presence", { event: "join" }, async ({ newPresences }) => {
       const { data } = await supabase
-        .from("publicgameplayer")
+        .from("gameplayer")
         .select()
-        .eq("theme", theme.id);
+        .eq("game", id);
       const uuids = data.map((el) => el.uuid);
       const syncPlayers = newPresences
         .map((el) => ({
           score: el.score,
           uuid: el.uuid,
           username: el.username,
-          theme: theme.id,
+          game: id,
         }))
         .filter((el) => !uuids.includes(el.uuid));
       syncPlayers.forEach(async (el) => {
-        await supabase.from("publicgameplayer").insert(el);
+        await supabase.from("gameplayer").insert(el);
       });
     })
     .on("broadcast", { event: "responseuser" }, async (v) => {
@@ -286,7 +332,7 @@ Deno.serve(async (req) => {
         supabase
           .rpc("addpoint", {
             useruuid: responseuser.uuid,
-            themeid: theme.id,
+            gameid: id,
             points: POINTSANSWER + pointsFastest,
           })
           .then((res) => {
@@ -316,21 +362,21 @@ Deno.serve(async (req) => {
       if (status === "SUBSCRIBED") {
         if (!gameOn) {
           const { data } = await supabase
-            .from("publicgame")
+            .from("game")
             .select()
-            .eq("theme", theme.id)
+            .eq("id", id)
             .maybeSingle();
           if (data !== null && !data.in_progress) {
             gameOn = true;
             await supabase
-              .from("publicgame")
+              .from("game")
               .update({
                 in_progress: true,
                 next_game: moment().add(TIMEGAME, "seconds"),
               })
-              .eq("theme", theme.id);
+              .eq("id", id);
             setTimeout(() => {
-              launchGame(channel, theme.id);
+              launchGame(channel);
             }, 10000);
           }
         } else {

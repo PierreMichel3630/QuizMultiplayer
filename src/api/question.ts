@@ -8,3 +8,6 @@ export const selectQuestionWithImage = () =>
     .select()
     .neq("image", null)
     .eq("theme", 5);
+
+export const selectQuestionById = (id: number) =>
+  supabase.from(SUPABASE_QUESTION_TABLE).select().eq("id", id).maybeSingle();

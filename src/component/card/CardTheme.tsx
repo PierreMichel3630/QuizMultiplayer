@@ -1,98 +1,105 @@
 import { Box, Button, Paper, Typography } from "@mui/material";
 import { percent, px } from "csx";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import {
+  selectScoreByThemeAndPlayer,
+  selectScoresByTheme,
+} from "src/api/score";
 import { useUser } from "src/context/UserProvider";
-import { Game } from "src/models/Game";
+import { MyScore, Score } from "src/models/Score";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
-import { style } from "typestyle";
-
-const imageCss = style({
-  position: "absolute",
-  width: percent(100),
-  objectFit: "cover",
-  opacity: 0.8,
-  height: px(300),
-  top: 0,
-});
+import { RankingTable } from "../table/RankingTable";
 
 interface Props {
   theme: Theme;
-  game?: Game;
 }
 
-export const CardTheme = ({ theme, game }: Props) => {
+export const CardTheme = ({ theme }: Props) => {
   const { t } = useTranslation();
-  const { language, username, setUsername } = useUser();
+  const { language, uuid } = useUser();
   const navigate = useNavigate();
+
+  const [scores, setScore] = useState<Array<Score>>([]);
+  const [myScore, setMyScore] = useState<MyScore | undefined>(undefined);
 
   const name = theme.name[language.iso];
 
+  useEffect(() => {
+    const getScore = () => {
+      selectScoresByTheme(theme.id).then(({ data }) => {
+        setScore(data as Array<Score>);
+      });
+    };
+    getScore();
+  }, [theme]);
+
+  useEffect(() => {
+    const getMyRank = () => {
+      selectScoreByThemeAndPlayer(uuid, theme.id).then(({ data }) => {
+        const res = data as MyScore;
+        setMyScore(res.id !== null ? res : undefined);
+      });
+    };
+    getMyRank();
+  }, [theme, uuid]);
+
   const joinRoom = () => {
-    const newUsername = username !== "" ? username : "Player 1";
-    setUsername(newUsername);
-    navigate(`/play/${theme.id}`, { state: { username: newUsername } });
+    navigate(`/solo/${theme.id}`);
   };
 
   return (
     <Paper
       sx={{
         borderRadius: px(10),
-        overflow: "hidden",
-        position: "relative",
-        height: px(250),
+        minHeight: px(300),
+        padding: 1,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: Colors.greyLightMode,
+        backgroundImage: `url('${theme.image}')`,
+        backgroundSize: "cover",
       }}
     >
-      {theme.image && <img src={theme.image} className={imageCss} />}
-      <Box sx={{ zIndex: 1, textAlign: "center" }}>
+      <Box
+        sx={{
+          zIndex: 1,
+          display: "flex",
+          flexDirection: "column",
+          gap: px(5),
+          alignItems: "center",
+          width: percent(100),
+        }}
+      >
         <Typography
           variant="h1"
-          sx={{ color: "white", fontSize: 50, textShadow: "2px 2px 4px black" }}
+          sx={{
+            color: "white",
+            textShadow: "2px 2px 4px black",
+            wordWrap: "break-word",
+            fontSize: 45,
+            maxWidth: percent(100),
+          }}
         >
           {name}
         </Typography>
         <Typography
-          variant="h2"
+          variant="h6"
           sx={{ color: "white", textShadow: "2px 2px 4px black" }}
         >
           {`${theme.questions} ${t("commun.questions")}`}
         </Typography>
-        <Typography
-          variant="h4"
-          sx={{ color: "white", textShadow: "2px 2px 4px black" }}
-        >
-          {game && game.players > 0
-            ? t("commun.player", { count: game.players })
-            : t("commun.noplayer")}
-        </Typography>
-        {game && game.in_progress && (
-          <Typography
-            variant="h4"
-            sx={{ color: "white", textShadow: "2px 2px 4px black" }}
-          >
-            {game && game.question !== null
-              ? `${game.question} ${t("commun.questions")}`
-              : t("commun.wait")}
-          </Typography>
-        )}
-        <Typography
-          variant="body1"
-          sx={{ color: "white", textShadow: "2px 2px 4px black" }}
-        ></Typography>
+        <RankingTable scores={scores} myscore={myScore} />
         <Button
           variant="contained"
           color="primary"
-          sx={{ borderRadius: px(50), p: 2 }}
+          fullWidth
           onClick={() => joinRoom()}
         >
-          <Typography variant="h1" sx={{ fontSize: 30 }}>
-            {t("commun.play")}
-          </Typography>
+          <Typography variant="h6">{t("commun.play")}</Typography>
         </Button>
       </Box>
     </Paper>

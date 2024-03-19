@@ -1,13 +1,20 @@
-import { AppBar, Box, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
 import { important, px } from "csx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
 import logo from "src/assets/logo.png";
+import { useAuth } from "src/context/AuthProviderSupabase";
+import { AccountMenu } from "./AccountMenu";
 import { LanguagesMenu } from "./LanguageMenu";
 
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+
 export const Header = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const { user } = useAuth();
 
   return (
     <Box sx={{ flexGrow: 1, pl: 1, pr: 1 }}>
@@ -28,6 +35,19 @@ export const Header = () => {
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
             <LanguagesMenu />
+            {user ? (
+              <AccountMenu user={user} />
+            ) : (
+              <Box>
+                <Button
+                  endIcon={<AccountCircleIcon />}
+                  onClick={() => navigate("login")}
+                  variant="contained"
+                >
+                  <Typography variant="body1">{t("commun.login")}</Typography>
+                </Button>
+              </Box>
+            )}
           </Box>
         </Toolbar>
       </AppBar>

@@ -1,5 +1,7 @@
 import { Moment } from "moment";
 import { JsonLanguage, JsonLanguageArrayOrString } from "./Language";
+import { Theme } from "./Theme";
+import { ResponseLanguageString } from "./Response";
 
 export interface QuestionEnd {
   image?: string;
@@ -28,4 +30,13 @@ export interface QuestionAdmin {
   question: JsonLanguage;
   difficulty: string;
   id: number;
+}
+
+export interface QuestionSolo {
+  image?: string;
+  question: JsonLanguage;
+  difficulty: string;
+  theme: Theme;
+  isqcm: boolean;
+  responses: Array<ResponseLanguageString>;
 }
