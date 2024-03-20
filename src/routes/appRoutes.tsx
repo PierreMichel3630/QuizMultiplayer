@@ -11,6 +11,7 @@ import { SoloPage } from "src/pages/play/SoloPage";
 import { PlayPage } from "../pages/PlayPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { GenerateQuestionPage } from "src/pages/GenerateQuestionPage";
+import { StatisticsPage } from "src/pages/StatisticsPage";
 
 export const AppRoutes = [
   {
@@ -66,6 +67,14 @@ export const AppRoutes = [
     element: (
       <ProtectedRoute>
         <FriendPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/statistics",
+    element: (
+      <ProtectedRoute>
+        <StatisticsPage />
       </ProtectedRoute>
     ),
   },

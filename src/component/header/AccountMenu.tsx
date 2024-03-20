@@ -12,16 +12,17 @@ import { style } from "typestyle";
 import { AccountBadge } from "../AccountBadge";
 
 import LogoutIcon from "@mui/icons-material/Logout";
-import { useTranslation } from "react-i18next";
 import { User } from "@supabase/supabase-js";
-import { useAuth } from "src/context/AuthProviderSupabase";
-import { Link, useNavigate } from "react-router-dom";
 import { important, px } from "csx";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "src/context/AuthProviderSupabase";
+import { useUser } from "src/context/UserProvider";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 
+import BarChartIcon from "@mui/icons-material/BarChart";
 import PeopleIcon from "@mui/icons-material/People";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { useUser } from "src/context/UserProvider";
 
 const divCss = style({
   display: "flex",
@@ -46,6 +47,11 @@ export const AccountMenu = ({ user }: Props) => {
   const { setUuid } = useUser();
 
   const settings: Array<Setting> = [
+    {
+      name: t("commun.mystatistics"),
+      icon: <BarChartIcon fontSize="small" color="primary" />,
+      url: "/statistics",
+    },
     {
       name: t("commun.myfriends"),
       icon: <PeopleIcon fontSize="small" color="primary" />,
@@ -101,18 +107,23 @@ export const AccountMenu = ({ user }: Props) => {
       >
         {profile && (
           <div>
-            <MenuItem>
-              <Link to={`/user/${profile.id}`}>
-                <div className={divCss}>
-                  <AvatarAccount avatar={profile.avatar} size={50} />
-                  <div>
-                    {profile && (
-                      <Typography variant="h6">{profile.username}</Typography>
-                    )}
-                    <Typography variant="caption">{user.email}</Typography>
-                  </div>
+            <MenuItem
+              sx={{
+                cursor: "default",
+                "&:hover": {
+                  backgroundColor: "transparent",
+                },
+              }}
+            >
+              <div className={divCss}>
+                <AvatarAccount avatar={profile.avatar} size={50} />
+                <div>
+                  {profile && (
+                    <Typography variant="h6">{profile.username}</Typography>
+                  )}
+                  <Typography variant="caption">{user.email}</Typography>
                 </div>
-              </Link>
+              </div>
             </MenuItem>
             <Divider sx={{ m: important(0) }} />
           </div>

@@ -1,13 +1,13 @@
-import { Box, Card, Grid, Typography } from "@mui/material";
+import { Card, Container, Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { style } from "typestyle";
 
 import { ResetPasswordForm } from "src/form/authentification/ResetPasswordForm";
 
+import { px } from "csx";
 import { Helmet } from "react-helmet-async";
 import logo from "src/assets/logo.png";
-import { px } from "csx";
 
 const cardCss = style({
   padding: px(8),
@@ -16,7 +16,7 @@ export const ResetPasswordPage = () => {
   const { t } = useTranslation();
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
+    <Container maxWidth="sm" sx={{ display: "flex", alignItems: "center" }}>
       <Helmet>
         <title>{`${t("pages.resetpassword.title")} - ${t("appname")}`}</title>
       </Helmet>
@@ -51,6 +51,6 @@ export const ResetPasswordPage = () => {
           </Grid>
         </Grid>
       </Card>
-    </Box>
+    </Container>
   );
 };

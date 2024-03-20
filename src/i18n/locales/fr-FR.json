@@ -7,6 +7,7 @@
     "play": "Jouer",
     "ranking": "Classement",
     "game": "Partie",
+    "games": "Parties",
     "devine": "Devine la réponse !",
     "question": "Question",
     "startgame": "La partie va bientôt commencer",
@@ -50,7 +51,10 @@
     "noresultinvitation": "Aucune invitation en attente.",
     "noresultrequest": "Aucune demande d'ami en attente.",
     "noresultfriends": "Aucun ami.",
-    "myrecord": "Best"
+    "myrecord": "Best",
+    "hi": "Bonjour",
+    "mystatistics": "Mes Statistiques",
+    "gamesplay": "Parties jouées"
   },
   "rules": {
     "step1": "Choisissez un thème et cliquez sur jouer",

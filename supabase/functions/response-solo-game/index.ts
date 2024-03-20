@@ -37,6 +37,29 @@ const compareString = (a: string, b: string) =>
     normalizeString(b.toString().toLowerCase())
   ) / a.length;
 
+export const DIFFICULTY = {
+  moyen: 4,
+  difficile: 8,
+  impossible: 16,
+};
+
+const getDifficultyQuestion = (niveau: number) => {
+  const difficulties = ["FACILE", "MOYEN", "DIFFICILE", "IMPOSSIBLE"];
+  let result = "FACILE";
+  if (niveau >= DIFFICULTY.moyen && niveau < DIFFICULTY.difficile) {
+    result = "MOYEN";
+  } else if (niveau >= DIFFICULTY.difficile && niveau < DIFFICULTY.impossible) {
+    result = "DIFFICILE";
+  } else if (niveau >= DIFFICULTY.impossible) {
+    result = "IMPOSSIBLE";
+  }
+  const index = difficulties.findIndex((el) => el === result);
+  const difficultiesPossible = difficulties.filter(
+    (el, i) => i <= index && i >= index - 1
+  );
+  return difficultiesPossible;
+};
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -67,6 +90,8 @@ Deno.serve(async (req) => {
   let points = data.points;
   let response = undefined;
   let isAnswer = false;
+
+  const difficulties = getDifficultyQuestion(points);
 
   const channel = supabase.channel(`${player}${theme}`);
   channel
@@ -128,22 +153,26 @@ Deno.serve(async (req) => {
           .from("randomquestion")
           .select("*, theme(*)")
           .eq("theme", theme)
+          .in("difficulty", difficulties)
           .limit(1)
           .maybeSingle();
         response = data.response;
         let responsesQcm: Array<any> = [];
-        if (data.isqcm) {
+        const qcm =
+          data.isqcm === null ? Math.random() < 1 - 0.05 * points : data.isqcm;
+        if (qcm) {
           const responses = Array.isArray(data.response["en-US"])
             ? data.allresponse
               ? data.response["en-US"]
-              : data.response["en-US"][1]
+              : [data.response["en-US"][0]]
             : [data.response["en-US"]];
+
           const res = await supabase
             .from("randomresponse")
             .select("*")
             .eq("type", data.typeResponse)
             .not("usvalue", "in", `(${responses.join(",")})`)
-            .limit(3);
+            .limit(4);
 
           const res2 = await supabase
             .from("randomresponse")
@@ -163,7 +192,7 @@ Deno.serve(async (req) => {
             difficulty: data.difficulty,
             image: data.image,
             theme: data.theme,
-            isqcm: data.isqcm,
+            isqcm: qcm,
             responses: responsesQcm,
           },
         });

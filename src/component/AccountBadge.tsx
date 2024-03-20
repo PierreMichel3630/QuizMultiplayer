@@ -38,7 +38,7 @@ export const AccountBadge = ({ onClick }: Props) => {
         ml={1}
         sx={{ display: { xs: "none", md: "flex" } }}
       >
-        {t("header.account.hi")}
+        {t("commun.hi")} ,
       </Typography>
       <Typography
         component="small"

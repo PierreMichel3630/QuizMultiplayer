@@ -7,9 +7,15 @@ interface Props {
   time: number;
   size?: number;
   thickness?: number;
+  fontSize?: number;
 }
 
-export const Timer = ({ time, size = 50, thickness = 6 }: Props) => {
+export const Timer = ({
+  time,
+  size = 50,
+  thickness = 6,
+  fontSize = 50,
+}: Props) => {
   const DELAY = 100;
   const [timer, setTimer] = useState(time * 1000);
 
@@ -72,7 +78,7 @@ export const Timer = ({ time, size = 50, thickness = 6 }: Props) => {
         <Typography
           variant="h2"
           component="div"
-          sx={{ color: "white", fontSize: 50 }}
+          sx={{ color: "white", fontSize: fontSize }}
         >
           {timeValue < 0 ? 0 : Math.floor(timeValue)}
         </Typography>

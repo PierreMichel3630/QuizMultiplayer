@@ -2,12 +2,12 @@ import { supabase } from "./supabase";
 
 export const SUPABASE_SCORE_TABLE = "score";
 
-export const selectScoresByTheme = (theme: number) =>
+export const selectScoresByTheme = (theme: number, order: string) =>
   supabase
     .from(SUPABASE_SCORE_TABLE)
     .select("*, profile(*)")
     .eq("theme", theme)
-    .order("points", { ascending: false })
+    .order(order, { ascending: false })
     .limit(3);
 
 export const selectScoreByThemeAndPlayer = (player: string, theme: number) =>

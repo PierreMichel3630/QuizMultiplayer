@@ -1,4 +1,4 @@
-import { Box, Card, Grid, Typography } from "@mui/material";
+import { Card, Container, Grid, Typography } from "@mui/material";
 import { px } from "csx";
 import { useTranslation } from "react-i18next";
 import { style } from "typestyle";
@@ -17,7 +17,7 @@ export const LoginPage = () => {
   const { t } = useTranslation();
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
+    <Container maxWidth="sm" sx={{ display: "flex", alignItems: "center" }}>
       <Helmet>
         <title>{`${t("pages.login.title")} - ${t("appname")}`}</title>
       </Helmet>
@@ -51,6 +51,6 @@ export const LoginPage = () => {
           </Grid>
         </Grid>
       </Card>
-    </Box>
+    </Container>
   );
 };

@@ -29,7 +29,7 @@ export const CardTheme = ({ theme }: Props) => {
 
   useEffect(() => {
     const getScore = () => {
-      selectScoresByTheme(theme.id).then(({ data }) => {
+      selectScoresByTheme(theme.id, "points").then(({ data }) => {
         setScore(data as Array<Score>);
       });
     };

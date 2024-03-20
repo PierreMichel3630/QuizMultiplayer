@@ -6,6 +6,7 @@ export interface Theme {
   name: JsonLanguage;
   image: string;
   questions: number;
+  color: string;
 }
 
 export interface ThemeDifficulty {

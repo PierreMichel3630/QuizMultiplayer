@@ -89,7 +89,11 @@ export const QuestionSoloBlock = ({ question }: PropsSolo) => {
               </Grid>
             )}
             <Grid item xs={12}>
-              <JsonLanguageBlock variant="h2" value={question.question} />
+              <JsonLanguageBlock
+                variant="h2"
+                sx={{ fontSize: 30 }}
+                value={question.question}
+              />
             </Grid>
           </>
         ) : (

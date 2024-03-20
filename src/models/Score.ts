@@ -9,6 +9,11 @@ export interface Score {
   games: number;
 }
 
-export interface MyScore extends Score {
+export interface MyScore {
+  id: number;
+  profile: string;
+  theme: number;
+  points: number;
+  games: number;
   rank: number;
 }

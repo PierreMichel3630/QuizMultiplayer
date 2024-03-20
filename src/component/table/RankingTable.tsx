@@ -21,9 +21,10 @@ import { Colors } from "src/style/Colors";
 interface Props {
   scores: Array<Score>;
   myscore?: MyScore;
+  type?: "points" | "games";
 }
 
-export const RankingTable = ({ scores, myscore }: Props) => {
+export const RankingTable = ({ scores, myscore, type = "points" }: Props) => {
   const { profile } = useAuth();
   const getIcon = (rank: number) => {
     let icon = (
@@ -67,7 +68,7 @@ export const RankingTable = ({ scores, myscore }: Props) => {
                 <Typography variant="h6">{score.profile.username}</Typography>
               </TableCell>
               <TableCell align="right" sx={{ p: px(4) }}>
-                <Typography variant="h2">{score.points}</Typography>
+                <Typography variant="h2">{score[type]}</Typography>
               </TableCell>
             </TableRow>
           ))}
@@ -91,7 +92,7 @@ export const RankingTable = ({ scores, myscore }: Props) => {
                 </TableCell>
                 <TableCell align="right" sx={{ p: px(4) }}>
                   <Typography variant="h2">
-                    {myscore ? myscore.points : "-"}
+                    {myscore ? myscore[type] : "-"}
                   </Typography>
                 </TableCell>
               </TableRow>

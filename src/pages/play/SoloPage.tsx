@@ -1,4 +1,12 @@
-import { Avatar, Box, Button, Grid, Paper, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -47,7 +55,7 @@ export const SoloPage = () => {
 
   const getScore = () => {
     if (theme) {
-      selectScoresByTheme(theme.id).then(({ data }) => {
+      selectScoresByTheme(theme.id, "points").then(({ data }) => {
         setScores(data as Array<Score>);
       });
     }
@@ -126,7 +134,7 @@ export const SoloPage = () => {
   }, [uuid, themeid, launch]);
 
   return (
-    <Box sx={{ p: 1, display: "flex", flex: "1 1 0%" }}>
+    <Container maxWidth="sm" sx={{ p: 1, display: "flex", flex: "1 1 0%" }}>
       <Helmet>
         <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
       </Helmet>
@@ -166,65 +174,74 @@ export const SoloPage = () => {
               </Box>
             </Paper>
           )}
-          <QuestionSoloBlock question={question} />
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
-            {timer && <Timer time={timer} size={100} thickness={3} />}
-          </Box>
+          <Grid container spacing={1} sx={{ flexGrow: 1 }}>
+            <Grid item xs={12}>
+              <QuestionSoloBlock question={question} />
+            </Grid>
+            {response && !response.result && (
+              <Grid item xs={12}>
+                <RankingTable scores={scores} myscore={myScore} />
+              </Grid>
+            )}
+          </Grid>
           <Box
             sx={{
-              flexGrow: 1,
               display: "flex",
-              alignItems: "flex-end",
+              gap: 1,
+              flexDirection: "column",
             }}
           >
-            <Grid container spacing={1}>
-              {response && !response.result && (
-                <Grid item xs={12}>
-                  <RankingTable scores={scores} myscore={myScore} />
-                </Grid>
-              )}
-              {response && (
-                <Grid item xs={12}>
-                  {question && question.isqcm ? (
-                    <QcmResponseBlock
-                      response={response}
-                      responses={question.responses}
-                    />
-                  ) : (
-                    <ResponseSoloBlock response={response} />
-                  )}
-                </Grid>
-              )}
-            </Grid>
+            {response && (
+              <>
+                {question && question.isqcm ? (
+                  <QcmResponseBlock
+                    response={response}
+                    responses={question.responses}
+                  />
+                ) : (
+                  <ResponseSoloBlock response={response} />
+                )}
+              </>
+            )}
+            {response && !response.result ? (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => launch()}
+                fullWidth
+                startIcon={<ReplayIcon />}
+              >
+                <Typography variant="h2">{t("commun.tryagain")}</Typography>
+              </Button>
+            ) : (
+              <>
+                {!response && (
+                  <>
+                    {question && question.isqcm ? (
+                      <>
+                        <Box sx={{ display: "flex", justifyContent: "center" }}>
+                          {timer && (
+                            <Timer time={timer} size={100} thickness={3} />
+                          )}
+                        </Box>
+                        <QcmBlock
+                          responses={question.responses}
+                          onSubmit={validateResponse}
+                        />
+                      </>
+                    ) : (
+                      <InputResponseBlock
+                        onSubmit={validateResponse}
+                        timer={timer}
+                      />
+                    )}
+                  </>
+                )}
+              </>
+            )}
           </Box>
-          {response && !response.result ? (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => launch()}
-              fullWidth
-              startIcon={<ReplayIcon />}
-            >
-              <Typography variant="h2">{t("commun.tryagain")}</Typography>
-            </Button>
-          ) : (
-            <>
-              {!response && (
-                <>
-                  {question && question.isqcm ? (
-                    <QcmBlock
-                      responses={question.responses}
-                      onSubmit={validateResponse}
-                    />
-                  ) : (
-                    <InputResponseBlock onSubmit={validateResponse} />
-                  )}
-                </>
-              )}
-            </>
-          )}
         </Grid>
       </Grid>
-    </Box>
+    </Container>
   );
 };

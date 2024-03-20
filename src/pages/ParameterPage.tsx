@@ -1,4 +1,11 @@
-import { Alert, Box, Button, Container, Grid, Typography } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Container,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BaseInput } from "src/component/Input";
@@ -94,13 +101,15 @@ export const ParameterPage = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ p: 2 }}>
+      <Paper sx={{ p: 2 }}>
         <Helmet>
           <title>{`${t("pages.parameters.title")} - ${t("appname")}`}</title>
         </Helmet>
         <Grid container spacing={3}>
           <Grid item xs={12} sx={{ textAlign: "center" }}>
-            <Typography variant="h2">{t("commun.myparameters")}</Typography>
+            <Typography variant="h1" sx={{ fontSize: 30 }}>
+              {t("commun.myparameters")}
+            </Typography>
           </Grid>
           <Grid item xs={12}>
             <Grid container spacing={1} alignItems="center">
@@ -176,7 +185,7 @@ export const ParameterPage = () => {
             </Grid>
           </Grid>
         </Grid>
-      </Box>
+      </Paper>
     </Container>
   );
 };
