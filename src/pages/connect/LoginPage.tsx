@@ -1,4 +1,4 @@
-import { Card, Container, Grid, Typography } from "@mui/material";
+import { Card, Grid, Typography } from "@mui/material";
 import { px } from "csx";
 import { useTranslation } from "react-i18next";
 import { style } from "typestyle";
@@ -17,7 +17,7 @@ export const LoginPage = () => {
   const { t } = useTranslation();
 
   return (
-    <Container maxWidth="sm" sx={{ display: "flex", alignItems: "center" }}>
+    <>
       <Helmet>
         <title>{`${t("pages.login.title")} - ${t("appname")}`}</title>
       </Helmet>
@@ -32,17 +32,19 @@ export const LoginPage = () => {
             </Link>
           </Grid>
           <Grid item xs={12} sx={{ textAlign: "center" }}>
-            <Typography variant="h3">{t("form.login.connectmail")}</Typography>
+            <Typography variant="h2">{t("form.login.connectmail")}</Typography>
           </Grid>
           <Grid item xs={12}>
             <LoginForm />
           </Grid>
-          <Grid item xs={12} md={6} sx={{ textAlign: "center" }}>
+          <Grid
+            item
+            xs={12}
+            sx={{ justifyContent: "center", display: "flex", gap: 1 }}
+          >
             <Typography variant="body1">
               {t("form.login.haveaccount")}
             </Typography>
-          </Grid>
-          <Grid item xs={12} md={6} sx={{ textAlign: "center" }}>
             <Link to="/register">
               <Typography variant="body1" sx={{ textDecoration: "underline" }}>
                 {t("form.login.createaccount")}
@@ -51,6 +53,6 @@ export const LoginPage = () => {
           </Grid>
         </Grid>
       </Card>
-    </Container>
+    </>
   );
 };

@@ -29,7 +29,9 @@ export const RankingTable = ({ scores, myscore, type = "points" }: Props) => {
   const getIcon = (rank: number) => {
     let icon = (
       <Avatar sx={{ bgcolor: Colors.grey, width: 30, height: 30 }}>
-        <Typography variant="h6">{rank}</Typography>
+        <Typography variant="h6" color="text.primary">
+          {rank}
+        </Typography>
       </Avatar>
     );
     switch (rank) {
@@ -49,7 +51,12 @@ export const RankingTable = ({ scores, myscore, type = "points" }: Props) => {
   return (
     <TableContainer
       component={Paper}
-      sx={{ backgroundColor: "rgba(255, 255, 255, 0.9)", width: percent(100) }}
+      sx={{
+        bgcolor: "#ffffff26",
+        width: percent(100),
+        borderTopLeftRadius: px(0),
+        borderTopRightRadius: px(0),
+      }}
     >
       <Table size="small">
         <TableBody>
@@ -65,10 +72,14 @@ export const RankingTable = ({ scores, myscore, type = "points" }: Props) => {
                 <AvatarAccount avatar={score.profile.avatar} size={30} />
               </TableCell>
               <TableCell align="left" sx={{ p: px(4) }}>
-                <Typography variant="h6">{score.profile.username}</Typography>
+                <Typography variant="h6" color="text.primary">
+                  {score.profile.username}
+                </Typography>
               </TableCell>
               <TableCell align="right" sx={{ p: px(4) }}>
-                <Typography variant="h2">{score[type]}</Typography>
+                <Typography variant="h2" color="text.primary">
+                  {score[type]}
+                </Typography>
               </TableCell>
             </TableRow>
           ))}
@@ -88,10 +99,12 @@ export const RankingTable = ({ scores, myscore, type = "points" }: Props) => {
                   <AvatarAccount avatar={profile.avatar} size={30} />
                 </TableCell>
                 <TableCell align="left" sx={{ p: px(4) }}>
-                  <Typography variant="h6">{profile.username}</Typography>
+                  <Typography variant="h6" color="text.primary">
+                    {profile.username}
+                  </Typography>
                 </TableCell>
                 <TableCell align="right" sx={{ p: px(4) }}>
-                  <Typography variant="h2">
+                  <Typography variant="h2" color="text.primary">
                     {myscore ? myscore[type] : "-"}
                   </Typography>
                 </TableCell>

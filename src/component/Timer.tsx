@@ -1,21 +1,79 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
-import { percent } from "csx";
+import { percent, px } from "csx";
 import { useEffect, useState } from "react";
 import { Colors } from "src/style/Colors";
 
 interface Props {
+  time: number;
+}
+
+export const Timer = ({ time }: Props) => {
+  const DELAY = 100;
+  const [timer, setTimer] = useState(time * 1000);
+
+  useEffect(() => {
+    setTimer(time * 1000);
+  }, [time]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer((prev) => prev - DELAY);
+    }, DELAY);
+    return () => clearInterval(interval);
+  }, [time]);
+
+  const pourcentage = (timer / (time * 1000)) * 100;
+
+  const getColor = (pourcentage: number) => {
+    let color: string = Colors.green;
+    if (pourcentage < 70) {
+      color = Colors.yellow;
+    }
+    if (pourcentage < 40) {
+      color = Colors.orange;
+    }
+    if (pourcentage < 20) {
+      color = Colors.red;
+    }
+    return color;
+  };
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        backgroundColor: Colors.grey,
+        borderRadius: px(5),
+        height: px(10),
+        width: percent(100),
+      }}
+    >
+      <Box
+        sx={{
+          borderTopLeftRadius: px(5),
+          borderBottomLeftRadius: px(5),
+          height: percent(100),
+          width: percent(pourcentage),
+          backgroundColor: getColor(pourcentage),
+        }}
+      />
+    </Box>
+  );
+};
+
+interface PropsRoundTimer {
   time: number;
   size?: number;
   thickness?: number;
   fontSize?: number;
 }
 
-export const Timer = ({
+export const RoundTimer = ({
   time,
   size = 50,
   thickness = 6,
   fontSize = 50,
-}: Props) => {
+}: PropsRoundTimer) => {
   const DELAY = 100;
   const [timer, setTimer] = useState(time * 1000);
 

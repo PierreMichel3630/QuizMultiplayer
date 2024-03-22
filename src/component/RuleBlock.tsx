@@ -25,19 +25,17 @@ export const RuleBlock = () => {
               display: "flex",
               alignItems: "center",
               gap: 1,
-              background: "rgba(69,46,125,.15)",
+              background: "rgba(255,255,255,.15)",
               width: percent(100),
               borderRadius: 2,
             }}
           >
-            <Avatar
-              sx={{ width: 30, height: 30, background: "rgba(69,46,125,.1)" }}
-            >
-              {rule.number}
+            <Avatar sx={{ width: 30, height: 30 }}>
+              <Typography variant="h4" color="text.primary">
+                {rule.number}
+              </Typography>
             </Avatar>
-            <Typography variant="h6" color="white">
-              {rule.label}
-            </Typography>
+            <Typography variant="h6">{rule.label}</Typography>
           </Box>
         </Grid>
       ))}
@@ -50,17 +48,15 @@ export const RuleBlock = () => {
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
-                background: "white",
+                background: "rgba(255,165,0,.65)",
                 width: percent(100),
                 borderRadius: 2,
               }}
             >
-              <Avatar sx={{ bgcolor: Colors.orange }}>
-                <WarningIcon />
+              <Avatar sx={{ bgcolor: Colors.white }}>
+                <WarningIcon sx={{ color: Colors.orange }} />
               </Avatar>
-              <Typography variant="caption" sx={{ color: Colors.orange }}>
-                {warning.label}
-              </Typography>
+              <Typography variant="caption">{warning.label}</Typography>
             </Box>
           </Grid>
         ))}

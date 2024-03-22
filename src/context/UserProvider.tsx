@@ -31,7 +31,7 @@ export const UserContext = createContext<{
       : LANGUAGES[0],
   languages: [],
   setLanguage: (language: Language) => {},
-  mode: "light",
+  mode: "dark",
   setMode: (mode: "light" | "dark") => {},
 });
 

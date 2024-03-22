@@ -6,7 +6,7 @@ import { AppProvider } from "src/context/AppProvider";
 export const HomePage = () => {
   return (
     <AppProvider>
-      <Container maxWidth="xl">
+      <Container maxWidth="md">
         <Box
           sx={{
             display: "flex",

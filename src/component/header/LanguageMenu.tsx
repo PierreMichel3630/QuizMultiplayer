@@ -43,7 +43,7 @@ export const LanguagesMenu = () => {
             <Avatar src={language.icon} sx={{ width: 30, height: 30 }} />
           </IconButton>
           <Menu
-            sx={{ mt: "45px" }}
+            sx={{ mt: "45px", backgroundColor: "primary" }}
             id="menu-appbar"
             anchorEl={anchor}
             anchorOrigin={{

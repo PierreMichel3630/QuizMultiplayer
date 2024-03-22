@@ -1,4 +1,5 @@
-import { Avatar, Grid, Paper } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
+import { px } from "csx";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -9,6 +10,7 @@ import { useUser } from "src/context/UserProvider";
 import { MyScore, Score } from "src/models/Score";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
+import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { ToogleButtonCard } from "../ToogleButton";
 import { RankingTable } from "../table/RankingTable";
@@ -49,23 +51,25 @@ export const CardRanking = ({ theme }: Props) => {
   }, [theme, uuid]);
 
   return (
-    <Paper>
+    <Paper sx={{ overflow: "hidden" }}>
       <Grid container>
         <Grid
           item
           xs={12}
           sx={{
             backgroundColor: Colors.purple,
-            p: 1,
+            p: px(5),
           }}
         >
           <Grid container spacing={1} alignItems="center">
+            <Grid item xs={2}>
+              <ImageThemeBlock theme={theme} />
+            </Grid>
             <Grid
               item
-              xs={7}
+              xs={5}
               sx={{ display: "flex", alignItems: "center", gap: 1 }}
             >
-              <Avatar src={theme.image} sx={{ width: 40, height: 40 }} />
               <JsonLanguageBlock
                 variant="h1"
                 sx={{

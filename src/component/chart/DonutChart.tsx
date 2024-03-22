@@ -16,7 +16,7 @@ interface Props {
 
 export const DonutChart = ({ data, title }: Props) => {
   return (
-    <Paper variant="outlined">
+    <Paper sx={{ overflow: "hidden" }}>
       <Grid container>
         <Grid
           item
@@ -30,8 +30,7 @@ export const DonutChart = ({ data, title }: Props) => {
             variant="h1"
             sx={{
               wordWrap: "break-word",
-              fontSize: 25,
-              color: Colors.white,
+              fontSize: 18,
             }}
           >
             {title}

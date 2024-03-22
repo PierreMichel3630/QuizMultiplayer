@@ -1,12 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  Grid,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -26,13 +18,10 @@ import { ResponseSolo } from "src/models/Response";
 import { Theme } from "src/models/Theme";
 
 import ReplayIcon from "@mui/icons-material/Replay";
-import { MyScore, Score } from "src/models/Score";
-import {
-  selectScoresByTheme,
-  selectScoreByThemeAndPlayer,
-} from "src/api/score";
-import { RankingTable } from "src/component/table/RankingTable";
+import { selectScoreByThemeAndPlayer } from "src/api/score";
+import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { QcmBlock, QcmResponseBlock } from "src/component/QcmBlock";
+import { MyScore } from "src/models/Score";
 
 export const SoloPage = () => {
   const { t } = useTranslation();
@@ -49,29 +38,17 @@ export const SoloPage = () => {
   const [response, setResponse] = useState<undefined | ResponseSolo>(undefined);
   const [score, setScore] = useState<number>(0);
   const [timer, setTimer] = useState<undefined | number>(undefined);
-
-  const [scores, setScores] = useState<Array<Score>>([]);
   const [myScore, setMyScore] = useState<MyScore | undefined>(undefined);
 
-  const getScore = () => {
-    if (theme) {
-      selectScoresByTheme(theme.id, "points").then(({ data }) => {
-        setScores(data as Array<Score>);
-      });
-    }
-  };
-
-  const getMyRank = () => {
-    if (theme) {
-      selectScoreByThemeAndPlayer(uuid, theme.id).then(({ data }) => {
-        const res = data as MyScore;
-        setMyScore(res.id !== null ? res : undefined);
-      });
-    }
-  };
-
   useEffect(() => {
-    getScore();
+    const getMyRank = () => {
+      if (theme) {
+        selectScoreByThemeAndPlayer(uuid, theme.id).then(({ data }) => {
+          const res = data as MyScore;
+          setMyScore(res.id !== null ? res : undefined);
+        });
+      }
+    };
     getMyRank();
   }, [theme, uuid]);
 
@@ -99,9 +76,6 @@ export const SoloPage = () => {
           setTimer(undefined);
           setResponse(res);
           setScore(res.points);
-          if (!res.result) {
-            getMyRank();
-          }
         })
         .subscribe();
       setChannel(channel);
@@ -146,15 +120,11 @@ export const SoloPage = () => {
         >
           {theme && (
             <Paper sx={{ p: 1 }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 3,
-                }}
-              >
-                <Avatar src={theme.image} sx={{ width: 70, height: 70 }} />
-                <Box>
+              <Grid container spacing={1} alignItems="center">
+                <Grid item xs={4}>
+                  <ImageThemeBlock theme={theme} />
+                </Grid>
+                <Grid item xs={8}>
                   <JsonLanguageBlock
                     variant="h1"
                     sx={{ wordBreak: "break-all" }}
@@ -170,19 +140,17 @@ export const SoloPage = () => {
                     <Typography variant="h6">{t("commun.score")} : </Typography>
                     <Typography variant="h2">{score}</Typography>
                   </Box>
-                </Box>
-              </Box>
+                </Grid>
+              </Grid>
             </Paper>
           )}
-          <Grid container spacing={1} sx={{ flexGrow: 1 }}>
+          <Grid container spacing={1}>
             <Grid item xs={12}>
               <QuestionSoloBlock question={question} />
             </Grid>
-            {response && !response.result && (
-              <Grid item xs={12}>
-                <RankingTable scores={scores} myscore={myScore} />
-              </Grid>
-            )}
+            <Grid item xs={12}>
+              {timer && <Timer time={timer} />}
+            </Grid>
           </Grid>
           <Box
             sx={{
@@ -218,22 +186,12 @@ export const SoloPage = () => {
                 {!response && (
                   <>
                     {question && question.isqcm ? (
-                      <>
-                        <Box sx={{ display: "flex", justifyContent: "center" }}>
-                          {timer && (
-                            <Timer time={timer} size={100} thickness={3} />
-                          )}
-                        </Box>
-                        <QcmBlock
-                          responses={question.responses}
-                          onSubmit={validateResponse}
-                        />
-                      </>
-                    ) : (
-                      <InputResponseBlock
+                      <QcmBlock
+                        responses={question.responses}
                         onSubmit={validateResponse}
-                        timer={timer}
                       />
+                    ) : (
+                      <InputResponseBlock onSubmit={validateResponse} />
                     )}
                   </>
                 )}

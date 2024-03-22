@@ -17,7 +17,7 @@ export const Colors = {
   backgroundColor: grey[200],
   lightgrey: grey[200],
   lightgrey2: grey[400],
-  grey: grey[600],
+  grey: "#ffffff26",
   grey2: "#5f748d",
   grey3: "#d3e6f3",
   greyDarkMode: "#8ca3ba",
@@ -35,7 +35,7 @@ export const Colors = {
 
   yellow: yellow[600],
   orange: orange[600],
-  black: "#121f43",
+  black: "#000",
   white: "#fff",
 
   gold: yellow[700],

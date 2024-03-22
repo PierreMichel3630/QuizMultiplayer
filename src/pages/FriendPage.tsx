@@ -2,7 +2,6 @@ import {
   Alert,
   Button,
   Chip,
-  Container,
   Divider,
   Grid,
   Paper,
@@ -111,100 +110,98 @@ export const FriendPage = () => {
   }, []);
 
   return (
-    <Container maxWidth="sm">
-      <Paper sx={{ p: 2 }}>
-        <Helmet>
-          <title>{`${t("pages.friend.title")} - ${t("appname")}`}</title>
-        </Helmet>
-        <Grid container spacing={1}>
-          <Grid item xs={12} sx={{ textAlign: "center" }}>
-            <Typography variant="h1" sx={{ fontSize: 30 }}>
-              {t("pages.friend.title")}
-            </Typography>
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sx={{
-              position: "sticky",
-              top: 0,
-              zIndex: 3,
-            }}
-          >
-            <Button
-              variant="contained"
-              startIcon={<PersonAddIcon />}
-              fullWidth
-              onClick={() => setOpenAddFriend(true)}
-            >
-              {t("commun.addfriend")}
-            </Button>
-          </Grid>
-          <Grid item xs={12}>
-            <Divider>
-              <Chip label={t("commun.myinvitation")} size="small" />
-            </Divider>
-          </Grid>
-          {invitations.length > 0 ? (
-            invitations.map((invitation) => (
-              <Grid item xs={12} key={invitation.id}>
-                <CardInvitationFriend
-                  friend={invitation}
-                  validate={() => confirmFriend(invitation, FRIENDSTATUS.VALID)}
-                  refuse={() => confirmFriend(invitation, FRIENDSTATUS.REFUSE)}
-                />
-              </Grid>
-            ))
-          ) : (
-            <Grid item xs={12}>
-              <Alert severity="warning">{t("commun.noresultinvitation")}</Alert>
-            </Grid>
-          )}
-          <Grid item xs={12}>
-            <Divider>
-              <Chip label={t("commun.myrequests")} size="small" />
-            </Divider>
-          </Grid>
-          {requests.length > 0 ? (
-            requests.map((invitation) => (
-              <Grid item xs={12} key={invitation.id}>
-                <CardRequestFriend friend={invitation} />
-              </Grid>
-            ))
-          ) : (
-            <Grid item xs={12}>
-              <Alert severity="warning">{t("commun.noresultrequest")}</Alert>
-            </Grid>
-          )}
-          <Grid item xs={12}>
-            <Divider>
-              <Chip label={t("commun.myfriends")} size="small" />
-            </Divider>
-          </Grid>
-          {profiles.length > 0 ? (
-            profiles.map((profile) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} xl={3} key={profile.id}>
-                <CardProfile
-                  profile={profile}
-                  deleteToFriend={() => deleteFriend(profile)}
-                />
-              </Grid>
-            ))
-          ) : (
-            <Grid item xs={12}>
-              <Alert severity="warning">{t("commun.noresultfriends")}</Alert>
-            </Grid>
-          )}
+    <Paper sx={{ p: 2 }}>
+      <Helmet>
+        <title>{`${t("pages.friend.title")} - ${t("appname")}`}</title>
+      </Helmet>
+      <Grid container spacing={1}>
+        <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <Typography variant="h1" sx={{ fontSize: 30 }}>
+            {t("pages.friend.title")}
+          </Typography>
         </Grid>
-        <AddFriendModal
-          open={openAddFriend}
-          close={() => setOpenAddFriend(false)}
-          onValid={() => {
-            setOpenAddFriend(false);
-            refreshFriends();
+        <Grid
+          item
+          xs={12}
+          sx={{
+            position: "sticky",
+            top: 0,
+            zIndex: 3,
           }}
-        />
-      </Paper>
-    </Container>
+        >
+          <Button
+            variant="contained"
+            startIcon={<PersonAddIcon />}
+            fullWidth
+            onClick={() => setOpenAddFriend(true)}
+          >
+            {t("commun.addfriend")}
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Divider>
+            <Chip label={t("commun.myinvitation")} size="small" />
+          </Divider>
+        </Grid>
+        {invitations.length > 0 ? (
+          invitations.map((invitation) => (
+            <Grid item xs={12} key={invitation.id}>
+              <CardInvitationFriend
+                friend={invitation}
+                validate={() => confirmFriend(invitation, FRIENDSTATUS.VALID)}
+                refuse={() => confirmFriend(invitation, FRIENDSTATUS.REFUSE)}
+              />
+            </Grid>
+          ))
+        ) : (
+          <Grid item xs={12}>
+            <Alert severity="warning">{t("commun.noresultinvitation")}</Alert>
+          </Grid>
+        )}
+        <Grid item xs={12}>
+          <Divider>
+            <Chip label={t("commun.myrequests")} size="small" />
+          </Divider>
+        </Grid>
+        {requests.length > 0 ? (
+          requests.map((invitation) => (
+            <Grid item xs={12} key={invitation.id}>
+              <CardRequestFriend friend={invitation} />
+            </Grid>
+          ))
+        ) : (
+          <Grid item xs={12}>
+            <Alert severity="warning">{t("commun.noresultrequest")}</Alert>
+          </Grid>
+        )}
+        <Grid item xs={12}>
+          <Divider>
+            <Chip label={t("commun.myfriends")} size="small" />
+          </Divider>
+        </Grid>
+        {profiles.length > 0 ? (
+          profiles.map((profile) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} xl={3} key={profile.id}>
+              <CardProfile
+                profile={profile}
+                deleteToFriend={() => deleteFriend(profile)}
+              />
+            </Grid>
+          ))
+        ) : (
+          <Grid item xs={12}>
+            <Alert severity="warning">{t("commun.noresultfriends")}</Alert>
+          </Grid>
+        )}
+      </Grid>
+      <AddFriendModal
+        open={openAddFriend}
+        close={() => setOpenAddFriend(false)}
+        onValid={() => {
+          setOpenAddFriend(false);
+          refreshFriends();
+        }}
+      />
+    </Paper>
   );
 };

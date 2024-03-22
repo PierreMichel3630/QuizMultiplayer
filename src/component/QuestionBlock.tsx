@@ -2,7 +2,7 @@ import { Grid, Paper, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Question, QuestionSolo } from "src/models/Question";
 import { NUMBERQUESTION } from "src/pages/PlayPage";
-import { BadgeDifficulty, BadgeTheme } from "./Badge";
+import { BadgeDifficulty } from "./Badge";
 import { ImageQuestionBlock } from "./ImageBlock";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 import { CircularLoading } from "./Loading";
@@ -69,20 +69,6 @@ export const QuestionSoloBlock = ({ question }: PropsSolo) => {
       >
         {question ? (
           <>
-            <Grid
-              item
-              xs={6}
-              sx={{ display: "flex", justifyContent: "flex-start" }}
-            >
-              <BadgeTheme value={question.theme} />
-            </Grid>
-            <Grid
-              item
-              xs={6}
-              sx={{ display: "flex", justifyContent: "flex-end" }}
-            >
-              <BadgeDifficulty value={question.difficulty} />
-            </Grid>
             {question.image && (
               <Grid item>
                 <ImageQuestionBlock src={question.image} />

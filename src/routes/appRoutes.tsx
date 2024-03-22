@@ -2,7 +2,7 @@ import { AdminPage } from "src/pages/AdminPage";
 import { FriendPage } from "src/pages/FriendPage";
 import { ParameterPage } from "src/pages/ParameterPage";
 import { PrivateGamePage } from "src/pages/PrivateGamePage";
-import { ThemePage } from "src/pages/ThemePage";
+import { ThemesPage } from "src/pages/ThemesPage";
 import { ForgotPasswordPage } from "src/pages/connect/ForgotPasswordPage";
 import { LoginPage } from "src/pages/connect/LoginPage";
 import { RegisterPage } from "src/pages/connect/RegisterPage";
@@ -12,15 +12,25 @@ import { PlayPage } from "../pages/PlayPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { GenerateQuestionPage } from "src/pages/GenerateQuestionPage";
 import { StatisticsPage } from "src/pages/StatisticsPage";
+import { DuelPage } from "src/pages/play/DuelPage";
+import { ThemePage } from "src/pages/ThemePage";
 
 export const AppRoutes = [
   {
     path: "/",
+    element: <ThemesPage />,
+  },
+  {
+    path: "/theme/:id",
     element: <ThemePage />,
   },
   {
     path: "/solo/:themeid",
     element: <SoloPage />,
+  },
+  {
+    path: "/duel/:id",
+    element: <DuelPage />,
   },
   {
     path: "/play/:channelid",

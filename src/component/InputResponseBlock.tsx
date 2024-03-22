@@ -4,14 +4,12 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Colors } from "src/style/Colors";
 import { HealthBlock } from "./HealthBlock";
-import { Timer } from "./Timer";
 
 interface Props {
   onSubmit: (value: string) => void;
   health?: number;
-  timer?: number;
 }
-export const InputResponseBlock = ({ onSubmit, health, timer }: Props) => {
+export const InputResponseBlock = ({ onSubmit, health }: Props) => {
   const { t } = useTranslation();
 
   const [value, setValue] = useState("");
@@ -39,13 +37,13 @@ export const InputResponseBlock = ({ onSubmit, health, timer }: Props) => {
                   style: {
                     textAlign: "center",
                     fontFamily: ["Montserrat", "sans-serif"].join(","),
-                    fontSize: 25,
+                    fontSize: 15,
                     fontWeight: 700,
                   },
                 }}
                 sx={{
-                  border: `3px solid ${Colors.purple}`,
-                  backgroundColor: Colors.white,
+                  border: `1px solid ${Colors.white}`,
+                  backgroundColor: Colors.grey,
                   height: px(50),
                   borderRadius: px(15),
                   textAlign: "center",
@@ -55,11 +53,6 @@ export const InputResponseBlock = ({ onSubmit, health, timer }: Props) => {
             </FormControl>
           </form>
         </Grid>
-        {timer && (
-          <Grid item>
-            <Timer time={timer} size={45} thickness={6} fontSize={15} />
-          </Grid>
-        )}
         {health !== undefined && (
           <Grid item>
             <HealthBlock health={health} />

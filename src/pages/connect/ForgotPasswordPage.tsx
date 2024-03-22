@@ -1,4 +1,4 @@
-import { Card, Container, Grid, Typography } from "@mui/material";
+import { Card, Grid, Typography } from "@mui/material";
 import { px } from "csx";
 import { useTranslation } from "react-i18next";
 import { style } from "typestyle";
@@ -16,7 +16,7 @@ export const ForgotPasswordPage = () => {
   const { t } = useTranslation();
 
   return (
-    <Container maxWidth="sm" sx={{ display: "flex", alignItems: "center" }}>
+    <>
       <Helmet>
         <title>{`${t("pages.forgotpassword.title")} - ${t("appname")}`}</title>
       </Helmet>
@@ -43,12 +43,14 @@ export const ForgotPasswordPage = () => {
           <Grid item xs={12}>
             <ForgotPasswordForm />
           </Grid>
-          <Grid item xs={12} md={6} sx={{ textAlign: "center" }}>
+          <Grid
+            item
+            xs={12}
+            sx={{ justifyContent: "center", display: "flex", gap: 1 }}
+          >
             <Typography variant="body1">
               {t("form.forgotpassword.notforget")}
             </Typography>
-          </Grid>
-          <Grid item xs={12} md={6} sx={{ textAlign: "center" }}>
             <Link to="/login">
               <Typography variant="body1" sx={{ textDecoration: "underline" }}>
                 {t("form.forgotpassword.connection")}
@@ -57,6 +59,6 @@ export const ForgotPasswordPage = () => {
           </Grid>
         </Grid>
       </Card>
-    </Container>
+    </>
   );
 };

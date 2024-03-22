@@ -47,13 +47,13 @@ export const StatisticsPage = () => {
           {t("commun.mystatistics")}
         </Typography>
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12}>
         <DonutGames stats={myScores} themes={themes} />
       </Grid>
       <Grid item xs={12}>
         <Grid container spacing={1} alignItems="stretch">
           {themes.map((theme) => (
-            <Grid item xs={12} sm={12} md={6} lg={4} key={theme.id}>
+            <Grid item xs={12} sm={12} md={6} key={theme.id}>
               <CardRanking theme={theme} />
             </Grid>
           ))}

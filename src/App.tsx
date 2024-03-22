@@ -9,6 +9,7 @@ import { BrowserRouter } from "react-router-dom";
 import { UserProvider, useUser } from "./context/UserProvider";
 import { AuthProviderSupabase } from "./context/AuthProviderSupabase";
 import { MessageProvider } from "./context/MessageProvider";
+import { px } from "csx";
 
 function App() {
   const { mode, language } = useUser();
@@ -19,14 +20,49 @@ function App() {
         palette: {
           mode,
           primary: {
-            main: Colors.purple,
+            main: Colors.grey,
+            contrastText: Colors.white,
           },
           secondary: {
             main: Colors.white,
+            contrastText: Colors.black,
           },
           text: {
-            primary: Colors.purple,
-            secondary: Colors.grey2,
+            primary: Colors.white,
+            secondary: Colors.black,
+          },
+        },
+        components: {
+          MuiPaper: {
+            styleOverrides: {
+              root: {
+                backgroundColor: Colors.grey,
+              },
+            },
+          },
+          MuiFormLabel: {
+            styleOverrides: {
+              root: {
+                color: Colors.white,
+              },
+            },
+          },
+          MuiList: {
+            styleOverrides: {
+              root: {
+                padding: 0,
+                backgroundColor: Colors.black,
+                border: "2px solid white",
+                borderRadius: px(5),
+              },
+            },
+          },
+          MuiButton: {
+            styleOverrides: {
+              root: {
+                textTransform: "none",
+              },
+            },
           },
         },
         typography: {

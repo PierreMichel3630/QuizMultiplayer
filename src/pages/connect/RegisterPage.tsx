@@ -1,4 +1,4 @@
-import { Card, Container, Grid, Typography } from "@mui/material";
+import { Card, Grid, Typography } from "@mui/material";
 import { px } from "csx";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -17,7 +17,7 @@ export const RegisterPage = () => {
   const { t } = useTranslation();
 
   return (
-    <Container maxWidth="sm" sx={{ display: "flex", alignItems: "center" }}>
+    <>
       <Helmet>
         <title>{`${t("pages.register.title")} - ${t("appname")}`}</title>
       </Helmet>
@@ -32,7 +32,7 @@ export const RegisterPage = () => {
             </Link>
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="h4">
+            <Typography variant="h2">
               {t("form.register.createaccountemail")}
             </Typography>
           </Grid>
@@ -55,6 +55,6 @@ export const RegisterPage = () => {
           </Grid>
         </Grid>
       </Card>
-    </Container>
+    </>
   );
 };

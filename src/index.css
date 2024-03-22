@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  background-image: linear-gradient(-35deg, #d8ff94 0%, #83d9dc 100%);
+  background-image: linear-gradient(-35deg, #000 0%, #353935 100%);
   background-attachment: fixed;
 }
 
@@ -40,8 +40,4 @@ a {
 
 .rsm-svg > g > rect {
   stroke: transparent;
-}
-
-.MuiList-root {
-  padding: 0px !important;
 }

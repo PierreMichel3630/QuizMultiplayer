@@ -1,11 +1,4 @@
-import {
-  Alert,
-  Button,
-  Container,
-  Grid,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Alert, Button, Grid, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BaseInput } from "src/component/Input";
@@ -100,92 +93,90 @@ export const ParameterPage = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Paper sx={{ p: 2 }}>
-        <Helmet>
-          <title>{`${t("pages.parameters.title")} - ${t("appname")}`}</title>
-        </Helmet>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sx={{ textAlign: "center" }}>
-            <Typography variant="h1" sx={{ fontSize: 30 }}>
-              {t("commun.myparameters")}
-            </Typography>
+    <Paper sx={{ p: 2 }}>
+      <Helmet>
+        <title>{`${t("pages.parameters.title")} - ${t("appname")}`}</title>
+      </Helmet>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <Typography variant="h1" sx={{ fontSize: 30 }}>
+            {t("commun.myparameters")}
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Grid container spacing={1} alignItems="center">
+            <Grid item xs={12} md={4}>
+              <Typography variant="h4">{t("commun.username")}</Typography>
+            </Grid>
+            <Grid item xs={12} md={8}>
+              <BaseInput
+                value={username}
+                clear={() => setUsername("")}
+                onChange={(value) => setUsername(value)}
+              />
+            </Grid>
+            {profile && profile.username !== username && (
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  startIcon={<DoneIcon />}
+                  fullWidth
+                  onClick={() => changeUsername()}
+                  size="small"
+                >
+                  {t("commun.validate")}
+                </Button>
+              </Grid>
+            )}
           </Grid>
-          <Grid item xs={12}>
-            <Grid container spacing={1} alignItems="center">
-              <Grid item xs={12} md={4}>
-                <Typography variant="h4">{t("commun.username")}</Typography>
-              </Grid>
-              <Grid item xs={12} md={8}>
-                <BaseInput
-                  value={username}
-                  clear={() => setUsername("")}
-                  onChange={(value) => setUsername(value)}
-                />
-              </Grid>
-              {profile && profile.username !== username && (
+        </Grid>
+        <Grid item xs={12}>
+          <Grid container spacing={1} alignItems="center">
+            <Grid item xs={12} md={4}>
+              <Typography variant="h4">{t("commun.email")}</Typography>
+            </Grid>
+            <Grid item xs={12} md={8}>
+              <BaseInput
+                value={email}
+                clear={() => setEmail(user ? user.email ?? "" : "")}
+                onChange={(value) => {
+                  setEmail(value);
+                }}
+              />
+            </Grid>
+            {user && user.email !== email && (
+              <>
                 <Grid item xs={12}>
                   <Button
                     variant="contained"
                     startIcon={<DoneIcon />}
                     fullWidth
-                    onClick={() => changeUsername()}
+                    onClick={() => changeEmail()}
                     size="small"
                   >
                     {t("commun.validate")}
                   </Button>
                 </Grid>
-              )}
-            </Grid>
+                <Grid item xs={12}>
+                  <Alert severity="info">
+                    {t("pages.parameters.infoemail")}
+                  </Alert>
+                </Grid>
+              </>
+            )}
           </Grid>
-          <Grid item xs={12}>
-            <Grid container spacing={1} alignItems="center">
-              <Grid item xs={12} md={4}>
-                <Typography variant="h4">{t("commun.email")}</Typography>
-              </Grid>
-              <Grid item xs={12} md={8}>
-                <BaseInput
-                  value={email}
-                  clear={() => setEmail(user ? user.email ?? "" : "")}
-                  onChange={(value) => {
-                    setEmail(value);
-                  }}
-                />
-              </Grid>
-              {user && user.email !== email && (
-                <>
-                  <Grid item xs={12}>
-                    <Button
-                      variant="contained"
-                      startIcon={<DoneIcon />}
-                      fullWidth
-                      onClick={() => changeEmail()}
-                      size="small"
-                    >
-                      {t("commun.validate")}
-                    </Button>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Alert severity="info">
-                      {t("pages.parameters.infoemail")}
-                    </Alert>
-                  </Grid>
-                </>
-              )}
+        </Grid>
+        <Grid item xs={12}>
+          <Grid container spacing={1} alignItems="center">
+            <Grid item xs={12} md={4}>
+              <Typography variant="h4">{t("commun.avatar")}</Typography>
             </Grid>
-          </Grid>
-          <Grid item xs={12}>
-            <Grid container spacing={1} alignItems="center">
-              <Grid item xs={12} md={4}>
-                <Typography variant="h4">{t("commun.avatar")}</Typography>
-              </Grid>
-              <Grid item xs={12} md={8}>
-                <AvatarSelector selected={avatar} onSelect={changeAvatar} />
-              </Grid>
+            <Grid item xs={12} md={8}>
+              <AvatarSelector selected={avatar} onSelect={changeAvatar} />
             </Grid>
           </Grid>
         </Grid>
-      </Paper>
-    </Container>
+      </Grid>
+    </Paper>
   );
 };

@@ -8,7 +8,7 @@ export const selectScoresByTheme = (theme: number, order: string) =>
     .select("*, profile(*)")
     .eq("theme", theme)
     .order(order, { ascending: false })
-    .limit(3);
+    .limit(10);
 
 export const selectScoreByThemeAndPlayer = (player: string, theme: number) =>
   supabase.rpc("getranking", {

@@ -1,8 +1,6 @@
 import {
   Button,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   FormHelperText,
   Grid,
   IconButton,
@@ -43,8 +41,6 @@ export const LoginForm = () => {
       .required(t("form.login.requiredmail")),
     password: Yup.string().max(255).required(t("form.login.requiredpassword")),
   });
-
-  const [checked, setChecked] = useState(true);
 
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => {
@@ -116,6 +112,7 @@ export const LoginForm = () => {
           <FormControl
             fullWidth
             error={Boolean(formik.touched.password && formik.errors.password)}
+            color="primary"
           >
             <InputLabel htmlFor="login-password-input">
               {t("form.login.password")}
@@ -150,18 +147,6 @@ export const LoginForm = () => {
             )}
           </FormControl>
         </Grid>
-        {/*<Grid item xs={12} md={6} sx={{ textAlign: "left" }}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={checked}
-                onChange={(event) => setChecked(event.target.checked)}
-                name="checked"
-              />
-            }
-            label={t("form.login.rememberme")}
-          />
-          </Grid>*/}
         <Grid item xs={12} sx={{ textAlign: "right" }}>
           <Link to="/forgotpassword">
             <Typography variant="body1" sx={{ textDecoration: "underline" }}>

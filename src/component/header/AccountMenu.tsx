@@ -49,17 +49,17 @@ export const AccountMenu = ({ user }: Props) => {
   const settings: Array<Setting> = [
     {
       name: t("commun.mystatistics"),
-      icon: <BarChartIcon fontSize="small" color="primary" />,
+      icon: <BarChartIcon color="secondary" />,
       url: "/statistics",
     },
     {
       name: t("commun.myfriends"),
-      icon: <PeopleIcon fontSize="small" color="primary" />,
+      icon: <PeopleIcon color="secondary" />,
       url: "/friends",
     },
     {
       name: t("commun.myparameter"),
-      icon: <SettingsIcon fontSize="small" color="primary" />,
+      icon: <SettingsIcon color="secondary" />,
       url: "/parameter",
     },
   ];
@@ -141,7 +141,7 @@ export const AccountMenu = ({ user }: Props) => {
         <Divider sx={{ m: important(0) }} />
         <MenuItem onClick={disconnect} sx={{ minHeight: "auto" }}>
           <ListItemIcon>
-            <LogoutIcon fontSize="small" color="primary" />
+            <LogoutIcon color="secondary" />
           </ListItemIcon>
           <ListItemText primary={t("commun.logout")} />
         </MenuItem>

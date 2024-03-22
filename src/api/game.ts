@@ -5,6 +5,7 @@ export const SUPABASE_RESPONSESOLOGAME_FUNCTION = "response-solo-game";
 export const SUPABASE_LAUNCHSOLOGAME_FUNCTION = "launch-solo-game";
 export const SUPABASE_LAUNCHGAME_FUNCTION = "launch-game";
 export const SUPABASE_GAME_TABLE = "game";
+export const SUPABASE_DUELGAME_TABLE = "duelgame";
 
 //SOLO GAME
 export const launchSoloGame = (player: string, theme: number) =>
@@ -19,6 +20,14 @@ export const responseSoloGame = (
   supabase.functions.invoke(SUPABASE_RESPONSESOLOGAME_FUNCTION, {
     body: { game: game, response: response, language: language },
   });
+
+//DUEL GAME
+export const selectDuelGameById = (id: number) =>
+  supabase
+    .from(SUPABASE_DUELGAME_TABLE)
+    .select("*, player1(*), player2(*), theme(*)")
+    .eq("id", id)
+    .maybeSingle();
 
 //PUBLIC GAME
 export const launchGameByGameId = (id: number) =>

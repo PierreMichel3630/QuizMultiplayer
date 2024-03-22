@@ -54,11 +54,14 @@
     "myrecord": "Best",
     "hi": "Bonjour",
     "mystatistics": "Mes Statistiques",
-    "gamesplay": "Parties jouées"
+    "gamesplay": "Parties jouées",
+    "playsolo": "Jouer en solo",
+    "duel": "Duel",
+    "friendduel": "Duel avec un ami"
   },
   "rules": {
-    "step1": "Choisissez un thème et cliquez sur jouer",
-    "step2": "Faite la série de bonne réponse la plus longue"
+    "step1": "Choisissez un thème",
+    "step2": "Sélectionnez un mode de jeu (Solo, Duel, Duel contre amis)"
   },
   "warning": {
     "warning1": "Vous pouvez jouer sans vous connecter, mais vos scores ne seront pas sauvegardés."

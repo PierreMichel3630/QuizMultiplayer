@@ -60,7 +60,7 @@ export const ForgotPasswordForm = () => {
             fullWidth
             error={Boolean(formik.touched.email && formik.errors.email)}
           >
-            <InputLabel htmlFor="login-email-input">
+            <InputLabel htmlFor="login-email-input" color="secondary">
               {t("form.login.email")}
             </InputLabel>
             <OutlinedInput
@@ -71,7 +71,6 @@ export const ForgotPasswordForm = () => {
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               label={t("form.login.email")}
-              inputProps={{}}
             />
             {formik.touched.email && formik.errors.email && (
               <FormHelperText error id="login-error-email">

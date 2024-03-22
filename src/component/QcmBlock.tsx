@@ -22,10 +22,6 @@ export const QcmBlock = ({ responses, onSubmit }: Props) => {
               display: "flex",
               gap: 2,
               alignItems: "center",
-              "&:hover": {
-                backgroundColor: Colors.purple,
-                color: Colors.white,
-              },
             }}
             onClick={() => onSubmit(response[language.iso])}
           >
@@ -64,15 +60,11 @@ export const QcmResponseBlock = ({ responses, response }: PropsResponse) => {
                 display: "flex",
                 gap: 2,
                 alignItems: "center",
-                color:
-                  isCorrectResponse || isMyAnswer
-                    ? Colors.white
-                    : Colors.purple,
                 backgroundColor: isCorrectResponse
                   ? Colors.green
                   : isMyAnswer
                   ? Colors.red
-                  : Colors.white,
+                  : "primary.main",
               }}
             >
               <Typography variant="h6">{index + 1} .</Typography>
