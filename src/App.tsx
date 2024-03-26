@@ -10,6 +10,7 @@ import { UserProvider, useUser } from "./context/UserProvider";
 import { AuthProviderSupabase } from "./context/AuthProviderSupabase";
 import { MessageProvider } from "./context/MessageProvider";
 import { px } from "csx";
+import { AppProvider } from "./context/AppProvider";
 
 function App() {
   const { mode, language } = useUser();
@@ -31,12 +32,23 @@ function App() {
             primary: Colors.white,
             secondary: Colors.black,
           },
+          success: {
+            main: Colors.green,
+            contrastText: Colors.white,
+          },
         },
         components: {
-          MuiPaper: {
+          MuiCard: {
             styleOverrides: {
               root: {
                 backgroundColor: Colors.grey,
+              },
+            },
+          },
+          MuiPaper: {
+            styleOverrides: {
+              root: {
+                backgroundColor: Colors.grey2,
               },
             },
           },
@@ -109,19 +121,21 @@ function App() {
   return (
     <AuthProviderSupabase>
       <UserProvider>
-        <Helmet
-          htmlAttributes={{
-            lang: language.iso,
-          }}
-        />
-        <ThemeProvider theme={theme}>
-          <MessageProvider>
-            <CssBaseline />
-            <BrowserRouter>
-              <Routes />
-            </BrowserRouter>
-          </MessageProvider>
-        </ThemeProvider>
+        <AppProvider>
+          <Helmet
+            htmlAttributes={{
+              lang: language.iso,
+            }}
+          />
+          <ThemeProvider theme={theme}>
+            <MessageProvider>
+              <CssBaseline />
+              <BrowserRouter>
+                <Routes />
+              </BrowserRouter>
+            </MessageProvider>
+          </ThemeProvider>
+        </AppProvider>
       </UserProvider>
     </AuthProviderSupabase>
   );

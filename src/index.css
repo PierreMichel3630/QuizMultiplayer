@@ -2,6 +2,7 @@ body {
   margin: 0;
   background-image: linear-gradient(-35deg, #000 0%, #353935 100%);
   background-attachment: fixed;
+  min-height: 100vh;
 }
 
 body::after {
@@ -40,4 +41,20 @@ a {
 
 .rsm-svg > g > rect {
   stroke: transparent;
+}
+
+/*Animation*/
+@keyframes l3 {
+  20% {
+    background-position: 0% 0%, 50% 50%, 100% 50%;
+  }
+  40% {
+    background-position: 0% 100%, 50% 0%, 100% 50%;
+  }
+  60% {
+    background-position: 0% 50%, 50% 100%, 100% 0%;
+  }
+  80% {
+    background-position: 0% 50%, 50% 50%, 100% 100%;
+  }
 }

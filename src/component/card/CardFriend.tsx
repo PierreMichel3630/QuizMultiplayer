@@ -5,6 +5,9 @@ import { useTranslation } from "react-i18next";
 import { Friend } from "src/models/Friend";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 
+import CancelIcon from "@mui/icons-material/Cancel";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+
 interface PropsCardInvitationFriend {
   friend: Friend;
   validate: () => void;
@@ -19,17 +22,12 @@ export const CardInvitationFriend = ({
   const { t } = useTranslation();
 
   return (
-    <Card sx={{ p: 1 }}>
-      <Grid
-        container
-        spacing={1}
-        justifyContent="space-between"
-        alignItems="center"
-      >
+    <Card sx={{ p: 1 }} variant="outlined">
+      <Grid container spacing={1} justifyContent="center" alignItems="center">
         <Grid item>
           <AvatarAccount avatar={friend.user1.avatar} size={60} />
         </Grid>
-        <Grid item xs={9}>
+        <Grid item>
           <Typography variant="h2" sx={{ wordWrap: "break-word" }}>
             {friend.user1.username}
           </Typography>
@@ -48,13 +46,20 @@ export const CardInvitationFriend = ({
             fullWidth
             color="success"
             onClick={validate}
+            startIcon={<CheckCircleIcon />}
           >
-            {t("commun.validate")}
+            <Typography variant="h6">{t("commun.validate")}</Typography>
           </Button>
         </Grid>
         <Grid item xs={6}>
-          <Button variant="contained" fullWidth color="error" onClick={refuse}>
-            {t("commun.refuse")}
+          <Button
+            variant="contained"
+            fullWidth
+            color="error"
+            onClick={refuse}
+            startIcon={<CancelIcon />}
+          >
+            <Typography variant="h6">{t("commun.refuse")}</Typography>
           </Button>
         </Grid>
       </Grid>
@@ -70,7 +75,7 @@ export const CardRequestFriend = ({ friend }: PropsCardRequestFriend) => {
   const { t } = useTranslation();
 
   return (
-    <Card sx={{ p: 1 }}>
+    <Card sx={{ p: 1 }} variant="outlined">
       <Grid
         container
         spacing={1}

@@ -11,13 +11,13 @@ import { BadgeAccountSkeleton } from "./skeleton/SkeletonAccount";
 const divCss = style({
   display: "flex",
   borderRadius: 30,
-  border: border({ width: 1, style: "solid", color: Colors.grey3 }),
+  border: border({ width: 2, style: "solid", color: Colors.grey }),
   padding: 5,
   alignItems: "center",
   cursor: "pointer",
   $nest: {
     "&:hover": {
-      backgroundColor: Colors.lightgrey,
+      backgroundColor: Colors.grey,
     },
   },
 });
@@ -34,7 +34,6 @@ export const AccountBadge = ({ onClick }: Props) => {
       <Typography
         component="small"
         variant="caption"
-        color="secondary"
         ml={1}
         sx={{ display: { xs: "none", md: "flex" } }}
       >
@@ -46,7 +45,6 @@ export const AccountBadge = ({ onClick }: Props) => {
         sx={{ display: { xs: "none", md: "flex" }, fontWeight: 700 }}
         ml={0.5}
         mr={1}
-        color="secondary"
       >
         {profile.username}
       </Typography>

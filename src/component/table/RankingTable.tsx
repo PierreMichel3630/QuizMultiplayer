@@ -52,7 +52,7 @@ export const RankingTable = ({ scores, myscore, type = "points" }: Props) => {
     <TableContainer
       component={Paper}
       sx={{
-        bgcolor: "#ffffff26",
+        bgcolor: Colors.grey,
         width: percent(100),
         borderTopLeftRadius: px(0),
         borderTopRightRadius: px(0),

@@ -40,3 +40,12 @@ export interface QuestionSolo {
   isqcm: boolean;
   responses: Array<ResponseLanguageString>;
 }
+
+export interface QuestionDuel {
+  image?: string;
+  question: JsonLanguage;
+  difficulty: string;
+  theme: Theme;
+  isqcm: boolean;
+  responses: Array<ResponseLanguageString>;
+}

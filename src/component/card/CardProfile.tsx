@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Profile } from "src/models/Profile";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 import DeleteIcon from "@mui/icons-material/Delete";
-
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 interface Props {
   profile: Profile;
   addToFriend?: () => void;
@@ -39,14 +39,15 @@ export const CardProfile = ({
     <Card
       sx={{ p: 1, cursor: onSelect ? "pointer" : "default" }}
       onClick={select}
+      variant="outlined"
     >
-      <Grid container spacing={1} alignItems="center">
+      <Grid container spacing={1} alignItems="center" justifyContent="center">
         <Grid item>
           <AvatarAccount avatar={profile.avatar} size={60} />
         </Grid>
-        <Grid item xs={9}>
+        <Grid item>
           <Typography variant="h2" sx={{ wordWrap: "break-word" }}>
-            {`${profile.firstname} ${profile.lastname}`}
+            {profile.username}
           </Typography>
           <Typography
             variant="caption"
@@ -60,8 +61,15 @@ export const CardProfile = ({
 
         {addToFriend && (
           <Grid item xs={12}>
-            <Button variant="contained" size="small" fullWidth onClick={add}>
-              {t("commun.addtofriend")}
+            <Button
+              variant="contained"
+              size="small"
+              color="success"
+              fullWidth
+              onClick={add}
+              startIcon={<AddCircleIcon />}
+            >
+              <Typography variant="h6">{t("commun.addtofriend")}</Typography>
             </Button>
           </Grid>
         )}
@@ -75,7 +83,7 @@ export const CardProfile = ({
               fullWidth
               onClick={remove}
             >
-              {t("commun.delete")}
+              <Typography variant="h6">{t("commun.delete")}</Typography>
             </Button>
           </Grid>
         )}

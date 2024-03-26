@@ -14,12 +14,9 @@ import { useTranslation } from "react-i18next";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
-import { insertFriend, selectFriend } from "src/api/friend";
-import { searchProfile } from "src/api/profile";
-import { useAuth } from "src/context/AuthProviderSupabase";
-import { useMessage } from "src/context/MessageProvider";
-import { FRIENDSTATUS, Friend, FriendInsert } from "src/models/Friend";
-import { Profile } from "src/models/Profile";
+import { selectFriend } from "src/api/friend";
+import { useUser } from "src/context/UserProvider";
+import { FRIENDSTATUS, Friend } from "src/models/Friend";
 import { BasicSearchInput } from "../Input";
 import { Loading } from "../Loading";
 import { CardProfile } from "../card/CardProfile";
@@ -27,46 +24,24 @@ import { CardProfile } from "../card/CardProfile";
 interface Props {
   open: boolean;
   close: () => void;
-  onValid: () => void;
+  onValid: (uuid: string) => void;
 }
 
-export const AddFriendModal = ({ open, close, onValid }: Props) => {
+export const SelectFriendModal = ({ open, close, onValid }: Props) => {
   const { t } = useTranslation();
-  const { user } = useAuth();
-  const { setMessage, setSeverity } = useMessage();
+  const { uuid } = useUser();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const [search, setSearch] = useState("");
-  const [profiles, setProfiles] = useState<Array<Profile>>([]);
 
-  const [uuidfriends, setUuidFriends] = useState<Array<string>>([]);
+  const [friends, setFriends] = useState<Array<Friend>>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const getUsers = async () => {
-    const { data } = await searchProfile(search, uuidfriends);
-    setProfiles(data ? (data as Array<Profile>) : []);
-  };
-
-  useEffect(() => {
-    if (search !== "") {
-      getUsers();
-    } else {
-      setProfiles([]);
-    }
-  }, [search, user, uuidfriends]);
 
   const getFriends = async () => {
     const { data } = await selectFriend();
     const friends = data as Array<Friend>;
-    const uuids: Array<string> = user ? [user.id] : [];
-    friends
-      .filter((el) => el.status !== FRIENDSTATUS.REFUSE)
-      .forEach((el) => {
-        uuids.push(el.user1.id);
-        uuids.push(el.user2.id);
-      });
-    setUuidFriends([...new Set(uuids)]);
+    setFriends(friends);
     setIsLoading(false);
   };
 
@@ -74,27 +49,14 @@ export const AddFriendModal = ({ open, close, onValid }: Props) => {
     getFriends();
   }, []);
 
-  const addToFriend = async (profile: Profile) => {
-    if (user !== null) {
-      const invitation: FriendInsert = {
-        user1: user.id,
-        user2: profile.id,
-      };
-      const { error } = await insertFriend(invitation);
-      if (error) {
-        setSeverity("error");
-        setMessage(t("commun.error"));
-      } else {
-        setUuidFriends((prev) => [...prev, profile.id]);
-        setSeverity("success");
-        setMessage(t("alert.sendfriendrequest"));
-        onValid();
-      }
-    } else {
-      setSeverity("error");
-      setMessage(t("commun.error"));
-    }
-  };
+  const profiles = friends
+    .filter((el) => el.status === FRIENDSTATUS.VALID)
+    .map((el) => (el.user1.id === uuid ? el.user2 : el.user1))
+    .filter((el) =>
+      search !== ""
+        ? el.username.toLowerCase().includes(search.toLowerCase())
+        : true
+    );
 
   return (
     <Dialog
@@ -108,7 +70,7 @@ export const AddFriendModal = ({ open, close, onValid }: Props) => {
       <AppBar sx={{ position: "relative" }}>
         <Toolbar>
           <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.addfriend")}
+            {t("commun.myfriends")}
           </Typography>
           <IconButton color="inherit" onClick={close} aria-label="close">
             <CloseIcon />
@@ -144,7 +106,7 @@ export const AddFriendModal = ({ open, close, onValid }: Props) => {
                   >
                     <CardProfile
                       profile={profile}
-                      addToFriend={() => addToFriend(profile)}
+                      onSelect={() => onValid(profile.id)}
                     />
                   </Grid>
                 ))

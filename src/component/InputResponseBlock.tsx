@@ -1,5 +1,5 @@
 import { FormControl, Grid, InputBase, Paper } from "@mui/material";
-import { px } from "csx";
+import { percent, px } from "csx";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Colors } from "src/style/Colors";
@@ -15,7 +15,7 @@ export const InputResponseBlock = ({ onSubmit, health }: Props) => {
   const [value, setValue] = useState("");
 
   return (
-    <Paper sx={{ p: 0.5, display: "flex" }}>
+    <Paper sx={{ p: 0.5, display: "flex", width: percent(100) }}>
       <Grid container spacing={1} alignItems="center">
         <Grid item xs>
           <form

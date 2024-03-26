@@ -18,7 +18,7 @@ export const Colors = {
   lightgrey: grey[200],
   lightgrey2: grey[400],
   grey: "#ffffff26",
-  grey2: "#5f748d",
+  grey2: grey[800],
   grey3: "#d3e6f3",
   greyDarkMode: "#8ca3ba",
   greyLightMode: "#5f748d",

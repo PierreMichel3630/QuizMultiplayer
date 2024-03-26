@@ -61,6 +61,66 @@ export const Timer = ({ time }: Props) => {
   );
 };
 
+interface PropsVerticalTimer {
+  time: number;
+  color: string;
+  answer: number | undefined;
+}
+
+export const VerticalTimer = ({ time, color, answer }: PropsVerticalTimer) => {
+  const DELAY = 100;
+  const [timer, setTimer] = useState(time * 1000);
+
+  useEffect(() => {
+    setTimer(time * 1000);
+  }, [time]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer((prev) => prev - DELAY);
+    }, DELAY);
+    return () => clearInterval(interval);
+  }, [time]);
+
+  const pourcentage = (timer / (time * 1000)) * 100;
+  const pourcentageAnswer = answer ? 100 - (answer / (time * 1000)) * 100 : 0;
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        position: "relative",
+        flexDirection: "column-reverse",
+        backgroundColor: Colors.grey,
+        borderRadius: px(5),
+        height: percent(100),
+        width: px(10),
+      }}
+    >
+      {answer && (
+        <Box
+          sx={{
+            position: "absolute",
+            borderRadius: px(5),
+            height: percent(pourcentageAnswer),
+            width: percent(100),
+            backgroundColor: color,
+            opacity: 0.5,
+          }}
+        />
+      )}
+      <Box
+        sx={{
+          borderRadius: px(5),
+          height: percent(pourcentage),
+          width: percent(100),
+          backgroundColor: color,
+        }}
+      />
+    </Box>
+  );
+};
+
 interface PropsRoundTimer {
   time: number;
   size?: number;

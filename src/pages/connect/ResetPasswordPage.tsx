@@ -1,4 +1,4 @@
-import { Card, Container, Grid, Typography } from "@mui/material";
+import { Box, Card, Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { style } from "typestyle";
@@ -16,7 +16,7 @@ export const ResetPasswordPage = () => {
   const { t } = useTranslation();
 
   return (
-    <Container maxWidth="sm" sx={{ display: "flex", alignItems: "center" }}>
+    <Box>
       <Helmet>
         <title>{`${t("pages.resetpassword.title")} - ${t("appname")}`}</title>
       </Helmet>
@@ -51,6 +51,6 @@ export const ResetPasswordPage = () => {
           </Grid>
         </Grid>
       </Card>
-    </Container>
+    </Box>
   );
 };

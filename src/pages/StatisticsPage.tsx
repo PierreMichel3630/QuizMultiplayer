@@ -9,6 +9,7 @@ import { MyScore } from "src/models/Score";
 import { Theme } from "src/models/Theme";
 import { uniqBy } from "lodash";
 import { DonutGames } from "src/component/chart/DonutGames";
+import { GoHomeButton } from "src/component/navigation/GoBackButton";
 
 export const StatisticsPage = () => {
   const { t } = useTranslation();
@@ -42,6 +43,9 @@ export const StatisticsPage = () => {
 
   return (
     <Grid container spacing={1} justifyContent="center">
+      <Grid item xs={12}>
+        <GoHomeButton />
+      </Grid>
       <Grid item xs={12} sx={{ textAlign: "center" }}>
         <Typography variant="h1" sx={{ fontSize: 30 }}>
           {t("commun.mystatistics")}

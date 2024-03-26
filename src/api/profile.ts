@@ -18,7 +18,6 @@ export const searchProfile = (search: string, notin: Array<string>) =>
   supabase
     .from(SUPABASE_PROFILE_TABLE)
     .select()
-    .ilike("firstname_lastname", `%${search}%`)
+    .ilike("username", `%${search}%`)
     .not("id", "in", `(${notin.join(",")})`)
-    .order("firstname", { ascending: true })
-    .order("lastname", { ascending: true });
+    .order("username", { ascending: true });

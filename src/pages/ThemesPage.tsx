@@ -1,28 +1,15 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { percent } from "csx";
-import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 
-import { selectThemes } from "src/api/theme";
 import { RuleBlock } from "src/component/RuleBlock";
 import { CardTheme } from "src/component/card/CardTheme";
-import { Theme } from "src/models/Theme";
+import { useApp } from "src/context/AppProvider";
 
 export const ThemesPage = () => {
   const { t } = useTranslation();
-
-  const [themes, setThemes] = useState<Array<Theme>>([]);
-
-  const getThemes = () => {
-    selectThemes().then((res) => {
-      if (res.data) setThemes(res.data as Array<Theme>);
-    });
-  };
-
-  useEffect(() => {
-    getThemes();
-  }, []);
+  const { themes } = useApp();
 
   /*const createPrivateGame = () => {
     const idGame = Math.random().toString(36).slice(2, 9);
@@ -30,7 +17,7 @@ export const ThemesPage = () => {
   };*/
 
   return (
-    <Box sx={{ display: "flex", width: percent(100) }}>
+    <Box sx={{ width: percent(100) }}>
       <Grid container spacing={1} justifyContent="center" sx={{ mb: 2 }}>
         <Helmet>
           <title>{`${t("pages.home.title")} - ${t("appname")}`}</title>

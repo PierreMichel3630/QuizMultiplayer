@@ -36,7 +36,13 @@ export const DonutChart = ({ data, title }: Props) => {
             {title}
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+          sx={{
+            backgroundColor: Colors.grey,
+          }}
+        >
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie

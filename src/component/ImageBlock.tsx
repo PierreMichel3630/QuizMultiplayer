@@ -1,11 +1,5 @@
-import { Box } from "@mui/material";
-import { percent, viewHeight } from "csx";
-import { style } from "typestyle";
-
-const imageCss = style({
-  maxWidth: percent(100),
-  maxHeight: viewHeight(30),
-});
+import { Paper } from "@mui/material";
+import { percent } from "csx";
 
 interface Props {
   src: string;
@@ -13,8 +7,15 @@ interface Props {
 
 export const ImageQuestionBlock = ({ src }: Props) => {
   return (
-    <Box>
-      <img src={src} className={imageCss} />
-    </Box>
+    <Paper
+      sx={{
+        width: percent(100),
+        height: percent(100),
+        backgroundImage: `url(${src})`,
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        backgroundRepeat: "no-repeat",
+      }}
+    />
   );
 };

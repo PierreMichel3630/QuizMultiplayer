@@ -29,6 +29,7 @@ export const DefaultTabs = ({ tab, onChange, values }: Props) => {
       >
         {values.map((value) => (
           <Tab
+            key={value}
             sx={{ p: padding(8, 5), minHeight: "auto" }}
             label={
               <Typography

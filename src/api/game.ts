@@ -3,9 +3,13 @@ import { supabase } from "./supabase";
 
 export const SUPABASE_RESPONSESOLOGAME_FUNCTION = "response-solo-game";
 export const SUPABASE_LAUNCHSOLOGAME_FUNCTION = "launch-solo-game";
+
 export const SUPABASE_LAUNCHGAME_FUNCTION = "launch-game";
 export const SUPABASE_GAME_TABLE = "game";
+
 export const SUPABASE_DUELGAME_TABLE = "duelgame";
+export const SUPABASE_RESPONSEDUELGAME_FUNCTION = "response-duel-game";
+export const SUPABASE_LAUNCHDUELGAME_FUNCTION = "launch-duel-game";
 
 //SOLO GAME
 export const launchSoloGame = (player: string, theme: number) =>
@@ -22,12 +26,31 @@ export const responseSoloGame = (
   });
 
 //DUEL GAME
-export const selectDuelGameById = (id: number) =>
+export const deleteDuelByUuid = (uuid: string) =>
+  supabase.from(SUPABASE_DUELGAME_TABLE).delete().eq("uuid", uuid);
+
+export const selectInvitationDuelByUser = (uuid: string) =>
+  supabase
+    .from(SUPABASE_DUELGAME_TABLE)
+    .select()
+    .eq("player2", uuid)
+    .eq("start", false);
+
+export const selectDuelGameById = (uuid: string) =>
   supabase
     .from(SUPABASE_DUELGAME_TABLE)
     .select("*, player1(*), player2(*), theme(*)")
-    .eq("id", id)
+    .eq("uuid", uuid)
     .maybeSingle();
+
+export const launchDuelGame = (
+  player1: string,
+  player2: string,
+  theme: number
+) =>
+  supabase.functions.invoke(SUPABASE_LAUNCHDUELGAME_FUNCTION, {
+    body: { player1: player1, player2: player2, theme: theme },
+  });
 
 //PUBLIC GAME
 export const launchGameByGameId = (id: number) =>
