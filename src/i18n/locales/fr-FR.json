@@ -45,7 +45,9 @@
     "searchfriend": "Rechercher un ami via son nom d'utilisateur",
     "noresult": "Aucun résultat ne correspond à votre recherche.",
     "addtofriend": "Ajouter en ami",
+    "deletefriend": "Supprimer de mes amis",
     "waitvalidation": "En attente de validation depuis le",
+    "notificationfriend": "{{username}} vous demande en ami",
     "myrequests": "Mes demandes",
     "myinvitation": "Mes invitations",
     "noresultinvitation": "Aucune invitation en attente.",
@@ -65,7 +67,7 @@
     "join": "Rejoindre",
     "refuse": "Refuser",
     "delete": "Supprimer",
-    "challenge": " vous défie au thème ",
+    "challenge": "{{username}} vous défie !",
     "unknown": "inconnu",
     "waitplayer": "En attente du deuxième joueur",
     "gamebegin": "La partie va commencer",
@@ -74,7 +76,42 @@
     "loose": "Perdu !",
     "equality": "Égalité !",
     "cancelgame": "Match annulé",
-    "opponentdontjoin": "Votre adversaire n'a pas rejoint le match à temps."
+    "opponentdontjoin": "Votre adversaire n'a pas rejoint le match à temps.",
+    "color": "Couleur",
+    "myorigincountry": "Mon pays d'origine",
+    "search": "Rechercher",
+    "selectcountry": "Sélectionner un pays",
+    "myprofile": "Mon profil",
+    "profile": "Profil",
+    "bestscore": "Meilleur score",
+    "themes": "Thèmes",
+    "people": "Joueurs",
+    "setting": "Paramètres",
+    "home": "Accueil",
+    "notifications": "Notifications",
+    "opposition": "Opposition",
+    "victory_one": "victoire",
+    "victory_other": "victoires",
+    "draw_one": "nul",
+    "draw_other": "nuls",
+    "defeat_one": "défaite",
+    "defeat_other": "défaites",
+    "selectadv": "Sélectionner un adversaire",
+    "friend": "Ami",
+    "friends": "Amis",
+    "total": "Total",
+    "points": "points",
+    "first": "1er",
+    "second": "2ème",
+    "third": "3ème",
+    "position": "{{position}}ème",
+    "changetheme": "Changer de thème",
+    "revenge": "Revanche",
+    "administration": "Administration",
+    "notrank": "Non Classé",
+    "yes": "Oui",
+    "no": "Non",
+    "searchplayer": "Recherche de joueur"
   },
   "rules": {
     "step1": "Choisissez un thème",
@@ -90,11 +127,32 @@
     "play": {
       "title": "Jouer"
     },
+    "people": {
+      "title": "Joueurs"
+    },
+    "parameters": {
+      "title": "Mes paramètres"
+    },
     "privategame": {
       "title": "Partie privée"
     },
     "friend": {
       "title": "Mes amis"
+    },
+    "themes": {
+      "title": "Accueil"
+    },
+    "notifications": {
+      "title": "Mes notifications"
+    },
+    "register": {
+      "title": "Inscription"
+    },
+    "login": {
+      "title": "Connexion"
+    },
+    "forgotpassword": {
+      "title": "Mot de passe oublié"
     }
   },
   "enum": {
@@ -160,13 +218,21 @@
       "minpassword": "Veuillez saisir un mot de passe de plus de 6 caractères"
     }
   },
+  "modal": {
+    "delete": "Etes-vous sûr de vouloir supprimer ?"
+  },
   "error": {
-    "selectatleast1theme": "Sélectionner au moins un thème"
+    "selectatleast1theme": "Sélectionner au moins un thème",
+    "selectadv": "Sélectionner un adversaire"
   },
   "alert": {
+    "nofriend": "Aucune demande d'ami.",
+    "nogame": "Aucun duel en cours.",
     "deletefriend": "Votre suppression a été pris en compte.",
     "updateavatarsuccess": "Votre modification d'avatar à été pris en compte.",
+    "updateorigincountrysuccess": "Votre modification de pays à été pris en compte.",
     "updateusernamesuccess": "Votre modification de pseudonyme à été pris en compte.",
+    "updatecolorsuccess": "Votre modification de couleur à été pris en compte.",
     "sendfriendrequest": "Votre demande d'ami a été envoyé.",
     "validatefriendrequest": "Demande d'ami validée.",
     "refusefriendrequest": "Demande d'ami refusée.",

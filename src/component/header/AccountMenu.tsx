@@ -19,10 +19,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { AvatarAccount } from "../avatar/AvatarAccount";
-
-import BarChartIcon from "@mui/icons-material/BarChart";
-import PeopleIcon from "@mui/icons-material/People";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { useApp } from "src/context/AppProvider";
 
 const divCss = style({
   display: "flex",
@@ -44,25 +43,30 @@ export const AccountMenu = ({ user }: Props) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { profile, logout } = useAuth();
+  const { refreshFriends } = useApp();
   const { setUuid } = useUser();
 
-  const settings: Array<Setting> = [
-    {
-      name: t("commun.mystatistics"),
-      icon: <BarChartIcon color="secondary" />,
-      url: "/statistics",
-    },
-    {
-      name: t("commun.myfriends"),
-      icon: <PeopleIcon color="secondary" />,
-      url: "/friends",
-    },
-    {
-      name: t("commun.myparameter"),
-      icon: <SettingsIcon color="secondary" />,
-      url: "/parameter",
-    },
-  ];
+  const settings: Array<Setting> =
+    profile && profile.isadmin
+      ? [
+          {
+            name: t("commun.myparameter"),
+            icon: <SettingsIcon />,
+            url: "/parameter",
+          },
+          {
+            name: t("commun.administration"),
+            icon: <AdminPanelSettingsIcon />,
+            url: "/administration",
+          },
+        ]
+      : [
+          {
+            name: t("commun.myparameter"),
+            icon: <SettingsIcon />,
+            url: "/parameter",
+          },
+        ];
 
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
@@ -78,7 +82,7 @@ export const AccountMenu = ({ user }: Props) => {
     handleCloseUserMenu();
     await logout();
     setUuid(crypto.randomUUID());
-    navigate(0);
+    refreshFriends();
   };
 
   const goTo = (url: string) => {
@@ -141,7 +145,7 @@ export const AccountMenu = ({ user }: Props) => {
         <Divider sx={{ m: important(0) }} />
         <MenuItem onClick={disconnect} sx={{ minHeight: "auto" }}>
           <ListItemIcon>
-            <LogoutIcon color="secondary" />
+            <LogoutIcon />
           </ListItemIcon>
           <ListItemText primary={t("commun.logout")} />
         </MenuItem>

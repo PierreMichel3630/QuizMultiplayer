@@ -1,10 +1,11 @@
-import { Button, Card, Grid, Typography } from "@mui/material";
+import { Box, Button, Card, Grid, Typography } from "@mui/material";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 import { Profile } from "src/models/Profile";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { useNavigate } from "react-router-dom";
 interface Props {
   profile: Profile;
   addToFriend?: () => void;
@@ -89,5 +90,28 @@ export const CardProfile = ({
         )}
       </Grid>
     </Card>
+  );
+};
+
+interface PropsBasic {
+  profile: Profile;
+}
+export const BasicCardProfile = ({ profile }: PropsBasic) => {
+  const navigate = useNavigate();
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        cursor: "pointer",
+      }}
+      onClick={() => navigate(`/profil/${profile.id}`)}
+    >
+      <AvatarAccount avatar={profile.avatar} size={70} color={profile.color} />
+      <Typography variant="body1" sx={{ wordWrap: "break-word" }}>
+        {profile.username}
+      </Typography>
+    </Box>
   );
 };

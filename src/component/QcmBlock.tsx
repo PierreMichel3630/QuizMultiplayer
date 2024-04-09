@@ -32,10 +32,18 @@ export const QcmBlock = ({ responses, onSubmit }: Props) => {
               pr: 1,
               cursor: "pointer",
               textAlign: "center",
+              backgroundColor: Colors.grey,
+              borderColor: Colors.grey,
+              borderWidth: 2,
             }}
+            variant="outlined"
             onClick={() => onSubmit(response[language.iso])}
           >
-            <JsonLanguageBlock variant="h2" value={response} />
+            <JsonLanguageBlock
+              variant="h2"
+              color="text.secondary"
+              value={response}
+            />
           </Paper>
         </Grid>
       ))}
@@ -61,6 +69,11 @@ export const QcmResponseBlock = ({ responses, response }: PropsResponse) => {
           ? value.includes(r[language.iso])
           : value === r[language.iso];
         const isMyAnswer = response.answer === r[language.iso];
+        const color = isCorrectResponse
+          ? Colors.green2
+          : isMyAnswer
+          ? Colors.red2
+          : Colors.grey;
         return (
           <Grid item xs={12} key={index}>
             <Paper
@@ -70,14 +83,17 @@ export const QcmResponseBlock = ({ responses, response }: PropsResponse) => {
                 pl: 1,
                 pr: 1,
                 textAlign: "center",
-                backgroundColor: isCorrectResponse
-                  ? Colors.green
-                  : isMyAnswer
-                  ? Colors.red
-                  : "primary.main",
+                backgroundColor: color,
+                borderColor: color,
+                borderWidth: 2,
               }}
+              variant="outlined"
             >
-              <JsonLanguageBlock variant="h2" value={r} />
+              <JsonLanguageBlock
+                variant="h2"
+                value={r}
+                color={"text.secondary"}
+              />
             </Paper>
           </Grid>
         );
@@ -125,6 +141,12 @@ export const QcmBlockDuelBlock = ({
         const isResponsePlayer2 =
           responsePlayer2 && responsePlayer2.answer === res[language.iso];
 
+        const color = isCorrectResponse
+          ? Colors.green
+          : value && (isResponsePlayer1 || isResponsePlayer2)
+          ? Colors.red
+          : Colors.grey;
+
         return (
           <Grid item xs={12} key={index}>
             <Paper
@@ -136,11 +158,9 @@ export const QcmBlockDuelBlock = ({
                 position: "relative",
                 cursor: hasAnswer ? "default" : "pointer",
                 textAlign: "center",
-                backgroundColor: isCorrectResponse
-                  ? Colors.green
-                  : value && (isResponsePlayer1 || isResponsePlayer2)
-                  ? Colors.red
-                  : "primary.main",
+                borderColor: color,
+                borderWidth: 2,
+                backgroundColor: color,
               }}
               onClick={() => {
                 if (!hasAnswer) {
@@ -156,10 +176,15 @@ export const QcmBlockDuelBlock = ({
                     top: percent(50),
                     translate: "0 -50%",
                     left: 0,
+                    color: Colors.white,
                   }}
                 />
               )}
-              <JsonLanguageBlock variant="h2" value={res} />
+              <JsonLanguageBlock
+                variant="h2"
+                color="text.secondary"
+                value={res}
+              />
               {isResponsePlayer2 && (response || isPlayer2) && (
                 <ArrowLeftIcon
                   sx={{
@@ -168,6 +193,7 @@ export const QcmBlockDuelBlock = ({
                     top: percent(50),
                     translate: "0 -50%",
                     right: 0,
+                    color: Colors.white,
                   }}
                 />
               )}

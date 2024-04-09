@@ -15,7 +15,15 @@ export const InputResponseBlock = ({ onSubmit, health }: Props) => {
   const [value, setValue] = useState("");
 
   return (
-    <Paper sx={{ p: 0.5, display: "flex", width: percent(100) }}>
+    <Paper
+      sx={{
+        p: 0.5,
+        display: "flex",
+        width: percent(100),
+        backgroundColor: Colors.grey,
+      }}
+      variant="outlined"
+    >
       <Grid container spacing={1} alignItems="center">
         <Grid item xs>
           <form
@@ -39,6 +47,7 @@ export const InputResponseBlock = ({ onSubmit, health }: Props) => {
                     fontFamily: ["Montserrat", "sans-serif"].join(","),
                     fontSize: 15,
                     fontWeight: 700,
+                    color: Colors.white,
                   },
                 }}
                 sx={{
@@ -47,8 +56,8 @@ export const InputResponseBlock = ({ onSubmit, health }: Props) => {
                   height: px(50),
                   borderRadius: px(15),
                   textAlign: "center",
+                  color: Colors.white,
                 }}
-                autoFocus
               />
             </FormControl>
           </form>

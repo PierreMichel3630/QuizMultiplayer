@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -19,9 +19,11 @@ import { Theme } from "src/models/Theme";
 import HomeIcon from "@mui/icons-material/Home";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import ReplayIcon from "@mui/icons-material/Replay";
+import { viewHeight } from "csx";
+import { ButtonColor } from "src/component/Button";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { QcmBlock, QcmResponseBlock } from "src/component/QcmBlock";
-import { viewHeight } from "csx";
+import { Colors } from "src/style/Colors";
 
 export const SoloPage = () => {
   const { t } = useTranslation();
@@ -56,7 +58,7 @@ export const SoloPage = () => {
         .channel(`${uuid}${themeid}`)
         .on("broadcast", { event: "question" }, (value) => {
           setQuestion(value.payload as QuestionSolo);
-          setTimer(9);
+          setTimer(14);
           setResponse(undefined);
           scrollTop();
         })
@@ -101,15 +103,15 @@ export const SoloPage = () => {
     window.scrollTo(0, 0);
   };
 
-  const isInputDisplay = question && !question.isqcm && !response;
-
   return (
     <Container
-      maxWidth="sm"
+      maxWidth="lg"
       sx={{
         display: "flex",
         flexDirection: "column",
         height: viewHeight(100),
+        p: 0,
+        backgroundColor: Colors.black,
       }}
     >
       <Box
@@ -125,12 +127,7 @@ export const SoloPage = () => {
           <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
         </Helmet>
         {theme && (
-          <Paper
-            sx={{
-              p: 1,
-              display: { xs: isInputDisplay ? "none" : "block", sm: "block" },
-            }}
-          >
+          <Box>
             <Grid container spacing={3} alignItems="center">
               <Grid item xs={4} sm={3} md={2}>
                 <ImageThemeBlock theme={theme} />
@@ -138,6 +135,7 @@ export const SoloPage = () => {
               <Grid item xs={8} sm={9} md={10}>
                 <JsonLanguageBlock
                   variant="h1"
+                  color="text.secondary"
                   sx={{ wordBreak: "break-all" }}
                   value={theme.name}
                 />
@@ -148,12 +146,16 @@ export const SoloPage = () => {
                     gap: 1,
                   }}
                 >
-                  <Typography variant="h6">{t("commun.score")} : </Typography>
-                  <Typography variant="h2">{score}</Typography>
+                  <Typography variant="h6" color="text.secondary">
+                    {t("commun.score")} :{" "}
+                  </Typography>
+                  <Typography variant="h2" color="text.secondary">
+                    {score}
+                  </Typography>
                 </Box>
               </Grid>
             </Grid>
-          </Paper>
+          </Box>
         )}
 
         <Box
@@ -166,7 +168,6 @@ export const SoloPage = () => {
           }}
         >
           <QuestionSoloBlock question={question} timer={timer} />
-
           {response && (
             <>
               {question && question.isqcm ? (
@@ -181,40 +182,29 @@ export const SoloPage = () => {
           )}
         </Box>
         {response && !response.result ? (
-          <>
-            <Button
-              variant="outlined"
-              color="primary"
+          <Box sx={{ mt: 2, display: "flex", gap: 1, flexDirection: "column" }}>
+            <ButtonColor
+              value={Colors.red}
+              label={t("commun.tryagain")}
+              icon={ReplayIcon}
               onClick={() => launch()}
-              fullWidth
-              startIcon={<ReplayIcon color="secondary" />}
-            >
-              <Typography variant="h2" color="text.primary">
-                {t("commun.tryagain")}
-              </Typography>
-            </Button>
-            <Button
-              variant="outlined"
-              color="primary"
+              variant="contained"
+            />
+            <ButtonColor
+              value={Colors.blue}
+              label={t("commun.return")}
+              icon={KeyboardReturnIcon}
               onClick={() => navigate(-1)}
-              fullWidth
-              startIcon={<KeyboardReturnIcon color="secondary" />}
-            >
-              <Typography variant="h2" color="text.primary">
-                {t("commun.return")}
-              </Typography>
-            </Button>
-            <Button
-              variant="outlined"
+              variant="contained"
+            />
+            <ButtonColor
+              value={Colors.green}
+              label={t("commun.returnhome")}
+              icon={HomeIcon}
               onClick={() => navigate("/")}
-              fullWidth
-              startIcon={<HomeIcon color="secondary" />}
-            >
-              <Typography variant="h2" color="text.primary">
-                {t("commun.returnhome")}
-              </Typography>
-            </Button>
-          </>
+              variant="contained"
+            />
+          </Box>
         ) : (
           <>
             {!response && (

@@ -1,6 +1,7 @@
 import { supabase } from "./supabase";
 
 export const SUPABASE_SCORE_TABLE = "score";
+export const SUPABASE_OPPOSITION_TABLE = "opposition";
 
 export const selectScoresByTheme = (theme: number, order: string) =>
   supabase
@@ -8,10 +9,28 @@ export const selectScoresByTheme = (theme: number, order: string) =>
     .select("*, profile(*)")
     .eq("theme", theme)
     .order(order, { ascending: false })
-    .limit(10);
+    .limit(5);
+
+export const selectScoresByProfile = (uuid: string) =>
+  supabase.from(SUPABASE_SCORE_TABLE).select("*, theme(*)").eq("profile", uuid);
 
 export const selectScoreByThemeAndPlayer = (player: string, theme: number) =>
-  supabase.rpc("getranking", {
+  supabase.rpc("getrankingsolo", {
     player: player,
     themeid: theme,
   });
+
+export const countPlayersByTheme = (theme: number) =>
+  supabase
+    .from(SUPABASE_SCORE_TABLE)
+    .select("*", { count: "exact", head: true })
+    .eq("theme", theme);
+
+//Opposition
+
+export const selectOppositionByOpponent = (player1: string, player2: string) =>
+  supabase
+    .from(SUPABASE_OPPOSITION_TABLE)
+    .select("*")
+    .eq("player1", player1)
+    .eq("player2", player2);

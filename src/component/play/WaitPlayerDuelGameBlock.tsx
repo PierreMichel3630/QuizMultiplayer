@@ -6,12 +6,21 @@ import { AvatarAccount } from "../avatar/AvatarAccount";
 import { StatusPlayerGame } from "../StatusPlayer";
 
 import BoltIcon from "@mui/icons-material/Bolt";
+import { CountryBlock } from "../CountryBlock";
+import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
+import { MyRank } from "src/models/Rank";
+import { LabelRankBlock } from "../RankBlock";
+import { LoadingDot } from "../Loading";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   game: DuelGame;
   players: Array<string>;
+  rankplayer1?: MyRank;
+  rankplayer2?: MyRank;
 }
 export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
+  const { t } = useTranslation();
   return (
     <Box
       sx={{
@@ -21,7 +30,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
     >
       <Box
         sx={{
-          backgroundColor: Colors.blue,
+          backgroundColor: COLORDUEL1,
           height: percent(50),
           width: percent(100),
           display: "flex",
@@ -38,8 +47,16 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           color={Colors.white}
         />
         <Box>
-          <Typography variant="h2">{game.player1.username}</Typography>
-          <StatusPlayerGame ready={players.includes(game.player1.id)} />
+          <Typography variant="h2" color="text.secondary">
+            {game.player1.username}
+          </Typography>
+          <LabelRankBlock player={game.player1.id} theme={game.theme.id} />
+          {game.player1.country && (
+            <CountryBlock id={game.player1.country} color="text.secondary" />
+          )}
+          <StatusPlayerGame
+            ready={game.start || players.includes(game.player1.id)}
+          />
         </Box>
       </Box>
       <Box
@@ -78,7 +95,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
       </Box>
       <Box
         sx={{
-          backgroundColor: Colors.pink,
+          backgroundColor: COLORDUEL2,
           height: percent(50),
           width: percent(100),
           display: "flex",
@@ -89,15 +106,37 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           borderTop: "5px solid white",
         }}
       >
-        <Box sx={{ textAlign: "right" }}>
-          <Typography variant="h2">{game.player2.username}</Typography>
-          <StatusPlayerGame ready={players.includes(game.player2.id)} />
-        </Box>
-        <AvatarAccount
-          avatar={game.player2.avatar}
-          size={100}
-          color={Colors.white}
-        />
+        {game.player2 !== null ? (
+          <>
+            <Box sx={{ textAlign: "left" }}>
+              <Typography variant="h2" color="text.secondary">
+                {game.player2.username}
+              </Typography>
+              <LabelRankBlock player={game.player2.id} theme={game.theme.id} />
+              {game.player2.country && (
+                <CountryBlock
+                  id={game.player2.country}
+                  color="text.secondary"
+                />
+              )}
+              <StatusPlayerGame
+                ready={game.start || players.includes(game.player2.id)}
+              />
+            </Box>
+            <AvatarAccount
+              avatar={game.player2.avatar}
+              size={100}
+              color={Colors.white}
+            />
+          </>
+        ) : (
+          <>
+            <LoadingDot />
+            <Typography variant="h6" color="text.secondary">
+              {t("commun.searchplayer")}
+            </Typography>
+          </>
+        )}
       </Box>
     </Box>
   );

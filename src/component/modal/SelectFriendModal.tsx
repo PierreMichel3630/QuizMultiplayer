@@ -20,11 +20,12 @@ import { FRIENDSTATUS, Friend } from "src/models/Friend";
 import { BasicSearchInput } from "../Input";
 import { Loading } from "../Loading";
 import { CardProfile } from "../card/CardProfile";
+import { Profile } from "src/models/Profile";
 
 interface Props {
   open: boolean;
   close: () => void;
-  onValid: (uuid: string) => void;
+  onValid: (uuid: Profile) => void;
 }
 
 export const SelectFriendModal = ({ open, close, onValid }: Props) => {
@@ -77,8 +78,8 @@ export const SelectFriendModal = ({ open, close, onValid }: Props) => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <DialogContent>
-        <Grid container spacing={2}>
+      <DialogContent sx={{ p: 1 }}>
+        <Grid container spacing={1}>
           {isLoading ? (
             <Grid item xs={12}>
               <Loading />
@@ -106,7 +107,7 @@ export const SelectFriendModal = ({ open, close, onValid }: Props) => {
                   >
                     <CardProfile
                       profile={profile}
-                      onSelect={() => onValid(profile.id)}
+                      onSelect={() => onValid(profile)}
                     />
                   </Grid>
                 ))

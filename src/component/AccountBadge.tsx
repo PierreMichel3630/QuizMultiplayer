@@ -34,6 +34,7 @@ export const AccountBadge = ({ onClick }: Props) => {
       <Typography
         component="small"
         variant="caption"
+        color="text.secondary"
         ml={1}
         sx={{ display: { xs: "none", md: "flex" } }}
       >
@@ -42,6 +43,7 @@ export const AccountBadge = ({ onClick }: Props) => {
       <Typography
         component="small"
         variant="caption"
+        color="text.secondary"
         sx={{ display: { xs: "none", md: "flex" }, fontWeight: 700 }}
         ml={0.5}
         mr={1}

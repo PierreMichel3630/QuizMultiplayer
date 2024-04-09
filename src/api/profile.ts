@@ -3,7 +3,7 @@ import { supabase } from "./supabase";
 
 export const SUPABASE_PROFILE_TABLE = "profiles";
 
-export const getProfil = (uuid: string) =>
+export const getProfilById = (uuid: string) =>
   supabase.from(SUPABASE_PROFILE_TABLE).select().eq("id", uuid).single();
 
 export const updateProfil = (profil: ProfileUpdate) =>

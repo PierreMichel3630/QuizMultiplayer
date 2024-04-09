@@ -194,6 +194,7 @@ export const RegisterForm = () => {
             fullWidth
             size="large"
             variant="contained"
+            color="secondary"
           >
             {t("form.register.continue")}
           </Button>

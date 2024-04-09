@@ -7,6 +7,11 @@ export interface Score {
   theme: Theme;
   points: number;
   games: number;
+  totalpoints: number;
+  duelgames: number;
+  victory: number;
+  draw: number;
+  defeat: number;
 }
 
 export interface MyScore {
@@ -15,5 +20,17 @@ export interface MyScore {
   theme: number;
   points: number;
   games: number;
+  duelgames: number;
   rank: number;
+}
+
+export interface Opposition {
+  id: number;
+  player1: string;
+  player2: string;
+  theme: number;
+  games: number;
+  victory: number;
+  draw: number;
+  defeat: number;
 }

@@ -17,12 +17,17 @@ export const Header = () => {
   const { user } = useAuth();
 
   return (
-    <Box sx={{ flexGrow: 1, pl: 1, pr: 1, mb: 2 }}>
-      <AppBar position="static" color="transparent" sx={{ boxShadow: "none" }}>
+    <Box sx={{ flexGrow: 1, pl: 1, pr: 1 }}>
+      <AppBar position="static" color="secondary" sx={{ boxShadow: "none" }}>
         <Toolbar id="toolbar" sx={{ p: important(px(0)), gap: px(8) }}>
           <Link
             to="/"
-            style={{ display: "flex", gap: px(10), alignItems: "center" }}
+            style={{
+              display: "flex",
+              gap: px(10),
+              alignItems: "center",
+              textDecoration: "none",
+            }}
           >
             <img src={logo} width={50} height={50} />
             <Typography

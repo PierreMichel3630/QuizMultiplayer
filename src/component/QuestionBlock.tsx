@@ -1,7 +1,7 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Question, QuestionDuel, QuestionSolo } from "src/models/Question";
-import { NUMBERQUESTION } from "src/pages/PlayPage";
+import { NUMBERQUESTION } from "src/pages/PlayMultiPage";
 import { BadgeDifficulty } from "./Badge";
 import { ImageQuestionBlock } from "./ImageBlock";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
@@ -65,7 +65,6 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
   return (
     <Box
       sx={{
-        p: 1,
         width: percent(100),
         flexGrow: 1,
         display: "flex",
@@ -80,6 +79,7 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
         <>
           <JsonLanguageBlock
             variant="h2"
+            color="text.secondary"
             sx={{ fontSize: 40 }}
             value={question.question}
           />
@@ -127,7 +127,8 @@ export const QuestionDuelBlock = ({ question }: PropsDuel) => {
         <>
           <JsonLanguageBlock
             variant="h2"
-            sx={{ fontSize: 35, pt: 3 }}
+            color="text.secondary"
+            sx={{ fontSize: 40 }}
             value={question.question}
           />
           {question.image && (

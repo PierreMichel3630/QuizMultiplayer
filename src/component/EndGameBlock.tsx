@@ -2,7 +2,7 @@ import { Box, Grid, Paper, Typography } from "@mui/material";
 import { percent, px } from "csx";
 import { useTranslation } from "react-i18next";
 import { EndGame } from "src/models/EndGame";
-import { NUMBERQUESTION } from "src/pages/PlayPage";
+import { NUMBERQUESTION } from "src/pages/PlayMultiPage";
 import { style } from "typestyle";
 import { BadgeDifficulty } from "./Badge";
 import {

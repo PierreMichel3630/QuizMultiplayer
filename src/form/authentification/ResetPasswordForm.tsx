@@ -150,6 +150,7 @@ export const ResetPasswordForm = () => {
             type="submit"
             fullWidth
             size="large"
+            color="secondary"
             variant="contained"
           >
             {t("form.resetpassword.continue")}

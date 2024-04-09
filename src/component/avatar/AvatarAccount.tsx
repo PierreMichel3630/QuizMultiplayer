@@ -7,9 +7,15 @@ interface Props {
   avatar: string | null;
   size?: number;
   color?: string;
+  backgroundColor?: string;
 }
 
-export const AvatarAccount = ({ avatar, size = 30, color }: Props) => {
+export const AvatarAccount = ({
+  avatar,
+  backgroundColor = Colors.white,
+  size = 30,
+  color,
+}: Props) => {
   const { user } = useAuth();
 
   const image =
@@ -27,7 +33,7 @@ export const AvatarAccount = ({ avatar, size = 30, color }: Props) => {
         width: size,
         height: size,
         border: color ? `${size / 15}px solid ${color}` : "none",
-        backgroundColor: Colors.white,
+        backgroundColor: backgroundColor,
       }}
     />
   );

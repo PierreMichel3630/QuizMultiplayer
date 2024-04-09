@@ -30,9 +30,11 @@ export const JsonLanguageArrayBlock = ({ value, ...props }: PropsArray) => {
 
 interface PropsArrayOrString extends TypographyProps {
   value: JsonLanguageArrayOrString;
+  all?: boolean;
 }
 export const JsonLanguageArrayOrStringBlock = ({
   value,
+  all = false,
   ...props
 }: PropsArrayOrString) => {
   const { language } = useUser();
@@ -41,7 +43,9 @@ export const JsonLanguageArrayOrStringBlock = ({
     : value["fr-FR"];
 
   const label = Array.isArray(valueLanguage)
-    ? valueLanguage[0] ?? ""
+    ? all
+      ? valueLanguage.join(", ")
+      : valueLanguage[0] ?? ""
     : valueLanguage;
   return <Typography {...props}>{label}</Typography>;
 };

@@ -1,0 +1,121 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
+};
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", {
+      headers: corsHeaders,
+    });
+  }
+  const supabase = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+  );
+
+  const body = await req.json();
+  const player = body.player;
+  const theme = body.theme;
+
+  const bots = [
+    "571b2a1c-e2ca-4e95-9d99-80a17b5796a4",
+    "006c5385-8e71-41f7-801f-b6ee56f9996c",
+    "931b2102-9550-4c8e-a629-fcd858293b18",
+    "eed610db-4b85-4e0e-aa11-7497d5159393",
+    "9e5543c3-ec9d-4a9c-8f0c-6e634759eb45",
+  ];
+  const ranks = await supabase
+    .from("rank")
+    .select()
+    .eq("theme", theme)
+    .in("profile", [player, ...bots]);
+
+  const rankPlayer = ranks.data.find((el) => el.profile === player);
+  const eloPlayer = rankPlayer ? rankPlayer.points : 1000;
+
+  const matchmakings = await supabase
+    .from("matchmaking")
+    .select("*, game(*)")
+    .eq("theme", theme)
+    .neq("player", player)
+    .order("created_at");
+
+  let duelgame: any = undefined;
+  let matchmaking: any = undefined;
+  if (matchmakings.data.length > 0) {
+    duelgame = matchmakings.data[0].game;
+    await supabase
+      .from("duelgame")
+      .update({ player2: player, start: true })
+      .eq("uuid", duelgame.uuid);
+    setTimeout(async () => {
+      await supabase.functions.invoke("response-duel-game", {
+        body: { game: duelgame.uuid },
+      });
+    }, 3000);
+  } else {
+    const game = {
+      player1: player,
+      player2: null,
+      theme: theme,
+    };
+    const resDuel = await supabase
+      .from("duelgame")
+      .insert(game)
+      .select()
+      .maybeSingle();
+    duelgame = resDuel.data;
+
+    const resMatchmaking = await supabase
+      .from("matchmaking")
+      .insert({
+        game: duelgame.id,
+        player: player,
+        theme: theme,
+        elo: eloPlayer,
+      })
+      .select()
+      .maybeSingle();
+    matchmaking = resMatchmaking.data;
+  }
+
+  setTimeout(async () => {
+    const { data } = await supabase
+      .from("duelgame")
+      .select()
+      .eq("uuid", duelgame.uuid)
+      .maybeSingle();
+    if (matchmaking) {
+      await supabase.from("matchmaking").delete().eq("id", matchmaking.id);
+    }
+    if (!data.start) {
+      const rankBots = ranks.data.filter((el) => el.profile !== player);
+      const bot =
+        rankBots.length === 5
+          ? rankBots.reduce((prev, curr) =>
+              Math.abs(curr - eloPlayer) < Math.abs(prev - eloPlayer)
+                ? curr
+                : prev
+            ).profile
+          : bots[Math.floor(Math.random() * bots.length)];
+      await supabase
+        .from("duelgame")
+        .update({ player2: bot, start: true })
+        .eq("uuid", duelgame.uuid);
+      setTimeout(async () => {
+        await supabase.functions.invoke("response-duel-game", {
+          body: { game: duelgame.uuid },
+        });
+      }, 3000);
+    }
+  }, 5000);
+
+  return new Response(JSON.stringify(duelgame), {
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    status: 200,
+  });
+});

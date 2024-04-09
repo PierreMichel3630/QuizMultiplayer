@@ -1,26 +1,35 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { percent } from "csx";
+import { useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-
+import { CategoryBlock } from "src/component/CategoryBlock";
+import { BasicSearchInput } from "src/component/Input";
 import { RuleBlock } from "src/component/RuleBlock";
 import { CardTheme } from "src/component/card/CardTheme";
+
 import { useApp } from "src/context/AppProvider";
+import { useUser } from "src/context/UserProvider";
+import { sortByName } from "src/utils/sort";
+import { searchString } from "src/utils/string";
 
 export const ThemesPage = () => {
   const { t } = useTranslation();
-  const { themes } = useApp();
+  const { language } = useUser();
+  const { categories, themes } = useApp();
 
-  /*const createPrivateGame = () => {
-    const idGame = Math.random().toString(36).slice(2, 9);
-    navigate(`/privategame/${idGame}`);
-  };*/
+  const [search, setSearch] = useState("");
+
+  const themesFilter = useMemo(
+    () => themes.filter((el) => searchString(search, el.name[language.iso])),
+    [themes, search, language.iso]
+  );
 
   return (
-    <Box sx={{ width: percent(100) }}>
-      <Grid container spacing={1} justifyContent="center" sx={{ mb: 2 }}>
+    <Box sx={{ width: percent(100), p: 1 }}>
+      <Grid container spacing={1}>
         <Helmet>
-          <title>{`${t("pages.home.title")} - ${t("appname")}`}</title>
+          <title>{`${t("pages.themes.title")} - ${t("appname")}`}</title>
         </Helmet>
         <Grid item xs={12} sx={{ textAlign: "center" }}>
           <Typography variant="h1">{t("appname")}</Typography>
@@ -29,28 +38,27 @@ export const ThemesPage = () => {
         <Grid item xs={12}>
           <RuleBlock />
         </Grid>
-        {/*<Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<LockIcon />}
-            sx={{ borderRadius: px(50), p: 1 }}
-            onClick={() => createPrivateGame()}
-          >
-            <Typography variant="h4">
-              {t("commun.createprivategame")}
-            </Typography>
-          </Button>
-  </Grid>*/}
         <Grid item xs={12}>
-          <Grid container spacing={1}>
-            {themes.map((theme) => (
-              <Grid item xs={4} sm={2} md={2} key={theme.id}>
+          <BasicSearchInput
+            label={t("commun.search")}
+            onChange={(value) => setSearch(value)}
+            value={search}
+            clear={() => setSearch("")}
+          />
+        </Grid>
+        {search !== ""
+          ? themesFilter.map((theme) => (
+              <Grid item xs={3} sm={2} md={2} lg={1} key={theme.id}>
                 <CardTheme theme={theme} />
               </Grid>
-            ))}
-          </Grid>
-        </Grid>
+            ))
+          : categories
+              .sort((a, b) => sortByName(language, a, b))
+              .map((category) => (
+                <Grid item xs={12} key={category.id}>
+                  <CategoryBlock category={category} />
+                </Grid>
+              ))}
       </Grid>
     </Box>
   );

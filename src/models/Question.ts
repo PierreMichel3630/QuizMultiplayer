@@ -30,6 +30,14 @@ export interface QuestionAdmin {
   question: JsonLanguage;
   difficulty: string;
   id: number;
+  isqcm?: boolean;
+  allresponse: boolean;
+  response: JsonLanguageArrayOrString;
+}
+
+export interface QuestionUpdate {
+  id: number;
+  difficulty?: string;
 }
 
 export interface QuestionSolo {

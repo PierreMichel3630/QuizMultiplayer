@@ -32,11 +32,9 @@ Deno.serve(async (req) => {
     .insert(game)
     .select()
     .maybeSingle();
-  setTimeout(async () => {
-    await supabase.functions.invoke("response-solo-game", {
-      body: { game: data.id },
-    });
-  }, 3000);
+  await supabase.functions.invoke("response-solo-game", {
+    body: { game: data.id },
+  });
   return new Response(JSON.stringify(data), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
     status: 200,

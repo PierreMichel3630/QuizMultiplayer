@@ -8,24 +8,28 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { MyScore, Score } from "src/models/Score";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 
 import { percent, px } from "csx";
 import rank1 from "src/assets/rank/rank1.png";
 import rank2 from "src/assets/rank/rank2.png";
 import rank3 from "src/assets/rank/rank3.png";
-import { useAuth } from "src/context/AuthProviderSupabase";
+import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
 
+export interface DataRanking {
+  profile: Profile;
+  value: number;
+}
+export interface DataRankingMe extends DataRanking {
+  rank: number;
+}
 interface Props {
-  scores: Array<Score>;
-  myscore?: MyScore;
-  type?: "points" | "games";
+  data: Array<DataRanking>;
+  me?: DataRankingMe;
 }
 
-export const RankingTable = ({ scores, myscore, type = "points" }: Props) => {
-  const { profile } = useAuth();
+export const RankingTable = ({ data, me }: Props) => {
   const getIcon = (rank: number) => {
     let icon = (
       <Avatar sx={{ bgcolor: Colors.grey, width: 30, height: 30 }}>
@@ -60,7 +64,7 @@ export const RankingTable = ({ scores, myscore, type = "points" }: Props) => {
     >
       <Table size="small">
         <TableBody>
-          {scores.map((score, index) => (
+          {data.map((el, index) => (
             <TableRow
               key={index}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -69,47 +73,42 @@ export const RankingTable = ({ scores, myscore, type = "points" }: Props) => {
                 {getIcon(index + 1)}
               </TableCell>
               <TableCell sx={{ p: px(4) }}>
-                <AvatarAccount avatar={score.profile.avatar} size={30} />
+                <AvatarAccount avatar={el.profile.avatar} size={30} />
               </TableCell>
               <TableCell align="left" sx={{ p: px(4) }}>
                 <Typography variant="h6" color="text.primary">
-                  {score.profile.username}
+                  {el.profile.username}
                 </Typography>
               </TableCell>
               <TableCell align="right" sx={{ p: px(4) }}>
                 <Typography variant="h2" color="text.primary">
-                  {score[type]}
+                  {el.value}
                 </Typography>
               </TableCell>
             </TableRow>
           ))}
-          {profile !== null &&
-            ((myscore && myscore.rank > 3) || myscore === undefined) && (
-              <TableRow
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell align="left" sx={{ p: px(4) }}>
-                  <Avatar sx={{ bgcolor: Colors.grey, width: 30, height: 30 }}>
-                    <Typography variant="h6">
-                      {myscore ? myscore.rank : "-"}
-                    </Typography>
-                  </Avatar>
-                </TableCell>
-                <TableCell sx={{ p: px(4) }}>
-                  <AvatarAccount avatar={profile.avatar} size={30} />
-                </TableCell>
-                <TableCell align="left" sx={{ p: px(4) }}>
-                  <Typography variant="h6" color="text.primary">
-                    {profile.username}
-                  </Typography>
-                </TableCell>
-                <TableCell align="right" sx={{ p: px(4) }}>
-                  <Typography variant="h2" color="text.primary">
-                    {myscore ? myscore[type] : "-"}
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            )}
+          {me && me.rank > 5 && (
+            <TableRow
+              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+            >
+              <TableCell align="left" sx={{ p: px(4) }}>
+                {getIcon(me.rank)}
+              </TableCell>
+              <TableCell sx={{ p: px(4) }}>
+                <AvatarAccount avatar={me.profile.avatar} size={30} />
+              </TableCell>
+              <TableCell align="left" sx={{ p: px(4) }}>
+                <Typography variant="h6" color="text.primary">
+                  {me.profile.username}
+                </Typography>
+              </TableCell>
+              <TableCell align="right" sx={{ p: px(4) }}>
+                <Typography variant="h2" color="text.primary">
+                  {me.value}
+                </Typography>
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </TableContainer>

@@ -17,7 +17,7 @@ export const BadgeDifficulty = ({ value }: Props) => {
     if (value === "FACILE") {
       color = Colors.green;
     } else if (value === "MOYEN") {
-      color = Colors.orange;
+      color = Colors.orange2;
     } else if (value === "DIFFICILE") {
       color = Colors.red;
     }

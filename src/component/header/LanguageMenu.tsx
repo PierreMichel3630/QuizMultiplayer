@@ -12,6 +12,7 @@ import { useState } from "react";
 
 import { useUser } from "src/context/UserProvider";
 import { Language } from "src/models/Language";
+import { Colors } from "src/style/Colors";
 
 export const LanguagesMenu = () => {
   const { language, setLanguage, languages } = useUser();
@@ -39,8 +40,16 @@ export const LanguagesMenu = () => {
             aria-label="language"
             color="inherit"
             onClick={handleOpenMenu}
+            sx={{ p: 0 }}
           >
-            <Avatar src={language.icon} sx={{ width: 30, height: 30 }} />
+            <Avatar
+              src={language.icon}
+              sx={{
+                width: 40,
+                height: 40,
+                border: `2px solid ${Colors.white}`,
+              }}
+            />
           </IconButton>
           <Menu
             sx={{ mt: "45px", backgroundColor: "primary" }}

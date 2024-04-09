@@ -1,16 +1,15 @@
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { useMemo } from "react";
-import "./App.css";
-import "./i18n/config";
-import { Colors } from "./style/Colors";
 import { Helmet } from "react-helmet-async";
-import Routes from "./routes";
 import { BrowserRouter } from "react-router-dom";
-import { UserProvider, useUser } from "./context/UserProvider";
+import "./App.css";
+import { AppProvider } from "./context/AppProvider";
 import { AuthProviderSupabase } from "./context/AuthProviderSupabase";
 import { MessageProvider } from "./context/MessageProvider";
-import { px } from "csx";
-import { AppProvider } from "./context/AppProvider";
+import { UserProvider, useUser } from "./context/UserProvider";
+import "./i18n/config";
+import Routes from "./routes";
+import { Colors } from "./style/Colors";
 
 function App() {
   const { mode, language } = useUser();
@@ -21,16 +20,16 @@ function App() {
         palette: {
           mode,
           primary: {
-            main: Colors.grey,
+            main: Colors.black,
             contrastText: Colors.white,
           },
           secondary: {
-            main: Colors.white,
-            contrastText: Colors.black,
+            main: Colors.red,
+            contrastText: Colors.white,
           },
           text: {
-            primary: Colors.white,
-            secondary: Colors.black,
+            primary: Colors.black,
+            secondary: Colors.white,
           },
           success: {
             main: Colors.green,
@@ -38,34 +37,20 @@ function App() {
           },
         },
         components: {
-          MuiCard: {
+          MuiBottomNavigation: {
             styleOverrides: {
               root: {
-                backgroundColor: Colors.grey,
+                backgroundColor: Colors.white,
               },
             },
           },
-          MuiPaper: {
+          MuiBottomNavigationAction: {
             styleOverrides: {
               root: {
-                backgroundColor: Colors.grey2,
-              },
-            },
-          },
-          MuiFormLabel: {
-            styleOverrides: {
-              root: {
-                color: Colors.white,
-              },
-            },
-          },
-          MuiList: {
-            styleOverrides: {
-              root: {
-                padding: 0,
-                backgroundColor: Colors.black,
-                border: "2px solid white",
-                borderRadius: px(5),
+                color: Colors.greyLightMode,
+                "&.Mui-selected": {
+                  color: Colors.red,
+                },
               },
             },
           },
@@ -73,6 +58,16 @@ function App() {
             styleOverrides: {
               root: {
                 textTransform: "none",
+              },
+              outlined: {
+                borderWidth: 2,
+              },
+            },
+          },
+          MuiInputLabel: {
+            styleOverrides: {
+              root: {
+                color: "inherit",
               },
             },
           },

@@ -165,6 +165,7 @@ export const LoginForm = () => {
             fullWidth
             size="large"
             type="submit"
+            color="secondary"
             variant="contained"
           >
             {t("form.login.connect")}

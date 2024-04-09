@@ -1,16 +1,16 @@
 import { AdminPage } from "src/pages/AdminPage";
-import { FriendPage } from "src/pages/FriendPage";
 import { GenerateQuestionPage } from "src/pages/GenerateQuestionPage";
+import { NotificationPage } from "src/pages/NotificationPage";
 import { ParameterPage } from "src/pages/ParameterPage";
+import { PeoplePage } from "src/pages/PeoplePage";
 import { PrivateGamePage } from "src/pages/PrivateGamePage";
-import { StatisticsPage } from "src/pages/StatisticsPage";
+import { ProfilPage } from "src/pages/ProfilPage";
 import { ThemePage } from "src/pages/ThemePage";
 import { ThemesPage } from "src/pages/ThemesPage";
 import { ForgotPasswordPage } from "src/pages/connect/ForgotPasswordPage";
 import { LoginPage } from "src/pages/connect/LoginPage";
 import { RegisterPage } from "src/pages/connect/RegisterPage";
 import { ResetPasswordPage } from "src/pages/connect/ResetPasswordPage";
-import { PlayPage } from "../pages/PlayPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 export const AppRoutes = [
@@ -23,16 +23,16 @@ export const AppRoutes = [
     element: <ThemePage />,
   },
   {
-    path: "/play/:channelid",
-    element: <PlayPage />,
-  },
-  {
     path: "/privategame/:id",
     element: <PrivateGamePage />,
   },
   {
-    path: "/admine",
-    element: <AdminPage />,
+    path: "/administration",
+    element: (
+      <ProtectedRoute>
+        <AdminPage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/login",
@@ -63,19 +63,19 @@ export const AppRoutes = [
     ),
   },
   {
-    path: "/friends",
+    path: "/notifications",
     element: (
       <ProtectedRoute>
-        <FriendPage />
+        <NotificationPage />
       </ProtectedRoute>
     ),
   },
   {
-    path: "/statistics",
-    element: (
-      <ProtectedRoute>
-        <StatisticsPage />
-      </ProtectedRoute>
-    ),
+    path: "/profil/:id",
+    element: <ProfilPage />,
+  },
+  {
+    path: "/people",
+    element: <PeoplePage />,
   },
 ];

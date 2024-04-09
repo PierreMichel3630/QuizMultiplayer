@@ -1,6 +1,4 @@
-import { Grid, Paper, Typography } from "@mui/material";
 import { Cell, LabelList, Pie, PieChart, ResponsiveContainer } from "recharts";
-import { Colors } from "src/style/Colors";
 import { isInt } from "src/utils/calcul";
 
 export interface DataDonut {
@@ -10,70 +8,39 @@ export interface DataDonut {
 }
 
 interface Props {
-  title: string;
   data: Array<DataDonut>;
 }
 
-export const DonutChart = ({ data, title }: Props) => {
+export const DonutChart = ({ data }: Props) => {
   return (
-    <Paper sx={{ overflow: "hidden" }}>
-      <Grid container>
-        <Grid
-          item
-          xs={12}
-          sx={{
-            backgroundColor: Colors.purple,
-            p: 1,
-          }}
+    <ResponsiveContainer width="100%" height={300}>
+      <PieChart>
+        <Pie
+          data={data}
+          dataKey="value"
+          nameKey="name"
+          cx="50%"
+          cy="50%"
+          stroke="none"
+          innerRadius={50}
+          outerRadius={120}
+          paddingAngle={5}
+          cornerRadius={5}
+          label={renderCustomizedLabel}
+          labelLine={false}
         >
-          <Typography
-            variant="h1"
-            sx={{
-              wordWrap: "break-word",
-              fontSize: 18,
-            }}
-          >
-            {title}
-          </Typography>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sx={{
-            backgroundColor: Colors.grey,
-          }}
-        >
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={data}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                stroke="none"
-                innerRadius={50}
-                outerRadius={120}
-                paddingAngle={5}
-                cornerRadius={5}
-                label={renderCustomizedLabel}
-                labelLine={false}
-              >
-                {data.map((el, index) => (
-                  <Cell key={`cell-${index}`} fill={el.color} />
-                ))}
-                <LabelList
-                  dataKey="name"
-                  position="outside"
-                  fontSize={18}
-                  fontWeight={700}
-                />
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-        </Grid>
-      </Grid>
-    </Paper>
+          {data.map((el, index) => (
+            <Cell key={`cell-${index}`} fill={el.color} />
+          ))}
+          <LabelList
+            dataKey="name"
+            position="outside"
+            fontSize={18}
+            fontWeight={700}
+          />
+        </Pie>
+      </PieChart>
+    </ResponsiveContainer>
   );
 };
 

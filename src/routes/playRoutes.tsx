@@ -1,6 +1,8 @@
+import { PlayPage } from "src/pages/PlayPage";
 import { DuelPage } from "src/pages/play/DuelPage";
-import { ProtectedRoute } from "./ProtectedRoute";
 import { SoloPage } from "src/pages/play/SoloPage";
+import { ProtectedRoute } from "./ProtectedRoute";
+import { RecapDuelPage } from "src/pages/play/RecapDuelPage";
 
 export const PlayRoutes = [
   {
@@ -14,5 +16,13 @@ export const PlayRoutes = [
   {
     path: "/solo/:themeid",
     element: <SoloPage />,
+  },
+  {
+    path: "/play",
+    element: <PlayPage />,
+  },
+  {
+    path: "/recapduel",
+    element: <RecapDuelPage />,
   },
 ];

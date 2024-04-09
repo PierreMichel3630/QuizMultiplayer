@@ -2,7 +2,9 @@ import { Button, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export const GenerateQuestionPage = () => {
-  /*const getSpecies = async (url: string) => {
+  /*
+  
+  const getSpecies = async (url: string) => {
     const test = await fetch(url);
     const res = await test.json();
     const nameEN = res.name;
@@ -72,7 +74,8 @@ export const GenerateQuestionPage = () => {
     }
 
     console.log(result);
-  };*/
+  };
+  
   const [abilities, setAbilities] = useState<
     Array<{
       id: number;
@@ -81,7 +84,7 @@ export const GenerateQuestionPage = () => {
       fr: string;
       de: string;
     }>
-  >([]); /*
+  >([]); 
   const [types, setTypes] = useState<
     Array<{ id: number; es: string; en: string; fr: string; de: string }>
   >([]);
@@ -150,7 +153,6 @@ export const GenerateQuestionPage = () => {
 
     return questionType;
   };
-*/
   const [responses, setResponses] = useState<
     Array<{ type: string; value: string }>
   >([]);
@@ -179,8 +181,6 @@ export const GenerateQuestionPage = () => {
         });
       });
   };
-  console.log(responses);
-  /*
   const getPokemon = async (id: number) => {
     const t = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
     const pokemon = await t.json();
@@ -279,7 +279,6 @@ export const GenerateQuestionPage = () => {
     };
     return [questionImage, questionType, questionGeneration, questionAbility];
   };
-
   const getQuestionCountries = async () => {
     const t = await fetch(`https://restcountries.com/v3.1/all`);
     const countries = await t.json();
@@ -299,7 +298,108 @@ export const GenerateQuestionPage = () => {
       questions = [...questions, question];
     });
     console.log(questions);
-  };*/
+  };
+const getQuestionCountries = async () => {
+  const t = await fetch(`https://restcountries.com/v3.1/all`);
+  const countries = await t.json();
+  const countriesIndependant = countries.filter((el) => el.independent);
+  let questions = [];
+
+  countriesIndependant.forEach((country) => {
+    const question = {
+      theme: 11,
+      question: `{"fr-FR" : "Quelle pays à ${} pour capitale ?", "en-US": "Which country has ${} as its capital? ?", "de-DE": "Welches Land hat ${} als Hauptstadt?", "es-ES": "¿Qué país tiene ${} como capital?"}`,
+      response: `{"fr-FR" : "${country.translations.fra.common}", "en-US": "${country.name.common}", "de-DE": "${country.translations.deu.common}", "es-ES": "${country.translations.spa.common}"}`,
+      image: country.flags.svg,
+      typeResponse: "COUNTRY",
+      difficulty: "MOYEN",
+    };
+
+    questions = [...questions, question];
+  });
+  console.log(questions);
+};
+*/
+
+  const getMovies = async () => {
+    const t = await fetch(
+      `https://api.themoviedb.org/3/discover/movie?language=fr&page=1&sort_by=popularity.desc&vote_count.gte=5500`,
+      {
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjZjYTY3NDEyY2U3MzA4MGE4YWM1YzhjMDQwOTZiNSIsInN1YiI6IjY0YmJkY2M0ZWI3OWMyMDExYzI0ZTEwMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.0geOpDej0t0qVeEp5qvXPv-UW9ao9Cmfkv2aQYyF_UA",
+        },
+      }
+    );
+
+    const movies = [];
+    const page1 = await t.json();
+    //page1.total_pages
+    for (let p = 36; p <= 40; p++) {
+      const pageResult = await fetch(
+        `https://api.themoviedb.org/3/discover/movie?language=fr&page=${p}&sort_by=popularity.desc&vote_count.gte=5500`,
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjZjYTY3NDEyY2U3MzA4MGE4YWM1YzhjMDQwOTZiNSIsInN1YiI6IjY0YmJkY2M0ZWI3OWMyMDExYzI0ZTEwMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.0geOpDej0t0qVeEp5qvXPv-UW9ao9Cmfkv2aQYyF_UA",
+          },
+        }
+      );
+      const jsonResult = await pageResult.json();
+      movies.push(...jsonResult.results);
+    }
+
+    const questions = movies.map(async (movie) => {
+      const tradMovie = await fetch(
+        `https://api.themoviedb.org/3/movie/${movie.id}/translations`,
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjZjYTY3NDEyY2U3MzA4MGE4YWM1YzhjMDQwOTZiNSIsInN1YiI6IjY0YmJkY2M0ZWI3OWMyMDExYzI0ZTEwMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.0geOpDej0t0qVeEp5qvXPv-UW9ao9Cmfkv2aQYyF_UA",
+          },
+        }
+      );
+      const traductions = await tradMovie.json();
+      const tradEn = traductions.translations.find(
+        (el) => el.iso_639_1 === "en"
+      );
+      const tradfr = traductions.translations.find(
+        (el) => el.iso_639_1 === "fr"
+      );
+      const tradDe = traductions.translations.find(
+        (el) => el.iso_639_1 === "de"
+      );
+      const tradEs = traductions.translations.find(
+        (el) => el.iso_639_1 === "es"
+      );
+      const difficulty =
+        movie.vote_count > 20000
+          ? "FACILE"
+          : movie.vote_count > 10000
+          ? "MOYEN"
+          : "DIFFICILE";
+      const question = {
+        theme: 12,
+        question: `{"fr-FR" : "Quel est ce film ?", "en-US": "Which film is that ?", "de-DE": "Welcher Film ist das?", "es-ES": "¿Qué película es esa?"}`,
+        response: `{"fr-FR" : "${
+          tradfr.data.title !== "" ? tradfr.data.title : movie.original_title
+        }", "en-US": "${
+          tradEn.data.title !== "" ? tradEn.data.title : movie.original_title
+        }", "de-DE": "${
+          tradDe.data.title !== "" ? tradDe.data.title : movie.original_title
+        }", "es-ES": "${
+          tradEs.data.title !== "" ? tradEs.data.title : movie.original_title
+        }"}`,
+        image: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`,
+        typeResponse: "MOVIE",
+        difficulty: difficulty,
+      };
+      return question;
+    });
+    Promise.all(questions).then((res) => {
+      console.log(res);
+    });
+  };
 
   return (
     <Grid container spacing={1}>
@@ -307,7 +407,7 @@ export const GenerateQuestionPage = () => {
         <Typography variant="h1">GenerateQuestionPage</Typography>
       </Grid>
       <Grid item xs={12}>
-        <Button variant="contained" fullWidth onClick={() => getAbilities()}>
+        <Button variant="contained" fullWidth onClick={() => getMovies()}>
           Generate
         </Button>
       </Grid>

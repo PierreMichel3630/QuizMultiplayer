@@ -90,6 +90,7 @@ export const ForgotPasswordForm = () => {
             fullWidth
             size="large"
             type="submit"
+            color="secondary"
             variant="contained"
           >
             {t("form.forgotpassword.continue")}

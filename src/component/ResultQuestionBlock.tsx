@@ -1,6 +1,6 @@
 import { Avatar, Box, Typography } from "@mui/material";
 import { QuestionPosition } from "src/models/Question";
-import { NUMBERQUESTION } from "src/pages/PlayPage";
+import { NUMBERQUESTION } from "src/pages/PlayMultiPage";
 import { Colors } from "src/style/Colors";
 
 import rank1 from "src/assets/rank/rank1.png";

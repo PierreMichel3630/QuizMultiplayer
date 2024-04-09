@@ -4,14 +4,15 @@ import { Theme } from "src/models/Theme";
 
 interface Props {
   theme: Theme;
+  size?: string | number;
 }
 
-export const ImageThemeBlock = ({ theme }: Props) => {
+export const ImageThemeBlock = ({ theme, size = percent(100) }: Props) => {
   return (
     <Box
       sx={{
         backgroundColor: theme.color,
-        width: percent(100),
+        width: size,
         aspectRatio: "1/1",
         borderRadius: px(5),
         display: "flex",

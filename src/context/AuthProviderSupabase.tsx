@@ -12,7 +12,7 @@ import {
   supabase,
   updatePassword,
 } from "src/api/supabase";
-import { getProfil } from "src/api/profile";
+import { getProfilById } from "src/api/profile";
 import { Profile } from "src/models/Profile";
 
 type Props = {
@@ -65,7 +65,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
 
   const getProfilUser = async () => {
     if (user !== null) {
-      const { data } = await getProfil(user.id);
+      const { data } = await getProfilById(user.id);
       setProfile(data as Profile);
     }
   };
@@ -79,6 +79,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
         setAuth(true);
       } else if (event === "SIGNED_OUT") {
         setUser(null);
+        setProfile(null);
         setAuth(false);
       }
     });

@@ -1,5 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
-import { distance } from "https://deno.land/x/fastest_levenshtein/mod.ts";
+import { compareTwoStrings } from "https://deno.land/x/string_similarity/mod.ts";
 
 const stopwords = [
   "the",
@@ -13,29 +13,27 @@ const stopwords = [
   "une",
   "ce",
   "se",
-  ":",
   "et",
   "and",
-  "/",
-  ",",
-  ";",
 ];
 
 const normalizeString = (value: string) =>
-  removeSpecialCharacter(
-    removeStopWord(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))
-  );
+  removeStopWord(
+    value.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  ).toLowerCase();
 
 const removeStopWord = (value: string) =>
-  value.replace(new RegExp("\\b(" + stopwords.join("|") + ")\\b", "g"), "");
-
-const removeSpecialCharacter = (value: string) => value.replace(/\.|\&/g, "");
+  value
+    .toLowerCase()
+    .replace(new RegExp("\\b(" + stopwords.join("|") + ")\\b", "g"), "")
+    .replace(/\s/g, "")
+    .replace(/[^a-zA-Z0-9 ]/g, "");
 
 const compareString = (a: string, b: string) =>
-  distance(
+  compareTwoStrings(
     normalizeString(a.toLowerCase()),
     normalizeString(b.toString().toLowerCase())
-  ) / a.length;
+  );
 
 export const DIFFICULTY = {
   moyen: 4,
@@ -81,7 +79,7 @@ Deno.serve(async (req) => {
   const idgame = body.game;
   const { data } = await supabase
     .from("sologame")
-    .select("*")
+    .select("*, theme(*)")
     .eq("id", idgame)
     .maybeSingle();
   const id = data.id;
@@ -93,7 +91,7 @@ Deno.serve(async (req) => {
 
   const difficulties = getDifficultyQuestion(points);
 
-  const channel = supabase.channel(`${player}${theme}`);
+  const channel = supabase.channel(`${player}${theme.id}`);
   channel
     .on("broadcast", { event: "response" }, async (v) => {
       let result = false;
@@ -101,19 +99,19 @@ Deno.serve(async (req) => {
       const value = payload.response.toLowerCase();
       const language = payload.language;
 
-      const LIMIT = 0.2;
+      const LIMIT = 0.7;
       if (response) {
         isAnswer = true;
         if (Array.isArray(response[language])) {
           result = (response[language] as Array<string>).reduce(
             (acc: boolean, b: string) => {
-              const val = compareString(b, value) < LIMIT;
+              const val = compareString(b, value) >= LIMIT;
               return acc || val;
             },
             false
           );
         } else {
-          result = compareString(response[language] as string, value) < LIMIT;
+          result = compareString(response[language] as string, value) >= LIMIT;
         }
         points = result ? points + 1 : points;
         channel.send({
@@ -139,7 +137,7 @@ Deno.serve(async (req) => {
         } else {
           await supabase.rpc("updatescore", {
             player: player,
-            themeid: theme,
+            themeid: theme.id,
             newpoints: points,
           });
           await supabase.from("sologame").delete().eq("id", id);
@@ -152,7 +150,7 @@ Deno.serve(async (req) => {
         const { data } = await supabase
           .from("randomquestion")
           .select("*, theme(*)")
-          .eq("theme", theme)
+          .in("theme", theme.themes)
           .in("difficulty", difficulties)
           .limit(1)
           .maybeSingle();
@@ -172,7 +170,7 @@ Deno.serve(async (req) => {
             .select("*")
             .eq("type", data.typeResponse)
             .not("usvalue", "in", `(${responses.join(",")})`)
-            .limit(4);
+            .limit(3);
 
           const res2 = await supabase
             .from("randomresponse")
@@ -211,12 +209,12 @@ Deno.serve(async (req) => {
             await supabase.from("sologame").delete().eq("id", id);
             await supabase.rpc("updatescore", {
               player: player,
-              themeid: theme,
+              themeid: theme.id,
               newpoints: points,
             });
             channel.unsubscribe();
           }
-        }, 10000);
+        }, 15000);
       }
     });
 

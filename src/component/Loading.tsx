@@ -1,5 +1,5 @@
-import { CircularProgress, Grid } from "@mui/material";
-import { percent } from "csx";
+import { Box, CircularProgress, Grid } from "@mui/material";
+import { percent, px } from "csx";
 
 export const CircularLoading = () => (
   <Grid container>
@@ -14,7 +14,7 @@ export const CircularLoading = () => (
 );
 
 export const Loading = () => (
-  <div
+  <Box
     style={{
       display: "flex",
       justifyContent: "center",
@@ -23,5 +23,18 @@ export const Loading = () => (
     }}
   >
     <CircularProgress color="inherit" size={60} />
-  </div>
+  </Box>
+);
+
+export const LoadingDot = () => (
+  <Box
+    sx={{
+      width: px(60),
+      aspectRatio: 2,
+      background:
+        "no-repeat radial-gradient(circle closest-side,#fff 90%,transparent) 0% 50%, no-repeat radial-gradient(circle closest-side,#fff 90%,transparent) 50% 50%, no-repeat radial-gradient(circle closest-side,#fff 90%,transparent) 100% 50%",
+      backgroundSize: "calc(100%/3) 50%",
+      animation: "l3 1s infinite linear",
+    }}
+  />
 );

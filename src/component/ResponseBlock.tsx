@@ -119,18 +119,18 @@ export const ResponseSoloBlock = ({ response }: ResponseSoloProps) => {
       sx={{
         p: 1,
         backgroundColor: response.result ? Colors.green : Colors.red,
-        borderRadius: px(10),
+        borderRadius: px(5),
         textAlign: "center",
         width: percent(100),
       }}
     >
-      <Typography variant="h2" sx={{ color: "white" }}>
+      <Typography variant="h2" color="text.secondary">
         {response.answer}
       </Typography>
-      <Typography variant="h6" sx={{ color: "white" }} component="span">
+      <Typography variant="h4" color="text.secondary" component="span">
         {t("commun.goodresponse")} :{" "}
       </Typography>
-      <Typography variant="h4" sx={{ color: "white" }} component="span">
+      <Typography variant="h2" color="text.secondary" component="span">
         {label}
       </Typography>
     </Paper>
@@ -177,6 +177,7 @@ export const ResponseDuelBlock = ({
             >
               <JsonLanguageArrayOrStringBlock
                 variant="h2"
+                color="text.secondary"
                 value={response.response}
               />
             </Paper>
@@ -201,9 +202,12 @@ export const ResponseDuelBlock = ({
                   top: percent(50),
                   translate: "0 -50%",
                   left: 0,
+                  color: Colors.white,
                 }}
               />
-              <Typography variant="h2">{responsePlayer1.answer}</Typography>
+              <Typography variant="h2" color="text.secondary">
+                {responsePlayer1.answer}
+              </Typography>
             </Paper>
           )}
           {responsePlayer2 && (response || isPlayer2) && (
@@ -217,9 +221,12 @@ export const ResponseDuelBlock = ({
                 textAlign: "center",
                 width: percent(100),
                 position: "relative",
+                color: Colors.white,
               }}
             >
-              <Typography variant="h2">{responsePlayer2.answer}</Typography>
+              <Typography variant="h2" color="text.secondary">
+                {responsePlayer2.answer}
+              </Typography>
               <ArrowLeftIcon
                 sx={{
                   fontSize: 50,

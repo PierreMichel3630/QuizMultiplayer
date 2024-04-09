@@ -1,4 +1,4 @@
-import { Paper } from "@mui/material";
+import { Box } from "@mui/material";
 import { percent } from "csx";
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
 
 export const ImageQuestionBlock = ({ src }: Props) => {
   return (
-    <Paper
+    <Box
       sx={{
         width: percent(100),
         height: percent(100),
