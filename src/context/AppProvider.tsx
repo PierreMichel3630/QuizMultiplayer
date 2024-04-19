@@ -8,6 +8,10 @@ import { Country } from "src/models/Country";
 import { selectCountries } from "src/api/country";
 import { Category } from "src/models/Category";
 import { selectCategories } from "src/api/category";
+import { Favorite } from "src/models/Favorite";
+import { selectMyFavorite } from "src/api/favorite";
+import { ReportMessage } from "src/models/Report";
+import { selectReportMessage } from "src/api/report";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[];
@@ -17,14 +21,22 @@ const AppContext = createContext<{
   friends: Array<Friend>;
   refreshFriends: () => void;
   themes: Array<Theme>;
+  refreshThemes: () => void;
+  favorites: Array<Favorite>;
+  refreshFavorites: () => void;
   categories: Array<Category>;
   countries: Array<Country>;
+  reportmessages: Array<ReportMessage>;
 }>({
   friends: [],
   refreshFriends: () => {},
+  favorites: [],
+  refreshFavorites: () => {},
   themes: [],
+  refreshThemes: () => {},
   categories: [],
   countries: [],
+  reportmessages: [],
 });
 
 export const useApp = () => useContext(AppContext);
@@ -35,6 +47,25 @@ export const AppProvider = ({ children }: Props) => {
   const [themes, setThemes] = useState<Array<Theme>>([]);
   const [categories, setCategories] = useState<Array<Category>>([]);
   const [countries, setCountries] = useState<Array<Country>>([]);
+  const [favorites, setFavorites] = useState<Array<Favorite>>([]);
+  const [reportmessages, setReportmessages] = useState<Array<ReportMessage>>(
+    []
+  );
+
+  const getFavorite = () => {
+    if (user !== null) {
+      selectMyFavorite(user.id).then(({ data }) => {
+        setFavorites(data as Array<Favorite>);
+      });
+    }
+  };
+  const refreshFavorites = () => {
+    getFavorite();
+  };
+
+  useEffect(() => {
+    getFavorite();
+  }, [user]);
 
   const getFriends = async () => {
     if (user !== null) {
@@ -56,6 +87,9 @@ export const AppProvider = ({ children }: Props) => {
       if (res.data) setThemes(res.data as Array<Theme>);
     });
   };
+  const refreshThemes = () => {
+    getThemes();
+  };
 
   const getCategories = () => {
     selectCategories().then((res) => {
@@ -69,10 +103,17 @@ export const AppProvider = ({ children }: Props) => {
     });
   };
 
+  const getMessage = () => {
+    selectReportMessage().then((res) => {
+      setReportmessages(res.data as Array<ReportMessage>);
+    });
+  };
+
   useEffect(() => {
     getCategories();
     getCountries();
     getThemes();
+    getMessage();
   }, []);
 
   return (
@@ -81,8 +122,12 @@ export const AppProvider = ({ children }: Props) => {
         friends,
         refreshFriends,
         themes,
+        refreshThemes,
         countries,
+        favorites,
+        refreshFavorites,
         categories,
+        reportmessages,
       }}
     >
       {children}

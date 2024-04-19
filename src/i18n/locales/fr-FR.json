@@ -111,7 +111,19 @@
     "notrank": "Non Classé",
     "yes": "Oui",
     "no": "Non",
-    "searchplayer": "Recherche de joueur"
+    "searchplayer": "Recherche de joueur",
+    "seeall": "Voir tous",
+    "favorite": "Favoris",
+    "addfavorite": "Ajouter aux favoris",
+    "removefavorite": "Retirer des favoris",
+    "seequestions": "Voir les questions",
+    "report": "Signaler",
+    "reportquestion": "Signaler la question",
+    "typeproblem": "Type de problème *",
+    "selecttypeerror": "Veuillez sélectionner un type d'erreur",
+    "descriptionerror": "Description de l'erreur",
+    "placeholderdescriptionerror": "Veuillez donner des informations afin de résoudre le problème.",
+    "replay": "Rejouer"
   },
   "rules": {
     "step1": "Choisissez un thème",
@@ -123,6 +135,9 @@
   "pages": {
     "home": {
       "title": "Accueil"
+    },
+    "favorite": {
+      "title": "Favoris"
     },
     "play": {
       "title": "Jouer"
@@ -226,9 +241,13 @@
     "selectadv": "Sélectionner un adversaire"
   },
   "alert": {
+    "allresponseanswer": "Vous avez répondu à toutes les question du thème.",
     "nofriend": "Aucune demande d'ami.",
     "nogame": "Aucun duel en cours.",
+    "addreport": "Votre report a été pris en compte.",
     "deletefriend": "Votre suppression a été pris en compte.",
+    "addfavorite": "Votre ajout a été pris en compte.",
+    "deletefavorite": "Votre suppression a été pris en compte.",
     "updateavatarsuccess": "Votre modification d'avatar à été pris en compte.",
     "updateorigincountrysuccess": "Votre modification de pays à été pris en compte.",
     "updateusernamesuccess": "Votre modification de pseudonyme à été pris en compte.",

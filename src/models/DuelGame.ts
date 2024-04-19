@@ -1,4 +1,5 @@
 import { Profile } from "./Profile";
+import { Question } from "./Question";
 import { Theme } from "./Theme";
 
 export interface DuelGame {
@@ -21,4 +22,5 @@ export interface DuelGameChange {
   ptsplayer1: number;
   ptsplayer2: number;
   start: boolean;
+  questions: Array<Question>;
 }

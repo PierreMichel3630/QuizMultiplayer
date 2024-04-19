@@ -15,7 +15,11 @@ import BoltIcon from "@mui/icons-material/Bolt";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate } from "react-router-dom";
-import { launchDuelGame, matchmakingDuelGame } from "src/api/game";
+import {
+  launchDuelGame,
+  launchSoloGame,
+  matchmakingDuelGame,
+} from "src/api/game";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
 import { Theme } from "src/models/Theme";
@@ -49,7 +53,9 @@ export const PlayPage = () => {
 
   const play = () => {
     if (theme && mode === "solo") {
-      navigate(`/solo/${theme.id}`);
+      launchSoloGame(uuid, theme.id).then(({ data }) => {
+        navigate(`/solo/${data.uuid}`);
+      });
     } else if (theme && mode === "duel" && profileAdv !== undefined) {
       if (user) {
         launchDuelGame(uuid, profileAdv.id, theme.id).then(({ data }) => {

@@ -1,40 +1,37 @@
 import { Grid, Paper } from "@mui/material";
 import { useUser } from "src/context/UserProvider";
-import {
-  Response,
-  ResponseDuel,
-  ResponseLanguageString,
-  ResponseSolo,
-} from "src/models/Response";
+import { Response, ResponseDuel, ResponseSolo } from "src/models/Response";
 import { Colors } from "src/style/Colors";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { percent } from "csx";
+import { QuestionDuel, QuestionSolo } from "src/models/Question";
 
 interface Props {
-  responses: Array<ResponseLanguageString>;
+  question: QuestionSolo;
   onSubmit: (value: string) => void;
 }
 
-export const QcmBlock = ({ responses, onSubmit }: Props) => {
+export const QcmBlock = ({ question, onSubmit }: Props) => {
   const { language } = useUser();
   return (
     <Grid container spacing={1}>
-      {responses.map((response, index) => (
-        <Grid item xs={12} key={index}>
+      {question.responses.map((response, index) => (
+        <Grid item xs={question.image ? 6 : 12} key={index}>
           <Paper
             sx={{
-              pt: 2,
-              pb: 2,
-              pl: 1,
-              pr: 1,
+              p: "15px 5px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               cursor: "pointer",
               textAlign: "center",
               backgroundColor: Colors.grey,
               borderColor: Colors.grey,
               borderWidth: 2,
+              height: percent(100),
             }}
             variant="outlined"
             onClick={() => onSubmit(response[language.iso])}
@@ -52,11 +49,11 @@ export const QcmBlock = ({ responses, onSubmit }: Props) => {
 };
 
 interface PropsResponse {
-  responses: Array<ResponseLanguageString>;
+  question: QuestionSolo;
   response: ResponseSolo;
 }
 
-export const QcmResponseBlock = ({ responses, response }: PropsResponse) => {
+export const QcmResponseBlock = ({ question, response }: PropsResponse) => {
   const { language } = useUser();
   const value = response.response[language.iso]
     ? response.response[language.iso]
@@ -64,7 +61,8 @@ export const QcmResponseBlock = ({ responses, response }: PropsResponse) => {
 
   return (
     <Grid container spacing={1}>
-      {responses.map((r, index) => {
+      {question.responses.map((r, index) => {
+        const xs = question.image ? 6 : 12;
         const isCorrectResponse = Array.isArray(value)
           ? value.includes(r[language.iso])
           : value === r[language.iso];
@@ -75,17 +73,18 @@ export const QcmResponseBlock = ({ responses, response }: PropsResponse) => {
           ? Colors.red2
           : Colors.grey;
         return (
-          <Grid item xs={12} key={index}>
+          <Grid item xs={xs} key={index}>
             <Paper
               sx={{
-                pt: 2,
-                pb: 2,
-                pl: 1,
-                pr: 1,
+                p: "15px 5px",
                 textAlign: "center",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 backgroundColor: color,
                 borderColor: color,
                 borderWidth: 2,
+                height: percent(100),
               }}
               variant="outlined"
             >
@@ -103,7 +102,7 @@ export const QcmResponseBlock = ({ responses, response }: PropsResponse) => {
 };
 
 interface PropsQcmBlockDuel {
-  responses: Array<ResponseLanguageString>;
+  question: QuestionDuel;
   onSubmit: (value: string) => void;
   responsePlayer1: undefined | ResponseDuel;
   responsePlayer2: undefined | ResponseDuel;
@@ -111,13 +110,14 @@ interface PropsQcmBlockDuel {
 }
 
 export const QcmBlockDuelBlock = ({
-  responses,
+  question,
   onSubmit,
   responsePlayer1,
   responsePlayer2,
   response,
 }: PropsQcmBlockDuel) => {
   const { uuid, language } = useUser();
+  const xs = question.image ? 6 : 12;
   const value = response
     ? response.response[language.iso]
       ? response.response[language.iso]
@@ -131,7 +131,7 @@ export const QcmBlockDuelBlock = ({
 
   return (
     <Grid container spacing={1}>
-      {responses.map((res, index) => {
+      {question.responses.map((res, index) => {
         const isCorrectResponse = Array.isArray(value)
           ? value.includes(res[language.iso])
           : value === res[language.iso];
@@ -148,19 +148,20 @@ export const QcmBlockDuelBlock = ({
           : Colors.grey;
 
         return (
-          <Grid item xs={12} key={index}>
+          <Grid item xs={xs} key={index}>
             <Paper
               sx={{
-                pt: 2,
-                pb: 2,
-                pl: 1,
-                pr: 1,
+                p: "15px 5px",
+                textAlign: "center",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 position: "relative",
                 cursor: hasAnswer ? "default" : "pointer",
-                textAlign: "center",
                 borderColor: color,
                 borderWidth: 2,
                 backgroundColor: color,
+                height: percent(100),
               }}
               onClick={() => {
                 if (!hasAnswer) {
@@ -170,8 +171,9 @@ export const QcmBlockDuelBlock = ({
             >
               {isResponsePlayer1 && (response || isPlayer1) && (
                 <ArrowRightIcon
+                  viewBox="10 7 5 10"
                   sx={{
-                    fontSize: 50,
+                    fontSize: 30,
                     position: "absolute",
                     top: percent(50),
                     translate: "0 -50%",
@@ -187,8 +189,9 @@ export const QcmBlockDuelBlock = ({
               />
               {isResponsePlayer2 && (response || isPlayer2) && (
                 <ArrowLeftIcon
+                  viewBox="10 7 5 10"
                   sx={{
-                    fontSize: 50,
+                    fontSize: 30,
                     position: "absolute",
                     top: percent(50),
                     translate: "0 -50%",

@@ -1,4 +1,4 @@
-import { Box, Container, Grid } from "@mui/material";
+import { Box, Container, Grid, Toolbar } from "@mui/material";
 import { percent, px } from "csx";
 import { Outlet } from "react-router-dom";
 import { Header } from "src/component/header/Header";
@@ -82,12 +82,11 @@ export const OutletPage = () => {
     <>
       <Grid container>
         <Grid item xs={12} sx={{ backgroundColor: Colors.red }}>
-          <Container maxWidth="lg">
-            <Header />
-          </Container>
+          <Header />
         </Grid>
         <Grid item xs={12} sx={{ marginBottom: 8 }}>
           <Container maxWidth="lg" sx={{ p: 0 }}>
+            <Toolbar />
             <Outlet />
           </Container>
         </Grid>

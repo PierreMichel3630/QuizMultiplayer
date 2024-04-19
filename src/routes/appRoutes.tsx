@@ -12,11 +12,21 @@ import { LoginPage } from "src/pages/connect/LoginPage";
 import { RegisterPage } from "src/pages/connect/RegisterPage";
 import { ResetPasswordPage } from "src/pages/connect/ResetPasswordPage";
 import { ProtectedRoute } from "./ProtectedRoute";
+import { CategoryPage } from "src/pages/CategoryPage";
+import { FavoritePage } from "src/pages/FavoritePage";
 
 export const AppRoutes = [
   {
     path: "/",
     element: <ThemesPage />,
+  },
+  {
+    path: "/favorite",
+    element: <FavoritePage />,
+  },
+  {
+    path: "/category/:id",
+    element: <CategoryPage />,
   },
   {
     path: "/theme/:id",

@@ -1,6 +1,6 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { RealtimeChannel } from "@supabase/supabase-js";
-import { viewHeight } from "csx";
+import { px, viewHeight } from "csx";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -19,7 +19,7 @@ import { WaitPlayerDuelGameBlock } from "src/component/play/WaitPlayerDuelGameBl
 import { useUser } from "src/context/UserProvider";
 import { DuelGame, DuelGameChange } from "src/models/DuelGame";
 import { Elo } from "src/models/Elo";
-import { QuestionDuel } from "src/models/Question";
+import { Question, QuestionDuel } from "src/models/Question";
 import { Response, ResponseDuel } from "src/models/Response";
 import { Colors } from "src/style/Colors";
 
@@ -41,6 +41,8 @@ export const DuelPage = () => {
   const [timer, setTimer] = useState<undefined | number>(undefined);
   const [question, setQuestion] = useState<undefined | QuestionDuel>(undefined);
   const [response, setResponse] = useState<undefined | Response>(undefined);
+  const [questions, setQuestions] = useState<Array<Question>>([]);
+  const [elo, setElo] = useState<undefined | Elo>(undefined);
   const [responsePlayer1, setResponsePlayer1] = useState<
     undefined | ResponseDuel
   >(undefined);
@@ -99,6 +101,7 @@ export const DuelPage = () => {
               game.player2 !== null
                 ? game.player2
                 : await getPlayer2(newGame.player2 as string);
+            setQuestions(newGame.questions);
             setGame((prev) =>
               prev
                 ? {
@@ -121,8 +124,14 @@ export const DuelPage = () => {
             filter: `uuid=eq.${game.uuid}`,
           },
           (payload) => {
-            setEnd(true);
             channel.unsubscribe();
+            navigate(`/recapduel`, {
+              state: {
+                game: game,
+                elo: elo,
+                questions: questions,
+              },
+            });
           }
         )
         .on("broadcast", { event: "question" }, (value) => {
@@ -147,10 +156,7 @@ export const DuelPage = () => {
           }
         })
         .on("broadcast", { event: "rank" }, (value) => {
-          channel.unsubscribe();
-          navigate(`/recapduel`, {
-            state: { game: game, elo: value.payload as Elo },
-          });
+          setElo(value.payload as Elo);
         })
         .subscribe(async (status) => {
           if (status !== "SUBSCRIBED") {
@@ -163,7 +169,7 @@ export const DuelPage = () => {
         channel.unsubscribe();
       };
     }
-  }, [game]);
+  }, [elo, game, navigate, questions, uuid]);
 
   const validateResponse = async (value: string) => {
     if (channel && game && language && uuid) {
@@ -299,7 +305,7 @@ export const DuelPage = () => {
                     flexGrow: 1,
                     display: "flex",
                     flexDirection: "row",
-                    gap: 2,
+                    gap: px(5),
                   }}
                 >
                   {timer && (
@@ -331,7 +337,7 @@ export const DuelPage = () => {
                         <>
                           {question.isqcm ? (
                             <QcmBlockDuelBlock
-                              responses={question.responses}
+                              question={question}
                               response={response}
                               responsePlayer1={responsePlayer1}
                               responsePlayer2={responsePlayer2}

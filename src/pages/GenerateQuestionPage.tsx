@@ -321,7 +321,7 @@ const getQuestionCountries = async () => {
 };
 */
 
-  const getMovies = async () => {
+  /*const getMovies = async () => {
     const t = await fetch(
       `https://api.themoviedb.org/3/discover/movie?language=fr&page=1&sort_by=popularity.desc&vote_count.gte=5500`,
       {
@@ -399,6 +399,234 @@ const getQuestionCountries = async () => {
     Promise.all(questions).then((res) => {
       console.log(res);
     });
+  };*/
+  /*
+  const getSeries = async () => {
+    const t = await fetch(
+      `https://api.themoviedb.org/3/discover/tv?language=fr&page=1&sort_by=popularity.desc&without_genres=10762,10767,10763&vote_count.gte=2000`,
+      {
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjZjYTY3NDEyY2U3MzA4MGE4YWM1YzhjMDQwOTZiNSIsInN1YiI6IjY0YmJkY2M0ZWI3OWMyMDExYzI0ZTEwMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.0geOpDej0t0qVeEp5qvXPv-UW9ao9Cmfkv2aQYyF_UA",
+        },
+      }
+    );
+
+    const series = [];
+    const page1 = await t.json();
+    //page1.total_pages
+    for (let p = 6; p <= 9; p++) {
+      const pageResult = await fetch(
+        `https://api.themoviedb.org/3/discover/tv?language=fr&page=${p}&sort_by=popularity.desc&without_genres=10762,10767,10763&vote_count.gte=2000`,
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjZjYTY3NDEyY2U3MzA4MGE4YWM1YzhjMDQwOTZiNSIsInN1YiI6IjY0YmJkY2M0ZWI3OWMyMDExYzI0ZTEwMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.0geOpDej0t0qVeEp5qvXPv-UW9ao9Cmfkv2aQYyF_UA",
+          },
+        }
+      );
+      const jsonResult = await pageResult.json();
+      series.push(...jsonResult.results);
+    }
+
+    const questions = series.map(async (serie) => {
+      const tradMovie = await fetch(
+        `https://api.themoviedb.org/3/tv/${serie.id}/translations`,
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjZjYTY3NDEyY2U3MzA4MGE4YWM1YzhjMDQwOTZiNSIsInN1YiI6IjY0YmJkY2M0ZWI3OWMyMDExYzI0ZTEwMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.0geOpDej0t0qVeEp5qvXPv-UW9ao9Cmfkv2aQYyF_UA",
+          },
+        }
+      );
+      const traductions = await tradMovie.json();
+      const tradEn = traductions.translations.find(
+        (el) => el.iso_639_1 === "en"
+      );
+      const tradfr = traductions.translations.find(
+        (el) => el.iso_639_1 === "fr"
+      );
+      const tradDe = traductions.translations.find(
+        (el) => el.iso_639_1 === "de"
+      );
+      const tradEs = traductions.translations.find(
+        (el) => el.iso_639_1 === "es"
+      );
+      const difficulty =
+        serie.vote_count > 4000
+          ? "FACILE"
+          : serie.vote_count > 3000
+          ? "MOYEN"
+          : serie.vote_count > 2500
+          ? "DIFFICILE"
+          : "IMPOSSIBLE";
+      const question = {
+        theme: 13,
+        question: `{"fr-FR" : "Quelle est cette série ?", "en-US": "Which TV show is that ?", "de-DE": "Welcher Fernsehsendung ist das?", "es-ES": "¿Qué programa de televisión es esa?"}`,
+        response: `{"fr-FR" : "${
+          tradfr && tradfr.data.name !== ""
+            ? tradfr.data.name
+            : serie.original_name
+        }", "en-US": "${
+          tradEn && tradEn.data.name !== ""
+            ? tradEn.data.name
+            : serie.original_name
+        }", "de-DE": "${
+          tradDe && tradDe.data.name !== ""
+            ? tradDe.data.name
+            : serie.original_name
+        }", "es-ES": "${
+          tradEs && tradEs.data.name !== ""
+            ? tradEs.data.name
+            : serie.original_name
+        }"}`,
+        image: `https://image.tmdb.org/t/p/w780${serie.backdrop_path}`,
+        typeResponse: "SERIE",
+        difficulty: difficulty,
+      };
+      return question;
+    });
+    Promise.all(questions).then((res) => {
+      console.log(res);
+    });
+  };
+
+  */
+  /*
+  const getAnime = async () => {
+    const ids = [
+      1429, 37854, 95479, 209867, 85937, 65930, 31910, 207784, 120089, 88803,
+      220542, 46260, 46298, 73223, 13916, 12971, 30984, 35935, 37863, 114410,
+      60572, 45790, 63926, 61459, 30981, 30991, 60863, 890, 72517, 70881, 1095,
+      105009, 57041, 31724, 94664, 207250, 65942, 62104, 46261, 67075, 42509,
+      205050, 45782,
+    ];
+
+    const questions = ids.map(async (id) => {
+      const serieInfo = await fetch(`https://api.themoviedb.org/3/tv/${id}`, {
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjZjYTY3NDEyY2U3MzA4MGE4YWM1YzhjMDQwOTZiNSIsInN1YiI6IjY0YmJkY2M0ZWI3OWMyMDExYzI0ZTEwMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.0geOpDej0t0qVeEp5qvXPv-UW9ao9Cmfkv2aQYyF_UA",
+        },
+      });
+      const tradSerie = await fetch(
+        `https://api.themoviedb.org/3/tv/${id}/translations`,
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjZjYTY3NDEyY2U3MzA4MGE4YWM1YzhjMDQwOTZiNSIsInN1YiI6IjY0YmJkY2M0ZWI3OWMyMDExYzI0ZTEwMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.0geOpDej0t0qVeEp5qvXPv-UW9ao9Cmfkv2aQYyF_UA",
+          },
+        }
+      );
+
+      const serie = await serieInfo.json();
+      const traductions = await tradSerie.json();
+      const tradEn = traductions.translations.find(
+        (el) => el.iso_639_1 === "en"
+      );
+      const tradfr = traductions.translations.find(
+        (el) => el.iso_639_1 === "fr"
+      );
+      const tradDe = traductions.translations.find(
+        (el) => el.iso_639_1 === "de"
+      );
+      const tradEs = traductions.translations.find(
+        (el) => el.iso_639_1 === "es"
+      );
+      const difficulty =
+        serie.vote_count > 5000
+          ? "FACILE"
+          : serie.vote_count > 1500
+          ? "MOYEN"
+          : serie.vote_count > 500
+          ? "DIFFICILE"
+          : "IMPOSSIBLE";
+      const question = {
+        theme: 15,
+        question: `{"fr-FR" : "Quelle est cette animé ?", "en-US": "Which anime is that ?", "de-DE": "Welcher Anime ist das?", "es-ES": "¿Qué anime es ese?"}`,
+        response: `{"fr-FR" : "${
+          tradfr && tradfr.data.name !== ""
+            ? tradfr.data.name
+            : serie.original_name
+        }", "en-US": "${
+          tradEn && tradEn.data.name !== ""
+            ? tradEn.data.name
+            : serie.original_name
+        }", "de-DE": "${
+          tradDe && tradDe.data.name !== ""
+            ? tradDe.data.name
+            : serie.original_name
+        }", "es-ES": "${
+          tradEs && tradEs.data.name !== ""
+            ? tradEs.data.name
+            : serie.original_name
+        }"}`,
+        image: `https://image.tmdb.org/t/p/w780${serie.backdrop_path}`,
+        typeResponse: "ANIME",
+        difficulty: difficulty,
+      };
+      return question;
+    });
+    Promise.all(questions).then((res) => {
+      console.log(res);
+    });
+  };*/
+
+  const getActors = async () => {
+    const series = [];
+    for (let p = 1; p <= 30; p++) {
+      const pageResult = await fetch(
+        `https://api.themoviedb.org/3/person/popular?language=fr&page=${p}`,
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjZjYTY3NDEyY2U3MzA4MGE4YWM1YzhjMDQwOTZiNSIsInN1YiI6IjY0YmJkY2M0ZWI3OWMyMDExYzI0ZTEwMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.0geOpDej0t0qVeEp5qvXPv-UW9ao9Cmfkv2aQYyF_UA",
+          },
+        }
+      );
+      const jsonResult = await pageResult.json();
+      series.push(...jsonResult.results);
+    }
+
+    const questions = series
+      .filter((el) => el.popularity >= 35)
+      .map(async (serie) => {
+        const difficulty =
+          serie.popularity > 150
+            ? "FACILE"
+            : serie.vote_count > 100
+            ? "MOYEN"
+            : serie.vote_count > 50
+            ? "DIFFICILE"
+            : "IMPOSSIBLE";
+        const isMale = serie.gender !== 1 ? true : false;
+        const splitName = serie.name.split(" ");
+        const splitNameLastName = [...splitName];
+        splitNameLastName.splice(0, 1);
+        const firstname = splitName[0];
+        const lastname = splitNameLastName.join(" ");
+        const question = isMale
+          ? {
+              theme: 42,
+              question: `{"fr-FR" : "Qui est cet acteur ?", "en-US": "Who is this actor ?", "de-DE": "Wer ist dieser Schauspieler ?", "es-ES": "¿Quien es este actor?"}`,
+              response: `{"fr-FR" : ["${serie.name}", "${firstname}","${lastname}"], "en-US": ["${serie.name}", "${firstname}","${lastname}"], "de-DE": ["${serie.name}", "${firstname}","${lastname}"], "es-ES": ["${serie.name}", "${firstname}","${lastname}"]}`,
+              image: `https://image.tmdb.org/t/p/w780${serie.profile_path}`,
+              typeResponse: "ACTOR",
+              difficulty: difficulty,
+            }
+          : {
+              theme: 42,
+              question: `{"fr-FR" : "Qui est cette actrice ?", "en-US": "Who is this actress ?", "de-DE": "Wer ist diese Schauspielerin ?", "es-ES": "¿Quien es esta actriz?"}`,
+              response: `{"fr-FR" : ["${serie.name}", "${firstname}","${lastname}"], "en-US": ["${serie.name}", "${firstname}","${lastname}"], "de-DE": ["${serie.name}", "${firstname}","${lastname}"], "es-ES": ["${serie.name}", "${firstname}","${lastname}"]}`,
+              image: `https://image.tmdb.org/t/p/w780${serie.profile_path}`,
+              typeResponse: "ACTRESS",
+              difficulty: difficulty,
+            };
+        return question;
+      });
+    Promise.all(questions).then((res) => {
+      console.log(res);
+    });
   };
 
   return (
@@ -407,7 +635,7 @@ const getQuestionCountries = async () => {
         <Typography variant="h1">GenerateQuestionPage</Typography>
       </Grid>
       <Grid item xs={12}>
-        <Button variant="contained" fullWidth onClick={() => getMovies()}>
+        <Button variant="contained" fullWidth onClick={() => getActors()}>
           Generate
         </Button>
       </Grid>

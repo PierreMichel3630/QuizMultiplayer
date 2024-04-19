@@ -10,6 +10,7 @@ export interface Theme {
   color: string;
   category: Category;
   background: null | string;
+  isfirst: boolean;
 }
 
 export interface ThemeDifficulty {

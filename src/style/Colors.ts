@@ -33,7 +33,7 @@ export const Colors = {
   red2: red[800],
   pink: pink[300],
   purple: deepPurple[700],
-  yellow: yellow[600],
+  yellow: yellow[800],
   orange: orange[900],
   orange2: orange[300],
   black: "#000",

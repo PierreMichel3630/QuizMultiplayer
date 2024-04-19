@@ -6,6 +6,7 @@ export const SUPABASE_LAUNCHSOLOGAME_FUNCTION = "launch-solo-game";
 
 export const SUPABASE_LAUNCHGAME_FUNCTION = "launch-game";
 export const SUPABASE_GAME_TABLE = "game";
+export const SUPABASE_SOLOGAME_TABLE = "sologame";
 
 export const SUPABASE_DUELGAME_TABLE = "duelgame";
 export const SUPABASE_RESPONSEDUELGAME_FUNCTION = "response-duel-game";
@@ -17,6 +18,14 @@ export const launchSoloGame = (player: string, theme: number) =>
   supabase.functions.invoke(SUPABASE_LAUNCHSOLOGAME_FUNCTION, {
     body: { player: player, theme: theme },
   });
+
+export const selectSoloGameById = (uuid: string) =>
+  supabase
+    .from(SUPABASE_SOLOGAME_TABLE)
+    .select("*, theme(*)")
+    .eq("uuid", uuid)
+    .maybeSingle();
+
 export const responseSoloGame = (
   game: number,
   response: string,

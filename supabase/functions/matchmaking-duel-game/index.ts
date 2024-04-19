@@ -46,18 +46,32 @@ Deno.serve(async (req) => {
 
   let duelgame: any = undefined;
   let matchmaking: any = undefined;
+  let opponent: any = undefined;
   if (matchmakings.data.length > 0) {
-    duelgame = matchmakings.data[0].game;
-    await supabase
-      .from("duelgame")
-      .update({ player2: player, start: true })
-      .eq("uuid", duelgame.uuid);
-    setTimeout(async () => {
-      await supabase.functions.invoke("response-duel-game", {
-        body: { game: duelgame.uuid },
-      });
-    }, 3000);
-  } else {
+    let indexPlayer = 0;
+    do {
+      const diffElo = Math.abs(eloPlayer - matchmakings.data[indexPlayer].elo);
+      if (diffElo <= 200) {
+        opponent = matchmakings.data[indexPlayer];
+        break;
+      }
+      indexPlayer++;
+    } while (indexPlayer < matchmakings.data.length);
+    if (opponent) {
+      duelgame = opponent.game;
+      await supabase
+        .from("duelgame")
+        .update({ player2: player, start: true })
+        .eq("uuid", duelgame.uuid);
+      setTimeout(async () => {
+        await supabase.functions.invoke("response-duel-game", {
+          body: { game: duelgame.uuid },
+        });
+      }, 3000);
+    }
+  }
+
+  if (!opponent) {
     const game = {
       player1: player,
       player2: null,

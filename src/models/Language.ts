@@ -12,13 +12,13 @@ export const LANGUAGES: Array<Language> = [
     name: "Français",
     icon: "https://flagcdn.com/w80/fr.png",
   },
-  {
+  /*{
     iso: "en-US",
     browser: "en",
     name: "English",
     icon: "https://flagcdn.com/w80/gb.png",
   },
-  /*{
+  {
     iso: "es-ES",
     browser: "es",
     name: "Español",

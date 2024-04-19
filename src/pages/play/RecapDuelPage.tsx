@@ -13,6 +13,7 @@ export const RecapDuelPage = () => {
 
   const game = location.state ? location.state.game : undefined;
   const elo = location.state ? location.state.elo : undefined;
+  const questions = location.state ? location.state.questions : [];
 
   return (
     <Container
@@ -20,7 +21,7 @@ export const RecapDuelPage = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: viewHeight(100),
+        minHeight: viewHeight(100),
         backgroundColor: Colors.black,
         p: 0,
       }}
@@ -31,14 +32,11 @@ export const RecapDuelPage = () => {
 
       <Box
         sx={{
-          display: "flex",
-          flex: "1 1 0%",
-          flexDirection: "column",
-          gap: 1,
+          p: 1,
         }}
       >
         {location.state && game && elo ? (
-          <EndDuelGameBlock game={game} elo={elo} />
+          <EndDuelGameBlock game={game} elo={elo} questions={questions} />
         ) : (
           <Navigate to="/" replace />
         )}

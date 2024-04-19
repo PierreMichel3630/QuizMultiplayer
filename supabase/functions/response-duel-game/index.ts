@@ -1,6 +1,12 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
 import moment from "https://esm.sh/moment";
 import { compareTwoStrings } from "https://deno.land/x/string_similarity/mod.ts";
+import { getRandomElement } from "../_shared/random.ts";
+import { verifyResponse } from "../_shared/response.ts";
+import {
+  GENERATETHEME,
+  generateQuestion,
+} from "../_shared/generateQuestion.ts";
 
 const stopwords = [
   "the",
@@ -88,7 +94,9 @@ const endGame = async (
     payload: res,
   });
   channel.unsubscribe();
-  await supabase.from("duelgame").delete().eq("uuid", uuidgame);
+  setTimeout(async () => {
+    await supabase.from("duelgame").delete().eq("uuid", uuidgame);
+  }, 2000);
 };
 
 const calculelo = async (
@@ -197,14 +205,18 @@ Deno.serve(async (req) => {
   const player1 = data.player1;
   const player2 = data.player2;
   const questionNumber = data.question;
+  const questions = data.questions;
+  const previousIdQuestion = questions.map((el) => el.id).join(",");
   let pointsPlayer1 = data.ptsplayer1;
   let pointsPlayer2 = data.ptsplayer2;
   let responsePlayer1 = false;
   let responsePlayer2 = false;
 
   let response = undefined;
+  let question: any = undefined;
   let correctresponseQCM = undefined;
   let time = undefined;
+  const randomTheme = getRandomElement(theme.themes);
 
   const bot = BOTS.find((el) => el.uuid === player2);
   const channel = supabase.channel(uuidgame, {
@@ -219,26 +231,15 @@ Deno.serve(async (req) => {
       const delayResponse = timeResponse.diff(time);
       const payload = v.payload;
       const uuid = payload.uuid;
-      const value = payload.response.toLowerCase();
+      const value = payload.response.toString().toLowerCase();
       const language = payload.language;
 
-      const LIMIT = 0.7;
       if (
         response &&
         ((uuid === player1 && !responsePlayer1) ||
           (uuid === player2 && !responsePlayer2))
       ) {
-        if (Array.isArray(response[language])) {
-          result = (response[language] as Array<string>).reduce(
-            (acc: boolean, b: string) => {
-              const val = compareString(b, value) >= LIMIT;
-              return acc || val;
-            },
-            false
-          );
-        } else {
-          result = compareString(response[language] as string, value) >= LIMIT;
-        }
+        result = verifyResponse(response[language], value);
         if (uuid === player1) {
           responsePlayer1 = true;
           pointsPlayer1 = result
@@ -246,7 +247,7 @@ Deno.serve(async (req) => {
               POINTSCORRECTANSWER -
               Math.round(delayResponse / 1000)
             : pointsPlayer1;
-        } else {
+        } else if (uuid === player2) {
           responsePlayer2 = true;
           pointsPlayer2 = result
             ? pointsPlayer2 +
@@ -280,6 +281,13 @@ Deno.serve(async (req) => {
               response: response,
             },
           });
+          await supabase
+            .from("duelgame")
+            .update({
+              question: questionNumber + 1,
+              questions: [...questions, question],
+            })
+            .eq("uuid", uuidgame);
           if (questionNumber >= 5) {
             setTimeout(async () => {
               const isdraw = pointsPlayer1 === pointsPlayer2;
@@ -300,10 +308,6 @@ Deno.serve(async (req) => {
             }, 2000);
           } else {
             channel.unsubscribe();
-            await supabase
-              .from("duelgame")
-              .update({ question: questionNumber + 1 })
-              .eq("uuid", uuidgame);
             setTimeout(async () => {
               await supabase.functions.invoke("response-duel-game", {
                 body: { game: uuidgame },
@@ -315,13 +319,20 @@ Deno.serve(async (req) => {
     })
     .subscribe(async (status) => {
       if (status === "SUBSCRIBED") {
-        const { data } = await supabase
-          .from("randomquestion")
-          .select("*, theme(*)")
-          .in("theme", theme.themes)
-          .limit(1)
-          .maybeSingle();
-        response = data.response;
+        if (GENERATETHEME.includes(Number(randomTheme))) {
+          question = generateQuestion(Number(randomTheme));
+        } else {
+          const { data } = await supabase
+            .from("randomquestion")
+            .select("*, theme(*)")
+            .in("theme", theme.themes)
+            .not("id", "in", `(${previousIdQuestion})`)
+            .limit(1)
+            .maybeSingle();
+          question = data;
+        }
+        response = question.response;
+
         let responsesQcm: Array<any> = [];
         const qcm = data.isqcm === null ? Math.random() < 0.5 : data.isqcm;
         if (qcm) {
@@ -355,10 +366,10 @@ Deno.serve(async (req) => {
           type: "broadcast",
           event: "question",
           payload: {
-            question: data.question,
-            difficulty: data.difficulty,
-            image: data.image,
-            theme: data.theme,
+            question: question.question,
+            difficulty: question.difficulty,
+            image: question.image,
+            theme: question.theme,
             isqcm: qcm,
             responses: responsesQcm,
           },
@@ -398,6 +409,13 @@ Deno.serve(async (req) => {
                 response: response,
               },
             });
+            await supabase
+              .from("duelgame")
+              .update({
+                question: questionNumber + 1,
+                questions: [...questions, question],
+              })
+              .eq("uuid", uuidgame);
             if (questionNumber >= 5) {
               setTimeout(async () => {
                 const isdraw = pointsPlayer1 === pointsPlayer2;
@@ -418,10 +436,6 @@ Deno.serve(async (req) => {
               }, 2000);
             } else {
               channel.unsubscribe();
-              await supabase
-                .from("duelgame")
-                .update({ question: questionNumber + 1 })
-                .eq("uuid", uuidgame);
               setTimeout(async () => {
                 await supabase.functions.invoke("response-duel-game", {
                   body: { game: uuidgame },

@@ -1,9 +1,10 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { percent } from "csx";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { CategoryBlock } from "src/component/CategoryBlock";
+import { FavoriteBlock } from "src/component/FavoriteBlock";
 import { BasicSearchInput } from "src/component/Input";
 import { RuleBlock } from "src/component/RuleBlock";
 import { CardTheme } from "src/component/card/CardTheme";
@@ -16,7 +17,7 @@ import { searchString } from "src/utils/string";
 export const ThemesPage = () => {
   const { t } = useTranslation();
   const { language } = useUser();
-  const { categories, themes } = useApp();
+  const { categories, themes, refreshThemes } = useApp();
 
   const [search, setSearch] = useState("");
 
@@ -24,6 +25,10 @@ export const ThemesPage = () => {
     () => themes.filter((el) => searchString(search, el.name[language.iso])),
     [themes, search, language.iso]
   );
+
+  useEffect(() => {
+    refreshThemes();
+  }, []);
 
   return (
     <Box sx={{ width: percent(100), p: 1 }}>
@@ -46,19 +51,29 @@ export const ThemesPage = () => {
             clear={() => setSearch("")}
           />
         </Grid>
-        {search !== ""
-          ? themesFilter.map((theme) => (
+        <Grid item xs={12}>
+          <FavoriteBlock search={search} />
+        </Grid>
+        {search !== "" ? (
+          <>
+            <Grid item xs={12}>
+              <Typography variant="h2">{t("commun.search")}</Typography>
+            </Grid>
+            {themesFilter.map((theme) => (
               <Grid item xs={3} sm={2} md={2} lg={1} key={theme.id}>
                 <CardTheme theme={theme} />
               </Grid>
+            ))}
+          </>
+        ) : (
+          categories
+            .sort((a, b) => sortByName(language, a, b))
+            .map((category) => (
+              <Grid item xs={12} key={category.id}>
+                <CategoryBlock category={category} />
+              </Grid>
             ))
-          : categories
-              .sort((a, b) => sortByName(language, a, b))
-              .map((category) => (
-                <Grid item xs={12} key={category.id}>
-                  <CategoryBlock category={category} />
-                </Grid>
-              ))}
+        )}
       </Grid>
     </Box>
   );

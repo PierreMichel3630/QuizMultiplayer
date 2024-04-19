@@ -1,5 +1,5 @@
 import { JsonLanguage } from "./Language";
-import { ThemeDifficulty } from "./Theme";
+import { Theme, ThemeDifficulty } from "./Theme";
 
 export interface Game {
   id: number;
@@ -16,6 +16,8 @@ export interface SoloGame {
   id: number;
   points: number;
   question: JsonLanguage;
+  theme: Theme;
+  uuid: string;
 }
 
 export interface SoloGamePayload {

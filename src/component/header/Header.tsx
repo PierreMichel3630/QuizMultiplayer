@@ -18,7 +18,7 @@ export const Header = () => {
 
   return (
     <Box sx={{ flexGrow: 1, pl: 1, pr: 1 }}>
-      <AppBar position="static" color="secondary" sx={{ boxShadow: "none" }}>
+      <AppBar position="fixed" color="secondary" sx={{ boxShadow: "none" }}>
         <Toolbar id="toolbar" sx={{ p: important(px(0)), gap: px(8) }}>
           <Link
             to="/"

@@ -6,7 +6,11 @@ import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { launchDuelGame, matchmakingDuelGame } from "src/api/game";
+import {
+  launchDuelGame,
+  launchSoloGame,
+  matchmakingDuelGame,
+} from "src/api/game";
 import { selectRankByTheme, selectRankByThemeAndPlayer } from "src/api/rank";
 import {
   countPlayersByTheme,
@@ -32,13 +36,21 @@ import { MyScore, Score } from "src/models/Score";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
+import StarIcon from "@mui/icons-material/Star";
+import { useApp } from "src/context/AppProvider";
+import { deleteFavoriteById, insertFavorite } from "src/api/favorite";
+import { FavoriteInsert } from "src/models/Favorite";
+import { useMessage } from "src/context/MessageProvider";
 
 export const ThemePage = () => {
   const { t } = useTranslation();
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const { uuid, language } = useUser();
   const { user, profile } = useAuth();
-  const navigate = useNavigate();
+  const { favorites, refreshFavorites } = useApp();
+  const { setMessage, setSeverity } = useMessage();
 
   const [openModalFriend, setOpenModalFriend] = useState(false);
   const [players, setPlayers] = useState<number | undefined>(undefined);
@@ -51,6 +63,11 @@ export const ThemePage = () => {
 
   const [tab, setTab] = useState(0);
   const tabs = [t("commun.solo"), t("commun.duel")];
+
+  const favorite = useMemo(
+    () => favorites.find((el) => el.theme === Number(id)),
+    [id, favorites]
+  );
 
   const dataDuel = useMemo(
     () =>
@@ -149,10 +166,6 @@ export const ThemePage = () => {
     getMyRankDuel();
   }, [id, uuid]);
 
-  const playSolo = () => {
-    navigate(`/solo/${id}`);
-  };
-
   const playFriend = async (profile: Profile) => {
     if (profile && id) {
       const { data } = await launchDuelGame(uuid, profile.id, Number(id));
@@ -171,6 +184,45 @@ export const ThemePage = () => {
     }
   };
 
+  const playSolo = () => {
+    if (uuid && id) {
+      launchSoloGame(uuid, Number(id)).then(({ data }) => {
+        navigate(`/solo/${data.uuid}`);
+      });
+    }
+  };
+
+  const addFavorite = () => {
+    if (theme) {
+      if (favorite) {
+        deleteFavoriteById(favorite.id).then(({ error }) => {
+          if (error) {
+            setSeverity("error");
+            setMessage(t("commun.error"));
+          } else {
+            setSeverity("success");
+            setMessage(t("alert.deletefavorite"));
+            refreshFavorites();
+          }
+        });
+      } else {
+        const newFavorite: FavoriteInsert = {
+          theme: theme.id,
+        };
+        insertFavorite(newFavorite).then(({ error }) => {
+          if (error) {
+            setSeverity("error");
+            setMessage(t("commun.error"));
+          } else {
+            setSeverity("success");
+            setMessage(t("alert.addfavorite"));
+            refreshFavorites();
+          }
+        });
+      }
+    }
+  };
+
   return (
     <Box sx={{ width: percent(100) }}>
       <Helmet>
@@ -180,19 +232,28 @@ export const ThemePage = () => {
             : t("appname")}
         </title>
       </Helmet>
-      <Grid container spacing={1}>
+      <Grid container>
         {theme && (
           <Grid item xs={12}>
             <Box
-              sx={{
-                backgroundImage: theme.background
-                  ? `url(${theme.background})`
-                  : "none",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
-                p: 2,
-              }}
+              sx={
+                theme.background
+                  ? {
+                      backgroundImage: theme.background
+                        ? `url(${theme.background})`
+                        : "none",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "cover",
+                      p: 1,
+                      display: "flex",
+                    }
+                  : {
+                      display: "flex",
+                      p: 1,
+                      backgroundColor: Colors.grey2,
+                    }
+              }
             >
               <Grid container spacing={1} alignItems="center">
                 <Grid item xs={12} sx={{ textAlign: "center" }}>
@@ -212,6 +273,7 @@ export const ThemePage = () => {
                   <Grid container spacing={1}>
                     <Grid item xs={12}>
                       <ButtonColor
+                        size="small"
                         value={Colors.red}
                         label={t("commun.duel")}
                         icon={OfflineBoltIcon}
@@ -221,6 +283,7 @@ export const ThemePage = () => {
                     </Grid>
                     <Grid item xs={12}>
                       <ButtonColor
+                        size="small"
                         value={Colors.blue2}
                         label={t("commun.playsolo")}
                         icon={PlayCircleIcon}
@@ -230,6 +293,7 @@ export const ThemePage = () => {
                     </Grid>
                     <Grid item xs={12}>
                       <ButtonColor
+                        size="small"
                         value={Colors.green}
                         label={t("commun.friendduel")}
                         icon={SupervisedUserCircleRoundedIcon}
@@ -240,6 +304,20 @@ export const ThemePage = () => {
                             navigate(`/login`);
                           }
                         }}
+                        variant="contained"
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <ButtonColor
+                        size="small"
+                        value={favorite ? Colors.greyDarkMode : Colors.yellow}
+                        label={
+                          favorite
+                            ? t("commun.removefavorite")
+                            : t("commun.addfavorite")
+                        }
+                        icon={StarIcon}
+                        onClick={() => addFavorite()}
                         variant="contained"
                       />
                     </Grid>

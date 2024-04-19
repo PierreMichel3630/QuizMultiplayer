@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Container, Divider, Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useUser } from "src/context/UserProvider";
 import { DuelGame } from "src/models/DuelGame";
@@ -9,23 +9,34 @@ import BoltIcon from "@mui/icons-material/Bolt";
 import HomeIcon from "@mui/icons-material/Home";
 import { px } from "csx";
 import { useNavigate } from "react-router-dom";
+import { launchDuelGame, matchmakingDuelGame } from "src/api/game";
+import { Elo } from "src/models/Elo";
+import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
 import { ButtonColor } from "../Button";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
-import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
-import { Elo } from "src/models/Elo";
-import { launchDuelGame } from "src/api/game";
+
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import AutorenewIcon from "@mui/icons-material/Autorenew";
+import ReplayIcon from "@mui/icons-material/Replay";
+import { Fragment, useState } from "react";
+import { Question } from "src/models/Question";
+import { CardSignalQuestion } from "../card/CardQuestion";
+import { ReportModal } from "../modal/ReportModal";
+import { useAuth } from "src/context/AuthProviderSupabase";
+
 interface Props {
   game: DuelGame;
   elo?: Elo;
+  questions: Array<Question>;
 }
 
-export const EndDuelGameBlock = ({ game, elo }: Props) => {
+export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { uuid } = useUser();
+  const { user } = useAuth();
+
+  const [question, setQuestion] = useState<Question | undefined>(undefined);
 
   const isPlayer1 = game.player1.id === uuid;
   const hasWin = isPlayer1
@@ -43,9 +54,20 @@ export const EndDuelGameBlock = ({ game, elo }: Props) => {
     });
   };
 
+  const playDuel = async () => {
+    if (user) {
+      if (uuid) {
+        const { data } = await matchmakingDuelGame(uuid, game.theme.id);
+        navigate(`/duel/${data.uuid}`);
+      }
+    } else {
+      navigate(`/login`);
+    }
+  };
+
   return (
-    <Box sx={{ pt: 3, pr: 1, pl: 1 }}>
-      <Grid container spacing={2}>
+    <Box sx={{ mb: px(180) }}>
+      <Grid container spacing={1}>
         <Grid
           item
           xs={12}
@@ -189,40 +211,90 @@ export const EndDuelGameBlock = ({ game, elo }: Props) => {
           </Box>
         </Grid>
         <Grid item xs={12}>
-          <ButtonColor
-            value={Colors.red}
-            label={t("commun.revenge")}
-            icon={OfflineBoltIcon}
-            onClick={() => revenge()}
-            variant="contained"
+          <Divider
+            sx={{
+              borderBottomWidth: 5,
+              borderColor: Colors.white,
+              borderRadius: px(5),
+            }}
           />
         </Grid>
-        <Grid item xs={12}>
-          <ButtonColor
-            value={Colors.blue}
-            label={t("commun.changetheme")}
-            icon={AutorenewIcon}
-            onClick={() =>
-              navigate("/play", {
-                state: {
-                  opponent: isPlayer1 ? game.player2 : game.player1,
-                  theme: game.theme,
-                },
-              })
-            }
-            variant="contained"
-          />
+        <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <Typography variant="h1" color="text.secondary">
+            {t("commun.questions")}
+          </Typography>
         </Grid>
-        <Grid item xs={12}>
-          <ButtonColor
-            value={Colors.green}
-            label={t("commun.returnhome")}
-            icon={HomeIcon}
-            onClick={() => navigate("/")}
-            variant="contained"
-          />
-        </Grid>
+        {questions.map((el) => (
+          <Fragment key={el.id}>
+            <Grid item xs={12}>
+              <CardSignalQuestion
+                question={el}
+                report={() => setQuestion(el)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Divider
+                sx={{
+                  borderBottomWidth: 3,
+                  borderColor: Colors.white,
+                  borderRadius: px(5),
+                }}
+              />
+            </Grid>
+          </Fragment>
+        ))}
       </Grid>
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+        }}
+      >
+        <Container
+          maxWidth="lg"
+          sx={{
+            backgroundColor: Colors.black,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              gap: 1,
+              p: 1,
+              flexDirection: "column",
+            }}
+          >
+            <ButtonColor
+              value={Colors.red}
+              label={t("commun.replay")}
+              icon={ReplayIcon}
+              onClick={() => playDuel()}
+              variant="contained"
+            />
+            <ButtonColor
+              value={Colors.blue}
+              label={t("commun.revenge")}
+              icon={OfflineBoltIcon}
+              onClick={() => revenge()}
+              variant="contained"
+            />
+            <ButtonColor
+              value={Colors.green}
+              label={t("commun.returnhome")}
+              icon={HomeIcon}
+              onClick={() => navigate("/")}
+              variant="contained"
+            />
+          </Box>
+        </Container>
+      </Box>
+      <ReportModal
+        open={question !== undefined}
+        close={() => setQuestion(undefined)}
+        question={question}
+      />
     </Box>
   );
 };

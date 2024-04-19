@@ -60,7 +60,7 @@ export const BottomNavigationBlock = () => {
           component={Link}
           to={"/people"}
         />
-        <BottomNavigationAction value={""} label={""} />
+        <BottomNavigationAction value={""} label={"ddd"} />
 
         <BottomNavigationAction
           value={"profil"}
