@@ -67,7 +67,9 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
       sx={{
         width: percent(100),
         flexGrow: 1,
+        flex: "1 1 0",
         display: "flex",
+        minHeight: 0,
         flexDirection: "column",
         alignItems: "center",
         textAlign: "center",
@@ -84,7 +86,16 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
             value={question.question}
           />
           {question.image && (
-            <Box sx={{ flexGrow: 1, width: percent(100) }}>
+            <Box
+              sx={{
+                flexGrow: 1,
+                flex: "1 1 0",
+                minHeight: 0,
+                display: "flex",
+                flexDirection: "column",
+                width: percent(100),
+              }}
+            >
               <ImageQuestionBlock src={question.image} />
             </Box>
           )}
@@ -112,15 +123,17 @@ export const QuestionDuelBlock = ({ question }: PropsDuel) => {
   return (
     <Box
       sx={{
-        p: 1,
         width: percent(100),
         flexGrow: 1,
+        flex: "1 1 0",
         display: "flex",
+        minHeight: 0,
         flexDirection: "column",
         alignItems: "center",
         textAlign: "center",
         justifyContent: "center",
         gap: 1,
+        p: 1,
       }}
     >
       {question ? (
@@ -132,7 +145,16 @@ export const QuestionDuelBlock = ({ question }: PropsDuel) => {
             value={question.question}
           />
           {question.image && (
-            <Box sx={{ flexGrow: 1, width: percent(100) }}>
+            <Box
+              sx={{
+                flexGrow: 1,
+                flex: "1 1 0",
+                minHeight: 0,
+                display: "flex",
+                flexDirection: "column",
+                width: percent(100),
+              }}
+            >
               <ImageQuestionBlock src={question.image} />
             </Box>
           )}

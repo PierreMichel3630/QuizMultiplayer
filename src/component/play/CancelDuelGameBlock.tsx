@@ -6,12 +6,12 @@ import { DuelGame } from "src/models/DuelGame";
 import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
-import { AvatarAccount } from "../avatar/AvatarAccount";
+import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 
 import BoltIcon from "@mui/icons-material/Bolt";
 import HomeIcon from "@mui/icons-material/Home";
-import { ButtonColor } from "../Button";
 import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
+import { ButtonColor } from "../Button";
 import { LabelRankBlock } from "../RankBlock";
 
 interface Props {
@@ -64,14 +64,21 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
             gap: 1,
           }}
         >
-          <AvatarAccount
-            avatar={game.player1.avatar}
+          <AvatarAccountBadge
+            profile={game.player1}
             size={80}
             color={COLORDUEL1}
           />
           <Typography variant="h4" sx={{ color: COLORDUEL1 }}>
             {game.player1.username}
           </Typography>
+          {game.player1.title && (
+            <JsonLanguageBlock
+              variant="caption"
+              color="text.secondary"
+              value={game.player1.title.name}
+            />
+          )}
           <LabelRankBlock player={game.player1.id} theme={game.theme.id} />
         </Grid>
         <Grid
@@ -95,14 +102,21 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
             gap: 1,
           }}
         >
-          <AvatarAccount
-            avatar={game.player2.avatar}
+          <AvatarAccountBadge
+            profile={game.player2}
             size={80}
             color={COLORDUEL2}
           />
           <Typography variant="h4" sx={{ color: COLORDUEL2 }}>
             {game.player2.username}
           </Typography>
+          {game.player2.title && (
+            <JsonLanguageBlock
+              variant="caption"
+              color="text.secondary"
+              value={game.player2.title.name}
+            />
+          )}
           <LabelRankBlock player={game.player2.id} theme={game.theme.id} />
         </Grid>
         <Grid item xs={12}>

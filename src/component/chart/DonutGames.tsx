@@ -1,20 +1,25 @@
+import { Grid, Paper, Typography } from "@mui/material";
+import { px } from "csx";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useUser } from "src/context/UserProvider";
 import { Score } from "src/models/Score";
-import { sortByValue } from "src/utils/sort";
-import { DonutChart } from "./DonutChart";
-import { Paper, Grid, Typography } from "@mui/material";
-import { useMemo, useState } from "react";
 import { Colors } from "src/style/Colors";
+import { sortByDuelGamesDesc, sortByGamesDesc } from "src/utils/sort";
 import { ToogleButtonCard } from "../ToogleButton";
-import { px } from "csx";
+import { DonutChart } from "./DonutChart";
+import { BarVictory } from "./BarVictory";
 
 interface Props {
   scores: Array<Score>;
+  totalScore: { victory: number; draw: number; defeat: number };
+  totalSolo: number;
 }
-export const DonutGames = ({ scores }: Props) => {
+export const DonutGames = ({ scores, totalScore, totalSolo }: Props) => {
   const { t } = useTranslation();
   const { language } = useUser();
+
+  const MAXVALUEDISPLAY = 5;
 
   const [type, setType] = useState<"solo" | "duel">("solo");
   const types = [
@@ -24,36 +29,66 @@ export const DonutGames = ({ scores }: Props) => {
 
   const dataSolo = useMemo(
     () =>
-      scores
-        .map((score) => {
-          const label = score.theme.name[language.iso]
-            ? score.theme.name[language.iso]
-            : score.theme.name["fr-FR"];
-          return {
-            name: label,
-            value: score ? score.games : 0,
-            color: score.theme.color,
-          };
-        })
-        .sort(sortByValue),
-    [scores, language.iso]
+      scores.sort(sortByGamesDesc).reduce(
+        (acc, score, index) => {
+          if (index + 1 <= MAXVALUEDISPLAY) {
+            const label = score.theme.name[language.iso]
+              ? score.theme.name[language.iso]
+              : score.theme.name["fr-FR"];
+            return [
+              ...acc,
+              {
+                name: label,
+                value: score ? score.games : 0,
+                color: score.theme.color,
+              },
+            ];
+          } else {
+            const other = { ...acc[0], value: acc[0].value + score.games };
+            return [other, ...acc.filter((el, index) => index !== 0)];
+          }
+        },
+        [
+          {
+            name: t("commun.others"),
+            value: 0,
+            color: Colors.black,
+          },
+        ]
+      ),
+    [scores, t, language.iso]
   );
 
   const dataDuel = useMemo(
     () =>
-      scores
-        .map((score) => {
-          const label = score.theme.name[language.iso]
-            ? score.theme.name[language.iso]
-            : score.theme.name["fr-FR"];
-          return {
-            name: label,
-            value: score ? score.duelgames : 0,
-            color: score.theme.color,
-          };
-        })
-        .sort(sortByValue),
-    [scores, language.iso]
+      scores.sort(sortByDuelGamesDesc).reduce(
+        (acc, score, index) => {
+          if (index + 1 <= MAXVALUEDISPLAY) {
+            const label = score.theme.name[language.iso]
+              ? score.theme.name[language.iso]
+              : score.theme.name["fr-FR"];
+            return [
+              ...acc,
+              {
+                name: label,
+                value: score ? score.duelgames : 0,
+                color: score.theme.color,
+              },
+            ];
+          } else {
+            const other = { ...acc[0], value: acc[0].value + score.duelgames };
+            return [other, ...acc.filter((el, index) => index !== 0)];
+          }
+        },
+        [
+          {
+            name: t("commun.others"),
+            value: 0,
+            color: Colors.black,
+          },
+        ]
+      ),
+    [scores, t, language.iso]
   );
 
   const data = useMemo(
@@ -103,9 +138,43 @@ export const DonutGames = ({ scores }: Props) => {
           xs={12}
           sx={{
             backgroundColor: Colors.grey,
+            display: "flex",
+            p: 1,
           }}
         >
-          <DonutChart data={data.filter((el) => el.value !== 0)} />
+          <Grid container spacing={1}>
+            {type === "duel" ? (
+              <>
+                <Grid item xs={12} sx={{ textAlign: "center" }}>
+                  <Typography variant="body1" component="span">
+                    {t("commun.games")} {" : "}
+                  </Typography>
+                  <Typography variant="h4" component="span">
+                    {totalScore.victory + totalScore.draw + totalScore.defeat}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <BarVictory
+                    victory={totalScore.victory}
+                    draw={totalScore.draw}
+                    defeat={totalScore.defeat}
+                  />
+                </Grid>
+              </>
+            ) : (
+              <Grid item xs={12} sx={{ textAlign: "center" }}>
+                <Typography variant="body1" component="span">
+                  {t("commun.games")} {" : "}
+                </Typography>
+                <Typography variant="h4" component="span">
+                  {totalSolo}
+                </Typography>
+              </Grid>
+            )}
+            <Grid item xs={12}>
+              <DonutChart data={data.filter((el) => el.value !== 0)} />
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </Paper>

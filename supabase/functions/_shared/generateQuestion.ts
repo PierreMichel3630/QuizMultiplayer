@@ -4,12 +4,13 @@ import {
   randomIntFromInterval,
 } from "./random.ts";
 
-export const GENERATETHEME = [37];
-
 export const generateQuestion = (theme: number, difficulty?: string) => {
   let question: any = undefined;
   switch (theme) {
     case 37:
+      question = generateQuestionMath(theme, difficulty);
+      break;
+    case 41:
       question = generateQuestionMath(theme, difficulty);
       break;
     default:

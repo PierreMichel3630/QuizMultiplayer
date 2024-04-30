@@ -1,6 +1,5 @@
 import {
   AppBar,
-  Box,
   Dialog,
   DialogContent,
   Grid,
@@ -160,28 +159,16 @@ export const ReportModal = ({ open, close, question }: Props) => {
               }}
             />
           </Grid>
+          <Grid item xs={12}>
+            <ButtonColor
+              value={Colors.green}
+              label={t("commun.validate")}
+              icon={DoneOutlineIcon}
+              onClick={() => validate()}
+              variant="contained"
+            />
+          </Grid>
         </Grid>
-        <Box
-          sx={{
-            position: "fixed",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            display: "flex",
-            gap: 1,
-            p: 1,
-            flexDirection: "column",
-            backgroundColor: Colors.black,
-          }}
-        >
-          <ButtonColor
-            value={Colors.green}
-            label={t("commun.validate")}
-            icon={DoneOutlineIcon}
-            onClick={() => validate()}
-            variant="contained"
-          />
-        </Box>
       </DialogContent>
     </Dialog>
   );

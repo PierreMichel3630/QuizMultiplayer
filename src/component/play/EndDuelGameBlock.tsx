@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useUser } from "src/context/UserProvider";
 import { DuelGame } from "src/models/DuelGame";
 import { Colors } from "src/style/Colors";
-import { AvatarAccount } from "../avatar/AvatarAccount";
+import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 
 import BoltIcon from "@mui/icons-material/Bolt";
 import HomeIcon from "@mui/icons-material/Home";
@@ -19,10 +19,10 @@ import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { Fragment, useState } from "react";
+import { useAuth } from "src/context/AuthProviderSupabase";
 import { Question } from "src/models/Question";
 import { CardSignalQuestion } from "../card/CardQuestion";
 import { ReportModal } from "../modal/ReportModal";
-import { useAuth } from "src/context/AuthProviderSupabase";
 
 interface Props {
   game: DuelGame;
@@ -111,8 +111,8 @@ export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
             <Typography variant="h2" sx={{ color: COLORDUEL1, fontSize: 35 }}>
               {game.ptsplayer1}
             </Typography>
-            <AvatarAccount
-              avatar={game.player1.avatar}
+            <AvatarAccountBadge
+              profile={game.player1}
               size={80}
               color={COLORDUEL1}
             />
@@ -121,31 +121,40 @@ export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
             <Typography variant="h4" sx={{ color: COLORDUEL1 }}>
               {game.player1.username}
             </Typography>
-            {elo && (
-              <>
-                <Typography
-                  variant="h6"
-                  component="span"
-                  color="text.secondary"
-                >
-                  {elo.eloPlayer1} {t("commun.points")}
-                </Typography>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color:
-                      elo.delta === 0
-                        ? Colors.white
-                        : elo.delta > 0
-                        ? Colors.green
-                        : Colors.red,
-                  }}
-                  component="span"
-                >
-                  {` (${elo.delta > 0 ? "+" : ""}${elo.delta})`}
-                </Typography>
-              </>
+            {game.player1.title && (
+              <JsonLanguageBlock
+                variant="caption"
+                color="text.secondary"
+                value={game.player1.title.name}
+              />
             )}
+            <Box>
+              {elo && (
+                <>
+                  <Typography
+                    variant="h6"
+                    component="span"
+                    color="text.secondary"
+                  >
+                    {elo.eloPlayer1} {t("commun.points")}
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      color:
+                        elo.delta === 0
+                          ? Colors.white
+                          : elo.delta > 0
+                          ? Colors.green
+                          : Colors.red,
+                    }}
+                    component="span"
+                  >
+                    {` (${elo.delta > 0 ? "+" : ""}${elo.delta})`}
+                  </Typography>
+                </>
+              )}
+            </Box>
           </Box>
         </Grid>
         <Grid
@@ -170,8 +179,8 @@ export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
           }}
         >
           <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-            <AvatarAccount
-              avatar={game.player2.avatar}
+            <AvatarAccountBadge
+              profile={game.player2}
               size={80}
               color={COLORDUEL2}
             />
@@ -183,31 +192,40 @@ export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
             <Typography variant="h4" sx={{ color: COLORDUEL2 }}>
               {game.player2.username}
             </Typography>
-            {elo && (
-              <>
-                <Typography
-                  variant="h6"
-                  component="span"
-                  color="text.secondary"
-                >
-                  {elo.eloPlayer2} {t("commun.points")}
-                </Typography>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color:
-                      elo.delta === 0
-                        ? Colors.white
-                        : -elo.delta > 0
-                        ? Colors.green
-                        : Colors.red,
-                  }}
-                  component="span"
-                >
-                  {` (${-elo.delta > 0 ? "+" : ""}${-elo.delta})`}
-                </Typography>
-              </>
+            {game.player2.title && (
+              <JsonLanguageBlock
+                variant="caption"
+                color="text.secondary"
+                value={game.player2.title.name}
+              />
             )}
+            <Box>
+              {elo && (
+                <>
+                  <Typography
+                    variant="h6"
+                    component="span"
+                    color="text.secondary"
+                  >
+                    {elo.eloPlayer2} {t("commun.points")}
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      color:
+                        elo.delta === 0
+                          ? Colors.white
+                          : -elo.delta > 0
+                          ? Colors.green
+                          : Colors.red,
+                    }}
+                    component="span"
+                  >
+                    {` (${-elo.delta > 0 ? "+" : ""}${-elo.delta})`}
+                  </Typography>
+                </>
+              )}
+            </Box>
           </Box>
         </Grid>
         <Grid item xs={12}>

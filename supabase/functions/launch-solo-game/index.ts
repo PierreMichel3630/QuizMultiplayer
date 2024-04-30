@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
     await supabase.functions.invoke("response-solo-game", {
       body: { game: data.id },
     });
-  }, 3000);
+  }, 1000);
   return new Response(JSON.stringify(data), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
     status: 200,

@@ -9,6 +9,7 @@ const stopwords = [
   "l'",
   "de",
   "des",
+  "du",
   "un",
   "une",
   "ce",
@@ -35,17 +36,18 @@ const compareString = (a: string, b: string) =>
     normalizeString(b.toString().toLowerCase())
   );
 
-export const verifyResponse = (response: string | number, value: string) => {
+export const verifyResponse = (
+  response: Array<string> | number,
+  value: string
+) => {
   let result = false;
   if (Array.isArray(response)) {
-    result = (response as Array<string>).reduce((acc: boolean, b: string) => {
+    result = response.reduce((acc: boolean, b: string) => {
       const val = compareString(b, value) >= LIMIT;
       return acc || val;
     }, false);
   } else {
-    result = Number.isInteger(response)
-      ? response === Number(value)
-      : compareString(response as string, value) >= LIMIT;
+    result = Number(response) === Number(value);
   }
   return result;
 };

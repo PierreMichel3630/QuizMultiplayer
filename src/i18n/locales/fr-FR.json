@@ -40,6 +40,7 @@
     "avatar": "Avatar",
     "myparameters": "Mes Paramètres",
     "username": "Pseudonyme",
+    "add": "Ajouter",
     "addfriend": "Ajouter un amis",
     "waitinvitation": "Invitations en attente",
     "searchfriend": "Rechercher un ami via son nom d'utilisateur",
@@ -55,6 +56,7 @@
     "noresultfriends": "Aucun ami.",
     "myrecord": "Best",
     "hi": "Bonjour",
+    "deleteaccountmessage": "Attention vous êtes sur le point de supprimer votre compte, cette action est définitive et immédiate, tous vos informations personnelles, ainsi que vos classements, records, ... seront supprimé.",
     "mystatistics": "Mes Statistiques",
     "gamesplay": "Parties jouées",
     "playsolo": "Jouer en solo",
@@ -67,6 +69,7 @@
     "join": "Rejoindre",
     "refuse": "Refuser",
     "delete": "Supprimer",
+    "deleteaccount": "Supprimer mon compte",
     "challenge": "{{username}} vous défie !",
     "unknown": "inconnu",
     "waitplayer": "En attente du deuxième joueur",
@@ -123,7 +126,55 @@
     "selecttypeerror": "Veuillez sélectionner un type d'erreur",
     "descriptionerror": "Description de l'erreur",
     "placeholderdescriptionerror": "Veuillez donner des informations afin de résoudre le problème.",
-    "replay": "Rejouer"
+    "replay": "Rejouer",
+    "edittheme": "Modifier un thème",
+    "addtheme": "Ajouter un thème",
+    "addquestion": "Ajouter une question",
+    "addlanguage": "Ajouter une langue",
+    "removelanguage": "Supprimer la langue",
+    "editquestion": "Modifier une question",
+    "selecttheme": "Sélectionner un thème",
+    "selectlanguage": "Sélectionner une langue",
+    "selectcategory": "Sélectionner une catégorie",
+    "category": "Catégorie",
+    "edit": "Modifier",
+    "language": "Langue",
+    "others": "Autres",
+    "myaccomplishments": "Mes succès",
+    "reward": "Récompense",
+    "title": "Titre",
+    "titles": "Titres",
+    "badge": "Badge",
+    "badges": "Badges",
+    "percentsuccess": "% réussite",
+    "rankingby": "Classé par",
+    "personalizedprofile": "Personnaliser votre profil",
+    "selecttitle": "Sélectionner un titre",
+    "launchpartie": "La partie va commencer",
+    "menus": "Menus",
+    "reportpropose": "Signaler un problème/ Proposer amélioration",
+    "signalproblemtext": "Vous pouvez signaler des problèmes techniques, proposer des questions ou thèmes en rejoignant le Discord.",
+    "joindiscord": "Rejoindre Discord",
+    "pertheme": "Par thème",
+    "global": "Global"
+  },
+  "accomplishment": {
+    "SOLO": "Succès Mode Solo",
+    "DUEL": "Succès Mode Duel",
+    "SOCIAL": "Succès Social"
+  },
+  "ranking": {
+    "games": "Nombre de parties Solo",
+    "gamestenpts": "Nombre de parties Solo + 10 points",
+    "gamestwentypts": "Nombre de parties Solo + 20 points",
+    "gamesfiftypts": "Nombre de parties Solo + 50 points",
+    "gameshundredpts": "Nombre de parties Solo + 100 points",
+    "themetenpts": "Thèmes +10 points",
+    "themetwentypts": "Thèmes +20 points",
+    "duelgames": "Nombre de parties Duel",
+    "victoryduel": "Nombre de victoires en Duel",
+    "drawduel": "Nombre de matchs nuls en Duel",
+    "defeatduel": "Nombre de défaites en Duel"
   },
   "rules": {
     "step1": "Choisissez un thème",
@@ -135,6 +186,18 @@
   "pages": {
     "home": {
       "title": "Accueil"
+    },
+    "menu": {
+      "title": "Menus"
+    },
+    "report": {
+      "title": "Signaler un problème"
+    },
+    "perzonalised": {
+      "title": "Personnalisé votre profil"
+    },
+    "accomplishments": {
+      "title": "Mes récompenses"
     },
     "favorite": {
       "title": "Favoris"
@@ -231,6 +294,31 @@
       "passwordmatch": "Les mots de passe doivent correspondre",
       "requiredpassword": "Veuillez saisir un mot de passe",
       "minpassword": "Veuillez saisir un mot de passe de plus de 6 caractères"
+    },
+    "createtheme": {
+      "namefr": "Nom en Français *",
+      "nameen": "Nom en Anglais *",
+      "color": "Couleur",
+      "logo": "Logo",
+      "background": "Image de fond",
+      "requirednameen": "Veuillez saisir un nom de thème en anglais",
+      "requirednamefr": "Veuillez saisir un nom de thème en français"
+    },
+    "createquestion": {
+      "question": "Question *",
+      "response": "Réponse *",
+      "language": "Langue *",
+      "typeResponse": "Type Réponse",
+      "image": "Image",
+      "requiredquestionfr": "Veuillez saisir une question",
+      "requiredresponsefr": "Veuillez saisir une réponse",
+      "requiredtyperesponse": "Veuillez saisir un type de réponse"
+    }
+  },
+  "input": {
+    "dragdrop": {
+      "drophere": "Déposer ici",
+      "text": "Cliquer ou Glisser pour ajouter une image"
     }
   },
   "modal": {
@@ -241,6 +329,7 @@
     "selectadv": "Sélectionner un adversaire"
   },
   "alert": {
+    "noresult": "Aucun résultat.",
     "allresponseanswer": "Vous avez répondu à toutes les question du thème.",
     "nofriend": "Aucune demande d'ami.",
     "nogame": "Aucun duel en cours.",
@@ -249,6 +338,8 @@
     "addfavorite": "Votre ajout a été pris en compte.",
     "deletefavorite": "Votre suppression a été pris en compte.",
     "updateavatarsuccess": "Votre modification d'avatar à été pris en compte.",
+    "updatebadgesuccess": "Votre modification de badge à été pris en compte.",
+    "updatetitlesuccess": "Votre modification de titre à été pris en compte.",
     "updateorigincountrysuccess": "Votre modification de pays à été pris en compte.",
     "updateusernamesuccess": "Votre modification de pseudonyme à été pris en compte.",
     "updatecolorsuccess": "Votre modification de couleur à été pris en compte.",
@@ -256,5 +347,24 @@
     "validatefriendrequest": "Demande d'ami validée.",
     "refusefriendrequest": "Demande d'ami refusée.",
     "updateemailsuccess": "Votre modification d'addresse mail est en cours. Veuillez confirmer sur votre ancien et nouveau email."
+  },
+  "confidentiality": {
+    "title": "Règles de confidentialité",
+    "rules1": {
+      "title": "Données personnelles",
+      "text": "QuizBattle collecte votre adresse email afin de vous authentifiez mais celle-ci reste confidentiel et n'est pas affiché à d'autre utilisateur. Vous pouvez personnaliser votre profil en ajoutant votre pays d'origine, et un identifiant ces informations seront publique au sein de l'application."
+    },
+    "rules2": {
+      "title": "Données sauvegardées",
+      "text": "QuizBattle sauvegarde l'ensemble des résultats de vos parties Solo et Duel afin d'afficher vos statistiques sur votre profil et calculer votre classement."
+    },
+    "rules3": {
+      "title": "Achats",
+      "text": "QuizBattle est 100% gratuite et n'utilise aucun achat en ligne."
+    },
+    "rules4": {
+      "title": "Contact",
+      "text": "Pour toutes plaintes, questions ou idées, vous pouvez utiliser l'adresse mail suivante: pierremichel804@gmail.com"
+    }
   }
 }

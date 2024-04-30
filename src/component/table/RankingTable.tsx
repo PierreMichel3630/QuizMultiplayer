@@ -16,13 +16,14 @@ import rank2 from "src/assets/rank/rank2.png";
 import rank3 from "src/assets/rank/rank3.png";
 import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
+import { useMemo } from "react";
 
 export interface DataRanking {
   profile: Profile;
   value: number;
 }
 export interface DataRankingMe extends DataRanking {
-  rank: number;
+  rank?: number;
 }
 interface Props {
   data: Array<DataRanking>;
@@ -52,6 +53,11 @@ export const RankingTable = ({ data, me }: Props) => {
     return icon;
   };
 
+  const isMeDisplay = useMemo(() => {
+    const profileId = data.map((el) => el.profile.id);
+    return me && profileId.includes(me.profile.id);
+  }, [me, data]);
+
   return (
     <TableContainer
       component={Paper}
@@ -73,7 +79,7 @@ export const RankingTable = ({ data, me }: Props) => {
                 {getIcon(index + 1)}
               </TableCell>
               <TableCell sx={{ p: px(4) }}>
-                <AvatarAccount avatar={el.profile.avatar} size={30} />
+                <AvatarAccount avatar={el.profile.avatar.icon} size={30} />
               </TableCell>
               <TableCell align="left" sx={{ p: px(4) }}>
                 <Typography variant="h6" color="text.primary">
@@ -87,15 +93,15 @@ export const RankingTable = ({ data, me }: Props) => {
               </TableCell>
             </TableRow>
           ))}
-          {me && me.rank > 5 && (
+          {me && !isMeDisplay && (
             <TableRow
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell align="left" sx={{ p: px(4) }}>
-                {getIcon(me.rank)}
+                {me.rank ? getIcon(me.rank) : "-"}
               </TableCell>
               <TableCell sx={{ p: px(4) }}>
-                <AvatarAccount avatar={me.profile.avatar} size={30} />
+                <AvatarAccount avatar={me.profile.avatar.icon} size={30} />
               </TableCell>
               <TableCell align="left" sx={{ p: px(4) }}>
                 <Typography variant="h6" color="text.primary">

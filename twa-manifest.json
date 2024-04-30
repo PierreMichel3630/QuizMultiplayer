@@ -1,0 +1,43 @@
+{
+  "packageId": "app.web.quizup_v2.twa",
+  "host": "quizup-v2.web.app",
+  "name": "QuizBattle",
+  "launcherName": "QuizBattle",
+  "display": "standalone",
+  "themeColor": "#171717",
+  "themeColorDark": "#000000",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#F0E7DB",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://quizup-v2.web.app/maskable.png",
+  "maskableIconUrl": "https://quizup-v2.web.app/maskable.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "D:\\Developpement\\QuizMultiplayer\\android.keystore",
+    "alias": "android"
+  },
+  "appVersionName": "1.0.1",
+  "appVersionCode": 2,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://quizup-v2.web.app/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://quizup-v2.web.app/",
+  "minSdkVersion": 19,
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "appVersion": "1.0.1"
+}

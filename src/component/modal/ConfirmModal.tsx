@@ -1,4 +1,11 @@
-import { Button, Dialog, DialogContent, Grid, Typography } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Dialog,
+  DialogContent,
+  Grid,
+  Typography,
+} from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -6,12 +13,19 @@ import CheckIcon from "@mui/icons-material/Check";
 
 interface Props {
   title: string;
+  text?: string;
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
 }
 
-export const ConfirmDialog = ({ open, title, onClose, onConfirm }: Props) => {
+export const ConfirmDialog = ({
+  open,
+  title,
+  text,
+  onClose,
+  onConfirm,
+}: Props) => {
   const { t } = useTranslation();
   return (
     <Dialog open={open} onClose={onClose}>
@@ -20,6 +34,13 @@ export const ConfirmDialog = ({ open, title, onClose, onConfirm }: Props) => {
           <Grid item xs={12} sx={{ textAlign: "center" }}>
             <Typography variant="h2">{title}</Typography>
           </Grid>
+          {text && (
+            <Grid item xs={12}>
+              <Alert severity="warning">
+                <Typography variant="h6">{text}</Typography>
+              </Alert>
+            </Grid>
+          )}
           <Grid item xs={6}>
             <Button
               fullWidth

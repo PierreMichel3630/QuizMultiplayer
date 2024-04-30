@@ -1,49 +1,31 @@
 import { Avatar, Grid } from "@mui/material";
-import { AVATARS } from "./Avatar";
+import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { Avatar as AvatarInterface } from "src/models/Avatar";
 
 interface Props {
-  selected: string | null;
-  onSelect: (value: string | null) => void;
+  onSelect: (value: AvatarInterface) => void;
 }
 
-export const AvatarSelector = ({ selected, onSelect }: Props) => {
-  const { user } = useAuth();
-
-  const avatarExternal =
-    user && user.user_metadata.avatar_url
-      ? user.user_metadata.avatar_url
-      : undefined;
+export const AvatarSelector = ({ onSelect }: Props) => {
+  const { profile } = useAuth();
+  const { avatars } = useApp();
 
   return (
     <Grid container spacing={1}>
-      {avatarExternal && (
-        <Grid item>
-          <Avatar
-            sx={{
-              cursor: "pointer",
-              border: selected === avatarExternal ? "5px solid green" : "none",
-              width: selected === avatarExternal ? 55 : 50,
-              height: selected === avatarExternal ? 55 : 50,
-            }}
-            src={avatarExternal}
-            onClick={() => onSelect(avatarExternal ?? null)}
-          />
-        </Grid>
-      )}
-      {AVATARS.map((avatar, index) => {
-        const stringIndex = index.toString();
+      {avatars.map((avatar) => {
+        const isSelect = profile && profile.avatar.id === avatar.id;
         return (
-          <Grid item key={index}>
+          <Grid item key={avatar.id}>
             <Avatar
               sx={{
                 cursor: "pointer",
-                border: selected === stringIndex ? "5px solid green" : "none",
-                width: selected === stringIndex ? 55 : 50,
-                height: selected === stringIndex ? 55 : 50,
+                border: isSelect ? "5px solid green" : "5px solid white",
+                width: 60,
+                height: 60,
               }}
-              src={avatar}
-              onClick={() => onSelect(stringIndex)}
+              src={avatar.icon}
+              onClick={() => onSelect(avatar)}
             />
           </Grid>
         );

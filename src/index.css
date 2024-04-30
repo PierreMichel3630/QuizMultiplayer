@@ -16,6 +16,9 @@ body::after {
   left: 0;
   bottom: 0;
 }*/
+.MuiSelect-select {
+  padding: 10px !important;
+}
 .MuiContainer-root {
   padding: 0 !important;
 }

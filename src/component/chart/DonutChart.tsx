@@ -13,7 +13,7 @@ interface Props {
 
 export const DonutChart = ({ data }: Props) => {
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={200}>
       <PieChart>
         <Pie
           data={data}
@@ -22,9 +22,9 @@ export const DonutChart = ({ data }: Props) => {
           cx="50%"
           cy="50%"
           stroke="none"
-          innerRadius={50}
-          outerRadius={120}
-          paddingAngle={5}
+          innerRadius={40}
+          outerRadius={80}
+          paddingAngle={2}
           cornerRadius={5}
           label={renderCustomizedLabel}
           labelLine={false}
@@ -35,7 +35,7 @@ export const DonutChart = ({ data }: Props) => {
           <LabelList
             dataKey="name"
             position="outside"
-            fontSize={18}
+            fontSize={12}
             fontWeight={700}
           />
         </Pie>
@@ -65,7 +65,7 @@ const renderCustomizedLabel = ({
       y={y}
       fill="white"
       fontWeight={700}
-      fontSize={16}
+      fontSize={14}
       textAnchor="middle"
       dominantBaseline="central"
     >

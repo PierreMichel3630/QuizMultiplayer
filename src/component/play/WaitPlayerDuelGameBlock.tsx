@@ -2,16 +2,17 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import { percent } from "csx";
 import { DuelGame } from "src/models/DuelGame";
 import { Colors } from "src/style/Colors";
-import { AvatarAccount } from "../avatar/AvatarAccount";
 import { StatusPlayerGame } from "../StatusPlayer";
+import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 
 import BoltIcon from "@mui/icons-material/Bolt";
-import { CountryBlock } from "../CountryBlock";
-import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
-import { MyRank } from "src/models/Rank";
-import { LabelRankBlock } from "../RankBlock";
-import { LoadingDot } from "../Loading";
 import { useTranslation } from "react-i18next";
+import { MyRank } from "src/models/Rank";
+import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
+import { CountryBlock } from "../CountryBlock";
+import { LoadingDot } from "../Loading";
+import { LabelRankBlock } from "../RankBlock";
+import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 interface Props {
   game: DuelGame;
@@ -41,8 +42,8 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           borderBottom: "5px solid white",
         }}
       >
-        <AvatarAccount
-          avatar={game.player1.avatar}
+        <AvatarAccountBadge
+          profile={game.player1}
           size={100}
           color={Colors.white}
         />
@@ -50,6 +51,13 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           <Typography variant="h2" color="text.secondary">
             {game.player1.username}
           </Typography>
+          {game.player1.title && (
+            <JsonLanguageBlock
+              variant="caption"
+              color="text.secondary"
+              value={game.player1.title.name}
+            />
+          )}
           <LabelRankBlock player={game.player1.id} theme={game.theme.id} />
           {game.player1.country && (
             <CountryBlock id={game.player1.country} color="text.secondary" />
@@ -112,6 +120,13 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
               <Typography variant="h2" color="text.secondary">
                 {game.player2.username}
               </Typography>
+              {game.player2.title && (
+                <JsonLanguageBlock
+                  variant="caption"
+                  color="text.secondary"
+                  value={game.player2.title.name}
+                />
+              )}
               <LabelRankBlock player={game.player2.id} theme={game.theme.id} />
               {game.player2.country && (
                 <CountryBlock
@@ -123,8 +138,8 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
                 ready={game.start || players.includes(game.player2.id)}
               />
             </Box>
-            <AvatarAccount
-              avatar={game.player2.avatar}
+            <AvatarAccountBadge
+              profile={game.player2}
               size={100}
               color={Colors.white}
             />

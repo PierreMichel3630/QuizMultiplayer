@@ -1,29 +1,39 @@
 import {
+  Badge,
   BottomNavigation,
   BottomNavigationAction,
   Box,
   Fab,
   Paper,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AppsIcon from "@mui/icons-material/Apps";
-import GroupsIcon from "@mui/icons-material/Groups";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import BoltIcon from "@mui/icons-material/Bolt";
+import GroupsIcon from "@mui/icons-material/Groups";
+import MenuIcon from "@mui/icons-material/Menu";
+import { padding, px } from "csx";
+import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
+import { FRIENDSTATUS } from "src/models/Friend";
 
 export const BottomNavigationBlock = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const { user } = useAuth();
+  const { friends } = useApp();
   const navigate = useNavigate();
 
   const [menu, setMenu] = useState(location.pathname.split("/")[1]);
+
+  const notifications = useMemo(
+    () => friends.filter((el) => el.status === FRIENDSTATUS.PROGRESS).length,
+    [friends]
+  );
 
   useEffect(() => {
     setMenu(location.pathname.split("/")[1]);
@@ -47,6 +57,7 @@ export const BottomNavigationBlock = () => {
         }}
       >
         <BottomNavigationAction
+          sx={{ p: padding(0, 5) }}
           value={""}
           label={t("commun.themes")}
           icon={<AppsIcon />}
@@ -54,15 +65,16 @@ export const BottomNavigationBlock = () => {
           to={"/"}
         />
         <BottomNavigationAction
+          sx={{ p: padding(0, 5) }}
           value={"people"}
           label={t("commun.people")}
           icon={<GroupsIcon />}
           component={Link}
           to={"/people"}
         />
-        <BottomNavigationAction value={""} label={"ddd"} />
-
+        <Box sx={{ width: px(60) }} />
         <BottomNavigationAction
+          sx={{ p: padding(0, 5) }}
           value={"profil"}
           label={t("commun.profile")}
           icon={<AccountCircleIcon />}
@@ -70,11 +82,16 @@ export const BottomNavigationBlock = () => {
           to={user ? `/profil/${user.id}` : "/login"}
         />
         <BottomNavigationAction
-          value={"notifications"}
-          label={t("commun.notifications")}
-          icon={<NotificationsIcon />}
+          sx={{ minWidth: "inherit", p: 0 }}
+          value={"menu"}
+          label={t("commun.menus")}
           component={Link}
-          to={"/notifications"}
+          icon={
+            <Badge badgeContent={notifications} color="error">
+              <MenuIcon />
+            </Badge>
+          }
+          to={"/menu"}
         />
         <Box
           sx={{

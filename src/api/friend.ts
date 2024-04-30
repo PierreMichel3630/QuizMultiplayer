@@ -9,7 +9,7 @@ export const insertFriend = (value: FriendInsert) =>
 export const getFirstFriend = () =>
   supabase
     .from(SUPABASE_FRIEND_TABLE)
-    .select("*, user1!inner(*), user2!inner(*)")
+    .select("*, user1(*), user2(*)")
     .eq("status", FRIENDSTATUS.VALID.toString())
     .limit(1);
 
@@ -17,11 +17,11 @@ export const selectFriend = (status?: FRIENDSTATUS) =>
   status !== undefined
     ? supabase
         .from(SUPABASE_FRIEND_TABLE)
-        .select("*, user1!inner(*), user2!inner(*)")
+        .select("*, user1(*, avatar(*)), user2(*, avatar(*))")
         .eq("status", status.toString())
     : supabase
         .from(SUPABASE_FRIEND_TABLE)
-        .select("*, user1!inner(*), user2!inner(*)");
+        .select("*, user1(*, avatar(*)), user2(*, avatar(*))");
 
 export const deleteFriendById = (id: string) =>
   supabase.from(SUPABASE_FRIEND_TABLE).delete().eq("id", id);

@@ -58,7 +58,7 @@ export const AccountBadge = ({ onClick }: Props) => {
         overlap="circular"
         variant="dot"
       >
-        <AvatarAccount avatar={profile.avatar} />
+        <AvatarAccount avatar={profile.avatar.icon} />
       </BadgeAccountActive>
     </div>
   ) : (

@@ -1,7 +1,8 @@
-import { IconButton, InputBase, Paper } from "@mui/material";
+import { IconButton, InputBase, Paper, TextField } from "@mui/material";
 import { percent } from "csx";
 
 import ClearIcon from "@mui/icons-material/Clear";
+import { useState } from "react";
 
 interface PropsBaseInput {
   value: string;
@@ -80,3 +81,28 @@ export const BasicSearchInput = ({
     )}
   </Paper>
 );
+
+interface PropsInputEnter {
+  label: string;
+  onChange: (value: string) => void;
+}
+
+export const InputEnter = ({ onChange, label }: PropsInputEnter) => {
+  const [value, setValue] = useState("");
+
+  return (
+    <TextField
+      value={value}
+      fullWidth
+      onChange={(event) => setValue(event.target.value)}
+      label={label}
+      onKeyPress={(ev) => {
+        if (ev.key === "Enter") {
+          onChange(value);
+          setValue("");
+          ev.preventDefault();
+        }
+      }}
+    />
+  );
+};

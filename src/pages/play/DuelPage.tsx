@@ -202,7 +202,7 @@ export const DuelPage = () => {
       <Box
         sx={{
           display: "flex",
-          flex: "1 1 0%",
+          flex: "1 1 0",
           flexDirection: "column",
           gap: 1,
         }}
@@ -213,7 +213,8 @@ export const DuelPage = () => {
               <Box
                 sx={{
                   display: "flex",
-                  flex: "1 1 0%",
+                  flex: "1 1 0",
+                  flexGrow: 1,
                   flexDirection: "column",
                   gap: 1,
                   p: 1,
@@ -232,7 +233,7 @@ export const DuelPage = () => {
                       }}
                     >
                       <AvatarAccount
-                        avatar={game.player1.avatar}
+                        avatar={game.player1.avatar.icon}
                         size={50}
                         color={COLORDUEL1}
                       />
@@ -293,7 +294,7 @@ export const DuelPage = () => {
                         </Typography>
                       </Box>
                       <AvatarAccount
-                        avatar={game.player2.avatar}
+                        avatar={game.player2.avatar.icon}
                         size={50}
                         color={COLORDUEL2}
                       />
@@ -303,6 +304,7 @@ export const DuelPage = () => {
                 <Box
                   sx={{
                     flexGrow: 1,
+                    flex: "1 1 0",
                     display: "flex",
                     flexDirection: "row",
                     gap: px(5),
@@ -321,11 +323,13 @@ export const DuelPage = () => {
                     sx={{
                       display: "flex",
                       flexGrow: 1,
+                      flex: "1 1 0",
                     }}
                   >
                     <Box
                       sx={{
                         flexGrow: 1,
+                        flex: "1 1 0",
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "flex-end",

@@ -21,7 +21,10 @@ import { useUser } from "src/context/UserProvider";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import SettingsIcon from "@mui/icons-material/Settings";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { useApp } from "src/context/AppProvider";
+import BrushIcon from "@mui/icons-material/Brush";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 const divCss = style({
   display: "flex",
@@ -50,6 +53,21 @@ export const AccountMenu = ({ user }: Props) => {
     profile && profile.isadmin
       ? [
           {
+            name: t("commun.personalizedprofile"),
+            icon: <BrushIcon />,
+            url: "/personalized",
+          },
+          {
+            name: t("commun.myaccomplishments"),
+            icon: <EmojiEventsIcon />,
+            url: "/accomplishments",
+          },
+          {
+            name: t("commun.notifications"),
+            icon: <NotificationsIcon />,
+            url: "/notifications",
+          },
+          {
             name: t("commun.myparameter"),
             icon: <SettingsIcon />,
             url: "/parameter",
@@ -57,10 +75,25 @@ export const AccountMenu = ({ user }: Props) => {
           {
             name: t("commun.administration"),
             icon: <AdminPanelSettingsIcon />,
-            url: "/administration",
+            url: "/administration/question",
           },
         ]
       : [
+          {
+            name: t("commun.personalizedprofile"),
+            icon: <BrushIcon />,
+            url: "/personalized",
+          },
+          {
+            name: t("commun.myaccomplishments"),
+            icon: <EmojiEventsIcon />,
+            url: "/accomplishments",
+          },
+          {
+            name: t("commun.notifications"),
+            icon: <NotificationsIcon />,
+            url: "/notifications",
+          },
           {
             name: t("commun.myparameter"),
             icon: <SettingsIcon />,
@@ -120,7 +153,7 @@ export const AccountMenu = ({ user }: Props) => {
               }}
             >
               <div className={divCss}>
-                <AvatarAccount avatar={profile.avatar} size={50} />
+                <AvatarAccount avatar={profile.avatar.icon} size={50} />
                 <div>
                   {profile && (
                     <Typography variant="h6">{profile.username}</Typography>

@@ -1,4 +1,4 @@
-import { QuestionUpdate } from "src/models/Question";
+import { QuestionInsert, QuestionUpdate } from "src/models/Question";
 import { supabase } from "./supabase";
 
 export const SUPABASE_QUESTION_TABLE = "question";
@@ -13,8 +13,8 @@ export const selectQuestionWithImage = () =>
 export const selectQuestionById = (id: number) =>
   supabase.from(SUPABASE_QUESTION_TABLE).select().eq("id", id).maybeSingle();
 
-export const selectQuestionByThemeAndDifficulty = (
-  theme: number,
+export const selectQuestionByThemesAndDifficulty = (
+  themes: Array<number>,
   page: number,
   itemperpage: number,
   difficulty?: string
@@ -23,14 +23,14 @@ export const selectQuestionByThemeAndDifficulty = (
     ? supabase
         .from(SUPABASE_QUESTION_TABLE)
         .select()
-        .eq("theme", theme)
+        .in("theme", themes)
         .eq("difficulty", difficulty)
         .order("id", { ascending: true })
         .range(page * itemperpage, (page + 1) * itemperpage)
     : supabase
         .from(SUPABASE_QUESTION_TABLE)
         .select()
-        .eq("theme", theme)
+        .in("theme", themes)
         .order("id", { ascending: true })
         .range(page * itemperpage, (page + 1) * itemperpage);
 
@@ -48,6 +48,9 @@ export const countQuestionByThemeAndDifficulty = (
         .from(SUPABASE_QUESTION_TABLE)
         .select("*", { count: "exact", head: true })
         .eq("theme", theme);
+
+export const insertQuestion = (value: QuestionInsert) =>
+  supabase.from(SUPABASE_QUESTION_TABLE).insert(value).select().single();
 
 export const updateQuestion = (value: QuestionUpdate) =>
   supabase

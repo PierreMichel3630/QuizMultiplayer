@@ -8,21 +8,22 @@ import DoneIcon from "@mui/icons-material/Done";
 import { Helmet } from "react-helmet-async";
 import { updateProfil } from "src/api/profile";
 import { updateUser } from "src/api/user";
-import { MyCountryBlock } from "src/component/MyCountryBlock";
-import { AvatarSelector } from "src/component/avatar/AvatarSelector";
-import { SelectCountryModal } from "src/component/modal/SelectCountryModal";
 import { useMessage } from "src/context/MessageProvider";
 import { Profile } from "src/models/Profile";
+import { Colors } from "src/style/Colors";
+
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import { ButtonColor } from "src/component/Button";
+import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 
 export const ParameterPage = () => {
   const { t } = useTranslation();
   const { setMessage, setSeverity } = useMessage();
-  const { user, profile, setProfile } = useAuth();
+  const { user, profile, setProfile, deleteAccount } = useAuth();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [avatar, setAvatar] = useState<string | null>(null);
-  const [openCountry, setOpenCountry] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -69,49 +70,6 @@ export const ParameterPage = () => {
       setSeverity("error");
       setMessage(t("commun.error"));
     }
-  };
-
-  useEffect(() => {
-    if (profile) {
-      setAvatar(profile.avatar);
-    }
-  }, [profile]);
-
-  const changeAvatar = async (value: string | null) => {
-    if (user) {
-      const newProfil = { id: user.id, avatar: value };
-      const { data, error } = await updateProfil(newProfil);
-      if (error) {
-        setSeverity("error");
-        setMessage(t("commun.error"));
-      } else {
-        setSeverity("success");
-        setMessage(t("alert.updateavatarsuccess"));
-        setProfile(data as Profile);
-      }
-    } else {
-      setSeverity("error");
-      setMessage(t("commun.error"));
-    }
-  };
-
-  const changeCountry = async (id: number | null) => {
-    if (user) {
-      const newProfil = { id: user.id, country: id };
-      const { data, error } = await updateProfil(newProfil);
-      if (error) {
-        setSeverity("error");
-        setMessage(t("commun.error"));
-      } else {
-        setSeverity("success");
-        setMessage(t("alert.updateorigincountrysuccess"));
-        setProfile(data as Profile);
-      }
-    } else {
-      setSeverity("error");
-      setMessage(t("commun.error"));
-    }
-    setOpenCountry(false);
   };
 
   return (
@@ -189,39 +147,22 @@ export const ParameterPage = () => {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <Grid container spacing={1} alignItems="center">
-            <Grid item xs={12} md={4}>
-              <Typography variant="h4">{t("commun.avatar")}</Typography>
-            </Grid>
-            <Grid item xs={12} md={8}>
-              <AvatarSelector selected={avatar} onSelect={changeAvatar} />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={1} alignItems="center">
-            <Grid item xs={12} md={4}>
-              <Typography variant="h4">
-                {t("commun.myorigincountry")}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={8}>
-              <MyCountryBlock
-                profile={profile}
-                onChange={() => setOpenCountry(true)}
-                onDelete={() => changeCountry(null)}
-              />
-            </Grid>
-          </Grid>
+          <ButtonColor
+            value={Colors.red}
+            label={t("commun.deleteaccount")}
+            icon={RemoveCircleIcon}
+            variant="contained"
+            onClick={() => setOpenModal(true)}
+          />
         </Grid>
       </Grid>
-      {openCountry && (
-        <SelectCountryModal
-          open={openCountry}
-          close={() => setOpenCountry(false)}
-          onValid={changeCountry}
-        />
-      )}
+      <ConfirmDialog
+        title={t("commun.deleteaccount")}
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        onConfirm={deleteAccount}
+        text={t("commun.deleteaccountmessage")}
+      />
     </Box>
   );
 };

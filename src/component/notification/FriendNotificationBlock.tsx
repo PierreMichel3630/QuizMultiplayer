@@ -60,7 +60,7 @@ export const FriendNotificationBlock = ({ friend }: Props) => {
         }}
       >
         <Box>
-          <AvatarAccount avatar={friend.user1.avatar} size={50} />
+          <AvatarAccount avatar={friend.user1.avatar.icon} size={50} />
         </Box>
         <Box>
           <Typography variant="body1" component="span">

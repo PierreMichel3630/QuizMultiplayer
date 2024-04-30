@@ -1,12 +1,21 @@
-import { Box } from "@mui/material";
+import {
+  Box,
+  Grid,
+  IconButton,
+  Paper,
+  Switch,
+  Typography,
+} from "@mui/material";
 import { percent, px } from "csx";
 import { useNavigate } from "react-router-dom";
-import { Theme } from "src/models/Theme";
+import { Theme, ThemeUpdate } from "src/models/Theme";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
 import { Colors } from "src/style/Colors";
+import { ChangeEvent } from "react";
+import EditIcon from "@mui/icons-material/Edit";
 
 interface Props {
   theme: Theme;
@@ -92,5 +101,58 @@ export const CardSelectTheme = ({
         value={theme.name}
       />
     </Box>
+  );
+};
+
+interface PropsCardAdminTheme {
+  theme: Theme;
+  onChange: (theme: ThemeUpdate) => void;
+  edit: () => void;
+}
+
+export const CardAdminTheme = ({
+  theme,
+  onChange,
+  edit,
+}: PropsCardAdminTheme) => {
+  const changeEnabled = (event: ChangeEvent<HTMLInputElement>) => {
+    onChange({ id: theme.id, enabled: event.target.checked });
+  };
+
+  return (
+    <Paper sx={{ p: 1 }}>
+      <Grid container spacing={1} alignItems="center">
+        <Grid item>
+          <Box sx={{ width: px(50) }}>
+            <ImageThemeBlock theme={theme} />
+          </Box>
+        </Grid>
+        <Grid
+          item
+          xs
+          sx={{
+            display: "flex",
+            gap: 2,
+            alignItems: "center",
+            justifyContent: "flex-start",
+          }}
+        >
+          <Typography variant="h2">{theme.id}</Typography>
+          <JsonLanguageBlock variant="h4" component="span" value={theme.name} />
+        </Grid>
+        <Grid item>
+          <Switch
+            checked={theme.enabled}
+            onChange={changeEnabled}
+            inputProps={{ "aria-label": "controlled" }}
+          />
+        </Grid>
+        <Grid item>
+          <IconButton aria-label="edit" onClick={edit}>
+            <EditIcon />
+          </IconButton>
+        </Grid>
+      </Grid>
+    </Paper>
   );
 };

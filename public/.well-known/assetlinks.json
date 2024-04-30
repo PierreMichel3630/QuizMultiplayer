@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.web.quizup_v2.twa",
+      "sha256_cert_fingerprints": [
+        "C1:98:98:B8:1C:5A:D5:AD:E7:32:5B:C7:44:BA:A8:78:D3:5F:D1:A9:45:09:D2:E3:ED:F5:37:8B:86:37:E9:86"
+      ]
+    }
+  }
+]

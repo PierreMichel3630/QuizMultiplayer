@@ -15,13 +15,23 @@ import { ButtonColor } from "../Button";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import { useTranslation } from "react-i18next";
 
+import EditIcon from "@mui/icons-material/Edit";
+
 interface Props {
   question: QuestionAdmin;
   onChange: (value: QuestionUpdate) => void;
+  onEdit: () => void;
   onDelete: () => void;
 }
 
-export const CardAdminQuestion = ({ question, onChange, onDelete }: Props) => {
+export const CardAdminQuestion = ({
+  question,
+  onChange,
+  onDelete,
+  onEdit,
+}: Props) => {
+  const { t } = useTranslation();
+
   const onChangeDifficulty = (value: Difficulty) => {
     const newQuestion: QuestionUpdate = {
       id: question.id,
@@ -32,16 +42,20 @@ export const CardAdminQuestion = ({ question, onChange, onDelete }: Props) => {
 
   return (
     <Paper
-      sx={{ p: 1, height: percent(100), position: "relative" }}
+      sx={{
+        p: 1,
+        height: percent(100),
+        position: "relative",
+        backgroundColor: Colors.black,
+        color: Colors.white,
+      }}
       variant="outlined"
     >
-      <DeleteIcon
-        sx={{ cursor: "pointer", position: "absolute", top: 5, right: 5 }}
-        onClick={onDelete}
-      />
       <Grid container spacing={1} justifyContent="center">
         <Grid item xs={12} sx={{ textAlign: "center" }}>
-          <Typography variant="h2">{question.id}</Typography>
+          <Typography variant="h2">{`${t("commun.question")} ${
+            question.id
+          }`}</Typography>
         </Grid>
         <Grid item>
           <SelectDifficulty
@@ -61,6 +75,24 @@ export const CardAdminQuestion = ({ question, onChange, onDelete }: Props) => {
           <JsonLanguageArrayOrStringBlock
             all={question.allresponse}
             value={question.response}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <ButtonColor
+            value={Colors.red}
+            label={t("commun.delete")}
+            icon={DeleteIcon}
+            variant="contained"
+            onClick={onDelete}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <ButtonColor
+            value={Colors.purple}
+            label={t("commun.edit")}
+            icon={EditIcon}
+            variant="contained"
+            onClick={onEdit}
           />
         </Grid>
       </Grid>

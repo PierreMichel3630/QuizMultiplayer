@@ -70,7 +70,7 @@ export const CategoryBlock = ({ category }: Props) => {
         </Button>
       </Grid>
       {themesDisplay.map((theme) => (
-        <Grid item xs={3} sm={2} md={2} lg={1} key={theme.id}>
+        <Grid item xs={3} sm={2} md={1} lg={1} key={theme.id}>
           <CardTheme theme={theme} />
         </Grid>
       ))}

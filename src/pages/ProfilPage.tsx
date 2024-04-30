@@ -5,15 +5,21 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getProfilById } from "src/api/profile";
 import { ButtonColor } from "src/component/Button";
 import { CountryBlock } from "src/component/CountryBlock";
-import { AvatarAccount } from "src/component/avatar/AvatarAccount";
+import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
 import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
 
 import BoltIcon from "@mui/icons-material/Bolt";
+import { percent, px } from "csx";
+import { Helmet } from "react-helmet-async";
+import { selectBadgeByProfile } from "src/api/badge";
+import { selectRankByProfile } from "src/api/rank";
 import {
   selectOppositionByOpponent,
   selectScoresByProfile,
 } from "src/api/score";
+import { selectTitleByProfile } from "src/api/title";
+import { BadgeTitle } from "src/component/Badge";
 import { FriendButton } from "src/component/FriendButton";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
@@ -21,11 +27,13 @@ import { BarVictory } from "src/component/chart/BarVictory";
 import { DonutGames } from "src/component/chart/DonutGames";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
-import { Opposition, Score } from "src/models/Score";
+import { Badge, BadgeProfile } from "src/models/Badge";
 import { Rank } from "src/models/Rank";
-import { selectRankByProfile } from "src/api/rank";
-import { Helmet } from "react-helmet-async";
-import { percent } from "csx";
+import { Opposition, Score } from "src/models/Score";
+import { Title, TitleProfile } from "src/models/Title";
+import { sortByDuelGamesDesc } from "src/utils/sort";
+
+import EditIcon from "@mui/icons-material/Edit";
 
 export const ProfilPage = () => {
   const { t } = useTranslation();
@@ -37,15 +45,39 @@ export const ProfilPage = () => {
   const [profile, setProfile] = useState<Profile | undefined>(undefined);
   const [scores, setScores] = useState<Array<Score>>([]);
   const [ranks, setRanks] = useState<Array<Rank>>([]);
+  const [titles, setTitles] = useState<Array<Title>>([]);
+  const [badges, setBadges] = useState<Array<Badge>>([]);
   const [oppositions, setOppositions] = useState<Array<Opposition>>([]);
 
   const isMe = id === uuid;
 
   useEffect(() => {
+    const getBadges = () => {
+      if (id) {
+        selectBadgeByProfile(id).then(({ data }) => {
+          const res = data as Array<BadgeProfile>;
+          setBadges(res.map((el) => el.badge));
+        });
+      }
+    };
+    const getTitles = () => {
+      if (id) {
+        selectTitleByProfile(id).then(({ data }) => {
+          const res = data as Array<TitleProfile>;
+          setTitles(res.map((el) => el.title));
+        });
+      }
+    };
+    getTitles();
+    getBadges();
+  }, [id]);
+
+  useEffect(() => {
     const getScore = () => {
       if (id) {
         selectScoresByProfile(id).then(({ data }) => {
-          setScores(data as Array<Score>);
+          const res = data as Array<Score>;
+          setScores(res.sort(sortByDuelGamesDesc));
         });
       }
     };
@@ -86,6 +118,11 @@ export const ProfilPage = () => {
     navigate(`/play`, { state: { opponent: profile } });
   };
 
+  const totalSolo = useMemo(
+    () => scores.reduce((acc, value) => acc + value.games, 0),
+    [scores]
+  );
+
   const totalScore = useMemo(
     () =>
       scores.reduce(
@@ -99,19 +136,6 @@ export const ProfilPage = () => {
     [scores]
   );
 
-  const totalOpposition = useMemo(
-    () =>
-      oppositions.reduce(
-        (acc, value) => ({
-          victory: acc.victory + value.victory,
-          draw: acc.draw + value.draw,
-          defeat: acc.defeat + value.defeat,
-        }),
-        { victory: 0, draw: 0, defeat: 0 }
-      ),
-    [oppositions]
-  );
-
   return (
     profile && (
       <Box>
@@ -121,13 +145,16 @@ export const ProfilPage = () => {
         <Box
           sx={{
             p: 1,
-            backgroundColor: Colors.grey2,
+            backgroundColor: "#4158D0",
+            backgroundImage:
+              "linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%)",
+            position: "relative",
           }}
         >
           <Grid container spacing={1} justifyContent="center">
             <Grid item>
-              <AvatarAccount
-                avatar={profile.avatar}
+              <AvatarAccountBadge
+                profile={profile}
                 size={120}
                 color={Colors.white}
                 backgroundColor={Colors.grey2}
@@ -143,6 +170,13 @@ export const ProfilPage = () => {
               <Typography variant="h2" color="text.secondary">
                 {profile.username}
               </Typography>
+              {profile.title && (
+                <JsonLanguageBlock
+                  variant="caption"
+                  color="text.secondary"
+                  value={profile.title.name}
+                />
+              )}
             </Grid>
             {profile.country && (
               <Grid
@@ -172,64 +206,97 @@ export const ProfilPage = () => {
               </>
             )}
           </Grid>
+          {isMe && (
+            <Box sx={{ position: "absolute", top: 10, right: 10 }}>
+              <EditIcon
+                sx={{ cursor: "pointer", color: Colors.white }}
+                onClick={() => navigate("/personalized")}
+              />
+            </Box>
+          )}
         </Box>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
-            <Grid item xs={12}>
-              <DonutGames scores={scores} />
-            </Grid>
-            <Grid item xs={12}>
-              <Paper sx={{ p: 1, backgroundColor: Colors.lightgrey }}>
-                <Grid
-                  container
-                  spacing={1}
-                  alignItems="center"
-                  justifyContent="center"
+            {badges.length > 0 && (
+              <Grid item xs={12}>
+                <Paper
+                  sx={{ overflow: "hidden", backgroundColor: Colors.lightgrey }}
                 >
-                  <Grid item>
-                    <Typography
-                      variant="h1"
+                  <Grid container>
+                    <Grid
+                      item
+                      xs={12}
                       sx={{
-                        wordWrap: "anywhere",
-                        fontSize: 22,
+                        backgroundColor: Colors.red,
+                        p: px(10),
                       }}
                     >
-                      {t("commun.total")}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Typography variant="h4" component="span">
-                      {t("commun.duel")}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <BarVictory
-                      victory={totalScore.victory}
-                      draw={totalScore.draw}
-                      defeat={totalScore.defeat}
-                    />
-                  </Grid>
-                  {!isMe && (
-                    <>
-                      <Grid item xs={12}>
-                        <Divider sx={{ borderBottomWidth: 3 }} />
+                      <Typography
+                        variant="h2"
+                        sx={{
+                          fontSize: 18,
+                        }}
+                        color="text.secondary"
+                      >
+                        {t("commun.badges")}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sx={{ display: "flex", p: 1 }}>
+                      <Grid container spacing={1}>
+                        {badges.map((badge) => (
+                          <Grid item>
+                            <img src={badge.icon} width={40} />
+                          </Grid>
+                        ))}
                       </Grid>
-                      <Grid item xs={12}>
-                        <Typography variant="h4" component="span">
-                          {t("commun.opposition")}
-                        </Typography>
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </Grid>
+            )}
+            {titles.length > 0 && (
+              <Grid item xs={12}>
+                <Paper
+                  sx={{ overflow: "hidden", backgroundColor: Colors.lightgrey }}
+                >
+                  <Grid container>
+                    <Grid
+                      item
+                      xs={12}
+                      sx={{
+                        backgroundColor: Colors.red,
+                        p: px(10),
+                      }}
+                    >
+                      <Typography
+                        variant="h2"
+                        sx={{
+                          fontSize: 18,
+                        }}
+                        color="text.secondary"
+                      >
+                        {t("commun.titles")}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sx={{ display: "flex", p: 1 }}>
+                      <Grid container spacing={1}>
+                        {titles.map((title) => (
+                          <Grid item>
+                            <BadgeTitle label={title.name} />
+                          </Grid>
+                        ))}
                       </Grid>
-                      <Grid item xs={12}>
-                        <BarVictory
-                          victory={totalOpposition.victory}
-                          draw={totalOpposition.draw}
-                          defeat={totalOpposition.defeat}
-                        />
-                      </Grid>
-                    </>
-                  )}
-                </Grid>
-              </Paper>
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </Grid>
+            )}
+            <Grid item xs={12}>
+              <DonutGames
+                scores={scores}
+                totalScore={totalScore}
+                totalSolo={totalSolo}
+              />
             </Grid>
             {scores.map((score) => {
               const opposition = oppositions.find(
@@ -240,36 +307,35 @@ export const ProfilPage = () => {
                 <Grid item xs={12} sm={6} md={6} lg={4} key={score.id}>
                   <Paper
                     sx={{
-                      p: 1,
+                      overflow: "hidden",
                       backgroundColor: Colors.lightgrey,
                       height: percent(100),
                     }}
                   >
-                    <Grid
-                      container
-                      spacing={1}
-                      alignItems="center"
-                      justifyContent="center"
-                    >
+                    <Grid container>
                       <Grid
                         item
+                        xs={12}
                         sx={{
                           display: "flex",
                           alignItems: "center",
                           gap: 1,
+                          backgroundColor: Colors.red,
+                          p: px(5),
                         }}
                       >
-                        <ImageThemeBlock theme={score.theme} size={50} />
+                        <ImageThemeBlock theme={score.theme} size={40} />
                         <JsonLanguageBlock
-                          variant="h1"
+                          variant="h2"
                           sx={{
                             wordWrap: "anywhere",
-                            fontSize: 22,
+                            fontSize: 18,
                           }}
+                          color="text.secondary"
                           value={score.theme.name}
                         />
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid item xs={12} sx={{ p: 1 }}>
                         <Grid
                           container
                           spacing={1}
@@ -306,58 +372,58 @@ export const ProfilPage = () => {
                               />
                             </Grid>
                           )}
-                        </Grid>
-                      </Grid>
 
-                      {opposition && (
-                        <>
+                          {opposition && (
+                            <>
+                              <Grid item xs={12}>
+                                <Divider sx={{ borderBottomWidth: 3 }} />
+                              </Grid>
+                              <Grid item xs={12}>
+                                <Typography variant="h4" component="span">
+                                  {t("commun.opposition")}
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={12}>
+                                <BarVictory
+                                  victory={opposition.victory}
+                                  draw={opposition.draw}
+                                  defeat={opposition.defeat}
+                                />
+                              </Grid>
+                            </>
+                          )}
                           <Grid item xs={12}>
                             <Divider sx={{ borderBottomWidth: 3 }} />
                           </Grid>
                           <Grid item xs={12}>
-                            <Typography variant="h4" component="span">
-                              {t("commun.opposition")}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12}>
-                            <BarVictory
-                              victory={opposition.victory}
-                              draw={opposition.draw}
-                              defeat={opposition.defeat}
-                            />
-                          </Grid>
-                        </>
-                      )}
-                      <Grid item xs={12}>
-                        <Divider sx={{ borderBottomWidth: 3 }} />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Grid
-                          container
-                          spacing={1}
-                          alignItems="center"
-                          justifyContent="center"
-                        >
-                          <Grid item xs={12}>
-                            <Typography variant="h4" component="span">
-                              {t("commun.solo")}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={6} sx={{ textAlign: "center" }}>
-                            <Typography variant="body1" component="span">
-                              {t("commun.games")} {" : "}
-                            </Typography>
-                            <Typography variant="h4" component="span">
-                              {score ? score.games : "0"}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={6} sx={{ textAlign: "center" }}>
-                            <Typography variant="body1" component="span">
-                              {t("commun.bestscore")} {" : "}
-                            </Typography>
-                            <Typography variant="h4" component="span">
-                              {score ? score.points : "-"}
-                            </Typography>
+                            <Grid
+                              container
+                              spacing={1}
+                              alignItems="center"
+                              justifyContent="center"
+                            >
+                              <Grid item xs={12}>
+                                <Typography variant="h4" component="span">
+                                  {t("commun.solo")}
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={6} sx={{ textAlign: "center" }}>
+                                <Typography variant="body1" component="span">
+                                  {t("commun.games")} {" : "}
+                                </Typography>
+                                <Typography variant="h4" component="span">
+                                  {score ? score.games : "0"}
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={6} sx={{ textAlign: "center" }}>
+                                <Typography variant="body1" component="span">
+                                  {t("commun.bestscore")} {" : "}
+                                </Typography>
+                                <Typography variant="h4" component="span">
+                                  {score ? score.points : "-"}
+                                </Typography>
+                              </Grid>
+                            </Grid>
                           </Grid>
                         </Grid>
                       </Grid>

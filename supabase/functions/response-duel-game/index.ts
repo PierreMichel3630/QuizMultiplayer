@@ -1,46 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
 import moment from "https://esm.sh/moment";
-import { compareTwoStrings } from "https://deno.land/x/string_similarity/mod.ts";
-import { getRandomElement } from "../_shared/random.ts";
+import { generateQuestion } from "../_shared/generateQuestion.ts";
 import { verifyResponse } from "../_shared/response.ts";
-import {
-  GENERATETHEME,
-  generateQuestion,
-} from "../_shared/generateQuestion.ts";
-
-const stopwords = [
-  "the",
-  "of",
-  "le",
-  "la",
-  "l'",
-  "de",
-  "des",
-  "un",
-  "une",
-  "ce",
-  "se",
-  "et",
-  "and",
-];
-
-const normalizeString = (value: string) =>
-  removeStopWord(
-    value.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-  ).toLowerCase();
-
-const removeStopWord = (value: string) =>
-  value
-    .toLowerCase()
-    .replace(new RegExp("\\b(" + stopwords.join("|") + ")\\b", "g"), "")
-    .replace(/\s/g, "")
-    .replace(/[^a-zA-Z0-9 ]/g, "");
-
-const compareString = (a: string, b: string) =>
-  compareTwoStrings(
-    normalizeString(a.toLowerCase()),
-    normalizeString(b.toString().toLowerCase())
-  );
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -60,16 +21,16 @@ const endGame = async (
   await supabase.rpc("addgameduel", {
     player: player1,
     themeid: theme,
-    victory: result === 1 ? 1 : 0,
-    draw: result === 0.5 ? 1 : 0,
-    defeat: result === 0 ? 1 : 0,
+    victoryprop: result === 1 ? 1 : 0,
+    drawprop: result === 0.5 ? 1 : 0,
+    defeatprop: result === 0 ? 1 : 0,
   });
   await supabase.rpc("addgameduel", {
     player: player2,
     themeid: theme,
-    victory: result === 0 ? 1 : 0,
-    draw: result === 0.5 ? 1 : 0,
-    defeat: result === 1 ? 1 : 0,
+    victoryprop: result === 0 ? 1 : 0,
+    drawprop: result === 0.5 ? 1 : 0,
+    defeatprop: result === 1 ? 1 : 0,
   });
   await supabase.rpc("addopposition", {
     player1uuid: player1,
@@ -216,7 +177,6 @@ Deno.serve(async (req) => {
   let question: any = undefined;
   let correctresponseQCM = undefined;
   let time = undefined;
-  const randomTheme = getRandomElement(theme.themes);
 
   const bot = BOTS.find((el) => el.uuid === player2);
   const channel = supabase.channel(uuidgame, {
@@ -289,23 +249,17 @@ Deno.serve(async (req) => {
             })
             .eq("uuid", uuidgame);
           if (questionNumber >= 5) {
-            setTimeout(async () => {
-              const isdraw = pointsPlayer1 === pointsPlayer2;
-              const result = isdraw
-                ? 0.5
-                : pointsPlayer1 > pointsPlayer2
-                ? 1
-                : 0;
-              endGame(
-                channel,
-                supabase,
-                uuidgame,
-                player1,
-                player2,
-                theme.id,
-                result
-              );
-            }, 2000);
+            const isdraw = pointsPlayer1 === pointsPlayer2;
+            const result = isdraw ? 0.5 : pointsPlayer1 > pointsPlayer2 ? 1 : 0;
+            endGame(
+              channel,
+              supabase,
+              uuidgame,
+              player1,
+              player2,
+              theme.id,
+              result
+            );
           } else {
             channel.unsubscribe();
             setTimeout(async () => {
@@ -319,13 +273,17 @@ Deno.serve(async (req) => {
     })
     .subscribe(async (status) => {
       if (status === "SUBSCRIBED") {
-        if (GENERATETHEME.includes(Number(randomTheme))) {
-          question = generateQuestion(Number(randomTheme));
+        const isGenerate =
+          theme.generatequestion !== null
+            ? theme.generatequestion
+            : Math.random() < 0.5;
+        if (isGenerate) {
+          question = generateQuestion(Number(theme.id));
         } else {
           const { data } = await supabase
             .from("randomquestion")
             .select("*, theme(*)")
-            .in("theme", theme.themes)
+            .eq("theme", theme.id)
             .not("id", "in", `(${previousIdQuestion})`)
             .limit(1)
             .maybeSingle();
@@ -334,25 +292,26 @@ Deno.serve(async (req) => {
         response = question.response;
 
         let responsesQcm: Array<any> = [];
-        const qcm = data.isqcm === null ? Math.random() < 0.5 : data.isqcm;
+        const qcm =
+          question.isqcm === null ? Math.random() < 0.5 : question.isqcm;
         if (qcm) {
-          const responses = Array.isArray(data.response["en-US"])
-            ? data.allresponse
-              ? data.response["en-US"]
-              : [data.response["en-US"][0]]
-            : [data.response["en-US"]];
+          const responses = Array.isArray(question.response["en-US"])
+            ? question.allresponse
+              ? question.response["en-US"]
+              : [question.response["en-US"][0]]
+            : [question.response["en-US"]];
 
           const res = await supabase
             .from("randomresponse")
             .select("*")
-            .eq("type", data.typeResponse)
+            .eq("type", question.typeResponse)
             .not("usvalue", "in", `(${responses.join(",")})`)
             .limit(3);
 
           const res2 = await supabase
             .from("randomresponse")
             .select("*")
-            .eq("type", data.typeResponse)
+            .eq("type", question.typeResponse)
             .in("usvalue", responses)
             .limit(1)
             .maybeSingle();
@@ -417,23 +376,21 @@ Deno.serve(async (req) => {
               })
               .eq("uuid", uuidgame);
             if (questionNumber >= 5) {
-              setTimeout(async () => {
-                const isdraw = pointsPlayer1 === pointsPlayer2;
-                const result = isdraw
-                  ? 0.5
-                  : pointsPlayer1 > pointsPlayer2
-                  ? 1
-                  : 0;
-                endGame(
-                  channel,
-                  supabase,
-                  uuidgame,
-                  player1,
-                  player2,
-                  theme.id,
-                  result
-                );
-              }, 2000);
+              const isdraw = pointsPlayer1 === pointsPlayer2;
+              const result = isdraw
+                ? 0.5
+                : pointsPlayer1 > pointsPlayer2
+                ? 1
+                : 0;
+              endGame(
+                channel,
+                supabase,
+                uuidgame,
+                player1,
+                player2,
+                theme.id,
+                result
+              );
             } else {
               channel.unsubscribe();
               setTimeout(async () => {

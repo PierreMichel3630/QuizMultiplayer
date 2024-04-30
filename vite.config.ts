@@ -4,10 +4,30 @@ import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
 
 const manifestForPlugIn: Partial<VitePWAOptions> = {
   registerType: "autoUpdate",
+  includeAssets: ["**/*"],
+  workbox: {
+    globPatterns: ["**/*"],
+    runtimeCaching: [
+      {
+        urlPattern:
+          /^https:\/\/cperjgnbmoqyyqgkyqws\.supabase\.co\/storage\/.*/i,
+        handler: "CacheFirst",
+        options: {
+          cacheName: "supabase-image",
+          expiration: {
+            maxAgeSeconds: 60 * 60 * 24 * 30,
+          },
+          cacheableResponse: {
+            statuses: [0, 200],
+          },
+        },
+      },
+    ],
+  },
   manifest: {
-    name: "QuizUp V2.0",
-    short_name: "QuizUp V2.0",
-    description: "",
+    name: "QuizBattle",
+    short_name: "QuizBattle",
+    description: "Multitheme quiz with solo mode and ranked",
     icons: [
       {
         src: "/android-chrome-192x192.png",

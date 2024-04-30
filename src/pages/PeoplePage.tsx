@@ -26,7 +26,7 @@ export const PeoplePage = () => {
       });
     };
     getPlayers();
-  }, []);
+  }, [search]);
 
   const friendsProfile = useMemo(
     () =>

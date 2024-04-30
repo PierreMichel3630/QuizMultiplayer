@@ -26,6 +26,7 @@ import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
+import { uniqBy } from "lodash";
 
 export const PlayPage = () => {
   const { t } = useTranslation();
@@ -47,7 +48,8 @@ export const PlayPage = () => {
   );
 
   const themesFilter = useMemo(
-    () => themes.sort((a, b) => sortByName(language, a, b)),
+    () =>
+      uniqBy(themes, (el) => el.id).sort((a, b) => sortByName(language, a, b)),
     [themes, language]
   );
 

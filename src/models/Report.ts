@@ -11,6 +11,7 @@ export interface Report {
   message: ReportMessage;
   question: Question;
   description: string;
+  created_at: Date;
 }
 
 export interface ReportInsert {

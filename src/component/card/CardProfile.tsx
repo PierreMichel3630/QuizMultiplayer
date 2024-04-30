@@ -44,7 +44,7 @@ export const CardProfile = ({
     >
       <Grid container spacing={1} alignItems="center" justifyContent="center">
         <Grid item>
-          <AvatarAccount avatar={profile.avatar} size={60} />
+          <AvatarAccount avatar={profile.avatar.icon} size={60} />
         </Grid>
         <Grid item>
           <Typography variant="h2" sx={{ wordWrap: "break-word" }}>
@@ -108,7 +108,11 @@ export const BasicCardProfile = ({ profile }: PropsBasic) => {
       }}
       onClick={() => navigate(`/profil/${profile.id}`)}
     >
-      <AvatarAccount avatar={profile.avatar} size={70} color={profile.color} />
+      <AvatarAccount
+        avatar={profile.avatar.icon}
+        size={70}
+        color={profile.color}
+      />
       <Typography variant="body1" sx={{ wordWrap: "break-word" }}>
         {profile.username}
       </Typography>

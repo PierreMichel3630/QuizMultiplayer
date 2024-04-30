@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
+import { JsonLanguage } from "src/models/Language";
 
 interface Props {
   value: string;
@@ -92,3 +93,22 @@ export const BadgeAccountActive = styled(Badge)(({ theme }) => ({
     },
   },
 }));
+
+interface PropsBadgeTitle {
+  label: JsonLanguage;
+}
+
+export const BadgeTitle = ({ label }: PropsBadgeTitle) => {
+  return (
+    <Box
+      sx={{
+        p: padding(2, 8),
+        backgroundColor: Colors.purple,
+        borderRadius: px(10),
+        width: "fit-content",
+      }}
+    >
+      <JsonLanguageBlock variant="h6" color="text.secondary" value={label} />
+    </Box>
+  );
+};

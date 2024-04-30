@@ -1,5 +1,5 @@
-import { Box, Container, Grid, Toolbar } from "@mui/material";
-import { percent, px } from "csx";
+import { Box, Container, Fab, Grid, Toolbar } from "@mui/material";
+import { percent } from "csx";
 import { Outlet } from "react-router-dom";
 import { Header } from "src/component/header/Header";
 
@@ -14,13 +14,24 @@ import { DuelGame, DuelGameChange } from "src/models/DuelGame";
 
 import { BottomNavigationBlock } from "src/component/BottomNavigation";
 import { DuelNotificationBlock } from "src/component/notification/DuelNotificationBlock";
+import { useApp } from "src/context/AppProvider";
 import { Colors } from "src/style/Colors";
+
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
 export const OutletPage = () => {
   const { uuid } = useUser();
+  const { getAccomplishments, getBadges, getTitles, getThemes } = useApp();
 
   const [gamesChange, setGamesChange] = useState<Array<DuelGameChange>>([]);
   const [games, setGames] = useState<Array<DuelGame>>([]);
+
+  useEffect(() => {
+    getAccomplishments();
+    getBadges();
+    getTitles();
+    getThemes();
+  }, []);
 
   useEffect(() => {
     const getGamesUuid = () => {

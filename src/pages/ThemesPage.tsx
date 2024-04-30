@@ -1,6 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { percent } from "csx";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { CategoryBlock } from "src/component/CategoryBlock";
@@ -17,7 +17,7 @@ import { searchString } from "src/utils/string";
 export const ThemesPage = () => {
   const { t } = useTranslation();
   const { language } = useUser();
-  const { categories, themes, refreshThemes } = useApp();
+  const { categories, themes } = useApp();
 
   const [search, setSearch] = useState("");
 
@@ -25,10 +25,6 @@ export const ThemesPage = () => {
     () => themes.filter((el) => searchString(search, el.name[language.iso])),
     [themes, search, language.iso]
   );
-
-  useEffect(() => {
-    refreshThemes();
-  }, []);
 
   return (
     <Box sx={{ width: percent(100), p: 1 }}>
@@ -60,7 +56,7 @@ export const ThemesPage = () => {
               <Typography variant="h2">{t("commun.search")}</Typography>
             </Grid>
             {themesFilter.map((theme) => (
-              <Grid item xs={3} sm={2} md={2} lg={1} key={theme.id}>
+              <Grid item xs={3} sm={2} md={1} lg={1} key={theme.id}>
                 <CardTheme theme={theme} />
               </Grid>
             ))}

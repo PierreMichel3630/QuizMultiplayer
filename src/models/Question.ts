@@ -27,16 +27,32 @@ export interface QuestionPosition {
 export interface QuestionAdmin {
   image?: string;
   question: JsonLanguage;
+  typeResponse: string;
   difficulty: string;
   id: number;
+  theme: Theme;
   isqcm?: boolean;
   allresponse: boolean;
   response: JsonLanguageArrayOrString;
 }
 
+export interface QuestionInsert {
+  difficulty: string;
+  question: JsonLanguage;
+  image: string | null;
+  response: JsonLanguageArrayOrString;
+  theme: number;
+  typeResponse: string;
+}
+
 export interface QuestionUpdate {
   id: number;
   difficulty?: string;
+  question?: JsonLanguage;
+  image?: string | null;
+  response?: JsonLanguageArrayOrString;
+  theme?: number;
+  typeResponse?: string;
 }
 
 export interface QuestionSolo {

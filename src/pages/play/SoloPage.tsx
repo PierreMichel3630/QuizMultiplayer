@@ -1,4 +1,4 @@
-import { Box, Container } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -13,11 +13,12 @@ import { useUser } from "src/context/UserProvider";
 import { Question, QuestionSolo } from "src/models/Question";
 import { ResponseSolo } from "src/models/Response";
 
-import { viewHeight } from "csx";
+import { percent, viewHeight } from "csx";
 import { QcmBlock, QcmResponseBlock } from "src/component/QcmBlock";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { SoloGame } from "src/models/Game";
 import { Colors } from "src/style/Colors";
+import { LoadingDot } from "src/component/Loading";
 
 export const SoloPage = () => {
   const { t } = useTranslation();
@@ -88,7 +89,6 @@ export const SoloPage = () => {
           }
         )
         .on("broadcast", { event: "question" }, (value) => {
-          console.log(value.payload as QuestionSolo);
           setQuestion(value.payload as QuestionSolo);
           setTimer(14);
           setResponse(undefined);
@@ -151,7 +151,7 @@ export const SoloPage = () => {
       <Box
         sx={{
           display: "flex",
-          flex: "1 1 0%",
+          flex: "1 1 0",
           p: 1,
           flexDirection: "column",
           gap: 1,
@@ -168,18 +168,43 @@ export const SoloPage = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "flex-end",
+            flex: "1 1 0",
             gap: 1,
+            minHeight: 0,
           }}
         >
-          <QuestionSoloBlock question={question} timer={timer} />
-          {response && (
+          {question ? (
             <>
-              {question && question.isqcm ? (
-                <QcmResponseBlock response={response} question={question} />
-              ) : (
-                <ResponseSoloBlock response={response} />
+              <QuestionSoloBlock question={question} timer={timer} />
+              {response && (
+                <>
+                  {question && question.isqcm ? (
+                    <QcmResponseBlock response={response} question={question} />
+                  ) : (
+                    <ResponseSoloBlock response={response} />
+                  )}
+                </>
               )}
             </>
+          ) : (
+            <Box
+              sx={{
+                flexGrow: 1,
+                flex: "1 1 0",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                gap: 1,
+                width: percent(100),
+              }}
+            >
+              <Typography variant="h6" color="text.secondary">
+                {t("commun.launchpartie")}
+              </Typography>
+              <LoadingDot />
+            </Box>
           )}
         </Box>
         {!response && (

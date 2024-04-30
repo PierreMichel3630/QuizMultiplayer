@@ -35,7 +35,7 @@ export const SelectorProfileBlock = ({
           }}
           onClick={onChange}
         >
-          <AvatarAccount avatar={profile.avatar} size={40} />
+          <AvatarAccount avatar={profile.avatar.icon} size={40} />
           <Typography variant="h4">{profile.username}</Typography>
           <DeleteIcon
             sx={{ cursor: "pointer" }}

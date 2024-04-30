@@ -6,7 +6,7 @@ export const SUPABASE_OPPOSITION_TABLE = "opposition";
 export const selectScoresByTheme = (theme: number, order: string) =>
   supabase
     .from(SUPABASE_SCORE_TABLE)
-    .select("*, profile(*)")
+    .select("*, profile(*, avatar(*))")
     .eq("theme", theme)
     .order(order, { ascending: false })
     .limit(5);

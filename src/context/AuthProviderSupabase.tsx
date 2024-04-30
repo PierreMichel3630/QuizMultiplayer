@@ -14,6 +14,7 @@ import {
 } from "src/api/supabase";
 import { getProfilById } from "src/api/profile";
 import { Profile } from "src/models/Profile";
+import { deleteAccountUser } from "src/api/user";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[];
@@ -25,6 +26,7 @@ const AuthContext = createContext<{
   setProfile: (value: Profile) => void;
   login: (email: string, password: string) => Promise<AuthTokenResponse>;
   logout: () => Promise<{ error: AuthError | null }>;
+  deleteAccount: () => void;
   passwordReset: (
     email: string
   ) => Promise<{ data: {}; error: null } | { data: null; error: AuthError }>;
@@ -34,6 +36,7 @@ const AuthContext = createContext<{
     localStorage.getItem("user") !== null
       ? (JSON.parse(localStorage.getItem("user")!) as User)
       : null,
+  deleteAccount: () => {},
   profile: null,
   setProfile: (value: Profile) => {},
   login: (email: string, password: string) => signInWithEmail(email, password),
@@ -88,6 +91,14 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     };
   }, []);
 
+  const deleteAccount = async () => {
+    await deleteAccountUser();
+    localStorage.clear();
+    setUser(null);
+    setProfile(null);
+    setAuth(false);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -96,6 +107,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
         user,
         login,
         logout,
+        deleteAccount,
         passwordReset,
         updatePassword,
       }}

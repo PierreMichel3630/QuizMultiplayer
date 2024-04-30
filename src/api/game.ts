@@ -42,21 +42,23 @@ export const deleteDuelByUuid = (uuid: string) =>
 export const selectInvitationDuelByUuid = (uuids: Array<string>) =>
   supabase
     .from(SUPABASE_DUELGAME_TABLE)
-    .select("*, player1(*), player2(*), theme(*)")
+    .select("*, player1(*, avatar(*)), player2(*, avatar(*)), theme(*)")
     .in("uuid", uuids)
     .eq("start", false);
 
 export const selectInvitationDuelByUser = (uuid: string) =>
   supabase
     .from(SUPABASE_DUELGAME_TABLE)
-    .select("*, player1(*), player2(*), theme(*)")
+    .select("*, player1(*, avatar(*)), player2(*, avatar(*)), theme(*)")
     .eq("player2", uuid)
     .eq("start", false);
 
 export const selectDuelGameById = (uuid: string) =>
   supabase
     .from(SUPABASE_DUELGAME_TABLE)
-    .select("*, player1(*), player2(*), theme(*)")
+    .select(
+      "*, player1(*, avatar(*), title(*), badge(*)), player2(*, avatar(*), title(*), badge(*)), theme(*)"
+    )
     .eq("uuid", uuid)
     .maybeSingle();
 

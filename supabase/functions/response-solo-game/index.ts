@@ -1,10 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
 import { corsHeaders } from "../_shared/cors.ts";
-import { DIFFICULTIES, getRandomElement } from "../_shared/random.ts";
-import {
-  GENERATETHEME,
-  generateQuestion,
-} from "../_shared/generateQuestion.ts";
+import { generateQuestion } from "../_shared/generateQuestion.ts";
+import { DIFFICULTIES } from "../_shared/random.ts";
 import { verifyResponse } from "../_shared/response.ts";
 
 export const DIFFICULTY = {
@@ -57,7 +54,6 @@ Deno.serve(async (req) => {
   let question = undefined;
   let isAnswer = false;
 
-  const randomTheme = getRandomElement(theme.themes);
   const difficulties = getDifficultyQuestion(points);
 
   const channel = supabase.channel(data.uuid);
@@ -112,14 +108,18 @@ Deno.serve(async (req) => {
     .subscribe(async (status) => {
       if (status === "SUBSCRIBED") {
         let newQuestion: any = undefined;
-        if (GENERATETHEME.includes(Number(randomTheme))) {
+        const isGenerate =
+          theme.generatequestion !== null
+            ? theme.generatequestion
+            : Math.random() < 0.5;
+        if (isGenerate) {
           const difficulty = difficulties[difficulties.length - 1];
-          newQuestion = generateQuestion(Number(randomTheme), difficulty);
+          newQuestion = generateQuestion(Number(theme.id), difficulty);
         } else {
           const { data } = await supabase
             .from("randomquestion")
             .select("*, theme(*)")
-            .in("theme", theme.themes)
+            .eq("theme", theme.id)
             .in("difficulty", difficulties)
             .not("id", "in", `(${previousIdQuestion})`)
             .limit(1)
@@ -129,7 +129,7 @@ Deno.serve(async (req) => {
             const { data } = await supabase
               .from("randomquestion")
               .select("*, theme(*)")
-              .in("theme", theme.themes)
+              .eq("theme", theme.id)
               .in("difficulty", DIFFICULTIES)
               .not("id", "in", `(${previousIdQuestion})`)
               .limit(1)
