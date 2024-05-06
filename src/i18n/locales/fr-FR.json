@@ -156,7 +156,13 @@
     "signalproblemtext": "Vous pouvez signaler des problèmes techniques, proposer des questions ou thèmes en rejoignant le Discord.",
     "joindiscord": "Rejoindre Discord",
     "pertheme": "Par thème",
-    "global": "Global"
+    "selectplayer": "Sélectionner un joueur",
+    "global": "Global",
+    "victory": "Victoires",
+    "defeat": "Défaites",
+    "draw": "Match nul",
+    "select2player": "Sélectionner 2 joueurs à comparer",
+    "compare": "Comparer"
   },
   "accomplishment": {
     "SOLO": "Succès Mode Solo",
@@ -186,6 +192,9 @@
   "pages": {
     "home": {
       "title": "Accueil"
+    },
+    "compare": {
+      "title": "Comparer des joueurs"
     },
     "menu": {
       "title": "Menus"

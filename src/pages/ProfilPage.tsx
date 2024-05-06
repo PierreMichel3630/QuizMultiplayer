@@ -19,7 +19,6 @@ import {
   selectScoresByProfile,
 } from "src/api/score";
 import { selectTitleByProfile } from "src/api/title";
-import { BadgeTitle } from "src/component/Badge";
 import { FriendButton } from "src/component/FriendButton";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
@@ -34,15 +33,20 @@ import { Title, TitleProfile } from "src/models/Title";
 import { sortByDuelGamesDesc } from "src/utils/sort";
 
 import EditIcon from "@mui/icons-material/Edit";
+import { CardBadge } from "src/component/card/CardBadge";
+import { CardTitle } from "src/component/card/CardTitle";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 
 export const ProfilPage = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const { uuid } = useUser();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
 
-  const [profile, setProfile] = useState<Profile | undefined>(undefined);
+  const [profileUser, setProfileUser] = useState<Profile | undefined>(
+    undefined
+  );
   const [scores, setScores] = useState<Array<Score>>([]);
   const [ranks, setRanks] = useState<Array<Rank>>([]);
   const [titles, setTitles] = useState<Array<Title>>([]);
@@ -107,7 +111,7 @@ export const ProfilPage = () => {
     const getProfile = () => {
       if (id) {
         getProfilById(id).then(({ data }) => {
-          setProfile(data as Profile);
+          setProfileUser(data as Profile);
         });
       }
     };
@@ -115,7 +119,13 @@ export const ProfilPage = () => {
   }, [id]);
 
   const launchDuel = () => {
-    navigate(`/play`, { state: { opponent: profile } });
+    navigate(`/play`, { state: { opponent: profileUser } });
+  };
+
+  const compare = () => {
+    navigate(`/compare`, {
+      state: { profile1: profile, profile2: profileUser },
+    });
   };
 
   const totalSolo = useMemo(
@@ -137,10 +147,10 @@ export const ProfilPage = () => {
   );
 
   return (
-    profile && (
+    profileUser && (
       <Box>
         <Helmet>
-          <title>{`${profile.username} - ${t("appname")}`}</title>
+          <title>{`${profileUser.username} - ${t("appname")}`}</title>
         </Helmet>
         <Box
           sx={{
@@ -154,7 +164,7 @@ export const ProfilPage = () => {
           <Grid container spacing={1} justifyContent="center">
             <Grid item>
               <AvatarAccountBadge
-                profile={profile}
+                profile={profileUser}
                 size={120}
                 color={Colors.white}
                 backgroundColor={Colors.grey2}
@@ -168,23 +178,23 @@ export const ProfilPage = () => {
               }}
             >
               <Typography variant="h2" color="text.secondary">
-                {profile.username}
+                {profileUser.username}
               </Typography>
-              {profile.title && (
+              {profileUser.title && (
                 <JsonLanguageBlock
                   variant="caption"
                   color="text.secondary"
-                  value={profile.title.name}
+                  value={profileUser.title.name}
                 />
               )}
             </Grid>
-            {profile.country && (
+            {profileUser.country && (
               <Grid
                 item
                 xs={12}
                 sx={{ display: "flex", justifyContent: "center" }}
               >
-                <CountryBlock id={profile.country} color="text.secondary" />
+                <CountryBlock id={profileUser.country} color="text.secondary" />
               </Grid>
             )}
             {!isMe && (
@@ -199,9 +209,20 @@ export const ProfilPage = () => {
                   />
                 </Grid>
                 {user && (
-                  <Grid item xs={6} sm={6} md={4}>
-                    <FriendButton profile={profile} />
-                  </Grid>
+                  <>
+                    <Grid item xs={6} sm={6} md={4}>
+                      <FriendButton profile={profileUser} />
+                    </Grid>
+                    <Grid item xs={12} md={8}>
+                      <ButtonColor
+                        value={Colors.blue}
+                        label={t("commun.compare")}
+                        icon={CompareArrowsIcon}
+                        variant="contained"
+                        onClick={compare}
+                      />
+                    </Grid>
+                  </>
                 )}
               </>
             )}
@@ -219,76 +240,12 @@ export const ProfilPage = () => {
           <Grid container spacing={1}>
             {badges.length > 0 && (
               <Grid item xs={12}>
-                <Paper
-                  sx={{ overflow: "hidden", backgroundColor: Colors.lightgrey }}
-                >
-                  <Grid container>
-                    <Grid
-                      item
-                      xs={12}
-                      sx={{
-                        backgroundColor: Colors.red,
-                        p: px(10),
-                      }}
-                    >
-                      <Typography
-                        variant="h2"
-                        sx={{
-                          fontSize: 18,
-                        }}
-                        color="text.secondary"
-                      >
-                        {t("commun.badges")}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sx={{ display: "flex", p: 1 }}>
-                      <Grid container spacing={1}>
-                        {badges.map((badge) => (
-                          <Grid item>
-                            <img src={badge.icon} width={40} />
-                          </Grid>
-                        ))}
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Paper>
+                <CardBadge badges={badges} />
               </Grid>
             )}
             {titles.length > 0 && (
               <Grid item xs={12}>
-                <Paper
-                  sx={{ overflow: "hidden", backgroundColor: Colors.lightgrey }}
-                >
-                  <Grid container>
-                    <Grid
-                      item
-                      xs={12}
-                      sx={{
-                        backgroundColor: Colors.red,
-                        p: px(10),
-                      }}
-                    >
-                      <Typography
-                        variant="h2"
-                        sx={{
-                          fontSize: 18,
-                        }}
-                        color="text.secondary"
-                      >
-                        {t("commun.titles")}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sx={{ display: "flex", p: 1 }}>
-                      <Grid container spacing={1}>
-                        {titles.map((title) => (
-                          <Grid item>
-                            <BadgeTitle label={title.name} />
-                          </Grid>
-                        ))}
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Paper>
+                <CardTitle titles={titles} />
               </Grid>
             )}
             <Grid item xs={12}>

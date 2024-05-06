@@ -5,14 +5,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-const URLPROD = "https://intinerairedemavie.web.app";
-const URLLOCAL = "http://localhost:5173";
-
-export const signInWithGoogle = () =>
-  supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: { redirectTo: URLLOCAL },
-  });
+const URLPROD = "https://quizup-v2.web.app";
 
 export const signUpWithEmail = (
   email: string,
@@ -45,5 +38,5 @@ export const signOut = () => supabase.auth.signOut();
 
 export const passwordReset = (email: string) =>
   supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${URLLOCAL}/resetpassword`,
+    redirectTo: `${URLPROD}/resetpassword`,
   });

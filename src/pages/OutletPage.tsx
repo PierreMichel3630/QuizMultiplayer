@@ -1,4 +1,4 @@
-import { Box, Container, Fab, Grid, Toolbar } from "@mui/material";
+import { Box, Container, Grid, Toolbar } from "@mui/material";
 import { percent } from "csx";
 import { Outlet } from "react-router-dom";
 import { Header } from "src/component/header/Header";
@@ -16,8 +16,6 @@ import { BottomNavigationBlock } from "src/component/BottomNavigation";
 import { DuelNotificationBlock } from "src/component/notification/DuelNotificationBlock";
 import { useApp } from "src/context/AppProvider";
 import { Colors } from "src/style/Colors";
-
-import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
 export const OutletPage = () => {
   const { uuid } = useUser();

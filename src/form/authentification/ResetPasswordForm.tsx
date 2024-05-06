@@ -36,7 +36,7 @@ export const ResetPasswordForm = () => {
       .min(6, t("form.register.minpassword"))
       .required(t("form.register.requiredpassword")),
     confirmpassword: Yup.string().oneOf(
-      [Yup.ref("password"), null],
+      [Yup.ref("password"), undefined],
       t("form.register.passwordmatch")
     ),
   });

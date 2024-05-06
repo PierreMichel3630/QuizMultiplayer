@@ -13,7 +13,7 @@ import {
 import { useTranslation } from "react-i18next";
 
 import CloseIcon from "@mui/icons-material/Close";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { selectFriend } from "src/api/friend";
 import { useUser } from "src/context/UserProvider";
 import { FRIENDSTATUS, Friend } from "src/models/Friend";
@@ -21,16 +21,24 @@ import { BasicSearchInput } from "../Input";
 import { Loading } from "../Loading";
 import { CardProfile } from "../card/CardProfile";
 import { Profile } from "src/models/Profile";
+import { useAuth } from "src/context/AuthProviderSupabase";
 
 interface Props {
+  withMe?: boolean;
   open: boolean;
   close: () => void;
   onValid: (uuid: Profile) => void;
 }
 
-export const SelectFriendModal = ({ open, close, onValid }: Props) => {
+export const SelectFriendModal = ({
+  open,
+  close,
+  onValid,
+  withMe = false,
+}: Props) => {
   const { t } = useTranslation();
   const { uuid } = useUser();
+  const { profile } = useAuth();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -50,14 +58,19 @@ export const SelectFriendModal = ({ open, close, onValid }: Props) => {
     getFriends();
   }, []);
 
-  const profiles = friends
-    .filter((el) => el.status === FRIENDSTATUS.VALID)
-    .map((el) => (el.user1.id === uuid ? el.user2 : el.user1))
-    .filter((el) =>
-      search !== ""
-        ? el.username.toLowerCase().includes(search.toLowerCase())
-        : true
-    );
+  const profiles = useMemo(() => {
+    const profileFriend = friends
+      .filter((el) => el.status === FRIENDSTATUS.VALID)
+      .map((el) => (el.user1.id === uuid ? el.user2 : el.user1))
+      .filter((el) =>
+        search !== ""
+          ? el.username.toLowerCase().includes(search.toLowerCase())
+          : true
+      );
+    return withMe && profile !== null
+      ? [profile, ...profileFriend]
+      : profileFriend;
+  }, [friends, search, uuid, withMe, profile]);
 
   return (
     <Dialog

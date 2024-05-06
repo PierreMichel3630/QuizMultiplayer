@@ -5,8 +5,11 @@ import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
 const manifestForPlugIn: Partial<VitePWAOptions> = {
   registerType: "autoUpdate",
   includeAssets: ["**/*"],
-  workbox: {
+  injectManifest: {
     globPatterns: ["**/*"],
+  },
+  workbox: {
+    globPatterns: ["**/*", ".well-known/assetlinks.json"],
     runtimeCaching: [
       {
         urlPattern:
@@ -33,25 +36,12 @@ const manifestForPlugIn: Partial<VitePWAOptions> = {
         src: "/android-chrome-192x192.png",
         sizes: "192x192",
         type: "image/png",
-        purpose: "favicon",
-      },
-      {
-        src: "/android-chrome-512x512.png",
-        sizes: "512x512",
-        type: "image/png",
-        purpose: "favicon",
-      },
-      {
-        src: "/apple-touch-icon.png",
-        sizes: "180x180",
-        type: "image/png",
-        purpose: "apple touch icon",
       },
       {
         src: "/maskable.png",
         sizes: "512x512",
         type: "image/png",
-        purpose: "any maskable",
+        purpose: "maskable",
       },
     ],
     theme_color: "#171717",

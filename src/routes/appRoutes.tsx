@@ -1,11 +1,16 @@
+import { AccomplishmentPage } from "src/pages/AccomplishmentPage";
 import { CategoryPage } from "src/pages/CategoryPage";
+import { ConfidentialityPage } from "src/pages/ConfidentialityPage";
+import { DiscordPage } from "src/pages/DiscordPage";
 import { FavoritePage } from "src/pages/FavoritePage";
 import { GenerateQuestionPage } from "src/pages/GenerateQuestionPage";
+import { MenuPage } from "src/pages/MenuPage";
 import { NotificationPage } from "src/pages/NotificationPage";
 import { ParameterPage } from "src/pages/ParameterPage";
 import { PeoplePage } from "src/pages/PeoplePage";
-import { PrivateGamePage } from "src/pages/PrivateGamePage";
+import { PersonalizedPage } from "src/pages/PersonalizedPage";
 import { ProfilPage } from "src/pages/ProfilPage";
+import { RankingPage } from "src/pages/RankingPage";
 import { ThemePage } from "src/pages/ThemePage";
 import { ThemesPage } from "src/pages/ThemesPage";
 import { AdminPage } from "src/pages/admin/AdminPage";
@@ -15,12 +20,7 @@ import { RegisterPage } from "src/pages/connect/RegisterPage";
 import { ResetPasswordPage } from "src/pages/connect/ResetPasswordPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { AdminRoutes } from "./adminPage";
-import { ConfidentialityPage } from "src/pages/ConfidentialityPage";
-import { AccomplishmentPage } from "src/pages/AccomplishmentPage";
-import { RankingPage } from "src/pages/RankingPage";
-import { PersonalizedPage } from "src/pages/PersonalizedPage";
-import { MenuPage } from "src/pages/MenuPage";
-import { DiscordPage } from "src/pages/DiscordPage";
+import { ComparePage } from "src/pages/ComparePage";
 
 export const AppRoutes = [
   {
@@ -38,10 +38,6 @@ export const AppRoutes = [
   {
     path: "/theme/:id",
     element: <ThemePage />,
-  },
-  {
-    path: "/privategame/:id",
-    element: <PrivateGamePage />,
   },
   {
     path: "/administration",
@@ -101,6 +97,14 @@ export const AppRoutes = [
     element: (
       <ProtectedRoute>
         <NotificationPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/compare",
+    element: (
+      <ProtectedRoute>
+        <ComparePage />
       </ProtectedRoute>
     ),
   },

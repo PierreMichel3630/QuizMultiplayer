@@ -15,7 +15,7 @@ import { percent, px } from "csx";
 import { Fragment, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { CountryBlock } from "src/component/CountryBlock";
 import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
@@ -26,6 +26,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AppsIcon from "@mui/icons-material/Apps";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import BrushIcon from "@mui/icons-material/Brush";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import GroupsIcon from "@mui/icons-material/Groups";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -40,6 +41,7 @@ interface Menu {
   label: string;
   icon: JSX.Element;
   to: string;
+  state?: unknown;
 }
 
 export const MenuPage = () => {
@@ -104,6 +106,13 @@ export const MenuPage = () => {
         to: "/accomplishments",
       },
       {
+        label: t("commun.compare"),
+        icon: <CompareArrowsIcon />,
+        value: "compare",
+        to: "/compare",
+        state: { profile1: profile },
+      },
+      {
         value: "notifications",
         label: t("commun.notifications"),
         icon: (
@@ -120,7 +129,7 @@ export const MenuPage = () => {
         to: "/parameter",
       },
     ],
-    [notifications, t]
+    [notifications, profile, t]
   );
 
   const allMenu = useMemo(
@@ -213,8 +222,11 @@ export const MenuPage = () => {
               <Fragment key={index}>
                 <ListItem
                   disablePadding
-                  component={Link}
-                  to={menu.to}
+                  onClick={() =>
+                    navigate(menu.to, {
+                      state: menu.state,
+                    })
+                  }
                   sx={{ backgroundColor: Colors.white }}
                 >
                   <ListItemButton>

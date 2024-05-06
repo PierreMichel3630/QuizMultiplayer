@@ -22,17 +22,17 @@ export const UserContext = createContext<{
     localStorage.getItem("uuid") !== null
       ? (localStorage.getItem("uuid")! as string)
       : crypto.randomUUID(),
-  setUuid: (uuid: string) => {},
+  setUuid: () => {},
   username: "Player 1",
-  setUsername: (username: string) => {},
+  setUsername: () => {},
   language:
     localStorage.getItem("language") !== null
       ? (JSON.parse(localStorage.getItem("language")!) as Language)
       : LANGUAGES[0],
   languages: [],
-  setLanguage: (language: Language) => {},
+  setLanguage: () => {},
   mode: "light",
-  setMode: (mode: "light" | "dark") => {},
+  setMode: () => {},
 });
 
 export const useUser = () => useContext(UserContext);

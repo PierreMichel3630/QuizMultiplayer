@@ -45,7 +45,7 @@ export const DonutGames = ({ scores, totalScore, totalSolo }: Props) => {
             ];
           } else {
             const other = { ...acc[0], value: acc[0].value + score.games };
-            return [other, ...acc.filter((el, index) => index !== 0)];
+            return [other, ...acc.filter((_el, index) => index !== 0)];
           }
         },
         [
@@ -77,7 +77,7 @@ export const DonutGames = ({ scores, totalScore, totalSolo }: Props) => {
             ];
           } else {
             const other = { ...acc[0], value: acc[0].value + score.duelgames };
-            return [other, ...acc.filter((el, index) => index !== 0)];
+            return [other, ...acc.filter((_el, index) => index !== 0)];
           }
         },
         [

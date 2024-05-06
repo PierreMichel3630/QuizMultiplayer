@@ -29,7 +29,9 @@ const AuthContext = createContext<{
   deleteAccount: () => void;
   passwordReset: (
     email: string
-  ) => Promise<{ data: {}; error: null } | { data: null; error: AuthError }>;
+  ) => Promise<
+    { data: object; error: null } | { data: null; error: AuthError }
+  >;
   updatePassword: (password: string) => Promise<UserResponse>;
 }>({
   user:
@@ -38,7 +40,7 @@ const AuthContext = createContext<{
       : null,
   deleteAccount: () => {},
   profile: null,
-  setProfile: (value: Profile) => {},
+  setProfile: () => {},
   login: (email: string, password: string) => signInWithEmail(email, password),
   logout: () => signOut(),
   passwordReset: (email: string) => passwordReset(email),
@@ -59,7 +61,6 @@ export const AuthProviderSupabase = ({ children }: Props) => {
       ? (JSON.parse(localStorage.getItem("user")!) as User)
       : null
   );
-  const [auth, setAuth] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(user));
@@ -75,15 +76,11 @@ export const AuthProviderSupabase = ({ children }: Props) => {
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event == "PASSWORD_RECOVERY") {
-        setAuth(false);
-      } else if (event === "SIGNED_IN") {
+      if (event === "SIGNED_IN") {
         setUser(session !== null ? session.user : null);
-        setAuth(true);
       } else if (event === "SIGNED_OUT") {
         setUser(null);
         setProfile(null);
-        setAuth(false);
       }
     });
     return () => {
@@ -96,7 +93,6 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     localStorage.clear();
     setUser(null);
     setProfile(null);
-    setAuth(false);
   };
 
   return (

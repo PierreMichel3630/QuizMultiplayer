@@ -1,5 +1,4 @@
 import { Button, Grid, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
 
 export const GenerateQuestionPage = () => {
   /*

@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet-async";
 import { Navigate, useLocation } from "react-router-dom";
 import { EndDuelGameBlock } from "src/component/play/EndDuelGameBlock";
 import { Colors } from "src/style/Colors";
+import { CancelDuelGameBlock } from "src/component/play/CancelDuelGameBlock";
 
 export const RecapDuelPage = () => {
   const { t } = useTranslation();
@@ -14,6 +15,8 @@ export const RecapDuelPage = () => {
   const game = location.state ? location.state.game : undefined;
   const elo = location.state ? location.state.elo : undefined;
   const questions = location.state ? location.state.questions : [];
+
+  console.log(location.state);
 
   return (
     <Container
@@ -35,8 +38,10 @@ export const RecapDuelPage = () => {
           p: 1,
         }}
       >
-        {location.state && game && elo ? (
+        {location.state && game && elo && game.start ? (
           <EndDuelGameBlock game={game} elo={elo} questions={questions} />
+        ) : location.state && game && !game.start ? (
+          <CancelDuelGameBlock game={game} />
         ) : (
           <Navigate to="/" replace />
         )}

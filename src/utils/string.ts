@@ -1,4 +1,3 @@
-import { distance } from "fastest-levenshtein";
 import { compareTwoStrings } from "string-similarity";
 
 export const formatNumber = (n: number) => {

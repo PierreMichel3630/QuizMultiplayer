@@ -11,20 +11,21 @@ import { useState } from "react";
 import { style } from "typestyle";
 import { AccountBadge } from "../AccountBadge";
 
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import BrushIcon from "@mui/icons-material/Brush";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import LogoutIcon from "@mui/icons-material/Logout";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { User } from "@supabase/supabase-js";
 import { important, px } from "csx";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { AvatarAccount } from "../avatar/AvatarAccount";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import SettingsIcon from "@mui/icons-material/Settings";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import { useApp } from "src/context/AppProvider";
-import BrushIcon from "@mui/icons-material/Brush";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 
 const divCss = style({
   display: "flex",
@@ -36,6 +37,7 @@ interface Setting {
   name: string;
   url: string;
   icon: JSX.Element;
+  state?: unknown;
 }
 
 interface Props {
@@ -61,6 +63,12 @@ export const AccountMenu = ({ user }: Props) => {
             name: t("commun.myaccomplishments"),
             icon: <EmojiEventsIcon />,
             url: "/accomplishments",
+          },
+          {
+            name: t("commun.compare"),
+            icon: <CompareArrowsIcon />,
+            url: "/compare",
+            state: { profile1: profile },
           },
           {
             name: t("commun.notifications"),
@@ -118,9 +126,11 @@ export const AccountMenu = ({ user }: Props) => {
     refreshFriends();
   };
 
-  const goTo = (url: string) => {
+  const goTo = (url: string, state: unknown) => {
     handleCloseUserMenu();
-    navigate(url);
+    navigate(url, {
+      state: state,
+    });
   };
 
   return (
@@ -168,7 +178,7 @@ export const AccountMenu = ({ user }: Props) => {
         {settings.map((setting, index) => (
           <MenuItem
             key={index}
-            onClick={() => goTo(setting.url)}
+            onClick={() => goTo(setting.url, setting.state)}
             sx={{ minHeight: "auto" }}
           >
             <ListItemIcon>{setting.icon}</ListItemIcon>

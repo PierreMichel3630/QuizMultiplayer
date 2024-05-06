@@ -115,6 +115,7 @@ export const PlayPage = () => {
               {mode === "duel" && (
                 <Grid item xs={12}>
                   <SelectorProfileBlock
+                    label={t("commun.selectadv")}
                     profile={profileAdv}
                     onDelete={() => setProfileAdv(undefined)}
                     onChange={() => setOpenModalFriend(true)}

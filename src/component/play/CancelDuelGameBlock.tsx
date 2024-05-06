@@ -121,7 +121,7 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
         </Grid>
         <Grid item xs={12}>
           <ButtonColor
-            value={Colors.grey}
+            value={Colors.green}
             label={t("commun.returnhome")}
             icon={HomeIcon}
             onClick={() => navigate("/")}

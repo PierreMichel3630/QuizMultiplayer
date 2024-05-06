@@ -15,8 +15,8 @@ const MessageContext = createContext<{
 }>({
   message: "",
   severity: "error",
-  setMessage: (value: string) => {},
-  setSeverity: (value: AlertColor) => {},
+  setMessage: () => {},
+  setSeverity: () => {},
 });
 
 export const useMessage = () => useContext(MessageContext);

@@ -1,5 +1,5 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
-import { RealtimeChannel } from "@supabase/supabase-js";
+import { RealtimeChannel, RealtimePresenceState } from "@supabase/supabase-js";
 import { px, viewHeight } from "csx";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -14,7 +14,6 @@ import { QuestionDuelBlock } from "src/component/QuestionBlock";
 import { ResponseDuelBlock } from "src/component/ResponseBlock";
 import { RoundTimer, VerticalTimer } from "src/component/Timer";
 import { AvatarAccount } from "src/component/avatar/AvatarAccount";
-import { CancelDuelGameBlock } from "src/component/play/CancelDuelGameBlock";
 import { WaitPlayerDuelGameBlock } from "src/component/play/WaitPlayerDuelGameBlock";
 import { useUser } from "src/context/UserProvider";
 import { DuelGame, DuelGameChange } from "src/models/DuelGame";
@@ -34,7 +33,6 @@ export const DuelPage = () => {
 
   const [players, setPlayers] = useState<Array<string>>([]);
   const [game, setGame] = useState<undefined | DuelGame>(undefined);
-  const [end, setEnd] = useState(false);
   const [channel, setChannel] = useState<RealtimeChannel | undefined>(
     undefined
   );
@@ -63,7 +61,7 @@ export const DuelPage = () => {
       }
     };
     getGame();
-  }, [uuidGame]);
+  }, [navigate, uuidGame]);
 
   const getPlayer2 = async (uuid: string | null) => {
     if (uuid !== null) {
@@ -83,7 +81,9 @@ export const DuelPage = () => {
           },
         })
         .on("presence", { event: "sync" }, async () => {
-          const newState = channel.presenceState();
+          const newState = channel.presenceState() as RealtimePresenceState<{
+            uuid: string;
+          }>;
           const uuids = newState.uuid ? newState.uuid.map((el) => el.uuid) : [];
           setPlayers(uuids);
         })
@@ -123,8 +123,9 @@ export const DuelPage = () => {
             table: "duelgame",
             filter: `uuid=eq.${game.uuid}`,
           },
-          (payload) => {
+          () => {
             channel.unsubscribe();
+            console.log(game);
             navigate(`/recapduel`, {
               state: {
                 game: game,
@@ -370,8 +371,6 @@ export const DuelPage = () => {
                   )}
                 </Box>
               </Box>
-            ) : end ? (
-              <CancelDuelGameBlock game={game} />
             ) : (
               <Box
                 sx={{

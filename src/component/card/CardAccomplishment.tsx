@@ -1,5 +1,9 @@
 import { Paper, Grid, Typography } from "@mui/material";
-import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
+import {
+  Accomplishment,
+  StatAccomplishment,
+  StatAccomplishmentEnum,
+} from "src/models/Accomplishment";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { useTranslation } from "react-i18next";
 import { Colors } from "src/style/Colors";
@@ -16,7 +20,7 @@ export const CardAccomplishment = ({
   isFinish,
 }: Props) => {
   const { t } = useTranslation();
-  const champ = stat ? stat[accomplishment.champ] : 0;
+  const champ = stat ? stat[accomplishment.champ as StatAccomplishmentEnum] : 0;
   const value = Array.isArray(champ) ? champ.length : champ;
   return (
     <Paper

@@ -76,7 +76,7 @@ export const SoloPage = () => {
             table: "sologame",
             filter: `uuid=eq.${game.uuid}`,
           },
-          (payload) => {
+          () => {
             channel.unsubscribe();
             navigate(`/recapsolo`, {
               state: {
