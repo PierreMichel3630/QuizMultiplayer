@@ -1,14 +1,14 @@
-import { Button, Divider, Grid, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid, Typography } from "@mui/material";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "src/context/AppProvider";
-import { useBreakpoint } from "src/utils/mediaQuery";
-import { CardTheme } from "./card/CardTheme";
-import { sortByName } from "src/utils/sort";
 import { useUser } from "src/context/UserProvider";
-import { searchString } from "src/utils/string";
 import { Category } from "src/models/Category";
+import { sortByName } from "src/utils/sort";
+import { searchString } from "src/utils/string";
+import { CardTheme } from "./card/CardTheme";
+import { px } from "csx";
 
 interface Props {
   search?: string;
@@ -33,19 +33,9 @@ export const FavoriteBlock = ({ search, category }: Props) => {
       : themeFilter;
   }, [themes, favorites, search, language.iso, category]);
 
-  const breakpoint = useBreakpoint();
-  const cols = {
-    xs: 3,
-    sm: 2,
-    md: 2,
-    lg: 1,
-    xl: 1,
-  }[breakpoint];
-  const numberCols = 12;
-  const itemPerLine = numberCols / cols;
-  const themesDisplay = [...themesFavorite]
-    .splice(0, itemPerLine)
-    .sort((a, b) => sortByName(language, a, b));
+  const themesDisplay = [...themesFavorite].sort((a, b) =>
+    sortByName(language, a, b)
+  );
 
   return (
     themesFavorite.length > 0 && (
@@ -71,11 +61,22 @@ export const FavoriteBlock = ({ search, category }: Props) => {
             </Button>
           )}
         </Grid>
-        {themesDisplay.map((theme) => (
-          <Grid item xs={3} sm={2} md={1} lg={1} key={theme.id}>
-            <CardTheme theme={theme} />
-          </Grid>
-        ))}
+        <Grid item xs={12}>
+          <Box
+            sx={{
+              display: "flex",
+              gap: px(5),
+              overflowX: "auto",
+              scrollbarWidth: "none",
+            }}
+          >
+            {themesDisplay.map((theme) => (
+              <Box key={theme.id} sx={{ maxWidth: px(100) }}>
+                <CardTheme theme={theme} />
+              </Box>
+            ))}
+          </Box>
+        </Grid>
         <Grid item xs={12}>
           <Divider sx={{ borderBottomWidth: 5 }} />
         </Grid>

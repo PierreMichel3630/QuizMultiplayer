@@ -1,7 +1,5 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
-  Box,
-  Chip,
   Divider,
   FormControl,
   FormHelperText,
@@ -14,10 +12,10 @@ import { useFormik } from "formik";
 import deburr from "lodash.deburr";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
+import { insertCategoryTheme } from "src/api/category";
 import { BUCKET_THEME, URL_STORAGE, storeFile } from "src/api/storage";
 import { insertTheme, updateTheme } from "src/api/theme";
 import { ButtonColor } from "src/component/Button";
-import { InputEnter } from "src/component/Input";
 import { SelectCategory } from "src/component/Select";
 import { FileUploadInput } from "src/component/input/FileUploadInput";
 import { useMessage } from "src/context/MessageProvider";
@@ -42,7 +40,6 @@ export const ThemeForm = ({ validate, theme }: Props) => {
     image: null | File | string;
     background: null | File | string;
     category: null | Category;
-    themes: Array<number>;
   } = {
     namefr: theme ? theme.name["fr-FR"] : "",
     nameen: theme ? theme.name["en-US"] : "",
@@ -50,7 +47,6 @@ export const ThemeForm = ({ validate, theme }: Props) => {
     image: theme ? theme.image : null,
     background: theme ? theme.background : null,
     category: theme ? theme.category : null,
-    themes: theme ? theme.themes : [],
   };
 
   const validationSchema = Yup.object().shape({
@@ -60,7 +56,6 @@ export const ThemeForm = ({ validate, theme }: Props) => {
     image: Yup.mixed().nullable(),
     background: Yup.mixed().nullable(),
     category: Yup.mixed().nullable(),
-    themes: Yup.array().of(Yup.number()),
   });
 
   const formik = useFormik({
@@ -114,30 +109,26 @@ export const ThemeForm = ({ validate, theme }: Props) => {
               ? URL_STORAGE + BUCKET_THEME + "/" + image
               : image,
           color: values.color,
-          category: values.category ? values.category.id : 1,
           background:
             background !== null && typeof values.background !== "string"
               ? URL_STORAGE + BUCKET_THEME + "/" + background
               : background,
-          themes: values.themes,
         };
-        if (theme) {
-          const { error } = await updateTheme({ id: theme.id, ...newTheme });
-          if (error) {
-            setSeverity("error");
-            setMessage(t("commun.error"));
-          } else {
-            validate();
-          }
+        const { error, data } = theme
+          ? await updateTheme({ id: theme.id, ...newTheme })
+          : await insertTheme(newTheme);
+        if (error) {
+          setSeverity("error");
+          setMessage(t("commun.error"));
         } else {
-          const { data, error } = await insertTheme(newTheme);
-          if (error) {
-            setSeverity("error");
-            setMessage(t("commun.error"));
-          } else {
-            await updateTheme({ id: data.id, themes: [data.id] });
-            validate();
+          if (!theme) {
+            const insertCategory = {
+              theme: data.id,
+              category: values.category ? values.category.id : 1,
+            };
+            await insertCategoryTheme(insertCategory);
           }
+          validate();
         }
       } catch (err) {
         setSeverity("error");
@@ -258,41 +249,6 @@ export const ThemeForm = ({ validate, theme }: Props) => {
         <Grid item xs={12}>
           <FileUploadInput formik={formik} field="background" />
         </Grid>
-        {theme && (
-          <>
-            <Grid item xs={12}>
-              <Divider />
-            </Grid>
-            <Grid item xs={12}>
-              <InputEnter
-                label={t("commun.themes")}
-                onChange={(value) =>
-                  formik.setFieldValue(`themes`, [
-                    ...formik.values.themes,
-                    value,
-                  ])
-                }
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Box sx={{ display: "flex", gap: 1 }}>
-                {formik.values.themes.map((id, i) => (
-                  <Chip
-                    key={i}
-                    label={id}
-                    onDelete={() =>
-                      formik.setFieldValue(
-                        `themes`,
-                        formik.values.themes.filter((r) => r !== id)
-                      )
-                    }
-                  />
-                ))}
-              </Box>
-            </Grid>
-          </>
-        )}
-
         <Grid item xs={12}>
           <ButtonColor
             value={Colors.green}

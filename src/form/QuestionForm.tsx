@@ -13,7 +13,11 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
-import { insertQuestion, updateQuestion } from "src/api/question";
+import {
+  insertQuestion,
+  insertQuestionTheme,
+  updateQuestion,
+} from "src/api/question";
 import { ButtonColor } from "src/component/Button";
 import { InputEnter } from "src/component/Input";
 import { SelectDifficulty, SelectIso } from "src/component/Select";
@@ -97,17 +101,23 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
           question: questionLanguage,
           response: responseLanguage,
           image: values.image,
-          theme: values.theme ? values.theme.id : 1,
           difficulty: values.difficulty,
           typeResponse: values.typeResponse,
         };
-        const { error } = question
+        const { error, data } = question
           ? await updateQuestion({ id: question.id, ...newQuestion })
           : await insertQuestion(newQuestion);
         if (error) {
           setSeverity("error");
           setMessage(t("commun.error"));
         } else {
+          if (!question) {
+            const insertTheme = {
+              question: data.id,
+              theme: values.theme ? values.theme.id : 1,
+            };
+            await insertQuestionTheme(insertTheme);
+          }
           validate();
         }
       } catch (err) {

@@ -36,6 +36,7 @@ export const SoloPage = () => {
   const [response, setResponse] = useState<undefined | ResponseSolo>(undefined);
   const [score, setScore] = useState<number>(0);
   const [timer, setTimer] = useState<undefined | number>(undefined);
+  const [audio, setAudio] = useState<undefined | HTMLAudioElement>(undefined);
 
   useEffect(() => {
     const getGame = () => {
@@ -89,8 +90,14 @@ export const SoloPage = () => {
           }
         )
         .on("broadcast", { event: "question" }, (value) => {
-          setQuestion(value.payload as QuestionSolo);
-          setTimer(14);
+          const questionSolo = value.payload as QuestionSolo;
+          if (questionSolo.audio) {
+            const audio = new Audio(questionSolo.audio);
+            audio.play();
+            setAudio(audio);
+          }
+          setQuestion(questionSolo);
+          setTimer(questionSolo.time);
           setResponse(undefined);
           scrollTop();
         })
@@ -114,6 +121,9 @@ export const SoloPage = () => {
         })
         .subscribe();
       setChannel(channel);
+      return () => {
+        channel.unsubscribe();
+      };
     }
   }, [uuid, game, questions, score, navigate]);
 
@@ -127,6 +137,9 @@ export const SoloPage = () => {
           language: language.iso,
         },
       });
+      if (audio) {
+        audio.pause();
+      }
     }
   };
 

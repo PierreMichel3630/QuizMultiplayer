@@ -24,7 +24,7 @@ export const ImageThemeBlock = ({ theme, size = percent(100) }: Props) => {
         src={theme.image}
         style={{
           maxWidth: percent(80),
-          aspectRatio: "inherit",
+          maxHeight: Number.isFinite(size) ? Number(size) * 0.8 : size,
         }}
       />
     </Box>

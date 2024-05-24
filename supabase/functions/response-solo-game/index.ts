@@ -1,4 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
+import moment from "https://esm.sh/moment";
+
 import { corsHeaders } from "../_shared/cors.ts";
 import { generateQuestion } from "../_shared/generateQuestion.ts";
 import { DIFFICULTIES } from "../_shared/random.ts";
@@ -52,6 +54,7 @@ Deno.serve(async (req) => {
   const previousIdQuestion = questions.map((el) => el.id).join(",");
   let response = undefined;
   let question = undefined;
+  let time = 15;
   let isAnswer = false;
 
   const difficulties = getDifficultyQuestion(points);
@@ -81,7 +84,10 @@ Deno.serve(async (req) => {
         if (result) {
           await supabase
             .from("sologame")
-            .update({ points: points, questions: [...questions, question] })
+            .update({
+              points: points,
+              questions: [...questions, { ...question, response: response }],
+            })
             .eq("id", id);
           setTimeout(async () => {
             await supabase.functions.invoke("response-solo-game", {
@@ -91,7 +97,9 @@ Deno.serve(async (req) => {
         } else {
           await supabase
             .from("sologame")
-            .update({ questions: [...questions, question] })
+            .update({
+              questions: [...questions, { ...question, response: response }],
+            })
             .eq("id", id);
           await supabase.rpc("updatescore", {
             player: player,
@@ -112,9 +120,12 @@ Deno.serve(async (req) => {
           theme.generatequestion !== null
             ? theme.generatequestion
             : Math.random() < 0.5;
+        let responsesQcm: Array<any> = [];
+        let qcm = false;
         if (isGenerate) {
           const difficulty = difficulties[difficulties.length - 1];
-          newQuestion = generateQuestion(Number(theme.id), difficulty);
+          newQuestion = generateQuestion(Number(theme.id), points, difficulty);
+          time = newQuestion.time;
         } else {
           const { data } = await supabase
             .from("randomquestion")
@@ -143,84 +154,120 @@ Deno.serve(async (req) => {
                   result: true,
                 },
               });
-              setTimeout(async () => {
-                await supabase.from("sologame").delete().eq("id", id);
-              }, 2000);
-            }
-          }
-        }
-        if (newQuestion) {
-          question = newQuestion;
-          response = newQuestion.response;
-          let responsesQcm: Array<any> = [];
-          const qcm =
-            newQuestion.isqcm === null
-              ? Math.random() < 1 - 0.05 * points
-              : newQuestion.isqcm;
-          if (qcm) {
-            const responses = Array.isArray(newQuestion.response["en-US"])
-              ? newQuestion.allresponse
-                ? newQuestion.response["en-US"]
-                : [newQuestion.response["en-US"][0]]
-              : [newQuestion.response["en-US"]];
-
-            const res = await supabase
-              .from("randomresponse")
-              .select("*")
-              .eq("type", newQuestion.typeResponse)
-              .not("usvalue", "in", `(${responses.join(",")})`)
-              .limit(3);
-
-            const res2 = await supabase
-              .from("randomresponse")
-              .select("*")
-              .eq("type", newQuestion.typeResponse)
-              .in("usvalue", responses)
-              .limit(1);
-            responsesQcm = [...res.data, ...res2.data]
-              .map((el) => el.value)
-              .sort(() => Math.random() - 0.5);
-          }
-          channel.send({
-            type: "broadcast",
-            event: "question",
-            payload: {
-              question: newQuestion.question,
-              difficulty: newQuestion.difficulty,
-              image: newQuestion.image,
-              theme: newQuestion.theme,
-              isqcm: qcm,
-              responses: responsesQcm,
-            },
-          });
-          setTimeout(async () => {
-            if (!isAnswer) {
-              await supabase
-                .from("sologame")
-                .update({ questions: [...questions, question] })
-                .eq("id", id);
-              channel.send({
-                type: "broadcast",
-                event: "validate",
-                payload: {
-                  result: false,
-                  answer: "",
-                  response: response,
-                  points,
-                },
-              });
-              setTimeout(async () => {
-                await supabase.from("sologame").delete().eq("id", id);
-              }, 2000);
               await supabase.rpc("updatescore", {
                 player: player,
                 themeid: theme.id,
                 newpoints: points,
               });
               channel.unsubscribe();
+              setTimeout(async () => {
+                await supabase.from("sologame").delete().eq("id", id);
+              }, 2000);
             }
-          }, 15000);
+          }
+          if (newQuestion) {
+            qcm = newQuestion.isqcm === null ? points < 10 : newQuestion.isqcm;
+            time = qcm ? 15 : 15;
+            newQuestion = { ...newQuestion, time: time };
+            response = newQuestion.response;
+            if (qcm) {
+              if (newQuestion.order) {
+                const res = await supabase
+                  .from("order")
+                  .select("*")
+                  .eq("type", newQuestion.typeResponse)
+                  .limit(4);
+                responsesQcm = [...res.data]
+                  .map((el) => el.name)
+                  .sort(() => Math.random() - 0.5);
+                const responseOrder =
+                  newQuestion.order === "ASC"
+                    ? [...res.data].sort((a, b) =>
+                        a.format === "DATE"
+                          ? moment(a.value, "DD/MM/YYYY").diff(
+                              moment(b.value, "DD/MM/YYYY")
+                            )
+                          : a.value - b.value
+                      )[0]
+                    : [...res.data].sort((a, b) =>
+                        a.format === "DATE"
+                          ? moment(b.value, "DD/MM/YYYY").diff(
+                              moment(a.value, "DD/MM/YYYY")
+                            )
+                          : b.value - a.value
+                      )[0];
+                response = responseOrder.name;
+              } else {
+                const responses = Array.isArray(newQuestion.response["en-US"])
+                  ? newQuestion.allresponse
+                    ? newQuestion.response["en-US"]
+                    : [newQuestion.response["en-US"][0]]
+                  : [newQuestion.response["en-US"]];
+
+                const res = await supabase
+                  .from("randomresponse")
+                  .select("*")
+                  .eq("type", newQuestion.typeResponse)
+                  .not("usvalue", "in", `(${responses.join(",")})`)
+                  .limit(3);
+
+                const res2 = await supabase
+                  .from("randomresponse")
+                  .select("*")
+                  .eq("type", newQuestion.typeResponse)
+                  .in("usvalue", responses)
+                  .limit(1);
+                responsesQcm = [...res.data, ...res2.data]
+                  .map((el) => el.value)
+                  .sort(() => Math.random() - 0.5);
+              }
+            }
+          }
         }
+
+        question = newQuestion;
+        channel.send({
+          type: "broadcast",
+          event: "question",
+          payload: {
+            question: newQuestion.question,
+            difficulty: newQuestion.difficulty,
+            image: newQuestion.image,
+            audio: newQuestion.audio,
+            extra: newQuestion.extra,
+            theme: newQuestion.theme,
+            isqcm: qcm,
+            responses: responsesQcm,
+            time: newQuestion.time,
+          },
+        });
+        setTimeout(async () => {
+          if (!isAnswer) {
+            await supabase
+              .from("sologame")
+              .update({ questions: [...questions, question] })
+              .eq("id", id);
+            channel.send({
+              type: "broadcast",
+              event: "validate",
+              payload: {
+                result: false,
+                answer: "",
+                response: response,
+                points,
+              },
+            });
+            setTimeout(async () => {
+              await supabase.from("sologame").delete().eq("id", id);
+            }, 2000);
+            await supabase.rpc("updatescore", {
+              player: player,
+              themeid: theme.id,
+              newpoints: points,
+            });
+            channel.unsubscribe();
+          }
+        }, time * 1000);
       }
     });
 

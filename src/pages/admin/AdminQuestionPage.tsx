@@ -52,7 +52,7 @@ export const AdminQuestionPage = () => {
     if (theme) {
       setQuestion(undefined);
       selectQuestionByThemesAndDifficulty(
-        theme.themes,
+        theme.id,
         page - 1,
         ITEMPERPAGE,
         difficulty

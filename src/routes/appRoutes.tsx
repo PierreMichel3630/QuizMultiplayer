@@ -1,9 +1,9 @@
 import { AccomplishmentPage } from "src/pages/AccomplishmentPage";
 import { CategoryPage } from "src/pages/CategoryPage";
+import { ComparePage } from "src/pages/ComparePage";
 import { ConfidentialityPage } from "src/pages/ConfidentialityPage";
 import { DiscordPage } from "src/pages/DiscordPage";
 import { FavoritePage } from "src/pages/FavoritePage";
-import { GenerateQuestionPage } from "src/pages/GenerateQuestionPage";
 import { MenuPage } from "src/pages/MenuPage";
 import { NotificationPage } from "src/pages/NotificationPage";
 import { ParameterPage } from "src/pages/ParameterPage";
@@ -20,8 +20,6 @@ import { RegisterPage } from "src/pages/connect/RegisterPage";
 import { ResetPasswordPage } from "src/pages/connect/ResetPasswordPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { AdminRoutes } from "./adminPage";
-import { ComparePage } from "src/pages/ComparePage";
-
 export const AppRoutes = [
   {
     path: "/",
@@ -51,10 +49,6 @@ export const AppRoutes = [
   {
     path: "/login",
     element: <LoginPage />,
-  },
-  {
-    path: "/generate",
-    element: <GenerateQuestionPage />,
   },
   {
     path: "/register",

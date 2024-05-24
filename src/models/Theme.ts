@@ -11,7 +11,6 @@ export interface Theme {
   category: Category;
   background: null | string;
   isfirst: boolean;
-  themes: Array<number>;
   enabled: boolean;
 }
 
@@ -19,9 +18,7 @@ export interface ThemeInsert {
   name: JsonLanguage;
   image: null | string;
   color: string;
-  category: number;
   background: null | string;
-  themes: Array<number>;
 }
 
 export interface ThemeUpdate {
@@ -30,9 +27,7 @@ export interface ThemeUpdate {
   name?: JsonLanguage;
   image?: null | string;
   color?: string;
-  category?: number;
   background?: null | string;
-  themes?: Array<number>;
 }
 
 export interface ThemeDifficulty {

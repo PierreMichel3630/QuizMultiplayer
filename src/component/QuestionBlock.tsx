@@ -32,7 +32,10 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
           <JsonLanguageBlock
             variant="h2"
             color="text.secondary"
-            sx={{ fontSize: 40 }}
+            sx={{
+              fontSize: question.extra ? 30 : 40,
+              mb: question.extra ? 2 : 0,
+            }}
             value={question.question}
           />
           {question.image && (
@@ -48,6 +51,17 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
             >
               <ImageQuestionBlock src={question.image} />
             </Box>
+          )}
+          {question.extra && (
+            <JsonLanguageBlock
+              variant="h2"
+              color="text.secondary"
+              sx={{
+                fontSize: 20,
+                fontStyle: "italic",
+              }}
+              value={question.extra}
+            />
           )}
           <Box
             sx={{
@@ -94,6 +108,17 @@ export const QuestionDuelBlock = ({ question }: PropsDuel) => {
             sx={{ fontSize: 40 }}
             value={question.question}
           />
+          {question.extra && (
+            <JsonLanguageBlock
+              variant="h2"
+              color="text.secondary"
+              sx={{
+                fontSize: 20,
+                fontStyle: "italic",
+              }}
+              value={question.extra}
+            />
+          )}
           {question.image && (
             <Box
               sx={{

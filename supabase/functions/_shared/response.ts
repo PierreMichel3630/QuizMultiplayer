@@ -37,7 +37,7 @@ const compareString = (a: string, b: string) =>
   );
 
 export const verifyResponse = (
-  response: Array<string> | number,
+  response: Array<string> | string | number,
   value: string
 ) => {
   let result = false;
@@ -46,6 +46,8 @@ export const verifyResponse = (
       const val = compareString(b, value) >= LIMIT;
       return acc || val;
     }, false);
+  } else if (typeof response === "string") {
+    result = compareString(response, value) >= LIMIT;
   } else {
     result = Number(response) === Number(value);
   }

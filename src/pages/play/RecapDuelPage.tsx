@@ -16,8 +16,6 @@ export const RecapDuelPage = () => {
   const elo = location.state ? location.state.elo : undefined;
   const questions = location.state ? location.state.questions : [];
 
-  console.log(location.state);
-
   return (
     <Container
       maxWidth="lg"

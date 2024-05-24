@@ -1,7 +1,13 @@
-import { QuestionInsert, QuestionUpdate } from "src/models/Question";
+import {
+  QuestionInsert,
+  QuestionThemeInsert,
+  QuestionUpdate,
+} from "src/models/Question";
 import { supabase } from "./supabase";
 
 export const SUPABASE_QUESTION_TABLE = "question";
+export const SUPABASE_QUESTIONTHEME_TABLE = "questiontheme";
+export const SUPABASE_RANDOMQUESTION_TABLE = "randomquestion";
 
 export const selectQuestionWithImage = () =>
   supabase
@@ -14,23 +20,23 @@ export const selectQuestionById = (id: number) =>
   supabase.from(SUPABASE_QUESTION_TABLE).select().eq("id", id).maybeSingle();
 
 export const selectQuestionByThemesAndDifficulty = (
-  themes: Array<number>,
+  theme: number,
   page: number,
   itemperpage: number,
   difficulty?: string
 ) =>
   difficulty
     ? supabase
-        .from(SUPABASE_QUESTION_TABLE)
+        .from(SUPABASE_RANDOMQUESTION_TABLE)
         .select()
-        .in("theme", themes)
+        .eq("theme", theme)
         .eq("difficulty", difficulty)
         .order("id", { ascending: true })
         .range(page * itemperpage, (page + 1) * itemperpage)
     : supabase
-        .from(SUPABASE_QUESTION_TABLE)
+        .from(SUPABASE_RANDOMQUESTION_TABLE)
         .select()
-        .in("theme", themes)
+        .eq("theme", theme)
         .order("id", { ascending: true })
         .range(page * itemperpage, (page + 1) * itemperpage);
 
@@ -40,17 +46,20 @@ export const countQuestionByThemeAndDifficulty = (
 ) =>
   difficulty
     ? supabase
-        .from(SUPABASE_QUESTION_TABLE)
+        .from(SUPABASE_RANDOMQUESTION_TABLE)
         .select("*", { count: "exact", head: true })
         .eq("difficulty", difficulty)
         .eq("theme", theme)
     : supabase
-        .from(SUPABASE_QUESTION_TABLE)
+        .from(SUPABASE_RANDOMQUESTION_TABLE)
         .select("*", { count: "exact", head: true })
         .eq("theme", theme);
 
 export const insertQuestion = (value: QuestionInsert) =>
   supabase.from(SUPABASE_QUESTION_TABLE).insert(value).select().single();
+
+export const insertQuestionTheme = (value: QuestionThemeInsert) =>
+  supabase.from(SUPABASE_QUESTIONTHEME_TABLE).insert(value);
 
 export const updateQuestion = (value: QuestionUpdate) =>
   supabase

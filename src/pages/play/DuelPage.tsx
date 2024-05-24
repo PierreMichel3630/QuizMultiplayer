@@ -40,6 +40,7 @@ export const DuelPage = () => {
   const [question, setQuestion] = useState<undefined | QuestionDuel>(undefined);
   const [response, setResponse] = useState<undefined | Response>(undefined);
   const [questions, setQuestions] = useState<Array<Question>>([]);
+  const [audio, setAudio] = useState<undefined | HTMLAudioElement>(undefined);
   const [elo, setElo] = useState<undefined | Elo>(undefined);
   const [responsePlayer1, setResponsePlayer1] = useState<
     undefined | ResponseDuel
@@ -121,26 +122,32 @@ export const DuelPage = () => {
             event: "DELETE",
             schema: "public",
             table: "duelgame",
-            filter: `uuid=eq.${game.uuid}`,
           },
-          () => {
-            channel.unsubscribe();
-            console.log(game);
-            navigate(`/recapduel`, {
-              state: {
-                game: game,
-                elo: elo,
-                questions: questions,
-              },
-            });
+          (payload) => {
+            if (payload.old.id === game.id) {
+              channel.unsubscribe();
+              navigate(`/recapduel`, {
+                state: {
+                  game: game,
+                  elo: elo,
+                  questions: questions,
+                },
+              });
+            }
           }
         )
         .on("broadcast", { event: "question" }, (value) => {
-          setQuestion(value.payload as QuestionDuel);
+          const questionduel = value.payload as QuestionDuel;
+          if (questionduel.audio) {
+            const audio = new Audio(questionduel.audio);
+            audio.play();
+            setAudio(audio);
+          }
+          setTimer(questionduel.time);
+          setQuestion(questionduel);
           setResponse(undefined);
           setResponsePlayer1(undefined);
           setResponsePlayer2(undefined);
-          setTimer(14);
         })
         .on("broadcast", { event: "endquestion" }, (value) => {
           setTimer(undefined);
@@ -183,6 +190,9 @@ export const DuelPage = () => {
           uuid: uuid,
         },
       });
+      if (audio) {
+        audio.pause();
+      }
     }
   };
 

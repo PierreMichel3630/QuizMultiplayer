@@ -41,8 +41,12 @@ export interface QuestionInsert {
   question: JsonLanguage;
   image: string | null;
   response: JsonLanguageArrayOrString;
-  theme: number;
   typeResponse: string;
+}
+
+export interface QuestionThemeInsert {
+  question: number;
+  theme: number;
 }
 
 export interface QuestionUpdate {
@@ -51,13 +55,15 @@ export interface QuestionUpdate {
   question?: JsonLanguage;
   image?: string | null;
   response?: JsonLanguageArrayOrString;
-  theme?: number;
   typeResponse?: string;
 }
 
 export interface QuestionSolo {
   image?: string;
+  audio?: string;
+  extra?: JsonLanguage;
   question: JsonLanguage;
+  time: number;
   difficulty: string;
   theme: Theme;
   isqcm: boolean;
@@ -65,10 +71,13 @@ export interface QuestionSolo {
 }
 
 export interface QuestionDuel {
+  audio?: string;
   image?: string;
+  extra?: JsonLanguage;
   question: JsonLanguage;
   difficulty: string;
   theme: Theme;
   isqcm: boolean;
   responses: Array<ResponseLanguageString>;
+  time: number;
 }

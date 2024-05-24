@@ -44,7 +44,7 @@ export const CardTheme = ({ theme, link }: Props) => {
         gap: px(5),
       }}
     >
-      <ImageThemeBlock theme={theme} />
+      <ImageThemeBlock theme={theme} size={90} />
       <JsonLanguageBlock
         variant="h6"
         sx={{ textAlign: "center" }}

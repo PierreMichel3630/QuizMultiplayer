@@ -1,14 +1,14 @@
-import { Button, Divider, Grid, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid, Typography } from "@mui/material";
 import { useMemo } from "react";
-import { useApp } from "src/context/AppProvider";
-import { Category } from "src/models/Category";
-import { JsonLanguageBlock } from "./JsonLanguageBlock";
-import { CardTheme } from "./card/CardTheme";
-import { sortByName } from "src/utils/sort";
-import { useUser } from "src/context/UserProvider";
-import { useBreakpoint } from "src/utils/mediaQuery";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { useApp } from "src/context/AppProvider";
+import { useUser } from "src/context/UserProvider";
+import { Category } from "src/models/Category";
+import { sortByName } from "src/utils/sort";
+import { JsonLanguageBlock } from "./JsonLanguageBlock";
+import { CardTheme } from "./card/CardTheme";
+import { px } from "csx";
 
 interface Props {
   category: Category;
@@ -33,20 +33,7 @@ export const CategoryBlock = ({ category }: Props) => {
     [category, themes]
   );
 
-  const breakpoint = useBreakpoint();
-  const cols = {
-    xs: 3,
-    sm: 2,
-    md: 2,
-    lg: 1,
-    xl: 1,
-  }[breakpoint];
-  const numberCols = 12;
-  const itemPerLine = numberCols / cols;
-  const themesDisplay = [...FirstThemesCategory, ...themesCategory].splice(
-    0,
-    itemPerLine
-  );
+  const themesDisplay = [...FirstThemesCategory, ...themesCategory];
 
   return (
     <Grid container spacing={1}>
@@ -69,11 +56,22 @@ export const CategoryBlock = ({ category }: Props) => {
           <Typography variant="h6">{t("commun.seeall")}</Typography>
         </Button>
       </Grid>
-      {themesDisplay.map((theme) => (
-        <Grid item xs={3} sm={2} md={1} lg={1} key={theme.id}>
-          <CardTheme theme={theme} />
-        </Grid>
-      ))}
+      <Grid item xs={12}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: px(5),
+            overflowX: "auto",
+            scrollbarWidth: "none",
+          }}
+        >
+          {themesDisplay.map((theme) => (
+            <Box key={theme.id} sx={{ maxWidth: px(100) }}>
+              <CardTheme theme={theme} />
+            </Box>
+          ))}
+        </Box>
+      </Grid>
       <Grid item xs={12}>
         <Divider sx={{ borderBottomWidth: 5 }} />
       </Grid>

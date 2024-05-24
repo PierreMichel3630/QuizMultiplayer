@@ -85,8 +85,8 @@ export const RecapSoloPage = () => {
                 {t("commun.questions")}
               </Typography>
             </Grid>
-            {questions.map((el) => (
-              <Fragment key={el.id}>
+            {questions.map((el, index) => (
+              <Fragment key={index}>
                 <Grid item xs={12}>
                   <CardSignalQuestion
                     question={el}
