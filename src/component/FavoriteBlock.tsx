@@ -1,14 +1,13 @@
 import { Box, Button, Divider, Grid, Typography } from "@mui/material";
+import { px } from "csx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
 import { sortByName } from "src/utils/sort";
 import { searchString } from "src/utils/string";
 import { CardTheme } from "./card/CardTheme";
-import { px } from "csx";
 
 interface Props {
   search?: string;
@@ -16,7 +15,6 @@ interface Props {
 }
 export const FavoriteBlock = ({ search, category }: Props) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const { language } = useUser();
   const { themes, favorites } = useApp();
@@ -53,9 +51,15 @@ export const FavoriteBlock = ({ search, category }: Props) => {
           {!(search !== "") && (
             <Button
               variant="outlined"
-              sx={{ textTransform: "uppercase", p: "2px 5px" }}
+              sx={{
+                textTransform: "uppercase",
+                "&:hover": {
+                  border: "2px solid currentColor",
+                },
+              }}
               color="secondary"
-              onClick={() => navigate(`/favorite`)}
+              size="small"
+              href={`/favorite`}
             >
               <Typography variant="h6">{t("commun.seeall")}</Typography>
             </Button>

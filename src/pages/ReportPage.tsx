@@ -1,0 +1,47 @@
+import { Box, Button, Grid, Typography } from "@mui/material";
+import { percent } from "csx";
+import { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
+import { HeadTitle } from "src/component/HeadTitle";
+import { ReportModal } from "src/component/modal/ReportModal";
+
+export const ReportPage = () => {
+  const { t } = useTranslation();
+
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Grid container>
+      <Helmet>
+        <title>{`${t("pages.report.title")} - ${t("appname")}`}</title>
+      </Helmet>
+      <Grid item xs={12}>
+        <HeadTitle title={t("pages.report.title")} />
+      </Grid>
+      <Grid item xs={12}>
+        <Box sx={{ width: percent(100), p: 1, mt: 2 }}>
+          <Grid container spacing={1}>
+            <Grid item xs={12} sx={{ textAlign: "center" }}>
+              <Typography variant="body1">
+                {t("commun.signalproblemtext")}
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                fullWidth
+                onClick={() => setOpen(true)}
+              >
+                <Typography variant="h6">
+                  {t("commun.reportproblem")}
+                </Typography>
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
+      </Grid>
+      <ReportModal open={open} close={() => setOpen(false)} />
+    </Grid>
+  );
+};

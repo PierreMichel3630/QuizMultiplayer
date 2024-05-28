@@ -113,7 +113,7 @@ export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
             </Typography>
             <AvatarAccountBadge
               profile={game.player1}
-              size={80}
+              size={60}
               color={COLORDUEL1}
             />
           </Box>
@@ -181,7 +181,7 @@ export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
           <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
             <AvatarAccountBadge
               profile={game.player2}
-              size={80}
+              size={60}
               color={COLORDUEL2}
             />
             <Typography variant="h2" sx={{ color: COLORDUEL2, fontSize: 35 }}>

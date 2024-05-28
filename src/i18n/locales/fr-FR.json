@@ -70,7 +70,7 @@
     "refuse": "Refuser",
     "delete": "Supprimer",
     "deleteaccount": "Supprimer mon compte",
-    "challenge": "{{username}} vous défie !",
+    "challenge": "<bold>{{username}}</bold> vous défie au thème : <bold>{{theme}}</bold>",
     "unknown": "inconnu",
     "waitplayer": "En attente du deuxième joueur",
     "gamebegin": "La partie va commencer",
@@ -153,7 +153,8 @@
     "launchpartie": "La partie va commencer",
     "menus": "Menus",
     "reportpropose": "Signaler un problème/ Proposer amélioration",
-    "signalproblemtext": "Vous pouvez signaler des problèmes techniques, proposer des questions ou thèmes en rejoignant le Discord.",
+    "improvetext": "Vous pouvez proposer des questions ou thèmes en rejoignant le Discord.",
+    "signalproblemtext": "Vous pouvez signaler des problèmes techniques, en cliquant sur le bouton suivant :",
     "joindiscord": "Rejoindre Discord",
     "pertheme": "Par thème",
     "selectplayer": "Sélectionner un joueur",
@@ -162,7 +163,21 @@
     "defeat": "Défaites",
     "draw": "Match nul",
     "select2player": "Sélectionner 2 joueurs à comparer",
-    "compare": "Comparer"
+    "compare": "Comparer",
+    "howtoplay": "Comment jouer ?",
+    "faq": "FAQ",
+    "installation": "Installer",
+    "modes": "Mode de Jeu",
+    "rules": "Étapes",
+    "warnings": "Avertissements",
+    "link": "Lien",
+    "reportproblem": "Signaler un problème",
+    "android": "Android",
+    "apple": "Apple",
+    "solution1": "Solution 1",
+    "solution2": "Solution 2",
+    "clickon": "Cliquez sur",
+    "installapplication": "Installer l'application"
   },
   "accomplishment": {
     "SOLO": "Succès Mode Solo",
@@ -184,10 +199,66 @@
   },
   "rules": {
     "step1": "Choisissez un thème",
-    "step2": "Sélectionnez un mode de jeu (Solo, Duel, Duel contre amis)"
+    "step2": "Sélectionnez un mode de jeu (Solo, Duel, Duel contre amis)",
+    "step3": "Réponder aux questions dans le temps imparti !"
+  },
+  "modes": {
+    "mode1": {
+      "title": "Solo",
+      "goal": "L'objectif est de faire la plus grande série de bonne réponse d'affilé sur le thème selectionné.",
+      "explain": "Les questions s'enchaînent à vous de répondre dans le temps imparti, une seule mauvaise réponse et c'est la fin de partie."
+    },
+    "mode2": {
+      "title": "Duel",
+      "goal": "L'objectif est de faire plus de points que votre adversaire.",
+      "explain": "Vous aurez 5 questions avec un temps imparti pour y répondre. Plus vous allez vite à répondre plus vous avez de points."
+    },
+    "mode3": {
+      "title": "Duel contre amis",
+      "goal": "L'objectif est de faire plus de points que votre ami.",
+      "explain": "Vous aurez 5 questions avec un temps imparti pour y répondre. Plus vous allez vite à répondre plus vous avez de points."
+    }
   },
   "warning": {
     "warning1": "Vous pouvez jouer sans vous connecter, mais vos scores ne seront pas sauvegardés."
+  },
+  "faq": {
+    "question1": {
+      "title": "Comment j'installe l'application ?",
+      "explain": "Pour installer l'application sur Téléphone, Tablette ou PC cliquez sur ce <anchor>{{link}}</anchor>"
+    },
+    "question2": {
+      "title": "Comment créer un compte ?",
+      "explain": "Cliquez sur ce <anchor>{{link}}</anchor>"
+    },
+    "question3": {
+      "title": "Comment j'ajoute un ami ?",
+      "explain": "Aller sur la page Joueurs (<anchor>{{link}}</anchor>), puis cliquer sur l'avatar du joueur que vous voulez ajouter. Une fois sur son profil, vous cliquez sur le bouton vert Ami"
+    },
+    "question4": {
+      "title": "Comment supprimer un ami ?",
+      "explain": "Aller sur la page Joueurs (<anchor>{{link}}</anchor>), puis cliquer sur l'avatar du joueur que vous voulez ajouter. Une fois sur son profil, vous cliquez sur le bouton rouge Ami"
+    },
+    "question5": {
+      "title": "Comment j'ajoute un thème ?",
+      "explain": "Cliquez sur ce <anchor>{{link}}</anchor>"
+    },
+    "question6": {
+      "title": "Comment j'ajoute une question ?",
+      "explain": "Cliquez sur ce <anchor>{{link}}</anchor>"
+    },
+    "question7": {
+      "title": "Comment je signale un problème ?",
+      "explain": "À la fin d'une partie vous pouvez signaler une question via le bouton Signaler. Si le problème n'est pas lier à une question aller sur la page signaler un problème (<anchor>{{link}}</anchor>)"
+    }
+  },
+  "installation": {
+    "android1": "Cliquez sur 'Installer' si vous voyez la notification en haut de votre écran",
+    "android2": "en haut à droite de votre écran",
+    "android3": "Dans le menu, ",
+    "apple1": "En haut à droite de la barre d'adresse, appuyez sur Partager .",
+    "apple2": "Recherchez l'option Ajouter à l'écran d'accueil, puis appuyez dessus.",
+    "apple3": "Appuyez sur Ajouter"
   },
   "pages": {
     "home": {
@@ -240,6 +311,18 @@
     },
     "forgotpassword": {
       "title": "Mot de passe oublié"
+    },
+    "help": {
+      "title": "Comment jouer ?"
+    },
+    "faq": {
+      "title": "FAQ"
+    },
+    "installation": {
+      "title": "Installation"
+    },
+    "improve": {
+      "title": "Proposition"
     }
   },
   "enum": {

@@ -35,6 +35,10 @@ import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useApp } from "src/context/AppProvider";
 import { FRIENDSTATUS } from "src/models/Friend";
+import { HeadTitle } from "src/component/HeadTitle";
+import LiveHelpIcon from "@mui/icons-material/LiveHelp";
+import InstallMobileIcon from "@mui/icons-material/InstallMobile";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 
 interface Menu {
   value: string;
@@ -82,8 +86,26 @@ export const MenuPage = () => {
         to: "/ranking",
       },
       {
+        value: "faq",
+        label: t("commun.faq"),
+        icon: <LiveHelpIcon />,
+        to: "/faq",
+      },
+      {
+        value: "installation",
+        label: t("commun.installation"),
+        icon: <InstallMobileIcon />,
+        to: "/installation",
+      },
+      {
+        value: "howtoplay",
+        label: t("commun.howtoplay"),
+        icon: <PlayCircleIcon />,
+        to: "/help",
+      },
+      {
         value: "report",
-        label: t("commun.reportpropose"),
+        label: t("commun.reportproblem"),
         icon: <ReportProblemIcon />,
         to: "/report",
       },
@@ -211,9 +233,7 @@ export const MenuPage = () => {
             </Grid>
           </Box>
         ) : (
-          <Typography variant="h1" sx={{ fontSize: 30 }}>
-            {t("commun.menus")}
-          </Typography>
+          <HeadTitle title={t("commun.menus")} />
         )}
         <Grid item xs={12}>
           <List>

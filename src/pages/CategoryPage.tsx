@@ -52,11 +52,15 @@ export const CategoryPage = () => {
             : t("appname")}
         </title>
       </Helmet>
-      <Grid container spacing={1}>
+      <Grid container spacing={1} justifyContent="center">
         {category && (
           <Grid item xs={12}>
-            <Box sx={{ p: 2, textAlign: "center" }}>
-              <JsonLanguageBlock variant="h1" value={category.name} />
+            <Box sx={{ textAlign: "center" }}>
+              <JsonLanguageBlock
+                variant="h1"
+                value={category.name}
+                sx={{ wordBreak: "break-all" }}
+              />
             </Box>
           </Grid>
         )}
@@ -67,8 +71,10 @@ export const CategoryPage = () => {
           <Typography variant="h2">{t("commun.themes")}</Typography>
         </Grid>
         {themesDisplay.map((theme) => (
-          <Grid item xs={3} sm={2} md={2} lg={1} key={theme.id}>
-            <CardTheme theme={theme} />
+          <Grid item key={theme.id}>
+            <Box sx={{ maxWidth: 100 }}>
+              <CardTheme theme={theme} />
+            </Box>
           </Grid>
         ))}
       </Grid>

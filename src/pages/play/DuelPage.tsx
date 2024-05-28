@@ -1,7 +1,7 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { RealtimeChannel, RealtimePresenceState } from "@supabase/supabase-js";
 import { px, viewHeight } from "csx";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -28,7 +28,7 @@ export const COLORDUEL2 = Colors.blue;
 export const DuelPage = () => {
   const { t } = useTranslation();
   const { uuidGame } = useParams();
-  const { uuid, language } = useUser();
+  const { uuid, language, sound } = useUser();
   const navigate = useNavigate();
 
   const [players, setPlayers] = useState<Array<string>>([]);
@@ -140,9 +140,11 @@ export const DuelPage = () => {
           const questionduel = value.payload as QuestionDuel;
           if (questionduel.audio) {
             const audio = new Audio(questionduel.audio);
+            audio.volume = sound / 100;
             audio.play();
             setAudio(audio);
           }
+          console.log(questionduel);
           setTimer(questionduel.time);
           setQuestion(questionduel);
           setResponse(undefined);
@@ -175,9 +177,12 @@ export const DuelPage = () => {
       setChannel(channel);
       return () => {
         channel.unsubscribe();
+        if (audio) {
+          audio.pause();
+        }
       };
     }
-  }, [elo, game, navigate, questions, uuid]);
+  }, [elo, game, navigate, questions, uuid, audio, sound]);
 
   const validateResponse = async (value: string) => {
     if (channel && game && language && uuid) {
@@ -195,6 +200,17 @@ export const DuelPage = () => {
       }
     }
   };
+
+  useEffect(() => {
+    if (audio) {
+      audio.volume = sound / 100;
+      audio.play();
+    }
+  }, [audio, sound]);
+
+  const isPlayer1 = useMemo(() => {
+    return uuid === game?.player1.id;
+  }, [game, uuid]);
 
   return (
     <Container
@@ -354,8 +370,13 @@ export const DuelPage = () => {
                             <QcmBlockDuelBlock
                               question={question}
                               response={response}
-                              responsePlayer1={responsePlayer1}
-                              responsePlayer2={responsePlayer2}
+                              responseMe={
+                                isPlayer1 ? responsePlayer1 : responsePlayer2
+                              }
+                              responseAdv={
+                                isPlayer1 ? responsePlayer2 : responsePlayer1
+                              }
+                              isPlayer1={isPlayer1}
                               onSubmit={validateResponse}
                             />
                           ) : (

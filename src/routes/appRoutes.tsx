@@ -2,7 +2,6 @@ import { AccomplishmentPage } from "src/pages/AccomplishmentPage";
 import { CategoryPage } from "src/pages/CategoryPage";
 import { ComparePage } from "src/pages/ComparePage";
 import { ConfidentialityPage } from "src/pages/ConfidentialityPage";
-import { DiscordPage } from "src/pages/DiscordPage";
 import { FavoritePage } from "src/pages/FavoritePage";
 import { MenuPage } from "src/pages/MenuPage";
 import { NotificationPage } from "src/pages/NotificationPage";
@@ -20,6 +19,11 @@ import { RegisterPage } from "src/pages/connect/RegisterPage";
 import { ResetPasswordPage } from "src/pages/connect/ResetPasswordPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { AdminRoutes } from "./adminPage";
+import { HelpPage } from "src/pages/help/HelpPage";
+import { FAQPage } from "src/pages/help/FAQPage";
+import { InstallationPage } from "src/pages/help/InstallationPage";
+import { ImprovePage } from "src/pages/ImprovePage";
+import { ReportPage } from "src/pages/ReportPage";
 export const AppRoutes = [
   {
     path: "/",
@@ -112,7 +116,7 @@ export const AppRoutes = [
   },
   {
     path: "/report",
-    element: <DiscordPage />,
+    element: <ReportPage />,
   },
   {
     path: "/profil/:id",
@@ -125,5 +129,21 @@ export const AppRoutes = [
   {
     path: "/confidentiality",
     element: <ConfidentialityPage />,
+  },
+  {
+    path: "/help",
+    element: <HelpPage />,
+  },
+  {
+    path: "/faq",
+    element: <FAQPage />,
+  },
+  {
+    path: "/installation",
+    element: <InstallationPage />,
+  },
+  {
+    path: "/improve",
+    element: <ImprovePage />,
   },
 ];

@@ -97,7 +97,7 @@ export const VerticalTimer = ({ time, color, answer }: PropsVerticalTimer) => {
         width: px(10),
       }}
     >
-      {answer && (
+      {answer ? (
         <Box
           sx={{
             position: "absolute",
@@ -105,18 +105,18 @@ export const VerticalTimer = ({ time, color, answer }: PropsVerticalTimer) => {
             height: percent(pourcentageAnswer),
             width: percent(100),
             backgroundColor: color,
-            opacity: 0.5,
+          }}
+        />
+      ) : (
+        <Box
+          sx={{
+            borderRadius: px(5),
+            height: percent(pourcentage),
+            width: percent(100),
+            backgroundColor: color,
           }}
         />
       )}
-      <Box
-        sx={{
-          borderRadius: px(5),
-          height: percent(pourcentage),
-          width: percent(100),
-          backgroundColor: color,
-        }}
-      />
     </Box>
   );
 };

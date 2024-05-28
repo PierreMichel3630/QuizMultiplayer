@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { selectInvitationDuelByUser } from "src/api/game";
+import { HeadTitle } from "src/component/HeadTitle";
 import { DuelNotificationBlock } from "src/component/notification/DuelNotificationBlock";
 import { FriendNotificationBlock } from "src/component/notification/FriendNotificationBlock";
 import { useApp } from "src/context/AppProvider";
@@ -40,43 +41,50 @@ export const NotificationPage = () => {
   }, [uuid]);
 
   return (
-    <Box sx={{ p: 1 }}>
+    <Grid container spacing={1}>
       <Helmet>
         <title>{`${t("pages.notifications.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <Typography variant="h2">{t("commun.friends")}</Typography>
-        </Grid>
-        <Grid item xs={12}>
-          {invitationsfriends.length > 0 ? (
-            invitationsfriends.map((friend) => (
-              <FriendNotificationBlock friend={friend} />
-            ))
-          ) : (
-            <Alert severity="info">{t("alert.nofriend")}</Alert>
-          )}
-        </Grid>
-        <Grid item xs={12}>
-          <Divider sx={{ borderBottomWidth: 3 }} />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h2">{t("commun.games")}</Typography>
-        </Grid>
-        <Grid item xs={12}>
-          {games.length > 0 ? (
-            games.map((game) => (
-              <DuelNotificationBlock
-                key={game.id}
-                game={game}
-                refuse={() => getGames()}
-              />
-            ))
-          ) : (
-            <Alert severity="info">{t("alert.nogame")}</Alert>
-          )}
-        </Grid>
+      <Grid item xs={12}>
+        <HeadTitle title={t("pages.notifications.title")} />
       </Grid>
-    </Box>
+      <Grid item xs={12}>
+        <Box sx={{ p: 1 }}>
+          <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <Typography variant="h2">{t("commun.friends")}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              {invitationsfriends.length > 0 ? (
+                invitationsfriends.map((friend) => (
+                  <FriendNotificationBlock friend={friend} />
+                ))
+              ) : (
+                <Alert severity="info">{t("alert.nofriend")}</Alert>
+              )}
+            </Grid>
+            <Grid item xs={12}>
+              <Divider sx={{ borderBottomWidth: 3 }} />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h2">{t("commun.games")}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              {games.length > 0 ? (
+                games.map((game) => (
+                  <DuelNotificationBlock
+                    key={game.id}
+                    game={game}
+                    refuse={() => getGames()}
+                  />
+                ))
+              ) : (
+                <Alert severity="info">{t("alert.nogame")}</Alert>
+              )}
+            </Grid>
+          </Grid>
+        </Box>
+      </Grid>
+    </Grid>
   );
 };

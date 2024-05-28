@@ -1,9 +1,10 @@
 import { Paper, Tab, Tabs, Typography } from "@mui/material";
 import { padding, percent, px } from "csx";
 import { Link } from "react-router-dom";
+import { Colors } from "src/style/Colors";
 
 interface Props {
-  values: Array<string>;
+  values: Array<{ label: string; icon?: JSX.Element }>;
   onChange: (index: number) => void;
   tab: number;
 }
@@ -12,7 +13,6 @@ export const DefaultTabs = ({ tab, onChange, values }: Props) => {
   return (
     <Paper
       sx={{
-        bgcolor: "rgba(255,255,255,.15)",
         width: percent(100),
         borderBottomLeftRadius: px(0),
         borderBottomRightRadius: px(0),
@@ -24,14 +24,22 @@ export const DefaultTabs = ({ tab, onChange, values }: Props) => {
           onChange(newValue)
         }
         indicatorColor="secondary"
-        textColor="inherit"
         variant="fullWidth"
         sx={{ minHeight: "auto" }}
       >
-        {values.map((value) => (
+        {values.map((value, index) => (
           <Tab
-            key={value}
-            sx={{ p: padding(8, 5), minHeight: "auto" }}
+            key={index}
+            sx={{
+              p: padding(8, 5),
+              minHeight: "auto",
+              color: Colors.black,
+              "&.Mui-selected": {
+                color: Colors.blue3,
+              },
+            }}
+            icon={value.icon}
+            iconPosition="start"
             label={
               <Typography
                 variant="h6"
@@ -39,7 +47,7 @@ export const DefaultTabs = ({ tab, onChange, values }: Props) => {
                   textTransform: "uppercase",
                 }}
               >
-                {value}
+                {value.label}
               </Typography>
             }
           />

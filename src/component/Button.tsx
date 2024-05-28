@@ -7,7 +7,7 @@ import { Colors } from "src/style/Colors";
 interface Props extends ButtonProps {
   value: string;
   label: string;
-  icon: ElementType;
+  icon?: ElementType;
   typography?: Variant | "inherit";
   variant?: "text" | "outlined" | "contained";
 }
@@ -22,16 +22,19 @@ export const ButtonColor = ({
   const style =
     variant && variant === "outlined"
       ? {
+          minWidth: "auto",
           color: value,
           borderColor: value,
           borderWidth: 2,
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.blue3,
           "&:hover": {
             backgroundColor: value,
-            color: Colors.white,
+            color: Colors.blue3,
+            border: "2px solid currentColor",
           },
         }
       : {
+          minWidth: "auto",
           backgroundColor: value,
           color: Colors.white,
           border: `2px solid ${value}`,
@@ -40,7 +43,8 @@ export const ButtonColor = ({
             color: value,
           },
         };
-  return (
+
+  return icon ? (
     <Button
       variant={variant}
       fullWidth
@@ -54,7 +58,15 @@ export const ButtonColor = ({
         />
       }
     >
-      <Typography variant={typography}>{label}</Typography>
+      <Typography variant={typography} noWrap>
+        {label}
+      </Typography>
+    </Button>
+  ) : (
+    <Button variant={variant} fullWidth sx={style} {...props}>
+      <Typography variant={typography} noWrap>
+        {label}
+      </Typography>
     </Button>
   );
 };

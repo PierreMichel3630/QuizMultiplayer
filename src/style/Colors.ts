@@ -41,4 +41,5 @@ export const Colors = {
   gold: yellow[700],
   silver: grey[500],
   bronze: "#CD7F32",
+  blue3: "#01b5da",
 };

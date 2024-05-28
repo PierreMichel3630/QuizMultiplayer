@@ -22,7 +22,7 @@ import { LoadingDot } from "src/component/Loading";
 
 export const SoloPage = () => {
   const { t } = useTranslation();
-  const { uuid, language } = useUser();
+  const { uuid, language, sound } = useUser();
   const { uuidGame } = useParams();
   const navigate = useNavigate();
 
@@ -93,6 +93,7 @@ export const SoloPage = () => {
           const questionSolo = value.payload as QuestionSolo;
           if (questionSolo.audio) {
             const audio = new Audio(questionSolo.audio);
+            audio.volume = sound / 100;
             audio.play();
             setAudio(audio);
           }
@@ -123,9 +124,19 @@ export const SoloPage = () => {
       setChannel(channel);
       return () => {
         channel.unsubscribe();
+        if (audio) {
+          audio.pause();
+        }
       };
     }
-  }, [uuid, game, questions, score, navigate]);
+  }, [uuid, game, questions, score, navigate, audio, sound]);
+
+  useEffect(() => {
+    if (audio) {
+      audio.volume = sound / 100;
+      audio.play();
+    }
+  }, [audio, sound]);
 
   const validateResponse = async (value: string) => {
     if (channel && game && language) {

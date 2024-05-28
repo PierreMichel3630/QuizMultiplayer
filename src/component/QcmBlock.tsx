@@ -4,10 +4,11 @@ import { Response, ResponseDuel, ResponseSolo } from "src/models/Response";
 import { Colors } from "src/style/Colors";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 
-import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { percent } from "csx";
 import { QuestionDuel, QuestionSolo } from "src/models/Question";
+
+import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 
 interface Props {
   question: QuestionSolo;
@@ -104,30 +105,28 @@ export const QcmResponseBlock = ({ question, response }: PropsResponse) => {
 interface PropsQcmBlockDuel {
   question: QuestionDuel;
   onSubmit: (value: string) => void;
-  responsePlayer1: undefined | ResponseDuel;
-  responsePlayer2: undefined | ResponseDuel;
+  responseMe: undefined | ResponseDuel;
+  responseAdv: undefined | ResponseDuel;
+  isPlayer1: boolean;
   response?: Response;
 }
 
 export const QcmBlockDuelBlock = ({
   question,
   onSubmit,
-  responsePlayer1,
-  responsePlayer2,
+  responseMe,
+  responseAdv,
   response,
+  isPlayer1,
 }: PropsQcmBlockDuel) => {
-  const { uuid, language } = useUser();
+  const { language } = useUser();
   const xs = question.image ? 6 : 12;
   const value = response
     ? response.response[language.iso]
       ? response.response[language.iso]
       : response.response["fr-FR"]
     : undefined;
-  const isPlayer1 = responsePlayer1 && uuid === responsePlayer1.uuid;
-  const isPlayer2 = responsePlayer2 && uuid === responsePlayer2.uuid;
-  const hasAnswer =
-    (responsePlayer1 && responsePlayer1.uuid === uuid) ||
-    (responsePlayer2 && responsePlayer2.uuid === uuid);
+  const hasAnswer = responseMe !== undefined;
 
   return (
     <Grid container spacing={1}>
@@ -136,22 +135,30 @@ export const QcmBlockDuelBlock = ({
           ? value.includes(res[language.iso])
           : value === res[language.iso];
 
-        const isResponsePlayer1 =
-          responsePlayer1 && responsePlayer1.answer === res[language.iso];
-        const isResponsePlayer2 =
-          responsePlayer2 && responsePlayer2.answer === res[language.iso];
+        const isMyAnswer =
+          responseMe !== undefined && res[language.iso] === responseMe.answer;
+        const isAnswerAdv =
+          responseAdv !== undefined && res[language.iso] === responseAdv.answer;
 
-        const color = isCorrectResponse
-          ? Colors.green
-          : value && (isResponsePlayer1 || isResponsePlayer2)
-          ? Colors.red
-          : Colors.grey;
+        let color = Colors.grey;
+        if (isCorrectResponse) {
+          color = Colors.green;
+        } else if (isMyAnswer) {
+          color = responseMe.result ? Colors.green : Colors.red;
+        } else if (isAnswerAdv && hasAnswer) {
+          color = responseAdv.result ? Colors.green : Colors.red;
+        }
+
+        const isArrowRight =
+          (isPlayer1 && isMyAnswer) || (!isPlayer1 && isAnswerAdv && hasAnswer);
+        const isArrowLeft =
+          (!isPlayer1 && isMyAnswer) || (isPlayer1 && isAnswerAdv && hasAnswer);
 
         return (
           <Grid item xs={xs} key={index}>
             <Paper
               sx={{
-                p: "15px 5px",
+                p: "15px 8px",
                 textAlign: "center",
                 display: "flex",
                 alignItems: "center",
@@ -169,11 +176,11 @@ export const QcmBlockDuelBlock = ({
                 }
               }}
             >
-              {isResponsePlayer1 && (response || isPlayer1) && (
+              {isArrowRight && (
                 <ArrowRightIcon
                   viewBox="10 7 5 10"
                   sx={{
-                    fontSize: 30,
+                    fontSize: 10,
                     position: "absolute",
                     top: percent(50),
                     translate: "0 -50%",
@@ -187,11 +194,11 @@ export const QcmBlockDuelBlock = ({
                 color="text.secondary"
                 value={res}
               />
-              {isResponsePlayer2 && (response || isPlayer2) && (
+              {isArrowLeft && (
                 <ArrowLeftIcon
                   viewBox="10 7 5 10"
                   sx={{
-                    fontSize: 30,
+                    fontSize: 10,
                     position: "absolute",
                     top: percent(50),
                     translate: "0 -50%",

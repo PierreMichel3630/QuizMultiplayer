@@ -12,6 +12,7 @@ import {
   selectScoresByProfile,
 } from "src/api/score";
 import { selectTitleByProfile } from "src/api/title";
+import { HeadTitle } from "src/component/HeadTitle";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { LineCompareTable } from "src/component/LineCompareTable";
@@ -123,226 +124,241 @@ export const ComparePage = () => {
   }, [scores1, scores2, language]);
 
   return (
-    <Box sx={{ display: "flex", p: 1 }}>
+    <Grid container spacing={1}>
       <Helmet>
         <title>{`${t("pages.compare.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid container spacing={1}>
-        <Grid item xs={6}>
-          <SelectorProfileBlock
-            label={t("commun.selectplayer")}
-            profile={profile1}
-            onChange={() => setOpenModalFriend1(true)}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <SelectorProfileBlock
-            label={t("commun.selectplayer")}
-            profile={profile2}
-            onChange={() => setOpenModalFriend2(true)}
-          />
-        </Grid>
-        {profile1 && profile2 ? (
-          <>
+      <Grid item xs={12}>
+        <HeadTitle title={t("pages.compare.title")} />
+      </Grid>
+      <Grid item xs={12}>
+        <Box sx={{ p: 1 }}>
+          <Grid container spacing={1}>
             <Grid item xs={6}>
-              <CardBadge badges={badges1} />
+              <SelectorProfileBlock
+                label={t("commun.selectplayer")}
+                profile={profile1}
+                onChange={() => setOpenModalFriend1(true)}
+              />
             </Grid>
             <Grid item xs={6}>
-              <CardBadge badges={badges2} />
+              <SelectorProfileBlock
+                label={t("commun.selectplayer")}
+                profile={profile2}
+                onChange={() => setOpenModalFriend2(true)}
+              />
             </Grid>
-            <Grid item xs={6}>
-              <CardTitle titles={titles1} />
-            </Grid>
-            <Grid item xs={6}>
-              <CardTitle titles={titles2} />
-            </Grid>
-            {themes.map((theme) => {
-              const score1 = scores1.find((el) => el.theme.id === theme.id);
-              const score2 = scores2.find((el) => el.theme.id === theme.id);
-              const rank1 = ranks1.find((el) => el.theme.id === theme.id);
-              const rank2 = ranks2.find((el) => el.theme.id === theme.id);
-              const opposition = oppositions.find(
-                (el) => el.theme === theme.id
-              );
-              const maxDuel = Math.max(
-                score1 ? score1.duelgames : 0,
-                score2 ? score2.duelgames : 0
-              );
-              const datasDuel = [
-                {
-                  label: t("commun.games"),
-                  value1: score1 ? score1.duelgames : 0,
-                  value2: score2 ? score2.duelgames : 0,
-                  max: maxDuel,
-                },
-                {
-                  label: t("commun.victory"),
-                  value1: score1 ? score1.victory : 0,
-                  value2: score2 ? score2.victory : 0,
-                  max: maxDuel,
-                },
-                {
-                  label: t("commun.draw"),
-                  value1: score1 ? score1.draw : 0,
-                  value2: score2 ? score2.draw : 0,
-                  max: maxDuel,
-                },
-                {
-                  label: t("commun.defeat"),
-                  value1: score1 ? score1.defeat : 0,
-                  value2: score2 ? score2.defeat : 0,
-                  max: maxDuel,
-                },
-                {
-                  label: t("commun.points"),
-                  value1: rank1 ? rank1.points : 0,
-                  value2: rank2 ? rank2.points : 0,
-                  max: Math.max(
-                    rank1 ? rank1.points : 0,
-                    rank2 ? rank2.points : 0
-                  ),
-                },
-              ];
+            {profile1 && profile2 ? (
+              <>
+                <Grid item xs={6}>
+                  <CardBadge badges={badges1} />
+                </Grid>
+                <Grid item xs={6}>
+                  <CardBadge badges={badges2} />
+                </Grid>
+                <Grid item xs={6}>
+                  <CardTitle titles={titles1} />
+                </Grid>
+                <Grid item xs={6}>
+                  <CardTitle titles={titles2} />
+                </Grid>
+                {themes.map((theme) => {
+                  const score1 = scores1.find((el) => el.theme.id === theme.id);
+                  const score2 = scores2.find((el) => el.theme.id === theme.id);
+                  const rank1 = ranks1.find((el) => el.theme.id === theme.id);
+                  const rank2 = ranks2.find((el) => el.theme.id === theme.id);
+                  const opposition = oppositions.find(
+                    (el) => el.theme === theme.id
+                  );
+                  const maxDuel = Math.max(
+                    score1 ? score1.duelgames : 0,
+                    score2 ? score2.duelgames : 0
+                  );
+                  const datasDuel = [
+                    {
+                      label: t("commun.games"),
+                      value1: score1 ? score1.duelgames : 0,
+                      value2: score2 ? score2.duelgames : 0,
+                      max: maxDuel,
+                    },
+                    {
+                      label: t("commun.victory"),
+                      value1: score1 ? score1.victory : 0,
+                      value2: score2 ? score2.victory : 0,
+                      max: maxDuel,
+                    },
+                    {
+                      label: t("commun.draw"),
+                      value1: score1 ? score1.draw : 0,
+                      value2: score2 ? score2.draw : 0,
+                      max: maxDuel,
+                    },
+                    {
+                      label: t("commun.defeat"),
+                      value1: score1 ? score1.defeat : 0,
+                      value2: score2 ? score2.defeat : 0,
+                      max: maxDuel,
+                    },
+                    {
+                      label: t("commun.points"),
+                      value1: rank1 ? rank1.points : 0,
+                      value2: rank2 ? rank2.points : 0,
+                      max: Math.max(
+                        rank1 ? rank1.points : 0,
+                        rank2 ? rank2.points : 0
+                      ),
+                    },
+                  ];
 
-              const datasSolo = [
-                {
-                  label: t("commun.games"),
-                  value1: score1 ? score1.games : 0,
-                  value2: score2 ? score2.games : 0,
-                  max: Math.max(
-                    score1 ? score1.games : 0,
-                    score2 ? score2.games : 0
-                  ),
-                },
-                {
-                  label: t("commun.bestscore"),
-                  value1: score1 ? score1.points : 0,
-                  value2: score2 ? score2.points : 0,
-                  max: Math.max(
-                    score1 ? score1.points : 0,
-                    score2 ? score2.points : 0
-                  ),
-                },
-              ];
-              return (
-                <Grid item xs={12} key={theme.id}>
-                  <Paper
-                    sx={{
-                      overflow: "hidden",
-                      backgroundColor: Colors.lightgrey,
-                      height: percent(100),
-                    }}
-                  >
-                    <Grid container>
-                      <Grid
-                        item
-                        xs={12}
+                  const datasSolo = [
+                    {
+                      label: t("commun.games"),
+                      value1: score1 ? score1.games : 0,
+                      value2: score2 ? score2.games : 0,
+                      max: Math.max(
+                        score1 ? score1.games : 0,
+                        score2 ? score2.games : 0
+                      ),
+                    },
+                    {
+                      label: t("commun.bestscore"),
+                      value1: score1 ? score1.points : 0,
+                      value2: score2 ? score2.points : 0,
+                      max: Math.max(
+                        score1 ? score1.points : 0,
+                        score2 ? score2.points : 0
+                      ),
+                    },
+                  ];
+                  return (
+                    <Grid item xs={12} key={theme.id}>
+                      <Paper
                         sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: 1,
-                          backgroundColor: Colors.red,
-                          p: px(5),
+                          overflow: "hidden",
+                          backgroundColor: Colors.lightgrey,
+                          height: percent(100),
                         }}
                       >
-                        <ImageThemeBlock theme={theme} size={40} />
-                        <JsonLanguageBlock
-                          variant="h2"
-                          sx={{
-                            wordWrap: "anywhere",
-                            fontSize: 18,
-                          }}
-                          color="text.secondary"
-                          value={theme.name}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sx={{ p: 1 }}>
-                        <Grid
-                          container
-                          spacing={1}
-                          alignItems="center"
-                          justifyContent="center"
-                        >
-                          {opposition && (
-                            <>
+                        <Grid container>
+                          <Grid
+                            item
+                            xs={12}
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              gap: 1,
+                              backgroundColor: Colors.red,
+                              p: px(5),
+                            }}
+                          >
+                            <ImageThemeBlock theme={theme} size={40} />
+                            <JsonLanguageBlock
+                              variant="h2"
+                              sx={{
+                                wordWrap: "anywhere",
+                                fontSize: 18,
+                              }}
+                              color="text.secondary"
+                              value={theme.name}
+                            />
+                          </Grid>
+                          <Grid item xs={12} sx={{ p: 1 }}>
+                            <Grid
+                              container
+                              spacing={1}
+                              alignItems="center"
+                              justifyContent="center"
+                            >
+                              {opposition && (
+                                <>
+                                  <Grid
+                                    item
+                                    xs={12}
+                                    sx={{ textAlign: "center" }}
+                                  >
+                                    <Typography variant="h4">
+                                      {t("commun.opposition")}
+                                    </Typography>
+                                  </Grid>
+                                  <Grid item xs={12}>
+                                    <BarVictory
+                                      victory={opposition.victory}
+                                      draw={opposition.draw}
+                                      defeat={opposition.defeat}
+                                    />
+                                  </Grid>
+                                  <Grid item xs={12}>
+                                    <Divider sx={{ borderBottomWidth: 3 }} />
+                                  </Grid>
+                                </>
+                              )}
+                              {((score1 && score1.duelgames > 0) ||
+                                (score2 && score2.duelgames > 0)) && (
+                                <>
+                                  <Grid
+                                    item
+                                    xs={12}
+                                    sx={{ textAlign: "center" }}
+                                  >
+                                    <Typography variant="h4">
+                                      {t("commun.duel")}
+                                    </Typography>
+                                  </Grid>
+                                  {datasDuel.map((el, index) => (
+                                    <Grid item xs={12} key={index}>
+                                      <LineCompareTable value={el} />
+                                    </Grid>
+                                  ))}
+                                  <Grid item xs={12}>
+                                    <Divider sx={{ borderBottomWidth: 3 }} />
+                                  </Grid>
+                                </>
+                              )}
                               <Grid item xs={12} sx={{ textAlign: "center" }}>
                                 <Typography variant="h4">
-                                  {t("commun.opposition")}
+                                  {t("commun.solo")}
                                 </Typography>
                               </Grid>
-                              <Grid item xs={12}>
-                                <BarVictory
-                                  victory={opposition.victory}
-                                  draw={opposition.draw}
-                                  defeat={opposition.defeat}
-                                />
-                              </Grid>
-                              <Grid item xs={12}>
-                                <Divider sx={{ borderBottomWidth: 3 }} />
-                              </Grid>
-                            </>
-                          )}
-                          {((score1 && score1.duelgames > 0) ||
-                            (score2 && score2.duelgames > 0)) && (
-                            <>
-                              <Grid item xs={12} sx={{ textAlign: "center" }}>
-                                <Typography variant="h4">
-                                  {t("commun.duel")}
-                                </Typography>
-                              </Grid>
-                              {datasDuel.map((el, index) => (
+                              {datasSolo.map((el, index) => (
                                 <Grid item xs={12} key={index}>
                                   <LineCompareTable value={el} />
                                 </Grid>
                               ))}
-                              <Grid item xs={12}>
-                                <Divider sx={{ borderBottomWidth: 3 }} />
-                              </Grid>
-                            </>
-                          )}
-                          <Grid item xs={12} sx={{ textAlign: "center" }}>
-                            <Typography variant="h4">
-                              {t("commun.solo")}
-                            </Typography>
-                          </Grid>
-                          {datasSolo.map((el, index) => (
-                            <Grid item xs={12} key={index}>
-                              <LineCompareTable value={el} />
                             </Grid>
-                          ))}
+                          </Grid>
                         </Grid>
-                      </Grid>
+                      </Paper>
                     </Grid>
-                  </Paper>
-                </Grid>
-              );
-            })}
-          </>
-        ) : (
-          <Grid item xs={12} sx={{ textAlign: "center" }}>
-            <Alert severity="warning">{t("commun.select2player")}</Alert>
+                  );
+                })}
+              </>
+            ) : (
+              <Grid item xs={12} sx={{ textAlign: "center" }}>
+                <Alert severity="warning">{t("commun.select2player")}</Alert>
+              </Grid>
+            )}
+            <SelectFriendModal
+              open={openModalFriend1}
+              close={() => setOpenModalFriend1(false)}
+              onValid={(profile) => {
+                setProfile1(profile);
+                setOpenModalFriend1(false);
+              }}
+              withMe={true}
+            />
+            <SelectFriendModal
+              open={openModalFriend2}
+              close={() => setOpenModalFriend2(false)}
+              onValid={(profile) => {
+                setProfile2(profile);
+                setOpenModalFriend2(false);
+              }}
+              withMe={true}
+            />
           </Grid>
-        )}
+        </Box>
       </Grid>
-      <SelectFriendModal
-        open={openModalFriend1}
-        close={() => setOpenModalFriend1(false)}
-        onValid={(profile) => {
-          setProfile1(profile);
-          setOpenModalFriend1(false);
-        }}
-        withMe={true}
-      />
-      <SelectFriendModal
-        open={openModalFriend2}
-        close={() => setOpenModalFriend2(false)}
-        onValid={(profile) => {
-          setProfile2(profile);
-          setOpenModalFriend2(false);
-        }}
-        withMe={true}
-      />
-    </Box>
+    </Grid>
   );
 };

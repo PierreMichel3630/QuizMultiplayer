@@ -15,6 +15,8 @@ export const UserContext = createContext<{
   language: Language;
   languages: Array<Language>;
   setLanguage: (language: Language) => void;
+  sound: number;
+  setSound: (value: number) => void;
   mode: "light" | "dark";
   setMode: (mode: "light" | "dark") => void;
 }>({
@@ -31,6 +33,8 @@ export const UserContext = createContext<{
       : LANGUAGES[0],
   languages: [],
   setLanguage: () => {},
+  sound: 20,
+  setSound: () => {},
   mode: "light",
   setMode: () => {},
 });
@@ -64,6 +68,11 @@ export const UserProvider = ({ children }: Props) => {
   );
 
   const [language, setLanguage] = useState<Language>(getLanguage());
+  const [sound, setSound] = useState<number>(
+    localStorage.getItem("sound") !== null
+      ? Number(localStorage.getItem("sound")!)
+      : 20
+  );
   const [username, setUsername] = useState(
     localStorage.getItem("username") !== null
       ? (localStorage.getItem("username")! as string)
@@ -90,6 +99,10 @@ export const UserProvider = ({ children }: Props) => {
     localStorage.setItem("username", username);
   }, [username]);
 
+  useEffect(() => {
+    localStorage.setItem("sound", sound.toString());
+  }, [sound]);
+
   return (
     <UserContext.Provider
       value={{
@@ -100,6 +113,8 @@ export const UserProvider = ({ children }: Props) => {
         languages: LANGUAGES,
         language,
         setLanguage,
+        sound,
+        setSound,
         setMode,
         mode,
       }}

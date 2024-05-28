@@ -123,9 +123,13 @@ export const ProfilPage = () => {
   };
 
   const compare = () => {
-    navigate(`/compare`, {
-      state: { profile1: profile, profile2: profileUser },
-    });
+    if (user) {
+      navigate(`/compare`, {
+        state: { profile1: profile, profile2: profileUser },
+      });
+    } else {
+      navigate(`/login`);
+    }
   };
 
   const totalSolo = useMemo(
@@ -208,22 +212,18 @@ export const ProfilPage = () => {
                     onClick={launchDuel}
                   />
                 </Grid>
-                {user && (
-                  <>
-                    <Grid item xs={6} sm={6} md={4}>
-                      <FriendButton profile={profileUser} />
-                    </Grid>
-                    <Grid item xs={12} md={8}>
-                      <ButtonColor
-                        value={Colors.blue}
-                        label={t("commun.compare")}
-                        icon={CompareArrowsIcon}
-                        variant="contained"
-                        onClick={compare}
-                      />
-                    </Grid>
-                  </>
-                )}
+                <Grid item xs={6} sm={6} md={4}>
+                  <FriendButton profile={profileUser} />
+                </Grid>
+                <Grid item xs={12} md={8}>
+                  <ButtonColor
+                    value={Colors.blue}
+                    label={t("commun.compare")}
+                    icon={CompareArrowsIcon}
+                    variant="contained"
+                    onClick={compare}
+                  />
+                </Grid>
               </>
             )}
           </Grid>

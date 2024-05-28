@@ -15,6 +15,7 @@ import { Colors } from "src/style/Colors";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { ButtonColor } from "src/component/Button";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
+import { HeadTitle } from "src/component/HeadTitle";
 
 export const ParameterPage = () => {
   const { t } = useTranslation();
@@ -73,88 +74,90 @@ export const ParameterPage = () => {
   };
 
   return (
-    <Box sx={{ p: 1 }}>
+    <Grid container>
       <Helmet>
         <title>{`${t("pages.parameters.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid container spacing={3}>
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
-          <Typography variant="h1" sx={{ fontSize: 30 }}>
-            {t("commun.myparameters")}
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={1} alignItems="center">
-            <Grid item xs={12} md={4}>
-              <Typography variant="h4">{t("commun.username")}</Typography>
-            </Grid>
-            <Grid item xs={12} md={8}>
-              <BaseInput
-                value={username}
-                clear={() => setUsername("")}
-                onChange={(value) => setUsername(value)}
-              />
-            </Grid>
-            {profile && profile.username !== username && (
-              <Grid item xs={12}>
-                <Button
-                  variant="contained"
-                  startIcon={<DoneIcon />}
-                  fullWidth
-                  onClick={() => changeUsername()}
-                  size="small"
-                >
-                  {t("commun.validate")}
-                </Button>
+      <Grid item xs={12}>
+        <HeadTitle title={t("commun.myparameters")} />
+      </Grid>
+      <Grid item xs={12}>
+        <Box sx={{ p: 1 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Grid container spacing={1} alignItems="center">
+                <Grid item xs={12} md={4}>
+                  <Typography variant="h4">{t("commun.username")}</Typography>
+                </Grid>
+                <Grid item xs={12} md={8}>
+                  <BaseInput
+                    value={username}
+                    clear={() => setUsername("")}
+                    onChange={(value) => setUsername(value)}
+                  />
+                </Grid>
+                {profile && profile.username !== username && (
+                  <Grid item xs={12}>
+                    <Button
+                      variant="contained"
+                      startIcon={<DoneIcon />}
+                      fullWidth
+                      onClick={() => changeUsername()}
+                      size="small"
+                    >
+                      {t("commun.validate")}
+                    </Button>
+                  </Grid>
+                )}
               </Grid>
-            )}
-          </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={1} alignItems="center">
-            <Grid item xs={12} md={4}>
-              <Typography variant="h4">{t("commun.email")}</Typography>
             </Grid>
-            <Grid item xs={12} md={8}>
-              <BaseInput
-                value={email}
-                clear={() => setEmail(user ? user.email ?? "" : "")}
-                onChange={(value) => {
-                  setEmail(value);
-                }}
+            <Grid item xs={12}>
+              <Grid container spacing={1} alignItems="center">
+                <Grid item xs={12} md={4}>
+                  <Typography variant="h4">{t("commun.email")}</Typography>
+                </Grid>
+                <Grid item xs={12} md={8}>
+                  <BaseInput
+                    value={email}
+                    clear={() => setEmail(user ? user.email ?? "" : "")}
+                    onChange={(value) => {
+                      setEmail(value);
+                    }}
+                  />
+                </Grid>
+                {user && user.email !== email && (
+                  <>
+                    <Grid item xs={12}>
+                      <Button
+                        variant="contained"
+                        startIcon={<DoneIcon />}
+                        fullWidth
+                        onClick={() => changeEmail()}
+                        size="small"
+                      >
+                        {t("commun.validate")}
+                      </Button>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Alert severity="info">
+                        {t("pages.parameters.infoemail")}
+                      </Alert>
+                    </Grid>
+                  </>
+                )}
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <ButtonColor
+                value={Colors.red}
+                label={t("commun.deleteaccount")}
+                icon={RemoveCircleIcon}
+                variant="contained"
+                onClick={() => setOpenModal(true)}
               />
             </Grid>
-            {user && user.email !== email && (
-              <>
-                <Grid item xs={12}>
-                  <Button
-                    variant="contained"
-                    startIcon={<DoneIcon />}
-                    fullWidth
-                    onClick={() => changeEmail()}
-                    size="small"
-                  >
-                    {t("commun.validate")}
-                  </Button>
-                </Grid>
-                <Grid item xs={12}>
-                  <Alert severity="info">
-                    {t("pages.parameters.infoemail")}
-                  </Alert>
-                </Grid>
-              </>
-            )}
           </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          <ButtonColor
-            value={Colors.red}
-            label={t("commun.deleteaccount")}
-            icon={RemoveCircleIcon}
-            variant="contained"
-            onClick={() => setOpenModal(true)}
-          />
-        </Grid>
+        </Box>
       </Grid>
       <ConfirmDialog
         title={t("commun.deleteaccount")}
@@ -163,6 +166,6 @@ export const ParameterPage = () => {
         onConfirm={deleteAccount}
         text={t("commun.deleteaccountmessage")}
       />
-    </Box>
+    </Grid>
   );
 };

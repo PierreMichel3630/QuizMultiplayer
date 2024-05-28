@@ -24,7 +24,7 @@ function App() {
             contrastText: Colors.white,
           },
           secondary: {
-            main: Colors.red,
+            main: Colors.blue3,
             contrastText: Colors.white,
           },
           text: {
@@ -49,7 +49,7 @@ function App() {
               root: {
                 color: Colors.greyLightMode,
                 "&.Mui-selected": {
-                  color: Colors.red,
+                  color: Colors.blue3,
                 },
               },
             },
@@ -78,6 +78,9 @@ function App() {
             fontFamily: ["Bowlby One SC", "sans-serif"].join(","),
             fontSize: 50,
             fontWeight: 700,
+            "@media (max-width:600px)": {
+              fontSize: 30,
+            },
           },
           caption: {
             fontSize: 10,

@@ -4,6 +4,7 @@ import { QuestionDuel, QuestionSolo } from "src/models/Question";
 import { ImageQuestionBlock } from "./ImageBlock";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 import { CircularLoading } from "./Loading";
+import { SoundBar } from "./SoundBar";
 import { Timer } from "./Timer";
 
 interface PropsSolo {
@@ -52,6 +53,7 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
               <ImageQuestionBlock src={question.image} />
             </Box>
           )}
+          {question.audio && <SoundBar />}
           {question.extra && (
             <JsonLanguageBlock
               variant="h2"
@@ -133,6 +135,7 @@ export const QuestionDuelBlock = ({ question }: PropsDuel) => {
               <ImageQuestionBlock src={question.image} />
             </Box>
           )}
+          {question.audio && <SoundBar />}
         </>
       ) : (
         <CircularLoading />

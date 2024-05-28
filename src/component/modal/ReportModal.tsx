@@ -52,25 +52,23 @@ export const ReportModal = ({ open, close, question }: Props) => {
   };
 
   const validate = () => {
-    if (question) {
-      const reportInsert: ReportInsert = {
-        description: description,
-        message: Number(type),
-        question: question.id,
-      };
-      insertReport(reportInsert).then(({ error }) => {
-        if (error) {
-          setMessage(t("commun.error"));
-          setSeverity("error");
-        } else {
-          setMessage(t("alert.addreport"));
-          setSeverity("success");
-          setDescription("");
-          setType("");
-          close();
-        }
-      });
-    }
+    const reportInsert: ReportInsert = {
+      description: description,
+      message: Number(type),
+      question: question ? question.id : null,
+    };
+    insertReport(reportInsert).then(({ error }) => {
+      if (error) {
+        setMessage(t("commun.error"));
+        setSeverity("error");
+      } else {
+        setMessage(t("alert.addreport"));
+        setSeverity("success");
+        setDescription("");
+        setType("");
+        close();
+      }
+    });
   };
 
   return (

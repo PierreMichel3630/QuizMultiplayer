@@ -21,6 +21,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { useEffect } from "react";
 import { LoadingDot } from "./Loading";
+import { useNavigate } from "react-router-dom";
 interface Props {
   profile: Profile;
 }
@@ -29,6 +30,7 @@ export const FriendButton = ({ profile }: Props) => {
   const { user } = useAuth();
   const { friends, refreshFriends } = useApp();
   const { setMessage, setSeverity } = useMessage();
+  const navigate = useNavigate();
 
   const friend = friends.find(
     (el) =>
@@ -77,8 +79,7 @@ export const FriendButton = ({ profile }: Props) => {
         }
       });
     } else {
-      setSeverity("error");
-      setMessage(t("commun.error"));
+      navigate(`/login`);
     }
   };
 
@@ -107,87 +108,83 @@ export const FriendButton = ({ profile }: Props) => {
     refreshFriends();
   }, []);
 
-  return (
-    user && (
+  console.log;
+
+  return user && friend ? (
+    friend.status === FRIENDSTATUS.PROGRESS ? (
       <>
-        {friend ? (
-          friend.status === FRIENDSTATUS.PROGRESS ? (
-            <>
-              {user.id === friend.user2.id ? (
-                <Box
-                  sx={{
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    p: px(5),
-                    borderRadius: 1,
-                    gap: 2,
-                  }}
-                >
-                  <Typography variant="h4" color="text.secondary">
-                    {t("commun.waitinvitation")}
-                  </Typography>
-                  <Box sx={{ display: "flex", gap: 1 }}>
-                    <Box
-                      sx={{
-                        p: px(5),
-                        backgroundColor: Colors.green2,
-                        borderRadius: px(5),
-                        cursor: "pointer",
-                      }}
-                      onClick={() => confirmFriend(friend, FRIENDSTATUS.VALID)}
-                    >
-                      <CheckIcon sx={{ color: Colors.white }} />
-                    </Box>
-                    <Box
-                      sx={{
-                        p: px(5),
-                        backgroundColor: Colors.red2,
-                        borderRadius: px(5),
-                        cursor: "pointer",
-                      }}
-                      onClick={() => confirmFriend(friend, FRIENDSTATUS.REFUSE)}
-                    >
-                      <CloseIcon sx={{ color: Colors.white }} />
-                    </Box>
-                  </Box>
-                </Box>
-              ) : (
-                <Box
-                  sx={{
-                    display: "flex",
-                    gap: 1,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Typography variant="h4" color="text.secondary">
-                    {t("commun.waitinvitation")}
-                  </Typography>
-                  <LoadingDot />
-                </Box>
-              )}
-            </>
-          ) : (
-            <ButtonColor
-              value={Colors.red}
-              label={t("commun.friend")}
-              icon={RemoveCircleIcon}
-              variant="contained"
-              onClick={deleteFriend}
-            />
-          )
+        {user.id === friend.user2.id ? (
+          <Box
+            sx={{
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              p: px(5),
+              borderRadius: 1,
+              gap: 2,
+            }}
+          >
+            <Typography variant="h4" color="text.secondary">
+              {t("commun.waitinvitation")}
+            </Typography>
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Box
+                sx={{
+                  p: px(5),
+                  backgroundColor: Colors.green2,
+                  borderRadius: px(5),
+                  cursor: "pointer",
+                }}
+                onClick={() => confirmFriend(friend, FRIENDSTATUS.VALID)}
+              >
+                <CheckIcon sx={{ color: Colors.white }} />
+              </Box>
+              <Box
+                sx={{
+                  p: px(5),
+                  backgroundColor: Colors.red2,
+                  borderRadius: px(5),
+                  cursor: "pointer",
+                }}
+                onClick={() => confirmFriend(friend, FRIENDSTATUS.REFUSE)}
+              >
+                <CloseIcon sx={{ color: Colors.white }} />
+              </Box>
+            </Box>
+          </Box>
         ) : (
-          <ButtonColor
-            value={Colors.green}
-            label={t("commun.friend")}
-            icon={AddCircleIcon}
-            variant="contained"
-            onClick={addToFriend}
-          />
+          <Box
+            sx={{
+              display: "flex",
+              gap: 1,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography variant="h4" color="text.secondary">
+              {t("commun.waitinvitation")}
+            </Typography>
+            <LoadingDot />
+          </Box>
         )}
       </>
+    ) : (
+      <ButtonColor
+        value={Colors.red}
+        label={t("commun.friend")}
+        icon={RemoveCircleIcon}
+        variant="contained"
+        onClick={deleteFriend}
+      />
     )
+  ) : (
+    <ButtonColor
+      value={Colors.green}
+      label={t("commun.friend")}
+      icon={AddCircleIcon}
+      variant="contained"
+      onClick={addToFriend}
+    />
   );
 };

@@ -118,36 +118,36 @@ Deno.serve(async (req) => {
     {
       uuid: "571b2a1c-e2ca-4e95-9d99-80a17b5796a4",
       percent: 1,
-      delaiMin: 2,
-      delaiMax: 5,
+      delaiMin: 1,
+      delaiMax: 3,
       language: "fr-FR",
     },
     {
       uuid: "006c5385-8e71-41f7-801f-b6ee56f9996c",
       percent: 0.85,
       delaiMin: 3,
-      delaiMax: 10,
+      delaiMax: 5,
       language: "fr-FR",
     },
     {
       uuid: "931b2102-9550-4c8e-a629-fcd858293b18",
       percent: 0.5,
-      delaiMin: 8,
-      delaiMax: 15,
+      delaiMin: 5,
+      delaiMax: 7,
       language: "fr-FR",
     },
     {
       uuid: "eed610db-4b85-4e0e-aa11-7497d5159393",
       percent: 0.3,
-      delaiMin: 10,
-      delaiMax: 15,
+      delaiMin: 7,
+      delaiMax: 10,
       language: "fr-FR",
     },
     {
       uuid: "9e5543c3-ec9d-4a9c-8f0c-6e634759eb45",
       percent: 0.1,
-      delaiMin: 10,
-      delaiMax: 18,
+      delaiMin: 1,
+      delaiMax: 10,
       language: "fr-FR",
     },
   ];
@@ -176,6 +176,7 @@ Deno.serve(async (req) => {
   let response = undefined;
   let question: any = undefined;
   let correctresponseQCM = undefined;
+  let wrongresponseQCM = [];
   let time = undefined;
   let delay = 15;
 
@@ -287,8 +288,7 @@ Deno.serve(async (req) => {
         response = question.response;
 
         let responsesQcm: Array<any> = [];
-        const qcm =
-          question.isqcm === null ? Math.random() < 0.5 : question.isqcm;
+        const qcm = question.isqcm === null ? true : question.isqcm;
         if (qcm) {
           if (question.order) {
             const res = await supabase
@@ -330,6 +330,9 @@ Deno.serve(async (req) => {
               .eq("type", question.typeResponse)
               .not("usvalue", "in", `(${responses.join(",")})`)
               .limit(3);
+            wrongresponseQCM = [
+              ...res.data.map((el) => el.value).sort(() => Math.random() - 0.5),
+            ];
 
             const res2 = await supabase
               .from("randomresponse")
@@ -374,6 +377,22 @@ Deno.serve(async (req) => {
                 ? response[bot.language][0]
                 : response[bot.language]
               : "";
+            setTimeout(() => {
+              channel.send({
+                type: "broadcast",
+                event: "response",
+                payload: {
+                  response: responseBot,
+                  language: bot.language,
+                  uuid: bot.uuid,
+                },
+              });
+            }, delai * 1000);
+          } else {
+            const delai = randomIntFromInterval(2, 8);
+            const responseBot = qcm
+              ? wrongresponseQCM[0][bot.language]
+              : "dontknow";
             setTimeout(() => {
               channel.send({
                 type: "broadcast",

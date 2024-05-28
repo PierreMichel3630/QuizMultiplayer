@@ -16,6 +16,7 @@ import { AccountMenu } from "./AccountMenu";
 import { LanguagesMenu } from "./LanguageMenu";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { SoundMenu } from "./SoundMenu";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ export const Header = () => {
 
   return (
     <Box sx={{ flexGrow: 1, pl: 1, pr: 1 }}>
-      <AppBar position="fixed" color="secondary" sx={{ boxShadow: "none" }}>
+      <AppBar position="fixed" color="secondary">
         <Container
           maxWidth="lg"
           sx={{ pl: important(px(5)), pr: important(px(5)) }}
@@ -50,6 +51,7 @@ export const Header = () => {
             </Link>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+              <SoundMenu />
               <LanguagesMenu />
               {user ? (
                 <AccountMenu user={user} />

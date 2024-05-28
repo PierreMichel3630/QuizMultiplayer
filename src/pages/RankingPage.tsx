@@ -43,10 +43,10 @@ export const RankingPage = () => {
   const { user } = useAuth();
 
   const [tab, setTab] = useState(0);
-  const tabs = [t("commun.global"), t("commun.pertheme")];
+  const tabs = [{ label: t("commun.global") }, { label: t("commun.pertheme") }];
 
   const [tabTheme, setTabTheme] = useState(0);
-  const tabsTheme = [t("commun.solo"), t("commun.duel")];
+  const tabsTheme = [{ label: t("commun.solo") }, { label: t("commun.duel") }];
 
   const [mydata, setMyData] = useState<DataRankingMe | undefined>(undefined);
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);

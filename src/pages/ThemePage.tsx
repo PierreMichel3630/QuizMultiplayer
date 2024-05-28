@@ -62,7 +62,7 @@ export const ThemePage = () => {
   const [myScore, setMyScore] = useState<MyScore | undefined>(undefined);
 
   const [tab, setTab] = useState(0);
-  const tabs = [t("commun.solo"), t("commun.duel")];
+  const tabs = [{ label: t("commun.solo") }, { label: t("commun.duel") }];
 
   const favorite = useMemo(
     () => favorites.find((el) => el.theme === Number(id)),

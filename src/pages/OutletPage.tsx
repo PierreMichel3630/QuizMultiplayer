@@ -15,7 +15,6 @@ import { DuelGame, DuelGameChange } from "src/models/DuelGame";
 import { BottomNavigationBlock } from "src/component/BottomNavigation";
 import { DuelNotificationBlock } from "src/component/notification/DuelNotificationBlock";
 import { useApp } from "src/context/AppProvider";
-import { Colors } from "src/style/Colors";
 
 export const OutletPage = () => {
   const { uuid } = useUser();
@@ -90,7 +89,7 @@ export const OutletPage = () => {
   return (
     <>
       <Grid container>
-        <Grid item xs={12} sx={{ backgroundColor: Colors.red }}>
+        <Grid item xs={12}>
           <Header />
         </Grid>
         <Grid item xs={12} sx={{ marginBottom: 8 }}>

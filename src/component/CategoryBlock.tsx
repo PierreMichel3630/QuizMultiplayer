@@ -1,14 +1,14 @@
 import { Box, Button, Divider, Grid, Typography } from "@mui/material";
+import { px } from "csx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
 import { sortByName } from "src/utils/sort";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 import { CardTheme } from "./card/CardTheme";
-import { px } from "csx";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   category: Category;
@@ -49,8 +49,14 @@ export const CategoryBlock = ({ category }: Props) => {
         <JsonLanguageBlock variant="h2" sx={{ ml: 2 }} value={category.name} />
         <Button
           variant="outlined"
-          sx={{ textTransform: "uppercase", p: "2px 5px" }}
+          sx={{
+            textTransform: "uppercase",
+            "&:hover": {
+              border: "2px solid currentColor",
+            },
+          }}
           color="secondary"
+          size="small"
           onClick={() => navigate(`/category/${category.id}`)}
         >
           <Typography variant="h6">{t("commun.seeall")}</Typography>
