@@ -13,10 +13,11 @@ import { useUser } from "src/context/UserProvider";
 import { sortByName } from "src/utils/sort";
 import { searchString } from "src/utils/string";
 
-import head from "src/assets/head.png";
 import { ButtonColor } from "src/component/Button";
 import { Colors } from "src/style/Colors";
 import { useNavigate } from "react-router-dom";
+import { SkeletonCategories } from "src/component/skeleton/SkeletonCategory";
+import { HeadTitle } from "src/component/HeadTitle";
 
 export const ThemesPage = () => {
   const { t } = useTranslation();
@@ -36,44 +37,43 @@ export const ThemesPage = () => {
       <Helmet>
         <title>{`${t("pages.themes.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12} sx={{ position: "relative" }}>
-        <img src={head} style={{ width: percent(100) }} />
-        <Box
+      <Grid item xs={12}>
+        <HeadTitle
+          title={t("appname")}
           sx={{
-            position: "absolute",
-            top: percent(50),
-            left: percent(50),
-            transform: "translate(-50%, -50%)",
-            textAlign: "center",
+            fontFamily: ["Kalam", "cursive"].join(","),
+            fontSize: 80,
+            fontWeight: 700,
+            "@media (max-width:600px)": {
+              fontSize: 50,
+            },
           }}
-        >
-          <Typography variant="h1" color="text.secondary">
-            {t("appname")}
-          </Typography>
-          <Box sx={{ display: "flex", gap: 1 }}>
-            <ButtonColor
-              value={Colors.white}
-              label={t("commun.howtoplay")}
-              variant="outlined"
-              typography="h6"
-              onClick={() => navigate("/help")}
-            />
-            <ButtonColor
-              value={Colors.white}
-              label={t("commun.faq")}
-              variant="outlined"
-              typography="h6"
-              onClick={() => navigate("/faq")}
-            />
-            <ButtonColor
-              value={Colors.white}
-              label={t("commun.installation")}
-              variant="outlined"
-              typography="h6"
-              onClick={() => navigate("/installation")}
-            />
-          </Box>
-        </Box>
+          extra={
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <ButtonColor
+                value={Colors.white}
+                label={t("commun.howtoplay")}
+                variant="outlined"
+                typography="h6"
+                onClick={() => navigate("/help")}
+              />
+              <ButtonColor
+                value={Colors.white}
+                label={t("commun.faq")}
+                variant="outlined"
+                typography="h6"
+                onClick={() => navigate("/faq")}
+              />
+              <ButtonColor
+                value={Colors.white}
+                label={t("commun.installation")}
+                variant="outlined"
+                typography="h6"
+                onClick={() => navigate("/installation")}
+              />
+            </Box>
+          }
+        />
       </Grid>
       <Grid item xs={12}>
         <Box sx={{ width: percent(100), p: 1 }}>
@@ -100,7 +100,7 @@ export const ThemesPage = () => {
                   </Grid>
                 ))}
               </>
-            ) : (
+            ) : categories.length > 0 ? (
               categories
                 .sort((a, b) => sortByName(language, a, b))
                 .map((category) => (
@@ -108,6 +108,8 @@ export const ThemesPage = () => {
                     <CategoryBlock category={category} />
                   </Grid>
                 ))
+            ) : (
+              <SkeletonCategories number={4} />
             )}
           </Grid>
         </Box>

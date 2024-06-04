@@ -38,16 +38,19 @@ const compareString = (a: string, b: string) =>
 
 export const verifyResponse = (
   response: Array<string> | string | number,
-  value: string
+  value: string,
+  exact: boolean
 ) => {
   let result = false;
   if (Array.isArray(response)) {
     result = response.reduce((acc: boolean, b: string) => {
-      const val = compareString(b, value) >= LIMIT;
+      const val = exact ? b === value : compareString(b, value) >= LIMIT;
       return acc || val;
     }, false);
   } else if (typeof response === "string") {
-    result = compareString(response, value) >= LIMIT;
+    result = exact
+      ? response === value
+      : compareString(response, value) >= LIMIT;
   } else {
     result = Number(response) === Number(value);
   }

@@ -4,12 +4,17 @@ import { HeadTitle } from "src/component/HeadTitle";
 
 import { percent } from "csx";
 import img1 from "src/assets/installation/installation1.jpg";
+import img2 from "src/assets/installation/installation2.jpg";
 import img3 from "src/assets/installation/installation3.jpg";
+import img4 from "src/assets/installation/installation4.png";
+import img5 from "src/assets/installation/installation5.png";
 import { StepBlock } from "src/component/StepBlock";
 
 import AndroidIcon from "@mui/icons-material/Android";
 import AppleIcon from "@mui/icons-material/Apple";
 import InstallMobileIcon from "@mui/icons-material/InstallMobile";
+import InstallDesktopIcon from "@mui/icons-material/InstallDesktop";
+import ComputerIcon from "@mui/icons-material/Computer";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useState } from "react";
 import { DefaultTabs } from "src/component/Tabs";
@@ -21,6 +26,7 @@ export const InstallationPage = () => {
   const tabs = [
     { label: t("commun.android"), icon: <AndroidIcon /> },
     { label: t("commun.apple"), icon: <AppleIcon /> },
+    { label: t("commun.computer"), icon: <ComputerIcon /> },
   ];
 
   return (
@@ -33,15 +39,9 @@ export const InstallationPage = () => {
       </Grid>
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
-          <Grid container spacing={1}>
+          <Grid container spacing={1} justifyContent="center">
             {tab === 0 ? (
               <>
-                <Grid item xs={12}>
-                  <Typography variant="h6">{t("commun.solution1")}</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <img src={img1} style={{ maxWidth: percent(100) }} />
-                </Grid>
                 <Grid item xs={12}>
                   <StepBlock
                     number={1}
@@ -52,15 +52,9 @@ export const InstallationPage = () => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12} sx={{ mt: 2 }}>
-                  <Typography variant="h6">{t("commun.solution2")}</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <img src={img3} style={{ maxWidth: percent(100) }} />
-                </Grid>
                 <Grid item xs={12}>
                   <StepBlock
-                    number={1}
+                    number={2}
                     label={
                       <Box>
                         <Typography
@@ -84,9 +78,12 @@ export const InstallationPage = () => {
                     }
                   />
                 </Grid>
+                <Grid item>
+                  <img src={img1} style={{ maxWidth: percent(100) }} />
+                </Grid>
                 <Grid item xs={12}>
                   <StepBlock
-                    number={2}
+                    number={3}
                     label={
                       <Box>
                         <Typography
@@ -104,7 +101,12 @@ export const InstallationPage = () => {
                           {t("commun.clickon")}
                         </Typography>
                         <InstallMobileIcon
-                          sx={{ color: "white", verticalAlign: "bottom" }}
+                          sx={{
+                            color: "white",
+                            verticalAlign: "bottom",
+                            ml: 1,
+                            mr: 1,
+                          }}
                         />
                         <Typography
                           variant="body1"
@@ -117,8 +119,24 @@ export const InstallationPage = () => {
                     }
                   />
                 </Grid>
+                <Grid item>
+                  <img src={img2} style={{ maxWidth: percent(100) }} />
+                </Grid>
+                <Grid item xs={12}>
+                  <StepBlock
+                    number={1}
+                    label={
+                      <Typography variant="body1" color="text.secondary">
+                        {t("installation.android4")}
+                      </Typography>
+                    }
+                  />
+                </Grid>
+                <Grid item>
+                  <img src={img3} style={{ maxWidth: percent(100) }} />
+                </Grid>
               </>
-            ) : (
+            ) : tab === 1 ? (
               <>
                 <Grid item xs={12}>
                   <StepBlock
@@ -149,6 +167,67 @@ export const InstallationPage = () => {
                       </Typography>
                     }
                   />
+                </Grid>
+              </>
+            ) : (
+              <>
+                <Grid item xs={12}>
+                  <StepBlock
+                    number={1}
+                    label={
+                      <Typography variant="body1" color="text.secondary">
+                        {t("installation.computer1")}
+                      </Typography>
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Grid item xs={12}>
+                    <StepBlock
+                      number={2}
+                      label={
+                        <Box>
+                          <Typography
+                            variant="body1"
+                            color="text.secondary"
+                            component="span"
+                          >
+                            {t("installation.computer2")}
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            color="text.secondary"
+                            component="span"
+                          >
+                            {t("commun.clickon")}
+                          </Typography>
+                          <InstallDesktopIcon
+                            sx={{
+                              color: "white",
+                              verticalAlign: "bottom",
+                              ml: 1,
+                            }}
+                          />
+                        </Box>
+                      }
+                    />
+                  </Grid>
+                </Grid>
+                <Grid item>
+                  <img src={img5} style={{ maxWidth: percent(100) }} />
+                </Grid>
+                <Grid item xs={12}>
+                  <StepBlock
+                    number={3}
+                    label={
+                      <Typography variant="body1" color="text.secondary">
+                        {t("installation.computer3")}
+                      </Typography>
+                    }
+                  />
+                </Grid>
+                <Grid item>
+                  <img src={img4} style={{ maxWidth: percent(100) }} />
                 </Grid>
               </>
             )}

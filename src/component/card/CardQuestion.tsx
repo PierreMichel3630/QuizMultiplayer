@@ -9,13 +9,14 @@ import {
 } from "../JsonLanguageBlock";
 import { SelectDifficulty } from "../Select";
 
+import BugReportIcon from "@mui/icons-material/BugReport";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useTranslation } from "react-i18next";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
-import BugReportIcon from "@mui/icons-material/BugReport";
-import { useTranslation } from "react-i18next";
 
 import EditIcon from "@mui/icons-material/Edit";
+import { QcmBlockDuelResultBlock } from "../QcmBlock";
 
 interface Props {
   question: QuestionAdmin;
@@ -116,21 +117,39 @@ export const CardSignalQuestion = ({
           <JsonLanguageBlock
             variant="h2"
             color="text.secondary"
+            sx={{ fontSize: 35 }}
             value={question.question}
           />
         </Grid>
+        {question.extra && (
+          <Grid item xs={12}>
+            <JsonLanguageBlock
+              variant="h2"
+              color="text.secondary"
+              sx={{
+                fontSize: 20,
+                fontStyle: "italic",
+              }}
+              value={question.extra}
+            />
+          </Grid>
+        )}
         {question.image && (
-          <Grid item xs={12} sx={{ height: px(200) }}>
+          <Grid item xs={12} sx={{ maxWidth: percent(80), maxHeight: px(400) }}>
             <ImageQuestionBlock src={question.image} />
           </Grid>
         )}
         <Grid item xs={12} sx={{ textAlign: "center" }}>
-          <JsonLanguageArrayOrStringBlock
-            variant="h4"
-            color="text.secondary"
-            all={question.allresponse}
-            value={question.response}
-          />
+          {question.isqcm ? (
+            <QcmBlockDuelResultBlock question={question} />
+          ) : (
+            <JsonLanguageArrayOrStringBlock
+              sx={{ color: "white" }}
+              variant="h2"
+              all={question.allresponse}
+              value={question.response}
+            />
+          )}
         </Grid>
         {report && (
           <Grid item xs={12}>

@@ -25,3 +25,20 @@ export const searchProfile = (search: string, notin: Array<string>) =>
     .ilike("username", `%${search}%`)
     .not("id", "in", `(${notin.join(",")})`)
     .order("username", { ascending: true });
+
+export const searchProfilePagination = (
+  search: string,
+  notin: Array<string>,
+  page: number,
+  itemperpage: number
+) => {
+  const from = page * itemperpage;
+  const to = from + itemperpage - 1;
+  return supabase
+    .from(SUPABASE_PROFILE_TABLE)
+    .select("*, avatar(*)")
+    .ilike("username", `%${search}%`)
+    .not("id", "in", `(${notin.join(",")})`)
+    .order("username", { ascending: true })
+    .range(from, to);
+};

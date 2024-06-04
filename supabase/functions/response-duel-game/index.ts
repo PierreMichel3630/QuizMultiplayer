@@ -49,14 +49,25 @@ const endGame = async (
     defeat: result === 1 ? 1 : 0,
   });
   const res = await calculelo(supabase, player1, player2, theme, result);
-  channel.send({
-    type: "broadcast",
-    event: "rank",
-    payload: res,
-  });
-  channel.unsubscribe();
   setTimeout(async () => {
+    const { data } = await supabase
+      .from("duelgame")
+      .select(
+        "*,theme(*),player1(*,avatar(*),title(*), badge(*)),player2(*,avatar(*),title(*), badge(*))"
+      )
+      .eq("uuid", uuidgame)
+      .maybeSingle();
+    channel.send({
+      type: "broadcast",
+      event: "end",
+      payload: {
+        elo: res,
+        game: data,
+      },
+    });
     await supabase.from("duelgame").delete().eq("uuid", uuidgame);
+
+    channel.unsubscribe();
   }, 2000);
 };
 
@@ -193,7 +204,7 @@ Deno.serve(async (req) => {
       const delayResponse = timeResponse.diff(time);
       const payload = v.payload;
       const uuid = payload.uuid;
-      const value = payload.response.toString().toLowerCase();
+      const value = payload.response;
       const language = payload.language;
 
       if (
@@ -201,7 +212,7 @@ Deno.serve(async (req) => {
         ((uuid === player1 && !responsePlayer1) ||
           (uuid === player2 && !responsePlayer2))
       ) {
-        result = verifyResponse(response[language], value);
+        result = verifyResponse(response[language], value, question.isqcm);
         const delaypoints =
           POINTSCORRECTANSWER - Math.round(delayResponse / 1000);
         if (uuid === player1) {
@@ -219,6 +230,8 @@ Deno.serve(async (req) => {
             answer: payload.response,
             uuid,
             time: delayResponse,
+            ptsplayer1: pointsPlayer1,
+            ptsplayer2: pointsPlayer2,
           },
         });
         await supabase
@@ -273,8 +286,13 @@ Deno.serve(async (req) => {
           theme.generatequestion !== null
             ? theme.generatequestion
             : Math.random() < 0.5;
+        let qcm = false;
         if (isGenerate) {
           question = generateQuestion(Number(theme.id));
+          time = question.time;
+          qcm = question.isqcm;
+          correctresponseQCM = question.response;
+          wrongresponseQCM = [...question.responses];
         } else {
           const { data } = await supabase
             .from("randomquestion")
@@ -284,71 +302,73 @@ Deno.serve(async (req) => {
             .limit(1)
             .maybeSingle();
           question = data;
-        }
-        response = question.response;
+          let responsesQcm: Array<any> = [];
+          qcm = question.isqcm === null ? true : question.isqcm;
+          if (qcm) {
+            if (question.order) {
+              const res = await supabase
+                .from("order")
+                .select("*")
+                .eq("type", question.typeResponse)
+                .limit(4);
+              responsesQcm = [...res.data]
+                .map((el) => el.name)
+                .sort(() => Math.random() - 0.5);
+              const responseOrder =
+                question.order === "ASC"
+                  ? [...res.data].sort((a, b) =>
+                      a.format === "DATE"
+                        ? moment(a.value, "DD/MM/YYYY").diff(
+                            moment(b.value, "DD/MM/YYYY")
+                          )
+                        : a.value - b.value
+                    )[0]
+                  : [...res.data].sort((a, b) =>
+                      a.format === "DATE"
+                        ? moment(b.value, "DD/MM/YYYY").diff(
+                            moment(a.value, "DD/MM/YYYY")
+                          )
+                        : b.value - a.value
+                    )[0];
+              correctresponseQCM = responseOrder.name;
+              response = responseOrder.name;
+            } else {
+              const responses = Array.isArray(question.response["en-US"])
+                ? question.allresponse
+                  ? question.response["en-US"]
+                  : [question.response["en-US"][0]]
+                : [question.response["en-US"]];
 
-        let responsesQcm: Array<any> = [];
-        const qcm = question.isqcm === null ? true : question.isqcm;
-        if (qcm) {
-          if (question.order) {
-            const res = await supabase
-              .from("order")
-              .select("*")
-              .eq("type", question.typeResponse)
-              .limit(4);
-            responsesQcm = [...res.data]
-              .map((el) => el.name)
-              .sort(() => Math.random() - 0.5);
-            const responseOrder =
-              question.order === "ASC"
-                ? [...res.data].sort((a, b) =>
-                    a.format === "DATE"
-                      ? moment(a.value, "DD/MM/YYYY").diff(
-                          moment(b.value, "DD/MM/YYYY")
-                        )
-                      : a.value - b.value
-                  )[0]
-                : [...res.data].sort((a, b) =>
-                    a.format === "DATE"
-                      ? moment(b.value, "DD/MM/YYYY").diff(
-                          moment(a.value, "DD/MM/YYYY")
-                        )
-                      : b.value - a.value
-                  )[0];
-            correctresponseQCM = responseOrder.name;
-            response = responseOrder.name;
-          } else {
-            const responses = Array.isArray(question.response["en-US"])
-              ? question.allresponse
-                ? question.response["en-US"]
-                : [question.response["en-US"][0]]
-              : [question.response["en-US"]];
+              const res = await supabase
+                .from("randomresponse")
+                .select("*")
+                .eq("type", question.typeResponse)
+                .not("usvalue", "in", `(${responses.join(",")})`)
+                .limit(3);
+              wrongresponseQCM = [
+                ...res.data
+                  .map((el) => el.value)
+                  .sort(() => Math.random() - 0.5),
+              ];
 
-            const res = await supabase
-              .from("randomresponse")
-              .select("*")
-              .eq("type", question.typeResponse)
-              .not("usvalue", "in", `(${responses.join(",")})`)
-              .limit(3);
-            wrongresponseQCM = [
-              ...res.data.map((el) => el.value).sort(() => Math.random() - 0.5),
-            ];
-
-            const res2 = await supabase
-              .from("randomresponse")
-              .select("*")
-              .eq("type", question.typeResponse)
-              .in("usvalue", responses)
-              .limit(1)
-              .maybeSingle();
-            correctresponseQCM = res2.data.value;
-            responsesQcm = [...res.data, res2.data]
-              .map((el) => el.value)
-              .sort(() => Math.random() - 0.5);
+              const res2 = await supabase
+                .from("randomresponse")
+                .select("*")
+                .eq("type", question.typeResponse)
+                .in("usvalue", responses)
+                .limit(1)
+                .maybeSingle();
+              correctresponseQCM = res2.data.value;
+              responsesQcm = [...res.data, res2.data]
+                .map((el) => el.value)
+                .sort(() => Math.random() - 0.5);
+            }
+            question.responses = [...responsesQcm];
           }
         }
+        response = question.response;
         time = moment();
-        delay = qcm ? 15 : 15;
+        delay = qcm ? 10 : 15;
         channel.send({
           type: "broadcast",
           event: "question",
@@ -360,7 +380,7 @@ Deno.serve(async (req) => {
             extra: question.extra,
             theme: question.theme,
             isqcm: qcm,
-            responses: responsesQcm,
+            responses: question.responses,
             time: delay,
           },
         });

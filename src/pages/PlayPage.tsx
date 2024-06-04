@@ -11,7 +11,6 @@ import { useUser } from "src/context/UserProvider";
 import { Profile } from "src/models/Profile";
 import { sortByName } from "src/utils/sort";
 
-import BoltIcon from "@mui/icons-material/Bolt";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -27,6 +26,8 @@ import { Colors } from "src/style/Colors";
 
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import { uniqBy } from "lodash";
+import { LogoIcon } from "src/icons/LogoIcon";
+import { px } from "csx";
 
 export const PlayPage = () => {
   const { t } = useTranslation();
@@ -85,69 +86,94 @@ export const PlayPage = () => {
       <Helmet>
         <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12} sx={{ backgroundColor: Colors.red }}>
+      <Grid
+        item
+        xs={12}
+        sx={{ backgroundColor: Colors.blue3, marginBottom: 8 }}
+      >
         <BarNavigation title="Jouer" />
       </Grid>
       <Grid item xs={12}>
         <Container maxWidth="lg">
-          <Box sx={{ p: 1, position: "relative" }}>
-            <Grid container spacing={1} justifyContent="center">
-              <Grid item xs={6}>
-                <ButtonColorSelect
-                  select={mode === "duel"}
-                  value={Colors.red}
-                  label={t("commun.duel")}
-                  icon={OfflineBoltIcon}
-                  onClick={() => setMode("duel")}
-                  variant="contained"
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <ButtonColorSelect
-                  select={mode === "solo"}
-                  value={Colors.blue2}
-                  label={t("commun.solo")}
-                  icon={PlayCircleIcon}
-                  onClick={() => setMode("solo")}
-                  variant="contained"
-                />
-              </Grid>
-              {mode === "duel" && (
-                <Grid item xs={12}>
-                  <SelectorProfileBlock
-                    label={t("commun.selectadv")}
-                    profile={profileAdv}
-                    onDelete={() => setProfileAdv(undefined)}
-                    onChange={() => setOpenModalFriend(true)}
-                  />
+          <Box sx={{ p: 1, mt: px(100), mb: px(50), position: "relative" }}>
+            <Box
+              sx={{
+                position: "fixed",
+                top: 55,
+                left: 0,
+                right: 0,
+                backgroundColor: "white",
+                zIndex: 2,
+                p: 2,
+              }}
+            >
+              <Container maxWidth="lg">
+                <Grid container spacing={1} justifyContent="center">
+                  <Grid item xs={6}>
+                    <ButtonColorSelect
+                      select={mode === "duel"}
+                      value={Colors.red}
+                      label={t("commun.duel")}
+                      icon={OfflineBoltIcon}
+                      onClick={() => setMode("duel")}
+                      variant="contained"
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <ButtonColorSelect
+                      select={mode === "solo"}
+                      value={Colors.blue2}
+                      label={t("commun.solo")}
+                      icon={PlayCircleIcon}
+                      onClick={() => setMode("solo")}
+                      variant="contained"
+                    />
+                  </Grid>
+                  {mode === "duel" && (
+                    <Grid item xs={12}>
+                      <SelectorProfileBlock
+                        label={t("commun.selectadv")}
+                        profile={profileAdv}
+                        onDelete={() => setProfileAdv(undefined)}
+                        onChange={() => setOpenModalFriend(true)}
+                      />
+                    </Grid>
+                  )}
                 </Grid>
-              )}
+              </Container>
+            </Box>
+            <Grid container spacing={1} justifyContent="center">
               {themesFilter.map((t) => (
-                <Grid item xs={3} sm={2} md={2} lg={1} key={t.id}>
-                  <CardSelectTheme
-                    theme={t}
-                    select={theme && theme.id === t.id ? true : false}
-                    onSelect={() => setTheme(t)}
-                  />
+                <Grid item key={t.id}>
+                  <Box sx={{ maxWidth: px(100) }}>
+                    <CardSelectTheme
+                      theme={t}
+                      select={theme && theme.id === t.id ? true : false}
+                      onSelect={() => setTheme(t)}
+                    />
+                  </Box>
                 </Grid>
               ))}
             </Grid>
             <Box
               sx={{
                 position: "fixed",
-                bottom: 10,
-                left: 5,
-                right: 5,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                backgroundColor: "white",
               }}
             >
               <Container maxWidth="lg">
-                <ButtonColor
-                  value={Colors.red}
-                  label={t("commun.play")}
-                  icon={BoltIcon}
-                  variant="contained"
-                  onClick={play}
-                />
+                <Box sx={{ p: 1 }}>
+                  <ButtonColor
+                    value={Colors.blue3}
+                    label={t("commun.play")}
+                    icon={LogoIcon}
+                    variant="contained"
+                    onClick={play}
+                  />
+                </Box>
               </Container>
             </Box>
           </Box>

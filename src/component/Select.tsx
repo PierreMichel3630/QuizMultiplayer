@@ -343,7 +343,7 @@ export const SelectTitle = ({ onChange }: PropsSelectTitle) => {
         {options.map((option) => {
           const isLock = !titlesUnlock.includes(Number(option.value));
           return (
-            <MenuItem value={option.value} disabled={isLock}>
+            <MenuItem key={option.value} value={option.value} disabled={isLock}>
               {isLock && <LockIcon sx={{ color: Colors.lightgrey2 }} />}
               <JsonLanguageBlock variant="body1" value={option.label} />
             </MenuItem>

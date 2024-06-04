@@ -30,17 +30,17 @@ import { Badge, BadgeProfile } from "src/models/Badge";
 import { Rank } from "src/models/Rank";
 import { Opposition, Score } from "src/models/Score";
 import { Title, TitleProfile } from "src/models/Title";
-import { sortByDuelGamesDesc } from "src/utils/sort";
+import { sortByDuelGamesDesc, sortByTitle } from "src/utils/sort";
 
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import EditIcon from "@mui/icons-material/Edit";
 import { CardBadge } from "src/component/card/CardBadge";
 import { CardTitle } from "src/component/card/CardTitle";
-import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 
 export const ProfilPage = () => {
   const { t } = useTranslation();
   const { id } = useParams();
-  const { uuid } = useUser();
+  const { uuid, language } = useUser();
   const { user, profile } = useAuth();
   const navigate = useNavigate();
 
@@ -150,6 +150,11 @@ export const ProfilPage = () => {
     [scores]
   );
 
+  const titleOrder = useMemo(
+    () => titles.sort((a, b) => sortByTitle(language, a, b)),
+    [titles, language]
+  );
+
   return (
     profileUser && (
       <Box>
@@ -159,9 +164,8 @@ export const ProfilPage = () => {
         <Box
           sx={{
             p: 1,
-            backgroundColor: "#4158D0",
-            backgroundImage:
-              "linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%)",
+            backgroundColor: Colors.blue3,
+            backgroundImage: `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
             position: "relative",
           }}
         >
@@ -243,9 +247,9 @@ export const ProfilPage = () => {
                 <CardBadge badges={badges} />
               </Grid>
             )}
-            {titles.length > 0 && (
+            {titleOrder.length > 0 && (
               <Grid item xs={12}>
-                <CardTitle titles={titles} />
+                <CardTitle titles={titleOrder} />
               </Grid>
             )}
             <Grid item xs={12}>
@@ -277,7 +281,7 @@ export const ProfilPage = () => {
                           display: "flex",
                           alignItems: "center",
                           gap: 1,
-                          backgroundColor: Colors.red,
+                          backgroundColor: Colors.blue3,
                           p: px(5),
                         }}
                       >

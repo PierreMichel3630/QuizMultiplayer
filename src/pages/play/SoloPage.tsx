@@ -10,15 +10,15 @@ import { InputResponseBlock } from "src/component/InputResponseBlock";
 import { QuestionSoloBlock } from "src/component/QuestionBlock";
 import { ResponseSoloBlock } from "src/component/ResponseBlock";
 import { useUser } from "src/context/UserProvider";
-import { Question, QuestionSolo } from "src/models/Question";
+import { QuestionSolo } from "src/models/Question";
 import { ResponseSolo } from "src/models/Response";
 
 import { percent, viewHeight } from "csx";
-import { QcmBlock, QcmResponseBlock } from "src/component/QcmBlock";
+import { LoadingDot } from "src/component/Loading";
+import { QcmResponseBlock } from "src/component/QcmBlock";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { SoloGame } from "src/models/Game";
 import { Colors } from "src/style/Colors";
-import { LoadingDot } from "src/component/Loading";
 
 export const SoloPage = () => {
   const { t } = useTranslation();
@@ -32,7 +32,6 @@ export const SoloPage = () => {
   const [game, setGame] = useState<undefined | SoloGame>(undefined);
 
   const [question, setQuestion] = useState<undefined | QuestionSolo>(undefined);
-  const [questions, setQuestions] = useState<Array<Question>>([]);
   const [response, setResponse] = useState<undefined | ResponseSolo>(undefined);
   const [score, setScore] = useState<number>(0);
   const [timer, setTimer] = useState<undefined | number>(undefined);
@@ -57,38 +56,6 @@ export const SoloPage = () => {
     if (game) {
       const channel = supabase
         .channel(game.uuid)
-        .on(
-          "postgres_changes",
-          {
-            event: "UPDATE",
-            schema: "public",
-            table: "sologame",
-            filter: `uuid=eq.${game.uuid}`,
-          },
-          (payload) => {
-            setQuestions(payload.new.questions as Array<Question>);
-          }
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "DELETE",
-            schema: "public",
-            table: "sologame",
-            filter: `uuid=eq.${game.uuid}`,
-          },
-          () => {
-            channel.unsubscribe();
-            navigate(`/recapsolo`, {
-              state: {
-                questions: questions,
-                theme: game.theme,
-                score: score,
-                allquestion: false,
-              },
-            });
-          }
-        )
         .on("broadcast", { event: "question" }, (value) => {
           const questionSolo = value.payload as QuestionSolo;
           if (questionSolo.audio) {
@@ -109,14 +76,27 @@ export const SoloPage = () => {
           setScore(res.points);
           scrollTop();
         })
-        .on("broadcast", { event: "allquestion" }, () => {
+        .on("broadcast", { event: "allquestion" }, (value) => {
+          const res = value.payload as SoloGame;
           channel.unsubscribe();
           navigate(`/recapsolo`, {
             state: {
-              questions: questions,
-              theme: game.theme,
-              score: score,
+              questions: res.questions,
+              theme: res.theme,
+              score: res.points,
               allquestion: true,
+            },
+          });
+        })
+        .on("broadcast", { event: "end" }, (value) => {
+          const res = value.payload as SoloGame;
+          channel.unsubscribe();
+          navigate(`/recapsolo`, {
+            state: {
+              questions: res.questions,
+              theme: res.theme,
+              score: res.points,
+              allquestion: false,
             },
           });
         })
@@ -129,7 +109,7 @@ export const SoloPage = () => {
         }
       };
     }
-  }, [uuid, game, questions, score, navigate, audio, sound]);
+  }, [uuid, game, navigate, audio, sound]);
 
   useEffect(() => {
     if (audio) {
@@ -138,7 +118,7 @@ export const SoloPage = () => {
     }
   }, [audio, sound]);
 
-  const validateResponse = async (value: string) => {
+  const validateResponse = async (value: string | number) => {
     if (channel && game && language) {
       channel.send({
         type: "broadcast",
@@ -200,12 +180,18 @@ export const SoloPage = () => {
           {question ? (
             <>
               <QuestionSoloBlock question={question} timer={timer} />
-              {response && (
+              {question && question.isqcm ? (
+                <QcmResponseBlock
+                  response={response}
+                  question={question}
+                  onSubmit={validateResponse}
+                />
+              ) : (
                 <>
-                  {question && question.isqcm ? (
-                    <QcmResponseBlock response={response} question={question} />
-                  ) : (
+                  {response ? (
                     <ResponseSoloBlock response={response} />
+                  ) : (
+                    <InputResponseBlock onSubmit={validateResponse} />
                   )}
                 </>
               )}
@@ -231,15 +217,6 @@ export const SoloPage = () => {
             </Box>
           )}
         </Box>
-        {!response && (
-          <Box>
-            {question && question.isqcm ? (
-              <QcmBlock question={question} onSubmit={validateResponse} />
-            ) : (
-              <InputResponseBlock onSubmit={validateResponse} />
-            )}
-          </Box>
-        )}
       </Box>
     </Container>
   );

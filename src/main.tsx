@@ -8,6 +8,7 @@ import "@fontsource/montserrat/500.css";
 import "@fontsource/montserrat/700.css";
 
 import "@fontsource/bowlby-one-sc/400.css";
+import "@fontsource/kalam";
 
 import { HelmetProvider } from "react-helmet-async";
 

@@ -6,7 +6,6 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { selectDuelGameById } from "src/api/game";
-import { getProfilById } from "src/api/profile";
 import { supabase } from "src/api/supabase";
 import { CircularLoading } from "src/component/Loading";
 import { QcmBlockDuelBlock } from "src/component/QcmBlock";
@@ -16,9 +15,9 @@ import { RoundTimer, VerticalTimer } from "src/component/Timer";
 import { AvatarAccount } from "src/component/avatar/AvatarAccount";
 import { WaitPlayerDuelGameBlock } from "src/component/play/WaitPlayerDuelGameBlock";
 import { useUser } from "src/context/UserProvider";
-import { DuelGame, DuelGameChange } from "src/models/DuelGame";
+import { DuelGame } from "src/models/DuelGame";
 import { Elo } from "src/models/Elo";
-import { Question, QuestionDuel } from "src/models/Question";
+import { QuestionDuel } from "src/models/Question";
 import { Response, ResponseDuel } from "src/models/Response";
 import { Colors } from "src/style/Colors";
 
@@ -39,9 +38,7 @@ export const DuelPage = () => {
   const [timer, setTimer] = useState<undefined | number>(undefined);
   const [question, setQuestion] = useState<undefined | QuestionDuel>(undefined);
   const [response, setResponse] = useState<undefined | Response>(undefined);
-  const [questions, setQuestions] = useState<Array<Question>>([]);
   const [audio, setAudio] = useState<undefined | HTMLAudioElement>(undefined);
-  const [elo, setElo] = useState<undefined | Elo>(undefined);
   const [responsePlayer1, setResponsePlayer1] = useState<
     undefined | ResponseDuel
   >(undefined);
@@ -64,13 +61,6 @@ export const DuelPage = () => {
     getGame();
   }, [navigate, uuidGame]);
 
-  const getPlayer2 = async (uuid: string | null) => {
-    if (uuid !== null) {
-      const { data } = await getProfilById(uuid);
-      return data;
-    }
-  };
-
   useEffect(() => {
     if (game) {
       const channel = supabase
@@ -88,54 +78,10 @@ export const DuelPage = () => {
           const uuids = newState.uuid ? newState.uuid.map((el) => el.uuid) : [];
           setPlayers(uuids);
         })
-        .on(
-          "postgres_changes",
-          {
-            event: "UPDATE",
-            schema: "public",
-            table: "duelgame",
-            filter: `uuid=eq.${game.uuid}`,
-          },
-          async (payload) => {
-            const newGame = payload.new as DuelGameChange;
-            const player2 =
-              game.player2 !== null
-                ? game.player2
-                : await getPlayer2(newGame.player2 as string);
-            setQuestions(newGame.questions);
-            setGame((prev) =>
-              prev
-                ? {
-                    ...prev,
-                    player2: player2,
-                    ptsplayer1: newGame.ptsplayer1,
-                    ptsplayer2: newGame.ptsplayer2,
-                    start: newGame.start,
-                  }
-                : prev
-            );
-          }
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "DELETE",
-            schema: "public",
-            table: "duelgame",
-          },
-          (payload) => {
-            if (payload.old.id === game.id) {
-              channel.unsubscribe();
-              navigate(`/recapduel`, {
-                state: {
-                  game: game,
-                  elo: elo,
-                  questions: questions,
-                },
-              });
-            }
-          }
-        )
+        .on("broadcast", { event: "updategame" }, (value) => {
+          const game = value.payload as DuelGame;
+          setGame(game);
+        })
         .on("broadcast", { event: "question" }, (value) => {
           const questionduel = value.payload as QuestionDuel;
           if (questionduel.audio) {
@@ -144,7 +90,6 @@ export const DuelPage = () => {
             audio.play();
             setAudio(audio);
           }
-          console.log(questionduel);
           setTimer(questionduel.time);
           setQuestion(questionduel);
           setResponse(undefined);
@@ -163,10 +108,37 @@ export const DuelPage = () => {
             } else if (res.uuid === game.player2.id) {
               setResponsePlayer2(res);
             }
+            setGame((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    ptsplayer1: res.ptsplayer1,
+                    ptsplayer2: res.ptsplayer2,
+                  }
+                : undefined
+            );
           }
         })
-        .on("broadcast", { event: "rank" }, (value) => {
-          setElo(value.payload as Elo);
+        .on("broadcast", { event: "end" }, (value) => {
+          const res = value.payload as {
+            game: DuelGame;
+            elo: Elo;
+          };
+          channel.unsubscribe();
+          navigate(`/recapduel`, {
+            state: {
+              game: res.game,
+              elo: res.elo,
+              questions: res.game.questions,
+            },
+          });
+        })
+        .on("broadcast", { event: "cancel" }, () => {
+          navigate(`/recapduel`, {
+            state: {
+              game: game,
+            },
+          });
         })
         .subscribe(async (status) => {
           if (status !== "SUBSCRIBED") {
@@ -182,9 +154,9 @@ export const DuelPage = () => {
         }
       };
     }
-  }, [elo, game, navigate, questions, uuid, audio, sound]);
+  }, [game, navigate, uuid, audio, sound]);
 
-  const validateResponse = async (value: string) => {
+  const validateResponse = async (value: string | number) => {
     if (channel && game && language && uuid) {
       channel.send({
         type: "broadcast",
@@ -337,15 +309,11 @@ export const DuelPage = () => {
                     gap: px(5),
                   }}
                 >
-                  {timer && (
-                    <VerticalTimer
-                      time={timer}
-                      color={COLORDUEL1}
-                      answer={
-                        responsePlayer1 ? responsePlayer1.time : undefined
-                      }
-                    />
-                  )}
+                  <VerticalTimer
+                    time={timer}
+                    color={COLORDUEL1}
+                    answer={responsePlayer1 ? responsePlayer1.time : undefined}
+                  />
                   <Box
                     sx={{
                       display: "flex",
@@ -391,15 +359,11 @@ export const DuelPage = () => {
                       )}
                     </Box>
                   </Box>
-                  {timer && (
-                    <VerticalTimer
-                      time={timer}
-                      color={COLORDUEL2}
-                      answer={
-                        responsePlayer2 ? responsePlayer2.time : undefined
-                      }
-                    />
-                  )}
+                  <VerticalTimer
+                    time={timer}
+                    color={COLORDUEL2}
+                    answer={responsePlayer2 ? responsePlayer2.time : undefined}
+                  />
                 </Box>
               </Box>
             ) : (

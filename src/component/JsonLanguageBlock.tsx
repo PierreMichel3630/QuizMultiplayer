@@ -8,8 +8,12 @@ interface Props extends TypographyProps {
 export const JsonLanguageBlock = ({ value, ...props }: Props) => {
   const { language } = useUser();
   const label = value[language.iso] ? value[language.iso] : value["fr-FR"];
-  const split = label.split("/n");
-  return split.map((el) => <Typography {...props}>{el}</Typography>);
+  const split = label.toString().split("/n");
+  return split.map((el, index) => (
+    <Typography {...props} key={index}>
+      {el}
+    </Typography>
+  ));
 };
 
 interface PropsArray extends TypographyProps {

@@ -258,10 +258,11 @@ export const ThemePage = () => {
               <Grid container spacing={1} alignItems="center">
                 <Grid item xs={12} sx={{ textAlign: "center" }}>
                   <JsonLanguageBlock
-                    variant="h1"
+                    variant="h2"
                     sx={{
                       color: Colors.white,
                       textShadow: "2px 2px 4px black",
+                      fontSize: 35,
                     }}
                     value={theme.name}
                   />

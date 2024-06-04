@@ -177,7 +177,8 @@
     "solution1": "Solution 1",
     "solution2": "Solution 2",
     "clickon": "Cliquez sur",
-    "installapplication": "Installer l'application"
+    "installapplication": "Installer l'application",
+    "computer": "Ordinateur"
   },
   "accomplishment": {
     "SOLO": "Succès Mode Solo",
@@ -253,12 +254,16 @@
     }
   },
   "installation": {
-    "android1": "Cliquez sur 'Installer' si vous voyez la notification en haut de votre écran",
+    "android1": "Ouvrez Chrome et accédez à https://quizup-v2.web.app",
     "android2": "en haut à droite de votre écran",
     "android3": "Dans le menu, ",
+    "android4": "Une popup s'ouvre, cliquer sur installer.",
     "apple1": "En haut à droite de la barre d'adresse, appuyez sur Partager .",
     "apple2": "Recherchez l'option Ajouter à l'écran d'accueil, puis appuyez dessus.",
-    "apple3": "Appuyez sur Ajouter"
+    "apple3": "Appuyez sur Ajouter",
+    "computer1": "Ouvrez Chrome et accédez à https://quizup-v2.web.app",
+    "computer2": "En haut à droite, cliquer sur l'icône ",
+    "computer3": "Une popup s'ouvre, cliquer sur installer."
   },
   "pages": {
     "home": {

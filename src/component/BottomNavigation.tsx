@@ -12,7 +12,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AppsIcon from "@mui/icons-material/Apps";
-import BoltIcon from "@mui/icons-material/Bolt";
 import GroupsIcon from "@mui/icons-material/Groups";
 import MenuIcon from "@mui/icons-material/Menu";
 import { padding, px } from "csx";
@@ -20,6 +19,7 @@ import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
 import { FRIENDSTATUS } from "src/models/Friend";
+import { LogoIcon } from "src/icons/LogoIcon";
 
 export const BottomNavigationBlock = () => {
   const { t } = useTranslation();
@@ -106,7 +106,9 @@ export const BottomNavigationBlock = () => {
           onClick={() => navigate("/play")}
         >
           <Fab color="secondary">
-            <BoltIcon fontSize="large" sx={{ color: Colors.white }} />
+            <LogoIcon
+              sx={{ color: Colors.white, ml: "2px", mt: "3px", fontSize: 30 }}
+            />
           </Fab>
         </Box>
       </BottomNavigation>

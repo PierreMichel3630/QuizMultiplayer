@@ -1,4 +1,5 @@
 import { Language } from "src/models/Language";
+import { Title } from "src/models/Title";
 
 export const sortByScore = (a: { score: number }, b: { score: number }) =>
   b.score - a.score;
@@ -20,4 +21,7 @@ export const sortByDuelGamesDesc = (
 ) => b.duelgames - a.duelgames;
 
 export const sortByName = (language: Language, a: any, b: any) =>
+  a.name[language.iso].localeCompare(b.name[language.iso]);
+
+export const sortByTitle = (language: Language, a: Title, b: Title) =>
   a.name[language.iso].localeCompare(b.name[language.iso]);

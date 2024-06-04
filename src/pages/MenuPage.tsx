@@ -174,9 +174,8 @@ export const MenuPage = () => {
           <Box
             sx={{
               p: 1,
-              backgroundColor: "#4158D0",
-              backgroundImage:
-                "linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%)",
+              backgroundColor: Colors.blue3,
+              backgroundImage: `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
               position: "relative",
               width: percent(100),
             }}

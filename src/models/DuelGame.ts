@@ -11,6 +11,7 @@ export interface DuelGame {
   ptsplayer1: number;
   ptsplayer2: number;
   start: boolean;
+  questions: Array<Question>;
 }
 
 export interface DuelGameChange {

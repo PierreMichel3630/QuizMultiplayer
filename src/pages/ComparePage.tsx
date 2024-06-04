@@ -248,7 +248,7 @@ export const ComparePage = () => {
                               alignItems: "center",
                               justifyContent: "center",
                               gap: 1,
-                              backgroundColor: Colors.red,
+                              backgroundColor: Colors.blue3,
                               p: px(5),
                             }}
                           >

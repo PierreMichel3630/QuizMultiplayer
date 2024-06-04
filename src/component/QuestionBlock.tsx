@@ -6,6 +6,7 @@ import { JsonLanguageBlock } from "./JsonLanguageBlock";
 import { CircularLoading } from "./Loading";
 import { SoundBar } from "./SoundBar";
 import { Timer } from "./Timer";
+import { useMemo } from "react";
 
 interface PropsSolo {
   question?: QuestionSolo;
@@ -13,20 +14,36 @@ interface PropsSolo {
 }
 
 export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
+  const image = useMemo(
+    () => (question ? question.image : undefined),
+    [question]
+  );
   return (
     <Box
-      sx={{
-        width: percent(100),
-        flexGrow: 1,
-        flex: "1 1 0",
-        display: "flex",
-        minHeight: 0,
-        flexDirection: "column",
-        alignItems: "center",
-        textAlign: "center",
-        justifyContent: "center",
-        gap: 1,
-      }}
+      sx={
+        question && question.type === "IMAGE"
+          ? {
+              width: percent(100),
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+              justifyContent: "center",
+              gap: 1,
+            }
+          : {
+              width: percent(100),
+              flexGrow: 1,
+              flex: "1 1 0",
+              display: "flex",
+              minHeight: 0,
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+              justifyContent: "center",
+              gap: 1,
+            }
+      }
     >
       {question ? (
         <>
@@ -39,7 +56,7 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
             }}
             value={question.question}
           />
-          {question.image && (
+          {image && (
             <Box
               sx={{
                 flexGrow: 1,
@@ -50,7 +67,7 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
                 width: percent(100),
               }}
             >
-              <ImageQuestionBlock src={question.image} />
+              <ImageQuestionBlock src={image} />
             </Box>
           )}
           {question.audio && <SoundBar />}
@@ -86,21 +103,36 @@ interface PropsDuel {
 }
 
 export const QuestionDuelBlock = ({ question }: PropsDuel) => {
+  const image = useMemo(
+    () => (question ? question.image : undefined),
+    [question]
+  );
   return (
     <Box
-      sx={{
-        width: percent(100),
-        flexGrow: 1,
-        flex: "1 1 0",
-        display: "flex",
-        minHeight: 0,
-        flexDirection: "column",
-        alignItems: "center",
-        textAlign: "center",
-        justifyContent: "center",
-        gap: 1,
-        p: 1,
-      }}
+      sx={
+        question && question.type === "IMAGE"
+          ? {
+              width: percent(100),
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+              justifyContent: "center",
+              gap: 1,
+            }
+          : {
+              width: percent(100),
+              flexGrow: 1,
+              flex: "1 1 0",
+              display: "flex",
+              minHeight: 0,
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+              justifyContent: "center",
+              gap: 1,
+            }
+      }
     >
       {question ? (
         <>
@@ -121,7 +153,7 @@ export const QuestionDuelBlock = ({ question }: PropsDuel) => {
               value={question.extra}
             />
           )}
-          {question.image && (
+          {image && (
             <Box
               sx={{
                 flexGrow: 1,
@@ -132,7 +164,7 @@ export const QuestionDuelBlock = ({ question }: PropsDuel) => {
                 width: percent(100),
               }}
             >
-              <ImageQuestionBlock src={question.image} />
+              <ImageQuestionBlock src={image} />
             </Box>
           )}
           {question.audio && <SoundBar />}

@@ -24,7 +24,7 @@ export const CardBadge = ({ badges }: Props) => {
           item
           xs={12}
           sx={{
-            backgroundColor: Colors.red,
+            backgroundColor: Colors.blue3,
             p: px(10),
           }}
         >
@@ -41,7 +41,7 @@ export const CardBadge = ({ badges }: Props) => {
         <Grid item xs={12} sx={{ display: "flex", p: 1 }}>
           <Grid container spacing={1}>
             {badges.map((badge) => (
-              <Grid item>
+              <Grid item key={badge.id}>
                 <img src={badge.icon} width={40} />
               </Grid>
             ))}

@@ -4,6 +4,9 @@ import { useTranslation } from "react-i18next";
 import { Title } from "src/models/Title";
 import { Colors } from "src/style/Colors";
 import { BadgeTitle } from "../Badge";
+import { useMemo } from "react";
+import { sortByTitle } from "src/utils/sort";
+import { useUser } from "src/context/UserProvider";
 
 interface Props {
   titles: Array<Title>;
@@ -11,6 +14,12 @@ interface Props {
 
 export const CardTitle = ({ titles }: Props) => {
   const { t } = useTranslation();
+  const { language } = useUser();
+
+  const titleOrder = useMemo(
+    () => titles.sort((a, b) => sortByTitle(language, a, b)),
+    [titles, language]
+  );
 
   return (
     <Paper
@@ -25,7 +34,7 @@ export const CardTitle = ({ titles }: Props) => {
           item
           xs={12}
           sx={{
-            backgroundColor: Colors.red,
+            backgroundColor: Colors.blue3,
             p: px(10),
           }}
         >
@@ -41,8 +50,8 @@ export const CardTitle = ({ titles }: Props) => {
         </Grid>
         <Grid item xs={12} sx={{ display: "flex", p: 1 }}>
           <Grid container spacing={1}>
-            {titles.map((title) => (
-              <Grid item>
+            {titleOrder.map((title) => (
+              <Grid item key={title.id}>
                 <BadgeTitle label={title.name} />
               </Grid>
             ))}

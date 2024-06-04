@@ -1,4 +1,5 @@
 import { JsonLanguage } from "./Language";
+import { Question } from "./Question";
 import { Theme, ThemeDifficulty } from "./Theme";
 
 export interface Game {
@@ -15,7 +16,8 @@ export interface Game {
 export interface SoloGame {
   id: number;
   points: number;
-  question: JsonLanguage;
+  questions: Array<Question>;
+  player: string;
   theme: Theme;
   uuid: string;
 }

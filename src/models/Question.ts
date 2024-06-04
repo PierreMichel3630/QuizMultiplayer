@@ -11,11 +11,20 @@ export interface QuestionEnd {
 
 export interface Question {
   image?: string;
+  extra?: JsonLanguage;
+  audio?: string;
+  isqcm: boolean;
   question: JsonLanguage;
   response: JsonLanguage;
+  responsePlayer1?: string;
+  responsePlayer2?: string;
   difficulty: string;
   id: number;
   allresponse: boolean;
+  responses: Array<{
+    label?: ResponseLanguageString;
+    image?: string;
+  }>;
 }
 
 export interface QuestionPosition {
@@ -63,21 +72,29 @@ export interface QuestionSolo {
   audio?: string;
   extra?: JsonLanguage;
   question: JsonLanguage;
+  type: "DEFAULT" | "ORDER" | "IMAGE";
   time: number;
   difficulty: string;
   theme: Theme;
   isqcm: boolean;
-  responses: Array<ResponseLanguageString>;
+  responses: Array<{
+    label?: ResponseLanguageString;
+    image?: string;
+  }>;
 }
 
 export interface QuestionDuel {
-  audio?: string;
   image?: string;
+  audio?: string;
   extra?: JsonLanguage;
   question: JsonLanguage;
+  type: "DEFAULT" | "ORDER" | "IMAGE";
+  time: number;
   difficulty: string;
   theme: Theme;
   isqcm: boolean;
-  responses: Array<ResponseLanguageString>;
-  time: number;
+  responses: Array<{
+    label?: ResponseLanguageString;
+    image?: string;
+  }>;
 }

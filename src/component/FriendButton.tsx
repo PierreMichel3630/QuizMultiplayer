@@ -108,8 +108,6 @@ export const FriendButton = ({ profile }: Props) => {
     refreshFriends();
   }, []);
 
-  console.log;
-
   return user && friend ? (
     friend.status === FRIENDSTATUS.PROGRESS ? (
       <>

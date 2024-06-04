@@ -10,7 +10,7 @@ import { important, px } from "csx";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
-import logo from "src/assets/logo.png";
+import logo from "src/assets/logo.svg";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { AccountMenu } from "./AccountMenu";
 import { LanguagesMenu } from "./LanguageMenu";
@@ -41,7 +41,7 @@ export const Header = () => {
                 textDecoration: "none",
               }}
             >
-              <img src={logo} width={50} height={50} />
+              <img src={logo} width={45} height={45} />
               <Typography
                 variant="h1"
                 sx={{ fontSize: 30, display: { xs: "none", sm: "flex" } }}

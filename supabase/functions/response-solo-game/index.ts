@@ -53,7 +53,7 @@ Deno.serve(async (req) => {
   const questions = data.questions;
   const previousIdQuestion = questions.map((el) => el.id).join(",");
   let response = undefined;
-  let question = undefined;
+  let question: any = undefined;
   let time = 15;
   let isAnswer = false;
 
@@ -62,14 +62,17 @@ Deno.serve(async (req) => {
   const channel = supabase.channel(data.uuid);
   channel
     .on("broadcast", { event: "response" }, async (v) => {
-      let result = false;
+      let result: boolean = false;
       const payload = v.payload;
-      const value = payload.response.toLowerCase();
+      const value = payload.response;
       const language = payload.language;
-
-      if (response) {
+      if (response !== undefined && question !== undefined) {
         isAnswer = true;
-        result = verifyResponse(response[language], value);
+        if (question.isqcm) {
+          result = Number(response) === Number(value);
+        } else {
+          result = verifyResponse(response[language], value, false);
+        }
         points = result ? points + 1 : points;
         channel.send({
           type: "broadcast",
@@ -86,21 +89,38 @@ Deno.serve(async (req) => {
             .from("sologame")
             .update({
               points: points,
-              questions: [...questions, { ...question, response: response }],
+              questions: [
+                ...questions,
+                {
+                  ...question,
+                  response: response,
+                  responsePlayer1: payload.response,
+                },
+              ],
             })
             .eq("id", id);
           setTimeout(async () => {
             await supabase.functions.invoke("response-solo-game", {
               body: { game: idgame },
             });
+            channel.unsubscribe();
           }, 2000);
         } else {
-          await supabase
+          const { data } = await supabase
             .from("sologame")
             .update({
-              questions: [...questions, { ...question, response: response }],
+              questions: [
+                ...questions,
+                {
+                  ...question,
+                  response: response,
+                  responsePlayer1: payload.response,
+                },
+              ],
             })
-            .eq("id", id);
+            .eq("id", id)
+            .select("*,theme(*)")
+            .maybeSingle();
           await supabase.rpc("updatescore", {
             player: player,
             themeid: theme.id,
@@ -108,9 +128,14 @@ Deno.serve(async (req) => {
           });
           setTimeout(async () => {
             await supabase.from("sologame").delete().eq("id", id);
+            channel.send({
+              type: "broadcast",
+              event: "end",
+              payload: data,
+            });
+            channel.unsubscribe();
           }, 2000);
         }
-        channel.unsubscribe();
       }
     })
     .subscribe(async (status) => {
@@ -121,11 +146,11 @@ Deno.serve(async (req) => {
             ? theme.generatequestion
             : Math.random() < 0.5;
         let responsesQcm: Array<any> = [];
-        let qcm = false;
         if (isGenerate) {
           const difficulty = difficulties[difficulties.length - 1];
           newQuestion = generateQuestion(Number(theme.id), points, difficulty);
           time = newQuestion.time;
+          response = newQuestion.response;
         } else {
           const { data } = await supabase
             .from("randomquestion")
@@ -147,12 +172,15 @@ Deno.serve(async (req) => {
               .maybeSingle();
             newQuestion = data;
             if (data === null) {
+              const { data } = await supabase
+                .from("sologame")
+                .select("*,theme(*)")
+                .eq("id", id)
+                .maybeSingle();
               channel.send({
                 type: "broadcast",
                 event: "allquestion",
-                payload: {
-                  result: true,
-                },
+                payload: data,
               });
               await supabase.rpc("updatescore", {
                 player: player,
@@ -166,19 +194,20 @@ Deno.serve(async (req) => {
             }
           }
           if (newQuestion) {
-            qcm = newQuestion.isqcm === null ? points < 10 : newQuestion.isqcm;
-            time = qcm ? 15 : 15;
-            newQuestion = { ...newQuestion, time: time };
+            const qcm =
+              newQuestion.isqcm === null ? points < 10 : newQuestion.isqcm;
+            time = qcm ? 10 : 15;
+            newQuestion = { ...newQuestion, time: time, isqcm: qcm };
             response = newQuestion.response;
             if (qcm) {
-              if (newQuestion.order) {
+              if (newQuestion.typequestion === "ORDER") {
                 const res = await supabase
                   .from("order")
                   .select("*")
                   .eq("type", newQuestion.typeResponse)
                   .limit(4);
                 responsesQcm = [...res.data]
-                  .map((el) => el.name)
+                  .map((el) => ({ label: el.name }))
                   .sort(() => Math.random() - 0.5);
                 const responseOrder =
                   newQuestion.order === "ASC"
@@ -196,7 +225,36 @@ Deno.serve(async (req) => {
                             )
                           : b.value - a.value
                       )[0];
-                response = responseOrder.name;
+                response = [...responsesQcm].findIndex(
+                  (el) => el.label === responseOrder.name
+                );
+              } else if (newQuestion.typequestion === "IMAGE") {
+                const responses = Array.isArray(newQuestion.response["en-US"])
+                  ? newQuestion.allresponse
+                    ? newQuestion.response["en-US"]
+                    : [newQuestion.response["en-US"][0]]
+                  : [newQuestion.response["en-US"]];
+
+                const res = await supabase
+                  .from("randomresponseimage")
+                  .select("*")
+                  .eq("type", newQuestion.typeResponse)
+                  .not("usvalue", "in", `(${responses.join(",")})`)
+                  .limit(3);
+
+                const res2 = await supabase
+                  .from("randomresponseimage")
+                  .select("*")
+                  .eq("type", newQuestion.typeResponse)
+                  .in("usvalue", responses)
+                  .limit(1);
+                responsesQcm = [...res.data, ...res2.data]
+                  .map((el) => ({ image: el.image }))
+                  .sort(() => Math.random() - 0.5);
+
+                response = [...responsesQcm].findIndex(
+                  (el) => el.image === res2.data[0].image
+                );
               } else {
                 const responses = Array.isArray(newQuestion.response["en-US"])
                   ? newQuestion.allresponse
@@ -218,9 +276,14 @@ Deno.serve(async (req) => {
                   .in("usvalue", responses)
                   .limit(1);
                 responsesQcm = [...res.data, ...res2.data]
-                  .map((el) => el.value)
+                  .map((el) => ({ label: el.value }))
                   .sort(() => Math.random() - 0.5);
+
+                response = [...responsesQcm].findIndex(
+                  (el) => el.label === res2.data[0].value
+                );
               }
+              newQuestion.responses = [...responsesQcm];
             }
           }
         }
@@ -236,36 +299,46 @@ Deno.serve(async (req) => {
             audio: newQuestion.audio,
             extra: newQuestion.extra,
             theme: newQuestion.theme,
-            isqcm: qcm,
-            responses: responsesQcm,
+            isqcm: newQuestion.isqcm,
+            type: newQuestion.typequestion,
+            responses: newQuestion.responses,
             time: newQuestion.time,
           },
         });
         setTimeout(async () => {
           if (!isAnswer) {
-            await supabase
+            const { data } = await supabase
               .from("sologame")
-              .update({ questions: [...questions, question] })
-              .eq("id", id);
+              .update({
+                questions: [...questions, { ...question, response: response }],
+              })
+              .eq("id", id)
+              .select("*,theme(*)")
+              .maybeSingle();
             channel.send({
               type: "broadcast",
               event: "validate",
               payload: {
                 result: false,
-                answer: "",
+                answer: undefined,
                 response: response,
                 points,
               },
             });
             setTimeout(async () => {
               await supabase.from("sologame").delete().eq("id", id);
+              channel.send({
+                type: "broadcast",
+                event: "end",
+                payload: data,
+              });
+              channel.unsubscribe();
             }, 2000);
             await supabase.rpc("updatescore", {
               player: player,
               themeid: theme.id,
               newpoints: points,
             });
-            channel.unsubscribe();
           }
         }, time * 1000);
       }

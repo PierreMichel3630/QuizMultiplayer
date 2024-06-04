@@ -59,12 +59,23 @@ Deno.serve(async (req) => {
     } while (indexPlayer < matchmakings.data.length);
     if (opponent) {
       duelgame = opponent.game;
-      await supabase
+      const channel = supabase.channel(duelgame.uuid);
+      const { data } = await supabase
         .from("duelgame")
         .update({ player2: player, start: true })
-        .eq("uuid", duelgame.uuid);
+        .eq("uuid", duelgame.uuid)
+        .select(
+          "*,theme(*),player1(*,avatar(*),title(*), badge(*)),player2(*,avatar(*),title(*), badge(*))"
+        )
+        .maybeSingle();
+      channel.send({
+        type: "broadcast",
+        event: "updategame",
+        payload: data,
+      });
+      channel.unsubscribe();
       setTimeout(async () => {
-        await supabase.functions.invoke("response-duel-game", {
+        await supabase.functions.invoke("duel-game", {
           body: { game: duelgame.uuid },
         });
       }, 3000);
@@ -108,20 +119,28 @@ Deno.serve(async (req) => {
     }
     if (!data.start) {
       const rankBots = ranks.data.filter((el) => el.profile !== player);
-      const bot =
-        rankBots.length === 5
-          ? rankBots.reduce((prev, curr) =>
-              Math.abs(curr - eloPlayer) < Math.abs(prev - eloPlayer)
-                ? curr
-                : prev
-            ).profile
-          : bots[Math.floor(Math.random() * bots.length)];
-      await supabase
+      const bot = rankBots.reduce((prev, curr) =>
+        Math.abs(curr.points - eloPlayer) < Math.abs(prev.points - eloPlayer)
+          ? curr
+          : prev
+      );
+      const channel = supabase.channel(duelgame.uuid);
+      const { data } = await supabase
         .from("duelgame")
-        .update({ player2: bot, start: true })
-        .eq("uuid", duelgame.uuid);
+        .update({ player2: bot.profile, start: true })
+        .eq("uuid", duelgame.uuid)
+        .select(
+          "*,theme(*),player1(*,avatar(*),title(*), badge(*)),player2(*,avatar(*),title(*), badge(*))"
+        )
+        .maybeSingle();
+      channel.send({
+        type: "broadcast",
+        event: "updategame",
+        payload: data,
+      });
+      channel.unsubscribe();
       setTimeout(async () => {
-        await supabase.functions.invoke("response-duel-game", {
+        await supabase.functions.invoke("duel-game", {
           body: { game: duelgame.uuid },
         });
       }, 3000);

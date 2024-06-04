@@ -94,7 +94,7 @@ export const CardSelectTheme = ({
           }}
         />
       )}
-      <ImageThemeBlock theme={theme} />
+      <ImageThemeBlock theme={theme} size={90} />
       <JsonLanguageBlock
         variant="h6"
         sx={{ textAlign: "center" }}

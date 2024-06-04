@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { percent, px } from "csx";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Colors } from "src/style/Colors";
 
 interface Props {
@@ -62,17 +62,17 @@ export const Timer = ({ time }: Props) => {
 };
 
 interface PropsVerticalTimer {
-  time: number;
+  time: number | undefined;
   color: string;
   answer: number | undefined;
 }
 
 export const VerticalTimer = ({ time, color, answer }: PropsVerticalTimer) => {
   const DELAY = 100;
-  const [timer, setTimer] = useState(time * 1000);
+  const [timer, setTimer] = useState(0);
 
   useEffect(() => {
-    setTimer(time * 1000);
+    setTimer(time ? time * 1000 : 0);
   }, [time]);
 
   useEffect(() => {
@@ -82,8 +82,14 @@ export const VerticalTimer = ({ time, color, answer }: PropsVerticalTimer) => {
     return () => clearInterval(interval);
   }, [time]);
 
-  const pourcentage = (timer / (time * 1000)) * 100;
-  const pourcentageAnswer = answer ? 100 - (answer / (time * 1000)) * 100 : 0;
+  const pourcentage = useMemo(
+    () => (time ? (timer / (time * 1000)) * 100 : 0),
+    [time, timer]
+  );
+  const pourcentageAnswer = useMemo(
+    () => (answer ? 100 - (answer / ((time ? time : 10) * 1000)) * 100 : 0),
+    [time, answer]
+  );
 
   return (
     <Box

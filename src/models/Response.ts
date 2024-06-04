@@ -9,17 +9,19 @@ export interface Response {
 }
 
 export interface ResponseSolo {
-  response: ResponseLanguage;
+  response: number | ResponseLanguage;
   result: boolean;
   points: number;
-  answer: string;
+  answer: number | string;
 }
 
 export interface ResponseDuel {
   uuid: string;
   result: boolean;
   time: number;
-  answer: string;
+  answer: string | number;
+  ptsplayer1: number;
+  ptsplayer2: number;
 }
 
 export interface ResponseLanguage {

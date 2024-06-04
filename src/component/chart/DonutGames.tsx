@@ -103,7 +103,7 @@ export const DonutGames = ({ scores, totalScore, totalSolo }: Props) => {
           item
           xs={12}
           sx={{
-            backgroundColor: Colors.red,
+            backgroundColor: Colors.blue3,
             p: px(5),
           }}
         >
