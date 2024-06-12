@@ -12,6 +12,7 @@ export interface Theme {
   background: null | string;
   isfirst: boolean;
   enabled: boolean;
+  created_at: Date;
 }
 
 export interface ThemeInsert {

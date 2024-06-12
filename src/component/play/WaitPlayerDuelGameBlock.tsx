@@ -10,9 +10,9 @@ import { useTranslation } from "react-i18next";
 import { MyRank } from "src/models/Rank";
 import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
 import { CountryBlock } from "../CountryBlock";
+import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { LoadingDot } from "../Loading";
 import { LabelRankBlock } from "../RankBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 interface Props {
   game: DuelGame;
@@ -38,7 +38,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           alignItems: "center",
           gap: 2,
           justifyContent: "flex-start",
-          p: 5,
+          p: 2,
           borderBottom: "5px solid white",
         }}
       >

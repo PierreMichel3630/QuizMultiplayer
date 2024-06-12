@@ -1,3 +1,4 @@
+import moment from "moment";
 import { Language } from "src/models/Language";
 import { Title } from "src/models/Title";
 
@@ -14,6 +15,11 @@ export const sortByValue = (a: { value: number }, b: { value: number }) =>
 
 export const sortByGamesDesc = (a: { games: number }, b: { games: number }) =>
   b.games - a.games;
+
+export const sortByCreatedAt = (
+  a: { created_at: Date },
+  b: { created_at: Date }
+) => moment(b.created_at).diff(moment(a.created_at));
 
 export const sortByDuelGamesDesc = (
   a: { duelgames: number },

@@ -18,6 +18,7 @@ import { Colors } from "src/style/Colors";
 import { useNavigate } from "react-router-dom";
 import { SkeletonCategories } from "src/component/skeleton/SkeletonCategory";
 import { HeadTitle } from "src/component/HeadTitle";
+import { NewBlock } from "src/component/NewBlock";
 
 export const ThemesPage = () => {
   const { t } = useTranslation();
@@ -100,16 +101,23 @@ export const ThemesPage = () => {
                   </Grid>
                 ))}
               </>
-            ) : categories.length > 0 ? (
-              categories
-                .sort((a, b) => sortByName(language, a, b))
-                .map((category) => (
-                  <Grid item xs={12} key={category.id}>
-                    <CategoryBlock category={category} />
-                  </Grid>
-                ))
             ) : (
-              <SkeletonCategories number={4} />
+              <>
+                <Grid item xs={12}>
+                  <NewBlock />
+                </Grid>
+                {categories.length > 0 ? (
+                  categories
+                    .sort((a, b) => sortByName(language, a, b))
+                    .map((category) => (
+                      <Grid item xs={12} key={category.id}>
+                        <CategoryBlock category={category} />
+                      </Grid>
+                    ))
+                ) : (
+                  <SkeletonCategories number={4} />
+                )}
+              </>
             )}
           </Grid>
         </Box>

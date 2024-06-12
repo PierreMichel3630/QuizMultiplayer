@@ -38,10 +38,9 @@ export const CardTheme = ({ theme, link }: Props) => {
         justifyContent: "center",
         flexDirection: "column",
         cursor: "pointer",
-        p: px(5),
         background: "rgba(255,255,255,.15)",
         borderRadius: px(5),
-        gap: px(5),
+        gap: px(2),
       }}
     >
       <ImageThemeBlock theme={theme} size={90} />

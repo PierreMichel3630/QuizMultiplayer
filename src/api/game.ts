@@ -4,6 +4,10 @@ import { supabase } from "./supabase";
 export const SUPABASE_RESPONSESOLOGAME_FUNCTION = "response-solo-game";
 export const SUPABASE_LAUNCHSOLOGAME_FUNCTION = "launch-solo-game";
 
+export const SUPABASE_LAUNCHTRAININGGAME_FUNCTION = "launch-training-game";
+export const SUPABASE_QUESTIONTRAININGGAME_FUNCTION = "question-training-game";
+export const SUPABASE_TRAININGGAME_TABLE = "traininggame";
+
 export const SUPABASE_LAUNCHGAME_FUNCTION = "launch-game";
 export const SUPABASE_GAME_TABLE = "game";
 export const SUPABASE_SOLOGAME_TABLE = "sologame";
@@ -12,6 +16,29 @@ export const SUPABASE_DUELGAME_TABLE = "duelgame";
 export const SUPABASE_RESPONSEDUELGAME_FUNCTION = "response-duel-game";
 export const SUPABASE_LAUNCHDUELGAME_FUNCTION = "launch-duel-game";
 export const SUPABASE_MATCHMAKINGDUELGAME_FUNCTION = "matchmaking-duel-game";
+
+//TRAINING GAME
+export const launchTrainingGame = (player: string, theme: number) =>
+  supabase.functions.invoke(SUPABASE_LAUNCHTRAININGGAME_FUNCTION, {
+    body: { player: player, theme: theme },
+  });
+
+export const getQuestionTrainingGame = (game: string) =>
+  supabase.functions.invoke(SUPABASE_QUESTIONTRAININGGAME_FUNCTION, {
+    body: { game: game },
+  });
+
+export const deleteTrainingGame = (game: string) =>
+  supabase.functions.invoke(SUPABASE_QUESTIONTRAININGGAME_FUNCTION, {
+    body: { game: game, delete: true },
+  });
+
+export const selectTrainingGameById = (uuid: string) =>
+  supabase
+    .from(SUPABASE_TRAININGGAME_TABLE)
+    .select("*, theme(*)")
+    .eq("uuid", uuid)
+    .maybeSingle();
 
 //SOLO GAME
 export const launchSoloGame = (player: string, theme: number) =>

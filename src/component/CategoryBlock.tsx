@@ -44,12 +44,14 @@ export const CategoryBlock = ({ category }: Props) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          gap: 1,
         }}
       >
         <JsonLanguageBlock variant="h2" sx={{ ml: 2 }} value={category.name} />
         <Button
           variant="outlined"
           sx={{
+            minWidth: "auto",
             textTransform: "uppercase",
             "&:hover": {
               border: "2px solid currentColor",
@@ -59,14 +61,16 @@ export const CategoryBlock = ({ category }: Props) => {
           size="small"
           onClick={() => navigate(`/category/${category.id}`)}
         >
-          <Typography variant="h6">{t("commun.seeall")}</Typography>
+          <Typography variant="h6" noWrap>
+            {t("commun.seeall")}
+          </Typography>
         </Button>
       </Grid>
       <Grid item xs={12}>
         <Box
           sx={{
             display: "flex",
-            gap: px(5),
+            gap: px(10),
             overflowX: "auto",
             scrollbarWidth: "none",
           }}

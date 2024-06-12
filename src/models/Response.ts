@@ -15,6 +15,12 @@ export interface ResponseSolo {
   answer: number | string;
 }
 
+export interface ResponseTraining {
+  response: number | ResponseLanguage;
+  result: boolean;
+  answer: number | string;
+}
+
 export interface ResponseDuel {
   uuid: string;
   result: boolean;

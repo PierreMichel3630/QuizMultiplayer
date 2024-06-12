@@ -210,7 +210,7 @@ export const SoloPage = () => {
                 width: percent(100),
               }}
             >
-              <Typography variant="h6" color="text.secondary">
+              <Typography variant="h4" color="text.secondary">
                 {t("commun.launchpartie")}
               </Typography>
               <LoadingDot />

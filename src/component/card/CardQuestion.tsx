@@ -117,7 +117,6 @@ export const CardSignalQuestion = ({
           <JsonLanguageBlock
             variant="h2"
             color="text.secondary"
-            sx={{ fontSize: 35 }}
             value={question.question}
           />
         </Grid>

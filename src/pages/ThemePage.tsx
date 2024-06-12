@@ -9,6 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   launchDuelGame,
   launchSoloGame,
+  launchTrainingGame,
   matchmakingDuelGame,
 } from "src/api/game";
 import { selectRankByTheme, selectRankByThemeAndPlayer } from "src/api/rank";
@@ -41,6 +42,7 @@ import { useApp } from "src/context/AppProvider";
 import { deleteFavoriteById, insertFavorite } from "src/api/favorite";
 import { FavoriteInsert } from "src/models/Favorite";
 import { useMessage } from "src/context/MessageProvider";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 
 export const ThemePage = () => {
   const { t } = useTranslation();
@@ -192,34 +194,46 @@ export const ThemePage = () => {
     }
   };
 
+  const playTraining = () => {
+    if (uuid && id) {
+      launchTrainingGame(uuid, Number(id)).then(({ data }) => {
+        navigate(`/training/${data.uuid}`);
+      });
+    }
+  };
+
   const addFavorite = () => {
-    if (theme) {
-      if (favorite) {
-        deleteFavoriteById(favorite.id).then(({ error }) => {
-          if (error) {
-            setSeverity("error");
-            setMessage(t("commun.error"));
-          } else {
-            setSeverity("success");
-            setMessage(t("alert.deletefavorite"));
-            refreshFavorites();
-          }
-        });
-      } else {
-        const newFavorite: FavoriteInsert = {
-          theme: theme.id,
-        };
-        insertFavorite(newFavorite).then(({ error }) => {
-          if (error) {
-            setSeverity("error");
-            setMessage(t("commun.error"));
-          } else {
-            setSeverity("success");
-            setMessage(t("alert.addfavorite"));
-            refreshFavorites();
-          }
-        });
+    if (user) {
+      if (theme) {
+        if (favorite) {
+          deleteFavoriteById(favorite.id).then(({ error }) => {
+            if (error) {
+              setSeverity("error");
+              setMessage(t("commun.error"));
+            } else {
+              setSeverity("success");
+              setMessage(t("alert.deletefavorite"));
+              refreshFavorites();
+            }
+          });
+        } else {
+          const newFavorite: FavoriteInsert = {
+            theme: theme.id,
+          };
+          insertFavorite(newFavorite).then(({ error }) => {
+            if (error) {
+              setSeverity("error");
+              setMessage(t("commun.error"));
+            } else {
+              setSeverity("success");
+              setMessage(t("alert.addfavorite"));
+              refreshFavorites();
+            }
+          });
+        }
       }
+    } else {
+      navigate(`/login`);
     }
   };
 
@@ -256,7 +270,12 @@ export const ThemePage = () => {
               }
             >
               <Grid container spacing={1} alignItems="center">
-                <Grid item xs={12} sx={{ textAlign: "center" }}>
+                <Grid
+                  item
+                  display={{ xs: "none", sm: "block" }}
+                  sm={12}
+                  sx={{ textAlign: "center" }}
+                >
                   <JsonLanguageBlock
                     variant="h2"
                     sx={{
@@ -267,10 +286,25 @@ export const ThemePage = () => {
                     value={theme.name}
                   />
                 </Grid>
-                <Grid item xs={5} sm={3} md={2}>
+                <Grid item xs={3} sm={3} md={2}>
                   <ImageThemeBlock theme={theme} />
                 </Grid>
-                <Grid item xs={7} sm={9} md={10}>
+                <Grid
+                  item
+                  display={{ xs: "block", sm: "none" }}
+                  xs={8}
+                  sx={{ textAlign: "center" }}
+                >
+                  <JsonLanguageBlock
+                    variant="h2"
+                    sx={{
+                      color: Colors.white,
+                      textShadow: "2px 2px 4px black",
+                    }}
+                    value={theme.name}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={9} md={10}>
                   <Grid container spacing={1}>
                     <Grid item xs={12}>
                       <ButtonColor
@@ -289,6 +323,16 @@ export const ThemePage = () => {
                         label={t("commun.playsolo")}
                         icon={PlayCircleIcon}
                         onClick={() => playSolo()}
+                        variant="contained"
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <ButtonColor
+                        size="small"
+                        value={Colors.purple}
+                        label={t("commun.training")}
+                        icon={FitnessCenterIcon}
+                        onClick={() => playTraining()}
                         variant="contained"
                       />
                     </Grid>

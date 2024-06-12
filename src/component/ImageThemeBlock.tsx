@@ -24,8 +24,8 @@ export const ImageThemeBlock = ({ theme, size = percent(100) }: Props) => {
         src={theme.image}
         loading="lazy"
         style={{
-          maxWidth: percent(80),
-          maxHeight: Number.isFinite(size) ? Number(size) * 0.8 : size,
+          maxWidth: percent(90),
+          maxHeight: Number.isFinite(size) ? Number(size) * 0.9 : size,
         }}
       />
     </Box>

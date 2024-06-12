@@ -147,11 +147,11 @@ const getNewQuestion = async (
           (el) => el.label === responseOrder.name
         );
       } else if (question.typequestion === "IMAGE") {
-        const responses = Array.isArray(question.response["en-US"])
+        const responses = Array.isArray(question.response["fr-FR"])
           ? question.allresponse
-            ? question.response["en-US"]
-            : [question.response["en-US"][0]]
-          : [question.response["en-US"]];
+            ? question.response["fr-FR"]
+            : [question.response["fr-FR"][0]]
+          : [question.response["fr-FR"]];
 
         const res = await supabase
           .from("randomresponseimage")
@@ -173,11 +173,11 @@ const getNewQuestion = async (
           (el) => el.image === res2.data[0].image
         );
       } else {
-        const responses = Array.isArray(question.response["en-US"])
+        const responses = Array.isArray(question.response["fr-FR"])
           ? question.allresponse
-            ? question.response["en-US"]
-            : [question.response["en-US"][0]]
-          : [question.response["en-US"]];
+            ? question.response["fr-FR"]
+            : [question.response["fr-FR"][0]]
+          : [question.response["fr-FR"]];
 
         const res = await supabase
           .from("randomresponse")

@@ -6,10 +6,11 @@ import { useTranslation } from "react-i18next";
 
 interface Props {
   theme: Theme;
-  score: number;
+  score?: number;
+  extra?: JSX.Element;
 }
 
-export const ScoreThemeBlock = ({ theme, score }: Props) => {
+export const ScoreThemeBlock = ({ theme, score, extra }: Props) => {
   const { t } = useTranslation();
 
   return (
@@ -21,23 +22,43 @@ export const ScoreThemeBlock = ({ theme, score }: Props) => {
         <JsonLanguageBlock
           variant="h1"
           color="text.secondary"
-          sx={{ wordBreak: "break-all", fontSize: 30 }}
-          value={theme.name}
-        />
-        <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
+            fontSize: 30,
+            overflow: "hidden",
+            display: "block",
+            lineClamp: 1,
+            boxOrient: "vertical",
           }}
-        >
-          <Typography variant="h6" color="text.secondary">
-            {t("commun.score")} :{" "}
-          </Typography>
-          <Typography variant="h2" color="text.secondary">
-            {score}
-          </Typography>
-        </Box>
+          value={theme.name}
+          noWrap
+        />
+        {score !== undefined && (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <Typography variant="h6" color="text.secondary">
+              {t("commun.score")} :{" "}
+            </Typography>
+            <Typography variant="h2" color="text.secondary">
+              {score}
+            </Typography>
+          </Box>
+        )}
+        {extra && (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            {extra}
+          </Box>
+        )}
       </Grid>
     </Grid>
   );

@@ -146,6 +146,8 @@
     "titles": "Titres",
     "badge": "Badge",
     "badges": "Badges",
+    "training": "Entraînement",
+    "nextquestion": "Question suivante",
     "percentsuccess": "% réussite",
     "rankingby": "Classé par",
     "personalizedprofile": "Personnaliser votre profil",
@@ -178,7 +180,9 @@
     "solution2": "Solution 2",
     "clickon": "Cliquez sur",
     "installapplication": "Installer l'application",
-    "computer": "Ordinateur"
+    "computer": "Ordinateur",
+    "new": "Nouveautés",
+    "leave": "Quitter"
   },
   "accomplishment": {
     "SOLO": "Succès Mode Solo",

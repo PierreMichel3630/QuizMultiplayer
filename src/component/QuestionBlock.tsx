@@ -1,12 +1,12 @@
 import { Box } from "@mui/material";
-import { percent } from "csx";
+import { percent, px } from "csx";
+import { useMemo } from "react";
 import { QuestionDuel, QuestionSolo } from "src/models/Question";
 import { ImageQuestionBlock } from "./ImageBlock";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 import { CircularLoading } from "./Loading";
 import { SoundBar } from "./SoundBar";
 import { Timer } from "./Timer";
-import { useMemo } from "react";
 
 interface PropsSolo {
   question?: QuestionSolo;
@@ -51,7 +51,6 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
             variant="h2"
             color="text.secondary"
             sx={{
-              fontSize: question.extra ? 30 : 40,
               mb: question.extra ? 2 : 0,
             }}
             value={question.question}
@@ -82,14 +81,16 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
               value={question.extra}
             />
           )}
-          <Box
-            sx={{
-              width: percent(100),
-              pb: 3,
-            }}
-          >
-            {timer && <Timer time={timer} />}
-          </Box>
+          {timer && (
+            <Box
+              sx={{
+                width: percent(100),
+                pb: px(3),
+              }}
+            >
+              <Timer time={timer} />
+            </Box>
+          )}
         </>
       ) : (
         <CircularLoading />

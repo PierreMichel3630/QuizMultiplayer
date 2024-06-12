@@ -96,12 +96,18 @@ function App() {
             fontWeight: 700,
           },
           h2: {
-            fontSize: 22,
+            fontSize: 24,
             fontWeight: 700,
+            "@media (max-width:600px)": {
+              fontSize: 22,
+            },
           },
           h3: {
             fontSize: 18,
             fontWeight: 700,
+            "@media (max-width:600px)": {
+              fontSize: 16,
+            },
           },
           h4: {
             fontSize: 16,

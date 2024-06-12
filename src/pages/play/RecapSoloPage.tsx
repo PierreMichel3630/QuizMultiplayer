@@ -20,9 +20,9 @@ import { Colors } from "src/style/Colors";
 import HomeIcon from "@mui/icons-material/Home";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import ReplayIcon from "@mui/icons-material/Replay";
+import { launchSoloGame } from "src/api/game";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { ReportModal } from "src/component/modal/ReportModal";
-import { launchSoloGame } from "src/api/game";
 import { useUser } from "src/context/UserProvider";
 
 export const RecapSoloPage = () => {
@@ -72,7 +72,7 @@ export const RecapSoloPage = () => {
       >
         {location.state ? (
           <Grid container spacing={1}>
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{ mb: 2 }}>
               <ScoreThemeBlock theme={theme} score={score} />
             </Grid>
             {allquestion && (

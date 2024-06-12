@@ -13,6 +13,14 @@ export interface Game {
   next_game: Date;
 }
 
+export interface TrainingGame {
+  id: number;
+  questions: Array<Question>;
+  player: string;
+  theme: Theme;
+  uuid: string;
+}
+
 export interface SoloGame {
   id: number;
   points: number;

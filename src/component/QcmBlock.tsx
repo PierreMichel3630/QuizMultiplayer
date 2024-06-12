@@ -1,10 +1,20 @@
 import { Box, Grid, Paper } from "@mui/material";
-import { Response, ResponseDuel, ResponseSolo } from "src/models/Response";
+import {
+  Response,
+  ResponseDuel,
+  ResponseSolo,
+  ResponseTraining,
+} from "src/models/Response";
 import { Colors } from "src/style/Colors";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 
-import { percent } from "csx";
-import { Question, QuestionDuel, QuestionSolo } from "src/models/Question";
+import { percent, px } from "csx";
+import {
+  Question,
+  QuestionDuel,
+  QuestionSolo,
+  QuestionTraining,
+} from "src/models/Question";
 
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
@@ -81,9 +91,10 @@ export const QcmResponseBlock = ({
               alignItems: "center",
               textAlign: "center",
               justifyContent: "flex-end",
-              gap: 1,
+              gap: px(4),
               display: "grid",
-              gridTemplateColumns: "repeat(2,1fr)",
+              gridTemplateRows: "repeat(2, 1fr)",
+              gridTemplateColumns: "repeat(2, 50%)",
               gridAutoRows: "minmax(80px, auto)",
             }
           : {
@@ -92,10 +103,10 @@ export const QcmResponseBlock = ({
               alignItems: "center",
               textAlign: "center",
               justifyContent: "center",
-              gap: 1,
+              gap: px(4),
               display: "grid",
-              gridTemplateColumns: "repeat(2,1fr)",
-              gridAutoRows: "minmax(80px, auto)",
+              gridTemplateRows: "repeat(2, 1fr)",
+              gridTemplateColumns: "repeat(2, 50%)",
             }
       }
     >
@@ -113,7 +124,6 @@ export const QcmResponseBlock = ({
           <Paper
             key={index}
             sx={{
-              p: "15px 5px",
               textAlign: "center",
               display: "flex",
               alignItems: "center",
@@ -122,7 +132,12 @@ export const QcmResponseBlock = ({
               borderColor: color,
               borderWidth: 2,
               height: percent(100),
-              cursor: response ? "default" : "pointer",
+              userSelect: "none",
+              "&:hover": {
+                cursor: response ? "default" : "pointer",
+              },
+              p: "4px 5px",
+              minHeight: px(50),
             }}
             variant="outlined"
             onClick={() => {
@@ -135,9 +150,111 @@ export const QcmResponseBlock = ({
             {r.image && <ImageQCMBlock src={r.image} />}
             {r.label && (
               <JsonLanguageBlock
-                variant="h2"
+                variant="h3"
                 value={r.label}
                 color={"text.secondary"}
+                sx={{ wordBreak: "break-word" }}
+              />
+            )}
+          </Paper>
+        );
+      })}
+    </Box>
+  );
+};
+
+interface PropsResponseTraining {
+  question: QuestionTraining;
+  response?: ResponseTraining;
+  onSubmit: (value: string | number) => void;
+}
+
+export const QcmResponseTrainingBlock = ({
+  question,
+  response,
+  onSubmit,
+}: PropsResponseTraining) => {
+  const [isClick, setIsClick] = useState(false);
+  useEffect(() => {
+    setIsClick(response !== undefined ? true : false);
+  }, [response]);
+
+  return (
+    <Box
+      sx={
+        question.type === "IMAGE"
+          ? {
+              width: percent(100),
+              flexGrow: 1,
+              flex: "1 1 0",
+              minHeight: 0,
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+              justifyContent: "flex-end",
+              gap: px(4),
+              display: "grid",
+              gridTemplateRows: "repeat(2, 1fr)",
+              gridTemplateColumns: "repeat(2, 50%)",
+              gridAutoRows: "minmax(80px, auto)",
+            }
+          : {
+              width: percent(100),
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+              justifyContent: "center",
+              gap: px(4),
+              display: "grid",
+              gridTemplateRows: "repeat(2, 1fr)",
+              gridTemplateColumns: "repeat(2, 50%)",
+            }
+      }
+    >
+      {question.responses.map((r, index) => {
+        const isCorrectResponse =
+          response && Number(response.response) === index;
+        const isMyAnswer = response && Number(response.answer) === index;
+        const color = isCorrectResponse
+          ? Colors.green2
+          : isMyAnswer
+          ? Colors.red2
+          : Colors.grey;
+
+        return (
+          <Paper
+            key={index}
+            sx={{
+              textAlign: "center",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: color,
+              borderColor: color,
+              borderWidth: 2,
+              height: percent(100),
+              userSelect: "none",
+              "&:hover": {
+                cursor: response ? "default" : "pointer",
+              },
+              p: "4px 5px",
+              minHeight: px(50),
+            }}
+            variant="outlined"
+            onClick={() => {
+              if (!response && !isClick) {
+                setIsClick(true);
+                onSubmit(index);
+              }
+            }}
+          >
+            {r.image && <ImageQCMBlock src={r.image} />}
+            {r.label && (
+              <JsonLanguageBlock
+                variant="h3"
+                value={r.label}
+                color={"text.secondary"}
+                sx={{ wordBreak: "break-word" }}
               />
             )}
           </Paper>
@@ -185,9 +302,10 @@ export const QcmBlockDuelBlock = ({
               alignItems: "center",
               textAlign: "center",
               justifyContent: "flex-end",
-              gap: 1,
+              gap: px(4),
               display: "grid",
-              gridTemplateColumns: "repeat(2,1fr)",
+              gridTemplateRows: "repeat(2, 1fr)",
+              gridTemplateColumns: "repeat(2, 50%)",
               gridAutoRows: "minmax(80px, auto)",
             }
           : {
@@ -196,10 +314,10 @@ export const QcmBlockDuelBlock = ({
               alignItems: "center",
               textAlign: "center",
               justifyContent: "center",
-              gap: 1,
+              gap: px(4),
               display: "grid",
-              gridTemplateColumns: "repeat(2,1fr)",
-              gridAutoRows: "minmax(80px, auto)",
+              gridTemplateRows: "repeat(2, 1fr)",
+              gridTemplateColumns: "repeat(2, 50%)",
             }
       }
     >
@@ -229,17 +347,21 @@ export const QcmBlockDuelBlock = ({
         return (
           <Paper
             sx={{
-              p: "15px 8px",
+              p: "4px 5px",
+              minHeight: px(50),
               textAlign: "center",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               position: "relative",
-              cursor: hasAnswer ? "default" : "pointer",
               borderColor: color,
               borderWidth: 2,
               backgroundColor: color,
               height: percent(100),
+              userSelect: "none",
+              "&:hover": {
+                cursor: hasAnswer ? "default" : "pointer",
+              },
             }}
             key={index}
             onClick={() => {
@@ -265,7 +387,7 @@ export const QcmBlockDuelBlock = ({
             {res.image && <ImageQCMBlock src={res.image} />}
             {res.label && (
               <JsonLanguageBlock
-                variant="h2"
+                variant="h3"
                 value={res.label}
                 color={"text.secondary"}
               />
@@ -297,14 +419,20 @@ interface PropsQcmBlockDuelResultBlock {
 export const QcmBlockDuelResultBlock = ({
   question,
 }: PropsQcmBlockDuelResultBlock) => {
-  const xs = 6;
   const response = question.response;
 
   const responsePlayer1 = question.responsePlayer1;
   const responsePlayer2 = question.responsePlayer2;
 
   return (
-    <Grid container spacing={1}>
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateRows: "repeat(2, 1fr)",
+        gridTemplateColumns: "repeat(2, 50%)",
+        gap: px(4),
+      }}
+    >
       {question.responses.map((res, index) => {
         const isCorrectResponse = Number(response) === index;
 
@@ -314,67 +442,70 @@ export const QcmBlockDuelResultBlock = ({
           responsePlayer2 !== undefined && Number(responsePlayer2) === index;
 
         let color = Colors.grey;
+        let borderColor = Colors.white;
         if (isCorrectResponse) {
           color = Colors.green;
+          borderColor = Colors.white;
         } else if (isArrowRight || isArrowLeft) {
           color = Colors.red;
+          borderColor = Colors.white;
         }
 
         return (
-          <Grid item xs={xs} key={index}>
-            <Paper
-              sx={{
-                p: "15px 8px",
-                textAlign: "center",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
-                cursor: "default",
-                borderColor: color,
-                borderWidth: 2,
-                backgroundColor: color,
-                height: percent(100),
-              }}
-            >
-              {isArrowRight && (
-                <ArrowRightIcon
-                  viewBox="10 7 5 10"
-                  sx={{
-                    fontSize: 10,
-                    position: "absolute",
-                    top: percent(50),
-                    translate: "0 -50%",
-                    left: 0,
-                    color: Colors.white,
-                  }}
-                />
-              )}
-              {res.image && <ImageQCMBlock src={res.image} />}
-              {res.label && (
-                <JsonLanguageBlock
-                  variant="h2"
-                  color="text.secondary"
-                  value={res.label}
-                />
-              )}
-              {isArrowLeft && (
-                <ArrowLeftIcon
-                  viewBox="10 7 5 10"
-                  sx={{
-                    fontSize: 10,
-                    position: "absolute",
-                    top: percent(50),
-                    translate: "0 -50%",
-                    right: 0,
-                    color: Colors.white,
-                  }}
-                />
-              )}
-            </Paper>
-          </Grid>
+          <Paper
+            sx={{
+              p: "4px 10px",
+              textAlign: "center",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "relative",
+              cursor: "default",
+              borderColor: borderColor,
+              borderWidth: 2,
+              backgroundColor: color,
+              height: percent(100),
+              userSelect: "none",
+              minHeight: px(50),
+            }}
+          >
+            {isArrowRight && (
+              <ArrowRightIcon
+                viewBox="10 7 5 10"
+                sx={{
+                  fontSize: 10,
+                  position: "absolute",
+                  top: percent(50),
+                  translate: "0 -50%",
+                  left: 0,
+                  color: Colors.white,
+                }}
+              />
+            )}
+            {res.image && <ImageQCMBlock src={res.image} />}
+            {res.label && (
+              <JsonLanguageBlock
+                variant="h3"
+                color="text.secondary"
+                value={res.label}
+              />
+            )}
+            {isArrowLeft && (
+              <ArrowLeftIcon
+                viewBox="10 7 5 10"
+                sx={{
+                  fontSize: 10,
+                  position: "absolute",
+                  top: percent(50),
+                  translate: "0 -50%",
+                  right: 0,
+                  color: Colors.white,
+                }}
+              />
+            )}
+          </Paper>
         );
       })}
-    </Grid>
+    </Box>
   );
 };

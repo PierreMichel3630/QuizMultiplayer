@@ -26,6 +26,7 @@ export const ButtonColor = ({
           color: value,
           borderColor: value,
           borderWidth: 2,
+          padding: "3px 5px",
           backgroundColor: Colors.blue3,
           "&:hover": {
             backgroundColor: value,
@@ -36,6 +37,7 @@ export const ButtonColor = ({
       : {
           minWidth: "auto",
           backgroundColor: value,
+          padding: "3px 5px",
           color: Colors.white,
           border: `2px solid ${value}`,
           "&:hover": {

@@ -57,7 +57,7 @@ export const BottomNavigationBlock = () => {
         }}
       >
         <BottomNavigationAction
-          sx={{ p: padding(0, 5) }}
+          sx={{ p: padding(0, 5), minWidth: px(30) }}
           value={""}
           label={t("commun.themes")}
           icon={<AppsIcon />}
@@ -65,16 +65,16 @@ export const BottomNavigationBlock = () => {
           to={"/"}
         />
         <BottomNavigationAction
-          sx={{ p: padding(0, 5) }}
+          sx={{ p: padding(0, 5), minWidth: px(30) }}
           value={"people"}
           label={t("commun.people")}
           icon={<GroupsIcon />}
           component={Link}
           to={"/people"}
         />
-        <Box sx={{ width: px(60) }} />
+        <Box sx={{ width: px(50) }} />
         <BottomNavigationAction
-          sx={{ p: padding(0, 5) }}
+          sx={{ p: padding(0, 5), minWidth: px(30) }}
           value={"profil"}
           label={t("commun.profile")}
           icon={<AccountCircleIcon />}
@@ -82,7 +82,7 @@ export const BottomNavigationBlock = () => {
           to={user ? `/profil/${user.id}` : "/login"}
         />
         <BottomNavigationAction
-          sx={{ minWidth: "inherit", p: 0 }}
+          sx={{ p: padding(0, 5), minWidth: px(30) }}
           value={"menu"}
           label={t("commun.menus")}
           component={Link}
@@ -100,7 +100,7 @@ export const BottomNavigationBlock = () => {
             borderRadius: "50%",
             position: "absolute",
             left: "50%",
-            transform: "translate(-50%, -20%)",
+            transform: "translate(-45%, -20%)",
             cursor: "pointer",
           }}
           onClick={() => navigate("/play")}

@@ -1,5 +1,5 @@
 import { JsonLanguage, JsonLanguageArrayOrString } from "./Language";
-import { ResponseLanguageString } from "./Response";
+import { ResponseLanguage, ResponseLanguageString } from "./Response";
 import { Theme } from "./Theme";
 
 export interface QuestionEnd {
@@ -81,6 +81,23 @@ export interface QuestionSolo {
     label?: ResponseLanguageString;
     image?: string;
   }>;
+}
+
+export interface QuestionTraining {
+  image?: string;
+  audio?: string;
+  extra?: JsonLanguage;
+  question: JsonLanguage;
+  type: "DEFAULT" | "ORDER" | "IMAGE";
+  time: number;
+  difficulty: string;
+  theme: Theme;
+  isqcm: boolean;
+  responses: Array<{
+    label?: ResponseLanguageString;
+    image?: string;
+  }>;
+  response: number | ResponseLanguage;
 }
 
 export interface QuestionDuel {

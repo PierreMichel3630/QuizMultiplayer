@@ -20,18 +20,16 @@ export const LoginPage = () => {
       </Grid>
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
-          <Grid container spacing={1}>
+          <Grid container spacing={1} justifyContent="center">
             <Grid item xs={12}>
               <LoginForm />
             </Grid>
-            <Grid
-              item
-              xs={12}
-              sx={{ justifyContent: "center", display: "flex", gap: 1 }}
-            >
+            <Grid item>
               <Typography variant="body1">
                 {t("form.login.haveaccount")}
               </Typography>
+            </Grid>
+            <Grid item>
               <Link to="/register">
                 <Typography
                   variant="body1"

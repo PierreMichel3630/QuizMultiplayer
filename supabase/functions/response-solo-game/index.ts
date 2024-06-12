@@ -1,10 +1,15 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
 import moment from "https://esm.sh/moment";
 
-import { corsHeaders } from "../_shared/cors.ts";
 import { generateQuestion } from "../_shared/generateQuestion.ts";
 import { DIFFICULTIES } from "../_shared/random.ts";
 import { verifyResponse } from "../_shared/response.ts";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
+};
 
 export const DIFFICULTY = {
   moyen: 4,
@@ -229,11 +234,11 @@ Deno.serve(async (req) => {
                   (el) => el.label === responseOrder.name
                 );
               } else if (newQuestion.typequestion === "IMAGE") {
-                const responses = Array.isArray(newQuestion.response["en-US"])
+                const responses = Array.isArray(newQuestion.response["fr-FR"])
                   ? newQuestion.allresponse
-                    ? newQuestion.response["en-US"]
-                    : [newQuestion.response["en-US"][0]]
-                  : [newQuestion.response["en-US"]];
+                    ? newQuestion.response["fr-FR"]
+                    : [newQuestion.response["fr-FR"][0]]
+                  : [newQuestion.response["fr-FR"]];
 
                 const res = await supabase
                   .from("randomresponseimage")
@@ -256,11 +261,11 @@ Deno.serve(async (req) => {
                   (el) => el.image === res2.data[0].image
                 );
               } else {
-                const responses = Array.isArray(newQuestion.response["en-US"])
+                const responses = Array.isArray(newQuestion.response["fr-FR"])
                   ? newQuestion.allresponse
-                    ? newQuestion.response["en-US"]
-                    : [newQuestion.response["en-US"][0]]
-                  : [newQuestion.response["en-US"]];
+                    ? newQuestion.response["fr-FR"]
+                    : [newQuestion.response["fr-FR"][0]]
+                  : [newQuestion.response["fr-FR"]];
 
                 const res = await supabase
                   .from("randomresponse")

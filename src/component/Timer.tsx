@@ -100,7 +100,7 @@ export const VerticalTimer = ({ time, color, answer }: PropsVerticalTimer) => {
         backgroundColor: Colors.grey,
         borderRadius: px(5),
         height: percent(100),
-        width: px(10),
+        width: px(8),
       }}
     >
       {answer ? (
