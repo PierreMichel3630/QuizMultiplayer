@@ -76,9 +76,7 @@ export const CategoryBlock = ({ category }: Props) => {
           }}
         >
           {themesDisplay.map((theme) => (
-            <Box key={theme.id} sx={{ maxWidth: px(100) }}>
-              <CardTheme theme={theme} />
-            </Box>
+            <CardTheme key={theme.id} theme={theme} />
           ))}
         </Box>
       </Grid>

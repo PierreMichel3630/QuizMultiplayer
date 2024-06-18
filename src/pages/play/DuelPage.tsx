@@ -123,15 +123,20 @@ export const DuelPage = () => {
           const res = value.payload as {
             game: DuelGame;
             elo: Elo;
+            battlegame: null | string;
           };
           channel.unsubscribe();
-          navigate(`/recapduel`, {
-            state: {
-              game: res.game,
-              elo: res.elo,
-              questions: res.game.questions,
-            },
-          });
+          if (res.battlegame !== null) {
+            navigate(`/battle/${res.battlegame}`);
+          } else {
+            navigate(`/recapduel`, {
+              state: {
+                game: res.game,
+                elo: res.elo,
+                questions: res.game.questions,
+              },
+            });
+          }
         })
         .on("broadcast", { event: "cancel" }, () => {
           navigate(`/recapduel`, {

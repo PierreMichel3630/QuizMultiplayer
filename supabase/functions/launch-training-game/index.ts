@@ -20,20 +20,32 @@ Deno.serve(async (req) => {
   const body = await req.json();
   const player = body.player;
   const theme = body.theme;
+  let themequestion = body.theme;
+  if (theme === 272) {
+    const { data } = await supabase
+      .from("randomtheme")
+      .select("*")
+      .is("enabled", true)
+      .not("id", "in", `(271,272)`)
+      .limit(1)
+      .maybeSingle();
+    themequestion = data.id;
+  }
 
   const game = {
     player: player,
     theme: theme,
+    themequestion: themequestion,
     questions: [],
   };
 
-  const { data } = await supabase
+  const res = await supabase
     .from("traininggame")
     .insert(game)
     .select()
     .maybeSingle();
 
-  return new Response(JSON.stringify(data), {
+  return new Response(JSON.stringify(res.data), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
     status: 200,
   });

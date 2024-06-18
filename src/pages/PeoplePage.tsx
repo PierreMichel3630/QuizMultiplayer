@@ -15,7 +15,7 @@ import { Colors } from "src/style/Colors";
 
 export const PeoplePage = () => {
   const { t } = useTranslation();
-  const { friends } = useApp();
+  const { friends, refreshFriends } = useApp();
   const { profile } = useAuth();
 
   const ITEMPERPAGE = 25;
@@ -25,6 +25,10 @@ export const PeoplePage = () => {
   const [players, setPlayers] = useState<Array<Profile>>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
+
+  useEffect(() => {
+    refreshFriends();
+  }, []);
 
   useEffect(() => {
     const getPlayers = () => {

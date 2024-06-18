@@ -16,11 +16,13 @@ import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { Colors } from "src/style/Colors";
 import { AccountMenu } from "../header/AccountMenu";
 import { LanguagesMenu } from "../header/LanguageMenu";
+import { px } from "csx";
 
 interface Props {
   title: string;
+  quit?: () => void;
 }
-export const BarNavigation = ({ title }: Props) => {
+export const BarNavigation = ({ title, quit }: Props) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -28,9 +30,16 @@ export const BarNavigation = ({ title }: Props) => {
   return (
     <AppBar position="fixed" color="secondary">
       <Container maxWidth="lg">
-        <Box sx={{ backgroundColor: Colors.blue3, p: 1 }}>
+        <Box sx={{ backgroundColor: Colors.blue3, p: px(5) }}>
           <Grid container alignItems="center" spacing={1}>
-            <Grid item sx={{ cursor: "pointer" }} onClick={() => navigate(-1)}>
+            <Grid
+              item
+              sx={{ cursor: "pointer" }}
+              onClick={() => {
+                if (quit) quit();
+                navigate(-1);
+              }}
+            >
               <KeyboardBackspaceIcon sx={{ color: Colors.white }} />
             </Grid>
             <Grid item xs sx={{ textAlign: "center" }}>

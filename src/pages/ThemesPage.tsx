@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { SkeletonCategories } from "src/component/skeleton/SkeletonCategory";
 import { HeadTitle } from "src/component/HeadTitle";
 import { NewBlock } from "src/component/NewBlock";
+import { GameModeBlock } from "src/component/GameModeBlock";
 
 export const ThemesPage = () => {
   const { t } = useTranslation();
@@ -103,6 +104,9 @@ export const ThemesPage = () => {
               </>
             ) : (
               <>
+                <Grid item xs={12}>
+                  <GameModeBlock />
+                </Grid>
                 <Grid item xs={12}>
                   <NewBlock />
                 </Grid>

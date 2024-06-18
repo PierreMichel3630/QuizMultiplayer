@@ -25,9 +25,10 @@ import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import { uniqBy } from "lodash";
-import { LogoIcon } from "src/icons/LogoIcon";
 import { px } from "csx";
+import { uniqBy } from "lodash";
+import { FavoriteSelectBlock } from "src/component/FavoriteBlock";
+import { LogoIcon } from "src/icons/LogoIcon";
 
 export const PlayPage = () => {
   const { t } = useTranslation();
@@ -143,15 +144,19 @@ export const PlayPage = () => {
               </Container>
             </Box>
             <Grid container spacing={1} justifyContent="center">
+              <Grid item xs={12}>
+                <FavoriteSelectBlock
+                  select={(t) => setTheme(t)}
+                  selected={theme ? [theme.id] : []}
+                />
+              </Grid>
               {themesFilter.map((t) => (
                 <Grid item key={t.id}>
-                  <Box sx={{ maxWidth: px(100) }}>
-                    <CardSelectTheme
-                      theme={t}
-                      select={theme && theme.id === t.id ? true : false}
-                      onSelect={() => setTheme(t)}
-                    />
-                  </Box>
+                  <CardSelectTheme
+                    theme={t}
+                    select={theme && theme.id === t.id ? true : false}
+                    onSelect={() => setTheme(t)}
+                  />
                 </Grid>
               ))}
             </Grid>

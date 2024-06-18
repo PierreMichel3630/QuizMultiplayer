@@ -48,7 +48,7 @@ export const AvatarAccountBadge = ({
       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       badgeContent={
         <Avatar
-          sx={{ width: size / 3.5, height: size / 3.5 }}
+          sx={{ width: size / 2.5, height: size / 2.5 }}
           src={profile.badge.icon}
         />
       }

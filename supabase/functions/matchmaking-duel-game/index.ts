@@ -60,12 +60,23 @@ Deno.serve(async (req) => {
     if (opponent) {
       duelgame = opponent.game;
       const channel = supabase.channel(duelgame.uuid);
+      let themequestion = body.theme;
+      if (theme === 272) {
+        const { data } = await supabase
+          .from("randomtheme")
+          .select("*")
+          .is("enabled", true)
+          .not("id", "in", `(271,272)`)
+          .limit(1)
+          .maybeSingle();
+        themequestion = data.id;
+      }
       const { data } = await supabase
         .from("duelgame")
-        .update({ player2: player, start: true })
+        .update({ player2: player, start: true, themequestion: themequestion })
         .eq("uuid", duelgame.uuid)
         .select(
-          "*,theme(*),player1(*,avatar(*),title(*), badge(*)),player2(*,avatar(*),title(*), badge(*))"
+          "*,theme!public_duelgame_theme_fkey(*),player1(*,avatar(*),title(*), badge(*)),player2(*,avatar(*),title(*), badge(*))"
         )
         .maybeSingle();
       channel.send({
@@ -125,12 +136,27 @@ Deno.serve(async (req) => {
           : prev
       );
       const channel = supabase.channel(duelgame.uuid);
+      let themequestion = body.theme;
+      if (theme === 272) {
+        const { data } = await supabase
+          .from("randomtheme")
+          .select("*")
+          .is("enabled", true)
+          .not("id", "in", `(271,272)`)
+          .limit(1)
+          .maybeSingle();
+        themequestion = data.id;
+      }
       const { data } = await supabase
         .from("duelgame")
-        .update({ player2: bot.profile, start: true })
+        .update({
+          player2: bot.profile,
+          start: true,
+          themequestion: themequestion,
+        })
         .eq("uuid", duelgame.uuid)
         .select(
-          "*,theme(*),player1(*,avatar(*),title(*), badge(*)),player2(*,avatar(*),title(*), badge(*))"
+          "*,theme!public_duelgame_theme_fkey(*),player1(*,avatar(*),title(*), badge(*)),player2(*,avatar(*),title(*), badge(*))"
         )
         .maybeSingle();
       channel.send({

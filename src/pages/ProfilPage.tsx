@@ -303,35 +303,37 @@ export const ProfilPage = () => {
                           alignItems="center"
                           justifyContent="center"
                         >
-                          <Grid item xs={12}>
-                            <Typography variant="h4" component="span">
-                              {t("commun.duel")}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={6} sx={{ textAlign: "center" }}>
-                            <Typography variant="body1" component="span">
-                              {t("commun.games")} {" : "}
-                            </Typography>
-                            <Typography variant="h4" component="span">
-                              {score ? score.duelgames : "0"}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={6} sx={{ textAlign: "center" }}>
-                            <Typography variant="body1" component="span">
-                              {t("commun.points")} {" : "}
-                            </Typography>
-                            <Typography variant="h4" component="span">
-                              {rank ? rank.points : "-"}
-                            </Typography>
-                          </Grid>
-                          {score && (
-                            <Grid item xs={12}>
-                              <BarVictory
-                                victory={score.victory}
-                                draw={score.draw}
-                                defeat={score.defeat}
-                              />
-                            </Grid>
+                          {score && score.duelgames > 0 && (
+                            <>
+                              <Grid item xs={12}>
+                                <Typography variant="h4" component="span">
+                                  {t("commun.duel")}
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={6} sx={{ textAlign: "center" }}>
+                                <Typography variant="body1" component="span">
+                                  {t("commun.games")} {" : "}
+                                </Typography>
+                                <Typography variant="h4" component="span">
+                                  {score ? score.duelgames : "0"}
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={6} sx={{ textAlign: "center" }}>
+                                <Typography variant="body1" component="span">
+                                  {t("commun.points")} {" : "}
+                                </Typography>
+                                <Typography variant="h4" component="span">
+                                  {rank ? rank.points : "-"}
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={12}>
+                                <BarVictory
+                                  victory={score.victory}
+                                  draw={score.draw}
+                                  defeat={score.defeat}
+                                />
+                              </Grid>
+                            </>
                           )}
 
                           {opposition && (
@@ -353,39 +355,59 @@ export const ProfilPage = () => {
                               </Grid>
                             </>
                           )}
-                          <Grid item xs={12}>
-                            <Divider sx={{ borderBottomWidth: 3 }} />
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Grid
-                              container
-                              spacing={1}
-                              alignItems="center"
-                              justifyContent="center"
-                            >
+                          {score && score.games > 0 && (
+                            <>
+                              {(opposition || score.duelgames > 0) && (
+                                <Grid item xs={12}>
+                                  <Divider sx={{ borderBottomWidth: 3 }} />
+                                </Grid>
+                              )}
                               <Grid item xs={12}>
-                                <Typography variant="h4" component="span">
-                                  {t("commun.solo")}
-                                </Typography>
+                                <Grid
+                                  container
+                                  spacing={1}
+                                  alignItems="center"
+                                  justifyContent="center"
+                                >
+                                  <Grid item xs={12}>
+                                    <Typography variant="h4" component="span">
+                                      {t("commun.solo")}
+                                    </Typography>
+                                  </Grid>
+                                  <Grid
+                                    item
+                                    xs={6}
+                                    sx={{ textAlign: "center" }}
+                                  >
+                                    <Typography
+                                      variant="body1"
+                                      component="span"
+                                    >
+                                      {t("commun.games")} {" : "}
+                                    </Typography>
+                                    <Typography variant="h4" component="span">
+                                      {score ? score.games : "0"}
+                                    </Typography>
+                                  </Grid>
+                                  <Grid
+                                    item
+                                    xs={6}
+                                    sx={{ textAlign: "center" }}
+                                  >
+                                    <Typography
+                                      variant="body1"
+                                      component="span"
+                                    >
+                                      {t("commun.bestscore")} {" : "}
+                                    </Typography>
+                                    <Typography variant="h4" component="span">
+                                      {score ? score.points : "-"}
+                                    </Typography>
+                                  </Grid>
+                                </Grid>
                               </Grid>
-                              <Grid item xs={6} sx={{ textAlign: "center" }}>
-                                <Typography variant="body1" component="span">
-                                  {t("commun.games")} {" : "}
-                                </Typography>
-                                <Typography variant="h4" component="span">
-                                  {score ? score.games : "0"}
-                                </Typography>
-                              </Grid>
-                              <Grid item xs={6} sx={{ textAlign: "center" }}>
-                                <Typography variant="body1" component="span">
-                                  {t("commun.bestscore")} {" : "}
-                                </Typography>
-                                <Typography variant="h4" component="span">
-                                  {score ? score.points : "-"}
-                                </Typography>
-                              </Grid>
-                            </Grid>
-                          </Grid>
+                            </>
+                          )}
                         </Grid>
                       </Grid>
                     </Grid>

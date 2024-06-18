@@ -1,5 +1,12 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
-import { Fragment, useEffect, useState } from "react";
+import {
+  Fragment,
+  createRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 
 import { Helmet } from "react-helmet-async";
@@ -14,16 +21,42 @@ import award from "src/assets/award.png";
 import { useApp } from "src/context/AppProvider";
 import { Colors } from "src/style/Colors";
 import { HeadTitle } from "src/component/HeadTitle";
+import { useLocation } from "react-router-dom";
 
 export const AccomplishmentPage = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { accomplishments, myaccomplishments, getMyAccomplishments } = useApp();
+  const { hash } = useLocation();
 
   const [accomplishmentsGroupBy, setAccomplishmentsGroupBy] = useState<
     Dictionary<Array<Accomplishment>>
   >({});
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
+  const refs = useRef([]);
+
+  useEffect(() => {
+    refs.current = accomplishments.map(
+      (el) => refs.current[el.id] ?? createRef()
+    );
+  }, [accomplishments]);
+
+  const executeScroll = useCallback(
+    (hash: string) => {
+      const id = Number(hash.slice(1));
+      const element = refs.current[id];
+      const top = element && element.current ? element.current.offsetTop : 0;
+      window.scrollTo({
+        top: top - 70,
+        behavior: "smooth",
+      });
+    },
+    [refs.current]
+  );
+
+  useEffect(() => {
+    if (hash !== "") executeScroll(hash);
+  }, [hash, executeScroll]);
 
   useEffect(() => {
     const getMyStat = () => {
@@ -121,7 +154,12 @@ export const AccomplishmentPage = () => {
                     </Box>
                   </Grid>
                   {accomplishments.map((accomplishment) => (
-                    <Grid item xs={12} key={accomplishment.id}>
+                    <Grid
+                      item
+                      xs={12}
+                      key={accomplishment.id}
+                      ref={refs.current[accomplishment.id]}
+                    >
                       <CardAccomplishment
                         accomplishment={accomplishment}
                         stat={stat}

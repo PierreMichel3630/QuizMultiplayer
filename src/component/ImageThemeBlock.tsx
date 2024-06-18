@@ -1,9 +1,8 @@
 import { Box } from "@mui/material";
 import { percent, px } from "csx";
-import { Theme } from "src/models/Theme";
 
 interface Props {
-  theme: Theme;
+  theme: { image: string; color: string };
   size?: string | number;
 }
 

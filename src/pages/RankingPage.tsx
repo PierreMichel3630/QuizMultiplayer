@@ -1,5 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
-import { percent } from "csx";
+import { Box, Grid } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -9,6 +8,7 @@ import {
 } from "src/api/accomplishment";
 import { selectRankByTheme } from "src/api/rank";
 import { selectScoresByTheme } from "src/api/score";
+import { HeadTitle } from "src/component/HeadTitle";
 import { BasicSelect, SelectTheme } from "src/component/Select";
 import { DefaultTabs } from "src/component/Tabs";
 import {
@@ -183,57 +183,59 @@ export const RankingPage = () => {
   }, [stat, option]);
 
   return (
-    <Box sx={{ width: percent(100), p: 1, mt: 2 }}>
+    <Grid container>
       <Helmet>
         <title>{`${t("pages.people.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
-          <Typography variant="h1" sx={{ fontSize: 30 }}>
-            {t("commun.ranking")}
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <DefaultTabs values={tabs} tab={tab} onChange={setTab} />
-        </Grid>
-        {tab === 0 ? (
-          <>
-            <Grid item xs={12}>
-              <BasicSelect
-                label={t("commun.rankingby")}
-                placeholder={t("commun.rankingby")}
-                options={options}
-                value={option}
-                onChange={(value) => setOption(value as RankingEnum)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <RankingTable data={data} me={mydata} />
-            </Grid>
-          </>
-        ) : (
-          <>
-            <Grid item xs={12}>
-              <SelectTheme
-                theme={theme}
-                onChange={(value) => {
-                  setTheme(value);
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Box sx={{ p: 1 }}>
-                <DefaultTabs
-                  values={tabsTheme}
-                  tab={tabTheme}
-                  onChange={setTabTheme}
-                />
-                <RankingTable data={tabTheme === 0 ? dataSolo : dataDuel} />
-              </Box>
-            </Grid>
-          </>
-        )}
+      <Grid item xs={12}>
+        <HeadTitle title={t("commun.ranking")} />
       </Grid>
-    </Box>
+      <Grid item xs={12}>
+        <Box sx={{ p: 1 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <DefaultTabs values={tabs} tab={tab} onChange={setTab} />
+            </Grid>
+            {tab === 0 ? (
+              <>
+                <Grid item xs={12}>
+                  <BasicSelect
+                    label={t("commun.rankingby")}
+                    placeholder={t("commun.rankingby")}
+                    options={options}
+                    value={option}
+                    onChange={(value) => setOption(value as RankingEnum)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <RankingTable data={data} me={mydata} />
+                </Grid>
+              </>
+            ) : (
+              <>
+                <Grid item xs={12}>
+                  <SelectTheme
+                    theme={theme}
+                    onChange={(value) => {
+                      setTheme(value);
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Box sx={{ p: 1 }}>
+                    <DefaultTabs
+                      values={tabsTheme}
+                      tab={tabTheme}
+                      onChange={setTabTheme}
+                    />
+                    <RankingTable data={tabTheme === 0 ? dataSolo : dataDuel} />
+                  </Box>
+                </Grid>
+              </>
+            )}
+          </Grid>
+        </Box>
+      </Grid>
+    </Grid>
   );
 };

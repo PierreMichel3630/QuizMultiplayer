@@ -1,4 +1,5 @@
 import { AlertColor } from "@mui/material";
+import { px } from "csx";
 import { createContext, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MessageSnackbar } from "src/component/Snackbar";
@@ -37,11 +38,12 @@ export const MessageProvider = ({ children }: Props) => {
     >
       {children}
       <MessageSnackbar
-        autoHideDuration={600000}
+        autoHideDuration={5000}
         open={message !== ""}
         handleClose={() => setMessage("")}
         message={navigator.onLine ? message : t("alert.nointernet")}
         severity={severity}
+        sx={{ mb: px(60) }}
       />
     </MessageContext.Provider>
   );

@@ -13,6 +13,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
 import { ButtonColor } from "../Button";
 import { LabelRankBlock } from "../RankBlock";
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 
 interface Props {
   game: DuelGame;
@@ -120,13 +121,29 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
           <LabelRankBlock player={game.player2.id} theme={game.theme.id} />
         </Grid>
         <Grid item xs={12}>
-          <ButtonColor
-            value={Colors.green}
-            label={t("commun.returnhome")}
-            icon={HomeIcon}
-            onClick={() => navigate("/")}
-            variant="contained"
-          />
+          <Box
+            sx={{
+              display: "flex",
+              gap: 1,
+              p: 1,
+              flexDirection: "column",
+            }}
+          >
+            <ButtonColor
+              value={Colors.green}
+              label={t("commun.returnhome")}
+              icon={HomeIcon}
+              onClick={() => navigate("/")}
+              variant="contained"
+            />
+            <ButtonColor
+              value={Colors.blue}
+              label={t("commun.return")}
+              icon={KeyboardReturnIcon}
+              onClick={() => navigate(`/theme/${game.theme.id}`)}
+              variant="contained"
+            />
+          </Box>
         </Grid>
       </Grid>
     </Box>

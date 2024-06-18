@@ -21,12 +21,26 @@ Deno.serve(async (req) => {
   const player1 = body.player1;
   const player2 = body.player2;
   const theme = body.theme;
+  const battlegame = body.battlegame;
   let start = false;
+  let themequestion = body.theme;
+  if (theme === 272) {
+    const { data } = await supabase
+      .from("randomtheme")
+      .select("*")
+      .is("enabled", true)
+      .not("id", "in", `(271,272)`)
+      .limit(1)
+      .maybeSingle();
+    themequestion = data.id;
+  }
 
   const game = {
     player1: player1,
     player2: player2,
     theme: theme,
+    themequestion: themequestion,
+    battlegame,
   };
   let returnData = undefined;
 
@@ -87,7 +101,7 @@ Deno.serve(async (req) => {
             .update({ start: true })
             .eq("uuid", data.uuid)
             .select(
-              "*,theme(*),player1(*,avatar(*),title(*), badge(*)),player2(*,avatar(*),title(*), badge(*))"
+              "*, theme!public_duelgame_theme_fkey(*),player1(*,avatar(*),title(*), badge(*)),player2(*,avatar(*),title(*), badge(*))"
             )
             .maybeSingle();
           channel.send({

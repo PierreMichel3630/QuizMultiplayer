@@ -38,6 +38,7 @@
     "logout": "Se déconnecter",
     "email": "Adresse email",
     "avatar": "Avatar",
+    "avatars": "Avatars",
     "myparameters": "Mes Paramètres",
     "username": "Pseudonyme",
     "add": "Ajouter",
@@ -75,6 +76,7 @@
     "waitplayer": "En attente du deuxième joueur",
     "gamebegin": "La partie va commencer",
     "ready": "Prêt",
+    "noready": "Pas prêt",
     "win": "Gagné !",
     "loose": "Perdu !",
     "equality": "Égalité !",
@@ -182,7 +184,11 @@
     "installapplication": "Installer l'application",
     "computer": "Ordinateur",
     "new": "Nouveautés",
-    "leave": "Quitter"
+    "leave": "Quitter",
+    "gamemode": "Mode de Jeu",
+    "themesselected": "Thèmes sélectionnés",
+    "gamehistory": "Historique des parties",
+    "reset": "Réinitialiser la partie"
   },
   "accomplishment": {
     "SOLO": "Succès Mode Solo",
@@ -332,6 +338,9 @@
     },
     "improve": {
       "title": "Proposition"
+    },
+    "battle": {
+      "title": "Combat contre un ami"
     }
   },
   "enum": {
@@ -423,7 +432,8 @@
     }
   },
   "modal": {
-    "delete": "Etes-vous sûr de vouloir supprimer ?"
+    "delete": "Êtes-vous sûr de vouloir supprimer ?",
+    "resetgame": "Êtes-vous sûr de vouloir réinitialiser la partie (score et historique des parties) ?"
   },
   "error": {
     "selectatleast1theme": "Sélectionner au moins un thème",

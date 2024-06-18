@@ -2,32 +2,45 @@ import { Box, Paper, Typography } from "@mui/material";
 import { percent, px } from "csx";
 import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { deleteDuelByUuid } from "src/api/game";
-import { DuelGame } from "src/models/DuelGame";
 import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { useUser } from "src/context/UserProvider";
+import { BattleGame } from "src/models/BattleGame";
+import { deleteBattleByUuid } from "src/api/game";
+import { useAuth } from "src/context/AuthProviderSupabase";
 
 interface Props {
-  game: DuelGame;
+  game: BattleGame;
   refuse?: () => void;
 }
 
-export const DuelNotificationBlock = ({ game, refuse }: Props) => {
+export const BattleNotificationBlock = ({ game, refuse }: Props) => {
   const navigate = useNavigate();
   const { language } = useUser();
+  const { user } = useAuth();
   const { t } = useTranslation();
 
-  const playDuel = (uuid: string) => {
-    navigate(`/duel/${uuid}`);
+  const playBattle = (uuid: string) => {
+    navigate(`/battle/${uuid}`);
   };
 
-  const refuseDuel = async (uuid: string) => {
-    await deleteDuelByUuid(uuid);
-    if (refuse) refuse();
+  const refuseBattle = async (uuid: string) => {
+    await deleteBattleByUuid(uuid);
+    if (refuse) {
+      refuse();
+    }
+  };
+  const mode = {
+    image:
+      "https://cperjgnbmoqyyqgkyqws.supabase.co/storage/v1/object/public/theme/mode/swords.png",
+    color: "#a569bd",
+    name: {
+      "fr-FR": "Combat contre un ami",
+      "en-US": "Fight against a friend",
+    },
   };
 
   return (
@@ -49,7 +62,7 @@ export const DuelNotificationBlock = ({ game, refuse }: Props) => {
         }}
       >
         <Box>
-          <ImageThemeBlock theme={game.theme} size={70} />
+          <ImageThemeBlock theme={mode} size={70} />
         </Box>
         <Box>
           <Typography
@@ -61,12 +74,13 @@ export const DuelNotificationBlock = ({ game, refuse }: Props) => {
             <Trans
               i18nKey={t("commun.challenge")}
               values={{
-                username: game.player1
-                  ? game.player1.username
-                  : t("commun.unknown"),
-                theme: game
-                  ? game.theme.name[language.iso]
-                  : t("commun.unknown"),
+                username:
+                  user && user.id === game.player1.id
+                    ? game.player2
+                      ? game.player2.username
+                      : t("commun.unknown")
+                    : game.player1.username,
+                theme: mode.name[language.iso],
               }}
               components={{ bold: <strong /> }}
             />
@@ -80,7 +94,7 @@ export const DuelNotificationBlock = ({ game, refuse }: Props) => {
               borderRadius: px(5),
               cursor: "pointer",
             }}
-            onClick={() => playDuel(game.uuid)}
+            onClick={() => playBattle(game.uuid)}
           >
             <CheckIcon sx={{ color: Colors.white }} />
           </Box>
@@ -91,7 +105,7 @@ export const DuelNotificationBlock = ({ game, refuse }: Props) => {
               borderRadius: px(5),
               cursor: "pointer",
             }}
-            onClick={() => refuseDuel(game.uuid)}
+            onClick={() => refuseBattle(game.uuid)}
           >
             <CloseIcon sx={{ color: Colors.white }} />
           </Box>

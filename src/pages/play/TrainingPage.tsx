@@ -71,7 +71,7 @@ export const TrainingPage = () => {
         }
       });
     }
-  }, [sound, uuidGame]);
+  }, [uuidGame]);
 
   const validateResponse = async (value: string | number) => {
     if (question) {

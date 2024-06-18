@@ -1,21 +1,22 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "src/context/AuthProviderSupabase";
 
 import { Helmet } from "react-helmet-async";
+import { useLocation } from "react-router-dom";
 import { updateProfil } from "src/api/profile";
 import { BadgeSelector } from "src/component/BadgeSelector";
+import { HeadTitle } from "src/component/HeadTitle";
 import { MyCountryBlock } from "src/component/MyCountryBlock";
 import { SelectTitle } from "src/component/Select";
 import { AvatarSelector } from "src/component/avatar/AvatarSelector";
 import { SelectCountryModal } from "src/component/modal/SelectCountryModal";
+import { useApp } from "src/context/AppProvider";
 import { useMessage } from "src/context/MessageProvider";
 import { Avatar } from "src/models/Avatar";
 import { Badge } from "src/models/Badge";
 import { Profile } from "src/models/Profile";
-import { useApp } from "src/context/AppProvider";
-import { HeadTitle } from "src/component/HeadTitle";
 
 export const PersonalizedPage = () => {
   const { t } = useTranslation();
@@ -24,6 +25,26 @@ export const PersonalizedPage = () => {
   const { getMyTitles, getMyBadges } = useApp();
 
   const [openCountry, setOpenCountry] = useState(false);
+
+  const { hash } = useLocation();
+  const refBadge = useRef(null);
+  const refTitle = useRef(null);
+
+  useEffect(() => {
+    if (hash === "#badges") {
+      executeScroll(refBadge);
+    } else if (hash === "#titles") {
+      executeScroll(refTitle);
+    }
+  }, [hash]);
+
+  const executeScroll = (ref: any) => {
+    const top = ref.current.offsetTop;
+    window.scrollTo({
+      top: top - 70,
+      behavior: "smooth",
+    });
+  };
 
   useEffect(() => {
     getMyTitles();
@@ -115,7 +136,7 @@ export const PersonalizedPage = () => {
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1} alignItems="center">
             <Grid item xs={12} md={4}>
-              <Typography variant="h2">{t("commun.avatar")}</Typography>
+              <Typography variant="h2">{t("commun.avatars")}</Typography>
             </Grid>
             <Grid item xs={12} md={8}>
               <AvatarSelector onSelect={changeAvatar} />
@@ -126,7 +147,9 @@ export const PersonalizedPage = () => {
             <Grid item xs={12}>
               <Grid container spacing={1} alignItems="center">
                 <Grid item xs={12} md={4}>
-                  <Typography variant="h2">{t("commun.badge")}</Typography>
+                  <Typography variant="h2" ref={refBadge}>
+                    {t("commun.badges")}
+                  </Typography>
                 </Grid>
                 <Grid item xs={12} md={8}>
                   <BadgeSelector onSelect={changeBadge} />
@@ -155,10 +178,10 @@ export const PersonalizedPage = () => {
             <Grid item xs={12}>
               <Divider />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} ref={refTitle}>
               <Grid container spacing={2} alignItems="center">
                 <Grid item xs={12} md={4}>
-                  <Typography variant="h2">{t("commun.title")}</Typography>
+                  <Typography variant="h2">{t("commun.titles")}</Typography>
                 </Grid>
                 <Grid item xs={12} md={8}>
                   <SelectTitle onChange={changeTitle} />

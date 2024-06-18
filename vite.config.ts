@@ -18,7 +18,7 @@ const manifestForPlugIn: Partial<VitePWAOptions> = {
         options: {
           cacheName: "supabase-image",
           expiration: {
-            maxAgeSeconds: 60 * 60 * 24 * 30,
+            maxAgeSeconds: 60 * 60 * 24 * 5,
           },
           cacheableResponse: {
             statuses: [0, 200],

@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Grid, Typography } from "@mui/material";
+import { Box, Divider, Grid, Typography } from "@mui/material";
 import { px } from "csx";
 import moment from "moment";
 import { useMemo } from "react";
@@ -7,10 +7,7 @@ import { useApp } from "src/context/AppProvider";
 import { sortByCreatedAt } from "src/utils/sort";
 import { CardTheme } from "./card/CardTheme";
 
-interface Props {
-  search?: string;
-}
-export const NewBlock = ({ search }: Props) => {
+export const NewBlock = () => {
   const { t } = useTranslation();
 
   const { themes } = useApp();
@@ -35,22 +32,6 @@ export const NewBlock = ({ search }: Props) => {
         }}
       >
         <Typography variant="h2">{t("commun.new")}</Typography>
-        {!(search !== "") && (
-          <Button
-            variant="outlined"
-            sx={{
-              textTransform: "uppercase",
-              "&:hover": {
-                border: "2px solid currentColor",
-              },
-            }}
-            color="secondary"
-            size="small"
-            href={`/favorite`}
-          >
-            <Typography variant="h6">{t("commun.seeall")}</Typography>
-          </Button>
-        )}
       </Grid>
       <Grid item xs={12}>
         <Box
@@ -62,9 +43,7 @@ export const NewBlock = ({ search }: Props) => {
           }}
         >
           {themesDisplay.map((theme) => (
-            <Box key={theme.id} sx={{ maxWidth: px(100) }}>
-              <CardTheme theme={theme} />
-            </Box>
+            <CardTheme key={theme.id} theme={theme} />
           ))}
         </Box>
       </Grid>

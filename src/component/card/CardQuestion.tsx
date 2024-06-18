@@ -110,6 +110,7 @@ export const CardSignalQuestion = ({
   report,
 }: PropsCardSignalQuestion) => {
   const { t } = useTranslation();
+
   return (
     <Box sx={{ p: 1, height: percent(100), position: "relative" }}>
       <Grid container spacing={1} justifyContent="center">
@@ -142,12 +143,78 @@ export const CardSignalQuestion = ({
           {question.isqcm ? (
             <QcmBlockDuelResultBlock question={question} />
           ) : (
-            <JsonLanguageArrayOrStringBlock
-              sx={{ color: "white" }}
-              variant="h2"
-              all={question.allresponse}
-              value={question.response}
-            />
+            <Box sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
+              {question.responsePlayer1 && (
+                <Paper
+                  sx={{
+                    p: "4px 10px",
+                    textAlign: "center",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    position: "relative",
+                    cursor: "default",
+                    borderColor: Colors.white,
+                    borderStyle: "solid",
+                    borderWidth: 1,
+                    backgroundColor: question.resultPlayer1
+                      ? Colors.green
+                      : Colors.red,
+                    userSelect: "none",
+                  }}
+                >
+                  <Typography variant="h2" color="text.secondary">
+                    {question.responsePlayer1}
+                  </Typography>
+                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                    <Typography variant="h6" color="text.secondary">
+                      {t("commun.goodresponse")} :
+                    </Typography>
+                    <JsonLanguageArrayOrStringBlock
+                      color="text.secondary"
+                      variant="h2"
+                      all={question.allresponse}
+                      value={question.response}
+                    />
+                  </Box>
+                </Paper>
+              )}
+              {question.responsePlayer2 && (
+                <Paper
+                  sx={{
+                    p: "4px 10px",
+                    textAlign: "center",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    position: "relative",
+                    cursor: "default",
+                    borderColor: Colors.white,
+                    borderStyle: "solid",
+                    borderWidth: 1,
+                    backgroundColor: question.resultPlayer1
+                      ? Colors.green
+                      : Colors.red,
+                    userSelect: "none",
+                  }}
+                >
+                  <Typography variant="h2" color="text.secondary">
+                    {question.responsePlayer2}
+                  </Typography>
+                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                    <Typography variant="h6" color="text.secondary">
+                      {t("commun.goodresponse")} :
+                    </Typography>
+                    <JsonLanguageArrayOrStringBlock
+                      color="text.secondary"
+                      variant="h2"
+                      all={question.allresponse}
+                      value={question.response}
+                    />
+                  </Box>
+                </Paper>
+              )}
+            </Box>
           )}
         </Grid>
         {report && (

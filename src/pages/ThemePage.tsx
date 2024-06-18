@@ -1,4 +1,7 @@
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+import StarIcon from "@mui/icons-material/Star";
 import SupervisedUserCircleRoundedIcon from "@mui/icons-material/SupervisedUserCircleRounded";
 import { Box, Divider, Grid, Typography } from "@mui/material";
 import { percent, px } from "csx";
@@ -6,6 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
+import { deleteFavoriteById, insertFavorite } from "src/api/favorite";
 import {
   launchDuelGame,
   launchSoloGame,
@@ -29,20 +33,16 @@ import {
   DataRankingMe,
   RankingTable,
 } from "src/component/table/RankingTable";
+import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
+import { FavoriteInsert } from "src/models/Favorite";
 import { Profile } from "src/models/Profile";
 import { MyRank, Rank } from "src/models/Rank";
 import { MyScore, Score } from "src/models/Score";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import StarIcon from "@mui/icons-material/Star";
-import { useApp } from "src/context/AppProvider";
-import { deleteFavoriteById, insertFavorite } from "src/api/favorite";
-import { FavoriteInsert } from "src/models/Favorite";
-import { useMessage } from "src/context/MessageProvider";
-import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 
 export const ThemePage = () => {
   const { t } = useTranslation();

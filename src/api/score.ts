@@ -9,6 +9,7 @@ export const selectScoresByTheme = (theme: number, order: string) =>
     .select("*, profile(*, avatar(*))")
     .eq("theme", theme)
     .order(order, { ascending: false })
+    .order("created_at", { ascending: true })
     .limit(5);
 
 export const selectScoresByProfile = (uuid: string) =>

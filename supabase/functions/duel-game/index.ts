@@ -92,10 +92,21 @@ const calculelo = async (
 const getNewQuestion = async (
   supabase: any,
   channel: any,
-  theme: any,
+  themeDefined: any,
   questions: any,
   bot: any
 ) => {
+  let theme = themeDefined;
+  if (themeDefined.id === 271) {
+    const { data } = await supabase
+      .from("randomtheme")
+      .select("*")
+      .is("enabled", true)
+      .not("id", "in", `(271,272)`)
+      .limit(1)
+      .maybeSingle();
+    theme = data;
+  }
   let question: any = undefined;
   let response = undefined;
   const previousIdQuestion = questions.map((el) => el.id);
@@ -330,14 +341,16 @@ Deno.serve(async (req) => {
   const { data } = await supabase
     .from("duelgame")
     .select(
-      "*,theme(*),player1(*,avatar(*),title(*), badge(*)),player2(*,avatar(*),title(*), badge(*))"
+      "*,battlegame!duelgame_battlegame_fkey(*), theme!public_duelgame_theme_fkey(*),themequestion(*),player1(*,avatar(*),title(*), badge(*)),player2(*,avatar(*),title(*), badge(*))"
     )
     .eq("uuid", uuidgame)
     .maybeSingle();
   const game = data;
-  const theme = data.theme;
-  const player1 = data.player1.id;
-  const player2 = data.player2.id;
+  const battlegame = game.battlegame;
+  const theme = game.theme;
+  const themequestion = game.themequestion;
+  const player1 = game.player1.id;
+  const player2 = game.player2.id;
 
   let questions: any = [];
 
@@ -347,6 +360,8 @@ Deno.serve(async (req) => {
   let responsePlayer2 = [false, false, false, false, false];
   let answerPlayer1 = undefined;
   let answerPlayer2 = undefined;
+  let resultPlayer1 = false;
+  let resultPlayer2 = false;
 
   let response: any = undefined;
   let question: any = undefined;
@@ -383,10 +398,12 @@ Deno.serve(async (req) => {
         const delaypoints =
           POINTSCORRECTANSWER - Math.round(delayResponse / 1000);
         if (uuid === player1) {
+          resultPlayer1 = result;
           answerPlayer1 = payload.response;
           responsePlayer1[indexQuestion] = true;
           pointsPlayer1 = result ? pointsPlayer1 + delaypoints : pointsPlayer1;
         } else if (uuid === player2) {
+          resultPlayer2 = result;
           answerPlayer2 = payload.response;
           responsePlayer2[indexQuestion] = true;
           pointsPlayer2 = result ? pointsPlayer2 + delaypoints : pointsPlayer2;
@@ -422,12 +439,37 @@ Deno.serve(async (req) => {
           response: response,
           responsePlayer1: answerPlayer1,
           responsePlayer2: answerPlayer2,
+          resultPlayer1,
+          resultPlayer2,
         },
       ];
       if (questions.length >= 5) {
         const isdraw = pointsPlayer1 === pointsPlayer2;
         const result = isdraw ? 0.5 : pointsPlayer1 > pointsPlayer2 ? 1 : 0;
         const elo = await endGame(supabase, player1, player2, theme.id, result);
+        if (battlegame !== null) {
+          const games = [
+            ...battlegame.games,
+            { theme: theme, pointsPlayer1, pointsPlayer2 },
+          ];
+          await supabase
+            .from("battlegame")
+            .update({
+              scoreplayer1:
+                isdraw || result === 1
+                  ? battlegame.scoreplayer1 + 1
+                  : battlegame.scoreplayer1,
+              scoreplayer2:
+                isdraw || result === 0
+                  ? battlegame.scoreplayer2 + 1
+                  : battlegame.scoreplayer2,
+              readyplayer1: false,
+              readyplayer2: false,
+              games: games,
+            })
+            .eq("uuid", battlegame.uuid);
+        }
+
         setTimeout(async () => {
           channel.send({
             type: "broadcast",
@@ -440,6 +482,7 @@ Deno.serve(async (req) => {
                 ptsplayer1: pointsPlayer1,
                 ptsplayer2: pointsPlayer2,
               },
+              battlegame: battlegame !== null ? battlegame.uuid : null,
             },
           });
           await supabase.from("duelgame").delete().eq("uuid", uuidgame);
@@ -451,7 +494,7 @@ Deno.serve(async (req) => {
           const infosQuestion = await getNewQuestion(
             supabase,
             channel,
-            theme,
+            themequestion,
             questions,
             bot
           );
@@ -481,7 +524,7 @@ Deno.serve(async (req) => {
         const infosQuestion = await getNewQuestion(
           supabase,
           channel,
-          theme,
+          themequestion,
           questions,
           bot
         );

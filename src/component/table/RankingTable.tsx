@@ -17,6 +17,7 @@ import rank3 from "src/assets/rank/rank3.png";
 import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 
 export interface DataRanking {
   profile: Profile;
@@ -82,9 +83,14 @@ export const RankingTable = ({ data, me }: Props) => {
                 <AvatarAccount avatar={el.profile.avatar.icon} size={30} />
               </TableCell>
               <TableCell align="left" sx={{ p: px(4) }}>
-                <Typography variant="h6" color="text.primary">
-                  {el.profile.username}
-                </Typography>
+                <Link
+                  to={`/profil/${el.profile.id}`}
+                  style={{ textDecoration: "inherit" }}
+                >
+                  <Typography variant="h6" color="text.primary">
+                    {el.profile.username}
+                  </Typography>
+                </Link>
               </TableCell>
               <TableCell align="right" sx={{ p: px(4) }}>
                 <Typography variant="h2" color="text.primary">

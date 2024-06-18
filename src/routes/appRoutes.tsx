@@ -3,6 +3,7 @@ import { CategoryPage } from "src/pages/CategoryPage";
 import { ComparePage } from "src/pages/ComparePage";
 import { ConfidentialityPage } from "src/pages/ConfidentialityPage";
 import { FavoritePage } from "src/pages/FavoritePage";
+import { ImprovePage } from "src/pages/ImprovePage";
 import { MenuPage } from "src/pages/MenuPage";
 import { NotificationPage } from "src/pages/NotificationPage";
 import { ParameterPage } from "src/pages/ParameterPage";
@@ -10,6 +11,7 @@ import { PeoplePage } from "src/pages/PeoplePage";
 import { PersonalizedPage } from "src/pages/PersonalizedPage";
 import { ProfilPage } from "src/pages/ProfilPage";
 import { RankingPage } from "src/pages/RankingPage";
+import { ReportPage } from "src/pages/ReportPage";
 import { ThemePage } from "src/pages/ThemePage";
 import { ThemesPage } from "src/pages/ThemesPage";
 import { AdminPage } from "src/pages/admin/AdminPage";
@@ -17,13 +19,11 @@ import { ForgotPasswordPage } from "src/pages/connect/ForgotPasswordPage";
 import { LoginPage } from "src/pages/connect/LoginPage";
 import { RegisterPage } from "src/pages/connect/RegisterPage";
 import { ResetPasswordPage } from "src/pages/connect/ResetPasswordPage";
+import { FAQPage } from "src/pages/help/FAQPage";
+import { HelpPage } from "src/pages/help/HelpPage";
+import { InstallationPage } from "src/pages/help/InstallationPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { AdminRoutes } from "./adminPage";
-import { HelpPage } from "src/pages/help/HelpPage";
-import { FAQPage } from "src/pages/help/FAQPage";
-import { InstallationPage } from "src/pages/help/InstallationPage";
-import { ImprovePage } from "src/pages/ImprovePage";
-import { ReportPage } from "src/pages/ReportPage";
 export const AppRoutes = [
   {
     path: "/",

@@ -31,8 +31,12 @@ export const BottomNavigationBlock = () => {
   const [menu, setMenu] = useState(location.pathname.split("/")[1]);
 
   const notifications = useMemo(
-    () => friends.filter((el) => el.status === FRIENDSTATUS.PROGRESS).length,
-    [friends]
+    () =>
+      friends.filter(
+        (el) =>
+          el.status === FRIENDSTATUS.PROGRESS && user && user.id !== el.user1.id
+      ).length,
+    [friends, user]
   );
 
   useEffect(() => {

@@ -5,6 +5,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { RecapDuelPage } from "src/pages/play/RecapDuelPage";
 import { RecapSoloPage } from "src/pages/play/RecapSoloPage";
 import { TrainingPage } from "src/pages/play/TrainingPage";
+import { BattlePage } from "src/pages/play/BattlePage";
 
 export const PlayRoutes = [
   {
@@ -34,5 +35,9 @@ export const PlayRoutes = [
   {
     path: "/training/:uuidGame",
     element: <TrainingPage />,
+  },
+  {
+    path: "/battle/:uuidGame",
+    element: <BattlePage />,
   },
 ];

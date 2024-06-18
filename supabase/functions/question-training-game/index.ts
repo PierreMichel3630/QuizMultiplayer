@@ -1,7 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
 import moment from "https://esm.sh/moment";
 import { generateQuestion } from "../_shared/generateQuestion.ts";
-import { DIFFICULTIES } from "../_shared/random.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -30,13 +29,24 @@ Deno.serve(async (req) => {
       status: 200,
     });
   } else {
-    const { data } = await supabase
+    const res = await supabase
       .from("traininggame")
-      .select("*, theme(*)")
+      .select("*, themequestion(*)")
       .eq("uuid", uuidgame)
       .maybeSingle();
+    const data = res.data;
     const id = data.id;
-    const theme = data.theme;
+    let themequestion = data.themequestion;
+    if (themequestion.id === 271) {
+      const { data } = await supabase
+        .from("randomtheme")
+        .select("*")
+        .is("enabled", true)
+        .not("id", "in", `(271,272)`)
+        .limit(1)
+        .maybeSingle();
+      themequestion = data;
+    }
     const questions = data.questions;
     const previousIdQuestion = questions.map((el) => el.id).join(",");
 
@@ -44,19 +54,18 @@ Deno.serve(async (req) => {
 
     let newQuestion: any = undefined;
     const isGenerate =
-      theme.generatequestion !== null
-        ? theme.generatequestion
+      themequestion.generatequestion !== null
+        ? themequestion.generatequestion
         : Math.random() < 0.5;
     let responsesQcm: Array<any> = [];
     if (isGenerate) {
-      newQuestion = generateQuestion(Number(theme.id));
+      newQuestion = generateQuestion(Number(themequestion.id));
       response = newQuestion.response;
     } else {
       const { data } = await supabase
         .from("randomquestion")
         .select("*, theme(*)")
-        .eq("theme", theme.id)
-        .in("difficulty", DIFFICULTIES)
+        .eq("theme", themequestion.id)
         .not("id", "in", `(${previousIdQuestion})`)
         .limit(1)
         .maybeSingle();
@@ -65,13 +74,13 @@ Deno.serve(async (req) => {
         const { data } = await supabase
           .from("randomquestion")
           .select("*, theme(*)")
-          .eq("theme", theme.id)
-          .in("difficulty", DIFFICULTIES)
+          .eq("theme", themequestion.id)
           .not("id", "in", `(${previousIdQuestion})`)
           .limit(1)
           .maybeSingle();
         newQuestion = data;
         if (data === null) {
+          console.log(themequestion);
           return new Response(null, {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
             status: 204,

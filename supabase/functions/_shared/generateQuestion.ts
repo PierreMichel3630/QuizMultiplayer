@@ -31,11 +31,71 @@ export const generateQuestion = (
         true
       );
       break;
+    case 270:
+      question = generateQuestionChance(theme);
+      break;
     default:
       question = generateQuestionMath(theme, points, difficulty);
       break;
   }
   return question;
+};
+
+// CHANCE
+
+const generateQuestionChance = (theme: number) => {
+  const qcm = true;
+  const difficultyQuestion = getRandomDifficulties();
+  const response = randomIntFromInterval(0, 3);
+
+  return {
+    question: {
+      "de-DE": "Eine Antwort zufällig auswählen?",
+      "en-US": "Choose an answer at random ?",
+      "es-ES": "¿Elige una respuesta al azar?",
+      "fr-FR": "Choisissez une réponse au hasard ?",
+    },
+    difficulty: difficultyQuestion,
+    image: null,
+    theme: theme,
+    isqcm: qcm,
+    responses: [
+      {
+        label: {
+          "de-DE": "A",
+          "en-US": "A",
+          "es-ES": "A",
+          "fr-FR": "A",
+        },
+      },
+      {
+        label: {
+          "de-DE": "B",
+          "en-US": "B",
+          "es-ES": "B",
+          "fr-FR": "B",
+        },
+      },
+      {
+        label: {
+          "de-DE": "C",
+          "en-US": "C",
+          "es-ES": "C",
+          "fr-FR": "C",
+        },
+      },
+      {
+        label: {
+          "de-DE": "D",
+          "en-US": "D",
+          "es-ES": "D",
+          "fr-FR": "D",
+        },
+      },
+    ],
+    response: response,
+    time: 10,
+  };
 };
 
 // MATHS

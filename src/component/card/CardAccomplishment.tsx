@@ -7,6 +7,9 @@ import {
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { useTranslation } from "react-i18next";
 import { Colors } from "src/style/Colors";
+import { useApp } from "src/context/AppProvider";
+import { ImageThemeBlock } from "../ImageThemeBlock";
+import { Link } from "react-router-dom";
 
 interface Props {
   accomplishment: Accomplishment;
@@ -20,8 +23,17 @@ export const CardAccomplishment = ({
   isFinish,
 }: Props) => {
   const { t } = useTranslation();
+  const { themes } = useApp();
+
   const champ = stat ? stat[accomplishment.champ as StatAccomplishmentEnum] : 0;
   const value = Array.isArray(champ) ? champ.length : champ;
+
+  const themesAccomplishment = Array.isArray(champ)
+    ? themes
+        .filter((el) => champ.includes(el.id))
+        .splice(0, accomplishment.value)
+    : [];
+
   return (
     <Paper
       elevation={5}
@@ -34,7 +46,9 @@ export const CardAccomplishment = ({
       <Grid container spacing={1} alignItems="center">
         {accomplishment.badge && (
           <Grid item>
-            <img src={accomplishment.badge.icon} width={50} />
+            <Link to={`/personalized#badges`}>
+              <img src={accomplishment.badge.icon} width={50} />
+            </Link>
           </Grid>
         )}
         <Grid item xs container>
@@ -46,11 +60,18 @@ export const CardAccomplishment = ({
               <Typography variant="body1" component="span">
                 {`${t("commun.title")} "`}
               </Typography>
-              <JsonLanguageBlock
-                variant="h6"
-                component="span"
-                value={accomplishment.title.name}
-              />
+              <Link
+                to={`/personalized#titles`}
+                style={{
+                  textDecoration: "none",
+                }}
+              >
+                <JsonLanguageBlock
+                  variant="h6"
+                  component="span"
+                  value={accomplishment.title.name}
+                />
+              </Link>
               <Typography variant="body1" component="span">
                 {`"`}
               </Typography>
@@ -65,6 +86,19 @@ export const CardAccomplishment = ({
             {`/ ${accomplishment.value}`}
           </Typography>
         </Grid>
+        {themesAccomplishment.length > 0 && (
+          <Grid item xs={12}>
+            <Grid container spacing={1}>
+              {themesAccomplishment.map((theme) => (
+                <Grid item key={theme.id}>
+                  <Link to={`/theme/${theme.id}`}>
+                    <ImageThemeBlock theme={theme} size={35} />
+                  </Link>
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
+        )}
       </Grid>
     </Paper>
   );

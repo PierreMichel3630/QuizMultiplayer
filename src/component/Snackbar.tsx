@@ -1,4 +1,11 @@
-import { Alert, AlertColor, Snackbar, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertColor,
+  Snackbar,
+  SxProps,
+  Theme,
+  Typography,
+} from "@mui/material";
 
 interface Props {
   message: string;
@@ -6,6 +13,7 @@ interface Props {
   handleClose: () => void;
   severity?: AlertColor;
   autoHideDuration?: number;
+  sx?: SxProps<Theme>;
 }
 export const MessageSnackbar = ({
   open,
@@ -13,6 +21,7 @@ export const MessageSnackbar = ({
   handleClose,
   severity = "error",
   autoHideDuration = 6000,
+  sx,
 }: Props) => {
   return (
     <Snackbar
@@ -20,6 +29,7 @@ export const MessageSnackbar = ({
       autoHideDuration={autoHideDuration}
       onClose={handleClose}
       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      sx={sx}
     >
       <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
         <Typography variant="body1">{message}</Typography>

@@ -48,11 +48,23 @@ Deno.serve(async (req) => {
   const idgame = body.game;
   const { data } = await supabase
     .from("sologame")
-    .select("*, theme(*)")
+    .select("*, theme!public_sologame_theme_fkey(*), themequestion(*)")
     .eq("id", idgame)
     .maybeSingle();
   const id = data.id;
   const theme = data.theme;
+  let themequestion = data.themequestion;
+  if (theme.id === 271) {
+    const { data } = await supabase
+      .from("randomtheme")
+      .select("*")
+      .is("enabled", true)
+      .not("id", "in", `(271,272)`)
+      .limit(1)
+      .maybeSingle();
+    themequestion = data;
+  }
+
   const player = data.player;
   let points = data.points;
   const questions = data.questions;
@@ -100,6 +112,7 @@ Deno.serve(async (req) => {
                   ...question,
                   response: response,
                   responsePlayer1: payload.response,
+                  resultPlayer1: result,
                 },
               ],
             })
@@ -124,7 +137,7 @@ Deno.serve(async (req) => {
               ],
             })
             .eq("id", id)
-            .select("*,theme(*)")
+            .select("*, theme!public_sologame_theme_fkey(*), themequestion(*)")
             .maybeSingle();
           await supabase.rpc("updatescore", {
             player: player,
@@ -160,7 +173,7 @@ Deno.serve(async (req) => {
           const { data } = await supabase
             .from("randomquestion")
             .select("*, theme(*)")
-            .eq("theme", theme.id)
+            .eq("theme", themequestion.id)
             .in("difficulty", difficulties)
             .not("id", "in", `(${previousIdQuestion})`)
             .limit(1)
@@ -170,7 +183,7 @@ Deno.serve(async (req) => {
             const { data } = await supabase
               .from("randomquestion")
               .select("*, theme(*)")
-              .eq("theme", theme.id)
+              .eq("theme", themequestion.id)
               .in("difficulty", DIFFICULTIES)
               .not("id", "in", `(${previousIdQuestion})`)
               .limit(1)
@@ -179,7 +192,9 @@ Deno.serve(async (req) => {
             if (data === null) {
               const { data } = await supabase
                 .from("sologame")
-                .select("*,theme(*)")
+                .select(
+                  "*, theme!public_sologame_theme_fkey(*), themequestion(*)"
+                )
                 .eq("id", id)
                 .maybeSingle();
               channel.send({
@@ -318,7 +333,9 @@ Deno.serve(async (req) => {
                 questions: [...questions, { ...question, response: response }],
               })
               .eq("id", id)
-              .select("*,theme(*)")
+              .select(
+                "*, theme!public_sologame_theme_fkey(*), themequestion(*)"
+              )
               .maybeSingle();
             channel.send({
               type: "broadcast",

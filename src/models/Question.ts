@@ -16,8 +16,10 @@ export interface Question {
   isqcm: boolean;
   question: JsonLanguage;
   response: JsonLanguage;
+  resultPlayer1?: boolean;
   responsePlayer1?: string;
   responsePlayer2?: string;
+  resultPlayer2?: boolean;
   difficulty: string;
   id: number;
   allresponse: boolean;

@@ -7,6 +7,7 @@ import { Badge } from "src/models/Badge";
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import { percent } from "csx";
 import { Colors } from "src/style/Colors";
+import { Link } from "react-router-dom";
 
 interface Props {
   onSelect: (value: Badge) => void;
@@ -14,7 +15,7 @@ interface Props {
 
 export const BadgeSelector = ({ onSelect }: Props) => {
   const { profile } = useAuth();
-  const { badges, mybadges } = useApp();
+  const { badges, mybadges, accomplishments } = useApp();
 
   const badgesUnlock = useMemo(() => mybadges.map((el) => el.id), [mybadges]);
 
@@ -24,6 +25,9 @@ export const BadgeSelector = ({ onSelect }: Props) => {
         const isSelect =
           profile && profile.badge && profile.badge.id === badge.id;
         const isUnlock = badgesUnlock.includes(badge.id);
+        const accomplishment = accomplishments.find(
+          (el) => el.badge && el.badge.id === badge.id
+        );
         return (
           <Grid item key={badge.id}>
             <Box sx={{ position: "relative" }}>
@@ -41,7 +45,11 @@ export const BadgeSelector = ({ onSelect }: Props) => {
                   onClick={() => onSelect(badge)}
                 />
               ) : (
-                <>
+                <Link
+                  to={`/accomplishments${
+                    accomplishment ? `#${accomplishment.id}` : ""
+                  }`}
+                >
                   <Avatar
                     sx={{
                       border: `5px solid ${Colors.black}`,
@@ -66,7 +74,7 @@ export const BadgeSelector = ({ onSelect }: Props) => {
                       }}
                     />
                   </Box>
-                </>
+                </Link>
               )}
             </Box>
           </Grid>

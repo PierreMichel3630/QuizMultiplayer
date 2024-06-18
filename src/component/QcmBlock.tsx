@@ -40,8 +40,9 @@ export const QcmBlock = ({ question, onSubmit }: Props) => {
               cursor: "pointer",
               textAlign: "center",
               backgroundColor: Colors.grey,
-              borderColor: Colors.grey,
-              borderWidth: 2,
+              borderColor: Colors.white,
+              borderWidth: 1,
+              borderStyle: "solid",
               height: percent(100),
             }}
             variant="outlined"
@@ -129,8 +130,9 @@ export const QcmResponseBlock = ({
               alignItems: "center",
               justifyContent: "center",
               backgroundColor: color,
-              borderColor: color,
-              borderWidth: 2,
+              borderColor: Colors.white,
+              borderWidth: 1,
+              borderStyle: "solid",
               height: percent(100),
               userSelect: "none",
               "&:hover": {
@@ -140,7 +142,8 @@ export const QcmResponseBlock = ({
               minHeight: px(50),
             }}
             variant="outlined"
-            onClick={() => {
+            onClick={(event) => {
+              event.preventDefault();
               if (!response && !isClick) {
                 setIsClick(true);
                 onSubmit(index);
@@ -230,8 +233,9 @@ export const QcmResponseTrainingBlock = ({
               alignItems: "center",
               justifyContent: "center",
               backgroundColor: color,
-              borderColor: color,
-              borderWidth: 2,
+              borderColor: Colors.white,
+              borderWidth: 1,
+              borderStyle: "solid",
               height: percent(100),
               userSelect: "none",
               "&:hover": {
@@ -354,8 +358,9 @@ export const QcmBlockDuelBlock = ({
               alignItems: "center",
               justifyContent: "center",
               position: "relative",
-              borderColor: color,
-              borderWidth: 2,
+              borderColor: Colors.white,
+              borderWidth: 1,
+              borderStyle: "solid",
               backgroundColor: color,
               height: percent(100),
               userSelect: "none",
@@ -364,7 +369,8 @@ export const QcmBlockDuelBlock = ({
               },
             }}
             key={index}
-            onClick={() => {
+            onClick={(event) => {
+              event.preventDefault();
               if (!hasAnswer && !isClick) {
                 setIsClick(true);
                 onSubmit(index);
@@ -453,6 +459,7 @@ export const QcmBlockDuelResultBlock = ({
 
         return (
           <Paper
+            key={index}
             sx={{
               p: "4px 10px",
               textAlign: "center",
@@ -462,7 +469,8 @@ export const QcmBlockDuelResultBlock = ({
               position: "relative",
               cursor: "default",
               borderColor: borderColor,
-              borderWidth: 2,
+              borderStyle: "solid",
+              borderWidth: 1,
               backgroundColor: color,
               height: percent(100),
               userSelect: "none",

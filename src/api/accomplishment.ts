@@ -28,4 +28,5 @@ export const selectStatAccomplishment = (order: string) =>
     .from(SUPABASE_STATACCOMPLISHMENT_TABLE)
     .select("*, profile(*, avatar(*))")
     .order(order, { ascending: false })
+    .order("created_at", { ascending: true })
     .limit(25);

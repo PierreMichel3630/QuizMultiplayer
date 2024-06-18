@@ -1,15 +1,15 @@
-import { Box, CircularProgress, Typography } from "@mui/material";
-import { percent } from "csx";
+import { Box, Typography } from "@mui/material";
+import { percent, px } from "csx";
 import { DuelGame } from "src/models/DuelGame";
 import { Colors } from "src/style/Colors";
 import { StatusPlayerGame } from "../StatusPlayer";
 import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 
-import BoltIcon from "@mui/icons-material/Bolt";
 import { useTranslation } from "react-i18next";
 import { MyRank } from "src/models/Rank";
 import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
 import { CountryBlock } from "../CountryBlock";
+import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { LoadingDot } from "../Loading";
 import { LabelRankBlock } from "../RankBlock";
@@ -73,33 +73,31 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           top: percent(50),
           left: percent(50),
           translate: "-50% -50%",
-          borderRadius: percent(100),
           m: 1,
+          animation: "blinker 2s infinite",
+          p: px(8),
+          borderRadius: px(10),
         }}
       >
         <Box
           sx={{
-            borderRadius: percent(50),
-            width: 100,
-            height: 100,
-            bgcolor: Colors.black,
+            borderRadius: px(10),
+            bgcolor: game.theme.color,
             display: "flex",
+            flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
+            p: 1,
           }}
         >
-          <BoltIcon sx={{ fontSize: 70, color: Colors.white }} />
+          <ImageThemeBlock theme={game.theme} size={90} />
+          <JsonLanguageBlock
+            variant="h4"
+            sx={{ textAlign: "center" }}
+            value={game.theme.name}
+            color="text.secondary"
+          />
         </Box>
-        <CircularProgress
-          sx={{
-            color: Colors.white,
-            position: "absolute",
-            top: -10,
-            left: -10,
-            zIndex: 1,
-          }}
-          size={120}
-        />
       </Box>
       <Box
         sx={{

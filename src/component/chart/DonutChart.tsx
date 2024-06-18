@@ -65,7 +65,7 @@ const renderCustomizedLabel = ({
       y={y}
       fill="white"
       fontWeight={700}
-      fontSize={14}
+      fontSize={12}
       textAnchor="middle"
       dominantBaseline="central"
     >

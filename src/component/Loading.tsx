@@ -25,14 +25,15 @@ export const Loading = () => (
     <CircularProgress color="inherit" size={60} />
   </Box>
 );
-
-export const LoadingDot = () => (
+interface PropsDot {
+  color?: string;
+}
+export const LoadingDot = ({ color = "#fff" }: PropsDot) => (
   <Box
     sx={{
       width: px(60),
       aspectRatio: 2,
-      background:
-        "no-repeat radial-gradient(circle closest-side,#fff 90%,transparent) 0% 50%, no-repeat radial-gradient(circle closest-side,#fff 90%,transparent) 50% 50%, no-repeat radial-gradient(circle closest-side,#fff 90%,transparent) 100% 50%",
+      background: `no-repeat radial-gradient(circle closest-side,${color} 90%,transparent) 0% 50%, no-repeat radial-gradient(circle closest-side,${color} 90%,transparent) 50% 50%, no-repeat radial-gradient(circle closest-side,${color} 90%,transparent) 100% 50%`,
       backgroundSize: "calc(100%/3) 50%",
       animation: "l3 1s infinite linear",
     }}

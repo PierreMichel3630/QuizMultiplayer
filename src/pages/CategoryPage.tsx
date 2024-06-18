@@ -72,9 +72,7 @@ export const CategoryPage = () => {
         </Grid>
         {themesDisplay.map((theme) => (
           <Grid item key={theme.id}>
-            <Box sx={{ maxWidth: 100 }}>
-              <CardTheme theme={theme} />
-            </Box>
+            <CardTheme theme={theme} />
           </Grid>
         ))}
       </Grid>

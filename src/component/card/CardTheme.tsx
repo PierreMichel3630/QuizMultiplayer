@@ -1,4 +1,7 @@
 import {
+  Avatar,
+  AvatarGroup,
+  Badge,
   Box,
   Grid,
   IconButton,
@@ -20,9 +23,10 @@ import EditIcon from "@mui/icons-material/Edit";
 interface Props {
   theme: Theme;
   link?: string;
+  width?: number;
 }
 
-export const CardTheme = ({ theme, link }: Props) => {
+export const CardTheme = ({ theme, link, width = 90 }: Props) => {
   const navigate = useNavigate();
 
   const goTheme = () => {
@@ -33,9 +37,9 @@ export const CardTheme = ({ theme, link }: Props) => {
     <Box
       onClick={() => goTheme()}
       sx={{
-        width: percent(100),
+        width: width,
         display: "flex",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         flexDirection: "column",
         cursor: "pointer",
         background: "rgba(255,255,255,.15)",
@@ -43,7 +47,67 @@ export const CardTheme = ({ theme, link }: Props) => {
         gap: px(2),
       }}
     >
-      <ImageThemeBlock theme={theme} size={90} />
+      <ImageThemeBlock theme={theme} size={width} />
+      <JsonLanguageBlock
+        variant="h6"
+        sx={{ textAlign: "center" }}
+        value={theme.name}
+      />
+    </Box>
+  );
+};
+
+interface PropsCardSelectAvatarTheme {
+  theme: Theme;
+  avatars: Array<{ id: number; avatars: Array<string> }>;
+  onSelect: () => void;
+  width?: number;
+}
+
+export const CardSelectAvatarTheme = ({
+  theme,
+  avatars,
+  onSelect,
+  width = 80,
+}: PropsCardSelectAvatarTheme) => {
+  const avatarsTheme = avatars.find((el) => el.id === theme.id);
+  return (
+    <Box
+      onClick={() => onSelect()}
+      sx={{
+        maxWidth: width + 10,
+        display: "flex",
+        justifyContent: "flex-start",
+        flexDirection: "column",
+        cursor: "pointer",
+        p: px(5),
+        mt: px(9),
+        background: "rgba(255,255,255,.15)",
+        borderRadius: px(5),
+        gap: px(5),
+        position: "relative",
+      }}
+    >
+      <Badge
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        badgeContent={
+          avatarsTheme && (
+            <AvatarGroup
+              max={2}
+              sx={{
+                "& .MuiAvatar-root": { width: 30, height: 30, fontSize: 15 },
+                mr: 3,
+              }}
+            >
+              {avatarsTheme.avatars.map((a, index) => (
+                <Avatar key={index} src={a} sx={{ width: 30, height: 30 }} />
+              ))}
+            </AvatarGroup>
+          )
+        }
+      >
+        <ImageThemeBlock theme={theme} size={width} />
+      </Badge>
       <JsonLanguageBlock
         variant="h6"
         sx={{ textAlign: "center" }}
@@ -57,23 +121,26 @@ interface PropsCardSelectTheme {
   theme: Theme;
   select: boolean;
   onSelect: () => void;
+  width?: number;
 }
 
 export const CardSelectTheme = ({
   theme,
   select,
   onSelect,
+  width = 80,
 }: PropsCardSelectTheme) => {
   return (
     <Box
       onClick={() => onSelect()}
       sx={{
-        width: percent(100),
+        maxWidth: width + 10,
         display: "flex",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         flexDirection: "column",
         cursor: "pointer",
         p: px(5),
+        mt: px(5),
         background: "rgba(255,255,255,.15)",
         borderRadius: px(5),
         gap: px(5),
@@ -93,7 +160,7 @@ export const CardSelectTheme = ({
           }}
         />
       )}
-      <ImageThemeBlock theme={theme} size={90} />
+      <ImageThemeBlock theme={theme} size={width} />
       <JsonLanguageBlock
         variant="h6"
         sx={{ textAlign: "center" }}
