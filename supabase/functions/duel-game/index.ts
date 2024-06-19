@@ -228,6 +228,7 @@ const getNewQuestion = async (
       extra: question.extra,
       theme: question.theme,
       isqcm: question.isqcm,
+      type: question.typequestion,
       responses: question.responses,
       time: delay,
     },
@@ -393,7 +394,7 @@ Deno.serve(async (req) => {
         if (question.isqcm) {
           result = Number(response) === Number(value);
         } else {
-          result = verifyResponse(response[language], value, false);
+          result = verifyResponse(response[language], value, question.exact);
         }
         const delaypoints =
           POINTSCORRECTANSWER - Math.round(delayResponse / 1000);

@@ -1,6 +1,7 @@
 import { compareTwoStrings } from "https://deno.land/x/string_similarity/mod.ts";
 
 const LIMIT = 0.7;
+const LIMITEXACT = 1;
 const stopwords = [
   "the",
   "of",
@@ -20,7 +21,10 @@ const stopwords = [
 
 const normalizeString = (value: string) =>
   removeStopWord(
-    value.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    value
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
   ).toLowerCase();
 
 const removeStopWord = (value: string) =>
@@ -31,26 +35,22 @@ const removeStopWord = (value: string) =>
     .replace(/[^a-zA-Z0-9 ]/g, "");
 
 const compareString = (a: string, b: string) =>
-  compareTwoStrings(
-    normalizeString(a.toLowerCase()),
-    normalizeString(b.toString().toLowerCase())
-  );
+  compareTwoStrings(normalizeString(a), normalizeString(b));
 
 export const verifyResponse = (
   response: Array<string> | string | number,
   value: string,
   exact: boolean
 ) => {
+  const limit = exact ? LIMITEXACT : LIMIT;
   let result = false;
   if (Array.isArray(response)) {
     result = response.reduce((acc: boolean, b: string) => {
-      const val = exact ? b === value : compareString(b, value) >= LIMIT;
+      const val = compareString(b, value) >= limit;
       return acc || val;
     }, false);
   } else if (typeof response === "string") {
-    result = exact
-      ? response === value
-      : compareString(response, value) >= LIMIT;
+    result = compareString(response, value) >= limit;
   } else {
     result = Number(response) === Number(value);
   }

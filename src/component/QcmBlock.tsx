@@ -228,21 +228,22 @@ export const QcmResponseTrainingBlock = ({
           <Paper
             key={index}
             sx={{
+              p: "4px 5px",
+              minHeight: px(50),
               textAlign: "center",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: color,
+              position: "relative",
               borderColor: Colors.white,
               borderWidth: 1,
               borderStyle: "solid",
+              backgroundColor: color,
               height: percent(100),
               userSelect: "none",
               "&:hover": {
                 cursor: response ? "default" : "pointer",
               },
-              p: "4px 5px",
-              minHeight: px(50),
             }}
             variant="outlined"
             onClick={() => {

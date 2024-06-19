@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { percent, px } from "csx";
+import { important, percent, px } from "csx";
 import { useMemo } from "react";
 import { QuestionDuel, QuestionSolo } from "src/models/Question";
 import { ImageQuestionBlock } from "./ImageBlock";
@@ -20,39 +20,25 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
   );
   return (
     <Box
-      sx={
-        question && question.type === "IMAGE"
-          ? {
-              width: percent(100),
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-              justifyContent: "center",
-              gap: 1,
-            }
-          : {
-              width: percent(100),
-              flexGrow: 1,
-              flex: "1 1 0",
-              display: "flex",
-              minHeight: 0,
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-              justifyContent: "center",
-              gap: 1,
-            }
-      }
+      sx={{
+        width: percent(100),
+        flexGrow: 1,
+        flex: "1 1 0",
+        display: "flex",
+        minHeight: 0,
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center",
+        justifyContent: "center",
+        gap: 1,
+      }}
     >
       {question ? (
         <>
           <JsonLanguageBlock
             variant="h2"
             color="text.secondary"
-            sx={{
-              mb: question.extra ? 2 : 0,
-            }}
+            sx={{ fontSize: important(px(30)) }}
             value={question.question}
           />
           {image && (
@@ -110,37 +96,25 @@ export const QuestionDuelBlock = ({ question }: PropsDuel) => {
   );
   return (
     <Box
-      sx={
-        question && question.type === "IMAGE"
-          ? {
-              width: percent(100),
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-              justifyContent: "center",
-              gap: 1,
-            }
-          : {
-              width: percent(100),
-              flexGrow: 1,
-              flex: "1 1 0",
-              display: "flex",
-              minHeight: 0,
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-              justifyContent: "center",
-              gap: 1,
-            }
-      }
+      sx={{
+        width: percent(100),
+        flexGrow: 1,
+        flex: "1 1 0",
+        display: "flex",
+        minHeight: 0,
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center",
+        justifyContent: "center",
+        gap: 1,
+      }}
     >
       {question ? (
         <>
           <JsonLanguageBlock
             variant="h2"
             color="text.secondary"
-            sx={{ fontSize: 40 }}
+            sx={{ fontSize: important(px(30)) }}
             value={question.question}
           />
           {question.extra && (

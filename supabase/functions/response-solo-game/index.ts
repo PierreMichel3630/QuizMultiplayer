@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
         if (question.isqcm) {
           result = Number(response) === Number(value);
         } else {
-          result = verifyResponse(response[language], value, false);
+          result = verifyResponse(response[language], value, question.exact);
         }
         points = result ? points + 1 : points;
         channel.send({
