@@ -47,12 +47,24 @@ export interface QuestionAdmin {
   response: JsonLanguageArrayOrString;
 }
 
-export interface QuestionInsert {
+export interface QuestionInsertAdmin {
   difficulty: string;
   question: JsonLanguage;
   image: string | null;
   response: JsonLanguageArrayOrString;
   typeResponse: string;
+}
+
+export interface QuestionInsert {
+  difficulty: string;
+  question: JsonLanguage;
+  image: string | null;
+  response: JsonLanguage;
+  typeResponse: string | null;
+  responses?: Array<JsonLanguage>;
+  isqcm: boolean | null;
+  typequestion: string;
+  validate: boolean;
 }
 
 export interface QuestionThemeInsert {

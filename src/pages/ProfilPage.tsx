@@ -207,7 +207,7 @@ export const ProfilPage = () => {
             )}
             {!isMe && (
               <>
-                <Grid item xs={6} sm={6} md={4}>
+                <Grid item xs={12}>
                   <ButtonColor
                     value={Colors.red}
                     label={t("commun.duel")}
@@ -216,10 +216,7 @@ export const ProfilPage = () => {
                     onClick={launchDuel}
                   />
                 </Grid>
-                <Grid item xs={6} sm={6} md={4}>
-                  <FriendButton profile={profileUser} />
-                </Grid>
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12}>
                   <ButtonColor
                     value={Colors.blue}
                     label={t("commun.compare")}
@@ -227,6 +224,9 @@ export const ProfilPage = () => {
                     variant="contained"
                     onClick={compare}
                   />
+                </Grid>
+                <Grid item xs={12}>
+                  <FriendButton profile={profileUser} />
                 </Grid>
               </>
             )}

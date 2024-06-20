@@ -1,5 +1,6 @@
 import {
   QuestionInsert,
+  QuestionInsertAdmin,
   QuestionThemeInsert,
   QuestionUpdate,
 } from "src/models/Question";
@@ -55,7 +56,7 @@ export const countQuestionByThemeAndDifficulty = (
         .select("*", { count: "exact", head: true })
         .eq("theme", theme);
 
-export const insertQuestion = (value: QuestionInsert) =>
+export const insertQuestionAdmin = (value: QuestionInsertAdmin) =>
   supabase.from(SUPABASE_QUESTION_TABLE).insert(value).select().single();
 
 export const insertQuestionTheme = (value: QuestionThemeInsert) =>
@@ -71,3 +72,6 @@ export const updateQuestion = (value: QuestionUpdate) =>
 
 export const deleteQuestionById = (id: number) =>
   supabase.from(SUPABASE_QUESTION_TABLE).delete().eq("id", id);
+
+export const insertQuestion = (value: QuestionInsert) =>
+  supabase.from(SUPABASE_QUESTION_TABLE).insert(value).select().single();

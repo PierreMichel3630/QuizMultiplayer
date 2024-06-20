@@ -60,7 +60,7 @@ export const HistoryGameModal = ({
       </AppBar>
       <DialogContent sx={{ p: 1 }}>
         <Grid container spacing={1} flexDirection="column-reverse">
-          {games.map((game) => {
+          {games.map((game, index) => {
             const colorPlayer1 =
               game.pointsPlayer1 > game.pointsPlayer2
                 ? Colors.green
@@ -75,7 +75,7 @@ export const HistoryGameModal = ({
                 ? Colors.red
                 : Colors.black;
             return (
-              <Grid item xs={12}>
+              <Grid item xs={12} key={index}>
                 <Paper variant="outlined" sx={{ p: 1 }}>
                   <Grid
                     container

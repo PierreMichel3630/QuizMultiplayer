@@ -14,7 +14,7 @@ import {
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
 import {
-  insertQuestion,
+  insertQuestionAdmin,
   insertQuestionTheme,
   updateQuestion,
 } from "src/api/question";
@@ -106,7 +106,7 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
         };
         const { error, data } = question
           ? await updateQuestion({ id: question.id, ...newQuestion })
-          : await insertQuestion(newQuestion);
+          : await insertQuestionAdmin(newQuestion);
         if (error) {
           setSeverity("error");
           setMessage(t("commun.error"));

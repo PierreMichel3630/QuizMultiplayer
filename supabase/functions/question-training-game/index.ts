@@ -147,6 +147,14 @@ Deno.serve(async (req) => {
             response = [...responsesQcm].findIndex(
               (el) => el.image === res2.data[0].image
             );
+          } else if (newQuestion.typequestion === "QCM") {
+            responsesQcm = [...newQuestion.responses, newQuestion.response]
+              .map((el) => ({ label: el }))
+              .sort(() => Math.random() - 0.5);
+
+            response = [...responsesQcm].findIndex(
+              (el) => el.label === newQuestion.response
+            );
           } else {
             const responses = Array.isArray(newQuestion.response["fr-FR"])
               ? newQuestion.allresponse

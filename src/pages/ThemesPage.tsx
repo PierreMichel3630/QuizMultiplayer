@@ -58,6 +58,7 @@ export const ThemesPage = () => {
                 variant="outlined"
                 typography="h6"
                 onClick={() => navigate("/help")}
+                noWrap
               />
               <ButtonColor
                 value={Colors.white}
@@ -65,6 +66,7 @@ export const ThemesPage = () => {
                 variant="outlined"
                 typography="h6"
                 onClick={() => navigate("/faq")}
+                noWrap
               />
               <ButtonColor
                 value={Colors.white}
@@ -72,6 +74,7 @@ export const ThemesPage = () => {
                 variant="outlined"
                 typography="h6"
                 onClick={() => navigate("/installation")}
+                noWrap
               />
             </Box>
           }

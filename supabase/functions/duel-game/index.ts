@@ -183,6 +183,14 @@ const getNewQuestion = async (
         response = [...responsesQcm].findIndex(
           (el) => el.image === res2.data[0].image
         );
+      } else if (question.typequestion === "QCM") {
+        responsesQcm = [...question.responses, question.response]
+          .map((el) => ({ label: el }))
+          .sort(() => Math.random() - 0.5);
+
+        response = [...responsesQcm].findIndex(
+          (el) => el.label === question.response
+        );
       } else {
         const responses = Array.isArray(question.response["fr-FR"])
           ? question.allresponse

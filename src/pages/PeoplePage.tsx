@@ -97,63 +97,57 @@ export const PeoplePage = () => {
   }, [isEnd, isLoading]);
 
   return (
-    <Box sx={{ width: percent(100), p: 1 }}>
+    <Box sx={{ width: percent(100) }}>
       <Helmet>
         <title>{`${t("pages.people.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid container spacing={1} sx={{ position: "relative" }}>
-        <Box
-          sx={{
-            position: "sticky",
-            top: 56,
-            zIndex: 3,
-            p: 1,
-            width: percent(100),
-            backgroundColor: Colors.white,
-          }}
-        >
-          <Container maxWidth="lg">
-            <BasicSearchInput
-              label={t("commun.search")}
-              value={search}
-              onChange={setSearch}
-              clear={() => setSearch("")}
-            />
-          </Container>
-        </Box>
-        {friendsFilter.length > 0 && (
-          <>
-            <Grid item xs={12}>
-              <Typography variant="h2">{t("commun.myfriends")}</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container spacing={2} justifyContent="center">
-                {friendsFilter.map((friend) => (
-                  <Grid item key={friend.id}>
-                    <BasicCardProfile profile={friend} />
-                  </Grid>
-                ))}
+      <Box
+        sx={{
+          position: "sticky",
+          top: 56,
+          zIndex: 3,
+          p: 1,
+          width: percent(100),
+          backgroundColor: Colors.white,
+        }}
+      >
+        <Container maxWidth="lg">
+          <BasicSearchInput
+            label={t("commun.search")}
+            value={search}
+            onChange={setSearch}
+            clear={() => setSearch("")}
+          />
+        </Container>
+      </Box>
+      <Box sx={{ width: percent(100), p: 1 }}>
+        <Grid container spacing={1} sx={{ position: "relative" }}>
+          {friendsFilter.length > 0 && (
+            <>
+              <Grid item xs={12}>
+                <Typography variant="h2">{t("commun.myfriends")}</Typography>
               </Grid>
-            </Grid>
-            <Grid item xs={12}>
-              <Divider sx={{ borderBottomWidth: 3 }} />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h2">{t("commun.players")}</Typography>
-            </Grid>
-          </>
-        )}
-        <Grid item xs={12}>
-          <Grid container spacing={2} justifyContent="center">
-            {playerFilter.map((player) => (
-              <Grid item key={player.id}>
-                <BasicCardProfile profile={player} />
+              {friendsFilter.map((friend) => (
+                <Grid item key={friend.id} xs={12}>
+                  <BasicCardProfile profile={friend} />
+                </Grid>
+              ))}
+              <Grid item xs={12}>
+                <Divider sx={{ borderBottomWidth: 3 }} />
               </Grid>
-            ))}
-            {isLoading && <SkeletonPlayers number={ITEMPERPAGE} />}
-          </Grid>
+              <Grid item xs={12}>
+                <Typography variant="h2">{t("commun.players")}</Typography>
+              </Grid>
+            </>
+          )}
+          {playerFilter.map((player) => (
+            <Grid item key={player.id} xs={12}>
+              <BasicCardProfile profile={player} />
+            </Grid>
+          ))}
+          {isLoading && <SkeletonPlayers number={ITEMPERPAGE} />}
         </Grid>
-      </Grid>
+      </Box>
     </Box>
   );
 };

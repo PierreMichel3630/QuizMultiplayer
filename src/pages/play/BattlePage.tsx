@@ -72,7 +72,9 @@ export const BattlePage = () => {
     const getGame = () => {
       if (uuidGame) {
         selectBattleGameByUuid(uuidGame).then(({ data }) => {
-          setGame(data);
+          const game = data as BattleGame;
+          setGame(game);
+          setOpenModalFriend(game.player2 === null);
         });
       }
     };
@@ -130,11 +132,16 @@ export const BattlePage = () => {
         )
         .subscribe();
       return () => {
-        deleteGame();
         channel.unsubscribe();
       };
     }
   }, [deleteGame, game, navigate]);
+
+  useEffect(() => {
+    return () => {
+      deleteGame();
+    };
+  }, []);
 
   const updateGame = (value: BattleGameUpdate) => {
     updateBattleGameByUuid(value).then(({ data }) => {
@@ -273,33 +280,39 @@ export const BattlePage = () => {
                     position: "fixed",
                     top: 52,
                     left: 0,
+                    right: 0,
                     zIndex: 2,
                     p: 1,
                   }}
                 >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <SelectorProfileBattleBlock
-                      label={t("commun.selectplayer")}
-                      profile={game.player1}
-                      score={game.scoreplayer1}
-                      ready={game.readyplayer1}
-                    />
-                    <RestartAltIcon onClick={() => setOpenConfirmModal(true)} />
-                    <SelectorProfileBattleBlock
-                      label={t("commun.selectplayer")}
-                      profile={game.player2 ?? undefined}
-                      onChange={() => setOpenModalFriend(true)}
-                      score={game.scoreplayer2}
-                      ready={game.readyplayer2}
-                      left
-                    />
-                  </Box>
-                  <Divider sx={{ borderBottomWidth: 5 }} />
+                  <Container maxWidth="lg">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        width: percent(100),
+                      }}
+                    >
+                      <SelectorProfileBattleBlock
+                        label={t("commun.selectplayer")}
+                        profile={game.player1}
+                        score={game.scoreplayer1}
+                        ready={game.readyplayer1}
+                      />
+                      <RestartAltIcon
+                        onClick={() => setOpenConfirmModal(true)}
+                      />
+                      <SelectorProfileBattleBlock
+                        label={t("commun.selectadv")}
+                        profile={game.player2 ?? undefined}
+                        onChange={() => setOpenModalFriend(true)}
+                        score={game.scoreplayer2}
+                        ready={game.readyplayer2}
+                        left
+                      />
+                    </Box>
+                    <Divider sx={{ borderBottomWidth: 5 }} />
+                  </Container>
                 </Box>
               </Grid>
               <Grid item xs={12}>
@@ -346,13 +359,15 @@ export const BattlePage = () => {
             <Box
               sx={{ p: 1, display: "flex", gap: 1, flexDirection: "column" }}
             >
-              <ButtonColor
-                value={Colors.blue}
-                label={t("commun.gamehistory")}
-                variant="contained"
-                onClick={getHistory}
-                endIcon={<HistoryIcon />}
-              />
+              {game && game.games.length > 0 && (
+                <ButtonColor
+                  value={Colors.blue}
+                  label={t("commun.gamehistory")}
+                  variant="contained"
+                  onClick={getHistory}
+                  endIcon={<HistoryIcon />}
+                />
+              )}
               <ButtonColor
                 value={isReady ? Colors.green : Colors.red}
                 label={t("commun.ready")}
@@ -364,8 +379,12 @@ export const BattlePage = () => {
           </Container>
         </Box>
         <SelectFriendModal
+          title={t("commun.selectadv")}
           open={openModalFriend}
-          close={() => setOpenModalFriend(false)}
+          close={() => {
+            deleteGame();
+            navigate(-1);
+          }}
           onValid={(profile) => {
             setOpenModalFriend(false);
             if (uuidGame) {

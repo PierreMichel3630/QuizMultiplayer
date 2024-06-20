@@ -43,6 +43,8 @@ import { MyRank, Rank } from "src/models/Rank";
 import { MyScore, Score } from "src/models/Score";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
+import LightbulbIcon from "@mui/icons-material/Lightbulb";
+import { ProposeQuestionModal } from "src/component/modal/ProposeQuestionModal";
 
 export const ThemePage = () => {
   const { t } = useTranslation();
@@ -55,6 +57,7 @@ export const ThemePage = () => {
   const { setMessage, setSeverity } = useMessage();
 
   const [openModalFriend, setOpenModalFriend] = useState(false);
+  const [openProposeQuestion, setOpenProposeQuestion] = useState(false);
   const [players, setPlayers] = useState<number | undefined>(undefined);
   const [theme, setTheme] = useState<Theme | undefined>(undefined);
 
@@ -366,6 +369,24 @@ export const ThemePage = () => {
                         variant="contained"
                       />
                     </Grid>
+                    {user && (
+                      <Grid item xs={12}>
+                        <ButtonColor
+                          size="small"
+                          value={Colors.pink}
+                          label={t("commun.proposequestion")}
+                          icon={LightbulbIcon}
+                          onClick={() => {
+                            if (user) {
+                              setOpenProposeQuestion(true);
+                            } else {
+                              navigate(`/login`);
+                            }
+                          }}
+                          variant="contained"
+                        />
+                      </Grid>
+                    )}
                   </Grid>
                 </Grid>
               </Grid>
@@ -459,6 +480,13 @@ export const ThemePage = () => {
         close={() => setOpenModalFriend(false)}
         onValid={playFriend}
       />
+      {theme && (
+        <ProposeQuestionModal
+          open={openProposeQuestion}
+          close={() => setOpenProposeQuestion(false)}
+          theme={theme}
+        />
+      )}
     </Box>
   );
 };

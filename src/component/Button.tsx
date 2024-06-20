@@ -8,15 +8,21 @@ interface Props extends ButtonProps {
   value: string;
   label: string;
   icon?: ElementType;
+  fullWidth?: boolean;
+  iconSize?: number;
   typography?: Variant | "inherit";
   variant?: "text" | "outlined" | "contained";
+  noWrap?: boolean;
 }
 export const ButtonColor = ({
   icon,
   value,
   label,
+  fullWidth = true,
   typography = "h4",
   variant = "outlined",
+  iconSize = 25,
+  noWrap = false,
   ...props
 }: Props) => {
   const style =
@@ -49,24 +55,24 @@ export const ButtonColor = ({
   return icon ? (
     <Button
       variant={variant}
-      fullWidth
+      fullWidth={fullWidth}
       sx={style}
       {...props}
       startIcon={
         <SvgIcon
           component={icon}
           inheritViewBox
-          sx={{ fontSize: important(px(25)) }}
+          sx={{ fontSize: important(px(iconSize)) }}
         />
       }
     >
-      <Typography variant={typography} noWrap>
+      <Typography variant={typography} noWrap={noWrap}>
         {label}
       </Typography>
     </Button>
   ) : (
-    <Button variant={variant} fullWidth sx={style} {...props}>
-      <Typography variant={typography} noWrap>
+    <Button variant={variant} fullWidth={fullWidth} sx={style} {...props}>
+      <Typography variant={typography} noWrap={noWrap}>
         {label}
       </Typography>
     </Button>

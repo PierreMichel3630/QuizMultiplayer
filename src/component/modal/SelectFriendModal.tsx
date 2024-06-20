@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useMemo, useState } from "react";
 import { selectFriend } from "src/api/friend";
 import { useUser } from "src/context/UserProvider";
@@ -22,8 +21,13 @@ import { Loading } from "../Loading";
 import { CardProfile } from "../card/CardProfile";
 import { Profile } from "src/models/Profile";
 import { useAuth } from "src/context/AuthProviderSupabase";
-
+import { Colors } from "src/style/Colors";
+import { ButtonColor } from "../Button";
+import CloseIcon from "@mui/icons-material/Close";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import { useNavigate } from "react-router-dom";
 interface Props {
+  title?: string;
   withMe?: boolean;
   open: boolean;
   close: () => void;
@@ -34,12 +38,14 @@ export const SelectFriendModal = ({
   open,
   close,
   onValid,
+  title,
   withMe = false,
 }: Props) => {
   const { t } = useTranslation();
   const { uuid } = useUser();
   const { profile } = useAuth();
   const theme = useTheme();
+  const navigate = useNavigate();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const [search, setSearch] = useState("");
@@ -84,7 +90,7 @@ export const SelectFriendModal = ({
       <AppBar sx={{ position: "relative" }}>
         <Toolbar>
           <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.myfriends")}
+            {title ? title : t("commun.myfriends")}
           </Typography>
           <IconButton color="inherit" onClick={close} aria-label="close">
             <CloseIcon />
@@ -125,9 +131,42 @@ export const SelectFriendModal = ({
                   </Grid>
                 ))
               ) : (
-                <Grid item xs={12}>
-                  <Alert severity="warning">{t("commun.noresult")}</Alert>
-                </Grid>
+                <>
+                  {search !== "" ? (
+                    <Grid item xs={12}>
+                      <Alert severity="warning">{t("commun.noresult")}</Alert>
+                    </Grid>
+                  ) : (
+                    <>
+                      <Grid item xs={12}>
+                        <Alert severity="info">
+                          {t("commun.noresultfriends")}
+                        </Alert>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <ButtonColor
+                          value={Colors.blue}
+                          label={t("commun.addfriend")}
+                          variant="contained"
+                          onClick={() => {
+                            close();
+                            navigate("/people");
+                          }}
+                          endIcon={<PersonAddIcon />}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <ButtonColor
+                          value={Colors.red}
+                          label={t("commun.leave")}
+                          variant="contained"
+                          onClick={close}
+                          endIcon={<CloseIcon />}
+                        />
+                      </Grid>
+                    </>
+                  )}
+                </>
               )}
             </>
           )}

@@ -120,7 +120,7 @@ export const OutletPage = () => {
           event: "UPDATE",
           schema: "public",
           table: "battlegame",
-          filter: `player2=eq.${uuid},player1=eq.${uuid}`,
+          filter: `player2=eq.${uuid}`,
         },
         (payload) => {
           setBattlesChange((prev) => [
@@ -135,7 +135,23 @@ export const OutletPage = () => {
           event: "DELETE",
           schema: "public",
           table: "battlegame",
-          filter: `player2=eq.${uuid},player1=eq.${uuid}`,
+          filter: `player2=eq.${uuid}`,
+        },
+        (payload) => {
+          setGamesChange((prev) =>
+            [...prev].filter(
+              (el) => el.id !== (payload.old as BattleGameChange).id
+            )
+          );
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "DELETE",
+          schema: "public",
+          table: "battlegame",
+          filter: `player1=eq.${uuid}`,
         },
         (payload) => {
           setGamesChange((prev) =>

@@ -1,11 +1,13 @@
-import { Box, Button, Card, Grid, Typography } from "@mui/material";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Button, Card, Grid, Paper, Typography } from "@mui/material";
+import { px } from "csx";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
-import { Profile } from "src/models/Profile";
-import { AvatarAccount } from "../avatar/AvatarAccount";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useNavigate } from "react-router-dom";
+import { Profile } from "src/models/Profile";
+import { FriendButton } from "../FriendButton";
+import { AvatarAccount } from "../avatar/AvatarAccount";
 interface Props {
   profile: Profile;
   addToFriend?: () => void;
@@ -98,24 +100,28 @@ interface PropsBasic {
 }
 export const BasicCardProfile = ({ profile }: PropsBasic) => {
   const navigate = useNavigate();
+
   return (
-    <Box
+    <Paper
       sx={{
         display: "flex",
-        flexDirection: "column",
+        flexDirection: "row",
         alignItems: "center",
+        justifyContent: "space-between",
         cursor: "pointer",
+        p: px(5),
       }}
       onClick={() => navigate(`/profil/${profile.id}`)}
     >
       <AvatarAccount
         avatar={profile.avatar.icon}
-        size={70}
+        size={50}
         color={profile.color}
       />
-      <Typography variant="body1" sx={{ wordWrap: "break-word" }}>
+      <Typography variant="h6" sx={{ wordWrap: "break-word" }}>
         {profile.username}
       </Typography>
-    </Box>
+      <FriendButton profile={profile} small />
+    </Paper>
   );
 };

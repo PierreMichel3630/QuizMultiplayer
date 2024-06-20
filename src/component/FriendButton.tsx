@@ -20,13 +20,13 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { useEffect } from "react";
-import { LoadingDot } from "./Loading";
 import { useNavigate } from "react-router-dom";
 interface Props {
   profile: Profile;
+  small?: boolean;
 }
 
-export const FriendButton = ({ profile }: Props) => {
+export const FriendButton = ({ profile, small = false }: Props) => {
   const { user } = useAuth();
   const { friends, refreshFriends } = useApp();
   const { setMessage, setSeverity } = useMessage();
@@ -158,31 +158,47 @@ export const FriendButton = ({ profile }: Props) => {
               gap: 1,
               alignItems: "center",
               justifyContent: "center",
+              backgroundColor: Colors.purple,
+              p: 1,
+              borderRadius: px(5),
             }}
           >
-            <Typography variant="h4" color="text.secondary">
+            <Typography variant="body1" color="text.secondary">
               {t("commun.waitinvitation")}
             </Typography>
-            <LoadingDot />
           </Box>
         )}
       </>
     ) : (
       <ButtonColor
+        fullWidth={!small}
         value={Colors.red}
-        label={t("commun.friend")}
+        label={t("commun.deletefriend")}
         icon={RemoveCircleIcon}
         variant="contained"
-        onClick={deleteFriend}
+        onClick={(ev) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          deleteFriend();
+        }}
+        typography={small ? "body1" : undefined}
+        iconSize={small ? 15 : undefined}
       />
     )
   ) : (
     <ButtonColor
+      fullWidth={!small}
       value={Colors.green}
-      label={t("commun.friend")}
+      label={t("commun.addtofriend")}
       icon={AddCircleIcon}
       variant="contained"
-      onClick={addToFriend}
+      onClick={(ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        addToFriend();
+      }}
+      typography={small ? "body1" : undefined}
+      iconSize={small ? 15 : undefined}
     />
   );
 };
