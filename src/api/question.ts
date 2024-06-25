@@ -75,3 +75,8 @@ export const deleteQuestionById = (id: number) =>
 
 export const insertQuestion = (value: QuestionInsert) =>
   supabase.from(SUPABASE_QUESTION_TABLE).insert(value).select().single();
+
+export const countQuestions = () =>
+  supabase
+    .from(SUPABASE_RANDOMQUESTION_TABLE)
+    .select("*", { count: "exact", head: true });

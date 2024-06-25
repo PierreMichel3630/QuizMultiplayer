@@ -83,6 +83,9 @@ Deno.serve(async (req) => {
       const payload = v.payload;
       const value = payload.response;
       const language = payload.language;
+      console.log(value);
+      console.log(response);
+      console.log(question);
       if (response !== undefined && question !== undefined) {
         isAnswer = true;
         if (question.isqcm) {
@@ -102,7 +105,7 @@ Deno.serve(async (req) => {
           },
         });
         if (result) {
-          await supabase
+          const res = await supabase
             .from("sologame")
             .update({
               points: points,
@@ -117,6 +120,7 @@ Deno.serve(async (req) => {
               ],
             })
             .eq("id", id);
+          console.log(res);
           setTimeout(async () => {
             await supabase.functions.invoke("response-solo-game", {
               body: { game: idgame },
@@ -170,7 +174,7 @@ Deno.serve(async (req) => {
           time = newQuestion.time;
           response = newQuestion.response;
         } else {
-          const { data } = await supabase
+          const res = await supabase
             .from("randomquestion")
             .select("*, theme(*)")
             .eq("theme", themequestion.id)
@@ -178,18 +182,19 @@ Deno.serve(async (req) => {
             .not("id", "in", `(${previousIdQuestion})`)
             .limit(1)
             .maybeSingle();
-          newQuestion = data;
-          if (data === null) {
-            const { data } = await supabase
+          console.log(res);
+          newQuestion = res.data;
+          if (res.data === null) {
+            const res2 = await supabase
               .from("randomquestion")
               .select("*, theme(*)")
               .eq("theme", themequestion.id)
-              .in("difficulty", DIFFICULTIES)
               .not("id", "in", `(${previousIdQuestion})`)
               .limit(1)
               .maybeSingle();
-            newQuestion = data;
-            if (data === null) {
+            console.log(res2);
+            newQuestion = res2.data;
+            if (res2.data === null) {
               const { data } = await supabase
                 .from("sologame")
                 .select(
@@ -197,6 +202,7 @@ Deno.serve(async (req) => {
                 )
                 .eq("id", id)
                 .maybeSingle();
+              console.log(data);
               channel.send({
                 type: "broadcast",
                 event: "allquestion",
@@ -317,6 +323,7 @@ Deno.serve(async (req) => {
         }
 
         question = newQuestion;
+        console.log(newQuestion);
         channel.send({
           type: "broadcast",
           event: "question",

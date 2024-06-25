@@ -45,7 +45,7 @@ export const SelectorProfileBlock = ({
             }
           }}
         >
-          <AvatarAccount avatar={profile.avatar.icon} size={40} />
+          <AvatarAccount avatar={profile.avatar.icon} size={30} />
           <Typography variant="h4" sx={{ wordBreak: "break-all" }}>
             {profile.username}
           </Typography>

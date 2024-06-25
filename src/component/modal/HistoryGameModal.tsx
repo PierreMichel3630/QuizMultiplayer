@@ -1,5 +1,6 @@
 import {
   AppBar,
+  Box,
   Dialog,
   DialogContent,
   Grid,
@@ -13,31 +14,52 @@ import {
 import { useTranslation } from "react-i18next";
 
 import CloseIcon from "@mui/icons-material/Close";
-import { Profile } from "src/models/Profile";
-import { Theme } from "src/models/Theme";
+import { useMemo } from "react";
+import { BattleGame } from "src/models/BattleGame";
 import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 
 interface Props {
-  games: Array<{ theme: Theme; pointsPlayer1: number; pointsPlayer2: number }>;
-  player1: Profile;
-  player2: Profile;
+  game: BattleGame;
   open: boolean;
   close: () => void;
 }
 
-export const HistoryGameModal = ({
-  games,
-  player1,
-  player2,
-  open,
-  close,
-}: Props) => {
+export const HistoryGameModal = ({ game, open, close }: Props) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+
+  const totalScore1 = useMemo(
+    () => game.games.reduce((acc, value) => acc + value.pointsPlayer1, 0),
+    [game]
+  );
+  const totalScore2 = useMemo(
+    () => game.games.reduce((acc, value) => acc + value.pointsPlayer2, 0),
+    [game]
+  );
+
+  const color1 = useMemo(
+    () =>
+      game.scoreplayer1 > game.scoreplayer2
+        ? Colors.green
+        : game.scoreplayer1 < game.scoreplayer2
+        ? Colors.red
+        : Colors.black,
+    [game]
+  );
+
+  const color2 = useMemo(
+    () =>
+      game.scoreplayer2 > game.scoreplayer1
+        ? Colors.green
+        : game.scoreplayer2 < game.scoreplayer1
+        ? Colors.red
+        : Colors.black,
+    [game]
+  );
 
   return (
     <Dialog
@@ -60,18 +82,18 @@ export const HistoryGameModal = ({
       </AppBar>
       <DialogContent sx={{ p: 1 }}>
         <Grid container spacing={1} flexDirection="column-reverse">
-          {games.map((game, index) => {
+          {game.games.map((el, index) => {
             const colorPlayer1 =
-              game.pointsPlayer1 > game.pointsPlayer2
+              el.pointsPlayer1 > el.pointsPlayer2
                 ? Colors.green
-                : game.pointsPlayer1 < game.pointsPlayer2
+                : el.pointsPlayer1 < el.pointsPlayer2
                 ? Colors.red
                 : Colors.black;
 
             const colorPlayer2 =
-              game.pointsPlayer2 > game.pointsPlayer1
+              el.pointsPlayer2 > el.pointsPlayer1
                 ? Colors.green
-                : game.pointsPlayer2 < game.pointsPlayer1
+                : el.pointsPlayer2 < el.pointsPlayer1
                 ? Colors.red
                 : Colors.black;
             return (
@@ -93,11 +115,11 @@ export const HistoryGameModal = ({
                         justifyContent: "center",
                       }}
                     >
-                      <ImageThemeBlock theme={game.theme} size={40} />
+                      <ImageThemeBlock theme={el.theme} size={40} />
                       <JsonLanguageBlock
                         variant="h4"
                         sx={{ textAlign: "center" }}
-                        value={game.theme.name}
+                        value={el.theme.name}
                       />
                     </Grid>
                     <Grid
@@ -110,7 +132,10 @@ export const HistoryGameModal = ({
                         justifyContent: "flex-start",
                       }}
                     >
-                      <AvatarAccount avatar={player1.avatar.icon} size={30} />
+                      <AvatarAccount
+                        avatar={game.player1.avatar.icon}
+                        size={30}
+                      />
                       <Typography
                         variant="h6"
                         sx={{
@@ -122,7 +147,7 @@ export const HistoryGameModal = ({
                           color: colorPlayer1,
                         }}
                       >
-                        {player1.username}
+                        {game.player1.username}
                       </Typography>
                     </Grid>
                     <Grid
@@ -136,11 +161,11 @@ export const HistoryGameModal = ({
                       }}
                     >
                       <Typography variant="h2" sx={{ color: colorPlayer1 }}>
-                        {game.pointsPlayer1}
+                        {el.pointsPlayer1}
                       </Typography>
                       <Typography variant="h4">-</Typography>
                       <Typography variant="h2" sx={{ color: colorPlayer2 }}>
-                        {game.pointsPlayer2}
+                        {el.pointsPlayer2}
                       </Typography>
                     </Grid>
                     <Grid
@@ -164,15 +189,93 @@ export const HistoryGameModal = ({
                           color: colorPlayer2,
                         }}
                       >
-                        {player2.username}
+                        {game.player2.username}
                       </Typography>
-                      <AvatarAccount avatar={player2.avatar.icon} size={30} />
+                      <AvatarAccount
+                        avatar={game.player2.avatar.icon}
+                        size={30}
+                      />
                     </Grid>
                   </Grid>
                 </Paper>
               </Grid>
             );
           })}
+          <Grid item xs={12} sx={{ mb: 2 }}>
+            <Grid
+              container
+              spacing={1}
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Grid
+                item
+                xs={2}
+                sx={{
+                  display: "flex",
+                  gap: 1,
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                }}
+              >
+                <AvatarAccount avatar={game.player1.avatar.icon} size={50} />
+              </Grid>
+              <Grid
+                item
+                xs={8}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1,
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography variant="h2" sx={{ color: color1 }}>
+                    {game.scoreplayer1}
+                  </Typography>
+                  <Typography variant="h4">-</Typography>
+                  <Typography variant="h2" sx={{ color: color2 }}>
+                    {game.scoreplayer2}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography variant="h6">
+                    {totalScore1} {t("commun.points")}
+                  </Typography>
+                  <Typography variant="h4">-</Typography>
+                  <Typography variant="h6">
+                    {totalScore2} {t("commun.points")}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid
+                item
+                xs={2}
+                sx={{
+                  display: "flex",
+                  gap: 1,
+                  alignItems: "center",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <AvatarAccount avatar={game.player2.avatar.icon} size={50} />
+              </Grid>
+            </Grid>
+          </Grid>
         </Grid>
       </DialogContent>
     </Dialog>

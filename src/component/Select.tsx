@@ -183,7 +183,7 @@ interface PropsSelectCategory {
 
 export const SelectCategory = ({ category, onChange }: PropsSelectCategory) => {
   const { t } = useTranslation();
-  const { categories } = useApp();
+  const { categoriesAdmin } = useApp();
   const { language } = useUser();
 
   return (
@@ -194,7 +194,7 @@ export const SelectCategory = ({ category, onChange }: PropsSelectCategory) => {
       onChange={(_event: SyntheticEvent, newValue: Category | null) => {
         if (newValue) onChange(newValue);
       }}
-      options={categories.sort((a, b) => sortByName(language, a, b))}
+      options={categoriesAdmin.sort((a, b) => sortByName(language, a, b))}
       getOptionLabel={(option) => option.name[language.iso]}
       renderOption={(props, option) => (
         <Box component="li" {...props}>

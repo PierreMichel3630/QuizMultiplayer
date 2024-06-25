@@ -29,6 +29,11 @@ export const RuleBlock = () => {
       goal: t("modes.mode3.goal"),
       explain: t("modes.mode3.explain"),
     },
+    {
+      title: t("modes.mode4.title"),
+      goal: t("modes.mode4.goal"),
+      explain: t("modes.mode4.explain"),
+    },
   ];
   return (
     <Grid container spacing={1}>

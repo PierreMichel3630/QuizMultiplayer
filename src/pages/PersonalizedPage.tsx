@@ -136,7 +136,7 @@ export const PersonalizedPage = () => {
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1} alignItems="center">
             <Grid item xs={12} md={4}>
-              <Typography variant="h2">{t("commun.avatars")}</Typography>
+              <Typography variant="h4">{t("commun.avatars")}</Typography>
             </Grid>
             <Grid item xs={12} md={8}>
               <AvatarSelector onSelect={changeAvatar} />
@@ -147,7 +147,7 @@ export const PersonalizedPage = () => {
             <Grid item xs={12}>
               <Grid container spacing={1} alignItems="center">
                 <Grid item xs={12} md={4}>
-                  <Typography variant="h2" ref={refBadge}>
+                  <Typography variant="h4" ref={refBadge}>
                     {t("commun.badges")}
                   </Typography>
                 </Grid>
@@ -162,7 +162,7 @@ export const PersonalizedPage = () => {
             <Grid item xs={12}>
               <Grid container spacing={1} alignItems="center">
                 <Grid item xs={12} md={4}>
-                  <Typography variant="h2">
+                  <Typography variant="h4">
                     {t("commun.myorigincountry")}
                   </Typography>
                 </Grid>
@@ -181,7 +181,7 @@ export const PersonalizedPage = () => {
             <Grid item xs={12} ref={refTitle}>
               <Grid container spacing={2} alignItems="center">
                 <Grid item xs={12} md={4}>
-                  <Typography variant="h2">{t("commun.titles")}</Typography>
+                  <Typography variant="h4">{t("commun.titles")}</Typography>
                 </Grid>
                 <Grid item xs={12} md={8}>
                   <SelectTitle onChange={changeTitle} />

@@ -118,14 +118,15 @@ const getNewQuestion = async (
     question = generateQuestion(Number(theme.id));
     response = question.response;
   } else {
-    const { data } = await supabase
+    const res = await supabase
       .from("randomquestion")
       .select("*, theme(*)")
       .eq("theme", theme.id)
       .not("id", "in", `(${previousIdQuestion})`)
       .limit(1)
       .maybeSingle();
-    question = data;
+    console.log(res);
+    question = res.data;
     let responsesQcm: Array<any> = [];
     question.isqcm = question.isqcm === null ? true : question.isqcm;
     if (question.isqcm) {
@@ -135,6 +136,7 @@ const getNewQuestion = async (
           .select("*")
           .eq("type", question.typeResponse)
           .limit(4);
+        console.log(res);
         responsesQcm = [...res.data]
           .map((el) => ({ label: el.name }))
           .sort(() => Math.random() - 0.5);
@@ -393,6 +395,7 @@ Deno.serve(async (req) => {
       const uuid = payload.uuid;
       const value = payload.response;
       const language = payload.language;
+      console.log(payload);
 
       if (
         response !== undefined &&
@@ -417,6 +420,14 @@ Deno.serve(async (req) => {
           responsePlayer2[indexQuestion] = true;
           pointsPlayer2 = result ? pointsPlayer2 + delaypoints : pointsPlayer2;
         }
+        console.log({
+          result: result,
+          answer: payload.response,
+          uuid,
+          time: delayResponse,
+          ptsplayer1: pointsPlayer1,
+          ptsplayer2: pointsPlayer2,
+        });
         channel.send({
           type: "broadcast",
           event: "validate",
@@ -430,6 +441,7 @@ Deno.serve(async (req) => {
           },
         });
         if (responsePlayer1[indexQuestion] && responsePlayer2[indexQuestion]) {
+          console.log("endquestion :", response);
           channel.send({
             type: "broadcast",
             event: "endquestion",
@@ -465,11 +477,11 @@ Deno.serve(async (req) => {
             .from("battlegame")
             .update({
               scoreplayer1:
-                isdraw || result === 1
+                result === 1
                   ? battlegame.scoreplayer1 + 1
                   : battlegame.scoreplayer1,
               scoreplayer2:
-                isdraw || result === 0
+                result === 0
                   ? battlegame.scoreplayer2 + 1
                   : battlegame.scoreplayer2,
               readyplayer1: false,
@@ -491,7 +503,6 @@ Deno.serve(async (req) => {
                 ptsplayer1: pointsPlayer1,
                 ptsplayer2: pointsPlayer2,
               },
-              battlegame: battlegame !== null ? battlegame.uuid : null,
             },
           });
           await supabase.from("duelgame").delete().eq("uuid", uuidgame);
@@ -507,6 +518,7 @@ Deno.serve(async (req) => {
             questions,
             bot
           );
+          console.log(infosQuestion);
           time = moment();
           answerPlayer1 = undefined;
           answerPlayer2 = undefined;

@@ -105,7 +105,6 @@ export const BadgeTitle = ({ label }: PropsBadgeTitle) => {
         p: padding(2, 8),
         backgroundColor: Colors.purple,
         borderRadius: px(10),
-        width: "fit-content",
       }}
     >
       <JsonLanguageBlock variant="h6" color="text.secondary" value={label} />

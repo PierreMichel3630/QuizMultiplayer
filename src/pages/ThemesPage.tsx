@@ -24,7 +24,7 @@ import { GameModeBlock } from "src/component/GameModeBlock";
 export const ThemesPage = () => {
   const { t } = useTranslation();
   const { language } = useUser();
-  const { categories, themes } = useApp();
+  const { categories, themes, nbQuestions, nbThemes } = useApp();
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
@@ -51,31 +51,77 @@ export const ThemesPage = () => {
             },
           }}
           extra={
-            <Box sx={{ display: "flex", gap: 1 }}>
-              <ButtonColor
-                value={Colors.white}
-                label={t("commun.howtoplay")}
-                variant="outlined"
-                typography="h6"
-                onClick={() => navigate("/help")}
-                noWrap
-              />
-              <ButtonColor
-                value={Colors.white}
-                label={t("commun.faq")}
-                variant="outlined"
-                typography="h6"
-                onClick={() => navigate("/faq")}
-                noWrap
-              />
-              <ButtonColor
-                value={Colors.white}
-                label={t("commun.installation")}
-                variant="outlined"
-                typography="h6"
-                onClick={() => navigate("/installation")}
-                noWrap
-              />
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Box sx={{ display: "flex", gap: 1 }}>
+                {nbQuestions && (
+                  <Box>
+                    <Typography
+                      variant="h6"
+                      component="span"
+                      color="text.secondary"
+                    >
+                      {`${nbQuestions}  `}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      component="span"
+                      color="text.secondary"
+                    >
+                      {t("commun.questions")}
+                    </Typography>
+                  </Box>
+                )}
+                {nbThemes && (
+                  <Box>
+                    <Typography
+                      variant="h6"
+                      component="span"
+                      color="text.secondary"
+                    >
+                      {`${nbThemes}  `}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      component="span"
+                      color="text.secondary"
+                    >
+                      {t("commun.themes")}
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <ButtonColor
+                  value={Colors.white}
+                  label={t("commun.howtoplay")}
+                  variant="outlined"
+                  typography="h6"
+                  onClick={() => navigate("/help")}
+                  noWrap
+                />
+                <ButtonColor
+                  value={Colors.white}
+                  label={t("commun.faq")}
+                  variant="outlined"
+                  typography="h6"
+                  onClick={() => navigate("/faq")}
+                  noWrap
+                />
+                <ButtonColor
+                  value={Colors.white}
+                  label={t("commun.installation")}
+                  variant="outlined"
+                  typography="h6"
+                  onClick={() => navigate("/installation")}
+                  noWrap
+                />
+              </Box>
             </Box>
           }
         />

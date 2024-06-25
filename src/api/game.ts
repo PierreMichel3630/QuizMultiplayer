@@ -53,6 +53,7 @@ export const selectInvitationBattleByUser = (uuid: string) =>
   supabase
     .from(SUPABASE_BATTLEGAME_TABLE)
     .select("*, player1(*, avatar(*)), player2(*, avatar(*))")
+    .not("player2", "is", null)
     .or(`player2.eq.${uuid},player1.eq.${uuid}`);
 
 //TRAINING GAME

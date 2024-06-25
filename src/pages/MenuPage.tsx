@@ -22,23 +22,20 @@ import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
 
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import AppsIcon from "@mui/icons-material/Apps";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import BrushIcon from "@mui/icons-material/Brush";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import GroupsIcon from "@mui/icons-material/Groups";
+import InstallMobileIcon from "@mui/icons-material/InstallMobile";
+import LiveHelpIcon from "@mui/icons-material/LiveHelp";
 import LogoutIcon from "@mui/icons-material/Logout";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { HeadTitle } from "src/component/HeadTitle";
 import { useApp } from "src/context/AppProvider";
 import { FRIENDSTATUS } from "src/models/Friend";
-import { HeadTitle } from "src/component/HeadTitle";
-import LiveHelpIcon from "@mui/icons-material/LiveHelp";
-import InstallMobileIcon from "@mui/icons-material/InstallMobile";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 
 interface Menu {
   value: string;
@@ -65,24 +62,6 @@ export const MenuPage = () => {
 
   const menus: Array<Menu> = useMemo(
     () => [
-      {
-        value: "",
-        label: t("commun.themes"),
-        icon: <AppsIcon />,
-        to: "/",
-      },
-      {
-        value: "people",
-        label: t("commun.people"),
-        icon: <GroupsIcon />,
-        to: "/people",
-      },
-      {
-        value: "profil",
-        label: t("commun.profile"),
-        icon: <AccountCircleIcon />,
-        to: user ? `/profil/${user.id}` : "/login",
-      },
       {
         value: "ranking",
         label: t("commun.ranking"),
@@ -114,7 +93,7 @@ export const MenuPage = () => {
         to: "/report",
       },
     ],
-    [t, user]
+    [t]
   );
 
   const menusUser: Array<Menu> = useMemo(

@@ -30,12 +30,22 @@ import { Badge, BadgeProfile } from "src/models/Badge";
 import { Rank } from "src/models/Rank";
 import { Opposition, Score } from "src/models/Score";
 import { Title, TitleProfile } from "src/models/Title";
-import { sortByDuelGamesDesc, sortByTitle } from "src/utils/sort";
+import {
+  sortByDuelGamesDesc,
+  sortByGamesDesc,
+  sortByName,
+  sortByPointsDesc,
+  sortByRankDesc,
+  sortByTitle,
+} from "src/utils/sort";
 
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import EditIcon from "@mui/icons-material/Edit";
+import { BasicSearchInput } from "src/component/Input";
+import { SortButton } from "src/component/SortBlock";
 import { CardBadge } from "src/component/card/CardBadge";
 import { CardTitle } from "src/component/card/CardTitle";
+import { searchString } from "src/utils/string";
 
 export const ProfilPage = () => {
   const { t } = useTranslation();
@@ -52,8 +62,17 @@ export const ProfilPage = () => {
   const [titles, setTitles] = useState<Array<Title>>([]);
   const [badges, setBadges] = useState<Array<Badge>>([]);
   const [oppositions, setOppositions] = useState<Array<Opposition>>([]);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("alphabetical");
+  const isMe = useMemo(() => id === uuid, [id, uuid]);
 
-  const isMe = id === uuid;
+  const sorts = [
+    { value: "alphabetical", label: t("sort.alphabetical"), sort: setSort },
+    { value: "gamessolo", label: t("sort.gamessolo"), sort: setSort },
+    { value: "gamesduel", label: t("sort.gamesduel"), sort: setSort },
+    { value: "scoresolo", label: t("sort.scoresolo"), sort: setSort },
+    { value: "scoreduel", label: t("sort.scoreduel"), sort: setSort },
+  ];
 
   useEffect(() => {
     const getBadges = () => {
@@ -154,6 +173,44 @@ export const ProfilPage = () => {
     () => titles.sort((a, b) => sortByTitle(language, a, b)),
     [titles, language]
   );
+
+  const scoresWithRankAndOpposition = useMemo(() => {
+    const result = scores.map((score) => {
+      const rank = ranks.find((el) => el.theme.id === score.theme.id);
+      const opposition = oppositions.find((el) => el.theme === score.theme.id);
+
+      return { ...score, rank: rank, opposition: opposition };
+    });
+    return result;
+  }, [scores, ranks, oppositions]);
+
+  const scoresDisplay = useMemo(() => {
+    let res = [...scoresWithRankAndOpposition].filter((el) =>
+      searchString(search, el.theme.name[language.iso])
+    );
+    switch (sort) {
+      case "alphabetical":
+        res = [...res].sort((a, b) => sortByName(language, a.theme, b.theme));
+        break;
+      case "gamessolo":
+        res = [...res].sort(sortByGamesDesc);
+        break;
+      case "gamesduel":
+        res = [...res].sort(sortByDuelGamesDesc);
+        break;
+      case "scoresolo":
+        res = [...res].sort(sortByPointsDesc);
+        break;
+      case "scoreduel":
+        res = [...res].sort(sortByRankDesc);
+        break;
+      default:
+        res = [...res].sort((a, b) => sortByName(language, a.theme, b.theme));
+        break;
+    }
+
+    return res;
+  }, [scoresWithRankAndOpposition, search, language, sort]);
 
   return (
     profileUser && (
@@ -259,163 +316,185 @@ export const ProfilPage = () => {
                 totalSolo={totalSolo}
               />
             </Grid>
-            {scores.map((score) => {
-              const opposition = oppositions.find(
-                (el) => el.theme === score.theme.id
-              );
-              const rank = ranks.find((el) => el.theme.id === score.theme.id);
-              return (
-                <Grid item xs={12} sm={6} md={6} lg={4} key={score.id}>
-                  <Paper
-                    sx={{
-                      overflow: "hidden",
-                      backgroundColor: Colors.lightgrey,
-                      height: percent(100),
-                    }}
-                  >
-                    <Grid container>
-                      <Grid
-                        item
-                        xs={12}
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                          backgroundColor: Colors.blue3,
-                          p: px(5),
-                        }}
-                      >
-                        <ImageThemeBlock theme={score.theme} size={40} />
-                        <JsonLanguageBlock
-                          variant="h2"
-                          sx={{
-                            wordWrap: "anywhere",
-                            fontSize: 18,
-                          }}
-                          color="text.secondary"
-                          value={score.theme.name}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sx={{ p: 1 }}>
+          </Grid>
+        </Box>
+        <Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: px(5),
+              p: 1,
+              position: "sticky",
+              top: px(55),
+              backgroundColor: "white",
+              width: percent(100),
+            }}
+          >
+            <BasicSearchInput
+              label={t("commun.searchtheme")}
+              onChange={(value) => setSearch(value)}
+              value={search}
+              clear={() => setSearch("")}
+            />
+            <SortButton menus={sorts} />
+          </Box>
+          <Box sx={{ p: 1 }}>
+            <Grid container spacing={1}>
+              {scoresDisplay.map((score) => {
+                return (
+                  <Grid item xs={12} sm={6} md={6} lg={4} key={score.id}>
+                    <Paper
+                      sx={{
+                        overflow: "hidden",
+                        backgroundColor: Colors.lightgrey,
+                        height: percent(100),
+                      }}
+                    >
+                      <Grid container>
                         <Grid
-                          container
-                          spacing={1}
-                          alignItems="center"
-                          justifyContent="center"
+                          item
+                          xs={12}
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                            backgroundColor: Colors.blue3,
+                            p: px(5),
+                          }}
                         >
-                          {score && score.duelgames > 0 && (
-                            <>
-                              <Grid item xs={12}>
-                                <Typography variant="h4" component="span">
-                                  {t("commun.duel")}
-                                </Typography>
-                              </Grid>
-                              <Grid item xs={6} sx={{ textAlign: "center" }}>
-                                <Typography variant="body1" component="span">
-                                  {t("commun.games")} {" : "}
-                                </Typography>
-                                <Typography variant="h4" component="span">
-                                  {score ? score.duelgames : "0"}
-                                </Typography>
-                              </Grid>
-                              <Grid item xs={6} sx={{ textAlign: "center" }}>
-                                <Typography variant="body1" component="span">
-                                  {t("commun.points")} {" : "}
-                                </Typography>
-                                <Typography variant="h4" component="span">
-                                  {rank ? rank.points : "-"}
-                                </Typography>
-                              </Grid>
-                              <Grid item xs={12}>
-                                <BarVictory
-                                  victory={score.victory}
-                                  draw={score.draw}
-                                  defeat={score.defeat}
-                                />
-                              </Grid>
-                            </>
-                          )}
+                          <ImageThemeBlock theme={score.theme} size={40} />
+                          <JsonLanguageBlock
+                            variant="h2"
+                            sx={{
+                              wordWrap: "anywhere",
+                              fontSize: 18,
+                            }}
+                            color="text.secondary"
+                            value={score.theme.name}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sx={{ p: 1 }}>
+                          <Grid
+                            container
+                            spacing={1}
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            {score && score.duelgames > 0 && (
+                              <>
+                                <Grid item xs={12}>
+                                  <Typography variant="h4" component="span">
+                                    {t("commun.duel")}
+                                  </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ textAlign: "center" }}>
+                                  <Typography variant="body1" component="span">
+                                    {t("commun.games")} {" : "}
+                                  </Typography>
+                                  <Typography variant="h4" component="span">
+                                    {score ? score.duelgames : "0"}
+                                  </Typography>
+                                </Grid>
+                                <Grid item xs={6} sx={{ textAlign: "center" }}>
+                                  <Typography variant="body1" component="span">
+                                    {t("commun.points")} {" : "}
+                                  </Typography>
+                                  <Typography variant="h4" component="span">
+                                    {score.rank ? score.rank.points : "-"}
+                                  </Typography>
+                                </Grid>
+                                <Grid item xs={12}>
+                                  <BarVictory
+                                    victory={score.victory}
+                                    draw={score.draw}
+                                    defeat={score.defeat}
+                                  />
+                                </Grid>
+                              </>
+                            )}
 
-                          {opposition && (
-                            <>
-                              <Grid item xs={12}>
-                                <Divider sx={{ borderBottomWidth: 3 }} />
-                              </Grid>
-                              <Grid item xs={12}>
-                                <Typography variant="h4" component="span">
-                                  {t("commun.opposition")}
-                                </Typography>
-                              </Grid>
-                              <Grid item xs={12}>
-                                <BarVictory
-                                  victory={opposition.victory}
-                                  draw={opposition.draw}
-                                  defeat={opposition.defeat}
-                                />
-                              </Grid>
-                            </>
-                          )}
-                          {score && score.games > 0 && (
-                            <>
-                              {(opposition || score.duelgames > 0) && (
+                            {score.opposition && (
+                              <>
                                 <Grid item xs={12}>
                                   <Divider sx={{ borderBottomWidth: 3 }} />
                                 </Grid>
-                              )}
-                              <Grid item xs={12}>
-                                <Grid
-                                  container
-                                  spacing={1}
-                                  alignItems="center"
-                                  justifyContent="center"
-                                >
+                                <Grid item xs={12}>
+                                  <Typography variant="h4" component="span">
+                                    {t("commun.opposition")}
+                                  </Typography>
+                                </Grid>
+                                <Grid item xs={12}>
+                                  <BarVictory
+                                    victory={score.opposition.victory}
+                                    draw={score.opposition.draw}
+                                    defeat={score.opposition.defeat}
+                                  />
+                                </Grid>
+                              </>
+                            )}
+                            {score && score.games > 0 && (
+                              <>
+                                {(score.opposition || score.duelgames > 0) && (
                                   <Grid item xs={12}>
-                                    <Typography variant="h4" component="span">
-                                      {t("commun.solo")}
-                                    </Typography>
+                                    <Divider sx={{ borderBottomWidth: 3 }} />
                                   </Grid>
+                                )}
+                                <Grid item xs={12}>
                                   <Grid
-                                    item
-                                    xs={6}
-                                    sx={{ textAlign: "center" }}
+                                    container
+                                    spacing={1}
+                                    alignItems="center"
+                                    justifyContent="center"
                                   >
-                                    <Typography
-                                      variant="body1"
-                                      component="span"
+                                    <Grid item xs={12}>
+                                      <Typography variant="h4" component="span">
+                                        {t("commun.solo")}
+                                      </Typography>
+                                    </Grid>
+                                    <Grid
+                                      item
+                                      xs={6}
+                                      sx={{ textAlign: "center" }}
                                     >
-                                      {t("commun.games")} {" : "}
-                                    </Typography>
-                                    <Typography variant="h4" component="span">
-                                      {score ? score.games : "0"}
-                                    </Typography>
-                                  </Grid>
-                                  <Grid
-                                    item
-                                    xs={6}
-                                    sx={{ textAlign: "center" }}
-                                  >
-                                    <Typography
-                                      variant="body1"
-                                      component="span"
+                                      <Typography
+                                        variant="body1"
+                                        component="span"
+                                      >
+                                        {t("commun.games")} {" : "}
+                                      </Typography>
+                                      <Typography variant="h4" component="span">
+                                        {score ? score.games : "0"}
+                                      </Typography>
+                                    </Grid>
+                                    <Grid
+                                      item
+                                      xs={6}
+                                      sx={{ textAlign: "center" }}
                                     >
-                                      {t("commun.bestscore")} {" : "}
-                                    </Typography>
-                                    <Typography variant="h4" component="span">
-                                      {score ? score.points : "-"}
-                                    </Typography>
+                                      <Typography
+                                        variant="body1"
+                                        component="span"
+                                      >
+                                        {t("commun.bestscore")} {" : "}
+                                      </Typography>
+                                      <Typography variant="h4" component="span">
+                                        {score ? score.points : "-"}
+                                      </Typography>
+                                    </Grid>
                                   </Grid>
                                 </Grid>
-                              </Grid>
-                            </>
-                          )}
+                              </>
+                            )}
+                          </Grid>
                         </Grid>
                       </Grid>
-                    </Grid>
-                  </Paper>
-                </Grid>
-              );
-            })}
-          </Grid>
+                    </Paper>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </Box>
         </Box>
       </Box>
     )

@@ -19,6 +19,7 @@ export const SkeletonPlayer = () => (
       flexDirection: "row",
       alignItems: "center",
       cursor: "pointer",
+      justifyContent: "space-between",
       p: px(5),
     }}
   >

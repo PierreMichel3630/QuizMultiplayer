@@ -37,7 +37,7 @@ export const BarNavigation = ({ title, quit }: Props) => {
               sx={{ cursor: "pointer" }}
               onClick={() => {
                 if (quit) quit();
-                navigate(-1);
+                navigate("/");
               }}
             >
               <KeyboardBackspaceIcon sx={{ color: Colors.white }} />

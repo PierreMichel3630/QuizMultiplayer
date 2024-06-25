@@ -5,9 +5,10 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { Badge } from "src/models/Badge";
 
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
-import { percent } from "csx";
-import { Colors } from "src/style/Colors";
+import { percent, viewHeight } from "csx";
 import { Link } from "react-router-dom";
+import { Colors } from "src/style/Colors";
+import { sortByUnlock } from "src/utils/sort";
 
 interface Props {
   onSelect: (value: Badge) => void;
@@ -17,21 +18,33 @@ export const BadgeSelector = ({ onSelect }: Props) => {
   const { profile } = useAuth();
   const { badges, mybadges, accomplishments } = useApp();
 
-  const badgesUnlock = useMemo(() => mybadges.map((el) => el.id), [mybadges]);
+  const badgesUnlock = useMemo(() => {
+    const idUnlock = mybadges.map((el) => el.id);
+    return [...badges]
+      .map((badge) => ({
+        ...badge,
+        unlock: idUnlock.includes(badge.id),
+      }))
+      .sort(sortByUnlock);
+  }, [mybadges, badges]);
 
   return (
-    <Grid container spacing={1}>
-      {badges.map((badge) => {
+    <Grid
+      container
+      spacing={1}
+      justifyContent="center"
+      sx={{ maxHeight: viewHeight(20), overflowX: "scroll" }}
+    >
+      {badgesUnlock.map((badge) => {
         const isSelect =
           profile && profile.badge && profile.badge.id === badge.id;
-        const isUnlock = badgesUnlock.includes(badge.id);
         const accomplishment = accomplishments.find(
           (el) => el.badge && el.badge.id === badge.id
         );
         return (
           <Grid item key={badge.id}>
             <Box sx={{ position: "relative" }}>
-              {isUnlock ? (
+              {badge.unlock ? (
                 <Avatar
                   sx={{
                     cursor: "pointer",

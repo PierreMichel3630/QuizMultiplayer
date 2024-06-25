@@ -13,8 +13,99 @@ export const shuffle = () => Math.random() - 0.5;
 export const sortByValue = (a: { value: number }, b: { value: number }) =>
   a.value - b.value;
 
-export const sortByGamesDesc = (a: { games: number }, b: { games: number }) =>
-  b.games - a.games;
+export const sortByGamesScore1Or2Desc = (
+  a: {
+    score1: undefined | { games: number };
+    score2: undefined | { games: number };
+  },
+  b: {
+    score1: undefined | { games: number };
+    score2: undefined | { games: number };
+  }
+) => {
+  const valueA =
+    (a.score1 ? a.score1.games : 0) + (a.score2 ? a.score2.games : 0);
+  const valueB =
+    (b.score1 ? b.score1.games : 0) + (b.score2 ? b.score2.games : 0);
+
+  return valueB - valueA;
+};
+
+export const sortByDuelGamesScore1Or2Desc = (
+  a: {
+    score1: undefined | { duelgames: number };
+    score2: undefined | { duelgames: number };
+  },
+  b: {
+    score1: undefined | { duelgames: number };
+    score2: undefined | { duelgames: number };
+  }
+) => {
+  const valueA =
+    (a.score1 ? a.score1.duelgames : 0) + (a.score2 ? a.score2.duelgames : 0);
+  const valueB =
+    (b.score1 ? b.score1.duelgames : 0) + (b.score2 ? b.score2.duelgames : 0);
+
+  return valueB - valueA;
+};
+
+export const sortByPointsGamesScore1Or2Desc = (
+  a: {
+    score1: undefined | { points: number };
+    score2: undefined | { points: number };
+  },
+  b: {
+    score1: undefined | { points: number };
+    score2: undefined | { points: number };
+  }
+) => {
+  const valueA = Math.max(
+    a.score1 ? a.score1.points : 0,
+    a.score2 ? a.score2.points : 0
+  );
+  const valueB = Math.max(
+    b.score1 ? b.score1.points : 0,
+    b.score2 ? b.score2.points : 0
+  );
+
+  return valueB - valueA;
+};
+
+export const sortByRankGamesScore1Or2Desc = (
+  a: {
+    rank1: undefined | { points: number };
+    rank2: undefined | { points: number };
+  },
+  b: {
+    rank1: undefined | { points: number };
+    rank2: undefined | { points: number };
+  }
+) => {
+  const valueA = Math.max(
+    a.rank1 ? a.rank1.points : 0,
+    a.rank2 ? a.rank2.points : 0
+  );
+  const valueB = Math.max(
+    b.rank1 ? b.rank1.points : 0,
+    b.rank2 ? b.rank2.points : 0
+  );
+
+  return valueB - valueA;
+};
+
+export const sortByPointsDesc = (
+  a: { points: number },
+  b: { points: number }
+) => b.points - a.points;
+
+export const sortByRankDesc = (
+  a: { rank: undefined | { points: number } },
+  b: { rank: undefined | { points: number } }
+) => {
+  const valueA = a.rank ? a.rank.points : 0;
+  const valueB = b.rank ? b.rank.points : 0;
+  return valueB - valueA;
+};
 
 export const sortByCreatedAt = (
   a: { created_at: Date },
@@ -31,3 +122,9 @@ export const sortByName = (language: Language, a: any, b: any) =>
 
 export const sortByTitle = (language: Language, a: Title, b: Title) =>
   a.name[language.iso].localeCompare(b.name[language.iso]);
+
+export const sortByUnlock = (a: { unlock: boolean }, b: { unlock: boolean }) =>
+  Number(b.unlock) - Number(a.unlock);
+
+export const sortByGamesDesc = (a: { games: number }, b: { games: number }) =>
+  b.games - a.games;

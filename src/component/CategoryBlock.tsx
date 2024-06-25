@@ -2,35 +2,34 @@ import { Box, Button, Divider, Grid, Typography } from "@mui/material";
 import { px } from "csx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useApp } from "src/context/AppProvider";
+import { useNavigate } from "react-router-dom";
 import { useUser } from "src/context/UserProvider";
-import { Category } from "src/models/Category";
+import { CategoryWithThemes } from "src/models/Category";
 import { sortByName } from "src/utils/sort";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 import { CardTheme } from "./card/CardTheme";
-import { useNavigate } from "react-router-dom";
 
 interface Props {
-  category: Category;
+  category: CategoryWithThemes;
 }
 export const CategoryBlock = ({ category }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
-  const { themes } = useApp();
   const { language } = useUser();
+
+  const themes = useMemo(() => category.themes, [category]);
 
   const themesCategory = useMemo(
     () =>
       themes
-        .filter((el) => el.category.id === category.id && !el.isfirst)
+        .filter((el) => !el.isfirst)
         .sort((a, b) => sortByName(language, a, b)),
-    [category, themes, language]
+    [themes, language]
   );
 
   const FirstThemesCategory = useMemo(
-    () => themes.filter((el) => el.category.id === category.id && el.isfirst),
-    [category, themes]
+    () => themes.filter((el) => el.isfirst),
+    [themes]
   );
 
   const themesDisplay = [...FirstThemesCategory, ...themesCategory];

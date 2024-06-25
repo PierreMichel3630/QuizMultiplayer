@@ -14,6 +14,7 @@ import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
 import { ButtonColor } from "../Button";
 import { LabelRankBlock } from "../RankBlock";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import { useMemo } from "react";
 
 interface Props {
   game: DuelGame;
@@ -22,6 +23,9 @@ interface Props {
 export const CancelDuelGameBlock = ({ game }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const gamebattle = useMemo(() => game.battlegame, [game]);
+
   return (
     <Box sx={{ pt: 3, pr: 1, pl: 1 }}>
       <Grid container spacing={2}>
@@ -129,20 +133,34 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
               flexDirection: "column",
             }}
           >
-            <ButtonColor
-              value={Colors.green}
-              label={t("commun.returnhome")}
-              icon={HomeIcon}
-              onClick={() => navigate("/")}
-              variant="contained"
-            />
-            <ButtonColor
-              value={Colors.blue}
-              label={t("commun.return")}
-              icon={KeyboardReturnIcon}
-              onClick={() => navigate(`/theme/${game.theme.id}`)}
-              variant="contained"
-            />
+            {gamebattle !== null ? (
+              <ButtonColor
+                value={Colors.blue}
+                label={t("commun.return")}
+                icon={KeyboardReturnIcon}
+                onClick={() => navigate(`/battle/${gamebattle.uuid}`)}
+                variant="contained"
+              />
+            ) : (
+              <>
+                <ButtonColor
+                  value={Colors.green}
+                  label={t("commun.returnhome")}
+                  icon={HomeIcon}
+                  onClick={() => navigate("/")}
+                  variant="contained"
+                />
+                <ButtonColor
+                  value={Colors.blue}
+                  label={t("commun.return")}
+                  icon={KeyboardReturnIcon}
+                  onClick={() => {
+                    navigate(`/theme/${game.theme.id}`);
+                  }}
+                  variant="contained"
+                />
+              </>
+            )}
           </Box>
         </Grid>
       </Grid>

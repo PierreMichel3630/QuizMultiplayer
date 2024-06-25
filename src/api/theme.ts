@@ -7,6 +7,12 @@ export const SUPABASE_VUETHEME_TABLE = "viewtheme";
 export const selectThemes = () =>
   supabase.from(SUPABASE_VUETHEME_TABLE).select("*, category(*)");
 
+export const countThemes = () =>
+  supabase
+    .from(SUPABASE_VUETHEME_TABLE)
+    .select("*", { count: "exact", head: true })
+    .eq("enabled", true);
+
 export const selectThemeById = (id: number) =>
   supabase.from(SUPABASE_THEME_TABLE).select().eq("id", id).maybeSingle();
 

@@ -1,4 +1,5 @@
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import LightbulbIcon from "@mui/icons-material/Lightbulb";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import StarIcon from "@mui/icons-material/Star";
@@ -27,6 +28,7 @@ import { ButtonColor } from "src/component/Button";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { DefaultTabs } from "src/component/Tabs";
+import { ProposeQuestionModal } from "src/component/modal/ProposeQuestionModal";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import {
   DataRanking,
@@ -43,8 +45,6 @@ import { MyRank, Rank } from "src/models/Rank";
 import { MyScore, Score } from "src/models/Score";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
-import LightbulbIcon from "@mui/icons-material/Lightbulb";
-import { ProposeQuestionModal } from "src/component/modal/ProposeQuestionModal";
 
 export const ThemePage = () => {
   const { t } = useTranslation();

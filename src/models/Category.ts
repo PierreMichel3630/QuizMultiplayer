@@ -1,4 +1,5 @@
 import { JsonLanguage } from "./Language";
+import { Theme } from "./Theme";
 
 export interface Category {
   id: number;
@@ -8,4 +9,10 @@ export interface Category {
 export interface CategoryThemeInsert {
   category: number;
   theme: number;
+}
+
+export interface CategoryWithThemes {
+  id: number;
+  name: JsonLanguage;
+  themes: Array<Theme>;
 }

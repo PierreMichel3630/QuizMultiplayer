@@ -35,14 +35,14 @@ export const ButtonColor = ({
           padding: "3px 5px",
           backgroundColor: Colors.blue3,
           "&:hover": {
-            backgroundColor: value,
+            backgroundColor: important(value),
             color: Colors.blue3,
             border: "2px solid currentColor",
           },
         }
       : {
           minWidth: "auto",
-          backgroundColor: value,
+          backgroundColor: important(value),
           padding: "3px 5px",
           color: Colors.white,
           border: `2px solid ${value}`,
@@ -56,8 +56,8 @@ export const ButtonColor = ({
     <Button
       variant={variant}
       fullWidth={fullWidth}
-      sx={style}
       {...props}
+      sx={{ ...style, ...props.sx }}
       startIcon={
         <SvgIcon
           component={icon}
@@ -71,7 +71,12 @@ export const ButtonColor = ({
       </Typography>
     </Button>
   ) : (
-    <Button variant={variant} fullWidth={fullWidth} sx={style} {...props}>
+    <Button
+      variant={variant}
+      fullWidth={fullWidth}
+      {...props}
+      sx={{ ...style, ...props.sx }}
+    >
       <Typography variant={typography} noWrap={noWrap}>
         {label}
       </Typography>

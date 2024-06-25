@@ -45,6 +45,7 @@
     "addfriend": "Ajouter un amis",
     "waitinvitation": "Invitation envoyée",
     "searchfriend": "Rechercher un ami via son nom d'utilisateur",
+    "searchtheme": "Rechercher un theme",
     "noresult": "Aucun résultat ne correspond à votre recherche.",
     "addtofriend": "Ajouter en ami",
     "deletefriend": "Supprimer ami",
@@ -229,6 +230,11 @@
       "title": "Duel contre amis",
       "goal": "L'objectif est de faire plus de points que votre ami.",
       "explain": "Vous aurez 5 questions avec un temps imparti pour y répondre. Plus vous allez vite à répondre plus vous avez de points."
+    },
+    "mode4": {
+      "title": "Entraînement",
+      "goal": "Il n'y a pas d'objectif",
+      "explain": "Vous enchainez les questions sans limite de temps peut importe si vous répondez mal ou bien."
     }
   },
   "warning": {
@@ -491,5 +497,12 @@
       "title": "Contact",
       "text": "Pour toutes plaintes, questions ou idées, vous pouvez utiliser l'adresse mail suivante: pierremichel804@gmail.com"
     }
+  },
+  "sort": {
+    "alphabetical": "Trier par ordre Alphabétique",
+    "gamessolo": "Trier par nombre de parties Solo",
+    "gamesduel": "Trier par nombre de parties Duel",
+    "scoresolo": "Trier par meilleur score en partie Solo",
+    "scoreduel": "Trier par meilleur classement en partie Duel"
   }
 }

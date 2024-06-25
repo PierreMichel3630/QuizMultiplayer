@@ -8,11 +8,11 @@ import {
 import { selectFriend } from "src/api/friend";
 import { FRIENDSTATUS, Friend } from "src/models/Friend";
 import { useAuth } from "./AuthProviderSupabase";
-import { selectThemes } from "src/api/theme";
+import { countThemes, selectThemes } from "src/api/theme";
 import { Theme } from "src/models/Theme";
 import { Country } from "src/models/Country";
 import { selectCountries } from "src/api/country";
-import { Category } from "src/models/Category";
+import { Category, CategoryWithThemes } from "src/models/Category";
 import { selectCategories } from "src/api/category";
 import { Favorite } from "src/models/Favorite";
 import { selectMyFavorite } from "src/api/favorite";
@@ -34,6 +34,8 @@ import { Badge, BadgeProfile } from "src/models/Badge";
 import { Title, TitleProfile } from "src/models/Title";
 import { selectBadgeByProfile, selectBadges } from "src/api/badge";
 import { selectTitleByProfile, selectTitles } from "src/api/title";
+import { groupBy, uniqBy } from "lodash";
+import { countQuestions } from "src/api/question";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[];
@@ -47,7 +49,8 @@ const AppContext = createContext<{
   getThemes: () => void;
   favorites: Array<Favorite>;
   refreshFavorites: () => void;
-  categories: Array<Category>;
+  categories: Array<CategoryWithThemes>;
+  categoriesAdmin: Array<Category>;
   refreshCategories: () => void;
   countries: Array<Country>;
   reportmessages: Array<ReportMessage>;
@@ -65,6 +68,8 @@ const AppContext = createContext<{
   getTitles: () => void;
   mytitles: Array<Title>;
   getMyTitles: () => void;
+  nbQuestions?: number;
+  nbThemes?: number;
 }>({
   friends: [],
   refreshFriends: () => {},
@@ -74,6 +79,7 @@ const AppContext = createContext<{
   themesAdmin: [],
   getThemes: () => {},
   categories: [],
+  categoriesAdmin: [],
   refreshCategories: () => {},
   countries: [],
   reportmessages: [],
@@ -91,6 +97,8 @@ const AppContext = createContext<{
   getTitles: () => {},
   mytitles: [],
   getMyTitles: () => {},
+  nbQuestions: undefined,
+  nbThemes: undefined,
 });
 
 export const useApp = () => useContext(AppContext);
@@ -99,6 +107,8 @@ export const AppProvider = ({ children }: Props) => {
   const { user } = useAuth();
   const { language } = useUser();
 
+  const [nbQuestions, setNbQuestions] = useState<undefined | number>(undefined);
+  const [nbThemes, setNbThemes] = useState<undefined | number>(undefined);
   const [avatars, setAvatars] = useState<Array<Avatar>>([]);
   const [badges, setBadges] = useState<Array<Badge>>([]);
   const [mybadges, setMyBadges] = useState<Array<Badge>>([]);
@@ -110,7 +120,8 @@ export const AppProvider = ({ children }: Props) => {
     []
   );
   const [themesAdmin, setThemesAdmin] = useState<Array<Theme>>([]);
-  const [categories, setCategories] = useState<Array<Category>>([]);
+  const [categoriesAdmin, setCategoriesAdmin] = useState<Array<Category>>([]);
+  const [categories, setCategories] = useState<Array<CategoryWithThemes>>([]);
   const [countries, setCountries] = useState<Array<Country>>([]);
   const [favorites, setFavorites] = useState<Array<Favorite>>([]);
   const [reportmessages, setReportmessages] = useState<Array<ReportMessage>>(
@@ -163,13 +174,28 @@ export const AppProvider = ({ children }: Props) => {
     });
   }, [language]);
 
+  useEffect(() => {
+    if (themes.length > 0) {
+      const categories = uniqBy(
+        themes.map((el) => el.category),
+        (el) => el.id
+      );
+      const themesByCategorie = groupBy(themes, "category.id");
+      const result = categories.map((el) => {
+        const themes = themesByCategorie[el.id];
+        return { ...el, themes };
+      });
+      setCategories(result);
+    }
+  }, [themes]);
+
   const refreshCategories = () => {
-    getCategories();
+    getCategoriesAdmin();
   };
 
-  const getCategories = () => {
+  const getCategoriesAdmin = () => {
     selectCategories().then((res) => {
-      if (res.data) setCategories(res.data as Array<Category>);
+      if (res.data) setCategoriesAdmin(res.data as Array<Category>);
     });
   };
 
@@ -248,8 +274,22 @@ export const AppProvider = ({ children }: Props) => {
     getMyAccomplishments();
   }, [getMyAccomplishments, user]);
 
+  const getCountThemes = () => {
+    countThemes().then((res) => {
+      if (res.count) setNbThemes(res.count);
+    });
+  };
+
+  const getCountQuestions = () => {
+    countQuestions().then((res) => {
+      if (res.count) setNbQuestions(res.count);
+    });
+  };
+
   useEffect(() => {
-    getCategories();
+    getCountThemes();
+    getCountQuestions();
+    getCategoriesAdmin();
     getCountries();
     getThemes();
     getMessage();
@@ -262,6 +302,8 @@ export const AppProvider = ({ children }: Props) => {
   return (
     <AppContext.Provider
       value={{
+        nbQuestions,
+        nbThemes,
         friends,
         refreshFriends,
         themes,
@@ -271,6 +313,7 @@ export const AppProvider = ({ children }: Props) => {
         favorites,
         refreshFavorites,
         categories,
+        categoriesAdmin,
         refreshCategories,
         reportmessages,
         accomplishments,

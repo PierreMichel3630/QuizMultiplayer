@@ -29,14 +29,15 @@ import {
 } from "src/models/BattleGame";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
-import { shuffle, sortByName } from "src/utils/sort";
+import { sortByName } from "src/utils/sort";
 
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import HistoryIcon from "@mui/icons-material/History";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import { HistoryGameModal } from "src/component/modal/HistoryGameModal";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
+import { HistoryGameModal } from "src/component/modal/HistoryGameModal";
+import { weightedRandom } from "src/utils/random";
 
 export const BattlePage = () => {
   const { t } = useTranslation();
@@ -222,9 +223,14 @@ export const BattlePage = () => {
       (game.themesplayer1.length > 0 || game.themesplayer2.length > 0)
     ) {
       setIsStart(true);
-      const themeRandom = [...game.themesplayer2, ...game.themesplayer1].sort(
-        shuffle
-      )[0];
+      const distinctTheme = [...game.themesplayer2, ...game.themesplayer1];
+      const games = [...game.games];
+      const cumuls = distinctTheme.map((el) => {
+        const nbGames = games.filter((g) => g.theme.id === el);
+        return nbGames.length;
+      });
+      const index = weightedRandom(cumuls);
+      const themeRandom = distinctTheme[index];
       launchDuelGame(
         game.player1.id,
         game.player2.id,
@@ -260,7 +266,13 @@ export const BattlePage = () => {
         <Helmet>
           <title>{`${t("pages.battle.title")} - ${t("appname")}`}</title>
         </Helmet>
-        <Grid container spacing={2} justifyContent="center" alignItems="center">
+        <Grid
+          container
+          spacing={1}
+          justifyContent="center"
+          alignItems="center"
+          sx={{ marginBottom: px(125) }}
+        >
           <Grid
             item
             xs={12}
@@ -373,7 +385,15 @@ export const BattlePage = () => {
                 label={t("commun.ready")}
                 variant="contained"
                 onClick={ready}
-                endIcon={isReady ? <CheckIcon /> : <CloseIcon />}
+                sx={{ p: px(10) }}
+                typography="h2"
+                endIcon={
+                  isReady ? (
+                    <CheckIcon sx={{ width: 30, height: 30 }} />
+                  ) : (
+                    <CloseIcon sx={{ width: 30, height: 30 }} />
+                  )
+                }
               />
             </Box>
           </Container>
@@ -399,9 +419,7 @@ export const BattlePage = () => {
           <HistoryGameModal
             open={isOpenHistory}
             close={() => setIsOpenHistory(false)}
-            games={game.games}
-            player1={game.player1}
-            player2={game.player2}
+            game={game}
           />
         )}
         <ConfirmDialog

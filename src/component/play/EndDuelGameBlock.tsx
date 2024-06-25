@@ -18,11 +18,12 @@ import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import ReplayIcon from "@mui/icons-material/Replay";
-import { Fragment, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Question } from "src/models/Question";
 import { CardSignalQuestion } from "../card/CardQuestion";
 import { ReportModal } from "../modal/ReportModal";
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 
 interface Props {
   game: DuelGame;
@@ -37,6 +38,8 @@ export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
   const { user } = useAuth();
 
   const [question, setQuestion] = useState<Question | undefined>(undefined);
+
+  const gamebattle = useMemo(() => game.battlegame, [game]);
 
   const isPlayer1 = game.player1.id === uuid;
   const hasWin = isPlayer1
@@ -66,7 +69,7 @@ export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
   };
 
   return (
-    <Box sx={{ mb: px(180) }}>
+    <Box sx={{ mb: gamebattle !== null ? px(50) : px(180) }}>
       <Grid container spacing={1}>
         <Grid
           item
@@ -284,27 +287,39 @@ export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
               flexDirection: "column",
             }}
           >
-            <ButtonColor
-              value={Colors.red}
-              label={t("commun.replay")}
-              icon={ReplayIcon}
-              onClick={() => playDuel()}
-              variant="contained"
-            />
-            <ButtonColor
-              value={Colors.blue}
-              label={t("commun.revenge")}
-              icon={OfflineBoltIcon}
-              onClick={() => revenge()}
-              variant="contained"
-            />
-            <ButtonColor
-              value={Colors.green}
-              label={t("commun.returnhome")}
-              icon={HomeIcon}
-              onClick={() => navigate("/")}
-              variant="contained"
-            />
+            {gamebattle !== null ? (
+              <ButtonColor
+                value={Colors.blue}
+                label={t("commun.return")}
+                icon={KeyboardReturnIcon}
+                onClick={() => navigate(`/battle/${gamebattle.uuid}`)}
+                variant="contained"
+              />
+            ) : (
+              <>
+                <ButtonColor
+                  value={Colors.red}
+                  label={t("commun.replay")}
+                  icon={ReplayIcon}
+                  onClick={() => playDuel()}
+                  variant="contained"
+                />
+                <ButtonColor
+                  value={Colors.blue}
+                  label={t("commun.revenge")}
+                  icon={OfflineBoltIcon}
+                  onClick={() => revenge()}
+                  variant="contained"
+                />
+                <ButtonColor
+                  value={Colors.green}
+                  label={t("commun.returnhome")}
+                  icon={HomeIcon}
+                  onClick={() => navigate("/")}
+                  variant="contained"
+                />
+              </>
+            )}
           </Box>
         </Container>
       </Box>

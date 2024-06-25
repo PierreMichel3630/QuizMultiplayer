@@ -19,7 +19,7 @@ export const DonutGames = ({ scores, totalScore, totalSolo }: Props) => {
   const { t } = useTranslation();
   const { language } = useUser();
 
-  const MAXVALUEDISPLAY = 5;
+  const MAXVALUEDISPLAY = 7;
 
   const [type, setType] = useState<"solo" | "duel">("solo");
   const types = [

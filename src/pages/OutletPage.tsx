@@ -61,7 +61,7 @@ export const OutletPage = () => {
   };
   useEffect(() => {
     getGames();
-  }, [uuid]);
+  }, []);
 
   useEffect(() => {
     const getBattleGamesUuid = () => {
@@ -81,7 +81,7 @@ export const OutletPage = () => {
 
   useEffect(() => {
     getBattles();
-  }, [uuid]);
+  }, []);
 
   useEffect(() => {
     const channel = supabase
