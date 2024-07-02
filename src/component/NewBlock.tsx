@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useApp } from "src/context/AppProvider";
 import { sortByCreatedAt } from "src/utils/sort";
 import { CardTheme } from "./card/CardTheme";
+import { uniqBy } from "lodash";
 
 export const NewBlock = () => {
   const { t } = useTranslation();
@@ -13,7 +14,10 @@ export const NewBlock = () => {
   const { themes } = useApp();
 
   const themesNew = useMemo(() => {
-    return themes.filter((el) => moment().diff(el.created_at, "days") < 7);
+    return uniqBy(
+      themes.filter((el) => moment().diff(el.created_at, "days") < 7),
+      (el) => el.id
+    );
   }, [themes]);
 
   const themesDisplay = useMemo(() => {

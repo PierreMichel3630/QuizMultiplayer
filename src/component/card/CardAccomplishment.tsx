@@ -10,6 +10,8 @@ import { Colors } from "src/style/Colors";
 import { useApp } from "src/context/AppProvider";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { Link } from "react-router-dom";
+import { uniqBy } from "lodash";
+import { useMemo } from "react";
 
 interface Props {
   accomplishment: Accomplishment;
@@ -28,11 +30,18 @@ export const CardAccomplishment = ({
   const champ = stat ? stat[accomplishment.champ as StatAccomplishmentEnum] : 0;
   const value = Array.isArray(champ) ? champ.length : champ;
 
-  const themesAccomplishment = Array.isArray(champ)
-    ? themes
-        .filter((el) => champ.includes(el.id))
-        .splice(0, accomplishment.value)
-    : [];
+  const themesAccomplishment = useMemo(
+    () =>
+      Array.isArray(champ)
+        ? uniqBy(
+            themes
+              .filter((el) => champ.includes(el.id))
+              .splice(0, accomplishment.value),
+            (el) => el.id
+          )
+        : [],
+    [accomplishment.value, champ, themes]
+  );
 
   return (
     <Paper

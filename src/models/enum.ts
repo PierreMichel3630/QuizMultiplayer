@@ -13,3 +13,8 @@ export const colorDifficulty: { [key: string]: string } = {
   DIFFICILE: Colors.red,
   IMPOSSIBLE: Colors.black,
 };
+
+export enum StatusGameSolo {
+  END = "END",
+  START = "START",
+}

@@ -76,7 +76,7 @@ export const BottomNavigationBlock = () => {
           component={Link}
           to={"/people"}
         />
-        <Box sx={{ width: px(50) }} />
+        <BottomNavigationAction sx={{ width: px(50) }} />
         <BottomNavigationAction
           sx={{ p: padding(0, 5), minWidth: px(30) }}
           value={"profil"}
@@ -97,25 +97,25 @@ export const BottomNavigationBlock = () => {
           }
           to={"/menu"}
         />
-        <Box
-          sx={{
-            p: 1,
-            backgroundColor: Colors.white,
-            borderRadius: "50%",
-            position: "absolute",
-            left: "50%",
-            transform: "translate(-45%, -20%)",
-            cursor: "pointer",
-          }}
-          onClick={() => navigate("/play")}
-        >
-          <Fab color="secondary">
-            <LogoIcon
-              sx={{ color: Colors.white, ml: "2px", mt: "3px", fontSize: 30 }}
-            />
-          </Fab>
-        </Box>
       </BottomNavigation>
+      <Box
+        sx={{
+          p: 1,
+          backgroundColor: Colors.white,
+          borderRadius: "50%",
+          position: "absolute",
+          left: "50%",
+          transform: "translate(-40%, -100%)",
+          cursor: "pointer",
+        }}
+        onClick={() => navigate("/play")}
+      >
+        <Fab color="secondary">
+          <LogoIcon
+            sx={{ color: Colors.white, ml: "2px", mt: "3px", fontSize: 30 }}
+          />
+        </Fab>
+      </Box>
     </Paper>
   );
 };

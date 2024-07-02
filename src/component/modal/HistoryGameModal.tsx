@@ -178,23 +178,27 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
                         justifyContent: "flex-end",
                       }}
                     >
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          overflow: "hidden",
-                          display: "block",
-                          lineClamp: 1,
-                          boxOrient: "vertical",
-                          textOverflow: "ellipsis",
-                          color: colorPlayer2,
-                        }}
-                      >
-                        {game.player2.username}
-                      </Typography>
-                      <AvatarAccount
-                        avatar={game.player2.avatar.icon}
-                        size={30}
-                      />
+                      {game.player2 && (
+                        <>
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              overflow: "hidden",
+                              display: "block",
+                              lineClamp: 1,
+                              boxOrient: "vertical",
+                              textOverflow: "ellipsis",
+                              color: colorPlayer2,
+                            }}
+                          >
+                            {game.player2.username}
+                          </Typography>
+                          <AvatarAccount
+                            avatar={game.player2.avatar.icon}
+                            size={30}
+                          />
+                        </>
+                      )}
                     </Grid>
                   </Grid>
                 </Paper>
@@ -272,7 +276,9 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
                   justifyContent: "flex-end",
                 }}
               >
-                <AvatarAccount avatar={game.player2.avatar.icon} size={50} />
+                {game.player2 && (
+                  <AvatarAccount avatar={game.player2.avatar.icon} size={50} />
+                )}
               </Grid>
             </Grid>
           </Grid>

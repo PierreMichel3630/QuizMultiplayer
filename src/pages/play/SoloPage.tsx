@@ -1,6 +1,5 @@
 import { Box, Container, Typography } from "@mui/material";
-import { RealtimeChannel } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -18,6 +17,7 @@ import { LoadingDot } from "src/component/Loading";
 import { QcmResponseBlock } from "src/component/QcmBlock";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { SoloGame } from "src/models/Game";
+import { StatusGameSolo } from "src/models/enum";
 import { Colors } from "src/style/Colors";
 
 export const SoloPage = () => {
@@ -26,9 +26,6 @@ export const SoloPage = () => {
   const { uuidGame } = useParams();
   const navigate = useNavigate();
 
-  const [channel, setChannel] = useState<RealtimeChannel | undefined>(
-    undefined
-  );
   const [game, setGame] = useState<undefined | SoloGame>(undefined);
 
   const [question, setQuestion] = useState<undefined | QuestionSolo>(undefined);
@@ -36,13 +33,56 @@ export const SoloPage = () => {
   const [score, setScore] = useState<number>(0);
   const [timer, setTimer] = useState<undefined | number>(undefined);
   const [audio, setAudio] = useState<undefined | HTMLAudioElement>(undefined);
+  const [timeoutQuestion, setTimeoutQuestion] = useState<
+    string | number | NodeJS.Timeout | undefined
+  >(undefined);
+
+  const validateResponse = useCallback(
+    async (value: string | number | undefined) => {
+      if (game && language) {
+        const { data } = await supabase.functions.invoke("response-solo-game", {
+          body: { game: game.uuid, response: value, language: language.iso },
+        });
+        clearTimeout(timeoutQuestion);
+        const res = data as ResponseSolo;
+        setTimer(undefined);
+        setResponse(res);
+        setScore(res.points);
+        scrollTop();
+        setTimeout(async () => {
+          if (res.result) {
+            await supabase.functions.invoke("question-solo-game", {
+              body: {
+                game: game.uuid,
+              },
+            });
+          } else {
+            navigate(`/recapsolo/${game.uuid}`, {
+              state: {
+                allquestion: false,
+              },
+            });
+          }
+        }, 2000);
+        if (audio) {
+          audio.pause();
+        }
+      }
+    },
+    [audio, game, language, navigate, timeoutQuestion]
+  );
 
   useEffect(() => {
     const getGame = () => {
       if (uuidGame) {
         selectSoloGameById(uuidGame).then(({ data }) => {
           if (data !== null) {
-            setGame(data as SoloGame);
+            const res = data as SoloGame;
+            if (res.status === StatusGameSolo.END) {
+              navigate(`/recapsolo/${res.uuid}`);
+            } else {
+              setGame(res);
+            }
           } else {
             navigate("/");
           }
@@ -68,48 +108,31 @@ export const SoloPage = () => {
           setTimer(questionSolo.time);
           setResponse(undefined);
           scrollTop();
-        })
-        .on("broadcast", { event: "validate" }, (value) => {
-          const res = value.payload as ResponseSolo;
-          setTimer(undefined);
-          setResponse(res);
-          setScore(res.points);
-          scrollTop();
+          const newtimeoutQuestion = setTimeout(async () => {
+            validateResponse(undefined);
+          }, questionSolo.time * 1000);
+          setTimeoutQuestion(newtimeoutQuestion);
         })
         .on("broadcast", { event: "allquestion" }, (value) => {
           const res = value.payload as SoloGame;
           channel.unsubscribe();
-          navigate(`/recapsolo`, {
+          supabase.removeChannel(channel);
+          navigate(`/recapsolo/${res.uuid}`, {
             state: {
-              questions: res.questions,
-              theme: res.theme,
-              score: res.points,
               allquestion: true,
             },
           });
         })
-        .on("broadcast", { event: "end" }, (value) => {
-          const res = value.payload as SoloGame;
-          channel.unsubscribe();
-          navigate(`/recapsolo`, {
-            state: {
-              questions: res.questions,
-              theme: res.theme,
-              score: res.points,
-              allquestion: false,
-            },
-          });
-        })
         .subscribe();
-      setChannel(channel);
       return () => {
         channel.unsubscribe();
+        supabase.removeChannel(channel);
         if (audio) {
           audio.pause();
         }
       };
     }
-  }, [uuid, game, navigate, audio, sound]);
+  }, [uuid, game, navigate, audio, sound, validateResponse]);
 
   useEffect(() => {
     if (audio) {
@@ -117,22 +140,6 @@ export const SoloPage = () => {
       audio.play();
     }
   }, [audio, sound]);
-
-  const validateResponse = async (value: string | number) => {
-    if (channel && game && language) {
-      channel.send({
-        type: "broadcast",
-        event: "response",
-        payload: {
-          response: value,
-          language: language.iso,
-        },
-      });
-      if (audio) {
-        audio.pause();
-      }
-    }
-  };
 
   const scrollTop = () => {
     window.scrollTo(0, 0);

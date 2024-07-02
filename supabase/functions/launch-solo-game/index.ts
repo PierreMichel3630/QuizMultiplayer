@@ -12,45 +12,60 @@ Deno.serve(async (req) => {
       headers: corsHeaders,
     });
   }
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-  );
+  try {
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
 
-  const body = await req.json();
-  const player = body.player;
-  const theme = body.theme;
-  let themequestion = body.theme;
-  if (theme === 272) {
-    const { data } = await supabase
-      .from("randomtheme")
-      .select("*")
-      .is("enabled", true)
-      .not("id", "in", `(271,272)`)
-      .limit(1)
+    const body = await req.json();
+    const player = body.player;
+    const theme = body.theme;
+    let themequestion = body.theme;
+    if (theme === 272) {
+      const resRandomTheme = await supabase
+        .from("randomtheme")
+        .select("*")
+        .is("enabled", true)
+        .not("id", "in", `(271,272)`)
+        .limit(1)
+        .maybeSingle();
+      if (resRandomTheme.error) throw resRandomTheme.error;
+      themequestion = resRandomTheme.data.id;
+    }
+
+    const game = {
+      player: player,
+      theme: theme,
+      themequestion: themequestion,
+      points: 0,
+    };
+
+    const { error, data } = await supabase
+      .from("sologame")
+      .insert(game)
+      .select()
       .maybeSingle();
-    themequestion = data.id;
-  }
+    if (error) throw error;
 
-  const game = {
-    player: player,
-    theme: theme,
-    themequestion: themequestion,
-    points: 0,
-  };
-
-  const { data } = await supabase
-    .from("sologame")
-    .insert(game)
-    .select()
-    .maybeSingle();
-  setTimeout(async () => {
-    await supabase.functions.invoke("response-solo-game", {
-      body: { game: data.id },
+    setTimeout(async () => {
+      supabase.functions
+        .invoke("question-solo-game", {
+          body: { game: data.uuid },
+        })
+        .then(({ error }) => {
+          if (error) throw error;
+        });
+    }, 1000);
+    return new Response(JSON.stringify(data), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
     });
-  }, 1000);
-  return new Response(JSON.stringify(data), {
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-    status: 200,
-  });
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 400,
+    });
+  }
 });

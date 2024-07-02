@@ -1,6 +1,7 @@
 import { JsonLanguage } from "./Language";
 import { Question } from "./Question";
 import { Theme, ThemeDifficulty } from "./Theme";
+import { StatusGameSolo } from "./enum";
 
 export interface Game {
   id: number;
@@ -28,6 +29,7 @@ export interface SoloGame {
   player: string;
   theme: Theme;
   uuid: string;
+  status: StatusGameSolo;
 }
 
 export interface SoloGamePayload {

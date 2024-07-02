@@ -15,10 +15,10 @@ import { useUser } from "src/context/UserProvider";
 import { DuelGame, DuelGameChange } from "src/models/DuelGame";
 
 import { BottomNavigationBlock } from "src/component/BottomNavigation";
+import { BattleNotificationBlock } from "src/component/notification/BattleNotificationBlock";
 import { DuelNotificationBlock } from "src/component/notification/DuelNotificationBlock";
 import { useApp } from "src/context/AppProvider";
 import { BattleGame, BattleGameChange } from "src/models/BattleGame";
-import { BattleNotificationBlock } from "src/component/notification/BattleNotificationBlock";
 
 export const OutletPage = () => {
   const { uuid } = useUser();

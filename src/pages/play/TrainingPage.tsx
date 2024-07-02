@@ -58,7 +58,6 @@ export const TrainingPage = () => {
           const questionSolo = data as QuestionTraining;
           if (questionSolo.audio) {
             const audio = new Audio(questionSolo.audio);
-            audio.volume = sound / 100;
             audio.play();
             setAudio(audio);
           }
@@ -109,6 +108,14 @@ export const TrainingPage = () => {
     };
     getGame();
   }, [getQuestion, navigate, uuidGame]);
+
+  useEffect(() => {
+    return () => {
+      if (audio) {
+        audio.pause();
+      }
+    };
+  }, [audio]);
 
   useEffect(() => {
     return () => {

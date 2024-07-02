@@ -1,6 +1,7 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
 import {
   Fragment,
+  MutableRefObject,
   createRef,
   useCallback,
   useEffect,
@@ -33,7 +34,7 @@ export const AccomplishmentPage = () => {
     Dictionary<Array<Accomplishment>>
   >({});
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
-  const refs = useRef([]);
+  const refs = useRef<Array<MutableRefObject<HTMLDivElement>>>([]);
 
   useEffect(() => {
     refs.current = accomplishments.map(
@@ -44,14 +45,17 @@ export const AccomplishmentPage = () => {
   const executeScroll = useCallback(
     (hash: string) => {
       const id = Number(hash.slice(1));
-      const element = refs.current[id];
+      const indexAccomplishment = accomplishments.findIndex(
+        (el) => el.id === id
+      );
+      const element = refs.current[indexAccomplishment];
       const top = element && element.current ? element.current.offsetTop : 0;
       window.scrollTo({
         top: top - 70,
         behavior: "smooth",
       });
     },
-    [refs.current]
+    [refs.current, accomplishments]
   );
 
   useEffect(() => {

@@ -1,11 +1,10 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { percent } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { FavoriteBlock } from "src/component/FavoriteBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
+import { HeadTitle } from "src/component/HeadTitle";
 import { CardTheme } from "src/component/card/CardTheme";
 import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
@@ -44,7 +43,7 @@ export const CategoryPage = () => {
 
   const themesDisplay = [...FirstThemesCategory, ...themesCategory];
   return (
-    <Box sx={{ width: percent(100), p: 1 }}>
+    <Grid container>
       <Helmet>
         <title>
           {category
@@ -52,30 +51,28 @@ export const CategoryPage = () => {
             : t("appname")}
         </title>
       </Helmet>
-      <Grid container spacing={1} justifyContent="center">
-        {category && (
-          <Grid item xs={12}>
-            <Box sx={{ textAlign: "center" }}>
-              <JsonLanguageBlock
-                variant="h1"
-                value={category.name}
-                sx={{ wordBreak: "break-all" }}
-              />
-            </Box>
-          </Grid>
-        )}
+      {category && (
         <Grid item xs={12}>
-          <FavoriteBlock category={category} />
+          <HeadTitle title={category.name[language.iso]} />
         </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h2">{t("commun.themes")}</Typography>
-        </Grid>
-        {themesDisplay.map((theme) => (
-          <Grid item key={theme.id}>
-            <CardTheme theme={theme} />
+      )}
+      <Grid item xs={12}>
+        <Box sx={{ p: 1 }}>
+          <Grid container spacing={1} justifyContent="center">
+            <Grid item xs={12}>
+              <FavoriteBlock category={category} />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h2">{t("commun.themes")}</Typography>
+            </Grid>
+            {themesDisplay.map((theme) => (
+              <Grid item key={theme.id}>
+                <CardTheme theme={theme} />
+              </Grid>
+            ))}
           </Grid>
-        ))}
+        </Box>
       </Grid>
-    </Box>
+    </Grid>
   );
 };

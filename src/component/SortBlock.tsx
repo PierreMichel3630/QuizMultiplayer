@@ -46,6 +46,7 @@ export const SortButton = ({ menus }: Props) => {
       >
         {menus.map((menu) => (
           <MenuItem
+            key={menu.value}
             onClick={() => {
               handleClose();
               menu.sort(menu.value);

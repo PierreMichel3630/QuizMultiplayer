@@ -1,3 +1,4 @@
+import { groupBy, uniqBy } from "lodash";
 import {
   createContext,
   useCallback,
@@ -5,37 +6,35 @@ import {
   useEffect,
   useState,
 } from "react";
-import { selectFriend } from "src/api/friend";
-import { FRIENDSTATUS, Friend } from "src/models/Friend";
-import { useAuth } from "./AuthProviderSupabase";
-import { countThemes, selectThemes } from "src/api/theme";
-import { Theme } from "src/models/Theme";
-import { Country } from "src/models/Country";
-import { selectCountries } from "src/api/country";
-import { Category, CategoryWithThemes } from "src/models/Category";
-import { selectCategories } from "src/api/category";
-import { Favorite } from "src/models/Favorite";
-import { selectMyFavorite } from "src/api/favorite";
-import { ReportMessage } from "src/models/Report";
-import { selectReportMessage } from "src/api/report";
-import { useUser } from "./UserProvider";
-import { sortByName } from "src/utils/sort";
-import {
-  Accomplishment,
-  ProfileAccomplishment,
-} from "src/models/Accomplishment";
 import {
   selectAccomplishment,
   selectMyAccomplishment,
 } from "src/api/accomplishment";
-import { Avatar } from "src/models/Avatar";
 import { selectAvatar } from "src/api/avatar";
-import { Badge, BadgeProfile } from "src/models/Badge";
-import { Title, TitleProfile } from "src/models/Title";
 import { selectBadgeByProfile, selectBadges } from "src/api/badge";
+import { selectCategories } from "src/api/category";
+import { selectCountries } from "src/api/country";
+import { selectMyFavorite } from "src/api/favorite";
+import { selectFriend } from "src/api/friend";
+import { selectReportMessage } from "src/api/report";
+import { selectThemes } from "src/api/theme";
 import { selectTitleByProfile, selectTitles } from "src/api/title";
-import { groupBy, uniqBy } from "lodash";
-import { countQuestions } from "src/api/question";
+import {
+  Accomplishment,
+  ProfileAccomplishment,
+} from "src/models/Accomplishment";
+import { Avatar } from "src/models/Avatar";
+import { Badge, BadgeProfile } from "src/models/Badge";
+import { Category, CategoryWithThemes } from "src/models/Category";
+import { Country } from "src/models/Country";
+import { Favorite } from "src/models/Favorite";
+import { FRIENDSTATUS, Friend } from "src/models/Friend";
+import { ReportMessage } from "src/models/Report";
+import { Theme } from "src/models/Theme";
+import { Title, TitleProfile } from "src/models/Title";
+import { sortByName } from "src/utils/sort";
+import { useAuth } from "./AuthProviderSupabase";
+import { useUser } from "./UserProvider";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[];
@@ -70,6 +69,7 @@ const AppContext = createContext<{
   getMyTitles: () => void;
   nbQuestions?: number;
   nbThemes?: number;
+  isLoadingTheme: boolean;
 }>({
   friends: [],
   refreshFriends: () => {},
@@ -99,6 +99,7 @@ const AppContext = createContext<{
   getMyTitles: () => {},
   nbQuestions: undefined,
   nbThemes: undefined,
+  isLoadingTheme: true,
 });
 
 export const useApp = () => useContext(AppContext);
@@ -128,6 +129,7 @@ export const AppProvider = ({ children }: Props) => {
     []
   );
   const [myaccomplishments, setMyaccomplishments] = useState<Array<number>>([]);
+  const [isLoadingTheme, setIsLoadingTheme] = useState(true);
 
   const getFavorite = useCallback(() => {
     if (user !== null) {
@@ -163,13 +165,23 @@ export const AppProvider = ({ children }: Props) => {
   }, [getFriends, user]);
 
   const getThemes = useCallback(() => {
+    setIsLoadingTheme(true);
     selectThemes().then((res) => {
       if (res.data) {
         const resultats = (res.data as Array<Theme>).sort((a, b) =>
           sortByName(language, a, b)
         );
+        const filterResultats = [...resultats].filter((el) => el.enabled);
+        const uniqTheme = uniqBy(filterResultats, (el) => el.id);
+        const count = uniqTheme.length;
+        const questions = uniqTheme
+          .filter((el) => !el.isfirst)
+          .reduce((acc, v) => acc + v.questions, 0);
+        setNbThemes(count);
+        setNbQuestions(questions);
         setThemesAdmin(resultats);
-        setThemes(resultats.filter((el) => el.enabled));
+        setThemes(filterResultats);
+        setIsLoadingTheme(false);
       }
     });
   }, [language]);
@@ -274,21 +286,7 @@ export const AppProvider = ({ children }: Props) => {
     getMyAccomplishments();
   }, [getMyAccomplishments, user]);
 
-  const getCountThemes = () => {
-    countThemes().then((res) => {
-      if (res.count) setNbThemes(res.count);
-    });
-  };
-
-  const getCountQuestions = () => {
-    countQuestions().then((res) => {
-      if (res.count) setNbQuestions(res.count);
-    });
-  };
-
   useEffect(() => {
-    getCountThemes();
-    getCountQuestions();
     getCategoriesAdmin();
     getCountries();
     getThemes();
@@ -330,6 +328,7 @@ export const AppProvider = ({ children }: Props) => {
         getTitles,
         mytitles,
         getMyTitles,
+        isLoadingTheme,
       }}
     >
       {children}

@@ -7,8 +7,8 @@ export const weightedRandom = (cumuls: Array<number>) => {
   );
   const random = Math.random();
 
-  return cumuls.findIndex((el, i) => {
-    const sum = [...cumuls].slice(0, i + 1).reduce((acc, el, i) => {
+  return cumuls.findIndex((_, i) => {
+    const sum = [...cumuls].slice(0, i + 1).reduce((acc, _, i) => {
       return acc + weights[i];
     }, 0);
 

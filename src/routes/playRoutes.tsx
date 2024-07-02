@@ -21,7 +21,7 @@ export const PlayRoutes = [
     element: <SoloPage />,
   },
   {
-    path: "/recapsolo",
+    path: "/recapsolo/:uuidGame",
     element: <RecapSoloPage />,
   },
   {

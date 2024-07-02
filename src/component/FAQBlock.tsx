@@ -54,8 +54,8 @@ export const FAQBlock = () => {
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
-        {faqs.map((el) => (
-          <Accordion defaultExpanded={el.expand}>
+        {faqs.map((el, i) => (
+          <Accordion defaultExpanded={el.expand} key={i}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1-content"

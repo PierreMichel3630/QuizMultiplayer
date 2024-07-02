@@ -100,7 +100,7 @@ export const PlayPage = () => {
             <Box
               sx={{
                 position: "fixed",
-                top: 55,
+                top: 50,
                 left: 0,
                 right: 0,
                 backgroundColor: "white",

@@ -58,29 +58,36 @@ export const CardReport = ({ report, onDelete }: Props) => {
         <Grid item xs={12}>
           <Divider />
         </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6">{`${t("commun.question")} ${
-            question.id
-          }`}</Typography>
-        </Grid>
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
-          <JsonLanguageBlock sx={{ fontSize: 18 }} value={question.question} />
-        </Grid>
-        {question.image && (
-          <Grid
-            item
-            xs={12}
-            sx={{ height: px(100), backgroundColor: Colors.black }}
-          >
-            <ImageQuestionBlock src={question.image} />
-          </Grid>
+        {question && (
+          <>
+            <Grid item xs={12}>
+              <Typography variant="h6">{`${t("commun.question")} ${
+                question.id
+              }`}</Typography>
+            </Grid>
+            <Grid item xs={12} sx={{ textAlign: "center" }}>
+              <JsonLanguageBlock
+                sx={{ fontSize: 18 }}
+                value={question.question}
+              />
+            </Grid>
+            {question.image && (
+              <Grid
+                item
+                xs={12}
+                sx={{ height: px(100), backgroundColor: Colors.black }}
+              >
+                <ImageQuestionBlock src={question.image} />
+              </Grid>
+            )}
+            <Grid item xs={12} sx={{ textAlign: "center" }}>
+              <JsonLanguageArrayOrStringBlock
+                all={question.allresponse}
+                value={question.response}
+              />
+            </Grid>
+          </>
         )}
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
-          <JsonLanguageArrayOrStringBlock
-            all={question.allresponse}
-            value={question.response}
-          />
-        </Grid>
       </Grid>
     </Paper>
   );

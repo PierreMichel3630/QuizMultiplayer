@@ -53,9 +53,12 @@ interface ResponseSoloProps {
 export const ResponseSoloBlock = ({ response }: ResponseSoloProps) => {
   const { t } = useTranslation();
   const { language } = useUser();
-  const value = response.response[language.iso]
-    ? response.response[language.iso]
-    : response.response["fr-FR"];
+  const value =
+    typeof response.response === "number"
+      ? response.response
+      : response.response[language.iso]
+      ? response.response[language.iso]
+      : response.response["fr-FR"];
 
   const label = Array.isArray(value) ? value[0] ?? "" : value;
 
@@ -90,9 +93,12 @@ interface ResponseTrainingProps {
 export const ResponseTrainingBlock = ({ response }: ResponseTrainingProps) => {
   const { t } = useTranslation();
   const { language } = useUser();
-  const value = response.response[language.iso]
-    ? response.response[language.iso]
-    : response.response["fr-FR"];
+  const value =
+    typeof response.response === "number"
+      ? response.response
+      : response.response[language.iso]
+      ? response.response[language.iso]
+      : response.response["fr-FR"];
 
   const label = Array.isArray(value) ? value[0] ?? "" : value;
 

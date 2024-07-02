@@ -11,6 +11,7 @@
     "devine": "Devine la réponse !",
     "question": "Question",
     "startgame": "La partie va bientôt commencer",
+    "start": "Commencer",
     "keyboardmessage": "À vos claviers !",
     "noplayer": "Aucun joueur",
     "player_one": "{{count}} joueur",
@@ -173,7 +174,7 @@
     "howtoplay": "Comment jouer ?",
     "faq": "FAQ",
     "installation": "Installer",
-    "modes": "Mode de Jeu",
+    "modes": "Les Modes de Jeu",
     "rules": "Étapes",
     "warnings": "Avertissements",
     "link": "Lien",
@@ -190,7 +191,8 @@
     "gamemode": "Mode de Jeu",
     "themesselected": "Thèmes sélectionnés",
     "gamehistory": "Historique des parties",
-    "reset": "Réinitialiser la partie"
+    "reset": "Réinitialiser la partie",
+    "next": "Suivant"
   },
   "accomplishment": {
     "SOLO": "Succès Mode Solo",
@@ -212,7 +214,7 @@
   },
   "rules": {
     "step1": "Choisissez un thème",
-    "step2": "Sélectionnez un mode de jeu (Solo, Duel, Duel contre amis)",
+    "step2": "Sélectionnez un mode de jeu (Solo, Duel, Duel contre amis, Entraînement)",
     "step3": "Réponder aux questions dans le temps imparti !"
   },
   "modes": {
@@ -504,5 +506,8 @@
     "gamesduel": "Trier par nombre de parties Duel",
     "scoresolo": "Trier par meilleur score en partie Solo",
     "scoreduel": "Trier par meilleur classement en partie Duel"
+  },
+  "tutorial": {
+    "title": "Bienvenue sur QuizBattle"
   }
 }

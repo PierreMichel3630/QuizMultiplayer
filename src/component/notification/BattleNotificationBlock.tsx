@@ -11,6 +11,7 @@ import { useUser } from "src/context/UserProvider";
 import { BattleGame } from "src/models/BattleGame";
 import { deleteBattleByUuid } from "src/api/game";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { ModeGame } from "src/models/ModeGame";
 
 interface Props {
   game: BattleGame;
@@ -33,7 +34,7 @@ export const BattleNotificationBlock = ({ game, refuse }: Props) => {
       refuse();
     }
   };
-  const mode = {
+  const mode: ModeGame = {
     image:
       "https://cperjgnbmoqyyqgkyqws.supabase.co/storage/v1/object/public/theme/mode/swords.png",
     color: "#a569bd",

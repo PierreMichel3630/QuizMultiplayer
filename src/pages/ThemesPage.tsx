@@ -13,24 +13,30 @@ import { useUser } from "src/context/UserProvider";
 import { sortByName } from "src/utils/sort";
 import { searchString } from "src/utils/string";
 
-import { ButtonColor } from "src/component/Button";
-import { Colors } from "src/style/Colors";
 import { useNavigate } from "react-router-dom";
-import { SkeletonCategories } from "src/component/skeleton/SkeletonCategory";
+import { ButtonColor } from "src/component/Button";
+import { GameModeBlock } from "src/component/GameModeBlock";
 import { HeadTitle } from "src/component/HeadTitle";
 import { NewBlock } from "src/component/NewBlock";
-import { GameModeBlock } from "src/component/GameModeBlock";
+import { SkeletonCategories } from "src/component/skeleton/SkeletonCategory";
+import { Colors } from "src/style/Colors";
+import { uniqBy } from "lodash";
 
 export const ThemesPage = () => {
   const { t } = useTranslation();
   const { language } = useUser();
-  const { categories, themes, nbQuestions, nbThemes } = useApp();
+  const { categories, themes, nbQuestions, nbThemes, isLoadingTheme } =
+    useApp();
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
 
   const themesFilter = useMemo(
-    () => themes.filter((el) => searchString(search, el.name[language.iso])),
+    () =>
+      uniqBy(
+        themes.filter((el) => searchString(search, el.name[language.iso])),
+        (el) => el.id
+      ),
     [themes, search, language.iso]
   );
 
@@ -129,7 +135,17 @@ export const ThemesPage = () => {
       <Grid item xs={12}>
         <Box sx={{ width: percent(100), p: 1 }}>
           <Grid container spacing={1}>
-            <Grid item xs={12}>
+            <Grid
+              item
+              xs={12}
+              sx={{
+                position: "sticky",
+                top: 55,
+                zIndex: 3,
+                pb: 1,
+                backgroundColor: Colors.white,
+              }}
+            >
               <BasicSearchInput
                 label={t("commun.search")}
                 onChange={(value) => setSearch(value)}
@@ -146,19 +162,28 @@ export const ThemesPage = () => {
                   <Typography variant="h2">{t("commun.search")}</Typography>
                 </Grid>
                 {themesFilter.map((theme) => (
-                  <Grid item xs={3} sm={2} md={1} lg={1} key={theme.id}>
+                  <Grid item key={theme.id}>
                     <CardTheme theme={theme} />
                   </Grid>
                 ))}
               </>
             ) : (
               <>
-                <Grid item xs={12}>
-                  <GameModeBlock />
-                </Grid>
-                <Grid item xs={12}>
-                  <NewBlock />
-                </Grid>
+                {isLoadingTheme ? (
+                  <SkeletonCategories number={1} />
+                ) : (
+                  <Grid item xs={12}>
+                    <GameModeBlock />
+                  </Grid>
+                )}
+                {isLoadingTheme ? (
+                  <SkeletonCategories number={1} />
+                ) : (
+                  <Grid item xs={12}>
+                    <NewBlock />
+                  </Grid>
+                )}
+
                 {categories.length > 0 ? (
                   categories
                     .sort((a, b) => sortByName(language, a, b))

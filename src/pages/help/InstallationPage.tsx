@@ -12,9 +12,8 @@ import { StepBlock } from "src/component/StepBlock";
 
 import AndroidIcon from "@mui/icons-material/Android";
 import AppleIcon from "@mui/icons-material/Apple";
-import InstallMobileIcon from "@mui/icons-material/InstallMobile";
 import InstallDesktopIcon from "@mui/icons-material/InstallDesktop";
-import ComputerIcon from "@mui/icons-material/Computer";
+import InstallMobileIcon from "@mui/icons-material/InstallMobile";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useState } from "react";
 import { DefaultTabs } from "src/component/Tabs";
@@ -26,7 +25,6 @@ export const InstallationPage = () => {
   const tabs = [
     { label: t("commun.android"), icon: <AndroidIcon /> },
     { label: t("commun.apple"), icon: <AppleIcon /> },
-    { label: t("commun.computer"), icon: <ComputerIcon /> },
   ];
 
   return (

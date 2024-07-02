@@ -1,5 +1,7 @@
+import { JsonLanguage } from "./Language";
+
 export interface ModeGame {
-  name: string;
-  icon: string;
-  url: string;
+  name: JsonLanguage;
+  image: string;
+  color: string;
 }
