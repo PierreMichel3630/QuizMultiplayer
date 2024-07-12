@@ -16,10 +16,12 @@ export const selectScoresByProfile = (uuid: string) =>
   supabase.from(SUPABASE_SCORE_TABLE).select("*, theme(*)").eq("profile", uuid);
 
 export const selectScoreByThemeAndPlayer = (player: string, theme: number) =>
-  supabase.rpc("getrankingsolo", {
-    player: player,
-    themeid: theme,
-  });
+  supabase
+    .from(SUPABASE_SCORE_TABLE)
+    .select("*")
+    .eq("profile", player)
+    .eq("theme", theme)
+    .maybeSingle();
 
 export const countPlayersByTheme = (theme: number) =>
   supabase

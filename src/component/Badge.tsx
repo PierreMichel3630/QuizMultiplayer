@@ -1,11 +1,11 @@
-import { Badge, Box, Typography, styled } from "@mui/material";
+import { Badge, Box, Typography } from "@mui/material";
 import { padding, px } from "csx";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { JsonLanguage } from "src/models/Language";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
-import { JsonLanguage } from "src/models/Language";
 
 interface Props {
   value: string;
@@ -65,49 +65,63 @@ export const BadgeTheme = ({ value }: PropsTheme) => {
   );
 };
 
-export const BadgeAccountActive = styled(Badge)(({ theme }) => ({
-  "& .MuiBadge-badge": {
-    backgroundColor: "#44b700",
-    color: "#44b700",
-    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-    "&::after": {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "80%",
-      height: "80%",
-      borderRadius: "50%",
-      animation: "ripple 1.2s 3 ease-in-out",
-      border: "1px solid currentColor",
-      content: '""',
-    },
-  },
-  "@keyframes ripple": {
-    "0%": {
-      transform: "scale(.8)",
-      opacity: 1,
-    },
-    "100%": {
-      transform: "scale(2.4)",
-      opacity: 0,
-    },
-  },
-}));
+interface PropsBadgeAccountActive {
+  online: boolean;
+
+  children: string | JSX.Element | JSX.Element[];
+}
+
+export const BadgeAccountActive = ({
+  online,
+  children,
+}: PropsBadgeAccountActive) => (
+  <Badge
+    sx={{
+      "& .MuiBadge-badge": {
+        backgroundColor: online ? Colors.green : Colors.red,
+        color: online ? Colors.green : Colors.red,
+        height: px(10),
+        width: px(10),
+      },
+    }}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "right",
+    }}
+    overlap="circular"
+    variant="dot"
+  >
+    {children}
+  </Badge>
+);
 
 interface PropsBadgeTitle {
   label: JsonLanguage;
+  onClick?: () => void;
+  color?: string;
 }
 
-export const BadgeTitle = ({ label }: PropsBadgeTitle) => {
+export const BadgeTitle = ({
+  label,
+  onClick,
+  color = Colors.blue3,
+}: PropsBadgeTitle) => {
   return (
     <Box
       sx={{
-        p: padding(2, 8),
-        backgroundColor: Colors.purple,
+        p: padding(3, 10),
+        backgroundColor: color,
         borderRadius: px(10),
+        cursor: onClick ? "pointer" : "default",
       }}
     >
-      <JsonLanguageBlock variant="h6" color="text.secondary" value={label} />
+      <JsonLanguageBlock
+        variant="caption"
+        fontSize={12}
+        color="text.secondary"
+        value={label}
+        noWrap
+      />
     </Box>
   );
 };

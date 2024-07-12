@@ -8,7 +8,7 @@ import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
 import { sortByName } from "src/utils/sort";
 
-export const FavoritePage = () => {
+export default function FavoritePage() {
   const { t } = useTranslation();
   const { language } = useUser();
   const { themes, favorites } = useApp();
@@ -39,4 +39,4 @@ export const FavoritePage = () => {
       </Grid>
     </Box>
   );
-};
+}

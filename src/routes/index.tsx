@@ -1,7 +1,11 @@
 import { useRoutes } from "react-router-dom";
+
+import { appNoOutletRoutes } from "./appNoOutletRoutes";
 import { AppRoutes } from "./appRoutes";
-import { OutletPage } from "src/pages/OutletPage";
 import { PlayRoutes } from "./playRoutes";
+
+import OutletPage from "src/pages/OutletPage";
+
 export default function ThemeRoutes() {
   const HomeRoute = {
     path: "/",
@@ -9,5 +13,5 @@ export default function ThemeRoutes() {
     children: [...AppRoutes],
   };
 
-  return useRoutes([HomeRoute, ...PlayRoutes]);
+  return useRoutes([HomeRoute, ...PlayRoutes, ...appNoOutletRoutes]);
 }

@@ -1,6 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { percent } from "csx";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { CategoryBlock } from "src/component/CategoryBlock";
@@ -13,6 +13,7 @@ import { useUser } from "src/context/UserProvider";
 import { sortByName } from "src/utils/sort";
 import { searchString } from "src/utils/string";
 
+import { uniqBy } from "lodash";
 import { useNavigate } from "react-router-dom";
 import { ButtonColor } from "src/component/Button";
 import { GameModeBlock } from "src/component/GameModeBlock";
@@ -20,9 +21,8 @@ import { HeadTitle } from "src/component/HeadTitle";
 import { NewBlock } from "src/component/NewBlock";
 import { SkeletonCategories } from "src/component/skeleton/SkeletonCategory";
 import { Colors } from "src/style/Colors";
-import { uniqBy } from "lodash";
 
-export const ThemesPage = () => {
+export default function ThemesPage() {
   const { t } = useTranslation();
   const { language } = useUser();
   const { categories, themes, nbQuestions, nbThemes, isLoadingTheme } =
@@ -30,6 +30,7 @@ export const ThemesPage = () => {
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
+  const [maxIndex, setMaxIndex] = useState(5);
 
   const themesFilter = useMemo(
     () =>
@@ -39,6 +40,33 @@ export const ThemesPage = () => {
       ),
     [themes, search, language.iso]
   );
+
+  const categoriesFilter = useMemo(
+    () =>
+      [...categories]
+        .sort((a, b) => sortByName(language, a, b))
+        .splice(0, maxIndex),
+    [categories, maxIndex, language]
+  );
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop + 250 <=
+          document.documentElement.offsetHeight ||
+        maxIndex >= categories.length
+      ) {
+        return;
+      }
+      setMaxIndex((prev) => prev + 5);
+    };
+    if (document) {
+      document.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+    };
+  }, [maxIndex, categories]);
 
   return (
     <Grid container>
@@ -133,7 +161,12 @@ export const ThemesPage = () => {
         />
       </Grid>
       <Grid item xs={12}>
-        <Box sx={{ width: percent(100), p: 1 }}>
+        <Box
+          sx={{
+            width: percent(100),
+            p: 1,
+          }}
+        >
           <Grid container spacing={1}>
             <Grid
               item
@@ -184,15 +217,14 @@ export const ThemesPage = () => {
                   </Grid>
                 )}
 
-                {categories.length > 0 ? (
-                  categories
-                    .sort((a, b) => sortByName(language, a, b))
-                    .map((category) => (
-                      <Grid item xs={12} key={category.id}>
-                        <CategoryBlock category={category} />
-                      </Grid>
-                    ))
-                ) : (
+                {categoriesFilter.map((category) => (
+                  <Grid item xs={12} key={category.id}>
+                    <CategoryBlock category={category} />
+                  </Grid>
+                ))}
+
+                {(isLoadingTheme ||
+                  categoriesFilter.length < categories.length) && (
                   <SkeletonCategories number={4} />
                 )}
               </>
@@ -202,4 +234,4 @@ export const ThemesPage = () => {
       </Grid>
     </Grid>
   );
-};
+}

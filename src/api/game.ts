@@ -1,17 +1,16 @@
-import { PrivateGameInsert } from "src/models/Game";
-import { supabase } from "./supabase";
 import { BattleGameInsert, BattleGameUpdate } from "src/models/BattleGame";
+import { FilterGame } from "src/pages/HistoryGamePage";
+import { supabase } from "./supabase";
+
+export const SUPABASE_HISTORYGAMES_TABLE = "historygames";
 
 export const SUPABASE_RESPONSESOLOGAME_FUNCTION = "response-solo-game";
 export const SUPABASE_LAUNCHSOLOGAME_FUNCTION = "launch-solo-game";
+export const SUPABASE_SOLOGAME_TABLE = "sologame";
 
 export const SUPABASE_LAUNCHTRAININGGAME_FUNCTION = "launch-training-game";
 export const SUPABASE_QUESTIONTRAININGGAME_FUNCTION = "question-training-game";
 export const SUPABASE_TRAININGGAME_TABLE = "traininggame";
-
-export const SUPABASE_LAUNCHGAME_FUNCTION = "launch-game";
-export const SUPABASE_GAME_TABLE = "game";
-export const SUPABASE_SOLOGAME_TABLE = "sologame";
 
 export const SUPABASE_DUELGAME_TABLE = "duelgame";
 export const SUPABASE_LAUNCHDUELGAME_FUNCTION = "launch-duel-game";
@@ -112,7 +111,7 @@ export const selectInvitationDuelByUuid = (uuids: Array<string>) =>
       "*, player1(*, avatar(*)), player2(*, avatar(*)), theme!public_duelgame_theme_fkey(*)"
     )
     .in("uuid", uuids)
-    .eq("start", false);
+    .eq("status", "WAIT");
 
 export const selectInvitationDuelByUser = (uuid: string) =>
   supabase
@@ -121,7 +120,7 @@ export const selectInvitationDuelByUser = (uuid: string) =>
       "*, player1(*, avatar(*)), player2(*, avatar(*)), theme!public_duelgame_theme_fkey(*)"
     )
     .eq("player2", uuid)
-    .eq("start", false);
+    .eq("status", "WAIT");
 
 export const selectDuelGameById = (uuid: string) =>
   supabase
@@ -152,24 +151,34 @@ export const matchmakingDuelGame = (player: string, theme: number) =>
     body: { player: player, theme: theme },
   });
 
-//PUBLIC GAME
-export const launchGameByGameId = (id: number) =>
-  supabase.functions.invoke(SUPABASE_LAUNCHGAME_FUNCTION, {
-    body: { game: id },
-  });
+// HISTORY
 
-export const selectGameByTheme = (id: number) =>
-  supabase.from(SUPABASE_GAME_TABLE).select().eq("theme", id).maybeSingle();
-
-export const selectGameByChannel = (channel: string) =>
-  supabase
-    .from(SUPABASE_GAME_TABLE)
-    .select()
-    .eq("channel", channel)
-    .maybeSingle();
-
-export const selectGames = () =>
-  supabase.from(SUPABASE_GAME_TABLE).select().eq("type", "PUBLIC");
-
-export const insertPrivateGame = (game: PrivateGameInsert) =>
-  supabase.from(SUPABASE_GAME_TABLE).insert(game).select().maybeSingle();
+export const selectGamesByPlayer = (
+  filter: FilterGame,
+  page: number,
+  itemperpage: number
+) => {
+  const player = filter.player ? filter.player.id : undefined;
+  const opponent = filter.opponent ? filter.opponent.id : undefined;
+  const types = filter.type === "ALL" ? ["SOLO", "DUEL"] : [filter.type];
+  const themes = filter.themes.map((el) => el.id);
+  const from = page * itemperpage;
+  const to = from + itemperpage - 1;
+  const queryPlayer = opponent
+    ? `and(player1->>id.eq.${player},player2->>id.eq.${opponent}),and(player2->>id.eq.${player},player1->>id.eq.${opponent})`
+    : `player2->>id.eq.${player},player1->>id.eq.${player}`;
+  return themes.length > 0
+    ? supabase
+        .from(SUPABASE_HISTORYGAMES_TABLE)
+        .select()
+        .or(queryPlayer)
+        .in("type", types)
+        .filter("theme->>id", "in", `(${themes})`)
+        .range(from, to)
+    : supabase
+        .from(SUPABASE_HISTORYGAMES_TABLE)
+        .select()
+        .or(queryPlayer)
+        .in("type", types)
+        .range(from, to);
+};

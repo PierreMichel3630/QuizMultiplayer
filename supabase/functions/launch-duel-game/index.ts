@@ -47,6 +47,7 @@ Deno.serve(async (req) => {
   const res = await supabase
     .from("duelgame")
     .select()
+    .eq("status", "WAIT")
     .eq("theme", theme)
     .or(
       `and(player1.eq.${player1},player2.eq.${player2}),and(player1.eq.${player2},player2.eq.${player1})`
@@ -68,26 +69,6 @@ Deno.serve(async (req) => {
       },
     });
     channel
-      .on(
-        "postgres_changes",
-        {
-          event: "DELETE",
-          schema: "public",
-          table: "duelgame",
-        },
-        (payload) => {
-          if (payload.old.id === data.id) {
-            channel.send({
-              type: "broadcast",
-              event: "cancel",
-              payload: {
-                response: true,
-              },
-            });
-            channel.unsubscribe();
-          }
-        }
-      )
       .on("presence", { event: "sync" }, async () => {
         const newState = channel.presenceState();
         const uuids = newState.uuid
@@ -98,7 +79,7 @@ Deno.serve(async (req) => {
         if (uuids.length === 2) {
           const res = await supabase
             .from("duelgame")
-            .update({ start: true })
+            .update({ status: "START" })
             .eq("uuid", data.uuid)
             .select(
               "*, theme!public_duelgame_theme_fkey(*),player1(*,avatar(*),title(*), badge(*)),player2(*,avatar(*),title(*), badge(*))"
@@ -129,7 +110,6 @@ Deno.serve(async (req) => {
                   response: true,
                 },
               });
-              await supabase.from("duelgame").delete().eq("uuid", data.uuid);
               channel.unsubscribe();
             }
           }, 15000);

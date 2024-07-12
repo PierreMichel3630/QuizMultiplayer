@@ -20,8 +20,8 @@
     "path": "D:\\Developpement\\QuizMultiplayer\\android.keystore",
     "alias": "android"
   },
-  "appVersionName": "V5.7",
-  "appVersionCode": 13,
+  "appVersionName": "V5.13",
+  "appVersionCode": 19,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://quizup-v2.web.app/manifest.webmanifest",
@@ -35,9 +35,9 @@
   "isMetaQuest": false,
   "fullScopeUrl": "https://quizup-v2.web.app/",
   "minSdkVersion": 19,
-  "orientation": "any",
+  "orientation": "portrait",
   "fingerprints": [],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "appVersion": "V5.7"
+  "appVersion": "V5.13"
 }

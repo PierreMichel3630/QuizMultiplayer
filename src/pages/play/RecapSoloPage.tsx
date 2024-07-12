@@ -1,11 +1,4 @@
-import {
-  Alert,
-  Box,
-  Container,
-  Divider,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, Container, Divider, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { px, viewHeight } from "csx";
@@ -21,12 +14,13 @@ import HomeIcon from "@mui/icons-material/Home";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { launchSoloGame, selectSoloGameById } from "src/api/game";
+import { ExperienceSoloBlock } from "src/component/ExperienceBlock";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { ReportModal } from "src/component/modal/ReportModal";
 import { useUser } from "src/context/UserProvider";
 import { SoloGame } from "src/models/Game";
 
-export const RecapSoloPage = () => {
+export default function RecapSoloPage() {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
@@ -37,6 +31,7 @@ export const RecapSoloPage = () => {
   const [game, setGame] = useState<undefined | SoloGame>(undefined);
 
   const allquestion = location.state ? location.state.allquestion : false;
+  const extra = location.state ? location.state.extra : undefined;
 
   useEffect(() => {
     const getGame = () => {
@@ -75,13 +70,13 @@ export const RecapSoloPage = () => {
       <Box
         sx={{
           p: 1,
-          mb: px(180),
+          mb: px(140),
         }}
       >
         {game && (
           <>
             <Grid container spacing={1}>
-              <Grid item xs={12} sx={{ mb: 2 }}>
+              <Grid item xs={12}>
                 <ScoreThemeBlock theme={game.theme} score={game.points} />
               </Grid>
               {allquestion && (
@@ -91,10 +86,21 @@ export const RecapSoloPage = () => {
                   </Alert>
                 </Grid>
               )}
-              <Grid item xs={12} sx={{ textAlign: "center" }}>
-                <Typography variant="h1" color="text.secondary">
-                  {t("commun.questions")}
-                </Typography>
+              <Grid item xs={12}>
+                <ExperienceSoloBlock
+                  theme={game.theme.id}
+                  xp={extra ? extra.xpplayer1 : undefined}
+                  player={game.player}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Divider
+                  sx={{
+                    borderBottomWidth: 5,
+                    borderColor: Colors.white,
+                    borderRadius: px(5),
+                  }}
+                />
               </Grid>
               {game.questions.map((el, index) => (
                 <Fragment key={index}>
@@ -172,4 +178,4 @@ export const RecapSoloPage = () => {
       />
     </Container>
   );
-};
+}

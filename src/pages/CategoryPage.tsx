@@ -11,7 +11,7 @@ import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
 import { sortByName } from "src/utils/sort";
 
-export const CategoryPage = () => {
+export default function CategoryPage() {
   const { t } = useTranslation();
   const { id } = useParams();
   const { language } = useUser();
@@ -75,4 +75,4 @@ export const CategoryPage = () => {
       </Grid>
     </Grid>
   );
-};
+}

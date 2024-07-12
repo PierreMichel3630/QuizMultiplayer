@@ -1,5 +1,5 @@
 import { Box, Container, Grid } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonColor, ButtonColorSelect } from "src/component/Button";
 import { SelectorProfileBlock } from "src/component/SelectorProfileBlock";
@@ -28,9 +28,12 @@ import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import { px } from "csx";
 import { uniqBy } from "lodash";
 import { FavoriteSelectBlock } from "src/component/FavoriteBlock";
+import { BasicSearchInput } from "src/component/Input";
+import { SkeletonTheme } from "src/component/skeleton/SkeletonTheme";
 import { LogoIcon } from "src/icons/LogoIcon";
+import { searchString } from "src/utils/string";
 
-export const PlayPage = () => {
+export default function PlayPage() {
   const { t } = useTranslation();
   const { language } = useUser();
   const { themes } = useApp();
@@ -43,17 +46,43 @@ export const PlayPage = () => {
   const [theme, setTheme] = useState<Theme | undefined>(
     location.state ? location.state.theme : undefined
   );
+  const [isLoading, setIsLoading] = useState(true);
+  const [search, setSearch] = useState("");
   const [mode, setMode] = useState<string | null>("duel");
   const [openModalFriend, setOpenModalFriend] = useState(false);
   const [profileAdv, setProfileAdv] = useState<undefined | Profile>(
     location.state ? location.state.opponent : undefined
   );
+  const [maxIndex, setMaxIndex] = useState(20);
 
-  const themesFilter = useMemo(
-    () =>
-      uniqBy(themes, (el) => el.id).sort((a, b) => sortByName(language, a, b)),
-    [themes, language]
-  );
+  const themesFilter = useMemo(() => {
+    setIsLoading(false);
+    return uniqBy(
+      [...themes]
+        .filter((el) => searchString(search, el.name[language.iso]))
+        .sort((a, b) => sortByName(language, a, b)),
+      (el) => el.id
+    ).splice(0, maxIndex);
+  }, [themes, search, language, maxIndex]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsLoading(true);
+      if (
+        window.innerHeight + document.documentElement.scrollTop + 250 <=
+        document.documentElement.offsetHeight
+      ) {
+        return;
+      }
+      setMaxIndex((prev) => prev + 20);
+    };
+    if (document) {
+      document.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+    };
+  }, [themes, maxIndex]);
 
   const play = () => {
     if (theme && mode === "solo") {
@@ -87,16 +116,10 @@ export const PlayPage = () => {
       <Helmet>
         <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid
-        item
-        xs={12}
-        sx={{ backgroundColor: Colors.blue3, marginBottom: 8 }}
-      >
-        <BarNavigation title="Jouer" />
-      </Grid>
+      <BarNavigation title={t("pages.play.title")} />
       <Grid item xs={12}>
         <Container maxWidth="lg">
-          <Box sx={{ p: 1, mt: px(100), mb: px(50), position: "relative" }}>
+          <Box sx={{ p: 1, mt: px(150), mb: px(50), position: "relative" }}>
             <Box
               sx={{
                 position: "fixed",
@@ -140,6 +163,14 @@ export const PlayPage = () => {
                       />
                     </Grid>
                   )}
+                  <Grid item xs={12}>
+                    <BasicSearchInput
+                      label={t("commun.search")}
+                      onChange={(value) => setSearch(value)}
+                      value={search}
+                      clear={() => setSearch("")}
+                    />
+                  </Grid>
                 </Grid>
               </Container>
             </Box>
@@ -148,6 +179,7 @@ export const PlayPage = () => {
                 <FavoriteSelectBlock
                   select={(t) => setTheme(t)}
                   selected={theme ? [theme.id] : []}
+                  search={search}
                 />
               </Grid>
               {themesFilter.map((t) => (
@@ -159,6 +191,15 @@ export const PlayPage = () => {
                   />
                 </Grid>
               ))}
+              {isLoading && (
+                <>
+                  {Array.from(new Array(20)).map((_, index) => (
+                    <Grid item key={index}>
+                      <SkeletonTheme />
+                    </Grid>
+                  ))}
+                </>
+              )}
             </Grid>
             <Box
               sx={{
@@ -194,4 +235,4 @@ export const PlayPage = () => {
       />
     </Grid>
   );
-};
+}

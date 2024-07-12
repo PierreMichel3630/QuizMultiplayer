@@ -28,14 +28,14 @@ Deno.serve(async (req) => {
     "eed610db-4b85-4e0e-aa11-7497d5159393",
     "9e5543c3-ec9d-4a9c-8f0c-6e634759eb45",
   ];
-  const ranks = await supabase
-    .from("rank")
+  const scores = await supabase
+    .from("score")
     .select()
     .eq("theme", theme)
     .in("profile", [player, ...bots]);
 
-  const rankPlayer = ranks.data.find((el) => el.profile === player);
-  const eloPlayer = rankPlayer ? rankPlayer.points : 1000;
+  const scorePlayer = scores.data.find((el) => el.profile === player);
+  const eloPlayer = scorePlayer ? scorePlayer.rank : 1000;
 
   const matchmakings = await supabase
     .from("matchmaking")
@@ -73,7 +73,11 @@ Deno.serve(async (req) => {
       }
       const { data } = await supabase
         .from("duelgame")
-        .update({ player2: player, start: true, themequestion: themequestion })
+        .update({
+          player2: player,
+          status: "START",
+          themequestion: themequestion,
+        })
         .eq("uuid", duelgame.uuid)
         .select(
           "*,theme!public_duelgame_theme_fkey(*),player1(*,avatar(*),title(*), badge(*)),player2(*,avatar(*),title(*), badge(*))"
@@ -128,10 +132,10 @@ Deno.serve(async (req) => {
     if (matchmaking) {
       await supabase.from("matchmaking").delete().eq("id", matchmaking.id);
     }
-    if (!data.start) {
-      const rankBots = ranks.data.filter((el) => el.profile !== player);
-      const bot = rankBots.reduce((prev, curr) =>
-        Math.abs(curr.points - eloPlayer) < Math.abs(prev.points - eloPlayer)
+    if (data.status === "WAIT") {
+      const scoresBots = scores.data.filter((el) => el.profile !== player);
+      const bot = scoresBots.reduce((prev, curr) =>
+        Math.abs(curr.rank - eloPlayer) < Math.abs(prev.rank - eloPlayer)
           ? curr
           : prev
       );
@@ -151,7 +155,7 @@ Deno.serve(async (req) => {
         .from("duelgame")
         .update({
           player2: bot.profile,
-          start: true,
+          status: "START",
           themequestion: themequestion,
         })
         .eq("uuid", duelgame.uuid)

@@ -10,3 +10,6 @@ export const selectBadgeByProfile = (profile: string) =>
     .from(SUPABASE_BADGEPROFILE_TABLE)
     .select("*, badge(*)")
     .eq("profile", profile);
+
+export const selectBadgeById = (id: number) =>
+  supabase.from(SUPABASE_BADGE_TABLE).select("*").eq("id", id).maybeSingle();

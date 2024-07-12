@@ -138,7 +138,7 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
                 value={Colors.blue}
                 label={t("commun.return")}
                 icon={KeyboardReturnIcon}
-                onClick={() => navigate(`/battle/${gamebattle.uuid}`)}
+                onClick={() => navigate(`/battle/${gamebattle}`)}
                 variant="contained"
               />
             ) : (

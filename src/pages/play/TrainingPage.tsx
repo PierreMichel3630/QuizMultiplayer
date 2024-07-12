@@ -25,7 +25,7 @@ import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { SoloGame, TrainingGame } from "src/models/Game";
 import { Colors } from "src/style/Colors";
 
-export const TrainingPage = () => {
+export default function TrainingPage() {
   const { t } = useTranslation();
   const { sound } = useUser();
   const { uuidGame } = useParams();
@@ -258,4 +258,4 @@ export const TrainingPage = () => {
       </Box>
     </Container>
   );
-};
+}

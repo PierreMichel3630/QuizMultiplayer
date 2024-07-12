@@ -38,8 +38,9 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import { HistoryGameModal } from "src/component/modal/HistoryGameModal";
 import { weightedRandom } from "src/utils/random";
+import { SkeletonTheme } from "src/component/skeleton/SkeletonTheme";
 
-export const BattlePage = () => {
+export default function BattlePage() {
   const { t } = useTranslation();
   const { uuidGame } = useParams();
   const { user } = useAuth();
@@ -52,6 +53,8 @@ export const BattlePage = () => {
   const [isStart, setIsStart] = useState(false);
   const [isOpenHistory, setIsOpenHistory] = useState(false);
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [maxIndex, setMaxIndex] = useState(20);
+  const [isLoading, setIsLoading] = useState(true);
 
   const isPlayer1 = useMemo(
     () => (user && game ? user.id === game.player1.id : null),
@@ -172,11 +175,13 @@ export const BattlePage = () => {
     [game, isPlayer1]
   );
 
-  const themesFilter = useMemo(
-    () =>
-      uniqBy(themes, (el) => el.id).sort((a, b) => sortByName(language, a, b)),
-    [themes, language]
-  );
+  const themesFilter = useMemo(() => {
+    setIsLoading(false);
+    return uniqBy(
+      [...themes].sort((a, b) => sortByName(language, a, b)),
+      (el) => el.id
+    ).splice(0, maxIndex);
+  }, [themes, language, maxIndex]);
 
   const ready = useCallback(() => {
     if (game) {
@@ -260,8 +265,77 @@ export const BattlePage = () => {
     }
   }, [game]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsLoading(true);
+      if (
+        window.innerHeight + document.documentElement.scrollTop + 250 <=
+        document.documentElement.offsetHeight
+      ) {
+        return;
+      }
+      setMaxIndex((prev) => prev + 20);
+    };
+    if (document) {
+      document.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+    };
+  }, [themes, maxIndex]);
+
   return (
     <Container maxWidth="lg">
+      <BarNavigation
+        title="Jouer"
+        quit={() => {
+          deleteGame();
+          navigate("/");
+        }}
+      />
+      {game && (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 1,
+            backgroundColor: "white",
+            position: "sticky",
+            top: 52,
+            left: 0,
+            right: 0,
+            zIndex: 2,
+            p: 1,
+          }}
+        >
+          <Container maxWidth="lg">
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: percent(100),
+              }}
+            >
+              <SelectorProfileBattleBlock
+                label={t("commun.selectplayer")}
+                profile={game.player1}
+                score={game.scoreplayer1}
+                ready={game.readyplayer1}
+              />
+              <RestartAltIcon onClick={() => setOpenConfirmModal(true)} />
+              <SelectorProfileBattleBlock
+                label={t("commun.selectadv")}
+                profile={game.player2 ?? undefined}
+                onChange={() => setOpenModalFriend(true)}
+                score={game.scoreplayer2}
+                ready={game.readyplayer2}
+                left
+              />
+            </Box>
+            <Divider sx={{ borderBottomWidth: 5 }} />
+          </Container>
+        </Box>
+      )}
       <Box sx={{ width: percent(100), p: 1, overflow: "hidden" }}>
         <Helmet>
           <title>{`${t("pages.battle.title")} - ${t("appname")}`}</title>
@@ -273,60 +347,8 @@ export const BattlePage = () => {
           alignItems="center"
           sx={{ marginBottom: px(125) }}
         >
-          <Grid
-            item
-            xs={12}
-            sx={{ backgroundColor: Colors.blue3, marginBottom: px(125) }}
-          >
-            <BarNavigation title="Jouer" quit={deleteGame} />
-          </Grid>
           {game && (
             <>
-              <Grid item xs={12}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1,
-                    backgroundColor: "white",
-                    position: "fixed",
-                    top: 52,
-                    left: 0,
-                    right: 0,
-                    zIndex: 2,
-                    p: 1,
-                  }}
-                >
-                  <Container maxWidth="lg">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        width: percent(100),
-                      }}
-                    >
-                      <SelectorProfileBattleBlock
-                        label={t("commun.selectplayer")}
-                        profile={game.player1}
-                        score={game.scoreplayer1}
-                        ready={game.readyplayer1}
-                      />
-                      <RestartAltIcon
-                        onClick={() => setOpenConfirmModal(true)}
-                      />
-                      <SelectorProfileBattleBlock
-                        label={t("commun.selectadv")}
-                        profile={game.player2 ?? undefined}
-                        onChange={() => setOpenModalFriend(true)}
-                        score={game.scoreplayer2}
-                        ready={game.readyplayer2}
-                        left
-                      />
-                    </Box>
-                    <Divider sx={{ borderBottomWidth: 5 }} />
-                  </Container>
-                </Box>
-              </Grid>
               <Grid item xs={12}>
                 <Grid container spacing={1} justifyContent="center">
                   <Grid item xs={12}>
@@ -352,6 +374,15 @@ export const BattlePage = () => {
                       </Grid>
                     );
                   })}
+                  {isLoading && (
+                    <>
+                      {Array.from(new Array(20)).map((_, index) => (
+                        <Grid item key={index}>
+                          <SkeletonTheme />
+                        </Grid>
+                      ))}
+                    </>
+                  )}
                 </Grid>
               </Grid>
             </>
@@ -431,4 +462,4 @@ export const BattlePage = () => {
       </Box>
     </Container>
   );
-};
+}

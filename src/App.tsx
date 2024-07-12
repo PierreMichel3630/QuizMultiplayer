@@ -1,10 +1,11 @@
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { BrowserRouter } from "react-router-dom";
+import { updateProfil } from "./api/profile";
 import "./App.css";
 import { AppProvider } from "./context/AppProvider";
-import { AuthProviderSupabase } from "./context/AuthProviderSupabase";
+import { AuthProviderSupabase, useAuth } from "./context/AuthProviderSupabase";
 import { MessageProvider } from "./context/MessageProvider";
 import { UserProvider, useUser } from "./context/UserProvider";
 import "./i18n/config";
@@ -13,6 +14,30 @@ import { Colors } from "./style/Colors";
 
 function App() {
   const { mode, language } = useUser();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const handleUnload = async () => {
+      if (user) {
+        await updateProfil({ id: user.id, isonline: false });
+      }
+    };
+    const handleVisibility = async () => {
+      if (document.hidden) {
+        if (user) {
+          await updateProfil({ id: user.id, isonline: false });
+        }
+      }
+    };
+    window.addEventListener("beforeunload", handleUnload);
+    window.addEventListener("pagehide", handleUnload);
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+      window.removeEventListener("pagehide", handleUnload);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, [user]);
 
   const theme = useMemo(
     () =>

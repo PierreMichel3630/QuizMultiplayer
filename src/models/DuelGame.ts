@@ -1,4 +1,4 @@
-import { BattleGame } from "./BattleGame";
+import { StatusGameDuel } from "./enum";
 import { Profile } from "./Profile";
 import { Question } from "./Question";
 import { Theme } from "./Theme";
@@ -11,9 +11,9 @@ export interface DuelGame {
   player2: Profile;
   ptsplayer1: number;
   ptsplayer2: number;
-  start: boolean;
+  status: StatusGameDuel;
   questions: Array<Question>;
-  battlegame: null | BattleGame;
+  battlegame: null | string;
 }
 
 export interface DuelGameChange {
@@ -24,6 +24,20 @@ export interface DuelGameChange {
   player2: string;
   ptsplayer1: number;
   ptsplayer2: number;
-  start: boolean;
+  status: StatusGameDuel;
   questions: Array<Question>;
+}
+
+export interface ExtraDuelGame {
+  delta: number;
+  eloPlayer1: number;
+  eloPlayer2: number;
+  xpplayer1: ExtraDuelGameXP;
+  xpplayer2: ExtraDuelGameXP;
+}
+
+export interface ExtraDuelGameXP {
+  matchscore: number;
+  victorybonus: number;
+  match: number;
 }

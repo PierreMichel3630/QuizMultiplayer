@@ -21,6 +21,7 @@ export const ImageThemeBlock = ({ theme, size = percent(100) }: Props) => {
     >
       <img
         src={theme.image}
+        srcSet={theme.image}
         loading="lazy"
         style={{
           maxWidth: percent(90),

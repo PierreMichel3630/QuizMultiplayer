@@ -6,19 +6,17 @@ import { StatusPlayerGame } from "../StatusPlayer";
 import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 
 import { useTranslation } from "react-i18next";
-import { MyRank } from "src/models/Rank";
 import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
 import { CountryBlock } from "../CountryBlock";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { LoadingDot } from "../Loading";
 import { LabelRankBlock } from "../RankBlock";
+import { StatusGameDuel } from "src/models/enum";
 
 interface Props {
   game: DuelGame;
   players: Array<string>;
-  rankplayer1?: MyRank;
-  rankplayer2?: MyRank;
 }
 export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
   const { t } = useTranslation();
@@ -63,7 +61,10 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
             <CountryBlock id={game.player1.country} color="text.secondary" />
           )}
           <StatusPlayerGame
-            ready={game.start || players.includes(game.player1.id)}
+            ready={
+              game.status === StatusGameDuel.START ||
+              players.includes(game.player1.id)
+            }
           />
         </Box>
       </Box>
@@ -133,7 +134,10 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
                 />
               )}
               <StatusPlayerGame
-                ready={game.start || players.includes(game.player2.id)}
+                ready={
+                  game.status === StatusGameDuel.START ||
+                  players.includes(game.player2.id)
+                }
               />
             </Box>
             <AvatarAccountBadge

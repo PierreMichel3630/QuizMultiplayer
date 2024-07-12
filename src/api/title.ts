@@ -11,3 +11,6 @@ export const selectTitleByProfile = (profile: string) =>
     .from(SUPABASE_TITLEPROFILE_TABLE)
     .select("*, title(*)")
     .eq("profile", profile);
+
+export const selectTitleById = (id: number) =>
+  supabase.from(SUPABASE_TITLE_TABLE).select("*").eq("id", id).maybeSingle();

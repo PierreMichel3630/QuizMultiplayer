@@ -15,16 +15,15 @@ import { RoundTimer, VerticalTimer } from "src/component/Timer";
 import { AvatarAccount } from "src/component/avatar/AvatarAccount";
 import { WaitPlayerDuelGameBlock } from "src/component/play/WaitPlayerDuelGameBlock";
 import { useUser } from "src/context/UserProvider";
-import { DuelGame } from "src/models/DuelGame";
-import { Elo } from "src/models/Elo";
+import { DuelGame, ExtraDuelGame } from "src/models/DuelGame";
 import { QuestionDuel } from "src/models/Question";
 import { Response, ResponseDuel } from "src/models/Response";
 import { Colors } from "src/style/Colors";
 
-export const COLORDUEL1 = Colors.pink;
+export const COLORDUEL1 = Colors.pink2;
 export const COLORDUEL2 = Colors.blue;
 
-export const DuelPage = () => {
+export default function DuelPage() {
   const { t } = useTranslation();
   const { uuidGame } = useParams();
   const { uuid, language, sound } = useUser();
@@ -121,24 +120,19 @@ export const DuelPage = () => {
         })
         .on("broadcast", { event: "end" }, (value) => {
           const res = value.payload as {
-            game: DuelGame;
-            elo: Elo;
+            extra: ExtraDuelGame;
           };
           channel.unsubscribe();
-          navigate(`/recapduel`, {
-            state: {
-              game: res.game,
-              elo: res.elo,
-              questions: res.game.questions,
-            },
-          });
+          setTimeout(() => {
+            navigate(`/recapduel/${game.uuid}`, {
+              state: {
+                extra: res.extra,
+              },
+            });
+          }, 2000);
         })
         .on("broadcast", { event: "cancel" }, () => {
-          navigate(`/recapduel`, {
-            state: {
-              game: game,
-            },
-          });
+          navigate(`/recapduel/${game.uuid}`);
         })
         .subscribe(async (status) => {
           if (status !== "SUBSCRIBED") {
@@ -208,7 +202,7 @@ export const DuelPage = () => {
       >
         {game ? (
           <>
-            {game.start && question ? (
+            {game.status === "START" && question ? (
               <Box
                 sx={{
                   display: "flex",
@@ -394,4 +388,4 @@ export const DuelPage = () => {
       </Box>
     </Container>
   );
-};
+}

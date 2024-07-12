@@ -48,7 +48,7 @@ export const AccountMenu = ({ user }: Props) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { profile, logout } = useAuth();
-  const { refreshFriends } = useApp();
+  const { getFriends } = useApp();
   const { setUuid } = useUser();
 
   const settings: Array<Setting> =
@@ -123,7 +123,7 @@ export const AccountMenu = ({ user }: Props) => {
     handleCloseUserMenu();
     await logout();
     setUuid(crypto.randomUUID());
-    refreshFriends();
+    getFriends();
   };
 
   const goTo = (url: string, state: unknown) => {

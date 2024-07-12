@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { HeadTitle } from "src/component/HeadTitle";
 import { ReportModal } from "src/component/modal/ReportModal";
 
-export const ReportPage = () => {
+export default function ReportPage() {
   const { t } = useTranslation();
 
   const [open, setOpen] = useState(false);
@@ -44,4 +44,4 @@ export const ReportPage = () => {
       <ReportModal open={open} close={() => setOpen(false)} />
     </Grid>
   );
-};
+}

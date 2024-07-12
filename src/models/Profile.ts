@@ -13,6 +13,7 @@ export interface Profile {
   created_at: Date;
   last_seen_friend: Date;
   isadmin: boolean;
+  isonline: boolean;
 }
 
 export interface ProfileUpdate {
@@ -21,4 +22,5 @@ export interface ProfileUpdate {
   title?: number | null;
   avatar?: number | null;
   last_seen_friend?: Date;
+  isonline?: boolean;
 }

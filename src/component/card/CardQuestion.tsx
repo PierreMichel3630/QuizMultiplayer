@@ -104,10 +104,12 @@ export const CardAdminQuestion = ({
 interface PropsCardSignalQuestion {
   question: Question;
   report?: () => void;
+  color?: string;
 }
 export const CardSignalQuestion = ({
   question,
   report,
+  color = "text.secondary",
 }: PropsCardSignalQuestion) => {
   const { t } = useTranslation();
 
@@ -117,7 +119,7 @@ export const CardSignalQuestion = ({
         <Grid item xs={12} sx={{ textAlign: "center" }}>
           <JsonLanguageBlock
             variant="h2"
-            color="text.secondary"
+            color={color}
             value={question.question}
           />
         </Grid>
@@ -125,7 +127,7 @@ export const CardSignalQuestion = ({
           <Grid item xs={12}>
             <JsonLanguageBlock
               variant="h2"
-              color="text.secondary"
+              color={color}
               sx={{
                 fontSize: 20,
                 fontStyle: "italic",
@@ -163,15 +165,15 @@ export const CardSignalQuestion = ({
                     userSelect: "none",
                   }}
                 >
-                  <Typography variant="h2" color="text.secondary">
+                  <Typography variant="h2" color={color}>
                     {question.responsePlayer1}
                   </Typography>
                   <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                    <Typography variant="h6" color="text.secondary">
+                    <Typography variant="h6" color={color}>
                       {t("commun.goodresponse")} :
                     </Typography>
                     <JsonLanguageArrayOrStringBlock
-                      color="text.secondary"
+                      color={color}
                       variant="h2"
                       all={question.allresponse}
                       value={question.response}
@@ -198,15 +200,15 @@ export const CardSignalQuestion = ({
                     userSelect: "none",
                   }}
                 >
-                  <Typography variant="h2" color="text.secondary">
+                  <Typography variant="h2" color={color}>
                     {question.responsePlayer2}
                   </Typography>
                   <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                    <Typography variant="h6" color="text.secondary">
+                    <Typography variant="h6" color={color}>
                       {t("commun.goodresponse")} :
                     </Typography>
                     <JsonLanguageArrayOrStringBlock
-                      color="text.secondary"
+                      color={color}
                       variant="h2"
                       all={question.allresponse}
                       value={question.response}

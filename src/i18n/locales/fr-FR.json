@@ -3,6 +3,7 @@
   "description": "Quiz multijoueur en ligne",
   "commun": {
     "all": "Tous",
+    "mygames": "Mes parties",
     "chooseusername": "Choisissez votre pseudo",
     "play": "Jouer",
     "ranking": "Classement",
@@ -26,7 +27,8 @@
     "levelquestionmin": "Niveau des questions minimum",
     "levelquestionmax": "Niveau des questions maximum",
     "solo": "Solo",
-    "versus": "Duel",
+    "sologame": "Partie Solo",
+    "duelgame": "Partie Duel",
     "privategame": "Partie privée",
     "goodresponse": "Bonne réponse",
     "score": "Score",
@@ -57,6 +59,7 @@
     "noresultinvitation": "Aucune invitation en attente.",
     "noresultrequest": "Aucune demande d'ami en attente.",
     "noresultfriends": "Vous n'avez pas encore d'ami.",
+    "noresultgame": "Aucune partie jouée.",
     "myrecord": "Best",
     "hi": "Bonjour",
     "deleteaccountmessage": "Attention vous êtes sur le point de supprimer votre compte, cette action est définitive et immédiate, tous vos informations personnelles, ainsi que vos classements, records, ... seront supprimé.",
@@ -85,7 +88,7 @@
     "cancelgame": "Match annulé",
     "opponentdontjoin": "Votre adversaire n'a pas rejoint le match à temps.",
     "color": "Couleur",
-    "myorigincountry": "Mon pays d'origine",
+    "myorigincountry": "Pays d'origine",
     "search": "Rechercher",
     "selectcountry": "Sélectionner un pays",
     "myprofile": "Mon profil",
@@ -146,6 +149,7 @@
     "language": "Langue",
     "others": "Autres",
     "myaccomplishments": "Mes succès",
+    "goaccomplishments": "Voir mes succès",
     "reward": "Récompense",
     "title": "Titre",
     "titles": "Titres",
@@ -165,9 +169,10 @@
     "joindiscord": "Rejoindre Discord",
     "pertheme": "Par thème",
     "selectplayer": "Sélectionner un joueur",
+    "selectopponent": "Sélectionner un adversaire",
     "global": "Global",
-    "victory": "Victoires",
-    "defeat": "Défaites",
+    "victory": "Victoire",
+    "defeat": "Défaite",
     "draw": "Match nul",
     "select2player": "Sélectionner 2 joueurs à comparer",
     "compare": "Comparer",
@@ -192,7 +197,25 @@
     "themesselected": "Thèmes sélectionnés",
     "gamehistory": "Historique des parties",
     "reset": "Réinitialiser la partie",
-    "next": "Suivant"
+    "next": "Suivant",
+    "versus": "vs",
+    "pointsabbreviation": "Pts",
+    "victoryabbreviation": "V",
+    "drawabbreviation": "N",
+    "defeatabbreviation": "D",
+    "filtermygames": "Filtrer mes parties",
+    "filter": "Filtrer",
+    "online": "En Ligne",
+    "notonline": "Hors Ligne",
+    "mylevel": "Mon niveau",
+    "level": "Niveau",
+    "xp": "expérience",
+    "matchscore": "Score",
+    "victorybonus": "victoire",
+    "match": "Partie",
+    "totalxp": "Total",
+    "xpabbreviation": "xp",
+    "xpnextlevel": "xp restant"
   },
   "accomplishment": {
     "SOLO": "Succès Mode Solo",
@@ -350,6 +373,15 @@
     },
     "battle": {
       "title": "Combat contre un ami"
+    },
+    "history": {
+      "title": "Historique des parties"
+    },
+    "badge": {
+      "title": "Badge"
+    },
+    "title": {
+      "title": "Titre"
     }
   },
   "enum": {

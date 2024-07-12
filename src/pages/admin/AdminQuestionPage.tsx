@@ -1,3 +1,4 @@
+import AddIcon from "@mui/icons-material/Add";
 import { Box, Grid, Pagination, Typography } from "@mui/material";
 import { px } from "csx";
 import { useCallback, useEffect, useState } from "react";
@@ -9,19 +10,18 @@ import {
   updateQuestion,
 } from "src/api/question";
 import { ButtonColor } from "src/component/Button";
-import { AutocompleteTheme } from "src/component/Select";
+import { AutocompleteThemeAdmin } from "src/component/Select";
 import { CardAdminQuestion } from "src/component/card/CardQuestion";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
+import { CreateEditQuestionDialog } from "src/component/modal/CreateEditQuestionDialog";
 import { useApp } from "src/context/AppProvider";
 import { useMessage } from "src/context/MessageProvider";
 import { QuestionAdmin, QuestionUpdate } from "src/models/Question";
 import { Theme } from "src/models/Theme";
 import { colorDifficulty } from "src/models/enum";
 import { Colors } from "src/style/Colors";
-import AddIcon from "@mui/icons-material/Add";
-import { CreateEditQuestionDialog } from "src/component/modal/CreateEditQuestionDialog";
 
-export const AdminQuestionPage = () => {
+export default function AdminQuestionPage() {
   const { t } = useTranslation();
 
   const { setMessage, setSeverity } = useMessage();
@@ -131,7 +131,7 @@ export const AdminQuestionPage = () => {
       <Grid container spacing={1} justifyContent="center">
         {theme && (
           <Grid item xs={12}>
-            <AutocompleteTheme
+            <AutocompleteThemeAdmin
               theme={theme}
               onChange={(value) => {
                 setPage(1);
@@ -313,4 +313,4 @@ export const AdminQuestionPage = () => {
       />
     </Box>
   );
-};
+}

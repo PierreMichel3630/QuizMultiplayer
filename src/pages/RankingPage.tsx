@@ -6,10 +6,9 @@ import {
   selectStatAccomplishment,
   selectStatAccomplishmentByProfile,
 } from "src/api/accomplishment";
-import { selectRankByTheme } from "src/api/rank";
 import { selectScoresByTheme } from "src/api/score";
 import { HeadTitle } from "src/component/HeadTitle";
-import { BasicSelect, SelectTheme } from "src/component/Select";
+import { BasicSelect, SelectIdTheme } from "src/component/Select";
 import { DefaultTabs } from "src/component/Tabs";
 import {
   DataRanking,
@@ -18,7 +17,6 @@ import {
 } from "src/component/table/RankingTable";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { StatAccomplishment } from "src/models/Accomplishment";
-import { Rank } from "src/models/Rank";
 import { Score } from "src/models/Score";
 
 enum RankingEnum {
@@ -38,7 +36,7 @@ interface ValueOption {
   label: string;
   value: RankingEnum;
 }
-export const RankingPage = () => {
+export default function RankingPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
 
@@ -53,7 +51,6 @@ export const RankingPage = () => {
   const [data, setData] = useState<Array<DataRanking>>([]);
   const [option, setOption] = useState<RankingEnum>(RankingEnum.games);
   const [theme, setTheme] = useState("1");
-  const [ranks, setRanks] = useState<Array<Rank>>([]);
   const [scores, setScores] = useState<Array<Score>>([]);
 
   const options: Array<ValueOption> = useMemo(
@@ -108,11 +105,11 @@ export const RankingPage = () => {
 
   const dataDuel = useMemo(
     () =>
-      ranks.map((el) => ({
+      scores.map((el) => ({
         profile: el.profile,
-        value: el.points,
+        value: el.rank,
       })) as Array<DataRanking>,
-    [ranks]
+    [scores]
   );
 
   const dataSolo = useMemo(
@@ -132,15 +129,7 @@ export const RankingPage = () => {
         });
       }
     };
-    const getScoresDuel = () => {
-      if (theme) {
-        selectRankByTheme(Number(theme)).then(({ data }) => {
-          setRanks(data as Array<Rank>);
-        });
-      }
-    };
     getScores();
-    getScoresDuel();
   }, [theme]);
 
   useEffect(() => {
@@ -214,7 +203,7 @@ export const RankingPage = () => {
             ) : (
               <>
                 <Grid item xs={12}>
-                  <SelectTheme
+                  <SelectIdTheme
                     theme={theme}
                     onChange={(value) => {
                       setTheme(value);
@@ -238,4 +227,4 @@ export const RankingPage = () => {
       </Grid>
     </Grid>
   );
-};
+}

@@ -7,7 +7,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { HeadTitle } from "src/component/HeadTitle";
 
-export const LoginPage = () => {
+export default function LoginPage() {
   const { t } = useTranslation();
 
   return (
@@ -44,4 +44,4 @@ export const LoginPage = () => {
       </Grid>
     </Grid>
   );
-};
+}

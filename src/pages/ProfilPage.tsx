@@ -1,7 +1,7 @@
-import { Box, Divider, Grid, Paper, Typography } from "@mui/material";
+import { Alert, Box, Divider, Grid, Paper, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getProfilById } from "src/api/profile";
 import { ButtonColor } from "src/component/Button";
 import { CountryBlock } from "src/component/CountryBlock";
@@ -13,7 +13,6 @@ import BoltIcon from "@mui/icons-material/Bolt";
 import { percent, px } from "csx";
 import { Helmet } from "react-helmet-async";
 import { selectBadgeByProfile } from "src/api/badge";
-import { selectRankByProfile } from "src/api/rank";
 import {
   selectOppositionByOpponent,
   selectScoresByProfile,
@@ -27,7 +26,6 @@ import { DonutGames } from "src/component/chart/DonutGames";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { Badge, BadgeProfile } from "src/models/Badge";
-import { Rank } from "src/models/Rank";
 import { Opposition, Score } from "src/models/Score";
 import { Title, TitleProfile } from "src/models/Title";
 import {
@@ -46,8 +44,11 @@ import { SortButton } from "src/component/SortBlock";
 import { CardBadge } from "src/component/card/CardBadge";
 import { CardTitle } from "src/component/card/CardTitle";
 import { searchString } from "src/utils/string";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { CardOpposition } from "src/component/card/CardOpposition";
+import { StatusProfileBlock } from "src/component/StatusProfileBlock";
 
-export const ProfilPage = () => {
+export default function ProfilPage() {
   const { t } = useTranslation();
   const { id } = useParams();
   const { uuid, language } = useUser();
@@ -58,13 +59,27 @@ export const ProfilPage = () => {
     undefined
   );
   const [scores, setScores] = useState<Array<Score>>([]);
-  const [ranks, setRanks] = useState<Array<Rank>>([]);
   const [titles, setTitles] = useState<Array<Title>>([]);
   const [badges, setBadges] = useState<Array<Badge>>([]);
   const [oppositions, setOppositions] = useState<Array<Opposition>>([]);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("alphabetical");
+  const [isLoading, setIsLoading] = useState(true);
+
   const isMe = useMemo(() => id === uuid, [id, uuid]);
+  const totalOpposition = useMemo(
+    () =>
+      oppositions.reduce(
+        (acc, value) => ({
+          games: acc.games + value.games,
+          victory: acc.victory + value.victory,
+          draw: acc.draw + value.draw,
+          defeat: acc.defeat + value.defeat,
+        }),
+        { games: 0, victory: 0, draw: 0, defeat: 0 }
+      ),
+    [oppositions]
+  );
 
   const sorts = [
     { value: "alphabetical", label: t("sort.alphabetical"), sort: setSort },
@@ -97,21 +112,15 @@ export const ProfilPage = () => {
 
   useEffect(() => {
     const getScore = () => {
+      setIsLoading(true);
       if (id) {
         selectScoresByProfile(id).then(({ data }) => {
           const res = data as Array<Score>;
           setScores(res.sort(sortByDuelGamesDesc));
+          setIsLoading(false);
         });
       }
     };
-    const getRank = () => {
-      if (id) {
-        selectRankByProfile(id).then(({ data }) => {
-          setRanks(data as Array<Rank>);
-        });
-      }
-    };
-    getRank();
     getScore();
   }, [id]);
 
@@ -176,13 +185,12 @@ export const ProfilPage = () => {
 
   const scoresWithRankAndOpposition = useMemo(() => {
     const result = scores.map((score) => {
-      const rank = ranks.find((el) => el.theme.id === score.theme.id);
       const opposition = oppositions.find((el) => el.theme === score.theme.id);
 
-      return { ...score, rank: rank, opposition: opposition };
+      return { ...score, opposition: opposition };
     });
     return result;
-  }, [scores, ranks, oppositions]);
+  }, [scores, oppositions]);
 
   const scoresDisplay = useMemo(() => {
     let res = [...scoresWithRankAndOpposition].filter((el) =>
@@ -253,6 +261,16 @@ export const ProfilPage = () => {
                 />
               )}
             </Grid>
+            <Grid
+              item
+              xs={12}
+              sx={{ display: "flex", justifyContent: "center" }}
+            >
+              <StatusProfileBlock
+                online={profileUser.isonline}
+                color="text.secondary"
+              />
+            </Grid>
             {profileUser.country && (
               <Grid
                 item
@@ -299,6 +317,11 @@ export const ProfilPage = () => {
         </Box>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
+            {!isLoading && scores.length === 0 && (
+              <Grid item xs={12}>
+                <Alert severity="warning">{t("commun.noresultgame")}</Alert>
+              </Grid>
+            )}
             {badges.length > 0 && (
               <Grid item xs={12}>
                 <CardBadge badges={badges} />
@@ -309,36 +332,48 @@ export const ProfilPage = () => {
                 <CardTitle titles={titleOrder} />
               </Grid>
             )}
+            {totalOpposition.games > 0 && (
+              <Grid item xs={12}>
+                <CardOpposition
+                  opposition={totalOpposition}
+                  opponent={profileUser}
+                />
+              </Grid>
+            )}
             <Grid item xs={12}>
               <DonutGames
                 scores={scores}
                 totalScore={totalScore}
                 totalSolo={totalSolo}
+                profile={profileUser}
+                loading={isLoading}
               />
             </Grid>
           </Grid>
         </Box>
         <Box>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: px(5),
-              p: 1,
-              position: "sticky",
-              top: px(55),
-              backgroundColor: "white",
-              width: percent(100),
-            }}
-          >
-            <BasicSearchInput
-              label={t("commun.searchtheme")}
-              onChange={(value) => setSearch(value)}
-              value={search}
-              clear={() => setSearch("")}
-            />
-            <SortButton menus={sorts} />
-          </Box>
+          {(isLoading || scores.length > 0) && (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: px(5),
+                p: 1,
+                position: "sticky",
+                top: px(55),
+                backgroundColor: "white",
+                width: percent(100),
+              }}
+            >
+              <BasicSearchInput
+                label={t("commun.searchtheme")}
+                onChange={(value) => setSearch(value)}
+                value={search}
+                clear={() => setSearch("")}
+              />
+              <SortButton menus={sorts} />
+            </Box>
+          )}
           <Box sx={{ p: 1 }}>
             <Grid container spacing={1}>
               {scoresDisplay.map((score) => {
@@ -361,18 +396,43 @@ export const ProfilPage = () => {
                             gap: 1,
                             backgroundColor: Colors.blue3,
                             p: px(5),
+                            justifyContent: "space-between",
                           }}
                         >
-                          <ImageThemeBlock theme={score.theme} size={40} />
-                          <JsonLanguageBlock
-                            variant="h2"
+                          <Box
                             sx={{
-                              wordWrap: "anywhere",
-                              fontSize: 18,
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
                             }}
-                            color="text.secondary"
-                            value={score.theme.name}
-                          />
+                          >
+                            <ImageThemeBlock theme={score.theme} size={40} />
+                            <JsonLanguageBlock
+                              variant="h2"
+                              sx={{
+                                wordWrap: "anywhere",
+                                fontSize: 18,
+                              }}
+                              color="text.secondary"
+                              value={score.theme.name}
+                            />
+                          </Box>
+                          <Link
+                            to={`/games`}
+                            state={{
+                              player: profileUser,
+                              themes: [score.theme],
+                            }}
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <VisibilityIcon
+                              fontSize="large"
+                              sx={{ color: "white" }}
+                            />
+                          </Link>
                         </Grid>
                         <Grid item xs={12} sx={{ p: 1 }}>
                           <Grid
@@ -401,7 +461,7 @@ export const ProfilPage = () => {
                                     {t("commun.points")} {" : "}
                                   </Typography>
                                   <Typography variant="h4" component="span">
-                                    {score.rank ? score.rank.points : "-"}
+                                    {score.rank}
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={12}>
@@ -499,4 +559,4 @@ export const ProfilPage = () => {
       </Box>
     )
   );
-};
+}

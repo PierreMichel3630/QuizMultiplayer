@@ -7,7 +7,7 @@ import { RegisterForm } from "src/form/authentification/RegisterForm";
 import { Helmet } from "react-helmet-async";
 import { HeadTitle } from "src/component/HeadTitle";
 
-export const RegisterPage = () => {
+export default function RegisterPage() {
   const { t } = useTranslation();
 
   return (
@@ -44,4 +44,4 @@ export const RegisterPage = () => {
       </Grid>
     </Grid>
   );
-};
+}

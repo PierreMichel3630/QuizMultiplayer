@@ -4,6 +4,8 @@
   players: Array<{ uuid: string; username: string; time: number }>;
 }*/
 
+import { ExtraSoloGame } from "./Game";
+
 export interface Response {
   response: ResponseLanguage;
 }
@@ -13,6 +15,7 @@ export interface ResponseSolo {
   result: boolean;
   points: number;
   answer: number | string;
+  extra?: ExtraSoloGame;
 }
 
 export interface ResponseTraining {

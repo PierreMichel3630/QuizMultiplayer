@@ -12,7 +12,7 @@ import { useMessage } from "src/context/MessageProvider";
 import { Report } from "src/models/Report";
 import { Colors } from "src/style/Colors";
 
-export const AdminReportPage = () => {
+export default function AdminReportPage() {
   const { t } = useTranslation();
 
   const { setMessage, setSeverity } = useMessage();
@@ -112,4 +112,4 @@ export const AdminReportPage = () => {
       />
     </Grid>
   );
-};
+}

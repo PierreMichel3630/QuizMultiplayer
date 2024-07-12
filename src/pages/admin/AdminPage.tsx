@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Outlet } from "react-router-dom";
 import { DefaultTabsLink } from "src/component/Tabs";
 
-export const AdminPage = () => {
+export default function AdminPage() {
   const { t } = useTranslation();
 
   const [tab, setTab] = useState(0);
@@ -35,4 +35,4 @@ export const AdminPage = () => {
       </Grid>
     </Grid>
   );
-};
+}

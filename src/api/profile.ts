@@ -11,6 +11,9 @@ export const getProfilById = (uuid: string) =>
     .single();
 
 export const updateProfil = (profil: ProfileUpdate) =>
+  supabase.from(SUPABASE_PROFILE_TABLE).update(profil).eq("id", profil.id);
+
+export const updateSelectProfil = (profil: ProfileUpdate) =>
   supabase
     .from(SUPABASE_PROFILE_TABLE)
     .update(profil)

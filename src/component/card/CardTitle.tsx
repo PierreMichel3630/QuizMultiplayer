@@ -1,4 +1,4 @@
-import { Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import { percent, px, viewHeight } from "csx";
 import { useTranslation } from "react-i18next";
 import { Title } from "src/models/Title";
@@ -48,23 +48,23 @@ export const CardTitle = ({ titles }: Props) => {
             ({titles.length})
           </Typography>
         </Grid>
-        <Grid
-          item
-          xs={12}
-          sx={{
-            display: "flex",
-            p: 1,
-            maxHeight: viewHeight(15),
-            overflowX: "scroll",
-          }}
-        >
-          <Grid container spacing={1}>
-            {titleOrder.map((title) => (
-              <Grid item key={title.id}>
-                <BadgeTitle label={title.name} />
-              </Grid>
-            ))}
-          </Grid>
+        <Grid item xs={12}>
+          <Box
+            sx={{
+              display: "flex",
+              p: 1,
+              maxHeight: viewHeight(15),
+              overflowX: "scroll",
+            }}
+          >
+            <Grid container spacing={1}>
+              {titleOrder.map((title) => (
+                <Grid item key={title.id}>
+                  <BadgeTitle label={title.name} />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
         </Grid>
       </Grid>
     </Paper>

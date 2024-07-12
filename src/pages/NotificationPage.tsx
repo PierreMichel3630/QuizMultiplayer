@@ -17,17 +17,17 @@ import { BattleGame } from "src/models/BattleGame";
 import { DuelGame } from "src/models/DuelGame";
 import { FRIENDSTATUS } from "src/models/Friend";
 
-export const NotificationPage = () => {
+export default function NotificationPage() {
   const { t } = useTranslation();
-  const { friends, refreshFriends } = useApp();
+  const { friends, getFriends } = useApp();
   const { user } = useAuth();
   const { uuid } = useUser();
   const [games, setGames] = useState<Array<DuelGame>>([]);
   const [battles, setBattles] = useState<Array<BattleGame>>([]);
 
   useEffect(() => {
-    refreshFriends();
-  }, []);
+    getFriends();
+  }, [getFriends]);
 
   const invitationsfriends = friends.filter(
     (el) =>
@@ -113,4 +113,4 @@ export const NotificationPage = () => {
       </Grid>
     </Grid>
   );
-};
+}

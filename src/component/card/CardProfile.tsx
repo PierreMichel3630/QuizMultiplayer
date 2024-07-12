@@ -2,12 +2,13 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Card, Grid, Paper, Typography } from "@mui/material";
 import { px } from "csx";
-import moment from "moment";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Profile } from "src/models/Profile";
-import { FriendButton } from "../FriendButton";
 import { AvatarAccount } from "../avatar/AvatarAccount";
+import { BadgeAccountActive } from "../Badge";
+import { FriendButton } from "../FriendButton";
+import { StatusProfileBlock } from "../StatusProfileBlock";
 interface Props {
   profile: Profile;
   addToFriend?: () => void;
@@ -46,20 +47,13 @@ export const CardProfile = ({
     >
       <Grid container spacing={1} alignItems="center" justifyContent="center">
         <Grid item>
-          <AvatarAccount avatar={profile.avatar.icon} size={60} />
+          <AvatarAccount avatar={profile.avatar.icon} size={50} />
         </Grid>
         <Grid item>
-          <Typography variant="h2" sx={{ wordWrap: "break-word" }}>
+          <Typography variant="h4" sx={{ wordWrap: "break-word" }}>
             {profile.username}
           </Typography>
-          <Typography
-            variant="caption"
-            sx={{ fontSize: 10, wordWrap: "break-word" }}
-          >
-            {t("commun.createdthe", {
-              value: moment(profile.created_at).format("DD MMMM YYYY"),
-            })}
-          </Typography>
+          <StatusProfileBlock online={profile.isonline} />
         </Grid>
 
         {addToFriend && (
@@ -113,11 +107,9 @@ export const BasicCardProfile = ({ profile }: PropsBasic) => {
       }}
       onClick={() => navigate(`/profil/${profile.id}`)}
     >
-      <AvatarAccount
-        avatar={profile.avatar.icon}
-        size={50}
-        color={profile.color}
-      />
+      <BadgeAccountActive online={profile.isonline}>
+        <AvatarAccount avatar={profile.avatar.icon} size={50} />
+      </BadgeAccountActive>
       <Typography variant="h6" sx={{ wordWrap: "break-word" }}>
         {profile.username}
       </Typography>

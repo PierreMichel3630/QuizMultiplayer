@@ -35,9 +35,7 @@ export const ButtonColor = ({
           padding: "3px 5px",
           backgroundColor: Colors.blue3,
           "&:hover": {
-            backgroundColor: important(value),
-            color: Colors.blue3,
-            border: "2px solid currentColor",
+            opacity: 0.85,
           },
         }
       : {
@@ -47,8 +45,7 @@ export const ButtonColor = ({
           color: Colors.white,
           border: `2px solid ${value}`,
           "&:hover": {
-            backgroundColor: Colors.white,
-            color: value,
+            opacity: 0.85,
           },
         };
 

@@ -71,12 +71,13 @@ Deno.serve(async (req) => {
       if (error) throw error;
 
       if (!result) {
-        const resupdatescore = await supabase.rpc("updatescore", {
+        await supabase.rpc("updatescore", {
           player: game.player,
           themeid: game.theme.id,
           newpoints: points,
+          game: uuid,
+          xpprop: 50 + points * 5,
         });
-        if (resupdatescore.error) throw resupdatescore.error;
       }
     }
 
@@ -84,6 +85,14 @@ Deno.serve(async (req) => {
       JSON.stringify({
         result: result,
         response: question.response,
+        extra: !result
+          ? {
+              xpplayer1: {
+                match: 50,
+                matchscore: points * 5,
+              },
+            }
+          : undefined,
         answer: value,
         points,
       }),

@@ -7,7 +7,7 @@ import { ResetPasswordForm } from "src/form/authentification/ResetPasswordForm";
 import { Helmet } from "react-helmet-async";
 import { HeadTitle } from "src/component/HeadTitle";
 
-export const ResetPasswordPage = () => {
+export default function ResetPasswordPage() {
   const { t } = useTranslation();
 
   return (
@@ -39,4 +39,4 @@ export const ResetPasswordPage = () => {
       </Grid>
     </Box>
   );
-};
+}

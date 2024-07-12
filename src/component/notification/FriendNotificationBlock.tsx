@@ -17,7 +17,7 @@ interface Props {
 
 export const FriendNotificationBlock = ({ friend }: Props) => {
   const { t } = useTranslation();
-  const { refreshFriends } = useApp();
+  const { getFriends } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
   const confirmFriend = (status: FRIENDSTATUS) => {
@@ -36,7 +36,7 @@ export const FriendNotificationBlock = ({ friend }: Props) => {
             ? t("alert.validatefriendrequest")
             : t("alert.refusefriendrequest")
         );
-        refreshFriends();
+        getFriends();
       }
     });
   };

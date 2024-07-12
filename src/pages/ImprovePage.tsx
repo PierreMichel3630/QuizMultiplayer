@@ -6,7 +6,7 @@ import { HeadTitle } from "src/component/HeadTitle";
 
 import { DiscordIcon } from "src/icons/DiscordIcon";
 
-export const ImprovePage = () => {
+export default function ImprovePage() {
   const { t } = useTranslation();
 
   const urlDiscord = "https://discord.gg/zyuruK2nBJ";
@@ -40,4 +40,4 @@ export const ImprovePage = () => {
       </Grid>
     </Grid>
   );
-};
+}

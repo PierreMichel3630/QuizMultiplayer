@@ -1,4 +1,5 @@
 import { JsonLanguage } from "./Language";
+import { Profile } from "./Profile";
 import { Question } from "./Question";
 import { Theme, ThemeDifficulty } from "./Theme";
 import { StatusGameSolo } from "./enum";
@@ -32,6 +33,15 @@ export interface SoloGame {
   status: StatusGameSolo;
 }
 
+export interface ExtraSoloGame {
+  xpplayer1: ExtraSoloGameXP;
+}
+
+export interface ExtraSoloGameXP {
+  matchscore: number;
+  match: number;
+}
+
 export interface SoloGamePayload {
   id: number;
   points: number;
@@ -51,4 +61,15 @@ export interface PrivateGameInsert {
   themes: Array<ThemeDifficulty>;
   next_game: Date;
   channel: string;
+}
+
+export interface HistoryGame {
+  uuid: string;
+  type: "SOLO" | "DUEL";
+  theme: Theme;
+  player1: Profile;
+  player2: Profile | null;
+  ptsplayer1: number;
+  ptsplayer2: number | null;
+  created_at: Date;
 }

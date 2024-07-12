@@ -1,6 +1,6 @@
-import { AdminQuestionPage } from "src/pages/admin/AdminQuestionPage";
-import { AdminReportPage } from "src/pages/admin/AdminReportPage";
-import { AdminThemesPage } from "src/pages/admin/AdminThemesPage";
+import AdminQuestionPage from "src/pages/admin/AdminQuestionPage";
+import AdminReportPage from "src/pages/admin/AdminReportPage";
+import AdminThemesPage from "src/pages/admin/AdminThemesPage";
 
 export const AdminRoutes = [
   {

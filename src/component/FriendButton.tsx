@@ -19,7 +19,6 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 interface Props {
   profile: Profile;
@@ -28,7 +27,7 @@ interface Props {
 
 export const FriendButton = ({ profile, small = false }: Props) => {
   const { user } = useAuth();
-  const { friends, refreshFriends } = useApp();
+  const { friends, getFriends } = useApp();
   const { setMessage, setSeverity } = useMessage();
   const navigate = useNavigate();
 
@@ -53,7 +52,7 @@ export const FriendButton = ({ profile, small = false }: Props) => {
         } else {
           setSeverity("success");
           setMessage(t("alert.deletefriend"));
-          refreshFriends();
+          getFriends();
         }
       });
     } else {
@@ -75,7 +74,7 @@ export const FriendButton = ({ profile, small = false }: Props) => {
         } else {
           setSeverity("success");
           setMessage(t("alert.sendfriendrequest"));
-          refreshFriends();
+          getFriends();
         }
       });
     } else {
@@ -99,14 +98,10 @@ export const FriendButton = ({ profile, small = false }: Props) => {
             ? t("alert.validatefriendrequest")
             : t("alert.refusefriendrequest")
         );
-        refreshFriends();
+        getFriends();
       }
     });
   };
-
-  useEffect(() => {
-    refreshFriends();
-  }, []);
 
   return user && friend ? (
     friend.status === FRIENDSTATUS.PROGRESS ? (

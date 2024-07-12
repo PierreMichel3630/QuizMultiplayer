@@ -1,7 +1,7 @@
 import { Box, Container, Divider, Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useUser } from "src/context/UserProvider";
-import { DuelGame } from "src/models/DuelGame";
+import { DuelGame, ExtraDuelGame } from "src/models/DuelGame";
 import { Colors } from "src/style/Colors";
 import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 
@@ -10,12 +10,12 @@ import HomeIcon from "@mui/icons-material/Home";
 import { px } from "csx";
 import { useNavigate } from "react-router-dom";
 import { launchDuelGame, matchmakingDuelGame } from "src/api/game";
-import { Elo } from "src/models/Elo";
 import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
 import { ButtonColor } from "../Button";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { Fragment, useMemo, useState } from "react";
@@ -23,15 +23,14 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { Question } from "src/models/Question";
 import { CardSignalQuestion } from "../card/CardQuestion";
 import { ReportModal } from "../modal/ReportModal";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import { ExperienceBlock } from "../ExperienceBlock";
 
 interface Props {
   game: DuelGame;
-  elo?: Elo;
-  questions: Array<Question>;
+  extra?: ExtraDuelGame;
 }
 
-export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
+export const EndDuelGameBlock = ({ game, extra }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { uuid } = useUser();
@@ -40,12 +39,29 @@ export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
   const [question, setQuestion] = useState<Question | undefined>(undefined);
 
   const gamebattle = useMemo(() => game.battlegame, [game]);
+  const isPlayer1 = useMemo(() => game.player1.id === uuid, [uuid, game]);
+  const isPlayer2 = useMemo(() => game.player2.id === uuid, [uuid, game]);
 
-  const isPlayer1 = game.player1.id === uuid;
-  const hasWin = isPlayer1
-    ? game.ptsplayer1 > game.ptsplayer2
-    : game.ptsplayer2 > game.ptsplayer1;
-  const equality = game.ptsplayer2 === game.ptsplayer1;
+  const xp = useMemo(
+    () =>
+      extra
+        ? isPlayer1
+          ? extra.xpplayer1
+          : isPlayer2
+          ? extra.xpplayer2
+          : undefined
+        : undefined,
+    [extra, isPlayer1, isPlayer2]
+  );
+
+  const hasWin = useMemo(
+    () =>
+      isPlayer1
+        ? game.ptsplayer1 > game.ptsplayer2
+        : game.ptsplayer2 > game.ptsplayer1,
+    [isPlayer1, game]
+  );
+  const equality = useMemo(() => game.ptsplayer2 === game.ptsplayer1, [game]);
 
   const revenge = () => {
     const player1 = isPlayer1 ? game.player1.id : game.player2.id;
@@ -69,8 +85,8 @@ export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
   };
 
   return (
-    <Box sx={{ mb: gamebattle !== null ? px(50) : px(180) }}>
-      <Grid container spacing={1}>
+    <Box sx={{ mb: gamebattle !== null ? px(50) : px(140) }}>
+      <Grid container spacing={2}>
         <Grid
           item
           xs={12}
@@ -132,28 +148,28 @@ export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
               />
             )}
             <Box>
-              {elo && (
+              {extra && (
                 <>
                   <Typography
                     variant="h6"
                     component="span"
                     color="text.secondary"
                   >
-                    {elo.eloPlayer1} {t("commun.points")}
+                    {extra.eloPlayer1} {t("commun.points")}
                   </Typography>
                   <Typography
                     variant="h6"
                     sx={{
                       color:
-                        elo.delta === 0
+                        extra.delta === 0
                           ? Colors.white
-                          : elo.delta > 0
+                          : extra.delta > 0
                           ? Colors.green
                           : Colors.red,
                     }}
                     component="span"
                   >
-                    {` (${elo.delta > 0 ? "+" : ""}${elo.delta})`}
+                    {` (${extra.delta > 0 ? "+" : ""}${extra.delta})`}
                   </Typography>
                 </>
               )}
@@ -203,34 +219,39 @@ export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
               />
             )}
             <Box>
-              {elo && (
+              {extra && (
                 <>
                   <Typography
                     variant="h6"
                     component="span"
                     color="text.secondary"
                   >
-                    {elo.eloPlayer2} {t("commun.points")}
+                    {extra.eloPlayer2} {t("commun.points")}
                   </Typography>
                   <Typography
                     variant="h6"
                     sx={{
                       color:
-                        elo.delta === 0
+                        extra.delta === 0
                           ? Colors.white
-                          : -elo.delta > 0
+                          : -extra.delta > 0
                           ? Colors.green
                           : Colors.red,
                     }}
                     component="span"
                   >
-                    {` (${-elo.delta > 0 ? "+" : ""}${-elo.delta})`}
+                    {` (${-extra.delta > 0 ? "+" : ""}${-extra.delta})`}
                   </Typography>
                 </>
               )}
             </Box>
           </Box>
         </Grid>
+        {xp && (
+          <Grid item xs={12}>
+            <ExperienceBlock theme={game.theme.id} xp={xp} />
+          </Grid>
+        )}
         <Grid item xs={12}>
           <Divider
             sx={{
@@ -240,12 +261,7 @@ export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
             }}
           />
         </Grid>
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
-          <Typography variant="h1" color="text.secondary">
-            {t("commun.questions")}
-          </Typography>
-        </Grid>
-        {questions.map((el) => (
+        {game.questions.map((el) => (
           <Fragment key={el.id}>
             <Grid item xs={12}>
               <CardSignalQuestion
@@ -292,7 +308,7 @@ export const EndDuelGameBlock = ({ game, elo, questions }: Props) => {
                 value={Colors.blue}
                 label={t("commun.return")}
                 icon={KeyboardReturnIcon}
-                onClick={() => navigate(`/battle/${gamebattle.uuid}`)}
+                onClick={() => navigate(`/battle/${gamebattle}`)}
                 variant="contained"
               />
             ) : (

@@ -8,9 +8,15 @@ interface Props {
   theme: Theme;
   score?: number;
   extra?: JSX.Element;
+  color?: string;
 }
 
-export const ScoreThemeBlock = ({ theme, score, extra }: Props) => {
+export const ScoreThemeBlock = ({
+  theme,
+  score,
+  extra,
+  color = "text.secondary",
+}: Props) => {
   const { t } = useTranslation();
 
   return (
@@ -21,7 +27,7 @@ export const ScoreThemeBlock = ({ theme, score, extra }: Props) => {
       <Grid item xs={9} sm={9} md={10}>
         <JsonLanguageBlock
           variant="h1"
-          color="text.secondary"
+          color={color}
           sx={{
             fontSize: 30,
             overflow: "hidden",
@@ -40,10 +46,10 @@ export const ScoreThemeBlock = ({ theme, score, extra }: Props) => {
               gap: 1,
             }}
           >
-            <Typography variant="h6" color="text.secondary">
+            <Typography variant="h6" color={color}>
               {t("commun.score")} :{" "}
             </Typography>
-            <Typography variant="h2" color="text.secondary">
+            <Typography variant="h2" color={color}>
               {score}
             </Typography>
           </Box>

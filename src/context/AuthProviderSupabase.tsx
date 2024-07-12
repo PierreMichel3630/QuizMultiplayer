@@ -5,6 +5,7 @@ import {
   UserResponse,
 } from "@supabase/supabase-js";
 import { createContext, useContext, useEffect, useState } from "react";
+import { getProfilById, updateProfil } from "src/api/profile";
 import {
   passwordReset,
   signInWithEmail,
@@ -12,9 +13,8 @@ import {
   supabase,
   updatePassword,
 } from "src/api/supabase";
-import { getProfilById } from "src/api/profile";
-import { Profile } from "src/models/Profile";
 import { deleteAccountUser } from "src/api/user";
+import { Profile } from "src/models/Profile";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[];
@@ -49,11 +49,6 @@ const AuthContext = createContext<{
 
 export const useAuth = () => useContext(AuthContext);
 
-const login = (email: string, password: string) =>
-  signInWithEmail(email, password);
-
-const logout = () => signOut();
-
 export const AuthProviderSupabase = ({ children }: Props) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [user, setUser] = useState<User | null>(
@@ -62,16 +57,29 @@ export const AuthProviderSupabase = ({ children }: Props) => {
       : null
   );
 
+  const login = (email: string, password: string) =>
+    signInWithEmail(email, password);
+
   useEffect(() => {
+    const getProfilUser = async () => {
+      if (user) {
+        await updateProfil({ id: user.id, isonline: true });
+      }
+      if (user !== null) {
+        const { data } = await getProfilById(user.id);
+        setProfile(data as Profile);
+      }
+    };
     localStorage.setItem("user", JSON.stringify(user));
     getProfilUser();
   }, [user]);
 
-  const getProfilUser = async () => {
-    if (user !== null) {
-      const { data } = await getProfilById(user.id);
-      setProfile(data as Profile);
+  const logout = async () => {
+    if (user) {
+      await updateProfil({ id: user.id, isonline: false });
     }
+    localStorage.clear();
+    return signOut();
   };
 
   useEffect(() => {

@@ -2,19 +2,34 @@ import { Box, Container } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { viewHeight } from "csx";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Navigate, useLocation } from "react-router-dom";
-import { EndDuelGameBlock } from "src/component/play/EndDuelGameBlock";
-import { Colors } from "src/style/Colors";
+import { useLocation, useParams } from "react-router-dom";
+import { selectDuelGameById } from "src/api/game";
 import { CancelDuelGameBlock } from "src/component/play/CancelDuelGameBlock";
+import { EndDuelGameBlock } from "src/component/play/EndDuelGameBlock";
+import { DuelGame } from "src/models/DuelGame";
+import { Colors } from "src/style/Colors";
 
-export const RecapDuelPage = () => {
+export default function RecapDuelPage() {
   const { t } = useTranslation();
   const location = useLocation();
+  const { uuidGame } = useParams();
 
-  const game = location.state ? location.state.game : undefined;
-  const elo = location.state ? location.state.elo : undefined;
-  const questions = location.state ? location.state.questions : [];
+  const extra = location.state ? location.state.extra : undefined;
+
+  const [game, setGame] = useState<undefined | DuelGame>(undefined);
+
+  useEffect(() => {
+    const getGame = () => {
+      if (uuidGame) {
+        selectDuelGameById(uuidGame).then(({ data }) => {
+          setGame(data as DuelGame);
+        });
+      }
+    };
+    getGame();
+  }, [uuidGame]);
 
   return (
     <Container
@@ -36,14 +51,16 @@ export const RecapDuelPage = () => {
           p: 1,
         }}
       >
-        {location.state && game && elo && game.start ? (
-          <EndDuelGameBlock game={game} elo={elo} questions={questions} />
-        ) : location.state && game && !game.start ? (
-          <CancelDuelGameBlock game={game} />
-        ) : (
-          <Navigate to="/" replace />
+        {game && (
+          <>
+            {game.status === "END" ? (
+              <EndDuelGameBlock game={game} extra={extra} />
+            ) : (
+              <CancelDuelGameBlock game={game} />
+            )}
+          </>
         )}
       </Box>
     </Container>
   );
-};
+}

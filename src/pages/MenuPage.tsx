@@ -11,7 +11,7 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import { percent, px } from "csx";
+import { important, percent, px } from "csx";
 import { Fragment, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -26,6 +26,7 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import BrushIcon from "@mui/icons-material/Brush";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import HistoryIcon from "@mui/icons-material/History";
 import InstallMobileIcon from "@mui/icons-material/InstallMobile";
 import LiveHelpIcon from "@mui/icons-material/LiveHelp";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -45,7 +46,7 @@ interface Menu {
   state?: unknown;
 }
 
-export const MenuPage = () => {
+export default function MenuPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { friends } = useApp();
@@ -109,6 +110,13 @@ export const MenuPage = () => {
         label: t("commun.myaccomplishments"),
         icon: <EmojiEventsIcon />,
         to: "/accomplishments",
+      },
+      {
+        value: "history",
+        label: t("commun.mygames"),
+        icon: <HistoryIcon />,
+        to: profile ? `/games` : "/login",
+        state: profile ? { player: profile } : undefined,
       },
       {
         label: t("commun.compare"),
@@ -205,7 +213,8 @@ export const MenuPage = () => {
                   startIcon={<LogoutIcon />}
                   sx={{
                     borderRadius: px(50),
-                    backgroundColor: Colors.white,
+                    backgroundColor: important(Colors.white),
+                    borderWidth: important(px(2)),
                   }}
                   onClick={disconnect}
                 >
@@ -244,4 +253,4 @@ export const MenuPage = () => {
       </Grid>
     </Box>
   );
-};
+}

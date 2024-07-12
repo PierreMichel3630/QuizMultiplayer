@@ -11,17 +11,37 @@ const corsHeaders = {
 
 const endGame = async (
   supabase: any,
+  uuidgame: any,
   player1: string,
   player2: string,
+  pointsPlayer1: number,
+  pointsPlayer2: number,
   theme: number,
   result: number
 ) => {
+  const res = await calculelo(supabase, player1, player2, theme, result);
+  const xpplayer1 = {
+    match: 50,
+    matchscore: pointsPlayer1,
+    victorybonus: result === 1 ? 50 : 0,
+  };
+  const totalxp1 =
+    xpplayer1.match + xpplayer1.matchscore + xpplayer1.victorybonus;
+  const xpplayer2 = {
+    match: 50,
+    matchscore: pointsPlayer2,
+    victorybonus: result === 0 ? 50 : 0,
+  };
+  const totalxp2 =
+    xpplayer2.match + xpplayer2.matchscore + xpplayer2.victorybonus;
   await supabase.rpc("addgameduel", {
     player: player1,
     themeid: theme,
     victoryprop: result === 1 ? 1 : 0,
     drawprop: result === 0.5 ? 1 : 0,
     defeatprop: result === 0 ? 1 : 0,
+    elo: res.delta,
+    xpprop: totalxp1,
   });
   await supabase.rpc("addgameduel", {
     player: player2,
@@ -29,6 +49,8 @@ const endGame = async (
     victoryprop: result === 0 ? 1 : 0,
     drawprop: result === 0.5 ? 1 : 0,
     defeatprop: result === 1 ? 1 : 0,
+    elo: -res.delta,
+    xpprop: totalxp2,
   });
   await supabase.rpc("addopposition", {
     player1uuid: player1,
@@ -46,8 +68,11 @@ const endGame = async (
     draw: result === 0.5 ? 1 : 0,
     defeat: result === 1 ? 1 : 0,
   });
-  const res = await calculelo(supabase, player1, player2, theme, result);
-  return res;
+  await supabase
+    .from("duelgame")
+    .update({ status: "END" })
+    .eq("uuid", uuidgame);
+  return { ...res, xpplayer1, xpplayer2 };
 };
 
 const calculelo = async (
@@ -58,30 +83,20 @@ const calculelo = async (
   result: number
 ) => {
   const { data } = await supabase
-    .from("rank")
+    .from("score")
     .select()
     .or(`profile.eq.${player1},profile.eq.${player2}`)
     .eq("theme", theme);
-  const rankPlayer1 = data
+  const scorePlayer1 = data
     ? data.find((el) => el.profile === player1)
     : undefined;
-  const rankPlayer2 = data
+  const scorePlayer2 = data
     ? data.find((el) => el.profile === player2)
     : undefined;
-  const eloPlayer1 = rankPlayer1 ? rankPlayer1.points : 1000;
-  const eloPlayer2 = rankPlayer2 ? rankPlayer2.points : 1000;
+  const eloPlayer1 = scorePlayer1 ? scorePlayer1.rank : 1000;
+  const eloPlayer2 = scorePlayer2 ? scorePlayer2.rank : 1000;
   const myChanceToWin = 1 / (1 + Math.pow(10, (eloPlayer2 - eloPlayer1) / 400));
   const delta = Math.round(32 * (result - myChanceToWin));
-  await supabase.rpc("updateranking", {
-    playeruuid: player1,
-    themeid: theme,
-    pts: delta,
-  });
-  await supabase.rpc("updateranking", {
-    playeruuid: player2,
-    themeid: theme,
-    pts: -delta,
-  });
   return {
     eloPlayer1: eloPlayer1 + delta,
     eloPlayer2: eloPlayer2 - delta,
@@ -467,7 +482,16 @@ Deno.serve(async (req) => {
       if (questions.length >= 5) {
         const isdraw = pointsPlayer1 === pointsPlayer2;
         const result = isdraw ? 0.5 : pointsPlayer1 > pointsPlayer2 ? 1 : 0;
-        const elo = await endGame(supabase, player1, player2, theme.id, result);
+        const elo = await endGame(
+          supabase,
+          uuidgame,
+          player1,
+          player2,
+          pointsPlayer1,
+          pointsPlayer2,
+          theme.id,
+          result
+        );
         if (battlegame !== null) {
           const games = [
             ...battlegame.games,
@@ -486,29 +510,32 @@ Deno.serve(async (req) => {
                   : battlegame.scoreplayer2,
               readyplayer1: false,
               readyplayer2: false,
+              game: null,
               games: games,
             })
             .eq("uuid", battlegame.uuid);
         }
-
-        setTimeout(async () => {
-          channel.send({
-            type: "broadcast",
-            event: "end",
-            payload: {
-              elo: elo,
-              game: {
-                ...game,
-                questions,
-                ptsplayer1: pointsPlayer1,
-                ptsplayer2: pointsPlayer2,
-              },
+        await supabase
+          .from("duelgame")
+          .update({
+            ptsplayer1: pointsPlayer1,
+            ptsplayer2: pointsPlayer2,
+            questions,
+          })
+          .eq("uuid", uuidgame);
+        channel.send({
+          type: "broadcast",
+          event: "end",
+          payload: {
+            extra: elo,
+            game: {
+              ...game,
+              questions,
+              ptsplayer1: pointsPlayer1,
+              ptsplayer2: pointsPlayer2,
             },
-          });
-          await supabase.from("duelgame").delete().eq("uuid", uuidgame);
-
-          channel.unsubscribe();
-        }, 2000);
+          },
+        });
       } else {
         setTimeout(async () => {
           const infosQuestion = await getNewQuestion(

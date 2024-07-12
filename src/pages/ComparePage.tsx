@@ -6,7 +6,6 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { selectBadgeByProfile } from "src/api/badge";
-import { selectRankByProfile } from "src/api/rank";
 import {
   selectOppositionByOpponent,
   selectScoresByProfile,
@@ -26,7 +25,6 @@ import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { useUser } from "src/context/UserProvider";
 import { Badge, BadgeProfile } from "src/models/Badge";
 import { Profile } from "src/models/Profile";
-import { Rank } from "src/models/Rank";
 import { Opposition, Score } from "src/models/Score";
 import { Title, TitleProfile } from "src/models/Title";
 import { Colors } from "src/style/Colors";
@@ -40,7 +38,7 @@ import {
 } from "src/utils/sort";
 import { searchString } from "src/utils/string";
 
-export const ComparePage = () => {
+export default function ComparePage() {
   const { t } = useTranslation();
   const { language } = useUser();
   const location = useLocation();
@@ -51,7 +49,6 @@ export const ComparePage = () => {
   const [titles1, setTitles1] = useState<Array<Title>>([]);
   const [badges1, setBadges1] = useState<Array<Badge>>([]);
   const [scores1, setScores1] = useState<Array<Score>>([]);
-  const [ranks1, setRanks1] = useState<Array<Rank>>([]);
   const [openModalFriend1, setOpenModalFriend1] = useState(false);
 
   const [profile2, setProfile2] = useState<Profile | undefined>(
@@ -60,7 +57,6 @@ export const ComparePage = () => {
   const [titles2, setTitles2] = useState<Array<Title>>([]);
   const [badges2, setBadges2] = useState<Array<Badge>>([]);
   const [scores2, setScores2] = useState<Array<Score>>([]);
-  const [ranks2, setRanks2] = useState<Array<Rank>>([]);
   const [openModalFriend2, setOpenModalFriend2] = useState(false);
 
   const [oppositions, setOppositions] = useState<Array<Opposition>>([]);
@@ -97,18 +93,11 @@ export const ComparePage = () => {
     });
   };
 
-  const getRank = (uuid: string, set: (value: Array<Rank>) => void) => {
-    selectRankByProfile(uuid).then(({ data }) => {
-      set(data as Array<Rank>);
-    });
-  };
-
   useEffect(() => {
     if (profile1) {
       getTitles(profile1.id, setTitles1);
       getBadges(profile1.id, setBadges1);
       getScore(profile1.id, setScores1);
-      getRank(profile1.id, setRanks1);
     }
   }, [profile1]);
 
@@ -117,7 +106,6 @@ export const ComparePage = () => {
       getTitles(profile2.id, setTitles2);
       getBadges(profile2.id, setBadges2);
       getScore(profile2.id, setScores2);
-      getRank(profile2.id, setRanks2);
     }
   }, [profile2]);
 
@@ -142,14 +130,12 @@ export const ComparePage = () => {
     const result = allthemes.map((theme) => {
       const score1 = scores1.find((el) => el.theme.id === theme.id);
       const score2 = scores2.find((el) => el.theme.id === theme.id);
-      const rank1 = ranks1.find((el) => el.theme.id === theme.id);
-      const rank2 = ranks2.find((el) => el.theme.id === theme.id);
       const opposition = oppositions.find((el) => el.theme === theme.id);
 
-      return { ...theme, score1, score2, rank1, rank2, opposition };
+      return { ...theme, score1, score2, opposition };
     });
     return result;
-  }, [oppositions, ranks1, ranks2, scores1, scores2]);
+  }, [oppositions, scores1, scores2]);
 
   const themesDisplay = useMemo(() => {
     let res = [...themesWithScoreAndRank].filter((el) =>
@@ -279,11 +265,11 @@ export const ComparePage = () => {
                       },
                       {
                         label: t("commun.points"),
-                        value1: theme.rank1 ? theme.rank1.points : 0,
-                        value2: theme.rank2 ? theme.rank2.points : 0,
+                        value1: theme.score1 ? theme.score1.rank : 0,
+                        value2: theme.score2 ? theme.score2.rank : 0,
                         max: Math.max(
-                          theme.rank1 ? theme.rank1.points : 0,
-                          theme.rank2 ? theme.rank2.points : 0
+                          theme.score1 ? theme.score1.rank : 0,
+                          theme.score2 ? theme.score2.rank : 0
                         ),
                       },
                     ];
@@ -442,4 +428,4 @@ export const ComparePage = () => {
       </Grid>
     </Grid>
   );
-};
+}

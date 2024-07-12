@@ -1,11 +1,4 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  Container,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Container, Grid, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
@@ -13,10 +6,10 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import { percent, px } from "csx";
 import { Colors } from "src/style/Colors";
 import { AccountMenu } from "../header/AccountMenu";
 import { LanguagesMenu } from "../header/LanguageMenu";
-import { px } from "csx";
 
 interface Props {
   title: string;
@@ -28,16 +21,27 @@ export const BarNavigation = ({ title, quit }: Props) => {
 
   const { user } = useAuth();
   return (
-    <AppBar position="fixed" color="secondary">
+    <Box
+      sx={{
+        position: "sticky",
+        top: 0,
+        width: percent(100),
+        backgroundColor: Colors.blue3,
+        zIndex: 100,
+      }}
+    >
       <Container maxWidth="lg">
-        <Box sx={{ backgroundColor: Colors.blue3, p: px(5) }}>
+        <Box sx={{ p: px(5) }}>
           <Grid container alignItems="center" spacing={1}>
             <Grid
               item
               sx={{ cursor: "pointer" }}
               onClick={() => {
-                if (quit) quit();
-                navigate("/");
+                if (quit) {
+                  quit();
+                } else {
+                  navigate("/");
+                }
               }}
             >
               <KeyboardBackspaceIcon sx={{ color: Colors.white }} />
@@ -68,6 +72,6 @@ export const BarNavigation = ({ title, quit }: Props) => {
           </Grid>
         </Box>
       </Container>
-    </AppBar>
+    </Box>
   );
 };

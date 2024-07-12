@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { ForgotPasswordForm } from "src/form/authentification/ForgotPasswordForm";
 import { HeadTitle } from "src/component/HeadTitle";
 
-export const ForgotPasswordPage = () => {
+export default function ForgotPasswordPage() {
   const { t } = useTranslation();
 
   return (
@@ -50,4 +50,4 @@ export const ForgotPasswordPage = () => {
       </Grid>
     </Grid>
   );
-};
+}

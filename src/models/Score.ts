@@ -12,6 +12,9 @@ export interface Score {
   victory: number;
   draw: number;
   defeat: number;
+  uuidgame: string;
+  rank: number;
+  xp: number;
 }
 
 export interface MyScore {
@@ -22,6 +25,7 @@ export interface MyScore {
   games: number;
   duelgames: number;
   rank: number;
+  xp: number;
 }
 
 export interface Opposition {

@@ -17,7 +17,6 @@ import {
   launchTrainingGame,
   matchmakingDuelGame,
 } from "src/api/game";
-import { selectRankByTheme, selectRankByThemeAndPlayer } from "src/api/rank";
 import {
   countPlayersByTheme,
   selectScoreByThemeAndPlayer,
@@ -41,12 +40,12 @@ import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
 import { FavoriteInsert } from "src/models/Favorite";
 import { Profile } from "src/models/Profile";
-import { MyRank, Rank } from "src/models/Rank";
-import { MyScore, Score } from "src/models/Score";
+import { Score } from "src/models/Score";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
+import { getLevel } from "src/utils/calcul";
 
-export const ThemePage = () => {
+export default function ThemePage() {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -61,13 +60,16 @@ export const ThemePage = () => {
   const [players, setPlayers] = useState<number | undefined>(undefined);
   const [theme, setTheme] = useState<Theme | undefined>(undefined);
 
-  const [ranks, setRanks] = useState<Array<Rank>>([]);
-  const [myRank, setMyRank] = useState<MyRank | undefined>(undefined);
   const [scores, setScores] = useState<Array<Score>>([]);
-  const [myScore, setMyScore] = useState<MyScore | undefined>(undefined);
+  const [loadingScore, setLoadingScore] = useState(true);
+  const [myScore, setMyScore] = useState<Score | undefined>(undefined);
 
   const [tab, setTab] = useState(0);
-  const tabs = [{ label: t("commun.solo") }, { label: t("commun.duel") }];
+  const tabs = [
+    { label: t("commun.solo") },
+    { label: t("commun.duel") },
+    { label: t("commun.level") },
+  ];
 
   const favorite = useMemo(
     () => favorites.find((el) => el.theme === Number(id)),
@@ -76,22 +78,21 @@ export const ThemePage = () => {
 
   const dataDuel = useMemo(
     () =>
-      ranks.map((el) => ({
+      scores.map((el) => ({
         profile: el.profile,
-        value: el.points,
+        value: el.rank,
       })) as Array<DataRanking>,
-    [ranks]
+    [scores]
   );
   const dataMeDuel = useMemo(
     () =>
-      myRank && profile
+      myScore && profile
         ? ({
             profile: profile,
-            value: myRank.points,
-            rank: myRank.rank,
+            value: myScore.rank,
           } as DataRankingMe)
         : undefined,
-    [myRank, profile]
+    [myScore, profile]
   );
 
   const dataSolo = useMemo(
@@ -99,8 +100,10 @@ export const ThemePage = () => {
       scores.map((el) => ({
         profile: el.profile,
         value: el.points,
+        uuid: el.uuidgame,
+        extra: t("commun.pointsabbreviation"),
       })) as Array<DataRanking>,
-    [scores]
+    [scores, t]
   );
   const dataMeSolo = useMemo(
     () =>
@@ -108,11 +111,50 @@ export const ThemePage = () => {
         ? ({
             profile: profile,
             value: myScore.points,
-            rank: myScore.rank,
+            extra: t("commun.pointsabbreviation"),
+          } as DataRankingMe)
+        : undefined,
+    [myScore, profile, t]
+  );
+
+  const dataLvl = useMemo(
+    () =>
+      scores.map((el) => ({
+        profile: el.profile,
+        value: getLevel(el.xp),
+      })) as Array<DataRanking>,
+    [scores]
+  );
+  const dataMeLvl = useMemo(
+    () =>
+      myScore && profile
+        ? ({
+            profile: profile,
+            value: getLevel(myScore.xp),
           } as DataRankingMe)
         : undefined,
     [myScore, profile]
   );
+
+  const data = useMemo(() => {
+    let res = dataLvl;
+    if (tab === 0) {
+      res = dataSolo;
+    } else if (tab === 1) {
+      res = dataDuel;
+    }
+    return res;
+  }, [dataDuel, dataLvl, dataSolo, tab]);
+
+  const dataMe = useMemo(() => {
+    let res = dataMeLvl;
+    if (tab === 0) {
+      res = dataMeSolo;
+    } else if (tab === 1) {
+      res = dataMeDuel;
+    }
+    return res;
+  }, [dataMeDuel, dataMeLvl, dataMeSolo, tab]);
 
   useEffect(() => {
     const getPlayers = () => {
@@ -134,41 +176,27 @@ export const ThemePage = () => {
   useEffect(() => {
     const getScores = () => {
       if (id) {
-        selectScoresByTheme(Number(id), "points").then(({ data }) => {
+        setLoadingScore(true);
+        const order = tab === 0 ? "points" : tab === 1 ? "rank" : "xp";
+        selectScoresByTheme(Number(id), order).then(({ data }) => {
           setScores(data as Array<Score>);
+          setLoadingScore(false);
         });
       }
     };
-    const getScoresDuel = () => {
-      if (id) {
-        selectRankByTheme(Number(id)).then(({ data }) => {
-          setRanks(data as Array<Rank>);
-        });
-      }
-    };
-    getScoresDuel();
     getScores();
-  }, [id]);
+  }, [id, tab]);
 
   useEffect(() => {
     const getMyRankSolo = () => {
       if (id && uuid) {
         selectScoreByThemeAndPlayer(uuid, Number(id)).then(({ data }) => {
-          const res = data as MyScore;
-          setMyScore(res.id !== null ? res : undefined);
-        });
-      }
-    };
-    const getMyRankDuel = () => {
-      if (id && uuid) {
-        selectRankByThemeAndPlayer(uuid, Number(id)).then(({ data }) => {
-          const res = data as MyRank;
-          setMyRank(res.id !== null ? res : undefined);
+          const res = data as Score;
+          setMyScore(res);
         });
       }
     };
     getMyRankSolo();
-    getMyRankDuel();
   }, [id, uuid]);
 
   const playFriend = async (profile: Profile) => {
@@ -253,24 +281,11 @@ export const ThemePage = () => {
         {theme && (
           <Grid item xs={12}>
             <Box
-              sx={
-                theme.background
-                  ? {
-                      backgroundImage: theme.background
-                        ? `url(${theme.background})`
-                        : "none",
-                      backgroundPosition: "center",
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "cover",
-                      p: 1,
-                      display: "flex",
-                    }
-                  : {
-                      display: "flex",
-                      p: 1,
-                      backgroundColor: Colors.grey2,
-                    }
-              }
+              sx={{
+                display: "flex",
+                p: 1,
+                backgroundColor: Colors.black,
+              }}
             >
               <Grid container spacing={1} alignItems="center">
                 <Grid
@@ -280,12 +295,8 @@ export const ThemePage = () => {
                   sx={{ textAlign: "center" }}
                 >
                   <JsonLanguageBlock
-                    variant="h2"
-                    sx={{
-                      color: Colors.white,
-                      textShadow: "2px 2px 4px black",
-                      fontSize: 35,
-                    }}
+                    variant="h1"
+                    color="text.secondary"
                     value={theme.name}
                   />
                 </Grid>
@@ -299,11 +310,8 @@ export const ThemePage = () => {
                   sx={{ textAlign: "center" }}
                 >
                   <JsonLanguageBlock
-                    variant="h2"
-                    sx={{
-                      color: Colors.white,
-                      textShadow: "2px 2px 4px black",
-                    }}
+                    variant="h1"
+                    color="text.secondary"
                     value={theme.name}
                   />
                 </Grid>
@@ -373,7 +381,7 @@ export const ThemePage = () => {
                       <Grid item xs={12}>
                         <ButtonColor
                           size="small"
-                          value={Colors.pink}
+                          value={Colors.pink2}
                           label={t("commun.proposequestion")}
                           icon={LightbulbIcon}
                           onClick={() => {
@@ -393,13 +401,18 @@ export const ThemePage = () => {
             </Box>
           </Grid>
         )}
-        <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+          sx={{
+            backgroundColor: Colors.black,
+          }}
+        >
           <Grid
             container
             justifyContent="center"
             columns={23}
             sx={{
-              background: "rgba(255,255,255,.15)",
               borderRadius: px(5),
             }}
           >
@@ -412,10 +425,10 @@ export const ThemePage = () => {
                     textTransform: "uppercase",
                   }}
                 >
-                  {t("commun.games")}
+                  {t("commun.mylevel")}
                 </Typography>
-                <Typography variant="h2">
-                  {myScore ? myScore.games + myScore.duelgames : "-"}
+                <Typography variant="h2" color="text.secondary">
+                  {myScore ? getLevel(myScore.xp) : "-"}
                 </Typography>
               </Box>
             </Grid>
@@ -424,7 +437,14 @@ export const ThemePage = () => {
               xs={1}
               sx={{ display: "flex", justifyContent: "center" }}
             >
-              <Divider orientation="vertical" variant="middle" flexItem />
+              <Divider
+                orientation="vertical"
+                variant="middle"
+                flexItem
+                sx={{
+                  borderColor: Colors.lightgrey2,
+                }}
+              />
             </Grid>
             <Grid item xs={7}>
               <Box sx={{ p: px(2), textAlign: "center" }}>
@@ -437,7 +457,9 @@ export const ThemePage = () => {
                 >
                   {t("commun.players")}
                 </Typography>
-                <Typography variant="h2">{players ? players : "-"}</Typography>
+                <Typography variant="h2" color="text.secondary">
+                  {players ? players : "-"}
+                </Typography>
               </Box>
             </Grid>
             <Grid
@@ -445,7 +467,14 @@ export const ThemePage = () => {
               xs={1}
               sx={{ display: "flex", justifyContent: "center" }}
             >
-              <Divider orientation="vertical" variant="middle" flexItem />
+              <Divider
+                orientation="vertical"
+                variant="middle"
+                flexItem
+                sx={{
+                  borderColor: Colors.lightgrey2,
+                }}
+              />
             </Grid>
             <Grid item xs={7}>
               <Box sx={{ p: px(2), textAlign: "center" }}>
@@ -458,7 +487,7 @@ export const ThemePage = () => {
                 >
                   {t("commun.questions")}
                 </Typography>
-                <Typography variant="h2">
+                <Typography variant="h2" color="text.secondary">
                   {theme ? theme.questions : "-"}
                 </Typography>
               </Box>
@@ -467,11 +496,15 @@ export const ThemePage = () => {
         </Grid>
         <Grid item xs={12}>
           <Box sx={{ p: 1 }}>
-            <DefaultTabs values={tabs} tab={tab} onChange={setTab} />
-            <RankingTable
-              data={tab === 0 ? dataSolo : dataDuel}
-              me={tab === 0 ? dataMeSolo : dataMeDuel}
+            <DefaultTabs
+              values={tabs}
+              tab={tab}
+              onChange={(value) => {
+                setLoadingScore(true);
+                setTab(value);
+              }}
             />
+            <RankingTable data={data} me={dataMe} loading={loadingScore} />
           </Box>
         </Grid>
       </Grid>
@@ -489,4 +522,4 @@ export const ThemePage = () => {
       )}
     </Box>
   );
-};
+}

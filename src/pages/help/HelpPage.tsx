@@ -8,7 +8,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
 import WarningIcon from "@mui/icons-material/Warning";
 
-export const HelpPage = () => {
+export default function HelpPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const warnings = [t("warning.warning1")];
@@ -78,4 +78,4 @@ export const HelpPage = () => {
       </Grid>
     </Grid>
   );
-};
+}

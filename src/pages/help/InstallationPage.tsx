@@ -18,7 +18,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useState } from "react";
 import { DefaultTabs } from "src/component/Tabs";
 
-export const InstallationPage = () => {
+export default function InstallationPage() {
   const { t } = useTranslation();
 
   const [tab, setTab] = useState(0);
@@ -234,4 +234,4 @@ export const InstallationPage = () => {
       </Grid>
     </Grid>
   );
-};
+}

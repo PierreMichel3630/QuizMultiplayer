@@ -1,7 +1,7 @@
 import { Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-export const ConfidentialityPage = () => {
+export default function ConfidentialityPage() {
   const { t } = useTranslation();
 
   return (
@@ -43,4 +43,4 @@ export const ConfidentialityPage = () => {
       </Grid>
     </Grid>
   );
-};
+}

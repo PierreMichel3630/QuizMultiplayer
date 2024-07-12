@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { FAQBlock } from "src/component/FAQBlock";
 import { HeadTitle } from "src/component/HeadTitle";
 
-export const FAQPage = () => {
+export default function FAQPage() {
   const { t } = useTranslation();
   return (
     <Grid container>
@@ -17,4 +17,4 @@ export const FAQPage = () => {
       </Grid>
     </Grid>
   );
-};
+}

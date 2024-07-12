@@ -18,7 +18,7 @@ import {
 
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ImageQCMBlock } from "./ImageBlock";
 
 interface Props {
@@ -182,6 +182,15 @@ export const QcmResponseTrainingBlock = ({
     setIsClick(response !== undefined ? true : false);
   }, [response]);
 
+  const columns = useMemo(() => {
+    const modulo = question.responses.length % 2;
+    return modulo === 0 ? 2 : 1;
+  }, [question.responses.length]);
+
+  const rows = useMemo(() => {
+    return question.responses.length / columns;
+  }, [question.responses.length, columns]);
+
   return (
     <Box
       sx={
@@ -197,8 +206,8 @@ export const QcmResponseTrainingBlock = ({
               justifyContent: "flex-end",
               gap: px(4),
               display: "grid",
-              gridTemplateRows: "repeat(2, 1fr)",
-              gridTemplateColumns: "repeat(2, 50%)",
+              gridTemplateRows: `repeat(${rows}, 1fr)`,
+              gridTemplateColumns: `repeat(${columns}, 50%)`,
               gridAutoRows: "minmax(80px, auto)",
             }
           : {
@@ -209,8 +218,8 @@ export const QcmResponseTrainingBlock = ({
               justifyContent: "center",
               gap: px(4),
               display: "grid",
-              gridTemplateRows: "repeat(2, 1fr)",
-              gridTemplateColumns: "repeat(2, 50%)",
+              gridTemplateRows: `repeat(${rows}, 1fr)`,
+              gridTemplateColumns: `repeat(${columns}, 50%)`,
             }
       }
     >

@@ -20,15 +20,10 @@ import { DuelNotificationBlock } from "src/component/notification/DuelNotificati
 import { useApp } from "src/context/AppProvider";
 import { BattleGame, BattleGameChange } from "src/models/BattleGame";
 
-export const OutletPage = () => {
+export default function OutletPage() {
   const { uuid } = useUser();
-  const {
-    getAccomplishments,
-    getBadges,
-    getTitles,
-    getThemes,
-    refreshFriends,
-  } = useApp();
+  const { getAccomplishments, getBadges, getTitles, getThemes, getFriends } =
+    useApp();
 
   const [gamesChange, setGamesChange] = useState<Array<DuelGameChange>>([]);
   const [games, setGames] = useState<Array<DuelGame>>([]);
@@ -170,7 +165,7 @@ export const OutletPage = () => {
           filter: `user2=eq.${uuid}`,
         },
         () => {
-          refreshFriends();
+          getFriends();
         }
       )
       .on(
@@ -182,7 +177,7 @@ export const OutletPage = () => {
           filter: `user1=eq.${uuid}`,
         },
         () => {
-          refreshFriends();
+          getFriends();
         }
       )
       .subscribe();
@@ -216,6 +211,7 @@ export const OutletPage = () => {
           alignItems: "end",
           flexDirection: "column",
           width: percent(98),
+          zIndex: 20,
         }}
       >
         {games.map((game) => (
@@ -231,4 +227,4 @@ export const OutletPage = () => {
       </Box>
     </>
   );
-};
+}

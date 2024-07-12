@@ -73,21 +73,21 @@ export const sortByPointsGamesScore1Or2Desc = (
 
 export const sortByRankGamesScore1Or2Desc = (
   a: {
-    rank1: undefined | { points: number };
-    rank2: undefined | { points: number };
+    score1: undefined | { rank: number };
+    score2: undefined | { rank: number };
   },
   b: {
-    rank1: undefined | { points: number };
-    rank2: undefined | { points: number };
+    score1: undefined | { rank: number };
+    score2: undefined | { rank: number };
   }
 ) => {
   const valueA = Math.max(
-    a.rank1 ? a.rank1.points : 0,
-    a.rank2 ? a.rank2.points : 0
+    a.score1 ? a.score1.rank : 0,
+    a.score2 ? a.score2.rank : 0
   );
   const valueB = Math.max(
-    b.rank1 ? b.rank1.points : 0,
-    b.rank2 ? b.rank2.points : 0
+    b.score1 ? b.score1.rank : 0,
+    b.score2 ? b.score2.rank : 0
   );
 
   return valueB - valueA;
@@ -98,12 +98,9 @@ export const sortByPointsDesc = (
   b: { points: number }
 ) => b.points - a.points;
 
-export const sortByRankDesc = (
-  a: { rank: undefined | { points: number } },
-  b: { rank: undefined | { points: number } }
-) => {
-  const valueA = a.rank ? a.rank.points : 0;
-  const valueB = b.rank ? b.rank.points : 0;
+export const sortByRankDesc = (a: { rank: number }, b: { rank: number }) => {
+  const valueA = a.rank;
+  const valueB = b.rank;
   return valueB - valueA;
 };
 

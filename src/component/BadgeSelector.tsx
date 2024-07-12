@@ -4,6 +4,7 @@ import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Badge } from "src/models/Badge";
 
+import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import { percent, viewHeight } from "csx";
 import { Link } from "react-router-dom";
@@ -16,7 +17,7 @@ interface Props {
 
 export const BadgeSelector = ({ onSelect }: Props) => {
   const { profile } = useAuth();
-  const { badges, mybadges, accomplishments } = useApp();
+  const { badges, mybadges } = useApp();
 
   const badgesUnlock = useMemo(() => {
     const idUnlock = mybadges.map((el) => el.id);
@@ -38,37 +39,43 @@ export const BadgeSelector = ({ onSelect }: Props) => {
       {badgesUnlock.map((badge) => {
         const isSelect =
           profile && profile.badge && profile.badge.id === badge.id;
-        const accomplishment = accomplishments.find(
-          (el) => el.badge && el.badge.id === badge.id
-        );
+
         return (
           <Grid item key={badge.id}>
             <Box sx={{ position: "relative" }}>
               {badge.unlock ? (
-                <Avatar
-                  sx={{
-                    cursor: "pointer",
-                    border: isSelect
-                      ? `5px solid ${Colors.green}`
-                      : `5px solid ${Colors.white}`,
-                    width: 60,
-                    height: 60,
-                  }}
-                  src={badge.icon}
-                  onClick={() => onSelect(badge)}
-                />
-              ) : (
-                <Link
-                  to={`/accomplishments${
-                    accomplishment ? `#${accomplishment.id}` : ""
-                  }`}
-                >
+                <>
+                  {isSelect && (
+                    <CheckCircleTwoToneIcon
+                      sx={{
+                        color: Colors.green2,
+                        position: "absolute",
+                        backgroundColor: "white",
+                        borderRadius: percent(50),
+                        top: 0,
+                        right: 0,
+                        transform: "translate(0%, 0%)",
+                        zIndex: 2,
+                      }}
+                    />
+                  )}
                   <Avatar
                     sx={{
-                      border: `5px solid ${Colors.black}`,
-                      width: 60,
-                      height: 60,
-                      opacity: 0.5,
+                      cursor: "pointer",
+                      width: 70,
+                      height: 70,
+                    }}
+                    src={badge.icon}
+                    onClick={() => onSelect(badge)}
+                  />
+                </>
+              ) : (
+                <Link to={`/badge/${badge.id}`}>
+                  <Avatar
+                    sx={{
+                      width: 70,
+                      height: 70,
+                      opacity: 0.85,
                     }}
                     src={badge.icon}
                   />
@@ -82,8 +89,8 @@ export const BadgeSelector = ({ onSelect }: Props) => {
                   >
                     <LockTwoToneIcon
                       sx={{
-                        fontSize: 30,
-                        color: Colors.black,
+                        fontSize: 40,
+                        color: Colors.grey4,
                       }}
                     />
                   </Box>

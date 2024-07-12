@@ -1,8 +1,10 @@
+import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
 import { Avatar, Grid } from "@mui/material";
-import { viewHeight } from "csx";
+import { percent, viewHeight } from "csx";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Avatar as AvatarInterface } from "src/models/Avatar";
+import { Colors } from "src/style/Colors";
 
 interface Props {
   onSelect: (value: AvatarInterface) => void;
@@ -22,13 +24,26 @@ export const AvatarSelector = ({ onSelect }: Props) => {
       {avatars.map((avatar) => {
         const isSelect = profile && profile.avatar.id === avatar.id;
         return (
-          <Grid item key={avatar.id}>
+          <Grid item key={avatar.id} sx={{ position: "relative" }}>
+            {isSelect && (
+              <CheckCircleTwoToneIcon
+                sx={{
+                  color: Colors.green2,
+                  position: "absolute",
+                  backgroundColor: "white",
+                  borderRadius: percent(50),
+                  top: 0,
+                  right: 0,
+                  transform: "translate(0%, 0%)",
+                  zIndex: 2,
+                }}
+              />
+            )}
             <Avatar
               sx={{
                 cursor: "pointer",
-                border: isSelect ? "5px solid green" : "5px solid white",
-                width: 60,
-                height: 60,
+                width: 70,
+                height: 70,
               }}
               src={avatar.icon}
               onClick={() => onSelect(avatar)}

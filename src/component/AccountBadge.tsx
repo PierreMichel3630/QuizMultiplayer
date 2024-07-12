@@ -5,7 +5,6 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
 import { style } from "typestyle";
 import { AvatarAccount } from "./avatar/AvatarAccount";
-import { BadgeAccountActive } from "./Badge";
 import { BadgeAccountSkeleton } from "./skeleton/SkeletonAccount";
 
 const divCss = style({
@@ -50,16 +49,7 @@ export const AccountBadge = ({ onClick }: Props) => {
       >
         {profile.username}
       </Typography>
-      <BadgeAccountActive
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-        overlap="circular"
-        variant="dot"
-      >
-        <AvatarAccount avatar={profile.avatar.icon} />
-      </BadgeAccountActive>
+      <AvatarAccount avatar={profile.avatar.icon} size={40} />
     </div>
   ) : (
     <div className={divCss}>

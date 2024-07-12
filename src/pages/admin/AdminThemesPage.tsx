@@ -10,11 +10,12 @@ import { Theme, ThemeUpdate } from "src/models/Theme";
 import { sortByName } from "src/utils/sort";
 
 import AddIcon from "@mui/icons-material/Add";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { CreateEditThemeDialog } from "src/component/modal/CreateEditThemeDialog";
 import { Colors } from "src/style/Colors";
+import { uniqBy } from "lodash";
 
-export const AdminThemesPage = () => {
+export default function AdminThemesPage() {
   const { t } = useTranslation();
   const { themesAdmin, getThemes } = useApp();
   const { language } = useUser();
@@ -22,6 +23,14 @@ export const AdminThemesPage = () => {
 
   const [theme, setTheme] = useState<Theme | undefined>(undefined);
   const [openModal, setOpenModal] = useState(false);
+
+  const themesDisplay = useMemo(
+    () =>
+      uniqBy(themesAdmin, (el) => el.id).sort((a, b) =>
+        sortByName(language, a, b)
+      ),
+    [themesAdmin, language]
+  );
 
   const update = (value: ThemeUpdate) => {
     updateTheme(value).then((res) => {
@@ -45,20 +54,18 @@ export const AdminThemesPage = () => {
           variant="contained"
         />
       </Grid>
-      {themesAdmin
-        .sort((a, b) => sortByName(language, a, b))
-        .map((theme) => (
-          <Grid item xs={12} key={theme.id}>
-            <CardAdminTheme
-              theme={theme}
-              onChange={update}
-              edit={() => {
-                setTheme(theme);
-                setOpenModal(true);
-              }}
-            />
-          </Grid>
-        ))}
+      {themesDisplay.map((theme) => (
+        <Grid item xs={12} key={theme.id}>
+          <CardAdminTheme
+            theme={theme}
+            onChange={update}
+            edit={() => {
+              setTheme(theme);
+              setOpenModal(true);
+            }}
+          />
+        </Grid>
+      ))}
       <CreateEditThemeDialog
         theme={theme}
         open={openModal}
@@ -70,4 +77,4 @@ export const AdminThemesPage = () => {
       />
     </Grid>
   );
-};
+}

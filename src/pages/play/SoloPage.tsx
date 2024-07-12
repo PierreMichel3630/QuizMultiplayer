@@ -20,7 +20,7 @@ import { SoloGame } from "src/models/Game";
 import { StatusGameSolo } from "src/models/enum";
 import { Colors } from "src/style/Colors";
 
-export const SoloPage = () => {
+export default function SoloPage() {
   const { t } = useTranslation();
   const { uuid, language, sound } = useUser();
   const { uuidGame } = useParams();
@@ -60,6 +60,7 @@ export const SoloPage = () => {
             navigate(`/recapsolo/${game.uuid}`, {
               state: {
                 allquestion: false,
+                extra: res.extra,
               },
             });
           }
@@ -227,4 +228,4 @@ export const SoloPage = () => {
       </Box>
     </Container>
   );
-};
+}

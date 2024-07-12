@@ -42,7 +42,7 @@ type Props = {
 
 const AppContext = createContext<{
   friends: Array<Friend>;
-  refreshFriends: () => void;
+  getFriends: () => void;
   themes: Array<Theme>;
   themesAdmin: Array<Theme>;
   getThemes: () => void;
@@ -72,7 +72,7 @@ const AppContext = createContext<{
   isLoadingTheme: boolean;
 }>({
   friends: [],
-  refreshFriends: () => {},
+  getFriends: () => {},
   favorites: [],
   refreshFavorites: () => {},
   themes: [],
@@ -156,14 +156,6 @@ export const AppProvider = ({ children }: Props) => {
     }
   }, [user]);
 
-  const refreshFriends = () => {
-    getFriends();
-  };
-
-  useEffect(() => {
-    getFriends();
-  }, [getFriends, user]);
-
   const getThemes = useCallback(() => {
     setIsLoadingTheme(true);
     selectThemes().then((res) => {
@@ -193,13 +185,15 @@ export const AppProvider = ({ children }: Props) => {
         (el) => el.id
       );
       const themesByCategorie = groupBy(themes, "category.id");
-      const result = categories.map((el) => {
-        const themes = themesByCategorie[el.id];
-        return { ...el, themes };
-      });
+      const result = categories
+        .sort((a, b) => sortByName(language, a, b))
+        .map((el) => {
+          const themes = themesByCategorie[el.id];
+          return { ...el, themes };
+        });
       setCategories(result);
     }
-  }, [themes]);
+  }, [themes, language]);
 
   const refreshCategories = () => {
     getCategoriesAdmin();
@@ -295,7 +289,8 @@ export const AppProvider = ({ children }: Props) => {
     getAvatars();
     getBadges();
     getTitles();
-  }, [getThemes]);
+    getFriends();
+  }, [getFriends, getThemes]);
 
   return (
     <AppContext.Provider
@@ -303,7 +298,7 @@ export const AppProvider = ({ children }: Props) => {
         nbQuestions,
         nbThemes,
         friends,
-        refreshFriends,
+        getFriends,
         themes,
         themesAdmin,
         getThemes,

@@ -24,7 +24,7 @@ import { Colors } from "src/style/Colors";
 import { HeadTitle } from "src/component/HeadTitle";
 import { useLocation } from "react-router-dom";
 
-export const AccomplishmentPage = () => {
+export default function AccomplishmentPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { accomplishments, myaccomplishments, getMyAccomplishments } = useApp();
@@ -168,6 +168,8 @@ export const AccomplishmentPage = () => {
                         accomplishment={accomplishment}
                         stat={stat}
                         isFinish={myaccomplishments.includes(accomplishment.id)}
+                        badge
+                        title
                       />
                     </Grid>
                   ))}
@@ -182,4 +184,4 @@ export const AccomplishmentPage = () => {
       </Grid>
     </Grid>
   );
-};
+}

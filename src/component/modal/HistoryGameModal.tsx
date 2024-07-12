@@ -1,6 +1,7 @@
 import {
   AppBar,
   Box,
+  Container,
   Dialog,
   DialogContent,
   Grid,
@@ -12,6 +13,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { useMemo } from "react";
@@ -20,6 +22,8 @@ import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { AvatarAccount } from "../avatar/AvatarAccount";
+import { ButtonColor } from "../Button";
+import { px } from "csx";
 
 interface Props {
   game: BattleGame;
@@ -80,7 +84,7 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <DialogContent sx={{ p: 1 }}>
+      <DialogContent sx={{ p: 1, mb: px(50) }}>
         <Grid container spacing={1} flexDirection="column-reverse">
           {game.games.map((el, index) => {
             const colorPlayer1 =
@@ -205,7 +209,11 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
               </Grid>
             );
           })}
-          <Grid item xs={12} sx={{ mb: 2 }}>
+          <Grid
+            item
+            xs={12}
+            sx={{ backgroundColor: "white", pb: 2, position: "sticky", top: 0 }}
+          >
             <Grid
               container
               spacing={1}
@@ -283,6 +291,38 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
             </Grid>
           </Grid>
         </Grid>
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+          }}
+        >
+          <Container
+            maxWidth="lg"
+            sx={{
+              backgroundColor: Colors.white,
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                gap: 1,
+                p: 1,
+                flexDirection: "column",
+              }}
+            >
+              <ButtonColor
+                value={Colors.blue}
+                label={t("commun.return")}
+                icon={KeyboardReturnIcon}
+                onClick={close}
+                variant="contained"
+              />
+            </Box>
+          </Container>
+        </Box>
       </DialogContent>
     </Dialog>
   );

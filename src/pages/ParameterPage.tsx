@@ -6,7 +6,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 
 import DoneIcon from "@mui/icons-material/Done";
 import { Helmet } from "react-helmet-async";
-import { updateProfil } from "src/api/profile";
+import { updateSelectProfil } from "src/api/profile";
 import { updateUser } from "src/api/user";
 import { useMessage } from "src/context/MessageProvider";
 import { Profile } from "src/models/Profile";
@@ -14,10 +14,10 @@ import { Colors } from "src/style/Colors";
 
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { ButtonColor } from "src/component/Button";
-import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import { HeadTitle } from "src/component/HeadTitle";
+import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 
-export const ParameterPage = () => {
+export default function ParameterPage() {
   const { t } = useTranslation();
   const { setMessage, setSeverity } = useMessage();
   const { user, profile, setProfile, deleteAccount } = useAuth();
@@ -35,7 +35,7 @@ export const ParameterPage = () => {
   const changeUsername = async () => {
     if (user) {
       const newProfil = { id: user.id, username };
-      const { data, error } = await updateProfil(newProfil);
+      const { data, error } = await updateSelectProfil(newProfil);
       if (error) {
         setSeverity("error");
         setMessage(t("commun.error"));
@@ -168,4 +168,4 @@ export const ParameterPage = () => {
       />
     </Grid>
   );
-};
+}

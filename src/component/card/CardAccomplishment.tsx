@@ -17,12 +17,16 @@ interface Props {
   accomplishment: Accomplishment;
   stat?: StatAccomplishment;
   isFinish: boolean;
+  badge?: boolean;
+  title?: boolean;
 }
 
 export const CardAccomplishment = ({
   accomplishment,
   stat,
   isFinish,
+  badge = false,
+  title = false,
 }: Props) => {
   const { t } = useTranslation();
   const { themes } = useApp();
@@ -53,7 +57,7 @@ export const CardAccomplishment = ({
       }}
     >
       <Grid container spacing={1} alignItems="center">
-        {accomplishment.badge && (
+        {badge && accomplishment.badge && (
           <Grid item>
             <Link to={`/personalized#badges`}>
               <img src={accomplishment.badge.icon} width={50} />
@@ -64,7 +68,7 @@ export const CardAccomplishment = ({
           <Grid item xs={12}>
             <JsonLanguageBlock variant="h4" value={accomplishment.label} />
           </Grid>
-          {accomplishment.title && (
+          {title && accomplishment.title && (
             <Grid item xs={12}>
               <Typography variant="body1" component="span">
                 {`${t("commun.title")} "`}
