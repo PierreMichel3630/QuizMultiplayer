@@ -1,4 +1,6 @@
-import { Avatar, Badge } from "@mui/material";
+import { Avatar, Badge, Box } from "@mui/material";
+import { percent } from "csx";
+import { BadgeLevel } from "src/icons/BadgeLevel";
 import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
 
@@ -34,6 +36,7 @@ interface PropsAvatarAccountBadge {
   size?: number;
   color?: string;
   backgroundColor?: string;
+  level?: number;
 }
 
 export const AvatarAccountBadge = ({
@@ -41,6 +44,7 @@ export const AvatarAccountBadge = ({
   backgroundColor = Colors.white,
   size = 30,
   color,
+  level,
 }: PropsAvatarAccountBadge) => {
   return profile.badge ? (
     <Badge
@@ -53,6 +57,32 @@ export const AvatarAccountBadge = ({
         />
       }
     >
+      <Box sx={{ position: "relative" }}>
+        <Avatar
+          alt="Avatar"
+          src={profile.avatar.icon}
+          sx={{
+            width: size,
+            height: size,
+            border: color ? `${size / 15}px solid ${color}` : "none",
+            backgroundColor: backgroundColor,
+          }}
+        />
+        {level !== undefined && (
+          <Box
+            sx={{
+              position: "absolute",
+              left: percent(50),
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <BadgeLevel level={level} size={size / 2.5} />
+          </Box>
+        )}
+      </Box>
+    </Badge>
+  ) : (
+    <Box sx={{ position: "relative" }}>
       <Avatar
         alt="Avatar"
         src={profile.avatar.icon}
@@ -63,17 +93,17 @@ export const AvatarAccountBadge = ({
           backgroundColor: backgroundColor,
         }}
       />
-    </Badge>
-  ) : (
-    <Avatar
-      alt="Avatar"
-      src={profile.avatar.icon}
-      sx={{
-        width: size,
-        height: size,
-        border: color ? `${size / 15}px solid ${color}` : "none",
-        backgroundColor: backgroundColor,
-      }}
-    />
+      {level !== undefined && (
+        <Box
+          sx={{
+            position: "absolute",
+            left: percent(50),
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <BadgeLevel level={level} size={size / 2.5} />
+        </Box>
+      )}
+    </Box>
   );
 };

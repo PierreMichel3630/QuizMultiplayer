@@ -127,7 +127,7 @@ export default function HistoryGamePage() {
         }}
       >
         <Grid container spacing={1} justifyContent="center" alignItems="center">
-          <Grid item>
+          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
             <ToggleButtonGroup
               color="primary"
               value={filter.type}

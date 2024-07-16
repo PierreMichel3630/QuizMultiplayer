@@ -18,6 +18,7 @@ import {
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { Score } from "src/models/Score";
+import { getLevel } from "src/utils/calcul";
 
 enum RankingEnum {
   games = "games",
@@ -31,6 +32,7 @@ enum RankingEnum {
   victoryduel = "victoryduel",
   drawduel = "drawduel",
   defeatduel = "defeatduel",
+  xp = "xp",
 }
 interface ValueOption {
   label: string;
@@ -44,7 +46,11 @@ export default function RankingPage() {
   const tabs = [{ label: t("commun.global") }, { label: t("commun.pertheme") }];
 
   const [tabTheme, setTabTheme] = useState(0);
-  const tabsTheme = [{ label: t("commun.solo") }, { label: t("commun.duel") }];
+  const tabsTheme = [
+    { label: t("commun.solo") },
+    { label: t("commun.duel") },
+    { label: t("commun.level") },
+  ];
 
   const [mydata, setMyData] = useState<DataRankingMe | undefined>(undefined);
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
@@ -52,9 +58,14 @@ export default function RankingPage() {
   const [option, setOption] = useState<RankingEnum>(RankingEnum.games);
   const [theme, setTheme] = useState("1");
   const [scores, setScores] = useState<Array<Score>>([]);
+  const [loadingScore, setLoadingScore] = useState(true);
 
   const options: Array<ValueOption> = useMemo(
     () => [
+      {
+        label: t("ranking.xp"),
+        value: RankingEnum.xp,
+      },
       {
         label: t("ranking.games"),
         value: RankingEnum.games,
@@ -117,20 +128,45 @@ export default function RankingPage() {
       scores.map((el) => ({
         profile: el.profile,
         value: el.points,
+        uuid: el.uuidgame,
+        extra: t("commun.pointsabbreviation"),
+      })) as Array<DataRanking>,
+    [scores, t]
+  );
+
+  const dataLvl = useMemo(
+    () =>
+      scores.map((el) => ({
+        profile: el.profile,
+        value: getLevel(el.xp),
       })) as Array<DataRanking>,
     [scores]
   );
 
+  const dataTheme = useMemo(() => {
+    let res = dataLvl;
+    if (tabTheme === 0) {
+      res = dataSolo;
+    } else if (tabTheme === 1) {
+      res = dataDuel;
+    }
+    return res;
+  }, [dataDuel, dataLvl, dataSolo, tabTheme]);
+
   useEffect(() => {
     const getScores = () => {
       if (theme) {
-        selectScoresByTheme(Number(theme), "points").then(({ data }) => {
+        setLoadingScore(true);
+        const order =
+          tabTheme === 0 ? "points" : tabTheme === 1 ? "rank" : "xp";
+        selectScoresByTheme(Number(theme), order).then(({ data }) => {
           setScores(data as Array<Score>);
+          setLoadingScore(false);
         });
       }
     };
     getScores();
-  }, [theme]);
+  }, [theme, tabTheme]);
 
   useEffect(() => {
     selectStatAccomplishment(option).then(({ data }) => {
@@ -206,6 +242,7 @@ export default function RankingPage() {
                   <SelectIdTheme
                     theme={theme}
                     onChange={(value) => {
+                      setLoadingScore(true);
                       setTheme(value);
                     }}
                   />
@@ -215,9 +252,12 @@ export default function RankingPage() {
                     <DefaultTabs
                       values={tabsTheme}
                       tab={tabTheme}
-                      onChange={setTabTheme}
+                      onChange={(value) => {
+                        setLoadingScore(true);
+                        setTabTheme(value);
+                      }}
                     />
-                    <RankingTable data={tabTheme === 0 ? dataSolo : dataDuel} />
+                    <RankingTable data={dataTheme} loading={loadingScore} />
                   </Box>
                 </Grid>
               </>

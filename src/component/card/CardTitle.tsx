@@ -53,6 +53,7 @@ export const CardTitle = ({ titles }: Props) => {
             sx={{
               display: "flex",
               p: 1,
+              mb: 1,
               maxHeight: viewHeight(15),
               overflowX: "scroll",
             }}

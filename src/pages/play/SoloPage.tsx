@@ -16,7 +16,7 @@ import { percent, viewHeight } from "csx";
 import { LoadingDot } from "src/component/Loading";
 import { QcmResponseBlock } from "src/component/QcmBlock";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
-import { SoloGame } from "src/models/Game";
+import { AllQuestionSoloGame, SoloGame } from "src/models/Game";
 import { StatusGameSolo } from "src/models/enum";
 import { Colors } from "src/style/Colors";
 
@@ -64,7 +64,7 @@ export default function SoloPage() {
               },
             });
           }
-        }, 2000);
+        }, 1500);
         if (audio) {
           audio.pause();
         }
@@ -115,12 +115,13 @@ export default function SoloPage() {
           setTimeoutQuestion(newtimeoutQuestion);
         })
         .on("broadcast", { event: "allquestion" }, (value) => {
-          const res = value.payload as SoloGame;
+          const res = value.payload as AllQuestionSoloGame;
           channel.unsubscribe();
           supabase.removeChannel(channel);
           navigate(`/recapsolo/${res.uuid}`, {
             state: {
               allquestion: true,
+              extra: res.extra,
             },
           });
         })

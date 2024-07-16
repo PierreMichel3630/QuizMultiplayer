@@ -11,6 +11,7 @@ import { UserProvider, useUser } from "./context/UserProvider";
 import "./i18n/config";
 import Routes from "./routes";
 import { Colors } from "./style/Colors";
+import { important, px } from "csx";
 
 function App() {
   const { mode, language } = useUser();
@@ -93,6 +94,13 @@ function App() {
             styleOverrides: {
               root: {
                 color: "inherit",
+              },
+            },
+          },
+          MuiToolbar: {
+            styleOverrides: {
+              root: {
+                minHeight: important(px(56)),
               },
             },
           },

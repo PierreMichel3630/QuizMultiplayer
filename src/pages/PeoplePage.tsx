@@ -5,7 +5,10 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { searchProfilePagination } from "src/api/profile";
 import { BasicSearchInput } from "src/component/Input";
-import { BasicCardProfile } from "src/component/card/CardProfile";
+import {
+  BasicCardFriendProfile,
+  BasicCardProfile,
+} from "src/component/card/CardProfile";
 import { SkeletonPlayers } from "src/component/skeleton/SkeletonPlayer";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
@@ -125,7 +128,7 @@ export default function PeoplePage() {
               </Grid>
               {friendsFilter.map((friend) => (
                 <Grid item key={friend.id} xs={12}>
-                  <BasicCardProfile profile={friend} />
+                  <BasicCardFriendProfile profile={friend} />
                 </Grid>
               ))}
               <Grid item xs={12}>

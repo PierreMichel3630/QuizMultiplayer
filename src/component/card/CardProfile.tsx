@@ -107,6 +107,33 @@ export const BasicCardProfile = ({ profile }: PropsBasic) => {
       }}
       onClick={() => navigate(`/profil/${profile.id}`)}
     >
+      <AvatarAccount avatar={profile.avatar.icon} size={50} />
+      <Typography variant="h6" sx={{ wordWrap: "break-word" }}>
+        {profile.username}
+      </Typography>
+      <FriendButton profile={profile} small />
+    </Paper>
+  );
+};
+
+interface PropsBasic {
+  profile: Profile;
+}
+export const BasicCardFriendProfile = ({ profile }: PropsBasic) => {
+  const navigate = useNavigate();
+
+  return (
+    <Paper
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        cursor: "pointer",
+        p: px(5),
+      }}
+      onClick={() => navigate(`/profil/${profile.id}`)}
+    >
       <BadgeAccountActive online={profile.isonline}>
         <AvatarAccount avatar={profile.avatar.icon} size={50} />
       </BadgeAccountActive>

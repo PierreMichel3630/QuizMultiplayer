@@ -113,14 +113,15 @@ export const BadgeTitle = ({
         backgroundColor: color,
         borderRadius: px(10),
         cursor: onClick ? "pointer" : "default",
+        userSelect: "none",
       }}
+      onClick={onClick}
     >
       <JsonLanguageBlock
         variant="caption"
         fontSize={12}
         color="text.secondary"
         value={label}
-        noWrap
       />
     </Box>
   );

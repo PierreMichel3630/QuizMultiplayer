@@ -13,6 +13,10 @@ import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { LoadingDot } from "../Loading";
 import { LabelRankBlock } from "../RankBlock";
 import { StatusGameDuel } from "src/models/enum";
+import { useState, useEffect, useMemo } from "react";
+import { selectScoreByThemeAndPlayer } from "src/api/score";
+import { Score } from "src/models/Score";
+import { getLevel } from "src/utils/calcul";
 
 interface Props {
   game: DuelGame;
@@ -20,6 +24,49 @@ interface Props {
 }
 export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
   const { t } = useTranslation();
+
+  const [loadingP2, setLoadingP2] = useState(true);
+  const [scoreP2, setScoreP2] = useState<Score | null>(null);
+  const [loadingP1, setLoadingP1] = useState(true);
+  const [scoreP1, setScoreP1] = useState<Score | null>(null);
+
+  useEffect(() => {
+    const getRank = () => {
+      selectScoreByThemeAndPlayer(game.player1.id, game.theme.id).then(
+        ({ data }) => {
+          const res = data as Score;
+          setScoreP1(res);
+          setLoadingP1(false);
+        }
+      );
+    };
+    getRank();
+  }, [game.player1, game.theme]);
+
+  useEffect(() => {
+    const getRank = () => {
+      if (game.player2 !== null) {
+        selectScoreByThemeAndPlayer(game.player2.id, game.theme.id).then(
+          ({ data }) => {
+            const res = data as Score;
+            setScoreP2(res);
+            setLoadingP2(false);
+          }
+        );
+      }
+    };
+    getRank();
+  }, [game.player2, game.theme]);
+
+  const lvlP1 = useMemo(
+    () => (scoreP1 !== null ? getLevel(scoreP1.xp) : undefined),
+    [scoreP1]
+  );
+  const lvlP2 = useMemo(
+    () => (scoreP2 !== null ? getLevel(scoreP2.xp) : undefined),
+    [scoreP2]
+  );
+
   return (
     <Box
       sx={{
@@ -44,6 +91,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           profile={game.player1}
           size={100}
           color={Colors.white}
+          level={lvlP1}
         />
         <Box>
           <Typography variant="h2" color="text.secondary">
@@ -56,7 +104,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
               value={game.player1.title.name}
             />
           )}
-          <LabelRankBlock player={game.player1.id} theme={game.theme.id} />
+          <LabelRankBlock loading={loadingP1} score={scoreP1} />
           {game.player1.country && (
             <CountryBlock id={game.player1.country} color="text.secondary" />
           )}
@@ -126,7 +174,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
                   value={game.player2.title.name}
                 />
               )}
-              <LabelRankBlock player={game.player2.id} theme={game.theme.id} />
+              <LabelRankBlock loading={loadingP2} score={scoreP2} />
               {game.player2.country && (
                 <CountryBlock
                   id={game.player2.country}
@@ -144,6 +192,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
               profile={game.player2}
               size={100}
               color={Colors.white}
+              level={lvlP2}
             />
           </>
         ) : (

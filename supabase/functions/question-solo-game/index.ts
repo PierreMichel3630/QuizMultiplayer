@@ -87,12 +87,22 @@ async function getQuestion(supabase, channel, game) {
         channel.send({
           type: "broadcast",
           event: "allquestion",
-          payload: { uuid: uuid },
+          payload: {
+            uuid: uuid,
+            extra: {
+              xpplayer1: {
+                match: 50,
+                matchscore: points * 10,
+              },
+            },
+          },
         });
         const resupdatescore = await supabase.rpc("updatescore", {
           player: player,
           themeid: theme.id,
           newpoints: points,
+          game: uuid,
+          xpprop: 50 + points * 10,
         });
         if (resupdatescore.error) throw resupdatescore.error;
         channel.unsubscribe();

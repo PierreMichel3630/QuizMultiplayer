@@ -205,7 +205,7 @@ export const AutocompleteTheme = ({
 
   return (
     <Grid container spacing={1} alignItems="center">
-      <Grid item xs={12} sm={9}>
+      <Grid item xs={12}>
         <AutocompleteInputTheme
           placeholder={t("commun.selecttheme")}
           onSelect={(newvalue) => onChange([...value, newvalue])}

@@ -33,6 +33,11 @@ export interface SoloGame {
   status: StatusGameSolo;
 }
 
+export interface AllQuestionSoloGame {
+  uuid: string;
+  extra: ExtraSoloGame;
+}
+
 export interface ExtraSoloGame {
   xpplayer1: ExtraSoloGameXP;
 }

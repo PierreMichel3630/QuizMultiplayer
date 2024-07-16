@@ -28,6 +28,7 @@ export interface StatAccomplishment {
   victoryduel: number;
   drawduel: number;
   defeatduel: number;
+  xp: number;
 }
 
 export enum StatAccomplishmentEnum {

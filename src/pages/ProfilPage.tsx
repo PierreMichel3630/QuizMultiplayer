@@ -35,6 +35,7 @@ import {
   sortByPointsDesc,
   sortByRankDesc,
   sortByTitle,
+  sortByXP,
 } from "src/utils/sort";
 
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
@@ -47,6 +48,11 @@ import { searchString } from "src/utils/string";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { CardOpposition } from "src/component/card/CardOpposition";
 import { StatusProfileBlock } from "src/component/StatusProfileBlock";
+import { getLevel } from "src/utils/calcul";
+import { BadgeLevel } from "src/icons/BadgeLevel";
+import { useApp } from "src/context/AppProvider";
+import { StatAccomplishment } from "src/models/Accomplishment";
+import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 
 export default function ProfilPage() {
   const { t } = useTranslation();
@@ -54,6 +60,7 @@ export default function ProfilPage() {
   const { uuid, language } = useUser();
   const { user, profile } = useAuth();
   const navigate = useNavigate();
+  const { friends } = useApp();
 
   const [profileUser, setProfileUser] = useState<Profile | undefined>(
     undefined
@@ -65,8 +72,21 @@ export default function ProfilPage() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("alphabetical");
   const [isLoading, setIsLoading] = useState(true);
+  const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
 
   const isMe = useMemo(() => id === uuid, [id, uuid]);
+  const friend = useMemo(
+    () =>
+      friends.find(
+        (el) =>
+          user &&
+          profileUser &&
+          ((el.user1.id === user.id && el.user2.id === profileUser.id) ||
+            (el.user2.id === user.id && el.user1.id === profileUser.id))
+      ),
+    [friends, user, profileUser]
+  );
+
   const totalOpposition = useMemo(
     () =>
       oppositions.reduce(
@@ -87,6 +107,7 @@ export default function ProfilPage() {
     { value: "gamesduel", label: t("sort.gamesduel"), sort: setSort },
     { value: "scoresolo", label: t("sort.scoresolo"), sort: setSort },
     { value: "scoreduel", label: t("sort.scoreduel"), sort: setSort },
+    { value: "level", label: t("sort.level"), sort: setSort },
   ];
 
   useEffect(() => {
@@ -109,6 +130,17 @@ export default function ProfilPage() {
     getTitles();
     getBadges();
   }, [id]);
+
+  useEffect(() => {
+    const getMyStat = () => {
+      if (profileUser) {
+        selectStatAccomplishmentByProfile(profileUser.id).then(({ data }) => {
+          setStat(data as StatAccomplishment);
+        });
+      }
+    };
+    getMyStat();
+  }, [profileUser]);
 
   useEffect(() => {
     const getScore = () => {
@@ -183,6 +215,8 @@ export default function ProfilPage() {
     [titles, language]
   );
 
+  const level = useMemo(() => (stat ? getLevel(stat.xp) : undefined), [stat]);
+
   const scoresWithRankAndOpposition = useMemo(() => {
     const result = scores.map((score) => {
       const opposition = oppositions.find((el) => el.theme === score.theme.id);
@@ -212,6 +246,9 @@ export default function ProfilPage() {
       case "scoreduel":
         res = [...res].sort(sortByRankDesc);
         break;
+      case "level":
+        res = [...res].sort(sortByXP);
+        break;
       default:
         res = [...res].sort((a, b) => sortByName(language, a.theme, b.theme));
         break;
@@ -235,12 +272,13 @@ export default function ProfilPage() {
           }}
         >
           <Grid container spacing={1} justifyContent="center">
-            <Grid item>
+            <Grid item sx={{ mb: 1 }}>
               <AvatarAccountBadge
                 profile={profileUser}
                 size={120}
                 color={Colors.white}
                 backgroundColor={Colors.grey2}
+                level={level}
               />
             </Grid>
             <Grid
@@ -261,16 +299,36 @@ export default function ProfilPage() {
                 />
               )}
             </Grid>
-            <Grid
-              item
-              xs={12}
-              sx={{ display: "flex", justifyContent: "center" }}
-            >
-              <StatusProfileBlock
-                online={profileUser.isonline}
-                color="text.secondary"
-              />
-            </Grid>
+            {stat && (
+              <Grid item>
+                <Typography
+                  variant="h4"
+                  component="span"
+                  color="text.secondary"
+                >
+                  {stat.xp}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  component="span"
+                  color="text.secondary"
+                >
+                  {t("commun.xpabbreviation")}
+                </Typography>
+              </Grid>
+            )}
+            {!isMe && friend && (
+              <Grid
+                item
+                xs={12}
+                sx={{ display: "flex", justifyContent: "center" }}
+              >
+                <StatusProfileBlock
+                  online={profileUser.isonline}
+                  color="text.secondary"
+                />
+              </Grid>
+            )}
             {profileUser.country && (
               <Grid
                 item
@@ -363,6 +421,7 @@ export default function ProfilPage() {
                 top: px(55),
                 backgroundColor: "white",
                 width: percent(100),
+                zIndex: 5,
               }}
             >
               <BasicSearchInput
@@ -377,6 +436,7 @@ export default function ProfilPage() {
           <Box sx={{ p: 1 }}>
             <Grid container spacing={1}>
               {scoresDisplay.map((score) => {
+                const lvl = getLevel(score.xp);
                 return (
                   <Grid item xs={12} sm={6} md={6} lg={4} key={score.id}>
                     <Paper
@@ -406,16 +466,48 @@ export default function ProfilPage() {
                               gap: 1,
                             }}
                           >
-                            <ImageThemeBlock theme={score.theme} size={40} />
-                            <JsonLanguageBlock
-                              variant="h2"
-                              sx={{
-                                wordWrap: "anywhere",
-                                fontSize: 18,
-                              }}
-                              color="text.secondary"
-                              value={score.theme.name}
-                            />
+                            <Link
+                              to={`/theme/${score.theme.id}`}
+                              style={{ textDecoration: "none" }}
+                            >
+                              <ImageThemeBlock theme={score.theme} size={60} />
+                            </Link>
+                            <Box>
+                              <JsonLanguageBlock
+                                variant="h2"
+                                sx={{
+                                  wordWrap: "anywhere",
+                                  fontSize: 18,
+                                }}
+                                color="text.secondary"
+                                value={score.theme.name}
+                              />
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  gap: 1,
+                                  alignItems: "center",
+                                }}
+                              >
+                                <BadgeLevel level={lvl} size={40} />
+                                <Box>
+                                  <Typography
+                                    variant="h4"
+                                    component="span"
+                                    color="text.secondary"
+                                  >
+                                    {score.xp}
+                                  </Typography>
+                                  <Typography
+                                    variant="caption"
+                                    component="span"
+                                    color="text.secondary"
+                                  >
+                                    {t("commun.xpabbreviation")}
+                                  </Typography>
+                                </Box>
+                              </Box>
+                            </Box>
                           </Box>
                           <Link
                             to={`/games`}

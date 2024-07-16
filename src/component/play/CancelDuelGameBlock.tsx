@@ -14,7 +14,9 @@ import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
 import { ButtonColor } from "../Button";
 import { LabelRankBlock } from "../RankBlock";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { selectScoreByThemeAndPlayer } from "src/api/score";
+import { Score } from "src/models/Score";
 
 interface Props {
   game: DuelGame;
@@ -25,6 +27,39 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
   const navigate = useNavigate();
 
   const gamebattle = useMemo(() => game.battlegame, [game]);
+
+  const [loadingP2, setLoadingP2] = useState(true);
+  const [scoreP2, setScoreP2] = useState<Score | null>(null);
+  const [loadingP1, setLoadingP1] = useState(true);
+  const [scoreP1, setScoreP1] = useState<Score | null>(null);
+
+  useEffect(() => {
+    const getRank = () => {
+      selectScoreByThemeAndPlayer(game.player1.id, game.theme.id).then(
+        ({ data }) => {
+          const res = data as Score;
+          setScoreP1(res);
+          setLoadingP1(false);
+        }
+      );
+    };
+    getRank();
+  }, [game.player1, game.theme]);
+
+  useEffect(() => {
+    const getRank = () => {
+      if (game.player2 !== null) {
+        selectScoreByThemeAndPlayer(game.player2.id, game.theme.id).then(
+          ({ data }) => {
+            const res = data as Score;
+            setScoreP2(res);
+            setLoadingP2(false);
+          }
+        );
+      }
+    };
+    getRank();
+  }, [game.player2, game.theme]);
 
   return (
     <Box sx={{ pt: 3, pr: 1, pl: 1 }}>
@@ -84,7 +119,7 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
               value={game.player1.title.name}
             />
           )}
-          <LabelRankBlock player={game.player1.id} theme={game.theme.id} />
+          <LabelRankBlock loading={loadingP1} score={scoreP1} />
         </Grid>
         <Grid
           item
@@ -122,7 +157,7 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
               value={game.player2.title.name}
             />
           )}
-          <LabelRankBlock player={game.player2.id} theme={game.theme.id} />
+          <LabelRankBlock loading={loadingP2} score={scoreP2} />
         </Grid>
         <Grid item xs={12}>
           <Box

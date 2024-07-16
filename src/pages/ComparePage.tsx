@@ -218,7 +218,7 @@ export default function ComparePage() {
                   gap: px(5),
                   p: 1,
                   position: "sticky",
-                  top: px(55),
+                  top: px(56),
                   backgroundColor: "white",
                   width: percent(100),
                 }}
@@ -381,16 +381,25 @@ export default function ComparePage() {
                                     </Grid>
                                   </>
                                 )}
-                                <Grid item xs={12} sx={{ textAlign: "center" }}>
-                                  <Typography variant="h4">
-                                    {t("commun.solo")}
-                                  </Typography>
-                                </Grid>
-                                {datasSolo.map((el, index) => (
-                                  <Grid item xs={12} key={index}>
-                                    <LineCompareTable value={el} />
-                                  </Grid>
-                                ))}
+                                {((theme.score1 && theme.score1.games > 0) ||
+                                  (theme.score2 && theme.score2.games > 0)) && (
+                                  <>
+                                    <Grid
+                                      item
+                                      xs={12}
+                                      sx={{ textAlign: "center" }}
+                                    >
+                                      <Typography variant="h4">
+                                        {t("commun.solo")}
+                                      </Typography>
+                                    </Grid>
+                                    {datasSolo.map((el, index) => (
+                                      <Grid item xs={12} key={index}>
+                                        <LineCompareTable value={el} />
+                                      </Grid>
+                                    ))}
+                                  </>
+                                )}
                               </Grid>
                             </Grid>
                           </Grid>

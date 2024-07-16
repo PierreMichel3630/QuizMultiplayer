@@ -40,12 +40,12 @@ export const CardHistoryGame = ({ game, player }: Props) => {
   return (
     <Paper sx={{ p: px(5) }}>
       <Grid container spacing={1} alignItems="center">
-        <Grid item xs={2}>
+        <Grid item xs={2} md={1}>
           <ImageThemeBlock theme={game.theme} />
         </Grid>
         {isSolo ? (
           <>
-            <Grid item xs={7}>
+            <Grid item xs={7} md={8}>
               <JsonLanguageBlock variant="h2" value={game.theme.name} noWrap />
               <Typography variant="caption">
                 {moment(game.created_at).format("DD/MM/YYYY HH:mm")}
@@ -84,7 +84,7 @@ export const CardHistoryGame = ({ game, player }: Props) => {
           </>
         ) : (
           <>
-            <Grid item xs={5}>
+            <Grid item xs={5} md={6}>
               <JsonLanguageBlock variant="h2" value={game.theme.name} noWrap />
               <Typography variant="caption">
                 {moment(game.created_at).format("DD/MM/YYYY HH:mm")}

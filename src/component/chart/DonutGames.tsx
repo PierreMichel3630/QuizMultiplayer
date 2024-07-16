@@ -105,7 +105,10 @@ export const DonutGames = ({
   );
 
   const data = useMemo(
-    () => (type === "solo" ? dataSolo : dataDuel),
+    () =>
+      type === "solo"
+        ? dataSolo.filter((el) => el.value !== 0)
+        : dataDuel.filter((el) => el.value !== 0),
     [dataSolo, dataDuel, type]
   );
 
@@ -203,7 +206,7 @@ export const DonutGames = ({
                     </Grid>
                   )}
                   <Grid item xs={12}>
-                    <DonutChart data={data.filter((el) => el.value !== 0)} />
+                    <DonutChart data={data} />
                   </Grid>
                   {profile && (
                     <Grid item xs={12}>

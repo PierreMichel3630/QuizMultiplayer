@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { important, percent, px } from "csx";
-import { Fragment, useMemo } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -37,6 +37,9 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { HeadTitle } from "src/component/HeadTitle";
 import { useApp } from "src/context/AppProvider";
 import { FRIENDSTATUS } from "src/models/Friend";
+import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
+import { StatAccomplishment } from "src/models/Accomplishment";
+import { getLevel } from "src/utils/calcul";
 
 interface Menu {
   value: string;
@@ -51,6 +54,19 @@ export default function MenuPage() {
   const { t } = useTranslation();
   const { friends } = useApp();
   const { user, profile, logout } = useAuth();
+
+  const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
+
+  useEffect(() => {
+    const getMyStat = () => {
+      if (user) {
+        selectStatAccomplishmentByProfile(user.id).then(({ data }) => {
+          setStat(data as StatAccomplishment);
+        });
+      }
+    };
+    getMyStat();
+  }, [user]);
 
   const notifications = useMemo(
     () =>
@@ -155,6 +171,8 @@ export default function MenuPage() {
     navigate("/");
   };
 
+  const level = useMemo(() => (stat ? getLevel(stat.xp) : undefined), [stat]);
+
   return (
     <Box>
       <Helmet>
@@ -172,12 +190,13 @@ export default function MenuPage() {
             }}
           >
             <Grid container spacing={1} justifyContent="center">
-              <Grid item>
+              <Grid item sx={{ mb: 1 }}>
                 <AvatarAccountBadge
                   profile={profile}
                   size={120}
                   color={Colors.white}
                   backgroundColor={Colors.grey2}
+                  level={level}
                 />
               </Grid>
               <Grid

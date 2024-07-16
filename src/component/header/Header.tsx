@@ -44,7 +44,10 @@ export const Header = () => {
               <img src={logo} width={45} height={45} />
               <Typography
                 variant="h1"
-                sx={{ fontSize: 30, display: { xs: "none", sm: "flex" } }}
+                sx={{
+                  fontSize: important(px(30)),
+                  display: { xs: "none", sm: "flex" },
+                }}
               >
                 {t("appname")}
               </Typography>

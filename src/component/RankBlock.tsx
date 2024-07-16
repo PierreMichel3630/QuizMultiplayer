@@ -1,27 +1,13 @@
 import { Box, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { selectScoreByThemeAndPlayer } from "src/api/score";
 import { Score } from "src/models/Score";
 
 interface Props {
-  player: string;
-  theme: number;
+  loading: boolean;
+  score: Score | null;
 }
-export const LabelRankBlock = ({ player, theme }: Props) => {
+export const LabelRankBlock = ({ score, loading }: Props) => {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(true);
-  const [score, setScore] = useState<Score | null>(null);
-  useEffect(() => {
-    const getRank = () => {
-      selectScoreByThemeAndPlayer(player, theme).then(({ data }) => {
-        const res = data as Score;
-        setScore(res);
-        setLoading(false);
-      });
-    };
-    getRank();
-  }, [player, theme]);
 
   return (
     <Box>

@@ -233,7 +233,8 @@
     "duelgames": "Nombre de parties Duel",
     "victoryduel": "Nombre de victoires en Duel",
     "drawduel": "Nombre de matchs nuls en Duel",
-    "defeatduel": "Nombre de défaites en Duel"
+    "defeatduel": "Nombre de défaites en Duel",
+    "xp": "XP Total"
   },
   "rules": {
     "step1": "Choisissez un thème",
@@ -537,7 +538,8 @@
     "gamessolo": "Trier par nombre de parties Solo",
     "gamesduel": "Trier par nombre de parties Duel",
     "scoresolo": "Trier par meilleur score en partie Solo",
-    "scoreduel": "Trier par meilleur classement en partie Duel"
+    "scoreduel": "Trier par meilleur classement en partie Duel",
+    "level": "Trier par niveau"
   },
   "tutorial": {
     "title": "Bienvenue sur QuizBattle"

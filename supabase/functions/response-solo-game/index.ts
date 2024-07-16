@@ -76,7 +76,7 @@ Deno.serve(async (req) => {
           themeid: game.theme.id,
           newpoints: points,
           game: uuid,
-          xpprop: 50 + points * 5,
+          xpprop: 50 + points * 10,
         });
       }
     }
@@ -89,7 +89,7 @@ Deno.serve(async (req) => {
           ? {
               xpplayer1: {
                 match: 50,
-                matchscore: points * 5,
+                matchscore: points * 10,
               },
             }
           : undefined,
