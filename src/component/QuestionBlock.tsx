@@ -58,10 +58,10 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
           {question.audio && <SoundBar />}
           {question.extra && (
             <JsonLanguageBlock
-              variant="h2"
+              variant="caption"
               color="text.secondary"
               sx={{
-                fontSize: 20,
+                fontSize: 18,
                 fontStyle: "italic",
               }}
               value={question.extra}
@@ -119,10 +119,10 @@ export const QuestionDuelBlock = ({ question }: PropsDuel) => {
           />
           {question.extra && (
             <JsonLanguageBlock
-              variant="h2"
+              variant="caption"
               color="text.secondary"
               sx={{
-                fontSize: 20,
+                fontSize: 18,
                 fontStyle: "italic",
               }}
               value={question.extra}

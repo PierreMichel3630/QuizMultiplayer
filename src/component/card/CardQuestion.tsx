@@ -124,12 +124,12 @@ export const CardSignalQuestion = ({
           />
         </Grid>
         {question.extra && (
-          <Grid item xs={12}>
+          <Grid item xs={12} sx={{ textAlign: "center" }}>
             <JsonLanguageBlock
-              variant="h2"
+              variant="caption"
               color={color}
               sx={{
-                fontSize: 20,
+                fontSize: 18,
                 fontStyle: "italic",
               }}
               value={question.extra}
