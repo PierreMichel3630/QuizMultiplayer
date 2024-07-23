@@ -17,6 +17,8 @@ import { ButtonColor } from "../Button";
 
 import EditIcon from "@mui/icons-material/Edit";
 import { QcmBlockDuelResultBlock } from "../QcmBlock";
+import { hasBorderImage } from "src/utils/theme";
+import { useMemo } from "react";
 
 interface Props {
   question: QuestionAdmin;
@@ -113,6 +115,11 @@ export const CardSignalQuestion = ({
 }: PropsCardSignalQuestion) => {
   const { t } = useTranslation();
 
+  const border = useMemo(
+    () => (question ? hasBorderImage(question.theme.id) : false),
+    [question]
+  );
+
   return (
     <Box sx={{ p: 1, height: percent(100), position: "relative" }}>
       <Grid container spacing={1} justifyContent="center">
@@ -138,7 +145,7 @@ export const CardSignalQuestion = ({
         )}
         {question.image && (
           <Grid item xs={12} sx={{ maxWidth: percent(80), maxHeight: px(400) }}>
-            <ImageQuestionBlock src={question.image} />
+            <ImageQuestionBlock src={question.image} border={border} />
           </Grid>
         )}
         <Grid item xs={12} sx={{ textAlign: "center" }}>
@@ -146,6 +153,38 @@ export const CardSignalQuestion = ({
             <QcmBlockDuelResultBlock question={question} />
           ) : (
             <Box sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
+              {!question.responsePlayer1 && !question.responsePlayer2 && (
+                <Paper
+                  sx={{
+                    p: "4px 10px",
+                    textAlign: "center",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    position: "relative",
+                    cursor: "default",
+                    borderColor: Colors.white,
+                    borderStyle: "solid",
+                    borderWidth: 1,
+                    backgroundColor: question.resultPlayer1
+                      ? Colors.green
+                      : Colors.red,
+                    userSelect: "none",
+                  }}
+                >
+                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                    <Typography variant="h6" color={color}>
+                      {t("commun.goodresponse")} :
+                    </Typography>
+                    <JsonLanguageArrayOrStringBlock
+                      color={color}
+                      variant="h2"
+                      all={question.allresponse}
+                      value={question.response}
+                    />
+                  </Box>
+                </Paper>
+              )}
               {question.responsePlayer1 && (
                 <Paper
                   sx={{

@@ -1,12 +1,12 @@
 import { Box } from "@mui/material";
 import { percent, px } from "csx";
-import { Colors } from "src/style/Colors";
 
 interface Props {
   src: string;
+  border?: boolean;
 }
 
-export const ImageQuestionBlock = ({ src }: Props) => {
+export const ImageQuestionBlock = ({ src, border = false }: Props) => {
   return (
     <Box
       sx={{
@@ -19,25 +19,36 @@ export const ImageQuestionBlock = ({ src }: Props) => {
         flex: "1 1 0",
       }}
     >
-      <img
-        src={src}
-        style={{
-          backgroundColor: Colors.greyDarkMode,
-          maxHeight: percent(100),
-          maxWidth: percent(100),
-          border: "1px solid white",
-        }}
-      />
+      {border ? (
+        <img
+          src={src}
+          style={{
+            maxHeight: percent(90),
+            maxWidth: percent(90),
+            objectFit: "contain",
+            border: "1px solid white",
+          }}
+        />
+      ) : (
+        <img
+          src={src}
+          style={{
+            height: percent(80),
+            width: percent(80),
+            objectFit: "contain",
+          }}
+        />
+      )}
     </Box>
   );
 };
 
-export const ImageQCMBlock = ({ src }: Props) => {
+export const ImageQCMBlock = ({ src, border = false }: Props) => {
   return (
     <Box
       sx={{
-        width: percent(90),
-        height: percent(90),
+        width: percent(100),
+        height: percent(100),
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -46,14 +57,26 @@ export const ImageQCMBlock = ({ src }: Props) => {
         maxHeight: px(200),
       }}
     >
-      <img
-        src={src}
-        style={{
-          maxHeight: percent(100),
-          maxWidth: percent(100),
-          border: "1px solid white",
-        }}
-      />
+      {border ? (
+        <img
+          src={src}
+          style={{
+            maxHeight: percent(90),
+            maxWidth: percent(90),
+            objectFit: "contain",
+            border: "1px solid white",
+          }}
+        />
+      ) : (
+        <img
+          src={src}
+          style={{
+            height: percent(80),
+            width: percent(80),
+            objectFit: "contain",
+          }}
+        />
+      )}
     </Box>
   );
 };

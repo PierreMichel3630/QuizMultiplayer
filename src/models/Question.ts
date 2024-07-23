@@ -1,4 +1,8 @@
-import { JsonLanguage, JsonLanguageArrayOrString } from "./Language";
+import {
+  JsonLanguage,
+  JsonLanguageArray,
+  JsonLanguageArrayOrString,
+} from "./Language";
 import { ResponseLanguage, ResponseLanguageString } from "./Response";
 import { Theme } from "./Theme";
 
@@ -20,6 +24,7 @@ export interface Question {
   responsePlayer1?: string;
   responsePlayer2?: string;
   resultPlayer2?: boolean;
+  theme: Theme;
   difficulty: string;
   id: number;
   allresponse: boolean;
@@ -44,7 +49,7 @@ export interface QuestionAdmin {
   theme: Theme;
   isqcm?: boolean;
   allresponse: boolean;
-  response: JsonLanguageArrayOrString;
+  response: JsonLanguageArray;
 }
 
 export interface QuestionInsertAdmin {

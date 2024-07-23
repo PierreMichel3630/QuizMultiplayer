@@ -26,6 +26,8 @@ import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { AvatarAccount } from "../avatar/AvatarAccount";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+import ReportIcon from "@mui/icons-material/Report";
 
 const divCss = style({
   display: "flex",
@@ -81,9 +83,19 @@ export const AccountMenu = ({ user }: Props) => {
             url: "/parameter",
           },
           {
-            name: t("commun.administration"),
-            icon: <AdminPanelSettingsIcon />,
+            name: t("commun.report"),
+            icon: <ReportIcon />,
+            url: "/administration/report",
+          },
+          {
+            name: t("commun.adminquestions"),
+            icon: <QuestionMarkIcon />,
             url: "/administration/question",
+          },
+          {
+            name: t("commun.themes"),
+            icon: <AdminPanelSettingsIcon />,
+            url: "/administration/themes",
           },
         ]
       : [

@@ -1,15 +1,11 @@
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
   Chip,
-  Divider,
   FormControl,
   FormHelperText,
   Grid,
   InputLabel,
   OutlinedInput,
-  Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
@@ -20,7 +16,7 @@ import {
 } from "src/api/question";
 import { ButtonColor } from "src/component/Button";
 import { InputEnter } from "src/component/Input";
-import { SelectDifficulty, SelectIso } from "src/component/Select";
+import { SelectDifficulty } from "src/component/Select";
 import { useMessage } from "src/context/MessageProvider";
 import { QuestionAdmin } from "src/models/Question";
 import { Theme } from "src/models/Theme";
@@ -43,19 +39,11 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
     typeResponse: string;
     image: null | string;
     theme: null | Theme;
-    languages: Array<{
-      question: string;
-      response: Array<string> | string;
-      language: string;
-    }>;
+    question: string;
+    responses: Array<string>;
   } = {
-    languages: question
-      ? Object.keys(question.question).map((el) => ({
-          question: question.question[el],
-          response: question.response[el],
-          language: el,
-        }))
-      : [],
+    question: question ? question.question["fr-FR"] : "",
+    responses: question ? question.response["fr-FR"] : [],
     difficulty: question ? question.difficulty : "FACILE",
     typeResponse: question ? question.typeResponse : "",
     image: question && question.image ? question.image : null,
@@ -66,19 +54,12 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
     typeResponse: Yup.string().required(
       t("form.createquestion.requiredtyperesponse")
     ),
-    language: Yup.array().of(
-      Yup.object({
-        question: Yup.string().required(
-          t("form.createquestion.requiredtyperesponse")
-        ),
-        response: Yup.string().required(
-          t("form.createquestion.requiredtyperesponse")
-        ),
-        language: Yup.string().required(
-          t("form.createquestion.requiredtyperesponse")
-        ),
-      })
+    question: Yup.string().required(
+      t("form.createquestion.requiredquestionfr")
     ),
+    responses: Yup.array()
+      .of(Yup.string())
+      .min(1, t("form.createquestion.requiredresponsefr")),
     difficulty: Yup.string(),
     image: Yup.mixed().nullable(),
     theme: Yup.mixed().nullable(),
@@ -89,17 +70,23 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
-        const questionLanguage = values.languages.reduce(
-          (acc, value) => ({ ...acc, [value.language]: value.question }),
-          {}
-        );
-        const responseLanguage = values.languages.reduce(
-          (acc, value) => ({ ...acc, [value.language]: value.response }),
-          {}
-        );
         const newQuestion = {
-          question: questionLanguage,
-          response: responseLanguage,
+          question: question
+            ? {
+                ...question.question,
+                "fr-FR": values.question,
+              }
+            : {
+                "fr-FR": values.question,
+              },
+          response: question
+            ? {
+                ...question.response,
+                "fr-FR": values.responses,
+              }
+            : {
+                "fr-FR": values.responses,
+              },
           image: values.image,
           difficulty: values.difficulty,
           typeResponse: values.typeResponse,
@@ -199,164 +186,60 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <Divider>
-            <Typography variant="h4" sx={{ textTransform: "uppercase" }}>
-              {t("commun.questions")}
-            </Typography>
-          </Divider>
+          <FormControl
+            fullWidth
+            error={Boolean(formik.touched.question && formik.errors.question)}
+          >
+            <InputLabel htmlFor="question-input">
+              {t("form.createquestion.question")}
+            </InputLabel>
+            <OutlinedInput
+              id="question-input"
+              type="text"
+              value={formik.values.question}
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              label={t("form.createquestion.question")}
+              inputProps={{}}
+            />
+            {formik.touched.question && formik.errors.question && (
+              <FormHelperText error id="error-question">
+                {formik.errors.question}
+              </FormHelperText>
+            )}
+          </FormControl>
         </Grid>
-        {formik.values.languages.map((language, index) => {
-          const responses =
-            typeof language.response === "string"
-              ? language.response !== ""
-                ? [language.response]
-                : []
-              : language.response;
-          const touched =
-            formik.touched &&
-            formik.touched.languages &&
-            formik.touched.languages[index]
-              ? (formik.touched.languages![index] as {
-                  language?: boolean;
-                  question?: boolean;
-                  response?: boolean;
-                })
-              : {};
-          const errors =
-            formik.errors &&
-            formik.errors.languages &&
-            formik.errors.languages[index]
-              ? (formik.errors.languages![index] as {
-                  language?: string;
-                  question?: string;
-                  response?: string;
-                })
-              : {
-                  language: undefined,
-                  question: undefined,
-                  response: undefined,
-                };
-          return (
-            <Grid item xs={12} key={index}>
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
-                  <FormControl
-                    fullWidth
-                    error={Boolean(touched.language && errors.language)}
-                  >
-                    <SelectIso
-                      value={language.language}
-                      onChange={(value) =>
-                        formik.setFieldValue(
-                          `languages[${index}].language`,
-                          value
-                        )
-                      }
-                    />
-                    {touched.language && errors.language && (
-                      <FormHelperText error id="error-language">
-                        {errors.language}
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl
-                    fullWidth
-                    error={Boolean(touched.question && errors.question)}
-                  >
-                    <InputLabel htmlFor="question-input">
-                      {t("form.createquestion.question")}
-                    </InputLabel>
-                    <OutlinedInput
-                      id="question-input"
-                      type="text"
-                      value={language.question}
-                      onChange={(event) => {
-                        formik.setFieldValue(
-                          `languages[${index}].question`,
-                          event.target.value
-                        );
-                      }}
-                      onBlur={() =>
-                        formik.setFieldTouched(`languages[${index}].question`)
-                      }
-                      label={t("form.createquestion.question")}
-                      inputProps={{}}
-                    />
-                    {touched.question && errors.question && (
-                      <FormHelperText error id="error-question">
-                        {errors.question}
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <InputEnter
-                    onChange={(value) =>
-                      formik.setFieldValue(`languages[${index}].response`, [
-                        ...responses,
-                        value,
-                      ])
-                    }
-                    label={t("form.createquestion.response")}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Box sx={{ display: "flex", gap: 1 }}>
-                    {responses.map((response, i) => (
-                      <Chip
-                        key={i}
-                        label={response}
-                        onDelete={() =>
-                          formik.setFieldValue(
-                            `languages[${index}].response`,
-                            responses.filter((r) => r !== response)
-                          )
-                        }
-                      />
-                    ))}
-                  </Box>
-                </Grid>
-                <Grid item xs={12}>
-                  <ButtonColor
-                    value={Colors.red}
-                    label={t("commun.removelanguage")}
-                    icon={DeleteIcon}
-                    variant="contained"
-                    onClick={() => {
-                      const newValue = [...formik.values.languages];
-                      newValue.splice(index, 1);
-                      formik.setFieldValue("languages", newValue);
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Divider />
-                </Grid>
-              </Grid>
-            </Grid>
-          );
-        })}
         <Grid item xs={12}>
-          <ButtonColor
-            value={Colors.purple}
-            label={t("commun.addlanguage")}
-            icon={AddCircleIcon}
-            variant="contained"
-            onClick={() => {
-              formik.setFieldValue("languages", [
-                ...formik.values.languages,
-                { language: "", question: "", response: "" },
-              ]);
-            }}
+          <InputEnter
+            onChange={(value) =>
+              formik.setFieldValue(`responses`, [
+                ...formik.values.responses,
+                value,
+              ])
+            }
+            label={t("form.createquestion.response")}
           />
+        </Grid>
+        <Grid item xs={12}>
+          <Box sx={{ display: "flex", gap: 1 }}>
+            {formik.values.responses.map((response, i) => (
+              <Chip
+                key={i}
+                label={response}
+                onDelete={() =>
+                  formik.setFieldValue(
+                    `responses`,
+                    [...formik.values.responses].filter((r) => r !== response)
+                  )
+                }
+              />
+            ))}
+          </Box>
         </Grid>
         <Grid item xs={12}>
           <ButtonColor
             value={Colors.green}
-            label={t("commun.add")}
-            icon={AddCircleIcon}
+            label={t("commun.validate")}
             variant="contained"
             type="submit"
           />

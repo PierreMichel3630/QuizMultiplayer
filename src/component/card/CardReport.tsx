@@ -8,8 +8,9 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
 import { Report } from "src/models/Report";
-import { ImageQuestionBlock } from "../ImageBlock";
 import { Colors } from "src/style/Colors";
+import { ImageQuestionBlock } from "../ImageBlock";
+import { Link } from "react-router-dom";
 
 interface Props {
   report: Report;
@@ -61,9 +62,11 @@ export const CardReport = ({ report, onDelete }: Props) => {
         {question && (
           <>
             <Grid item xs={12}>
-              <Typography variant="h6">{`${t("commun.question")} ${
-                question.id
-              }`}</Typography>
+              <Link to={`/administration/question/${question.id}`}>
+                <Typography variant="h6">{`${t("commun.question")} ${
+                  question.id
+                }`}</Typography>
+              </Link>
             </Grid>
             <Grid item xs={12} sx={{ textAlign: "center" }}>
               <JsonLanguageBlock

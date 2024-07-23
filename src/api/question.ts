@@ -20,41 +20,31 @@ export const selectQuestionWithImage = () =>
 export const selectQuestionById = (id: number) =>
   supabase.from(SUPABASE_QUESTION_TABLE).select().eq("id", id).maybeSingle();
 
-export const selectQuestionByThemesAndDifficulty = (
-  theme: number,
+export const selectQuestion = (
   page: number,
   itemperpage: number,
-  difficulty?: string
+  questionsId: string,
+  isImage: boolean
 ) =>
-  difficulty
+  questionsId !== ""
     ? supabase
-        .from(SUPABASE_RANDOMQUESTION_TABLE)
+        .from(SUPABASE_QUESTION_TABLE)
         .select()
-        .eq("theme", theme)
-        .eq("difficulty", difficulty)
+        .in("id", questionsId.split(","))
+        .order("id", { ascending: true })
+        .range(page * itemperpage, (page + 1) * itemperpage)
+    : isImage
+    ? supabase
+        .from(SUPABASE_QUESTION_TABLE)
+        .select()
+        .not("image", "is", null)
         .order("id", { ascending: true })
         .range(page * itemperpage, (page + 1) * itemperpage)
     : supabase
-        .from(SUPABASE_RANDOMQUESTION_TABLE)
+        .from(SUPABASE_QUESTION_TABLE)
         .select()
-        .eq("theme", theme)
         .order("id", { ascending: true })
         .range(page * itemperpage, (page + 1) * itemperpage);
-
-export const countQuestionByThemeAndDifficulty = (
-  theme: number,
-  difficulty?: string
-) =>
-  difficulty
-    ? supabase
-        .from(SUPABASE_RANDOMQUESTION_TABLE)
-        .select("*", { count: "exact", head: true })
-        .eq("difficulty", difficulty)
-        .eq("theme", theme)
-    : supabase
-        .from(SUPABASE_RANDOMQUESTION_TABLE)
-        .select("*", { count: "exact", head: true })
-        .eq("theme", theme);
 
 export const insertQuestionAdmin = (value: QuestionInsertAdmin) =>
   supabase.from(SUPABASE_QUESTION_TABLE).insert(value).select().single();
@@ -76,7 +66,12 @@ export const deleteQuestionById = (id: number) =>
 export const insertQuestion = (value: QuestionInsert) =>
   supabase.from(SUPABASE_QUESTION_TABLE).insert(value).select().single();
 
-export const countQuestions = () =>
-  supabase
-    .from(SUPABASE_RANDOMQUESTION_TABLE)
-    .select("*", { count: "exact", head: true });
+export const countQuestions = (questionsId: string) =>
+  questionsId !== ""
+    ? supabase
+        .from(SUPABASE_QUESTION_TABLE)
+        .select("*", { count: "exact", head: true })
+        .in("id", questionsId.split(","))
+    : supabase
+        .from(SUPABASE_QUESTION_TABLE)
+        .select("*", { count: "exact", head: true });

@@ -122,6 +122,12 @@ export default function MenuPage() {
         to: "/personalized",
       },
       {
+        value: "ranking",
+        label: t("commun.ranking"),
+        icon: <BarChartIcon />,
+        to: "/ranking",
+      },
+      {
         value: "accomplishments",
         label: t("commun.myaccomplishments"),
         icon: <EmojiEventsIcon />,
@@ -157,13 +163,37 @@ export default function MenuPage() {
         icon: <SettingsIcon />,
         to: "/parameter",
       },
+      {
+        value: "faq",
+        label: t("commun.faq"),
+        icon: <LiveHelpIcon />,
+        to: "/faq",
+      },
+      {
+        value: "installation",
+        label: t("commun.installation"),
+        icon: <InstallMobileIcon />,
+        to: "/installation",
+      },
+      {
+        value: "howtoplay",
+        label: t("commun.howtoplay"),
+        icon: <PlayCircleIcon />,
+        to: "/help",
+      },
+      {
+        value: "report",
+        label: t("commun.reportproblem"),
+        icon: <ReportProblemIcon />,
+        to: "/report",
+      },
     ],
     [notifications, profile, t]
   );
 
   const allMenu = useMemo(
-    () => (user ? [...menusUser, ...menus] : menus),
-    [user, menus, menusUser]
+    () => (user ? menusUser : menus),
+    [menus, menusUser, user]
   );
 
   const disconnect = async () => {

@@ -7,6 +7,7 @@ import { JsonLanguageBlock } from "./JsonLanguageBlock";
 import { CircularLoading } from "./Loading";
 import { SoundBar } from "./SoundBar";
 import { Timer } from "./Timer";
+import { hasBorderImage } from "src/utils/theme";
 
 interface PropsSolo {
   question?: QuestionSolo;
@@ -16,6 +17,10 @@ interface PropsSolo {
 export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
   const image = useMemo(
     () => (question ? question.image : undefined),
+    [question]
+  );
+  const border = useMemo(
+    () => (question ? hasBorderImage(question.theme.id) : false),
     [question]
   );
   return (
@@ -52,7 +57,7 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
                 width: percent(100),
               }}
             >
-              <ImageQuestionBlock src={image} />
+              <ImageQuestionBlock src={image} border={border} />
             </Box>
           )}
           {question.audio && <SoundBar />}
@@ -94,6 +99,10 @@ export const QuestionDuelBlock = ({ question }: PropsDuel) => {
     () => (question ? question.image : undefined),
     [question]
   );
+  const border = useMemo(
+    () => (question ? hasBorderImage(question.theme.id) : false),
+    [question]
+  );
   return (
     <Box
       sx={{
@@ -139,7 +148,7 @@ export const QuestionDuelBlock = ({ question }: PropsDuel) => {
                 width: percent(100),
               }}
             >
-              <ImageQuestionBlock src={image} />
+              <ImageQuestionBlock src={image} border={border} />
             </Box>
           )}
           {question.audio && <SoundBar />}

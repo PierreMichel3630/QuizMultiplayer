@@ -3,6 +3,7 @@
   "description": "Quiz multijoueur en ligne",
   "commun": {
     "all": "Tous",
+    "questionwithimage": "Questions avec image",
     "mygames": "Mes parties",
     "chooseusername": "Choisissez votre pseudo",
     "play": "Jouer",
@@ -117,7 +118,6 @@
     "position": "{{position}}ème",
     "changetheme": "Changer de thème",
     "revenge": "Revanche",
-    "administration": "Administration",
     "notrank": "Non Classé",
     "yes": "Oui",
     "no": "Non",
@@ -127,6 +127,10 @@
     "addfavorite": "Ajouter aux favoris",
     "removefavorite": "Retirer des favoris",
     "seequestions": "Voir les questions",
+    "adminquestions": "Questions",
+    "possibleresponses": "Réponses possibles",
+    "addresponse": "Ajouter une réponse",
+    "editresponse": "Modifier une réponse",
     "report": "Signaler",
     "reportquestion": "Signaler la question",
     "typeproblem": "Type de problème *",
@@ -234,7 +238,8 @@
     "victoryduel": "Nombre de victoires en Duel",
     "drawduel": "Nombre de matchs nuls en Duel",
     "defeatduel": "Nombre de défaites en Duel",
-    "xp": "XP Total"
+    "xp": "XP Total",
+    "bestgame": "Meilleur partie solo"
   },
   "rules": {
     "step1": "Choisissez un thème",
@@ -446,6 +451,11 @@
       "passwordmatch": "Les mots de passe doivent correspondre",
       "requiredpassword": "Veuillez saisir un mot de passe",
       "minpassword": "Veuillez saisir un mot de passe de plus de 6 caractères"
+    },
+    "createresponse": {
+      "type": "type",
+      "value": "Reponse *",
+      "requiredvalue": "Veuillez saisir une réponse"
     },
     "createtheme": {
       "namefr": "Nom en Français *",

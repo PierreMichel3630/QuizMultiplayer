@@ -1,9 +1,3 @@
-/*export interface Response {
-  response: ResponseLanguage;
-  date: Moment;
-  players: Array<{ uuid: string; username: string; time: number }>;
-}*/
-
 import { ExtraSoloGame } from "./Game";
 
 export interface Response {
@@ -39,4 +33,17 @@ export interface ResponseLanguage {
 
 export interface ResponseLanguageString {
   [iso: string]: string;
+}
+
+export interface ResponseInsert {
+  type: string;
+  usvalue: string;
+  value: ResponseLanguageString;
+}
+
+export interface ResponseUpdate {
+  id: number;
+  type: string;
+  usvalue: string;
+  value: ResponseLanguageString;
 }

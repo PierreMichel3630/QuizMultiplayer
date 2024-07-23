@@ -23,6 +23,14 @@ export const selectScoreByThemeAndPlayer = (player: string, theme: number) =>
     .eq("theme", theme)
     .maybeSingle();
 
+export const selectScore = (order: string, limit = 25) =>
+  supabase
+    .from(SUPABASE_SCORE_TABLE)
+    .select("*, profile(*, avatar(*)), theme(*)")
+    .order(order, { ascending: false })
+    .order("created_at", { ascending: true })
+    .limit(limit);
+
 export const countPlayersByTheme = (theme: number) =>
   supabase
     .from(SUPABASE_SCORE_TABLE)

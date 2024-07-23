@@ -19,6 +19,7 @@ import { ButtonColor } from "src/component/Button";
 import { GameModeBlock } from "src/component/GameModeBlock";
 import { HeadTitle } from "src/component/HeadTitle";
 import { NewBlock } from "src/component/NewBlock";
+import { RankingBlock } from "src/component/RankingBlock";
 import { SkeletonCategories } from "src/component/skeleton/SkeletonCategory";
 import { Colors } from "src/style/Colors";
 
@@ -216,7 +217,9 @@ export default function ThemesPage() {
                     <NewBlock />
                   </Grid>
                 )}
-
+                <Grid item xs={12}>
+                  <RankingBlock />
+                </Grid>
                 {categoriesFilter.map((category) => (
                   <Grid item xs={12} key={category.id}>
                     <CategoryBlock category={category} />

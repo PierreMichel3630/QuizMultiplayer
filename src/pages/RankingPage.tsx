@@ -2,11 +2,12 @@ import { Box, Grid } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import {
   selectStatAccomplishment,
   selectStatAccomplishmentByProfile,
 } from "src/api/accomplishment";
-import { selectScoresByTheme } from "src/api/score";
+import { selectScore, selectScoresByTheme } from "src/api/score";
 import { HeadTitle } from "src/component/HeadTitle";
 import { BasicSelect, SelectIdTheme } from "src/component/Select";
 import { DefaultTabs } from "src/component/Tabs";
@@ -20,7 +21,7 @@ import { StatAccomplishment } from "src/models/Accomplishment";
 import { Score } from "src/models/Score";
 import { getLevel } from "src/utils/calcul";
 
-enum RankingEnum {
+enum ClassementEnum {
   games = "games",
   gamestenpts = "gamestenpts",
   gamestwentypts = "gamestwentypts",
@@ -33,14 +34,16 @@ enum RankingEnum {
   drawduel = "drawduel",
   defeatduel = "defeatduel",
   xp = "xp",
+  points = "points",
 }
 interface ValueOption {
   label: string;
-  value: RankingEnum;
+  value: ClassementEnum;
 }
 export default function RankingPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
 
   const [tab, setTab] = useState(0);
   const tabs = [{ label: t("commun.global") }, { label: t("commun.pertheme") }];
@@ -55,7 +58,11 @@ export default function RankingPage() {
   const [mydata, setMyData] = useState<DataRankingMe | undefined>(undefined);
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
   const [data, setData] = useState<Array<DataRanking>>([]);
-  const [option, setOption] = useState<RankingEnum>(RankingEnum.games);
+  const [option, setOption] = useState<ClassementEnum>(
+    searchParams.has("sort")
+      ? (searchParams.get("sort") as ClassementEnum)
+      : ClassementEnum.points
+  );
   const [theme, setTheme] = useState("1");
   const [scores, setScores] = useState<Array<Score>>([]);
   const [loadingScore, setLoadingScore] = useState(true);
@@ -63,28 +70,32 @@ export default function RankingPage() {
   const options: Array<ValueOption> = useMemo(
     () => [
       {
+        label: t("ranking.bestgame"),
+        value: ClassementEnum.points,
+      },
+      {
         label: t("ranking.xp"),
-        value: RankingEnum.xp,
+        value: ClassementEnum.xp,
       },
       {
         label: t("ranking.games"),
-        value: RankingEnum.games,
+        value: ClassementEnum.games,
       },
       {
         label: t("ranking.gamestenpts"),
-        value: RankingEnum.gamestenpts,
+        value: ClassementEnum.gamestenpts,
       },
       {
         label: t("ranking.gamestwentypts"),
-        value: RankingEnum.gamestwentypts,
+        value: ClassementEnum.gamestwentypts,
       },
       {
         label: t("ranking.gamesfiftypts"),
-        value: RankingEnum.gamesfiftypts,
+        value: ClassementEnum.gamesfiftypts,
       },
       {
         label: t("ranking.gameshundredpts"),
-        value: RankingEnum.gameshundredpts,
+        value: ClassementEnum.gameshundredpts,
       },
       /*{
         label: t("ranking.themetenpts"),
@@ -96,19 +107,19 @@ export default function RankingPage() {
       },*/
       {
         label: t("ranking.duelgames"),
-        value: RankingEnum.duelgames,
+        value: ClassementEnum.duelgames,
       },
       {
         label: t("ranking.victoryduel"),
-        value: RankingEnum.victoryduel,
+        value: ClassementEnum.victoryduel,
       },
       {
         label: t("ranking.drawduel"),
-        value: RankingEnum.drawduel,
+        value: ClassementEnum.drawduel,
       },
       {
         label: t("ranking.defeatduel"),
-        value: RankingEnum.defeatduel,
+        value: ClassementEnum.defeatduel,
       },
     ],
     [t]
@@ -169,18 +180,34 @@ export default function RankingPage() {
   }, [theme, tabTheme]);
 
   useEffect(() => {
-    selectStatAccomplishment(option).then(({ data }) => {
-      const res = data as Array<StatAccomplishment>;
-      setData(
-        res.map((el) => {
-          const champ = el[option];
-          return {
-            profile: el.profile,
-            value: Array.isArray(champ) ? champ.length : champ,
-          };
-        })
-      );
-    });
+    if (option === ClassementEnum.points) {
+      selectScore(option).then(({ data }) => {
+        const res = data as Array<Score>;
+        setData(
+          res.map((el) => {
+            const champ = el[option];
+            return {
+              profile: el.profile,
+              value: Array.isArray(champ) ? champ.length : champ,
+              theme: el.theme,
+            };
+          })
+        );
+      });
+    } else {
+      selectStatAccomplishment(option).then(({ data }) => {
+        const res = data as Array<StatAccomplishment>;
+        setData(
+          res.map((el) => {
+            const champ = el[option];
+            return {
+              profile: el.profile,
+              value: Array.isArray(champ) ? champ.length : champ,
+            };
+          })
+        );
+      });
+    }
   }, [option]);
 
   useEffect(() => {
@@ -196,12 +223,16 @@ export default function RankingPage() {
 
   useEffect(() => {
     if (stat) {
-      const champ = stat[option];
-      setMyData({
-        profile: stat.profile,
-        rank: undefined,
-        value: Array.isArray(champ) ? champ.length : champ,
-      });
+      if (option === ClassementEnum.points) {
+        // DO
+      } else {
+        const champ = stat[option];
+        setMyData({
+          profile: stat.profile,
+          rank: undefined,
+          value: Array.isArray(champ) ? champ.length : champ,
+        });
+      }
     } else {
       setMyData(undefined);
     }
@@ -229,7 +260,7 @@ export default function RankingPage() {
                     placeholder={t("commun.rankingby")}
                     options={options}
                     value={option}
-                    onChange={(value) => setOption(value as RankingEnum)}
+                    onChange={(value) => setOption(value as ClassementEnum)}
                   />
                 </Grid>
                 <Grid item xs={12}>

@@ -1,25 +1,6 @@
-import { Box, Grid, Paper, Skeleton } from "@mui/material";
-import { px } from "csx";
+import { Paper, Grid, Skeleton } from "@mui/material";
 
-interface Props {
-  number: number;
-}
-export const SkeletonThemes = ({ number }: Props) => {
-  return Array.from(new Array(number)).map((_, index) => (
-    <SkeletonTheme key={index} />
-  ));
-};
-
-export const SkeletonTheme = () => {
-  return (
-    <Box sx={{ maxWidth: px(100) }}>
-      <Skeleton variant="rectangular" animation="wave" width={90} height={90} />
-      <Skeleton />
-    </Box>
-  );
-};
-
-export const SkeletonCardTheme = () => {
+export const SkeletonCardReport = () => {
   return (
     <Paper sx={{ p: 1 }}>
       <Grid container spacing={1} alignItems="center">

@@ -8,6 +8,7 @@ import {
 } from "src/api/report";
 import { CardReport } from "src/component/card/CardReport";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
+import { SkeletonCardReport } from "src/component/skeleton/SkeletonReport";
 import { useMessage } from "src/context/MessageProvider";
 import { Report } from "src/models/Report";
 import { Colors } from "src/style/Colors";
@@ -23,14 +24,17 @@ export default function AdminReportPage() {
   const [reports, setReports] = useState<Array<Report>>([]);
   const [report, setReport] = useState<Report | undefined>(undefined);
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getPage = useCallback(() => {
     selectReport(page - 1, ITEMPERPAGE).then(({ data }) => {
       setReports(data as Array<Report>);
+      setIsLoading(false);
     });
   }, [page]);
 
   useEffect(() => {
+    setIsLoading(true);
     getPage();
   }, [page, ITEMPERPAGE, getPage]);
 
@@ -64,22 +68,34 @@ export default function AdminReportPage() {
 
   return (
     <Grid container spacing={1} justifyContent="center">
-      {reports.length > 0 ? (
-        reports.map((report) => (
-          <Grid item xs={12} sm={6} md={4} key={report.id}>
-            <CardReport
-              report={report}
-              onDelete={() => {
-                setReport(report);
-                setOpenConfirmModal(true);
-              }}
-            />
-          </Grid>
-        ))
+      {isLoading ? (
+        <>
+          {Array.from(new Array(10)).map((_, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <SkeletonCardReport />
+            </Grid>
+          ))}
+        </>
       ) : (
-        <Grid item xs={12}>
-          <Alert severity="warning">{t("alert.noresult")}</Alert>
-        </Grid>
+        <>
+          {reports.length > 0 ? (
+            reports.map((report) => (
+              <Grid item xs={12} sm={6} md={4} key={report.id}>
+                <CardReport
+                  report={report}
+                  onDelete={() => {
+                    setReport(report);
+                    setOpenConfirmModal(true);
+                  }}
+                />
+              </Grid>
+            ))
+          ) : (
+            <Grid item xs={12}>
+              <Alert severity="warning">{t("alert.noresult")}</Alert>
+            </Grid>
+          )}
+        </>
       )}
       <Box
         sx={{

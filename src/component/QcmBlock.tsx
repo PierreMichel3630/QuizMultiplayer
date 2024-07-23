@@ -20,6 +20,7 @@ import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { useEffect, useMemo, useState } from "react";
 import { ImageQCMBlock } from "./ImageBlock";
+import { hasBorderImage } from "src/utils/theme";
 
 interface Props {
   question: QuestionSolo;
@@ -27,6 +28,10 @@ interface Props {
 }
 
 export const QcmBlock = ({ question, onSubmit }: Props) => {
+  const border = useMemo(
+    () => (question ? hasBorderImage(question.theme.id) : false),
+    [question]
+  );
   return (
     <Grid container spacing={1}>
       {question.responses.map((response, index) => (
@@ -48,7 +53,9 @@ export const QcmBlock = ({ question, onSubmit }: Props) => {
             variant="outlined"
             onClick={() => onSubmit(index)}
           >
-            {response.image && <ImageQCMBlock src={response.image} />}
+            {response.image && (
+              <ImageQCMBlock src={response.image} border={border} />
+            )}
             {response.label && (
               <JsonLanguageBlock
                 variant="h2"
@@ -78,6 +85,11 @@ export const QcmResponseBlock = ({
   useEffect(() => {
     setIsClick(response !== undefined ? true : false);
   }, [response]);
+
+  const border = useMemo(
+    () => (question ? hasBorderImage(question.theme.id) : false),
+    [question]
+  );
 
   return (
     <Box
@@ -150,7 +162,7 @@ export const QcmResponseBlock = ({
               }
             }}
           >
-            {r.image && <ImageQCMBlock src={r.image} />}
+            {r.image && <ImageQCMBlock src={r.image} border={border} />}
             {r.label && (
               <JsonLanguageBlock
                 variant="h3"
@@ -190,6 +202,11 @@ export const QcmResponseTrainingBlock = ({
   const rows = useMemo(() => {
     return question.responses.length / columns;
   }, [question.responses.length, columns]);
+
+  const border = useMemo(
+    () => (question ? hasBorderImage(question.theme.id) : false),
+    [question]
+  );
 
   return (
     <Box
@@ -262,7 +279,7 @@ export const QcmResponseTrainingBlock = ({
               }
             }}
           >
-            {r.image && <ImageQCMBlock src={r.image} />}
+            {r.image && <ImageQCMBlock src={r.image} border={border} />}
             {r.label && (
               <JsonLanguageBlock
                 variant="h3"
@@ -302,6 +319,11 @@ export const QcmBlockDuelBlock = ({
       response !== undefined || responseMe !== undefined ? true : false
     );
   }, [response, responseMe]);
+
+  const border = useMemo(
+    () => (question ? hasBorderImage(question.theme.id) : false),
+    [question]
+  );
 
   return (
     <Box
@@ -400,7 +422,7 @@ export const QcmBlockDuelBlock = ({
                 }}
               />
             )}
-            {res.image && <ImageQCMBlock src={res.image} />}
+            {res.image && <ImageQCMBlock src={res.image} border={border} />}
             {res.label && (
               <JsonLanguageBlock
                 variant="h3"
@@ -439,6 +461,11 @@ export const QcmBlockDuelResultBlock = ({
 
   const responsePlayer1 = question.responsePlayer1;
   const responsePlayer2 = question.responsePlayer2;
+
+  const border = useMemo(
+    () => (question ? hasBorderImage(question.theme.id) : false),
+    [question]
+  );
 
   return (
     <Box
@@ -500,7 +527,7 @@ export const QcmBlockDuelResultBlock = ({
                 }}
               />
             )}
-            {res.image && <ImageQCMBlock src={res.image} />}
+            {res.image && <ImageQCMBlock src={res.image} border={border} />}
             {res.label && (
               <JsonLanguageBlock
                 variant="h3"
