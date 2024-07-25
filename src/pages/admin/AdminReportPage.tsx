@@ -71,7 +71,7 @@ export default function AdminReportPage() {
       {isLoading ? (
         <>
           {Array.from(new Array(10)).map((_, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
+            <Grid item xs={12} sm={6} key={index}>
               <SkeletonCardReport />
             </Grid>
           ))}
@@ -80,7 +80,7 @@ export default function AdminReportPage() {
         <>
           {reports.length > 0 ? (
             reports.map((report) => (
-              <Grid item xs={12} sm={6} md={4} key={report.id}>
+              <Grid item xs={12} sm={6} key={report.id}>
                 <CardReport
                   report={report}
                   onDelete={() => {
@@ -97,6 +97,7 @@ export default function AdminReportPage() {
           )}
         </>
       )}
+      <Grid item xs={12} sx={{ mb: 5 }} />
       <Box
         sx={{
           position: "fixed",

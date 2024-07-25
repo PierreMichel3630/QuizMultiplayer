@@ -5,6 +5,7 @@ import {
   QuestionUpdate,
 } from "src/models/Question";
 import { supabase } from "./supabase";
+import { FilterQuestion } from "src/pages/admin/AdminQuestionsPage";
 
 export const SUPABASE_QUESTION_TABLE = "question";
 export const SUPABASE_QUESTIONTHEME_TABLE = "questiontheme";
@@ -20,31 +21,41 @@ export const selectQuestionWithImage = () =>
 export const selectQuestionById = (id: number) =>
   supabase.from(SUPABASE_QUESTION_TABLE).select().eq("id", id).maybeSingle();
 
+export const selectQuestionThemeByQuestion = (question: number) =>
+  supabase
+    .from(SUPABASE_QUESTIONTHEME_TABLE)
+    .select("*, theme(*)")
+    .eq("question", question);
+
+export const deleteQuestionThemeById = (id: number) =>
+  supabase.from(SUPABASE_QUESTIONTHEME_TABLE).delete().eq("id", id);
+
 export const selectQuestion = (
   page: number,
   itemperpage: number,
-  questionsId: string,
-  isImage: boolean
-) =>
-  questionsId !== ""
-    ? supabase
-        .from(SUPABASE_QUESTION_TABLE)
-        .select()
-        .in("id", questionsId.split(","))
-        .order("id", { ascending: true })
-        .range(page * itemperpage, (page + 1) * itemperpage)
-    : isImage
-    ? supabase
-        .from(SUPABASE_QUESTION_TABLE)
-        .select()
-        .not("image", "is", null)
-        .order("id", { ascending: true })
-        .range(page * itemperpage, (page + 1) * itemperpage)
-    : supabase
-        .from(SUPABASE_QUESTION_TABLE)
-        .select()
-        .order("id", { ascending: true })
-        .range(page * itemperpage, (page + 1) * itemperpage);
+  filter: FilterQuestion
+) => {
+  const from = page * itemperpage;
+  const to = from + itemperpage - 1;
+
+  let query = supabase
+    .from(SUPABASE_QUESTIONTHEME_TABLE)
+    .select("*,question(*),theme(*)")
+    .not("question", "is", null);
+  if (filter.ids.length > 0) {
+    query = query.in("question.id", filter.ids);
+  }
+  if (filter.themes.length > 0) {
+    const idTheme = filter.themes.map((el) => el.id);
+    query = query.in("theme", idTheme);
+  }
+  if (filter.isImage) {
+    query = query.not("question.image", "is", null);
+  }
+  query = query.is("question.validate", filter.validate);
+  query = query.order("question", { ascending: true }).range(from, to);
+  return query;
+};
 
 export const insertQuestionAdmin = (value: QuestionInsertAdmin) =>
   supabase.from(SUPABASE_QUESTION_TABLE).insert(value).select().single();
@@ -66,12 +77,35 @@ export const deleteQuestionById = (id: number) =>
 export const insertQuestion = (value: QuestionInsert) =>
   supabase.from(SUPABASE_QUESTION_TABLE).insert(value).select().single();
 
-export const countQuestions = (questionsId: string) =>
-  questionsId !== ""
-    ? supabase
-        .from(SUPABASE_QUESTION_TABLE)
-        .select("*", { count: "exact", head: true })
-        .in("id", questionsId.split(","))
-    : supabase
-        .from(SUPABASE_QUESTION_TABLE)
-        .select("*", { count: "exact", head: true });
+export const countQuestions = (filter: FilterQuestion) => {
+  let query = supabase
+    .from(SUPABASE_QUESTIONTHEME_TABLE)
+    .select("*,question(*)", { count: "exact", head: true })
+    .not("question", "is", null);
+  if (filter.ids.length > 0) {
+    query = query.in("question.id", filter.ids);
+  }
+  if (filter.themes.length > 0) {
+    const idTheme = filter.themes.map((el) => el.id);
+    query = query.in("theme", idTheme);
+  }
+  if (filter.isImage) {
+    query = query.not("question.image", "is", null);
+  }
+  query = query.is("question.validate", filter.validate);
+  return query;
+};
+
+export const selectImageQuestion = (page: number, itemperpage = 1000) =>
+  supabase
+    .from(SUPABASE_QUESTION_TABLE)
+    .select("image")
+    .not("image", "is", null)
+    .order("id", { ascending: true })
+    .range(page * itemperpage, (page + 1) * itemperpage);
+
+export const countImageQuestion = () =>
+  supabase
+    .from(SUPABASE_QUESTION_TABLE)
+    .select("image", { count: "exact", head: true })
+    .not("image", "is", null);

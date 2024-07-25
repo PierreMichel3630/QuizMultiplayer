@@ -1,3 +1,5 @@
+import AdminGamesPage from "src/pages/admin/AdminGamesPage";
+import AdminImagesPage from "src/pages/admin/AdminImagesPage";
 import AdminQuestionPage from "src/pages/admin/AdminQuestionPage";
 import AdminQuestionsPage from "src/pages/admin/AdminQuestionsPage";
 import AdminReportPage from "src/pages/admin/AdminReportPage";
@@ -19,5 +21,13 @@ export const AdminRoutes = [
   {
     path: "themes",
     element: <AdminThemesPage />,
+  },
+  {
+    path: "games",
+    element: <AdminGamesPage />,
+  },
+  {
+    path: "images",
+    element: <AdminImagesPage />,
   },
 ];

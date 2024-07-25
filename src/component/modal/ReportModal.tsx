@@ -19,7 +19,10 @@ import { important } from "csx";
 import { useState } from "react";
 import { insertReport } from "src/api/report";
 import { useApp } from "src/context/AppProvider";
+import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
+import { DuelGame } from "src/models/DuelGame";
+import { SoloGame } from "src/models/Game";
 import { Question } from "src/models/Question";
 import { ReportInsert } from "src/models/Report";
 import { Colors } from "src/style/Colors";
@@ -31,10 +34,19 @@ interface Props {
   open: boolean;
   close: () => void;
   question?: Question;
+  sologame?: SoloGame;
+  duelgame?: DuelGame;
 }
 
-export const ReportModal = ({ open, close, question }: Props) => {
+export const ReportModal = ({
+  open,
+  close,
+  question,
+  sologame,
+  duelgame,
+}: Props) => {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const { setMessage, setSeverity } = useMessage();
   const { reportmessages } = useApp();
   const theme = useTheme();
@@ -52,23 +64,29 @@ export const ReportModal = ({ open, close, question }: Props) => {
   };
 
   const validate = () => {
-    const reportInsert: ReportInsert = {
-      description: description,
-      message: Number(type),
-      question: question ? question.id : null,
-    };
-    insertReport(reportInsert).then(({ error }) => {
-      if (error) {
-        setMessage(t("commun.error"));
-        setSeverity("error");
-      } else {
-        setMessage(t("alert.addreport"));
-        setSeverity("success");
-        setDescription("");
-        setType("");
-        close();
-      }
-    });
+    if (type !== "") {
+      const reportInsert: ReportInsert = {
+        description: description,
+        message: Number(type),
+        question: question ? question.id : null,
+        profile: user ? user.id : null,
+        sologame: sologame ? sologame.id : null,
+        duelgame: duelgame ? duelgame.id : null,
+        questionjson: question,
+      };
+      insertReport(reportInsert).then(({ error }) => {
+        if (error) {
+          setMessage(t("commun.error"));
+          setSeverity("error");
+        } else {
+          setMessage(t("alert.addreport"));
+          setSeverity("success");
+          setDescription("");
+          setType("");
+          close();
+        }
+      });
+    }
   };
 
   return (
@@ -80,7 +98,7 @@ export const ReportModal = ({ open, close, question }: Props) => {
       fullScreen={fullScreen}
     >
       <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
+        <Toolbar sx={{ minHeight: important("auto") }}>
           <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
             {t("commun.reportquestion")}
           </Typography>
@@ -89,7 +107,7 @@ export const ReportModal = ({ open, close, question }: Props) => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <DialogContent sx={{ backgroundColor: Colors.black }}>
+      <DialogContent sx={{ backgroundColor: Colors.black, p: 1 }}>
         <Grid container spacing={3}>
           {question && (
             <Grid item xs={12}>

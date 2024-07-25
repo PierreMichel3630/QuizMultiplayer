@@ -97,6 +97,20 @@ function App() {
               },
             },
           },
+          MuiRadio: {
+            styleOverrides: {
+              root: {
+                color: "inherit",
+              },
+            },
+          },
+          MuiFormLabel: {
+            styleOverrides: {
+              root: {
+                color: "inherit",
+              },
+            },
+          },
           MuiToolbar: {
             styleOverrides: {
               root: {

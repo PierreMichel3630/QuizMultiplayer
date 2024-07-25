@@ -23,10 +23,11 @@ export const selectStatAccomplishmentByProfile = (profile: string) =>
     .eq("profile", profile)
     .maybeSingle();
 
-export const selectStatAccomplishment = (order: string) =>
+export const selectStatAccomplishment = (order: string, page: number, limit = 25) =>
   supabase
     .from(SUPABASE_STATACCOMPLISHMENT_TABLE)
     .select("*, profile(*, avatar(*))")
+    .gt(order, 0)
     .order(order, { ascending: false })
     .order("created_at", { ascending: true })
-    .limit(25);
+    .range(page * limit, (page + 1) * limit);

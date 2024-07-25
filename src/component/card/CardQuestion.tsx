@@ -16,9 +16,11 @@ import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
 
 import EditIcon from "@mui/icons-material/Edit";
-import { QcmBlockDuelResultBlock } from "../QcmBlock";
-import { hasBorderImage } from "src/utils/theme";
 import { useMemo } from "react";
+import { hasBorderImage } from "src/utils/theme";
+import { ImageThemeBlock } from "../ImageThemeBlock";
+import { QcmBlockDuelResultBlock } from "../QcmBlock";
+import { ValidateButton } from "../button/ValidateButton";
 
 interface Props {
   question: QuestionAdmin;
@@ -43,6 +45,14 @@ export const CardAdminQuestion = ({
     onChange(newQuestion);
   };
 
+  const onChangeValidate = () => {
+    const newQuestion: QuestionUpdate = {
+      id: question.id,
+      validate: !question.validate,
+    };
+    onChange(newQuestion);
+  };
+
   return (
     <Paper
       sx={{
@@ -55,12 +65,22 @@ export const CardAdminQuestion = ({
       variant="outlined"
     >
       <Grid container spacing={1} justifyContent="center">
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
-          <Typography variant="h2">{`${t("commun.question")} ${
-            question.id
-          }`}</Typography>
-        </Grid>
-        <Grid item>
+        {question.theme && (
+          <Grid
+            item
+            xs={12}
+            sx={{ display: "flex", gap: 1, alignItems: "center" }}
+          >
+            <ImageThemeBlock theme={question.theme} size={50} />
+            <Box>
+              <Typography variant="h4">{`${t("commun.question")} ${
+                question.id
+              }`}</Typography>
+              <JsonLanguageBlock variant="h6" value={question.theme.name} />
+            </Box>
+          </Grid>
+        )}
+        <Grid item xs={12}>
           <SelectDifficulty
             value={question.difficulty as Difficulty}
             onSelect={onChangeDifficulty}
@@ -78,6 +98,12 @@ export const CardAdminQuestion = ({
           <JsonLanguageArrayOrStringBlock
             all={question.allresponse}
             value={question.response}
+          />
+        </Grid>
+        <Grid item xs={12} sx={{ mt: 2 }}>
+          <ValidateButton
+            validate={question.validate}
+            onClick={onChangeValidate}
           />
         </Grid>
         <Grid item xs={6}>
@@ -116,12 +142,19 @@ export const CardSignalQuestion = ({
   const { t } = useTranslation();
 
   const border = useMemo(
-    () => (question ? hasBorderImage(question.theme.id) : false),
+    () =>
+      question && question.theme ? hasBorderImage(question.theme.id) : false,
     [question]
   );
 
   return (
-    <Box sx={{ p: 1, height: percent(100), position: "relative" }}>
+    <Box
+      sx={{
+        p: 1,
+        height: percent(100),
+        position: "relative",
+      }}
+    >
       <Grid container spacing={1} justifyContent="center">
         <Grid item xs={12} sx={{ textAlign: "center" }}>
           <JsonLanguageBlock

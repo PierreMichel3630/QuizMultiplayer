@@ -7,6 +7,7 @@ export interface DuelGame {
   id: number;
   uuid: string;
   theme: Theme;
+  themequestion: Theme;
   player1: Profile;
   player2: Profile;
   ptsplayer1: number;

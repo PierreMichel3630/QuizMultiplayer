@@ -36,3 +36,14 @@ export interface ThemeDifficulty {
   difficultymin: Difficulty;
   difficultymax: Difficulty;
 }
+
+export interface QuestionTheme {
+  id: number;
+  question: number;
+  theme: Theme;
+}
+
+export interface QuestionThemeInsert {
+  question: number;
+  theme: number;
+}

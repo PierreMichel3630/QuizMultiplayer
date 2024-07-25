@@ -10,7 +10,9 @@ export const selectReportMessage = () =>
 export const selectReport = (page: number, itemperpage: number) =>
   supabase
     .from(SUPABASE_REPORT_TABLE)
-    .select("*, message(*), question(*)")
+    .select(
+      "*, message(*), question(*), profile(*), sologame(*,themequestion(*)), duelgame(*,themequestion(*))"
+    )
     .order("created_at", { ascending: true })
     .range(page * itemperpage, (page + 1) * itemperpage);
 

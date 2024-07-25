@@ -182,3 +182,34 @@ export const selectGamesByPlayer = (
         .in("type", types)
         .range(from, to);
 };
+
+export const selectGames = (
+  filter: FilterGame,
+  page: number,
+  itemperpage: number
+) => {
+  const player = filter.player ? filter.player.id : undefined;
+  const opponent = filter.opponent ? filter.opponent.id : undefined;
+  const types = filter.type === "ALL" ? ["SOLO", "DUEL"] : [filter.type];
+  const themes = filter.themes.map((el) => el.id);
+  const from = page * itemperpage;
+  const to = from + itemperpage - 1;
+
+  let query = supabase.from(SUPABASE_HISTORYGAMES_TABLE).select();
+
+  if (opponent && player) {
+    query = query.or(
+      `and(player1->>id.eq.${player},player2->>id.eq.${opponent}),and(player2->>id.eq.${player},player1->>id.eq.${opponent})`
+    );
+  } else if (player) {
+    query = query.or(`player2->>id.eq.${player},player1->>id.eq.${player}`);
+  }
+
+  query = query.in("type", types);
+
+  if (themes.length > 0) {
+    query = query.filter("theme->>id", "in", `(${themes})`);
+  }
+  query = query.range(from, to);
+  return query;
+};

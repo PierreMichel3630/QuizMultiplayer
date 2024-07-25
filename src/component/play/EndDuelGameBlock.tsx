@@ -343,6 +343,7 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
         open={question !== undefined}
         close={() => setQuestion(undefined)}
         question={question}
+        duelgame={game}
       />
     </Box>
   );

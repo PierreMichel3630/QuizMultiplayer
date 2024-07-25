@@ -29,6 +29,7 @@ export interface SoloGame {
   questions: Array<Question>;
   player: string;
   theme: Theme;
+  themequestion: Theme;
   uuid: string;
   status: StatusGameSolo;
 }

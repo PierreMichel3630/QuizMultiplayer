@@ -175,6 +175,7 @@ export default function RecapSoloPage() {
         open={question !== undefined}
         close={() => setQuestion(undefined)}
         question={question}
+        sologame={game}
       />
     </Container>
   );

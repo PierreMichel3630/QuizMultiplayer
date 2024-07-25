@@ -131,3 +131,6 @@ export const sortByUnlock = (a: { unlock: boolean }, b: { unlock: boolean }) =>
 
 export const sortByGamesDesc = (a: { games: number }, b: { games: number }) =>
   b.games - a.games;
+
+export const sortByUsValue = (a: { usvalue: string }, b: { usvalue: string }) =>
+  a.usvalue.localeCompare(b.usvalue);

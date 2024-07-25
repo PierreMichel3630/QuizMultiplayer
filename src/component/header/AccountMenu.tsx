@@ -28,6 +28,8 @@ import { useUser } from "src/context/UserProvider";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import ReportIcon from "@mui/icons-material/Report";
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import ImageIcon from "@mui/icons-material/Image";
 
 const divCss = style({
   display: "flex",
@@ -53,35 +55,60 @@ export const AccountMenu = ({ user }: Props) => {
   const { getFriends } = useApp();
   const { setUuid } = useUser();
 
-  const settings: Array<Setting> =
+  const settings: Array<Setting> = profile
+    ? [
+        {
+          name: t("commun.personalizedprofile"),
+          icon: <BrushIcon />,
+          url: "/personalized",
+        },
+        {
+          name: t("commun.myaccomplishments"),
+          icon: <EmojiEventsIcon />,
+          url: "/accomplishments",
+        },
+        {
+          name: t("commun.compare"),
+          icon: <CompareArrowsIcon />,
+          url: "/compare",
+          state: { profile1: profile },
+        },
+        {
+          name: t("commun.notifications"),
+          icon: <NotificationsIcon />,
+          url: "/notifications",
+        },
+        {
+          name: t("commun.myparameter"),
+          icon: <SettingsIcon />,
+          url: "/parameter",
+        },
+      ]
+    : [
+        {
+          name: t("commun.personalizedprofile"),
+          icon: <BrushIcon />,
+          url: "/personalized",
+        },
+        {
+          name: t("commun.myaccomplishments"),
+          icon: <EmojiEventsIcon />,
+          url: "/accomplishments",
+        },
+        {
+          name: t("commun.notifications"),
+          icon: <NotificationsIcon />,
+          url: "/notifications",
+        },
+        {
+          name: t("commun.myparameter"),
+          icon: <SettingsIcon />,
+          url: "/parameter",
+        },
+      ];
+  const settingsAdmin: Array<Setting> =
     profile && profile.isadmin
       ? [
-          {
-            name: t("commun.personalizedprofile"),
-            icon: <BrushIcon />,
-            url: "/personalized",
-          },
-          {
-            name: t("commun.myaccomplishments"),
-            icon: <EmojiEventsIcon />,
-            url: "/accomplishments",
-          },
-          {
-            name: t("commun.compare"),
-            icon: <CompareArrowsIcon />,
-            url: "/compare",
-            state: { profile1: profile },
-          },
-          {
-            name: t("commun.notifications"),
-            icon: <NotificationsIcon />,
-            url: "/notifications",
-          },
-          {
-            name: t("commun.myparameter"),
-            icon: <SettingsIcon />,
-            url: "/parameter",
-          },
           {
             name: t("commun.report"),
             icon: <ReportIcon />,
@@ -97,29 +124,18 @@ export const AccountMenu = ({ user }: Props) => {
             icon: <AdminPanelSettingsIcon />,
             url: "/administration/themes",
           },
+          {
+            name: t("commun.games"),
+            icon: <SportsEsportsIcon />,
+            url: "/administration/games",
+          },
+          {
+            name: t("commun.images"),
+            icon: <ImageIcon />,
+            url: "/administration/images",
+          },
         ]
-      : [
-          {
-            name: t("commun.personalizedprofile"),
-            icon: <BrushIcon />,
-            url: "/personalized",
-          },
-          {
-            name: t("commun.myaccomplishments"),
-            icon: <EmojiEventsIcon />,
-            url: "/accomplishments",
-          },
-          {
-            name: t("commun.notifications"),
-            icon: <NotificationsIcon />,
-            url: "/notifications",
-          },
-          {
-            name: t("commun.myparameter"),
-            icon: <SettingsIcon />,
-            url: "/parameter",
-          },
-        ];
+      : [];
 
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
@@ -198,6 +214,25 @@ export const AccountMenu = ({ user }: Props) => {
           </MenuItem>
         ))}
         <Divider sx={{ m: important(0) }} />
+
+        {settingsAdmin.length > 0 && (
+          <div>
+            <Box sx={{ p: px(5), textAlign: "center" }}>
+              <Typography variant="h6">{t("commun.administration")}</Typography>
+            </Box>
+            {settingsAdmin.map((setting, index) => (
+              <MenuItem
+                key={index}
+                onClick={() => goTo(setting.url, setting.state)}
+                sx={{ minHeight: "auto" }}
+              >
+                <ListItemIcon>{setting.icon}</ListItemIcon>
+                <ListItemText primary={setting.name} />
+              </MenuItem>
+            ))}
+            <Divider sx={{ m: important(0) }} />
+          </div>
+        )}
         <MenuItem onClick={disconnect} sx={{ minHeight: "auto" }}>
           <ListItemIcon>
             <LogoutIcon />

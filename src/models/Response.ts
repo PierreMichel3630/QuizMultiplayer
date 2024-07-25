@@ -47,3 +47,18 @@ export interface ResponseUpdate {
   usvalue: string;
   value: ResponseLanguageString;
 }
+
+export interface ResponseImageInsert {
+  type: string;
+  usvalue: string;
+  response: ResponseLanguageString;
+  image: string;
+}
+
+export interface ResponseImageUpdate {
+  id: number;
+  type: string;
+  usvalue: string;
+  response: ResponseLanguageString;
+  image: string;
+}

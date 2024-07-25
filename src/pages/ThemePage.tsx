@@ -4,7 +4,7 @@ import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import StarIcon from "@mui/icons-material/Star";
 import SupervisedUserCircleRoundedIcon from "@mui/icons-material/SupervisedUserCircleRounded";
-import { Box, Divider, Grid, Typography } from "@mui/material";
+import { Alert, Box, Divider, Grid, Typography } from "@mui/material";
 import { percent, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -49,6 +49,7 @@ export default function ThemePage() {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
+  const ITEMPERPAGE = 10;
 
   const { uuid, language } = useUser();
   const { user, profile } = useAuth();
@@ -178,7 +179,7 @@ export default function ThemePage() {
       if (id) {
         setLoadingScore(true);
         const order = tab === 0 ? "points" : tab === 1 ? "rank" : "xp";
-        selectScoresByTheme(Number(id), order).then(({ data }) => {
+        selectScoresByTheme(Number(id), order, ITEMPERPAGE).then(({ data }) => {
           setScores(data as Array<Score>);
           setLoadingScore(false);
         });
@@ -507,6 +508,13 @@ export default function ThemePage() {
             <RankingTable data={data} me={dataMe} loading={loadingScore} />
           </Box>
         </Grid>
+        {!loadingScore && data.length === 0 && (
+          <Grid item xs={12}>
+            <Box sx={{ p: 1 }}>
+              <Alert severity="info">{t("commun.noresultgame")}</Alert>
+            </Box>
+          </Grid>
+        )}
       </Grid>
       <SelectFriendModal
         open={openModalFriend}

@@ -2,7 +2,12 @@
   "appname": "QuizBattle",
   "description": "Quiz multijoueur en ligne",
   "commun": {
+    "validatequestion": "Question Validé",
+    "deniedquestion": "Question Non Valide",
     "all": "Tous",
+    "per": "par",
+    "image": "Image",
+    "seegame": "Voir la partie",
     "questionwithimage": "Questions avec image",
     "mygames": "Mes parties",
     "chooseusername": "Choisissez votre pseudo",
@@ -48,6 +53,7 @@
     "add": "Ajouter",
     "addfriend": "Ajouter un amis",
     "waitinvitation": "Invitation envoyée",
+    "searchid": "Rechercher l'id d'une question",
     "searchfriend": "Rechercher un ami via son nom d'utilisateur",
     "searchtheme": "Rechercher un theme",
     "noresult": "Aucun résultat ne correspond à votre recherche.",
@@ -127,7 +133,10 @@
     "addfavorite": "Ajouter aux favoris",
     "removefavorite": "Retirer des favoris",
     "seequestions": "Voir les questions",
+    "seequestion": "Voir la question",
+    "signal": "Signaler le",
     "adminquestions": "Questions",
+    "administration": "Administration",
     "possibleresponses": "Réponses possibles",
     "addresponse": "Ajouter une réponse",
     "editresponse": "Modifier une réponse",
@@ -453,6 +462,7 @@
       "minpassword": "Veuillez saisir un mot de passe de plus de 6 caractères"
     },
     "createresponse": {
+      "image": "Image",
       "type": "type",
       "value": "Reponse *",
       "requiredvalue": "Veuillez saisir une réponse"
@@ -467,8 +477,14 @@
       "requirednamefr": "Veuillez saisir un nom de thème en français"
     },
     "createquestion": {
+      "isqcm": "QCM",
+      "typequestion": "Type Question *",
+      "validate": "Validée",
+      "exact": "Exact",
+      "allresponse": "Toutes les responses",
       "question": "Question *",
       "response": "Réponse *",
+      "responses": "Mauvaise Réponse *",
       "language": "Langue *",
       "typeResponse": "Type Réponse",
       "image": "Image",
@@ -506,6 +522,7 @@
   },
   "alert": {
     "noresult": "Aucun résultat.",
+    "updatequestion": "Votre modification de la question à été pris en compte.",
     "allresponseanswer": "Vous avez répondu à toutes les question du thème.",
     "nofriend": "Aucune demande d'ami.",
     "nogame": "Aucun duel en cours.",

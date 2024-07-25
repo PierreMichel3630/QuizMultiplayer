@@ -141,3 +141,103 @@ export const CardHistoryGame = ({ game, player }: Props) => {
     </Paper>
   );
 };
+
+export const CardHistoryGameAdmin = ({ game }: Props) => {
+  const { t } = useTranslation();
+
+  const isSolo = useMemo(() => game.type === "SOLO", [game.type]);
+
+  return (
+    <Paper sx={{ p: px(5) }}>
+      <Grid container spacing={1} alignItems="center">
+        <Grid item xs={2} md={1}>
+          <ImageThemeBlock theme={game.theme} />
+        </Grid>
+        <Grid item xs={10} md={11}>
+          <Grid container spacing={1} alignItems="center">
+            {isSolo ? (
+              <>
+                <Grid item xs={10}>
+                  <JsonLanguageBlock
+                    variant="h2"
+                    value={game.theme.name}
+                    noWrap
+                  />
+                  <Typography variant="caption">
+                    {moment(game.created_at).format("DD/MM/YYYY HH:mm")}
+                  </Typography>
+                  <Typography variant="h6">{game.player1.username}</Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: px(3),
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography variant="h2">{game.ptsplayer1}</Typography>
+                    <Typography variant="body1">
+                      {t("commun.pointsabbreviation")}
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid
+                  item
+                  xs={2}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <Link
+                    to={`/game/solo/${game.uuid}`}
+                    style={{ height: px(20) }}
+                  >
+                    <VisibilityIcon sx={{ color: Colors.black }} />
+                  </Link>
+                </Grid>
+              </>
+            ) : (
+              <>
+                <Grid item xs={10}>
+                  <JsonLanguageBlock
+                    variant="h2"
+                    value={game.theme.name}
+                    noWrap
+                  />
+                  <Typography variant="caption">
+                    {moment(game.created_at).format("DD/MM/YYYY HH:mm")}
+                  </Typography>
+                  <Box
+                    sx={{ display: "flex", alignItems: "center", gap: px(3) }}
+                  >
+                    <Typography variant="h6">
+                      {`${game.player1.username} ${t("commun.versus")} ${
+                        game.player2 ? game.player2.username : "inconnu"
+                      }`}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{ display: "flex", alignItems: "center", gap: px(3) }}
+                  >
+                    <Typography variant="h2">
+                      {`${game.ptsplayer1} - ${game.ptsplayer2}`}
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid
+                  item
+                  xs={2}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <Link
+                    to={`/game/duel/${game.uuid}`}
+                    style={{ height: px(20) }}
+                  >
+                    <VisibilityIcon sx={{ color: Colors.black }} />
+                  </Link>
+                </Grid>
+              </>
+            )}
+          </Grid>
+        </Grid>
+      </Grid>
+    </Paper>
+  );
+};

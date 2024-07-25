@@ -30,7 +30,7 @@ export const RankingBlock = () => {
   useEffect(() => {
     const getRank = () => {
       setIsLoading(true);
-      selectScore("points", 3).then(({ data }) => {
+      selectScore("points", 0, 3).then(({ data }) => {
         setScores(data as Array<Score>);
         setIsLoading(false);
       });

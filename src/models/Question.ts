@@ -44,20 +44,30 @@ export interface QuestionAdmin {
   image?: string;
   question: JsonLanguage;
   typeResponse: string;
+  typequestion: string;
   difficulty: string;
   id: number;
-  theme: Theme;
-  isqcm?: boolean;
+  theme?: Theme;
+  isqcm: boolean | null;
+  exact: boolean;
   allresponse: boolean;
+  validate: boolean;
   response: JsonLanguageArray;
+  responses: Array<JsonLanguage>;
 }
 
 export interface QuestionInsertAdmin {
   difficulty: string;
   question: JsonLanguage;
   image: string | null;
-  response: JsonLanguageArrayOrString;
-  typeResponse: string;
+  response: JsonLanguageArray;
+  responses?: Array<JsonLanguage>;
+  typeResponse: string | null;
+  isqcm: boolean | null;
+  typequestion: string;
+  validate: boolean;
+  allresponse: boolean;
+  exact: boolean;
 }
 
 export interface QuestionInsert {
@@ -70,6 +80,8 @@ export interface QuestionInsert {
   isqcm: boolean | null;
   typequestion: string;
   validate: boolean;
+  allresponse: boolean;
+  exact: boolean;
 }
 
 export interface QuestionThemeInsert {
@@ -83,7 +95,13 @@ export interface QuestionUpdate {
   question?: JsonLanguage;
   image?: string | null;
   response?: JsonLanguageArrayOrString;
-  typeResponse?: string;
+  typeResponse?: string | null;
+  typequestion?: string;
+  validate?: boolean;
+  allresponse?: boolean;
+  exact?: boolean;
+  isqcm?: boolean | null;
+  responses?: Array<JsonLanguage>;
 }
 
 export interface QuestionSolo {

@@ -84,13 +84,145 @@ export const RankingTable = ({ data, me, loading = false }: Props) => {
         borderTopRightRadius: px(0),
       }}
     >
-      {loading ? (
-        <Table size="small">
-          <TableBody>
-            {Array.from(new Array(5)).map((_, index) => (
-              <TableRow key={index}>
+      <Table size="small">
+        <TableBody>
+          {data.map((el, index) => (
+            <Fragment key={index}>
+              <TableRow>
                 <TableCell align="left" sx={{ p: px(4) }}>
                   {getIcon(index + 1)}
+                </TableCell>
+                <TableCell sx={{ p: px(4) }}>
+                  <Link
+                    to={`/profil/${el.profile.id}`}
+                    style={{ textDecoration: "inherit" }}
+                  >
+                    <AvatarAccount avatar={el.profile.avatar.icon} size={40} />
+                  </Link>
+                </TableCell>
+                <TableCell align="left" sx={{ p: px(4) }}>
+                  <Link
+                    to={`/profil/${el.profile.id}`}
+                    style={{ textDecoration: "inherit" }}
+                  >
+                    <Typography
+                      variant={el.theme ? "h4" : "h6"}
+                      color="text.primary"
+                    >
+                      {el.profile.username}
+                    </Typography>
+                  </Link>
+                  {el.theme && (
+                    <Link
+                      to={`/theme/${el.theme.id}`}
+                      style={{ textDecoration: "inherit" }}
+                    >
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: px(4),
+                          alignItems: "center",
+                        }}
+                      >
+                        <ImageThemeBlock theme={el.theme} size={20} />
+                        <JsonLanguageBlock
+                          variant="body1"
+                          value={el.theme.name}
+                        />
+                      </Box>
+                    </Link>
+                  )}
+                </TableCell>
+                <TableCell align="right" sx={{ p: px(4) }}>
+                  <Typography
+                    variant="h2"
+                    color="text.primary"
+                    component="span"
+                  >
+                    {el.value}
+                  </Typography>
+                  {el.extra && (
+                    <Typography
+                      variant="body1"
+                      color="text.primary"
+                      component="span"
+                    >
+                      {el.extra}
+                    </Typography>
+                  )}
+                </TableCell>
+                {hasGame && (
+                  <TableCell sx={{ p: px(4), width: px(40) }}>
+                    {el.uuid && (
+                      <Link
+                        to={`/game/solo/${el.uuid}`}
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <VisibilityIcon
+                          fontSize="small"
+                          sx={{ color: Colors.black }}
+                        />
+                      </Link>
+                    )}
+                  </TableCell>
+                )}
+              </TableRow>
+            </Fragment>
+          ))}
+          {me && !isMeDisplay && (
+            <TableRow
+              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+            >
+              <TableCell align="left" sx={{ p: px(4) }}>
+                {me.rank ? getIcon(me.rank) : ""}
+              </TableCell>
+              <TableCell sx={{ p: px(4) }}>
+                <AvatarAccount avatar={me.profile.avatar.icon} size={30} />
+              </TableCell>
+              <TableCell align="left" sx={{ p: px(4) }}>
+                <Typography variant="h6" color="text.primary">
+                  {me.profile.username}
+                </Typography>
+              </TableCell>
+              <TableCell align="right" sx={{ p: px(4) }}>
+                <Typography variant="h2" color="text.primary" component="span">
+                  {me.value}
+                </Typography>
+                {me.extra && (
+                  <Typography
+                    variant="body1"
+                    color="text.primary"
+                    component="span"
+                  >
+                    {me.extra}
+                  </Typography>
+                )}
+              </TableCell>
+              {hasGame && (
+                <TableCell align="right" sx={{ p: px(4), width: px(40) }}>
+                  {me.uuid && (
+                    <Link
+                      to={`/game/solo/${me.uuid}`}
+                      style={{ display: "flex", justifyContent: "center" }}
+                    >
+                      <VisibilityIcon
+                        fontSize="small"
+                        sx={{ color: Colors.black }}
+                      />
+                    </Link>
+                  )}
+                </TableCell>
+              )}
+            </TableRow>
+          )}
+          {loading &&
+            Array.from(new Array(10)).map((_, index) => (
+              <TableRow key={index}>
+                <TableCell align="left" sx={{ p: px(4) }}>
+                  <Skeleton variant="circular" width={30} height={30} />
                 </TableCell>
                 <TableCell align="left" sx={{ p: px(4) }}>
                   <Skeleton variant="circular" width={30} height={30} />
@@ -103,150 +235,8 @@ export const RankingTable = ({ data, me, loading = false }: Props) => {
                 </TableCell>
               </TableRow>
             ))}
-          </TableBody>
-        </Table>
-      ) : (
-        <Table size="small">
-          <TableBody>
-            {data.map((el, index) => (
-              <Fragment key={index}>
-                <TableRow>
-                  <TableCell align="left" sx={{ p: px(4) }}>
-                    {getIcon(index + 1)}
-                  </TableCell>
-                  <TableCell sx={{ p: px(4) }}>
-                    <Link
-                      to={`/profil/${el.profile.id}`}
-                      style={{ textDecoration: "inherit" }}
-                    >
-                      <AvatarAccount
-                        avatar={el.profile.avatar.icon}
-                        size={40}
-                      />
-                    </Link>
-                  </TableCell>
-                  <TableCell align="left" sx={{ p: px(4) }}>
-                    <Link
-                      to={`/profil/${el.profile.id}`}
-                      style={{ textDecoration: "inherit" }}
-                    >
-                      <Typography
-                        variant={el.theme ? "h4" : "h6"}
-                        color="text.primary"
-                      >
-                        {el.profile.username}
-                      </Typography>
-                    </Link>
-                    {el.theme && (
-                      <Link
-                        to={`/theme/${el.theme.id}`}
-                        style={{ textDecoration: "inherit" }}
-                      >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            gap: px(4),
-                            alignItems: "center",
-                          }}
-                        >
-                          <ImageThemeBlock theme={el.theme} size={20} />
-                          <JsonLanguageBlock
-                            variant="body1"
-                            value={el.theme.name}
-                          />
-                        </Box>
-                      </Link>
-                    )}
-                  </TableCell>
-                  <TableCell align="right" sx={{ p: px(4) }}>
-                    <Typography
-                      variant="h2"
-                      color="text.primary"
-                      component="span"
-                    >
-                      {el.value}
-                    </Typography>
-                    {el.extra && (
-                      <Typography
-                        variant="body1"
-                        color="text.primary"
-                        component="span"
-                      >
-                        {el.extra}
-                      </Typography>
-                    )}
-                  </TableCell>
-                  {hasGame && (
-                    <TableCell sx={{ p: px(4), width: px(40) }}>
-                      {el.uuid && (
-                        <Link
-                          to={`/game/solo/${el.uuid}`}
-                          style={{ display: "flex", justifyContent: "center" }}
-                        >
-                          <VisibilityIcon
-                            fontSize="small"
-                            sx={{ color: Colors.black }}
-                          />
-                        </Link>
-                      )}
-                    </TableCell>
-                  )}
-                </TableRow>
-              </Fragment>
-            ))}
-            {me && !isMeDisplay && (
-              <TableRow
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell align="left" sx={{ p: px(4) }}>
-                  {me.rank ? getIcon(me.rank) : ""}
-                </TableCell>
-                <TableCell sx={{ p: px(4) }}>
-                  <AvatarAccount avatar={me.profile.avatar.icon} size={30} />
-                </TableCell>
-                <TableCell align="left" sx={{ p: px(4) }}>
-                  <Typography variant="h6" color="text.primary">
-                    {me.profile.username}
-                  </Typography>
-                </TableCell>
-                <TableCell align="right" sx={{ p: px(4) }}>
-                  <Typography
-                    variant="h2"
-                    color="text.primary"
-                    component="span"
-                  >
-                    {me.value}
-                  </Typography>
-                  {me.extra && (
-                    <Typography
-                      variant="body1"
-                      color="text.primary"
-                      component="span"
-                    >
-                      {me.extra}
-                    </Typography>
-                  )}
-                </TableCell>
-                {hasGame && (
-                  <TableCell align="right" sx={{ p: px(4), width: px(40) }}>
-                    {me.uuid && (
-                      <Link
-                        to={`/game/solo/${me.uuid}`}
-                        style={{ display: "flex", justifyContent: "center" }}
-                      >
-                        <VisibilityIcon
-                          fontSize="small"
-                          sx={{ color: Colors.black }}
-                        />
-                      </Link>
-                    )}
-                  </TableCell>
-                )}
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      )}
+        </TableBody>
+      </Table>
     </TableContainer>
   );
 };

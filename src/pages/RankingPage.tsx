@@ -45,6 +45,8 @@ export default function RankingPage() {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
 
+  const ITEMPERPAGE = 25;
+
   const [tab, setTab] = useState(0);
   const tabs = [{ label: t("commun.global") }, { label: t("commun.pertheme") }];
 
@@ -66,6 +68,10 @@ export default function RankingPage() {
   const [theme, setTheme] = useState("1");
   const [scores, setScores] = useState<Array<Score>>([]);
   const [loadingScore, setLoadingScore] = useState(true);
+
+  const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
 
   const options: Array<ValueOption> = useMemo(
     () => [
@@ -180,35 +186,38 @@ export default function RankingPage() {
   }, [theme, tabTheme]);
 
   useEffect(() => {
+    setIsLoading(true);
     if (option === ClassementEnum.points) {
-      selectScore(option).then(({ data }) => {
+      selectScore(option, page, ITEMPERPAGE).then(({ data }) => {
         const res = data as Array<Score>;
-        setData(
-          res.map((el) => {
-            const champ = el[option];
-            return {
-              profile: el.profile,
-              value: Array.isArray(champ) ? champ.length : champ,
-              theme: el.theme,
-            };
-          })
-        );
+        const newdata = res.map((el) => {
+          const champ = el[option];
+          return {
+            profile: el.profile,
+            value: Array.isArray(champ) ? champ.length : champ,
+            theme: el.theme,
+          };
+        });
+        setIsEnd(newdata.length < ITEMPERPAGE);
+        setData((prev) => [...prev, ...newdata]);
+        setIsLoading(false);
       });
     } else {
-      selectStatAccomplishment(option).then(({ data }) => {
+      selectStatAccomplishment(option, page, ITEMPERPAGE).then(({ data }) => {
         const res = data as Array<StatAccomplishment>;
-        setData(
-          res.map((el) => {
-            const champ = el[option];
-            return {
-              profile: el.profile,
-              value: Array.isArray(champ) ? champ.length : champ,
-            };
-          })
-        );
+        const newdata = res.map((el) => {
+          const champ = el[option];
+          return {
+            profile: el.profile,
+            value: Array.isArray(champ) ? champ.length : champ,
+          };
+        });
+        setIsEnd(newdata.length < ITEMPERPAGE);
+        setData((prev) => [...prev, ...newdata]);
+        setIsLoading(false);
       });
     }
-  }, [option]);
+  }, [option, page]);
 
   useEffect(() => {
     const getMyStat = () => {
@@ -238,6 +247,24 @@ export default function RankingPage() {
     }
   }, [stat, option]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop + 500 <=
+        document.documentElement.offsetHeight
+      ) {
+        return;
+      }
+      if (!isEnd && !isLoading) setPage((prev) => prev + 1);
+    };
+    if (document) {
+      document.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+    };
+  }, [isEnd, isLoading]);
+
   return (
     <Grid container>
       <Helmet>
@@ -260,11 +287,16 @@ export default function RankingPage() {
                     placeholder={t("commun.rankingby")}
                     options={options}
                     value={option}
-                    onChange={(value) => setOption(value as ClassementEnum)}
+                    onChange={(value) => {
+                      setPage(0);
+                      setIsLoading(true);
+                      setData([]);
+                      setOption(value as ClassementEnum);
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <RankingTable data={data} me={mydata} />
+                  <RankingTable data={data} me={mydata} loading={isLoading} />
                 </Grid>
               </>
             ) : (
