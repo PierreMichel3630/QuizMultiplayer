@@ -1,5 +1,6 @@
 import { Box, Container, Divider, Grid, Typography } from "@mui/material";
 import { percent } from "csx";
+import { uniqBy } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -43,7 +44,14 @@ export default function PeoplePage() {
         );
       }
     };
-    getPlayers();
+    if (search !== "") {
+      const timer = setTimeout(() => {
+        getPlayers();
+      }, 300);
+      return () => clearTimeout(timer);
+    } else {
+      getPlayers();
+    }
   }, [search, page, isEnd]);
 
   useEffect(() => {
@@ -66,26 +74,35 @@ export default function PeoplePage() {
     () => friendsProfile.map((el) => el.id),
     [friendsProfile]
   );
-  const friendsFilter = friendsProfile.filter((el) =>
-    el.username.toLocaleLowerCase().includes(search.toLocaleLowerCase())
-  );
+  const friendsFilter = useMemo(() => {
+    const friends = friendsProfile.filter((el) =>
+      el.username.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+    );
+    return uniqBy(friends, (el) => el.id);
+  }, [friendsProfile, search]);
 
-  const playerFilter = players.filter(
-    (el) =>
-      el.username.toLocaleLowerCase().includes(search.toLocaleLowerCase()) &&
-      !uuidFriends.includes(el.id) &&
-      (profile ? el.id !== profile.id : true)
-  );
+  const playerFilter = useMemo(() => {
+    const res = players.filter(
+      (el) =>
+        el.username.toLocaleLowerCase().includes(search.toLocaleLowerCase()) &&
+        !uuidFriends.includes(el.id) &&
+        (profile ? el.id !== profile.id : true)
+    );
+    return uniqBy(res, (el) => el.id);
+  }, [players, profile, search, uuidFriends]);
 
   useEffect(() => {
     const handleScroll = () => {
       if (
+        isEnd ||
+        isLoading ||
         window.innerHeight + document.documentElement.scrollTop + 250 <=
-        document.documentElement.offsetHeight
+          document.documentElement.offsetHeight
       ) {
         return;
+      } else {
+        setPage((prev) => prev + 1);
       }
-      if (!isEnd && !isLoading) setPage((prev) => prev + 1);
     };
     if (document) {
       document.addEventListener("scroll", handleScroll);
@@ -93,7 +110,7 @@ export default function PeoplePage() {
     return () => {
       document.removeEventListener("scroll", handleScroll);
     };
-  }, [isEnd, isLoading]);
+  }, [isEnd, isLoading, page]);
 
   return (
     <Box sx={{ width: percent(100) }}>
@@ -126,8 +143,8 @@ export default function PeoplePage() {
               <Grid item xs={12}>
                 <Typography variant="h2">{t("commun.myfriends")}</Typography>
               </Grid>
-              {friendsFilter.map((friend) => (
-                <Grid item key={friend.id} xs={12}>
+              {friendsFilter.map((friend, index) => (
+                <Grid item key={index} xs={12}>
                   <BasicCardFriendProfile profile={friend} />
                 </Grid>
               ))}
@@ -139,8 +156,8 @@ export default function PeoplePage() {
               </Grid>
             </>
           )}
-          {playerFilter.map((player) => (
-            <Grid item key={player.id} xs={12}>
+          {playerFilter.map((player, index) => (
+            <Grid item key={index} xs={12}>
               <BasicCardProfile profile={player} />
             </Grid>
           ))}

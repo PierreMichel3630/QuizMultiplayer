@@ -34,13 +34,14 @@ Deno.serve(async (req) => {
     if (sologame.error) throw sologame.error;
     const game = sologame.data;
     const question = game.question;
-    const timequestion = moment(game.time);
+    const timequestion = moment(game.time).add(1500, "milliseconds");
     let points = game.points;
+    const isBefore = timeresponse.isBefore(timequestion);
     console.log(uuid);
 
     let result: boolean = false;
     if (question !== undefined) {
-      if (value !== undefined && timeresponse.isBefore(timequestion)) {
+      if (value !== undefined && isBefore) {
         if (question.isqcm) {
           result = Number(question.response) === Number(value);
         } else {
@@ -61,11 +62,11 @@ Deno.serve(async (req) => {
             ...game.questions,
             {
               ...question,
-              responsePlayer1: value,
+              responsePlayer1: isBefore ? value : undefined,
               resultPlayer1: result,
             },
           ],
-          status: result ? result : "END",
+          status: result ? game.status : "END",
         })
         .eq("uuid", uuid);
       if (error) throw error;
@@ -93,7 +94,7 @@ Deno.serve(async (req) => {
               },
             }
           : undefined,
-        answer: value,
+        answer: isBefore ? value : undefined,
         points,
       }),
       {

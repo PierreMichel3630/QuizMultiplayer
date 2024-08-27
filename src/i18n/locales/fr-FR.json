@@ -2,6 +2,8 @@
   "appname": "QuizBattle",
   "description": "Quiz multijoueur en ligne",
   "commun": {
+    "thememaintenance": "Actuellement en maintenance, le thème reviendra la plus rapidement possible.",
+    "images": "Images",
     "validatequestion": "Question Validé",
     "deniedquestion": "Question Non Valide",
     "all": "Tous",
@@ -134,6 +136,7 @@
     "removefavorite": "Retirer des favoris",
     "seequestions": "Voir les questions",
     "seequestion": "Voir la question",
+    "seequestionimageerror": "Voir les images qui ne marche pas",
     "signal": "Signaler le",
     "adminquestions": "Questions",
     "administration": "Administration",
@@ -521,6 +524,7 @@
     "selectadv": "Sélectionner un adversaire"
   },
   "alert": {
+    "pagenotfound": "Cette page n'est pas disponible.",
     "noresult": "Aucun résultat.",
     "updatequestion": "Votre modification de la question à été pris en compte.",
     "allresponseanswer": "Vous avez répondu à toutes les question du thème.",

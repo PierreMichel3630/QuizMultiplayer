@@ -103,7 +103,9 @@ export default function TitlePage() {
               label={t("commun.goaccomplishments")}
               icon={EmojiEventsIcon}
               variant="contained"
-              onClick={() => navigate("/accomplishments")}
+              onClick={() => {
+                if (user) navigate(`/accomplishments/${user.id}`);
+              }}
             />
             <ButtonColor
               value={Colors.blue3}

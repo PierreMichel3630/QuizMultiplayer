@@ -5,7 +5,7 @@ import { supabase } from "./supabase";
 export const SUPABASE_HISTORYGAMES_TABLE = "historygames";
 
 export const SUPABASE_RESPONSESOLOGAME_FUNCTION = "response-solo-game";
-export const SUPABASE_LAUNCHSOLOGAME_FUNCTION = "launch-solo-game";
+export const SUPABASE_LAUNCHSOLOGAME_FUNCTION = "launch-solo-gameV2";
 export const SUPABASE_SOLOGAME_TABLE = "sologame";
 
 export const SUPABASE_LAUNCHTRAININGGAME_FUNCTION = "launch-training-game";

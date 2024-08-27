@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Skeleton, Typography } from "@mui/material";
 import { percent, px, viewHeight } from "csx";
 import { useTranslation } from "react-i18next";
 import { Title } from "src/models/Title";
@@ -7,12 +7,14 @@ import { BadgeTitle } from "../Badge";
 import { useMemo } from "react";
 import { sortByTitle } from "src/utils/sort";
 import { useUser } from "src/context/UserProvider";
+import { Link } from "react-router-dom";
 
 interface Props {
   titles: Array<Title>;
+  loading?: boolean;
 }
 
-export const CardTitle = ({ titles }: Props) => {
+export const CardTitle = ({ titles, loading }: Props) => {
   const { t } = useTranslation();
   const { language } = useUser();
 
@@ -44,9 +46,11 @@ export const CardTitle = ({ titles }: Props) => {
           <Typography variant="h2" color="text.secondary">
             {t("commun.titles")}
           </Typography>
-          <Typography variant="h4" color="text.secondary">
-            ({titles.length})
-          </Typography>
+          {!loading && (
+            <Typography variant="h4" color="text.secondary">
+              ({titles.length})
+            </Typography>
+          )}
         </Grid>
         <Grid item xs={12}>
           <Box
@@ -58,12 +62,29 @@ export const CardTitle = ({ titles }: Props) => {
               overflowX: "scroll",
             }}
           >
-            <Grid container spacing={1}>
-              {titleOrder.map((title) => (
-                <Grid item key={title.id}>
-                  <BadgeTitle label={title.name} />
-                </Grid>
-              ))}
+            <Grid container spacing={1} justifyContent="center">
+              {loading ? (
+                <>
+                  {Array.from(new Array(6)).map((_, index) => (
+                    <Grid item key={index}>
+                      <Skeleton variant="rectangular" width={85} height={20} />
+                    </Grid>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {titleOrder.map((title) => (
+                    <Grid item key={title.id}>
+                      <Link
+                        to={`/title/${title.id}`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <BadgeTitle label={title.name} />
+                      </Link>
+                    </Grid>
+                  ))}
+                </>
+              )}
             </Grid>
           </Box>
         </Grid>

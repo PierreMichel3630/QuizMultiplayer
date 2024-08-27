@@ -41,21 +41,21 @@ export const MyRankBlock = ({ players, responses }: Props) => {
       case 1:
         icon = (
           <Avatar sx={{ bgcolor: "white" }}>
-            <img src={rank1} className={imgCss} />
+            <img src={rank1} className={imgCss} loading="lazy" />
           </Avatar>
         );
         break;
       case 2:
         icon = (
           <Avatar sx={{ bgcolor: "white" }}>
-            <img src={rank2} className={imgCss} />
+            <img src={rank2} className={imgCss} loading="lazy" />
           </Avatar>
         );
         break;
       case 3:
         icon = (
           <Avatar sx={{ bgcolor: "white" }}>
-            <img src={rank3} className={imgCss} />
+            <img src={rank3} className={imgCss} loading="lazy" />
           </Avatar>
         );
         break;

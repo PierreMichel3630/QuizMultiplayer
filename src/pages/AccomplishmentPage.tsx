@@ -13,28 +13,52 @@ import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet-async";
 
 import { Dictionary, groupBy } from "lodash";
-import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
+import {
+  selectAccomplishmentByProfile,
+  selectStatAccomplishmentByProfile,
+} from "src/api/accomplishment";
 import { CardAccomplishment } from "src/component/card/CardAccomplishment";
-import { useAuth } from "src/context/AuthProviderSupabase";
-import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
+import {
+  Accomplishment,
+  ProfileAccomplishment,
+  StatAccomplishment,
+} from "src/models/Accomplishment";
 
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import award from "src/assets/award.png";
+import { HeadTitle } from "src/component/HeadTitle";
 import { useApp } from "src/context/AppProvider";
 import { Colors } from "src/style/Colors";
-import { HeadTitle } from "src/component/HeadTitle";
-import { useLocation } from "react-router-dom";
+import { SelectorProfileBlock } from "src/component/SelectorProfileBlock";
+import { Profile } from "src/models/Profile";
+import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
+import { getProfilById } from "src/api/profile";
+import { px } from "csx";
 
 export default function AccomplishmentPage() {
   const { t } = useTranslation();
-  const { user } = useAuth();
-  const { accomplishments, myaccomplishments, getMyAccomplishments } = useApp();
+  const { id } = useParams();
+  const { accomplishments } = useApp();
   const { hash } = useLocation();
+  const navigate = useNavigate();
 
+  const [profile, setProfile] = useState<Profile | undefined>(undefined);
+  const [openModalFriend, setOpenModalFriend] = useState(false);
   const [accomplishmentsGroupBy, setAccomplishmentsGroupBy] = useState<
     Dictionary<Array<Accomplishment>>
   >({});
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
   const refs = useRef<Array<MutableRefObject<HTMLDivElement>>>([]);
+  const [myaccomplishments, setMyaccomplishments] = useState<Array<number>>([]);
+
+  useEffect(() => {
+    if (id) {
+      selectAccomplishmentByProfile(id).then(({ data }) => {
+        const res = data as Array<ProfileAccomplishment>;
+        setMyaccomplishments(res.map((el) => el.accomplishment));
+      });
+    }
+  }, [id]);
 
   useEffect(() => {
     refs.current = accomplishments.map(
@@ -64,31 +88,57 @@ export default function AccomplishmentPage() {
 
   useEffect(() => {
     const getMyStat = () => {
-      if (user) {
-        selectStatAccomplishmentByProfile(user.id).then(({ data }) => {
+      if (id) {
+        selectStatAccomplishmentByProfile(id).then(({ data }) => {
           setStat(data as StatAccomplishment);
         });
       }
     };
     getMyStat();
-  }, [user]);
+  }, [id]);
+
+  useEffect(() => {
+    const getProfil = () => {
+      if (id) {
+        getProfilById(id).then(({ data }) => {
+          setProfile(data as Profile);
+        });
+      }
+    };
+    getProfil();
+  }, [id]);
 
   useEffect(() => {
     setAccomplishmentsGroupBy(groupBy(accomplishments, "type"));
   }, [accomplishments]);
 
-  useEffect(() => {
-    getMyAccomplishments();
-  }, []);
-
   return (
-    <Grid container spacing={1}>
+    <Grid container>
       <Helmet>
         <title>{`${t("pages.accomplishments.title")} - ${t("appname")}`}</title>
       </Helmet>
       <Grid item xs={12}>
         <HeadTitle title={t("pages.accomplishments.title")} />
       </Grid>
+      {profile && (
+        <Grid
+          item
+          xs={12}
+          sx={{
+            position: "sticky",
+            top: px(55),
+            backgroundColor: Colors.white,
+            p: 1,
+          }}
+        >
+          <SelectorProfileBlock
+            label={t("commun.selectplayer")}
+            profile={profile}
+            onChange={() => setOpenModalFriend(true)}
+            onDelete={() => setOpenModalFriend(true)}
+          />
+        </Grid>
+      )}
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
@@ -118,7 +168,7 @@ export default function AccomplishmentPage() {
                     >
                       <Grid container spacing={1} alignItems="center">
                         <Grid item>
-                          <img src={award} width={40} />
+                          <img src={award} width={40} loading="lazy" />
                         </Grid>
                         <Grid item xs>
                           <Typography variant="h2" color="text.secondary">
@@ -182,6 +232,15 @@ export default function AccomplishmentPage() {
           </Grid>
         </Box>
       </Grid>
+      <SelectFriendModal
+        open={openModalFriend}
+        close={() => setOpenModalFriend(false)}
+        onValid={(profile) => {
+          navigate(`/accomplishments/${profile.id}`);
+          setOpenModalFriend(false);
+        }}
+        withMe={true}
+      />
     </Grid>
   );
 }

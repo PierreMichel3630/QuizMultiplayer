@@ -15,13 +15,15 @@ import { searchString } from "src/utils/string";
 interface PropsAutocompleteInput {
   placeholder: string;
   onSelect: (value: Theme) => void;
+  isAdmin?: boolean;
 }
 
 export const AutocompleteInputTheme = ({
   placeholder,
   onSelect,
+  isAdmin = false,
 }: PropsAutocompleteInput) => {
-  const { themes } = useApp();
+  const { themes, themesAdmin } = useApp();
   const { language } = useUser();
 
   const [search, setSearch] = useState("");
@@ -46,8 +48,10 @@ export const AutocompleteInputTheme = ({
 
   const uniqThemes = useMemo(
     () =>
-      uniqBy(themes, (el) => el.id).sort((a, b) => sortByName(language, a, b)),
-    [themes, language]
+      uniqBy(isAdmin ? themesAdmin : themes, (el) => el.id).sort((a, b) =>
+        sortByName(language, a, b)
+      ),
+    [isAdmin, themesAdmin, themes, language]
   );
 
   const themesSearch = useMemo(() => {

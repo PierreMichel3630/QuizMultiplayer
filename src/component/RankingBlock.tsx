@@ -72,15 +72,29 @@ export const RankingBlock = () => {
       <Grid item xs={12}>
         {isLoading ? (
           <Box sx={{ display: "flex", gap: px(2), alignItems: "flex-end" }}>
-            <Skeleton width={"100%"} height={180} />
-            <Skeleton width={"100%"} height={200} />
+            <Skeleton width={"100%"} height={170} />
+            <Skeleton width={"100%"} height={190} />
             <Skeleton width={"100%"} height={160} />
           </Box>
         ) : (
-          <Box sx={{ display: "flex", gap: px(2) }}>
-            {scores[1] && <RankingGame score={scores[1]} rank={2} />}
-            {scores[0] && <RankingGame score={scores[0]} rank={1} />}
-            {scores[2] && <RankingGame score={scores[2]} rank={3} />}
+          <Box>
+            <Grid container spacing={1}>
+              {scores[1] && (
+                <Grid item xs={4} sx={{ display: "flex" }}>
+                  <RankingGame score={scores[1]} rank={2} />
+                </Grid>
+              )}
+              {scores[0] && (
+                <Grid item xs={4} sx={{ display: "flex" }}>
+                  <RankingGame score={scores[0]} rank={1} />
+                </Grid>
+              )}
+              {scores[2] && (
+                <Grid item xs={4} sx={{ display: "flex" }}>
+                  <RankingGame score={scores[2]} rank={3} />
+                </Grid>
+              )}
+            </Grid>
           </Box>
         )}
       </Grid>
@@ -155,7 +169,7 @@ const RankingGame = ({ score, rank }: PropsRankingGame) => {
       <Box
         sx={{
           width: percent(100),
-          height: px(180 - rank * 20),
+          height: px(180 - rank * 10),
           backgroundColor: rankCss.color,
           borderTopRightRadius: px(10),
           borderTopLeftRadius: px(10),
@@ -167,7 +181,12 @@ const RankingGame = ({ score, rank }: PropsRankingGame) => {
         }}
       >
         {rankCss.icon}
-        <Box sx={{ textAlign: "center" }}>
+        <Box
+          sx={{
+            width: percent(100),
+            textAlign: "center",
+          }}
+        >
           <Link
             to={`/theme/${score.theme.id}`}
             style={{
@@ -182,6 +201,13 @@ const RankingGame = ({ score, rank }: PropsRankingGame) => {
               variant="body1"
               color="text.secondary"
               value={score.theme.name}
+              sx={{
+                width: percent(100),
+                overflow: "hidden",
+                display: "-webkit-box",
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: "vertical",
+              }}
             />
           </Link>
           <Typography variant="h2" color="text.secondary" component="span">

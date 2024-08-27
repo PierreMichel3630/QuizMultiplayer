@@ -1,5 +1,5 @@
 import { Alert, Box, Divider, Grid, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import {
@@ -29,11 +29,15 @@ export default function NotificationPage() {
     getFriends();
   }, [getFriends]);
 
-  const invitationsfriends = friends.filter(
-    (el) =>
-      user !== null &&
-      user.id === el.user2.id &&
-      el.status === FRIENDSTATUS.PROGRESS
+  const invitationsfriends = useMemo(
+    () =>
+      friends.filter(
+        (el) =>
+          user !== null &&
+          user.id === el.user2.id &&
+          el.status === FRIENDSTATUS.PROGRESS
+      ),
+    [friends, user]
   );
 
   const getGames = () => {

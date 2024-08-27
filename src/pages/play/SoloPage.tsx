@@ -16,13 +16,14 @@ import { percent, viewHeight } from "csx";
 import { LoadingDot } from "src/component/Loading";
 import { QcmResponseBlock } from "src/component/QcmBlock";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
-import { AllQuestionSoloGame, SoloGame } from "src/models/Game";
+import { SoloGame } from "src/models/Game";
 import { StatusGameSolo } from "src/models/enum";
 import { Colors } from "src/style/Colors";
+import { PreloadImages } from "src/utils/preload";
 
 export default function SoloPage() {
   const { t } = useTranslation();
-  const { uuid, language, sound } = useUser();
+  const { language, sound } = useUser();
   const { uuidGame } = useParams();
   const navigate = useNavigate();
 
@@ -36,41 +37,121 @@ export default function SoloPage() {
   const [timeoutQuestion, setTimeoutQuestion] = useState<
     string | number | NodeJS.Timeout | undefined
   >(undefined);
+  const [images, setImages] = useState<Array<string>>([]);
+  const [myresponse, setMyresponse] = useState<string | number | undefined>(
+    undefined
+  );
+
+  const generateQuestion = useCallback(
+    (game: undefined | SoloGame, delay: number) => {
+      if (game) {
+        supabase.functions
+          .invoke("question-solo-gameV2", {
+            body: {
+              game: game.uuid,
+            },
+          })
+          .then(({ data }) => {
+            const questionSolo = data as QuestionSolo;
+            console.log(questionSolo);
+            let urls: Array<string> = [];
+            if (questionSolo.image) {
+              urls = [...urls, questionSolo.image];
+            }
+            if (questionSolo.type === "IMAGE") {
+              const images = questionSolo.responses.reduce(
+                (acc, v) => (v.image ? [...acc, v.image] : acc),
+                [] as Array<string>
+              );
+              urls = [...urls, ...images];
+            }
+            setImages(urls);
+
+            setTimeout(async () => {
+              if (questionSolo.allresponse === true) {
+                navigate(`/recapsolo/${game.uuid}`, {
+                  state: {
+                    allquestion: true,
+                    extra: questionSolo.extra,
+                  },
+                });
+              } else {
+                if (questionSolo.audio) {
+                  const audio = new Audio(questionSolo.audio);
+                  setAudio(audio);
+                }
+                setQuestion(questionSolo);
+                setTimer(questionSolo.time - 1);
+                setResponse(undefined);
+                scrollTop();
+                const newtimeoutQuestion = setTimeout(async () => {
+                  const response = await supabase.functions.invoke(
+                    "response-solo-game",
+                    {
+                      body: {
+                        game: game.uuid,
+                        response: undefined,
+                      },
+                    }
+                  );
+                  const res = response.data as ResponseSolo;
+                  setTimer(undefined);
+                  setResponse(res);
+                  setScore(res.points);
+                  scrollTop();
+                  setTimeout(async () => {
+                    navigate(`/recapsolo/${game.uuid}`, {
+                      state: {
+                        allquestion: false,
+                        extra: res.extra,
+                      },
+                    });
+                  }, 1500);
+                }, questionSolo.time * 1000);
+                setTimeoutQuestion(newtimeoutQuestion);
+              }
+            }, delay);
+          });
+      }
+    },
+    [navigate]
+  );
 
   const validateResponse = useCallback(
     async (value: string | number | undefined) => {
+      setMyresponse(value);
+      setTimer(undefined);
+      clearTimeout(timeoutQuestion);
       if (game && language) {
         const { data } = await supabase.functions.invoke("response-solo-game", {
           body: { game: game.uuid, response: value, language: language.iso },
         });
-        clearTimeout(timeoutQuestion);
         const res = data as ResponseSolo;
+        console.log(res);
+        setMyresponse(undefined);
         setTimer(undefined);
         setResponse(res);
         setScore(res.points);
         scrollTop();
-        setTimeout(async () => {
-          if (res.result) {
-            await supabase.functions.invoke("question-solo-game", {
-              body: {
-                game: game.uuid,
-              },
-            });
-          } else {
+        if (res.result) {
+          console.log("generateQuestion");
+          generateQuestion(game, 1500);
+        } else {
+          setTimeout(async () => {
             navigate(`/recapsolo/${game.uuid}`, {
               state: {
                 allquestion: false,
                 extra: res.extra,
               },
             });
-          }
-        }, 1500);
+          }, 1500);
+        }
         if (audio) {
           audio.pause();
         }
       }
     },
-    [audio, game, language, navigate, timeoutQuestion]
+    [audio, game, generateQuestion, language, navigate, timeoutQuestion]
   );
 
   useEffect(() => {
@@ -83,6 +164,7 @@ export default function SoloPage() {
               navigate(`/recapsolo/${res.uuid}`);
             } else {
               setGame(res);
+              generateQuestion(res, 1000);
             }
           } else {
             navigate("/");
@@ -91,50 +173,7 @@ export default function SoloPage() {
       }
     };
     getGame();
-  }, [navigate, uuidGame]);
-
-  useEffect(() => {
-    if (game) {
-      const channel = supabase
-        .channel(game.uuid)
-        .on("broadcast", { event: "question" }, (value) => {
-          const questionSolo = value.payload as QuestionSolo;
-          if (questionSolo.audio) {
-            const audio = new Audio(questionSolo.audio);
-            audio.volume = sound / 100;
-            audio.play();
-            setAudio(audio);
-          }
-          setQuestion(questionSolo);
-          setTimer(questionSolo.time);
-          setResponse(undefined);
-          scrollTop();
-          const newtimeoutQuestion = setTimeout(async () => {
-            validateResponse(undefined);
-          }, questionSolo.time * 1000);
-          setTimeoutQuestion(newtimeoutQuestion);
-        })
-        .on("broadcast", { event: "allquestion" }, (value) => {
-          const res = value.payload as AllQuestionSoloGame;
-          channel.unsubscribe();
-          supabase.removeChannel(channel);
-          navigate(`/recapsolo/${res.uuid}`, {
-            state: {
-              allquestion: true,
-              extra: res.extra,
-            },
-          });
-        })
-        .subscribe();
-      return () => {
-        channel.unsubscribe();
-        supabase.removeChannel(channel);
-        if (audio) {
-          audio.pause();
-        }
-      };
-    }
-  }, [uuid, game, navigate, audio, sound, validateResponse]);
+  }, [generateQuestion, navigate, uuidGame]);
 
   useEffect(() => {
     if (audio) {
@@ -161,6 +200,7 @@ export default function SoloPage() {
       <Helmet>
         <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
       </Helmet>
+      <PreloadImages urls={images} />
       <Box
         sx={{
           display: "flex",
@@ -191,6 +231,7 @@ export default function SoloPage() {
               <QuestionSoloBlock question={question} timer={timer} />
               {question && question.isqcm ? (
                 <QcmResponseBlock
+                  myresponse={myresponse}
                   response={response}
                   question={question}
                   onSubmit={validateResponse}
@@ -200,7 +241,11 @@ export default function SoloPage() {
                   {response ? (
                     <ResponseSoloBlock response={response} />
                   ) : (
-                    <InputResponseBlock onSubmit={validateResponse} />
+                    <InputResponseBlock
+                      myresponse={myresponse}
+                      onSubmit={validateResponse}
+                      typeResponse={question.typeResponse}
+                    />
                   )}
                 </>
               )}

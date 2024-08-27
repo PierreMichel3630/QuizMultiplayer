@@ -12,7 +12,10 @@ export interface Score {
   victory: number;
   draw: number;
   defeat: number;
-  uuidgame: string;
+  uuidgame: {
+    uuid: string;
+    created_at: Date;
+  } | null;
   rank: number;
   xp: number;
 }

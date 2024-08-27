@@ -22,6 +22,7 @@ export const ImageQuestionBlock = ({ src, border = false }: Props) => {
       {border ? (
         <img
           src={src}
+          loading="lazy"
           style={{
             maxHeight: percent(90),
             maxWidth: percent(90),
@@ -32,6 +33,7 @@ export const ImageQuestionBlock = ({ src, border = false }: Props) => {
       ) : (
         <img
           src={src}
+          loading="lazy"
           style={{
             height: percent(80),
             width: percent(80),

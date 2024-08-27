@@ -1,4 +1,5 @@
 import { Box, Grid } from "@mui/material";
+import { px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -9,16 +10,21 @@ import {
 } from "src/api/accomplishment";
 import { selectScore, selectScoresByTheme } from "src/api/score";
 import { HeadTitle } from "src/component/HeadTitle";
-import { BasicSelect, SelectIdTheme } from "src/component/Select";
+import { ImageThemeBlock } from "src/component/ImageThemeBlock";
+import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
+import { BasicSelect, SelectTheme } from "src/component/Select";
 import { DefaultTabs } from "src/component/Tabs";
 import {
   DataRanking,
   DataRankingMe,
   RankingTable,
 } from "src/component/table/RankingTable";
+import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { Score } from "src/models/Score";
+import { Theme } from "src/models/Theme";
+import { Colors } from "src/style/Colors";
 import { getLevel } from "src/utils/calcul";
 
 enum ClassementEnum {
@@ -43,6 +49,7 @@ interface ValueOption {
 export default function RankingPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const { themes } = useApp();
   const [searchParams] = useSearchParams();
 
   const ITEMPERPAGE = 25;
@@ -65,7 +72,7 @@ export default function RankingPage() {
       ? (searchParams.get("sort") as ClassementEnum)
       : ClassementEnum.points
   );
-  const [theme, setTheme] = useState("1");
+  const [theme, setTheme] = useState<undefined | Theme>(undefined);
   const [scores, setScores] = useState<Array<Score>>([]);
   const [loadingScore, setLoadingScore] = useState(true);
 
@@ -145,7 +152,7 @@ export default function RankingPage() {
       scores.map((el) => ({
         profile: el.profile,
         value: el.points,
-        uuid: el.uuidgame,
+        uuid: el.uuidgame !== null ? el.uuidgame.uuid : undefined,
         extra: t("commun.pointsabbreviation"),
       })) as Array<DataRanking>,
     [scores, t]
@@ -171,53 +178,63 @@ export default function RankingPage() {
   }, [dataDuel, dataLvl, dataSolo, tabTheme]);
 
   useEffect(() => {
+    if (themes.length > 0) setTheme(themes[0]);
+  }, [themes]);
+
+  useEffect(() => {
     const getScores = () => {
       if (theme) {
         setLoadingScore(true);
         const order =
           tabTheme === 0 ? "points" : tabTheme === 1 ? "rank" : "xp";
-        selectScoresByTheme(Number(theme), order).then(({ data }) => {
-          setScores(data as Array<Score>);
-          setLoadingScore(false);
-        });
+        selectScoresByTheme(Number(theme.id), order, ITEMPERPAGE, page).then(
+          ({ data }) => {
+            const res = data as Array<Score>;
+            setIsEnd(res.length < ITEMPERPAGE);
+            setScores((prev) => [...prev, ...res]);
+            setLoadingScore(false);
+          }
+        );
       }
     };
     getScores();
-  }, [theme, tabTheme]);
+  }, [theme, tabTheme, page]);
 
   useEffect(() => {
-    setIsLoading(true);
-    if (option === ClassementEnum.points) {
-      selectScore(option, page, ITEMPERPAGE).then(({ data }) => {
-        const res = data as Array<Score>;
-        const newdata = res.map((el) => {
-          const champ = el[option];
-          return {
-            profile: el.profile,
-            value: Array.isArray(champ) ? champ.length : champ,
-            theme: el.theme,
-          };
+    if (tab === 0) {
+      setIsLoading(true);
+      if (option === ClassementEnum.points) {
+        selectScore(option, page, ITEMPERPAGE).then(({ data }) => {
+          const res = data as Array<Score>;
+          const newdata = res.map((el) => {
+            const champ = el[option];
+            return {
+              profile: el.profile,
+              value: Array.isArray(champ) ? champ.length : champ,
+              theme: el.theme,
+            };
+          });
+          setIsEnd(newdata.length < ITEMPERPAGE);
+          setData((prev) => [...prev, ...newdata]);
+          setIsLoading(false);
         });
-        setIsEnd(newdata.length < ITEMPERPAGE);
-        setData((prev) => [...prev, ...newdata]);
-        setIsLoading(false);
-      });
-    } else {
-      selectStatAccomplishment(option, page, ITEMPERPAGE).then(({ data }) => {
-        const res = data as Array<StatAccomplishment>;
-        const newdata = res.map((el) => {
-          const champ = el[option];
-          return {
-            profile: el.profile,
-            value: Array.isArray(champ) ? champ.length : champ,
-          };
+      } else {
+        selectStatAccomplishment(option, page, ITEMPERPAGE).then(({ data }) => {
+          const res = data as Array<StatAccomplishment>;
+          const newdata = res.map((el) => {
+            const champ = el[option];
+            return {
+              profile: el.profile,
+              value: Array.isArray(champ) ? champ.length : champ,
+            };
+          });
+          setIsEnd(newdata.length < ITEMPERPAGE);
+          setData((prev) => [...prev, ...newdata]);
+          setIsLoading(false);
         });
-        setIsEnd(newdata.length < ITEMPERPAGE);
-        setData((prev) => [...prev, ...newdata]);
-        setIsLoading(false);
-      });
+      }
     }
-  }, [option, page]);
+  }, [option, page, tab]);
 
   useEffect(() => {
     const getMyStat = () => {
@@ -277,7 +294,14 @@ export default function RankingPage() {
         <Box sx={{ p: 1 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <DefaultTabs values={tabs} tab={tab} onChange={setTab} />
+              <DefaultTabs
+                values={tabs}
+                tab={tab}
+                onChange={(value) => {
+                  setPage(0);
+                  setTab(value);
+                }}
+              />
             </Grid>
             {tab === 0 ? (
               <>
@@ -291,6 +315,7 @@ export default function RankingPage() {
                       setPage(0);
                       setIsLoading(true);
                       setData([]);
+                      setScores([]);
                       setOption(value as ClassementEnum);
                     }}
                   />
@@ -302,9 +327,11 @@ export default function RankingPage() {
             ) : (
               <>
                 <Grid item xs={12}>
-                  <SelectIdTheme
-                    theme={theme}
+                  <SelectTheme
                     onChange={(value) => {
+                      setPage(0);
+                      setIsEnd(false);
+                      setScores([]);
                       setLoadingScore(true);
                       setTheme(value);
                     }}
@@ -312,10 +339,36 @@ export default function RankingPage() {
                 </Grid>
                 <Grid item xs={12}>
                   <Box sx={{ p: 1 }}>
+                    {theme && (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: 2,
+                          alignItems: "center",
+                          p: px(5),
+                          backgroundColor: Colors.blue3,
+                          borderTopLeftRadius: px(5),
+                          borderTopRightRadius: px(5),
+                        }}
+                      >
+                        <ImageThemeBlock theme={theme} size={45} />
+                        <JsonLanguageBlock
+                          variant="h4"
+                          sx={{
+                            wordWrap: "anywhere",
+                          }}
+                          value={theme.name}
+                          color="text.secondary"
+                        />
+                      </Box>
+                    )}
                     <DefaultTabs
                       values={tabsTheme}
                       tab={tabTheme}
                       onChange={(value) => {
+                        setPage(0);
+                        setIsEnd(false);
+                        setScores([]);
                         setLoadingScore(true);
                         setTabTheme(value);
                       }}

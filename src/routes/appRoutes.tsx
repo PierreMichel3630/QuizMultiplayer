@@ -86,12 +86,8 @@ export const AppRoutes = [
     ),
   },
   {
-    path: "/accomplishments",
-    element: (
-      <ProtectedRoute>
-        <AccomplishmentPage />
-      </ProtectedRoute>
-    ),
+    path: "/accomplishments/:id",
+    element: <AccomplishmentPage />,
   },
   {
     path: "/notifications",

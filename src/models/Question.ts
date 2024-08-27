@@ -118,9 +118,12 @@ export interface QuestionSolo {
     label?: ResponseLanguageString;
     image?: string;
   }>;
+  allresponse?: boolean;
+  typeResponse: string;
 }
 
 export interface QuestionTraining {
+  id: number;
   image?: string;
   audio?: string;
   extra?: JsonLanguage;
@@ -135,6 +138,9 @@ export interface QuestionTraining {
     image?: string;
   }>;
   response: number | ResponseLanguage;
+  exact: boolean;
+  typeResponse: string;
+  allresponse: boolean;
 }
 
 export interface QuestionDuel {

@@ -41,7 +41,7 @@ export const Header = () => {
                 textDecoration: "none",
               }}
             >
-              <img src={logo} width={45} height={45} />
+              <img src={logo} width={45} height={45} loading="lazy" />
               <Typography
                 variant="h1"
                 sx={{

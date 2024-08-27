@@ -77,7 +77,11 @@ export default function InstallationPage() {
                   />
                 </Grid>
                 <Grid item>
-                  <img src={img1} style={{ maxWidth: percent(100) }} />
+                  <img
+                    src={img1}
+                    style={{ maxWidth: percent(100) }}
+                    loading="lazy"
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   <StepBlock
@@ -118,7 +122,11 @@ export default function InstallationPage() {
                   />
                 </Grid>
                 <Grid item>
-                  <img src={img2} style={{ maxWidth: percent(100) }} />
+                  <img
+                    src={img2}
+                    style={{ maxWidth: percent(100) }}
+                    loading="lazy"
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   <StepBlock
@@ -131,7 +139,11 @@ export default function InstallationPage() {
                   />
                 </Grid>
                 <Grid item>
-                  <img src={img3} style={{ maxWidth: percent(100) }} />
+                  <img
+                    src={img3}
+                    style={{ maxWidth: percent(100) }}
+                    loading="lazy"
+                  />
                 </Grid>
               </>
             ) : tab === 1 ? (
@@ -212,7 +224,11 @@ export default function InstallationPage() {
                   </Grid>
                 </Grid>
                 <Grid item>
-                  <img src={img5} style={{ maxWidth: percent(100) }} />
+                  <img
+                    src={img5}
+                    style={{ maxWidth: percent(100) }}
+                    loading="lazy"
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   <StepBlock
@@ -225,7 +241,11 @@ export default function InstallationPage() {
                   />
                 </Grid>
                 <Grid item>
-                  <img src={img4} style={{ maxWidth: percent(100) }} />
+                  <img
+                    src={img4}
+                    style={{ maxWidth: percent(100) }}
+                    loading="lazy"
+                  />
                 </Grid>
               </>
             )}

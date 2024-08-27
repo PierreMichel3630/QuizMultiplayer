@@ -46,8 +46,7 @@ export const selectQuestion = (
     query = query.in("question.id", filter.ids);
   }
   if (filter.themes.length > 0) {
-    const idTheme = filter.themes.map((el) => el.id);
-    query = query.in("theme", idTheme);
+    query = query.in("theme", filter.themes);
   }
   if (filter.isImage) {
     query = query.not("question.image", "is", null);
@@ -86,8 +85,7 @@ export const countQuestions = (filter: FilterQuestion) => {
     query = query.in("question.id", filter.ids);
   }
   if (filter.themes.length > 0) {
-    const idTheme = filter.themes.map((el) => el.id);
-    query = query.in("theme", idTheme);
+    query = query.in("theme", filter.themes);
   }
   if (filter.isImage) {
     query = query.not("question.image", "is", null);
@@ -96,10 +94,24 @@ export const countQuestions = (filter: FilterQuestion) => {
   return query;
 };
 
+export const countQuestionsAdmin = (filter: FilterQuestion) => {
+  let query = supabase
+    .from(SUPABASE_QUESTION_TABLE)
+    .select("*", { count: "exact", head: true });
+  if (filter.ids.length > 0) {
+    query = query.in("id", filter.ids);
+  }
+  if (filter.isImage) {
+    query = query.not("image", "is", null);
+  }
+  query = query.is("validate", filter.validate);
+  return query;
+};
+
 export const selectImageQuestion = (page: number, itemperpage = 1000) =>
   supabase
     .from(SUPABASE_QUESTION_TABLE)
-    .select("image")
+    .select("id, image")
     .not("image", "is", null)
     .order("id", { ascending: true })
     .range(page * itemperpage, (page + 1) * itemperpage);

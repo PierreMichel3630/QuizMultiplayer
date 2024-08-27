@@ -1,6 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import { Box, FormControlLabel, Grid, Pagination, Switch } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { uniqBy } from "lodash";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
@@ -14,13 +15,16 @@ import { CardAdminQuestion } from "src/component/card/CardQuestion";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import { CreateEditQuestionDialog } from "src/component/modal/CreateEditQuestionDialog";
 import { AutocompleteNumber, AutocompleteTheme } from "src/component/Select";
+import { useApp } from "src/context/AppProvider";
 import { useMessage } from "src/context/MessageProvider";
+import { useUser } from "src/context/UserProvider";
 import { QuestionAdmin, QuestionUpdate } from "src/models/Question";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
+import { sortByName } from "src/utils/sort";
 
 export interface FilterQuestion {
-  themes: Array<Theme>;
+  themes: Array<number>;
   isImage: boolean;
   ids: Array<number>;
   validate: boolean;
@@ -29,9 +33,12 @@ export default function AdminQuestionsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-
   const { setMessage, setSeverity } = useMessage();
+  const { language } = useUser();
+  const { themesAdmin } = useApp();
+
   const ITEMPERPAGE = 29;
+
   const [count, setCount] = useState<number>(1);
   const [page, setPage] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Array<QuestionAdmin>>([]);
@@ -47,15 +54,25 @@ export default function AdminQuestionsPage() {
     validate: true,
   });
 
+  const themesUniq = useMemo(
+    () =>
+      uniqBy(themesAdmin, (el) => el.id).sort((a, b) =>
+        sortByName(language, a, b)
+      ),
+    [themesAdmin, language]
+  );
+
   useEffect(() => {
     const question = searchParams.get("question") as string | null;
     const newPage = searchParams.get("page") as string | null;
+    const idthemes = searchParams.get("themes") as string | null;
     setPage(newPage ? Number(newPage) : 1);
     setFilter((prev) => ({
       ...prev,
       ids: question ? question.split(",").map((el) => Number(el)) : [],
+      themes: idthemes ? idthemes.split(",").map((el) => Number(el)) : [],
     }));
-  }, [searchParams]);
+  }, [searchParams, themesUniq]);
 
   const getCountQuestion = useCallback(() => {
     countQuestions(filter).then(({ count }) => {
@@ -108,6 +125,11 @@ export default function AdminQuestionsPage() {
     }
   };
 
+  const themes = useMemo(() => {
+    const ids = [...filter.themes];
+    return themesUniq.filter((el) => ids.includes(el.id));
+  }, [filter, themesUniq]);
+
   return (
     <Box sx={{ position: "relative", p: 1, mb: 7 }}>
       <Grid container spacing={1} justifyContent="center">
@@ -145,10 +167,12 @@ export default function AdminQuestionsPage() {
         </Grid>
         <Grid item xs={12}>
           <AutocompleteTheme
-            value={filter.themes}
+            value={themes}
             onChange={(value: Array<Theme>) => {
-              setFilter((prev) => ({ ...prev, themes: value }));
+              const ids = value.map((el) => el.id);
+              navigate(`/administration/question?page=1&themes=${ids}`);
             }}
+            isAdmin
           />
         </Grid>
         <Grid item xs={12}>
@@ -195,7 +219,9 @@ export default function AdminQuestionsPage() {
               count={count ? Math.ceil(count / ITEMPERPAGE) : 1}
               page={page}
               onChange={(_event: React.ChangeEvent<unknown>, value: number) =>
-                navigate(`/administration/question?page=${value}`)
+                navigate(
+                  `/administration/question?page=${value}&themes=${filter.themes}`
+                )
               }
               variant="outlined"
               shape="rounded"

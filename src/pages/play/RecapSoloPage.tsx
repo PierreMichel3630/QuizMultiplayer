@@ -86,13 +86,15 @@ export default function RecapSoloPage() {
                   </Alert>
                 </Grid>
               )}
-              <Grid item xs={12}>
-                <ExperienceSoloBlock
-                  theme={game.theme.id}
-                  xp={extra ? extra.xpplayer1 : undefined}
-                  player={game.player}
-                />
-              </Grid>
+              {
+                <Grid item xs={12}>
+                  <ExperienceSoloBlock
+                    theme={game.theme.id}
+                    xp={extra ? extra.xpplayer1 : undefined}
+                    player={game.player}
+                  />
+                </Grid>
+              }
               <Grid item xs={12}>
                 <Divider
                   sx={{

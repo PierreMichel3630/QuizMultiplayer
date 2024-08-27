@@ -1,20 +1,34 @@
+import { bots } from "./bots";
 import { supabase } from "./supabase";
 
 export const SUPABASE_SCORE_TABLE = "score";
 export const SUPABASE_OPPOSITION_TABLE = "opposition";
 
-export const selectScoresByTheme = (theme: number, order: string, limit = 5) =>
-  supabase
+export const selectScoresByTheme = (
+  theme: number,
+  order: string,
+  itemperpage = 25,
+  page = 0
+) => {
+  const from = page * itemperpage;
+  const to = from + itemperpage - 1;
+  return supabase
     .from(SUPABASE_SCORE_TABLE)
-    .select("*, profile(*, avatar(*))")
+    .select("*, profile(*, avatar(*)), uuidgame(uuid, created_at)")
     .gt(order, 0)
     .eq("theme", theme)
+    .not("profile", "in", `(${bots.join(",")})`)
     .order(order, { ascending: false })
-    .order("created_at", { ascending: true })
-    .limit(limit);
+    .order("uuidgame(created_at)", { ascending: false })
+    .range(from, to);
+};
 
 export const selectScoresByProfile = (uuid: string) =>
-  supabase.from(SUPABASE_SCORE_TABLE).select("*, theme(*)").eq("profile", uuid);
+  supabase
+    .from(SUPABASE_SCORE_TABLE)
+    .select("*, theme(*)")
+    .or("games.gt.0,duelgames.gt.0")
+    .eq("profile", uuid);
 
 export const selectScoreByThemeAndPlayer = (player: string, theme: number) =>
   supabase
@@ -24,14 +38,18 @@ export const selectScoreByThemeAndPlayer = (player: string, theme: number) =>
     .eq("theme", theme)
     .maybeSingle();
 
-export const selectScore = (order: string, page: number, limit = 25) =>
-  supabase
+export const selectScore = (order: string, page: number, itemperpage = 25) => {
+  const from = page * itemperpage;
+  const to = from + itemperpage - 1;
+  return supabase
     .from(SUPABASE_SCORE_TABLE)
-    .select("*, profile(*, avatar(*)), theme(*)")
+    .select("*, profile(*, avatar(*)), theme(*), uuidgame(uuid, created_at)")
     .gt(order, 0)
+    .not("profile", "in", `(${bots.join(",")})`)
     .order(order, { ascending: false })
-    .order("created_at", { ascending: true })
-    .range(page * limit, (page + 1) * limit);
+    .order("uuidgame(created_at)", { ascending: false })
+    .range(from, to);
+};
 
 export const countPlayersByTheme = (theme: number) =>
   supabase

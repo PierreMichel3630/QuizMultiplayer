@@ -1,14 +1,16 @@
-import { Paper, Grid, Typography } from "@mui/material";
+import { Paper, Grid, Typography, Avatar, Skeleton } from "@mui/material";
 import { percent, px, viewHeight } from "csx";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { Badge } from "src/models/Badge";
 import { Colors } from "src/style/Colors";
 
 interface Props {
   badges: Array<Badge>;
+  loading?: boolean;
 }
 
-export const CardBadge = ({ badges }: Props) => {
+export const CardBadge = ({ badges, loading }: Props) => {
   const { t } = useTranslation();
 
   return (
@@ -34,9 +36,11 @@ export const CardBadge = ({ badges }: Props) => {
           <Typography variant="h2" color="text.secondary">
             {t("commun.badges")}
           </Typography>
-          <Typography variant="h4" color="text.secondary">
-            ({badges.length})
-          </Typography>
+          {!loading && (
+            <Typography variant="h4" color="text.secondary">
+              ({badges.length})
+            </Typography>
+          )}
         </Grid>
         <Grid
           item
@@ -48,12 +52,32 @@ export const CardBadge = ({ badges }: Props) => {
             overflowX: "scroll",
           }}
         >
-          <Grid container spacing={1}>
-            {badges.map((badge) => (
-              <Grid item key={badge.id}>
-                <img src={badge.icon} width={40} />
-              </Grid>
-            ))}
+          <Grid container spacing={1} justifyContent="center">
+            {loading ? (
+              <>
+                {Array.from(new Array(6)).map((_, index) => (
+                  <Grid item key={index}>
+                    <Skeleton variant="circular" width={45} height={45} />
+                  </Grid>
+                ))}
+              </>
+            ) : (
+              <>
+                {badges.map((badge) => (
+                  <Grid item key={badge.id}>
+                    <Link to={`/badge/${badge.id}`}>
+                      <Avatar
+                        sx={{
+                          width: 45,
+                          height: 45,
+                        }}
+                        src={badge.icon}
+                      />
+                    </Link>
+                  </Grid>
+                ))}
+              </>
+            )}
           </Grid>
         </Grid>
       </Grid>

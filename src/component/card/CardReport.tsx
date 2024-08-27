@@ -58,8 +58,8 @@ export const CardReport = ({ report, onDelete }: Props) => {
             {report.description}
           </Typography>
         </Grid>
-        {(report.duelgame || report.sologame) && (
-          <Grid item xs={12}>
+        <Grid item xs={12}>
+          {(report.duelgame || report.sologame) && (
             <Box
               sx={{
                 backgroundColor: Colors.black,
@@ -91,12 +91,18 @@ export const CardReport = ({ report, onDelete }: Props) => {
                   variant="h4"
                 />
               </Box>
-              {report.questionjson && (
-                <CardSignalQuestion question={report.questionjson} />
-              )}
             </Box>
-          </Grid>
-        )}
+          )}
+          {report.questionjson && (
+            <Box
+              sx={{
+                backgroundColor: Colors.black,
+              }}
+            >
+              <CardSignalQuestion question={report.questionjson} />
+            </Box>
+          )}
+        </Grid>
         <Grid item xs={12} sm={4}>
           {(report.duelgame || report.sologame) && (
             <ButtonColor

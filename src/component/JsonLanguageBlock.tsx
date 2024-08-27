@@ -49,7 +49,7 @@ export const JsonLanguageArrayOrStringBlock = ({
 
   const label = Array.isArray(valueLanguage)
     ? all
-      ? valueLanguage.join(", ")
+      ? valueLanguage.join(" / ")
       : valueLanguage[0] ?? ""
     : valueLanguage;
   return <Typography {...props}>{label}</Typography>;

@@ -4,25 +4,41 @@ import { useEffect, useMemo, useState } from "react";
 import { Colors } from "src/style/Colors";
 
 interface Props {
-  time: number;
+  time?: number;
 }
 
 export const Timer = ({ time }: Props) => {
   const DELAY = 100;
-  const [timer, setTimer] = useState(time * 1000);
+  const [intervalTimer, setIntervalTimer] = useState<
+    NodeJS.Timeout | undefined
+  >(undefined);
+  const [totalTime, setTotalTime] = useState(1);
+  const [timer, setTimer] = useState(0);
 
   useEffect(() => {
-    setTimer(time * 1000);
-  }, [time]);
+    if (time) {
+      setTotalTime(time);
+      setTimer(time * 1000);
+    } else {
+      clearInterval(intervalTimer);
+    }
+  }, [intervalTimer, time]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setTimer((prev) => prev - DELAY);
     }, DELAY);
+    setIntervalTimer(interval);
     return () => clearInterval(interval);
   }, [time]);
 
-  const pourcentage = (timer / (time * 1000)) * 100;
+  useEffect(() => {
+    if (timer <= 0) {
+      clearInterval(intervalTimer);
+    }
+  }, [intervalTimer, timer]);
+
+  const pourcentage = (timer / (totalTime * 1000)) * 100;
 
   const getColor = (pourcentage: number) => {
     let color: string = Colors.green;
@@ -203,67 +219,6 @@ export const RoundTimer = ({
           variant="h2"
           component="div"
           sx={{ color: "white", fontSize: fontSize }}
-        >
-          {timeValue < 0 ? 0 : Math.floor(timeValue)}
-        </Typography>
-      </Box>
-    </Box>
-  );
-};
-
-interface Props {
-  time: number;
-}
-
-export const TimerWhite = ({ time }: Props) => {
-  const DELAY = 100;
-  const [timer, setTimer] = useState(time * 1000);
-
-  useEffect(() => {
-    setTimer(time * 1000);
-  }, [time]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimer((prev) => prev - DELAY);
-    }, DELAY);
-    return () => clearInterval(interval);
-  }, [time]);
-
-  const pourcentage = (timer / (time * 1000)) * 100;
-  const timeValue = timer / 1000;
-
-  return (
-    <Box
-      sx={{
-        position: "relative",
-        display: "inline-flex",
-        borderRadius: percent(50),
-      }}
-    >
-      <CircularProgress
-        variant="determinate"
-        value={pourcentage}
-        sx={{ color: Colors.purple }}
-        thickness={3}
-        size={50}
-      />
-      <Box
-        sx={{
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          position: "absolute",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Typography
-          variant="h2"
-          component="div"
-          sx={{ color: Colors.purple, fontSize: 30 }}
         >
           {timeValue < 0 ? 0 : Math.floor(timeValue)}
         </Typography>

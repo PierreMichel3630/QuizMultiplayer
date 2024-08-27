@@ -95,10 +95,7 @@ export const CardAdminQuestion = ({
           </Grid>
         )}
         <Grid item xs={12} sx={{ textAlign: "center" }}>
-          <JsonLanguageArrayOrStringBlock
-            all={question.allresponse}
-            value={question.response}
-          />
+          <JsonLanguageArrayOrStringBlock all value={question.response} />
         </Grid>
         <Grid item xs={12} sx={{ mt: 2 }}>
           <ValidateButton

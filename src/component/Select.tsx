@@ -190,11 +190,13 @@ export const AutocompleteThemeAdmin = ({
 interface PropsAutocompleteTheme {
   value: Array<Theme>;
   onChange: (value: Array<Theme>) => void;
+  isAdmin?: boolean;
 }
 
 export const AutocompleteTheme = ({
   value,
   onChange,
+  isAdmin = false,
 }: PropsAutocompleteTheme) => {
   const { t } = useTranslation();
 
@@ -210,6 +212,7 @@ export const AutocompleteTheme = ({
         <AutocompleteInputTheme
           placeholder={t("commun.selecttheme")}
           onSelect={(newvalue) => onChange([...value, newvalue])}
+          isAdmin={isAdmin}
         />
       </Grid>
 
@@ -234,6 +237,25 @@ export const AutocompleteTheme = ({
           </Paper>
         </Grid>
       ))}
+    </Grid>
+  );
+};
+
+interface PropsSelectTheme {
+  onChange: (value: Theme) => void;
+}
+
+export const SelectTheme = ({ onChange }: PropsSelectTheme) => {
+  const { t } = useTranslation();
+
+  return (
+    <Grid container spacing={1}>
+      <Grid item xs={12}>
+        <AutocompleteInputTheme
+          placeholder={t("commun.selecttheme")}
+          onSelect={(newvalue) => onChange(newvalue)}
+        />
+      </Grid>
     </Grid>
   );
 };

@@ -49,7 +49,9 @@ async function getQuestion(supabase, channel, game) {
 
   const points = game.points;
   const difficulties = getDifficultyQuestion(points);
-  const previousIdQuestion = game.questions.map((el) => el.id).join(",");
+  const previousIdQuestion = game.questions.reduce((acc, v) => {
+    return v.id ? [...acc, v.id] : acc;
+  }, []);
   const uuid = game.uuid;
   const player = game.player;
 
@@ -97,14 +99,13 @@ async function getQuestion(supabase, channel, game) {
             },
           },
         });
-        const resupdatescore = await supabase.rpc("updatescore", {
+        await supabase.rpc("updatescore", {
           player: player,
           themeid: theme.id,
           newpoints: points,
           game: uuid,
           xpprop: 50 + points * 10,
         });
-        if (resupdatescore.error) throw resupdatescore.error;
         channel.unsubscribe();
         supabase.removeChannel(channel);
       }

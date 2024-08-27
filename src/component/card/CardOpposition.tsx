@@ -11,6 +11,7 @@ import { Profile } from "src/models/Profile";
 interface Props {
   opposition: { games: number; victory: number; draw: number; defeat: number };
   opponent: Profile;
+  loading?: boolean;
 }
 
 export const CardOpposition = ({ opposition, opponent }: Props) => {

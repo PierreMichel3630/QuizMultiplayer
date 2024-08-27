@@ -293,7 +293,7 @@ export const ExperienceSoloBlock = ({ theme, xp, player }: PropsSolo) => {
             }}
           >
             {xpLevel !== undefined && myXpLevel !== undefined && (
-              <Box sx={{ position: "absolute", right: 8 }}>
+              <Box sx={{ position: "absolute", right: 8, zIndex: 1 }}>
                 <Typography variant="h6" component="span">
                   {xpLevel - myXpLevel}
                 </Typography>

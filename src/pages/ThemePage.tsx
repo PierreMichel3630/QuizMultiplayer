@@ -4,7 +4,15 @@ import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import StarIcon from "@mui/icons-material/Star";
 import SupervisedUserCircleRoundedIcon from "@mui/icons-material/SupervisedUserCircleRounded";
-import { Alert, Box, Divider, Grid, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Container,
+  Divider,
+  Grid,
+  Skeleton,
+  Typography,
+} from "@mui/material";
 import { percent, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -44,6 +52,8 @@ import { Score } from "src/models/Score";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import { getLevel } from "src/utils/calcul";
+import HomeIcon from "@mui/icons-material/Home";
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 
 export default function ThemePage() {
   const { t } = useTranslation();
@@ -60,6 +70,7 @@ export default function ThemePage() {
   const [openProposeQuestion, setOpenProposeQuestion] = useState(false);
   const [players, setPlayers] = useState<number | undefined>(undefined);
   const [theme, setTheme] = useState<Theme | undefined>(undefined);
+  const [loadingTheme, setLoadingTheme] = useState(true);
 
   const [scores, setScores] = useState<Array<Score>>([]);
   const [loadingScore, setLoadingScore] = useState(true);
@@ -101,7 +112,7 @@ export default function ThemePage() {
       scores.map((el) => ({
         profile: el.profile,
         value: el.points,
-        uuid: el.uuidgame,
+        uuid: el.uuidgame !== null ? el.uuidgame.uuid : undefined,
         extra: t("commun.pointsabbreviation"),
       })) as Array<DataRanking>,
     [scores, t]
@@ -164,9 +175,11 @@ export default function ThemePage() {
       });
     };
     const getTheme = () => {
+      setLoadingTheme(true);
       if (id) {
         selectThemeById(Number(id)).then((res) => {
           if (res.data) setTheme(res.data as Theme);
+          setLoadingTheme(false);
         });
       }
     };
@@ -279,7 +292,7 @@ export default function ThemePage() {
         </title>
       </Helmet>
       <Grid container>
-        {theme && (
+        {loadingTheme ? (
           <Grid item xs={12}>
             <Box
               sx={{
@@ -288,232 +301,408 @@ export default function ThemePage() {
                 backgroundColor: Colors.black,
               }}
             >
-              <Grid container spacing={1} alignItems="center">
+              <Grid
+                container
+                spacing={1}
+                alignItems="center"
+                sx={{ zIndex: 10 }}
+              >
                 <Grid
                   item
                   display={{ xs: "none", sm: "block" }}
                   sm={12}
                   sx={{ textAlign: "center" }}
                 >
-                  <JsonLanguageBlock
-                    variant="h1"
-                    color="text.secondary"
-                    value={theme.name}
+                  <Skeleton
+                    variant="rectangular"
+                    width={70}
+                    height={20}
+                    sx={{ bgcolor: "grey.800" }}
                   />
                 </Grid>
                 <Grid item xs={3} sm={3} md={2}>
-                  <ImageThemeBlock theme={theme} />
+                  <Skeleton
+                    variant="rectangular"
+                    width={"100%"}
+                    height={70}
+                    sx={{ bgcolor: "grey.800" }}
+                  />
                 </Grid>
                 <Grid
                   item
                   display={{ xs: "block", sm: "none" }}
                   xs={8}
-                  sx={{ textAlign: "center" }}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                 >
-                  <JsonLanguageBlock
-                    variant="h1"
-                    color="text.secondary"
-                    value={theme.name}
+                  <Skeleton
+                    variant="rectangular"
+                    width={"70%"}
+                    height={35}
+                    sx={{ bgcolor: "grey.800" }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={9} md={10}>
                   <Grid container spacing={1}>
                     <Grid item xs={12}>
-                      <ButtonColor
-                        size="small"
-                        value={Colors.red}
-                        label={t("commun.duel")}
-                        icon={OfflineBoltIcon}
-                        onClick={() => playDuel()}
-                        variant="contained"
+                      <Skeleton
+                        variant="rectangular"
+                        width={"100%"}
+                        height={40}
+                        sx={{ bgcolor: "grey.800" }}
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      <ButtonColor
-                        size="small"
-                        value={Colors.blue2}
-                        label={t("commun.playsolo")}
-                        icon={PlayCircleIcon}
-                        onClick={() => playSolo()}
-                        variant="contained"
+                      <Skeleton
+                        variant="rectangular"
+                        width={"100%"}
+                        height={40}
+                        sx={{ bgcolor: "grey.800" }}
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      <ButtonColor
-                        size="small"
-                        value={Colors.purple}
-                        label={t("commun.training")}
-                        icon={FitnessCenterIcon}
-                        onClick={() => playTraining()}
-                        variant="contained"
+                      <Skeleton
+                        variant="rectangular"
+                        width={"100%"}
+                        height={40}
+                        sx={{ bgcolor: "grey.800" }}
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      <ButtonColor
-                        size="small"
-                        value={Colors.green}
-                        label={t("commun.friendduel")}
-                        icon={SupervisedUserCircleRoundedIcon}
-                        onClick={() => {
-                          if (user) {
-                            setOpenModalFriend(true);
-                          } else {
-                            navigate(`/login`);
-                          }
-                        }}
-                        variant="contained"
+                      <Skeleton
+                        variant="rectangular"
+                        width={"100%"}
+                        height={40}
+                        sx={{ bgcolor: "grey.800" }}
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      <ButtonColor
-                        size="small"
-                        value={favorite ? Colors.greyDarkMode : Colors.yellow}
-                        label={
-                          favorite
-                            ? t("commun.removefavorite")
-                            : t("commun.addfavorite")
-                        }
-                        icon={StarIcon}
-                        onClick={() => addFavorite()}
-                        variant="contained"
+                      <Skeleton
+                        variant="rectangular"
+                        width={"100%"}
+                        height={40}
+                        sx={{ bgcolor: "grey.800" }}
                       />
                     </Grid>
-                    {user && (
-                      <Grid item xs={12}>
-                        <ButtonColor
-                          size="small"
-                          value={Colors.pink2}
-                          label={t("commun.proposequestion")}
-                          icon={LightbulbIcon}
-                          onClick={() => {
-                            if (user) {
-                              setOpenProposeQuestion(true);
-                            } else {
-                              navigate(`/login`);
-                            }
-                          }}
-                          variant="contained"
-                        />
-                      </Grid>
-                    )}
                   </Grid>
                 </Grid>
               </Grid>
             </Box>
           </Grid>
+        ) : (
+          <>
+            {theme && (
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    p: 1,
+                    backgroundColor: Colors.black,
+                  }}
+                >
+                  <Grid container spacing={1} alignItems="center">
+                    <Grid
+                      item
+                      display={{ xs: "none", sm: "block" }}
+                      sm={12}
+                      sx={{ textAlign: "center" }}
+                    >
+                      <JsonLanguageBlock
+                        variant="h1"
+                        color="text.secondary"
+                        value={theme.name}
+                      />
+                    </Grid>
+                    <Grid item xs={3} sm={3} md={2}>
+                      <ImageThemeBlock theme={theme} />
+                    </Grid>
+                    <Grid
+                      item
+                      display={{ xs: "block", sm: "none" }}
+                      xs={8}
+                      sx={{ textAlign: "center" }}
+                    >
+                      <JsonLanguageBlock
+                        variant="h1"
+                        color="text.secondary"
+                        value={theme.name}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={9} md={10}>
+                      {theme.enabled ? (
+                        <Grid container spacing={1}>
+                          <Grid item xs={12}>
+                            <ButtonColor
+                              size="small"
+                              value={Colors.red}
+                              label={t("commun.duel")}
+                              icon={OfflineBoltIcon}
+                              onClick={() => playDuel()}
+                              variant="contained"
+                            />
+                          </Grid>
+                          <Grid item xs={12}>
+                            <ButtonColor
+                              size="small"
+                              value={Colors.blue2}
+                              label={t("commun.playsolo")}
+                              icon={PlayCircleIcon}
+                              onClick={() => playSolo()}
+                              variant="contained"
+                            />
+                          </Grid>
+                          <Grid item xs={12}>
+                            <ButtonColor
+                              size="small"
+                              value={Colors.purple}
+                              label={t("commun.training")}
+                              icon={FitnessCenterIcon}
+                              onClick={() => playTraining()}
+                              variant="contained"
+                            />
+                          </Grid>
+                          <Grid item xs={12}>
+                            <ButtonColor
+                              size="small"
+                              value={Colors.green}
+                              label={t("commun.friendduel")}
+                              icon={SupervisedUserCircleRoundedIcon}
+                              onClick={() => {
+                                if (user) {
+                                  setOpenModalFriend(true);
+                                } else {
+                                  navigate(`/login`);
+                                }
+                              }}
+                              variant="contained"
+                            />
+                          </Grid>
+                          <Grid item xs={12}>
+                            <ButtonColor
+                              size="small"
+                              value={
+                                favorite ? Colors.greyDarkMode : Colors.yellow
+                              }
+                              label={
+                                favorite
+                                  ? t("commun.removefavorite")
+                                  : t("commun.addfavorite")
+                              }
+                              icon={StarIcon}
+                              onClick={() => addFavorite()}
+                              variant="contained"
+                            />
+                          </Grid>
+                          {user && (
+                            <Grid item xs={12}>
+                              <ButtonColor
+                                size="small"
+                                value={Colors.pink2}
+                                label={t("commun.proposequestion")}
+                                icon={LightbulbIcon}
+                                onClick={() => {
+                                  if (user) {
+                                    setOpenProposeQuestion(true);
+                                  } else {
+                                    navigate(`/login`);
+                                  }
+                                }}
+                                variant="contained"
+                              />
+                            </Grid>
+                          )}
+                        </Grid>
+                      ) : (
+                        <Grid container spacing={1}>
+                          <Grid item xs={12}>
+                            <Alert severity="error">
+                              {t("commun.thememaintenance")}
+                            </Alert>
+                          </Grid>
+                          <Grid item xs={12}>
+                            <ButtonColor
+                              value={Colors.blue}
+                              label={t("commun.return")}
+                              icon={KeyboardReturnIcon}
+                              onClick={() => navigate(-1)}
+                              variant="contained"
+                            />
+                          </Grid>
+                          <Grid item xs={12}>
+                            <ButtonColor
+                              value={Colors.green}
+                              label={t("commun.returnhome")}
+                              icon={HomeIcon}
+                              onClick={() => navigate("/")}
+                              variant="contained"
+                            />
+                          </Grid>
+                        </Grid>
+                      )}
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Grid>
+            )}
+          </>
         )}
-        <Grid
-          item
-          xs={12}
-          sx={{
-            backgroundColor: Colors.black,
-          }}
-        >
-          <Grid
-            container
-            justifyContent="center"
-            columns={23}
+        {loadingTheme || theme ? (
+          <>
+            <Grid
+              item
+              xs={12}
+              sx={{
+                backgroundColor: Colors.black,
+              }}
+            >
+              <Grid
+                container
+                justifyContent="center"
+                columns={23}
+                sx={{
+                  borderRadius: px(5),
+                }}
+              >
+                <Grid item xs={7}>
+                  <Box sx={{ p: px(2), textAlign: "center" }}>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        color: Colors.lightgrey2,
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {t("commun.mylevel")}
+                    </Typography>
+                    <Typography variant="h2" color="text.secondary">
+                      {myScore ? getLevel(myScore.xp) : "-"}
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid
+                  item
+                  xs={1}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <Divider
+                    orientation="vertical"
+                    variant="middle"
+                    flexItem
+                    sx={{
+                      borderColor: Colors.lightgrey2,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={7}>
+                  <Box sx={{ p: px(2), textAlign: "center" }}>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        color: Colors.lightgrey2,
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {t("commun.players")}
+                    </Typography>
+                    <Typography variant="h2" color="text.secondary">
+                      {players ? players : "-"}
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid
+                  item
+                  xs={1}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <Divider
+                    orientation="vertical"
+                    variant="middle"
+                    flexItem
+                    sx={{
+                      borderColor: Colors.lightgrey2,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={7}>
+                  <Box sx={{ p: px(2), textAlign: "center" }}>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        color: Colors.lightgrey2,
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {t("commun.questions")}
+                    </Typography>
+                    <Typography variant="h2" color="text.secondary">
+                      {theme ? theme.questions : "-"}
+                    </Typography>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Box sx={{ p: 1 }}>
+                <DefaultTabs
+                  values={tabs}
+                  tab={tab}
+                  onChange={(value) => {
+                    setLoadingScore(true);
+                    setTab(value);
+                  }}
+                />
+                <RankingTable data={data} me={dataMe} loading={loadingScore} />
+              </Box>
+            </Grid>
+          </>
+        ) : (
+          <Box
             sx={{
-              borderRadius: px(5),
+              display: "flex",
+              position: "absolute",
+              transform: "translate(0%, -50%)",
+              top: percent(50),
+              width: percent(100),
+              p: 2,
             }}
           >
-            <Grid item xs={7}>
-              <Box sx={{ p: px(2), textAlign: "center" }}>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: Colors.lightgrey2,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {t("commun.mylevel")}
-                </Typography>
-                <Typography variant="h2" color="text.secondary">
-                  {myScore ? getLevel(myScore.xp) : "-"}
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid
-              item
-              xs={1}
-              sx={{ display: "flex", justifyContent: "center" }}
-            >
-              <Divider
-                orientation="vertical"
-                variant="middle"
-                flexItem
-                sx={{
-                  borderColor: Colors.lightgrey2,
-                }}
-              />
-            </Grid>
-            <Grid item xs={7}>
-              <Box sx={{ p: px(2), textAlign: "center" }}>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: Colors.lightgrey2,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {t("commun.players")}
-                </Typography>
-                <Typography variant="h2" color="text.secondary">
-                  {players ? players : "-"}
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid
-              item
-              xs={1}
-              sx={{ display: "flex", justifyContent: "center" }}
-            >
-              <Divider
-                orientation="vertical"
-                variant="middle"
-                flexItem
-                sx={{
-                  borderColor: Colors.lightgrey2,
-                }}
-              />
-            </Grid>
-            <Grid item xs={7}>
-              <Box sx={{ p: px(2), textAlign: "center" }}>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: Colors.lightgrey2,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {t("commun.questions")}
-                </Typography>
-                <Typography variant="h2" color="text.secondary">
-                  {theme ? theme.questions : "-"}
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          <Box sx={{ p: 1 }}>
-            <DefaultTabs
-              values={tabs}
-              tab={tab}
-              onChange={(value) => {
-                setLoadingScore(true);
-                setTab(value);
-              }}
-            />
-            <RankingTable data={data} me={dataMe} loading={loadingScore} />
+            <Container maxWidth="lg">
+              <Grid container spacing={1}>
+                <Grid item xs={12} sx={{ textAlign: "center" }}>
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      color: Colors.lightgrey2,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {t("alert.pagenotfound")}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <ButtonColor
+                    value={Colors.blue}
+                    label={t("commun.return")}
+                    icon={KeyboardReturnIcon}
+                    onClick={() => navigate(-1)}
+                    variant="contained"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <ButtonColor
+                    value={Colors.green}
+                    label={t("commun.returnhome")}
+                    icon={HomeIcon}
+                    onClick={() => navigate("/")}
+                    variant="contained"
+                  />
+                </Grid>
+              </Grid>
+            </Container>
           </Box>
-        </Grid>
-        {!loadingScore && data.length === 0 && (
-          <Grid item xs={12}>
-            <Box sx={{ p: 1 }}>
-              <Alert severity="info">{t("commun.noresultgame")}</Alert>
-            </Box>
-          </Grid>
         )}
       </Grid>
       <SelectFriendModal

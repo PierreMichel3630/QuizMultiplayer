@@ -124,7 +124,9 @@ const getNewQuestion = async (
   }
   let question: any = undefined;
   let response = undefined;
-  const previousIdQuestion = questions.map((el) => el.id);
+  const previousIdQuestion = questions.reduce((acc, v) => {
+    return v.id ? [...acc, v.id] : acc;
+  }, []);
   const isGenerate =
     theme.generatequestion !== null
       ? theme.generatequestion

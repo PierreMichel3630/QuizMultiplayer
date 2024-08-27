@@ -20,6 +20,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 interface Props {
   profile: Profile;
   small?: boolean;
@@ -31,11 +32,15 @@ export const FriendButton = ({ profile, small = false }: Props) => {
   const { setMessage, setSeverity } = useMessage();
   const navigate = useNavigate();
 
-  const friend = friends.find(
-    (el) =>
-      user &&
-      ((el.user1.id === user.id && el.user2.id === profile.id) ||
-        (el.user2.id === user.id && el.user1.id === profile.id))
+  const friend = useMemo(
+    () =>
+      friends.find(
+        (el) =>
+          user &&
+          ((el.user1.id === user.id && el.user2.id === profile.id) ||
+            (el.user2.id === user.id && el.user1.id === profile.id))
+      ),
+    [friends, profile.id, user]
   );
 
   const deleteFriend = () => {

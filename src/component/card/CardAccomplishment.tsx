@@ -60,7 +60,7 @@ export const CardAccomplishment = ({
         {badge && accomplishment.badge && (
           <Grid item>
             <Link to={`/personalized#badges`}>
-              <img src={accomplishment.badge.icon} width={50} />
+              <img src={accomplishment.badge.icon} width={50} loading="lazy" />
             </Link>
           </Grid>
         )}

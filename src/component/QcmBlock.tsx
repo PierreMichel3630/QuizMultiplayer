@@ -71,6 +71,7 @@ export const QcmBlock = ({ question, onSubmit }: Props) => {
 };
 
 interface PropsResponse {
+  myresponse: string | number | undefined;
   question: QuestionSolo;
   response?: ResponseSolo;
   onSubmit: (value: string | number) => void;
@@ -80,11 +81,21 @@ export const QcmResponseBlock = ({
   question,
   response,
   onSubmit,
+  myresponse,
 }: PropsResponse) => {
   const [isClick, setIsClick] = useState(false);
   useEffect(() => {
     setIsClick(response !== undefined ? true : false);
   }, [response]);
+
+  const columns = useMemo(() => {
+    const modulo = question.responses.length % 2;
+    return modulo === 0 ? 2 : 1;
+  }, [question.responses.length]);
+
+  const rows = useMemo(() => {
+    return question.responses.length / columns;
+  }, [question.responses.length, columns]);
 
   const border = useMemo(
     () => (question ? hasBorderImage(question.theme.id) : false),
@@ -106,8 +117,8 @@ export const QcmResponseBlock = ({
               justifyContent: "flex-end",
               gap: px(4),
               display: "grid",
-              gridTemplateRows: "repeat(2, 1fr)",
-              gridTemplateColumns: "repeat(2, 50%)",
+              gridTemplateRows: `repeat(${rows}, 1fr)`,
+              gridTemplateColumns: `repeat(${columns}, ${100 / columns}%)`,
               gridAutoRows: "minmax(80px, auto)",
             }
           : {
@@ -118,20 +129,25 @@ export const QcmResponseBlock = ({
               justifyContent: "center",
               gap: px(4),
               display: "grid",
-              gridTemplateRows: "repeat(2, 1fr)",
-              gridTemplateColumns: "repeat(2, 50%)",
+              gridTemplateRows: `repeat(${rows}, 1fr)`,
+              gridTemplateColumns: `repeat(${columns}, ${100 / columns}%)`,
             }
       }
     >
       {question.responses.map((r, index) => {
         const isCorrectResponse =
           response && Number(response.response) === index;
-        const isMyAnswer = response && Number(response.answer) === index;
-        const color = isCorrectResponse
-          ? Colors.green2
-          : isMyAnswer
-          ? Colors.red2
-          : Colors.grey;
+        const isMyAnswer =
+          (response && Number(response.answer) === index) ||
+          Number(myresponse) === index;
+        let color = Colors.grey;
+        if (isCorrectResponse) {
+          color = Colors.green2;
+        } else if (isMyAnswer && response !== undefined) {
+          color = Colors.red2;
+        } else if (isMyAnswer && response === undefined) {
+          color = Colors.grey4;
+        }
 
         return (
           <Paper
@@ -141,6 +157,7 @@ export const QcmResponseBlock = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              position: "relative",
               backgroundColor: color,
               borderColor: Colors.white,
               borderWidth: 1,
@@ -148,9 +165,9 @@ export const QcmResponseBlock = ({
               height: percent(100),
               userSelect: "none",
               "&:hover": {
-                cursor: response ? "default" : "pointer",
+                cursor: response || myresponse ? "default" : "pointer",
               },
-              p: "4px 5px",
+              p: "4px 10px",
               minHeight: px(50),
             }}
             variant="outlined"
@@ -162,6 +179,19 @@ export const QcmResponseBlock = ({
               }
             }}
           >
+            {isMyAnswer && (
+              <ArrowRightIcon
+                viewBox="10 7 5 10"
+                sx={{
+                  fontSize: 15,
+                  position: "absolute",
+                  top: percent(50),
+                  translate: "0 -50%",
+                  left: 0,
+                  color: Colors.white,
+                }}
+              />
+            )}
             {r.image && <ImageQCMBlock src={r.image} border={border} />}
             {r.label && (
               <JsonLanguageBlock
@@ -179,6 +209,7 @@ export const QcmResponseBlock = ({
 };
 
 interface PropsResponseTraining {
+  myresponse: string | number | undefined;
   question: QuestionTraining;
   response?: ResponseTraining;
   onSubmit: (value: string | number) => void;
@@ -188,6 +219,7 @@ export const QcmResponseTrainingBlock = ({
   question,
   response,
   onSubmit,
+  myresponse,
 }: PropsResponseTraining) => {
   const [isClick, setIsClick] = useState(false);
   useEffect(() => {
@@ -224,7 +256,7 @@ export const QcmResponseTrainingBlock = ({
               gap: px(4),
               display: "grid",
               gridTemplateRows: `repeat(${rows}, 1fr)`,
-              gridTemplateColumns: `repeat(${columns}, 50%)`,
+              gridTemplateColumns: `repeat(${columns}, ${100 / columns}%)`,
               gridAutoRows: "minmax(80px, auto)",
             }
           : {
@@ -236,25 +268,30 @@ export const QcmResponseTrainingBlock = ({
               gap: px(4),
               display: "grid",
               gridTemplateRows: `repeat(${rows}, 1fr)`,
-              gridTemplateColumns: `repeat(${columns}, 50%)`,
+              gridTemplateColumns: `repeat(${columns}, ${100 / columns}%)`,
             }
       }
     >
       {question.responses.map((r, index) => {
         const isCorrectResponse =
           response && Number(response.response) === index;
-        const isMyAnswer = response && Number(response.answer) === index;
-        const color = isCorrectResponse
-          ? Colors.green2
-          : isMyAnswer
-          ? Colors.red2
-          : Colors.grey;
+        const isMyAnswer =
+          (response && Number(response.answer) === index) ||
+          Number(myresponse) === index;
+        let color = Colors.grey;
+        if (isCorrectResponse) {
+          color = Colors.green2;
+        } else if (isMyAnswer && response !== undefined) {
+          color = Colors.red2;
+        } else if (isMyAnswer && response === undefined) {
+          color = Colors.grey4;
+        }
 
         return (
           <Paper
             key={index}
             sx={{
-              p: "4px 5px",
+              p: "4px 12px",
               minHeight: px(50),
               textAlign: "center",
               display: "flex",
@@ -268,7 +305,7 @@ export const QcmResponseTrainingBlock = ({
               height: percent(100),
               userSelect: "none",
               "&:hover": {
-                cursor: response ? "default" : "pointer",
+                cursor: response || myresponse ? "default" : "pointer",
               },
             }}
             variant="outlined"
@@ -279,6 +316,19 @@ export const QcmResponseTrainingBlock = ({
               }
             }}
           >
+            {isMyAnswer && (
+              <ArrowRightIcon
+                viewBox="10 7 5 10"
+                sx={{
+                  fontSize: 15,
+                  position: "absolute",
+                  top: percent(50),
+                  translate: "0 -50%",
+                  left: 0,
+                  color: Colors.white,
+                }}
+              />
+            )}
             {r.image && <ImageQCMBlock src={r.image} border={border} />}
             {r.label && (
               <JsonLanguageBlock
@@ -320,6 +370,15 @@ export const QcmBlockDuelBlock = ({
     );
   }, [response, responseMe]);
 
+  const columns = useMemo(() => {
+    const modulo = question.responses.length % 2;
+    return modulo === 0 ? 2 : 1;
+  }, [question.responses.length]);
+
+  const rows = useMemo(() => {
+    return question.responses.length / columns;
+  }, [question.responses.length, columns]);
+
   const border = useMemo(
     () => (question ? hasBorderImage(question.theme.id) : false),
     [question]
@@ -340,8 +399,8 @@ export const QcmBlockDuelBlock = ({
               justifyContent: "flex-end",
               gap: px(4),
               display: "grid",
-              gridTemplateRows: "repeat(2, 1fr)",
-              gridTemplateColumns: "repeat(2, 50%)",
+              gridTemplateRows: `repeat(${rows}, 1fr)`,
+              gridTemplateColumns: `repeat(${columns}, ${100 / columns}%)`,
               gridAutoRows: "minmax(80px, auto)",
             }
           : {
@@ -352,8 +411,8 @@ export const QcmBlockDuelBlock = ({
               justifyContent: "center",
               gap: px(4),
               display: "grid",
-              gridTemplateRows: "repeat(2, 1fr)",
-              gridTemplateColumns: "repeat(2, 50%)",
+              gridTemplateRows: `repeat(${rows}, 1fr)`,
+              gridTemplateColumns: `repeat(${columns}, ${100 / columns}%)`,
             }
       }
     >
@@ -413,7 +472,7 @@ export const QcmBlockDuelBlock = ({
               <ArrowRightIcon
                 viewBox="10 7 5 10"
                 sx={{
-                  fontSize: 10,
+                  fontSize: 15,
                   position: "absolute",
                   top: percent(50),
                   translate: "0 -50%",
@@ -434,7 +493,7 @@ export const QcmBlockDuelBlock = ({
               <ArrowLeftIcon
                 viewBox="10 7 5 10"
                 sx={{
-                  fontSize: 10,
+                  fontSize: 15,
                   position: "absolute",
                   top: percent(50),
                   translate: "0 -50%",
@@ -462,6 +521,15 @@ export const QcmBlockDuelResultBlock = ({
   const responsePlayer1 = question.responsePlayer1;
   const responsePlayer2 = question.responsePlayer2;
 
+  const columns = useMemo(() => {
+    const modulo = question.responses.length % 2;
+    return modulo === 0 ? 2 : 1;
+  }, [question.responses.length]);
+
+  const rows = useMemo(() => {
+    return question.responses.length / columns;
+  }, [question.responses.length, columns]);
+
   const border = useMemo(
     () => (question ? hasBorderImage(question.theme.id) : false),
     [question]
@@ -471,8 +539,8 @@ export const QcmBlockDuelResultBlock = ({
     <Box
       sx={{
         display: "grid",
-        gridTemplateRows: "repeat(2, 1fr)",
-        gridTemplateColumns: "repeat(2, 50%)",
+        gridTemplateRows: `repeat(${rows}, 1fr)`,
+        gridTemplateColumns: `repeat(${columns}, ${100 / columns}%)`,
         gap: px(4),
       }}
     >
@@ -518,7 +586,7 @@ export const QcmBlockDuelResultBlock = ({
               <ArrowRightIcon
                 viewBox="10 7 5 10"
                 sx={{
-                  fontSize: 10,
+                  fontSize: 15,
                   position: "absolute",
                   top: percent(50),
                   translate: "0 -50%",
@@ -539,7 +607,7 @@ export const QcmBlockDuelResultBlock = ({
               <ArrowLeftIcon
                 viewBox="10 7 5 10"
                 sx={{
-                  fontSize: 10,
+                  fontSize: 15,
                   position: "absolute",
                   top: percent(50),
                   translate: "0 -50%",

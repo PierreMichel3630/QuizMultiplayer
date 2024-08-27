@@ -82,7 +82,7 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
     question: Yup.string().required(
       t("form.createquestion.requiredquestionfr")
     ),
-    responses: Yup.array()
+    response: Yup.array()
       .of(Yup.string())
       .min(1, t("form.createquestion.requiredresponsefr")),
     difficulty: Yup.string(),

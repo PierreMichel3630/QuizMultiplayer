@@ -49,7 +49,9 @@ async function getQuestion(supabase, game) {
 
   const points = game.points;
   const difficulties = getDifficultyQuestion(points);
-  const previousIdQuestion = game.questions.map((el) => el.id).join(",");
+  const previousIdQuestion = game.questions.reduce((acc, v) => {
+    return v.id ? [...acc, v.id] : acc;
+  }, []);
   const player = game.player;
 
   let newQuestion: any = undefined;
@@ -83,27 +85,14 @@ async function getQuestion(supabase, game) {
       if (resrandomquestion2.error) throw resrandomquestion2.error;
       newQuestion = resrandomquestion2.data;
       if (newQuestion === null) {
-        const resupdatescore = await supabase.rpc("updatescore", {
+        await supabase.rpc("updatescore", {
           player: player,
           themeid: theme.id,
           newpoints: points,
+          game: game.uuid,
+          xpprop: 50 + points * 10,
         });
-        if (resupdatescore.error) throw resupdatescore.error;
-        return new Response(
-          JSON.stringify({
-            allquestion: true,
-            extra: {
-              xpplayer1: {
-                match: 50,
-                matchscore: points * 10,
-              },
-            },
-          }),
-          {
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-            status: 200,
-          }
-        );
+        return null;
       }
     }
     if (newQuestion) {
@@ -249,35 +238,54 @@ Deno.serve(async (req) => {
     console.log(uuid);
 
     const question = await getQuestion(supabase, game);
-    supabase
-      .from("sologame")
-      .update({
-        time: moment().add(question.time, "seconds"),
-        question: question,
-      })
-      .eq("uuid", game.uuid)
-      .then(({ error }) => {
-        if (error) throw error;
-      });
+    if (question === null) {
+      return new Response(
+        JSON.stringify({
+          allresponse: true,
+          extra: {
+            xpplayer1: {
+              match: 50,
+              matchscore: game.points * 10,
+            },
+          },
+        }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        }
+      );
+    } else {
+      supabase
+        .from("sologame")
+        .update({
+          time: moment().add(question.time, "seconds"),
+          question: question,
+        })
+        .eq("uuid", game.uuid)
+        .then(({ error }) => {
+          if (error) throw error;
+        });
 
-    return new Response(
-      JSON.stringify({
-        question: question.question,
-        difficulty: question.difficulty,
-        image: question.image,
-        audio: question.audio,
-        extra: question.extra,
-        theme: question.theme,
-        isqcm: question.isqcm,
-        type: question.typequestion,
-        responses: question.responses,
-        time: question.time,
-      }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      }
-    );
+      return new Response(
+        JSON.stringify({
+          question: question.question,
+          difficulty: question.difficulty,
+          image: question.image,
+          audio: question.audio,
+          extra: question.extra,
+          theme: question.theme,
+          isqcm: question.isqcm,
+          type: question.typequestion,
+          responses: question.responses,
+          time: question.time,
+          typeResponse: question.typeresponselist,
+        }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        }
+      );
+    }
   } catch (error) {
     console.error(error);
 

@@ -8,14 +8,14 @@ import {
 } from "react";
 import {
   selectAccomplishment,
-  selectMyAccomplishment,
+  selectAccomplishmentByProfile,
 } from "src/api/accomplishment";
 import { selectAvatar } from "src/api/avatar";
 import { selectBadgeByProfile, selectBadges } from "src/api/badge";
 import { selectCategories } from "src/api/category";
 import { selectCountries } from "src/api/country";
 import { selectMyFavorite } from "src/api/favorite";
-import { selectFriend } from "src/api/friend";
+import { selectFriendByProfileId } from "src/api/friend";
 import { selectReportMessage } from "src/api/report";
 import { selectThemes } from "src/api/theme";
 import { selectTitleByProfile, selectTitles } from "src/api/title";
@@ -149,7 +149,7 @@ export const AppProvider = ({ children }: Props) => {
 
   const getFriends = useCallback(() => {
     if (user !== null) {
-      selectFriend().then(({ data }) => {
+      selectFriendByProfileId(user.id).then(({ data }) => {
         const friends = data as Array<Friend>;
         setFriends(friends.filter((el) => el.status !== FRIENDSTATUS.REFUSE));
       });
@@ -269,7 +269,7 @@ export const AppProvider = ({ children }: Props) => {
 
   const getMyAccomplishments = useCallback(() => {
     if (user) {
-      selectMyAccomplishment(user.id).then(({ data }) => {
+      selectAccomplishmentByProfile(user.id).then(({ data }) => {
         const res = data as Array<ProfileAccomplishment>;
         setMyaccomplishments(res.map((el) => el.accomplishment));
       });

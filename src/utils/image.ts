@@ -1,10 +1,17 @@
-export const testImages = (urls: Array<string>) => {
+import { QuestionImage } from "src/pages/admin/AdminImagesPage";
+
+interface ResultImage {
+  question: QuestionImage;
+  result: boolean;
+}
+
+export const testImages = (questions: Array<QuestionImage>) => {
   return new Promise((resolve) => {
-    const promises = urls.map((el) => testImage(el));
+    const promises = questions.map((el) => testImage(el));
     Promise.all(promises).then((res) => {
       const list = res as Array<ResultImage>;
       const result = list.reduce(
-        (acc, value) => (!value.result ? [...acc, value.url] : acc),
+        (acc, value) => (!value.result ? [...acc, value] : acc),
         [] as Array<ResultImage>
       );
       resolve(result);
@@ -12,25 +19,21 @@ export const testImages = (urls: Array<string>) => {
   });
 };
 
-interface ResultImage {
-  url: string;
-  result: boolean;
-}
-const testImage = (url: string) => {
+const testImage = (question: QuestionImage) => {
   return new Promise(function imgPromise(resolve, reject) {
     const imgElement = new Image();
     imgElement.addEventListener("load", function imgOnLoad() {
       resolve({
-        url,
+        question,
         result: true,
       });
     });
     imgElement.addEventListener("error", function imgOnError() {
       resolve({
-        url,
+        question,
         result: false,
       });
     });
-    imgElement.src = url;
+    imgElement.src = question.image;
   });
 };

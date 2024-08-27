@@ -131,7 +131,7 @@ export default function MenuPage() {
         value: "accomplishments",
         label: t("commun.myaccomplishments"),
         icon: <EmojiEventsIcon />,
-        to: "/accomplishments",
+        to: profile ? `/accomplishments/${profile.id}` : `/login`,
       },
       {
         value: "history",

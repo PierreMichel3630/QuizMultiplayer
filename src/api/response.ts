@@ -32,3 +32,10 @@ export const insertResponseImage = (value: ResponseImageInsert) =>
 
 export const deleteResponseImageById = (id: number) =>
   supabase.from(SUPABASE_RESPONSEIMAGE_TABLE).delete().eq("id", id);
+
+export const searchResponseByTypeAndValue = (value: string, type: string) =>
+  supabase
+    .from(SUPABASE_RESPONSE_TABLE)
+    .select()
+    .eq("type", type)
+    .ilike("searchvaluefr", `%${value}%`);

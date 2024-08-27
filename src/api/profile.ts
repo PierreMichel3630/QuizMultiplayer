@@ -42,6 +42,6 @@ export const searchProfilePagination = (
     .select("*, avatar(*)")
     .ilike("username", `%${search}%`)
     .not("id", "in", `(${notin.join(",")})`)
-    .order("username", { ascending: true })
+    .order("lower_name", { ascending: true })
     .range(from, to);
 };

@@ -88,7 +88,8 @@ Deno.serve(async (req) => {
         }
       }
       if (newQuestion) {
-        const qcm = newQuestion.isqcm === null ? true : newQuestion.isqcm;
+        const qcm =
+          newQuestion.isqcm === null ? Math.random() < 0.5 : newQuestion.isqcm;
         newQuestion = { ...newQuestion, isqcm: qcm };
         response = newQuestion.response;
         if (qcm) {
@@ -209,6 +210,7 @@ Deno.serve(async (req) => {
       theme: newQuestion.theme,
       isqcm: newQuestion.isqcm,
       type: newQuestion.typequestion,
+      typeResponse: newQuestion.typeresponselist,
       responses: newQuestion.responses,
       response: response,
     };
