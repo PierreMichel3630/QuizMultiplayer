@@ -28,6 +28,7 @@ export interface FilterQuestion {
   isImage: boolean;
   ids: Array<number>;
   validate: boolean;
+  difficulties: Array<string>;
 }
 export default function AdminQuestionsPage() {
   const { t } = useTranslation();
@@ -52,6 +53,7 @@ export default function AdminQuestionsPage() {
     isImage: false,
     ids: [],
     validate: true,
+    difficulties: [],
   });
 
   const themesUniq = useMemo(

@@ -23,7 +23,7 @@ export const ModesBlock = ({ summary = false }: Props) => {
 
   const modes: Array<Mode> = [
     {
-      color: Colors.blue2,
+      color: Colors.green,
       icon: <PlayCircleIcon fontSize="large" sx={{ color: Colors.white }} />,
       title: t("modes.mode1.title"),
       goal: t("modes.mode1.goal"),
@@ -36,8 +36,8 @@ export const ModesBlock = ({ summary = false }: Props) => {
       goal: t("modes.mode2.goal"),
       explain: t("modes.mode2.explain"),
     },
-    {
-      color: Colors.green,
+    /*{
+      color: Colors.blue2,
       icon: (
         <SupervisedUserCircleRoundedIcon
           fontSize="large"
@@ -47,7 +47,7 @@ export const ModesBlock = ({ summary = false }: Props) => {
       title: t("modes.mode3.title"),
       goal: t("modes.mode3.goal"),
       explain: t("modes.mode3.explain"),
-    },
+    },*/
     {
       color: Colors.purple,
       icon: <FitnessCenterIcon fontSize="large" sx={{ color: Colors.white }} />,
@@ -85,6 +85,7 @@ const ModeBlock = ({ mode, summary }: PropsModeBlock) => {
         borderRadius: 2,
         height: percent(100),
         backgroundColor: mode.color,
+        border: "2px solid white",
       }}
     >
       <Grid container spacing={1}>

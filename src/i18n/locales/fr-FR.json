@@ -2,6 +2,10 @@
   "appname": "QuizBattle",
   "description": "Quiz multijoueur en ligne",
   "commun": {
+    "qcm": "Question à Choix Multiple",
+    "inputquestion": "Question avec Saisie clavier",
+    "typequestion": "Type de question",
+    "difficulties": "Difficultés",
     "thememaintenance": "Actuellement en maintenance, le thème reviendra la plus rapidement possible.",
     "images": "Images",
     "validatequestion": "Question Validé",
@@ -61,7 +65,7 @@
     "noresult": "Aucun résultat ne correspond à votre recherche.",
     "addtofriend": "Ajouter en ami",
     "deletefriend": "Supprimer ami",
-    "waitvalidation": "En attente de validation depuis le",
+    "waitvalidation": "En attente de validation",
     "notificationfriend": "{{username}} vous demande en ami",
     "myrequests": "Mes demandes",
     "myinvitation": "Mes invitations",
@@ -161,6 +165,7 @@
     "selectcategory": "Sélectionner une catégorie",
     "proposequestion": "Proposer une question",
     "category": "Catégorie",
+    "categories": "Catégories",
     "edit": "Modifier",
     "language": "Langue",
     "others": "Autres",
@@ -172,6 +177,7 @@
     "badge": "Badge",
     "badges": "Badges",
     "training": "Entraînement",
+    "modetraining": "Mode Entraînement",
     "nextquestion": "Question suivante",
     "percentsuccess": "% réussite",
     "rankingby": "Classé par",
@@ -231,7 +237,15 @@
     "match": "Partie",
     "totalxp": "Total",
     "xpabbreviation": "xp",
-    "xpnextlevel": "xp restant"
+    "xpnextlevel": "xp restant",
+    "goal": "Objectif",
+    "configuration": "Configuration",
+    "googleplay": "Google Play",
+    "letgo": "Commencer à jouer !!!"
+  },
+  "offline": {
+    "title": "Connectez-vous à Internet",
+    "text": "Vous n'êtes pas connecté. Vérifiez votre connexion."
   },
   "accomplishment": {
     "SOLO": "Succès Mode Solo",
@@ -314,16 +328,15 @@
     }
   },
   "installation": {
-    "android1": "Ouvrez Chrome et accédez à https://quizup-v2.web.app",
-    "android2": "en haut à droite de votre écran",
-    "android3": "Dans le menu, ",
-    "android4": "Une popup s'ouvre, cliquer sur installer.",
+    "android": "Pour les appareils Android",
+    "android1": "Lien vers Google play",
+    "android2": "Disponible sur Google Play via le lien ci dessous",
+    "apple": "Pour les appareils Apple",
     "apple1": "En haut à droite de la barre d'adresse, appuyez sur Partager .",
     "apple2": "Recherchez l'option Ajouter à l'écran d'accueil, puis appuyez dessus.",
     "apple3": "Appuyez sur Ajouter",
-    "computer1": "Ouvrez Chrome et accédez à https://quizup-v2.web.app",
-    "computer2": "En haut à droite, cliquer sur l'icône ",
-    "computer3": "Une popup s'ouvre, cliquer sur installer."
+    "computer": "Pour les ordinateurs",
+    "computer1": "Suivez le lien suivant : <anchor>{{link}}</anchor>"
   },
   "pages": {
     "home": {
@@ -400,6 +413,15 @@
     },
     "title": {
       "title": "Titre"
+    },
+    "new": {
+      "title": "Nouveautés"
+    },
+    "resetpassword": {
+      "title": "Réinitaliser votre mot de passe"
+    },
+    "categories": {
+      "title": "Catégories"
     }
   },
   "enum": {
@@ -446,23 +468,26 @@
       "forgotpassword": "Mot de passe oublié ?",
       "email": "Adresse email *",
       "createaccount": "Créer un compte",
-      "continue": "Continuer",
+      "continue": "Valider",
       "requiredmail": "Veuillez saisir une adresse mail",
       "formatmail": "Veuillez saisir une adresse mail valide",
       "modality": "Veuillez saisir l'adresse e-mail utilisée lors de votre inscription. Vous recevrez un e-mail contenant les instructions à suivre pour réinitialiser votre mot de passe.",
       "connection": "Connexion",
       "notforget": "Se souvenir de votre mot de passe ?",
       "successsendmail": "Email envoyé",
-      "limitsendemail": "Veuillez attendre 60s avant de renvoyer un email"
+      "limitsendemail": "Veuillez attendre 60s avant de renvoyer un email",
+      "sendemail": "Email envoyé",
+      "sendemailinfo": "L'Email peut prendre entre 1 à 5 minutes avant d'être dans votre boîte mail. Vérifier vos spams."
     },
     "resetpassword": {
       "resetpassword": "Réinitialiser votre mot de passe",
-      "password": "Mot de passe *",
-      "confirmpassword": "Confirmation du mot de passe *",
-      "continue": "Continuer",
+      "password": "Nouveau mot de passe *",
+      "confirmpassword": "Confirmation du nouveau mot de passe *",
+      "continue": "Valider",
       "passwordmatch": "Les mots de passe doivent correspondre",
       "requiredpassword": "Veuillez saisir un mot de passe",
-      "minpassword": "Veuillez saisir un mot de passe de plus de 6 caractères"
+      "minpassword": "Veuillez saisir un mot de passe de plus de 6 caractères",
+      "resetpasswordexplain": "Veuillez saisir votre nouveau mot de passe ci-dessous."
     },
     "createresponse": {
       "image": "Image",
@@ -546,22 +571,53 @@
     "updateemailsuccess": "Votre modification d'addresse mail est en cours. Veuillez confirmer sur votre ancien et nouveau email."
   },
   "confidentiality": {
-    "title": "Règles de confidentialité",
-    "rules1": {
-      "title": "Données personnelles",
-      "text": "QuizBattle collecte votre adresse email afin de vous authentifiez mais celle-ci reste confidentiel et n'est pas affiché à d'autre utilisateur. Vous pouvez personnaliser votre profil en ajoutant votre pays d'origine, et un identifiant ces informations seront publique au sein de l'application."
+    "title": "Politique de confidentialité",
+    "date": "Révisé le 16 Septembre 2024",
+    "mentionslegales": {
+      "title": "Mentions légales",
+      "rules1": {
+        "title": "Article 1 - Compte dans l'application",
+        "text": "L'utilisateur créant un compte sur l'application a la possibilité d'y accèder en se connectant grâce aux identifiants fournis lors de son inscription.L'utilisteur est entièrement responsable de la protection du mot de passe qu'il a choisi. Il est encouragé à utiliser des mots de passe complexes. En cas d'oubli de mot de passe, l'utilisateur a la possibilité d'en générer un nouveau en utilisant l'email fourni lors de son inscription. Ce mot de passe constitue la garantie de la confidentialité des informations contenues dans son compte et l'utilisateur s'interdit donc de le transmettre ou de le communiquer à un tiers. A défaut, l'éditeur de l'application ne pourra pas être tenu pour responsable des accès non autorisés au compte utilisateur. L'utilisateur connecté peut saisir des informations personnelles supplémentaires afin de personnalisé son compte : Pays d'origine. QuizBattle se réserve le droit exclusif de supprimer le compte de tout membre qui aurait contrevenu aux présentes conditions générales. Ladite suppression ne sera pas susceptible de constituer un dommage pour l'utilisateur exclu qui ne pourra prétendre à aucune indemnité de ce fait. Cette exclusion n'est pas exclusive de la possibilité, pour l'éditeur, d'entreprendre des poursuites d'ordre judiciaire à l'encontre du membre, lorsque les faits l'auront justifié."
+      },
+      "rules2": {
+        "title": "Article 2 - Exonération de la responsabilité de l'éditeur dans le cadre de l'exécution du présent contrat",
+        "text": "En cas d'impossibilité d'accès à l'application, en raison de problèmes techniques ou de toutes natures, l'utilisateur ne pourra se prévaloir d'un dommage et ne pourra prétendre à aucune indemnité. L'indisponibilité, même prolongée et sans aucune durée limitative ne peut être constitutive d'un préjudice pour les utilisateurs et ne peut aucunement donner lieu à l'octroi de dommages et intérêts de la part de l'éditeur."
+      },
+      "rules3": {
+        "title": "Article 3 - Accès à l'application par connexion Internet",
+        "text": "La responsabilité de l'éditeur ne peut être engagée en raison d'une indisponibilité technique de la connexion, qu'elle soit due notamment à un cas de force majeure, à une maintenance, à une mise à jour, à une modification, à une intervention de l'hébergeur, à une grève interne ou externe, à une panne électrique du réseau, à une coupure d'alimentation électrique, ou encore à une mauvaise configuration ou utilisation  du périphérique de l'utilisateur."
+      },
+      "rules4": {
+        "title": "Article 4 - Fermeture de compte",
+        "text": "Chaque utilisateur est libre de fermer son compte sur l'application. Pour ceci, l'utilisateur doit aller dans le menu Mes paramètres et cliquer sur le bouton supprimer mon compte. Toutes les données liées à l'utilisateur seront supprimé et aucune récupération de ses données ne sera alors possible."
+      },
+      "rules5": {
+        "title": "Article 5 - Droit applicable et médiation",
+        "text": "Les présentes conditions générales sont soumises à l'application du droit Français. Elles peuvent être modifiées à tout moment par l'éditeur. Les conditions générales applicables à l'utilisateur sont celle en vigueur au jour de sa connexion sur l'application. L'éditeur s'engage bien évidemmment à conserver toutes ses anciennes conditions générales et à les faires parvenir à tout utilisateur qui en ferait la demande. Sauf dispositions d'ordre public, tous litiges qui pourraient survenir dans le cadre de l'exécution des présentes conditions générales pourront avant toute action judiciaire être soumis à l'appréciation de l'éditeur en vue d'un réglement amiable. Il est expressément rappelé que les demandes de règlement amiable ne suspendent pas les délais ouverts pour intenter les actions judiciaires. Sauf disposition contraire, d'ordre public, toute action judiciaire relative à l'exécution du présent contrat devra être soumise à la compétence des juridictions du ressort de la Cour d'appel saisie."
+      }
     },
-    "rules2": {
-      "title": "Données sauvegardées",
-      "text": "QuizBattle sauvegarde l'ensemble des résultats de vos parties Solo et Duel afin d'afficher vos statistiques sur votre profil et calculer votre classement."
-    },
-    "rules3": {
-      "title": "Achats",
-      "text": "QuizBattle est 100% gratuite et n'utilise aucun achat en ligne."
-    },
-    "rules4": {
-      "title": "Contact",
-      "text": "Pour toutes plaintes, questions ou idées, vous pouvez utiliser l'adresse mail suivante: pierremichel804@gmail.com"
+    "charte": {
+      "title": "Charte de données personnelles",
+      "rules1": {
+        "title": "Introduction et rôle de la charte",
+        "text": "La présente charte vise à vous informer des engagements de l'application eu égard au respect de votre vie privée et à la protection des données personnelles vous concernant, collectées et traitées à l'occasion de votre utilisation de l'application."
+      },
+      "rules2": {
+        "title": "Données personnelles",
+        "text": "QuizBattle collecte votre adresse email et votre mot de passe si vous créer un compte afin de vous authentifiez mais celle-ci reste confidentiel et n'est pas affiché à d'autre utilisateur. Vous pouvez personnaliser votre profil en ajoutant votre pays d'origine, et un identifiant ces informations seront publique au sein de l'application."
+      },
+      "rules3": {
+        "title": "Données sauvegardées",
+        "text": "QuizBattle sauvegarde l'ensemble des résultats de vos parties Solo et Duel afin d'afficher vos statistiques sur votre profil et calculer votre classement."
+      },
+      "rules4": {
+        "title": "Achats",
+        "text": "QuizBattle est 100% gratuite et n'utilise aucun achat en ligne."
+      },
+      "rules5": {
+        "title": "Contact",
+        "text": "Pour toutes plaintes, questions ou idées, vous pouvez utiliser l'adresse mail suivante: pierremichel804@gmail.com"
+      }
     }
   },
   "sort": {
@@ -573,6 +629,8 @@
     "level": "Trier par niveau"
   },
   "tutorial": {
-    "title": "Bienvenue sur QuizBattle"
+    "title": "Bienvenue sur QuizBattle",
+    "explain": "QuizBattle est un jeu de quiz vous permettant de tester vos connaissances sur une multitude de thèmes grâce à 3 modes de jeu fun et gratuit.",
+    "available": "Disponible sur"
   }
 }

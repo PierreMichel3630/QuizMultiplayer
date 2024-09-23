@@ -20,6 +20,7 @@ Deno.serve(async (req) => {
   const body = await req.json();
   const player = body.player;
   const theme = body.theme;
+  const config = body.config;
   let themequestion = body.theme;
   if (theme === 272) {
     const { data } = await supabase
@@ -37,6 +38,7 @@ Deno.serve(async (req) => {
     theme: theme,
     themequestion: themequestion,
     questions: [],
+    config: config,
   };
 
   const res = await supabase

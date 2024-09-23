@@ -76,6 +76,9 @@ export const FriendNotificationBlock = ({ friend }: Props) => {
               backgroundColor: Colors.green2,
               borderRadius: px(5),
               cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
             onClick={() => confirmFriend(FRIENDSTATUS.VALID)}
           >
@@ -87,6 +90,9 @@ export const FriendNotificationBlock = ({ friend }: Props) => {
               backgroundColor: Colors.red2,
               borderRadius: px(5),
               cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
             onClick={() => confirmFriend(FRIENDSTATUS.REFUSE)}
           >

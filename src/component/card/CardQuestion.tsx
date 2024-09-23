@@ -21,6 +21,7 @@ import { hasBorderImage } from "src/utils/theme";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { QcmBlockDuelResultBlock } from "../QcmBlock";
 import { ValidateButton } from "../button/ValidateButton";
+import { MapPositionBlock } from "../MapPositionBlock";
 
 interface Props {
   question: QuestionAdmin;
@@ -173,8 +174,18 @@ export const CardSignalQuestion = ({
             />
           </Grid>
         )}
+        {question.typequestion === "MAPPOSITION" && question.data !== null && (
+          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+            <MapPositionBlock
+              code={question.data.code}
+              url={question.data.map}
+              width={400}
+              height={300}
+            />
+          </Grid>
+        )}
         {question.image && (
-          <Grid item xs={12} sx={{ maxWidth: percent(80), maxHeight: px(400) }}>
+          <Grid item xs={12} sx={{ maxWidth: percent(80), maxHeight: px(250) }}>
             <ImageQuestionBlock src={question.image} border={border} />
           </Grid>
         )}

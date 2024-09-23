@@ -19,7 +19,7 @@ import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { AutocompleteTheme } from "src/component/Select";
 import { SelectorProfileBlock } from "src/component/SelectorProfileBlock";
 import { SkeletonGames } from "src/component/skeleton/SkeletonGame";
-import { HistoryGame } from "src/models/Game";
+import { HistoryGameAdmin } from "src/models/Game";
 import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
 
@@ -34,7 +34,7 @@ export default function AdminGamesPage() {
 
   const ITEMPERPAGE = 25;
 
-  const [games, setGames] = useState<Array<HistoryGame>>([]);
+  const [games, setGames] = useState<Array<HistoryGameAdmin>>([]);
   const [page, setPage] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -50,7 +50,7 @@ export default function AdminGamesPage() {
   const getGames = useCallback(() => {
     setIsLoading(true);
     selectGames(filter, page, ITEMPERPAGE).then(({ data }) => {
-      const result = data as Array<HistoryGame>;
+      const result = data as Array<HistoryGameAdmin>;
       setGames((prev) => (page === 0 ? [...result] : [...prev, ...result]));
       setIsEnd(result.length === 0);
       setIsLoading(false);

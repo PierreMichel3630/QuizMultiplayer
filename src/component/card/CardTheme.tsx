@@ -26,7 +26,7 @@ interface Props {
   width?: number;
 }
 
-export const CardTheme = ({ theme, link, width = 90 }: Props) => {
+export const CardTheme = ({ theme, link, width = 92 }: Props) => {
   const navigate = useNavigate();
 
   const goTheme = () => {
@@ -43,7 +43,7 @@ export const CardTheme = ({ theme, link, width = 90 }: Props) => {
         flexDirection: "column",
         cursor: "pointer",
         background: "rgba(255,255,255,.15)",
-        borderRadius: px(5),
+        borderRadius: px(10),
         gap: px(2),
       }}
     >

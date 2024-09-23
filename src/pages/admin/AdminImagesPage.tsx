@@ -39,6 +39,7 @@ export default function AdminImagesPage() {
     isImage: true,
     ids: [],
     validate: true,
+    difficulties: [],
   });
 
   useEffect(() => {

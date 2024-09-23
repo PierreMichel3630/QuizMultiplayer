@@ -2,6 +2,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { AdminRoutes } from "./adminPage";
 
 import AccomplishmentPage from "src/pages/AccomplishmentPage";
+import CategoriesPage from "src/pages/CategoriesPage";
 import CategoryPage from "src/pages/CategoryPage";
 import ComparePage from "src/pages/ComparePage";
 import ConfidentialityPage from "src/pages/ConfidentialityPage";
@@ -9,6 +10,7 @@ import FavoritePage from "src/pages/FavoritePage";
 import HistoryGamePage from "src/pages/HistoryGamePage";
 import ImprovePage from "src/pages/ImprovePage";
 import MenuPage from "src/pages/MenuPage";
+import NewThemePage from "src/pages/NewThemePage";
 import NotificationPage from "src/pages/NotificationPage";
 import ParameterPage from "src/pages/ParameterPage";
 import PeoplePage from "src/pages/PeoplePage";
@@ -26,6 +28,7 @@ import ResetPasswordPage from "src/pages/connect/ResetPasswordPage";
 import FAQPage from "src/pages/help/FAQPage";
 import HelpPage from "src/pages/help/HelpPage";
 import InstallationPage from "src/pages/help/InstallationPage";
+import ConfigTrainingPage from "src/pages/play/ConfigTrainingPage";
 
 export const AppRoutes = [
   {
@@ -35,6 +38,14 @@ export const AppRoutes = [
   {
     path: "/favorite",
     element: <FavoritePage />,
+  },
+  {
+    path: "/new",
+    element: <NewThemePage />,
+  },
+  {
+    path: "/categories",
+    element: <CategoriesPage />,
   },
   {
     path: "/category/:id",
@@ -148,5 +159,9 @@ export const AppRoutes = [
   {
     path: "/games",
     element: <HistoryGamePage />,
+  },
+  {
+    path: "/config/training/:themeid",
+    element: <ConfigTrainingPage />,
   },
 ];

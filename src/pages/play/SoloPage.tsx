@@ -53,12 +53,11 @@ export default function SoloPage() {
           })
           .then(({ data }) => {
             const questionSolo = data as QuestionSolo;
-            console.log(questionSolo);
             let urls: Array<string> = [];
             if (questionSolo.image) {
               urls = [...urls, questionSolo.image];
             }
-            if (questionSolo.type === "IMAGE") {
+            if (questionSolo.typequestion === "IMAGE") {
               const images = questionSolo.responses.reduce(
                 (acc, v) => (v.image ? [...acc, v.image] : acc),
                 [] as Array<string>
@@ -127,14 +126,12 @@ export default function SoloPage() {
           body: { game: game.uuid, response: value, language: language.iso },
         });
         const res = data as ResponseSolo;
-        console.log(res);
         setMyresponse(undefined);
         setTimer(undefined);
         setResponse(res);
         setScore(res.points);
         scrollTop();
         if (res.result) {
-          console.log("generateQuestion");
           generateQuestion(game, 1500);
         } else {
           setTimeout(async () => {
@@ -187,91 +184,96 @@ export default function SoloPage() {
   };
 
   return (
-    <Container
-      maxWidth="lg"
+    <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        height: viewHeight(100),
-        p: 0,
         backgroundColor: Colors.black,
       }}
     >
-      <Helmet>
-        <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
-      </Helmet>
-      <PreloadImages urls={images} />
-      <Box
+      <Container
+        maxWidth="md"
         sx={{
           display: "flex",
-          flex: "1 1 0",
-          p: 1,
           flexDirection: "column",
-          gap: 1,
+          height: viewHeight(100),
+          p: 0,
         }}
       >
-        {game && (
-          <Box>
-            <ScoreThemeBlock theme={game.theme} score={score} />
-          </Box>
-        )}
+        <Helmet>
+          <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
+        </Helmet>
+        <PreloadImages urls={images} />
         <Box
           sx={{
-            flexGrow: 1,
             display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
             flex: "1 1 0",
+            p: 1,
+            flexDirection: "column",
             gap: 1,
-            minHeight: 0,
           }}
         >
-          {question ? (
-            <>
-              <QuestionSoloBlock question={question} timer={timer} />
-              {question && question.isqcm ? (
-                <QcmResponseBlock
-                  myresponse={myresponse}
-                  response={response}
-                  question={question}
-                  onSubmit={validateResponse}
-                />
-              ) : (
-                <>
-                  {response ? (
-                    <ResponseSoloBlock response={response} />
-                  ) : (
-                    <InputResponseBlock
-                      myresponse={myresponse}
-                      onSubmit={validateResponse}
-                      typeResponse={question.typeResponse}
-                    />
-                  )}
-                </>
-              )}
-            </>
-          ) : (
-            <Box
-              sx={{
-                flexGrow: 1,
-                flex: "1 1 0",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                textAlign: "center",
-                gap: 1,
-                width: percent(100),
-              }}
-            >
-              <Typography variant="h4" color="text.secondary">
-                {t("commun.launchpartie")}
-              </Typography>
-              <LoadingDot />
+          {game && (
+            <Box>
+              <ScoreThemeBlock theme={game.theme} score={score} />
             </Box>
           )}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+              flex: "1 1 0",
+              gap: 1,
+              minHeight: 0,
+            }}
+          >
+            {question ? (
+              <>
+                <QuestionSoloBlock question={question} timer={timer} />
+                {question && question.isqcm ? (
+                  <QcmResponseBlock
+                    myresponse={myresponse}
+                    response={response}
+                    question={question}
+                    onSubmit={validateResponse}
+                  />
+                ) : (
+                  <>
+                    {response ? (
+                      <ResponseSoloBlock response={response} />
+                    ) : (
+                      <InputResponseBlock
+                        myresponse={myresponse}
+                        onSubmit={validateResponse}
+                        typeResponse={question.typeResponse}
+                      />
+                    )}
+                  </>
+                )}
+              </>
+            ) : (
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  flex: "1 1 0",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  gap: 1,
+                  width: percent(100),
+                }}
+              >
+                <Typography variant="h4" color="text.secondary">
+                  {t("commun.launchpartie")}
+                </Typography>
+                <LoadingDot />
+              </Box>
+            )}
+          </Box>
         </Box>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 }

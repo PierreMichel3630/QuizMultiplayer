@@ -48,7 +48,7 @@ export default function GameDuelPage() {
       </Helmet>
       <BarNavigation title={t("commun.duelgame")} quit={() => navigate(-1)} />
       <Grid item xs={12}>
-        <Container maxWidth="lg">
+        <Container maxWidth="md">
           <Box
             sx={{
               p: 1,
@@ -201,7 +201,7 @@ export default function GameDuelPage() {
         }}
       >
         <Container
-          maxWidth="lg"
+          maxWidth="md"
           sx={{
             backgroundColor: Colors.black,
           }}

@@ -36,7 +36,7 @@ export default function PeoplePage() {
         setIsLoading(true);
         searchProfilePagination(search, [], page, ITEMPERPAGE).then(
           ({ data }) => {
-            const result = data as Array<Profile>;
+            const result = data !== null ? (data as Array<Profile>) : [];
             setPlayers((prev) => [...prev, ...result]);
             setIsLoading(false);
             setIsEnd(result.length === 0);

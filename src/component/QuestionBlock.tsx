@@ -8,6 +8,7 @@ import { CircularLoading } from "./Loading";
 import { SoundBar } from "./SoundBar";
 import { Timer } from "./Timer";
 import { hasBorderImage } from "src/utils/theme";
+import { MapPositionBlock } from "./MapPositionBlock";
 
 interface PropsSolo {
   question?: QuestionSolo;
@@ -23,6 +24,7 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
     () => (question ? hasBorderImage(question.theme.id) : false),
     [question]
   );
+
   return (
     <Box
       sx={{
@@ -60,6 +62,13 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
               <ImageQuestionBlock src={image} border={border} />
             </Box>
           )}
+          {question.typequestion === "MAPPOSITION" &&
+            question.data !== null && (
+              <MapPositionBlock
+                code={question.data.code}
+                url={question.data.map}
+              />
+            )}
           {question.audio && <SoundBar />}
           {question.extra && (
             <JsonLanguageBlock
@@ -101,6 +110,7 @@ export const QuestionTrainingBlock = ({ question }: PropsTraining) => {
     () => (question ? hasBorderImage(question.theme.id) : false),
     [question]
   );
+
   return (
     <Box
       sx={{
@@ -138,6 +148,13 @@ export const QuestionTrainingBlock = ({ question }: PropsTraining) => {
               <ImageQuestionBlock src={image} border={border} />
             </Box>
           )}
+          {question.typequestion === "MAPPOSITION" &&
+            question.data !== null && (
+              <MapPositionBlock
+                code={question.data.code}
+                url={question.data.map}
+              />
+            )}
           {question.audio && <SoundBar />}
           {question.extra && (
             <JsonLanguageBlock
@@ -219,6 +236,13 @@ export const QuestionDuelBlock = ({ question }: PropsDuel) => {
               <ImageQuestionBlock src={image} border={border} />
             </Box>
           )}
+          {question.typequestion === "MAPPOSITION" &&
+            question.data !== null && (
+              <MapPositionBlock
+                code={question.data.code}
+                url={question.data.map}
+              />
+            )}
           {question.audio && <SoundBar />}
         </>
       ) : (

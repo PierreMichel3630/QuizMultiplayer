@@ -132,7 +132,7 @@ const getNewQuestion = async (
       ? theme.generatequestion
       : Math.random() < 0.5;
   if (isGenerate) {
-    question = generateQuestion(Number(theme.id));
+    question = generateQuestion(Number(theme.id), true);
     response = question.response;
   } else {
     const res = await supabase
@@ -255,9 +255,10 @@ const getNewQuestion = async (
       extra: question.extra,
       theme: question.theme,
       isqcm: question.isqcm,
-      type: question.typequestion,
+      typequestion: question.typequestion,
       responses: question.responses,
       time: delay,
+      data: question.data,
     },
   });
   if (bot) {

@@ -19,6 +19,8 @@ import { BattleNotificationBlock } from "src/component/notification/BattleNotifi
 import { DuelNotificationBlock } from "src/component/notification/DuelNotificationBlock";
 import { useApp } from "src/context/AppProvider";
 import { BattleGame, BattleGameChange } from "src/models/BattleGame";
+import { OfflineBlock } from "src/component/OfflineBlock";
+import { FirstTimeBlock } from "src/component/FirstTimeBlock";
 
 export default function OutletPage() {
   const { uuid } = useUser();
@@ -31,6 +33,10 @@ export default function OutletPage() {
     []
   );
   const [battles, setBattles] = useState<Array<BattleGame>>([]);
+  const [online, setOnline] = useState(navigator.onLine);
+  const [isNew, setIsNew] = useState(
+    localStorage.getItem("firsttime") === null
+  );
 
   useEffect(() => {
     getAccomplishments();
@@ -43,7 +49,8 @@ export default function OutletPage() {
     const getGamesUuid = () => {
       const uuids = gamesChange.map((el) => el.uuid);
       selectInvitationDuelByUuid(uuids).then(({ data }) => {
-        setGames(data as Array<DuelGame>);
+        const value = data !== null ? (data as Array<DuelGame>) : [];
+        setGames(value);
       });
     };
     getGamesUuid();
@@ -51,7 +58,8 @@ export default function OutletPage() {
 
   const getGames = () => {
     selectInvitationDuelByUser(uuid).then(({ data }) => {
-      setGames(data as Array<DuelGame>);
+      const value = data !== null ? (data as Array<DuelGame>) : [];
+      setGames(value);
     });
   };
   useEffect(() => {
@@ -62,7 +70,8 @@ export default function OutletPage() {
     const getBattleGamesUuid = () => {
       const uuids = battlesChange.map((el) => el.uuid);
       selectInvitationBattleByUuid(uuids).then(({ data }) => {
-        setBattles(data as Array<BattleGame>);
+        const value = data !== null ? (data as Array<BattleGame>) : [];
+        setBattles(value);
       });
     };
     getBattleGamesUuid();
@@ -70,7 +79,8 @@ export default function OutletPage() {
 
   const getBattles = () => {
     selectInvitationBattleByUser(uuid).then(({ data }) => {
-      setBattles(data as Array<BattleGame>);
+      const value = data !== null ? (data as Array<BattleGame>) : [];
+      setBattles(value);
     });
   };
 
@@ -186,45 +196,69 @@ export default function OutletPage() {
     };
   }, [uuid]);
 
+  useEffect(() => {
+    window.addEventListener("online", () => setOnline(true));
+    window.addEventListener("offline", () => setOnline(false));
+    return () => {
+      window.removeEventListener("online", () => setOnline(true));
+      window.removeEventListener("offline", () => setOnline(false));
+    };
+  }, []);
+
   return (
     <>
-      <Grid container>
-        <Grid item xs={12}>
-          <Header />
-        </Grid>
-        <Grid item xs={12} sx={{ marginBottom: 8 }}>
-          <Container maxWidth="lg" sx={{ p: 0 }}>
-            <Toolbar />
-            <Outlet />
-          </Container>
-        </Grid>
-      </Grid>
-      <BottomNavigationBlock />
-      <Box
-        sx={{
-          position: "fixed",
-          bottom: 5,
-          right: 0,
-          left: percent(1),
-          display: "flex",
-          gap: 2,
-          alignItems: "end",
-          flexDirection: "column",
-          width: percent(98),
-          zIndex: 20,
-        }}
-      >
-        {games.map((game) => (
-          <DuelNotificationBlock key={game.id} game={game} refuse={getGames} />
-        ))}
-        {battles.map((battle) => (
-          <BattleNotificationBlock
-            key={battle.id}
-            game={battle}
-            refuse={getBattles}
-          />
-        ))}
-      </Box>
+      {isNew ? (
+        <FirstTimeBlock
+          onQuit={() => {
+            localStorage.setItem("firsttime", JSON.stringify(false));
+            setIsNew(false);
+          }}
+        />
+      ) : (
+        <>
+          <Grid container>
+            <Grid item xs={12}>
+              <Header />
+            </Grid>
+            <Grid item xs={12} sx={{ marginBottom: 8 }}>
+              <Container maxWidth="lg" sx={{ p: 0 }}>
+                <Toolbar />
+                {online ? <Outlet /> : <OfflineBlock />}
+              </Container>
+            </Grid>
+          </Grid>
+          <BottomNavigationBlock />
+          <Box
+            sx={{
+              position: "fixed",
+              bottom: 5,
+              right: 0,
+              left: percent(1),
+              display: "flex",
+              gap: 2,
+              alignItems: "end",
+              flexDirection: "column",
+              width: percent(98),
+              zIndex: 20,
+            }}
+          >
+            {games.map((game) => (
+              <DuelNotificationBlock
+                key={game.id}
+                game={game}
+                refuse={getGames}
+              />
+            ))}
+            {battles.map((battle) => (
+              <BattleNotificationBlock
+                key={battle.id}
+                game={battle}
+                refuse={getBattles}
+              />
+            ))}
+          </Box>
+        </>
+      )}
     </>
   );
 }

@@ -1,4 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
+import { uniqBy } from "lodash";
+import moment from "moment";
 import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -6,46 +8,43 @@ import { CardTheme } from "src/component/card/CardTheme";
 import { HeadTitle } from "src/component/HeadTitle";
 import { RankingBlock } from "src/component/RankingBlock";
 import { useApp } from "src/context/AppProvider";
-import { useUser } from "src/context/UserProvider";
-import { sortByName } from "src/utils/sort";
+import { sortByCreatedAt } from "src/utils/sort";
 
-export default function FavoritePage() {
+export default function NewThemePage() {
   const { t } = useTranslation();
-  const { language } = useUser();
-  const { themes, favorites } = useApp();
+  const { themes } = useApp();
 
-  const idFavorite = useMemo(
-    () => favorites.map((el) => el.theme),
-    [favorites]
-  );
+  const themesNew = useMemo(() => {
+    return uniqBy(
+      themes
+        .filter((el) => moment().diff(el.created_at, "days") < 7)
+        .sort(sortByCreatedAt),
+      (el) => el.id
+    );
+  }, [themes]);
 
-  const themesFavorite = useMemo(() => {
-    const idFavorite = favorites.map((el) => el.theme);
-    return themes
-      .filter((el) => idFavorite.includes(el.id))
-      .sort((a, b) => sortByName(language, a, b));
-  }, [themes, favorites, language]);
+  const idthemes = useMemo(() => themesNew.map((el) => el.id), [themesNew]);
 
   return (
     <Grid container>
       <Helmet>
-        <title>{`${t("pages.favorite.title")} - ${t("appname")}`}</title>
+        <title>{`${t("pages.new.title")} - ${t("appname")}`}</title>
       </Helmet>
       <Grid item xs={12}>
-        <HeadTitle title={t("commun.favorite")} />
+        <HeadTitle title={t("commun.new")} />
       </Grid>
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1} justifyContent="center">
-            {idFavorite.length > 0 && (
+            {idthemes.length > 0 && (
               <Grid item xs={12}>
-                <RankingBlock themes={idFavorite} />
+                <RankingBlock themes={idthemes} />
               </Grid>
             )}
             <Grid item xs={12}>
               <Typography variant="h2">{t("commun.themes")}</Typography>
             </Grid>
-            {themesFavorite.map((theme) => (
+            {themesNew.map((theme) => (
               <Grid item key={theme.id}>
                 <CardTheme theme={theme} />
               </Grid>

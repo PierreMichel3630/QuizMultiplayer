@@ -61,9 +61,10 @@ async function getQuestion(supabase, channel, game) {
       ? theme.generatequestion
       : Math.random() < 0.5;
   let responsesQcm: Array<any> = [];
+  const qcm = newQuestion.isqcm === null ? points < 10 : newQuestion.isqcm;
   if (isGenerate) {
     const difficulty = difficulties[difficulties.length - 1];
-    newQuestion = generateQuestion(Number(theme.id), points, difficulty);
+    newQuestion = generateQuestion(Number(theme.id), qcm, points, difficulty);
   } else {
     const resrandomquestion = await supabase
       .from("randomquestion")
@@ -111,7 +112,6 @@ async function getQuestion(supabase, channel, game) {
       }
     }
     if (newQuestion) {
-      const qcm = newQuestion.isqcm === null ? points < 10 : newQuestion.isqcm;
       newQuestion = { ...newQuestion, time: qcm ? 10 : 15, isqcm: qcm };
       if (qcm) {
         if (newQuestion.typequestion === "ORDER") {

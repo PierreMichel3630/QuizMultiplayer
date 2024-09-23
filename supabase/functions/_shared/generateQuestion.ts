@@ -6,26 +6,28 @@ import {
 
 export const generateQuestion = (
   theme: number,
+  qcm?: boolean,
   points?: number,
   difficulty?: string
 ) => {
   let question: any = undefined;
   switch (theme) {
     case 37:
-      question = generateQuestionMath(theme, points, difficulty);
+      question = generateQuestionMath(theme, qcm, points, difficulty);
       break;
     case 41:
-      question = generateQuestionMath(theme, points, difficulty);
+      question = generateQuestionMath(theme, qcm, points, difficulty);
       break;
     case 53:
-      question = generateQuestionMath(theme, points, difficulty, true);
+      question = generateQuestionMath(theme, qcm, points, difficulty, true);
       break;
     case 78:
-      question = generateQuestionMultiplication(theme, points, difficulty);
+      question = generateQuestionMultiplication(theme, qcm, points, difficulty);
       break;
     case 79:
       question = generateQuestionMultiplication(
         theme,
+        qcm,
         points,
         difficulty,
         true
@@ -35,7 +37,7 @@ export const generateQuestion = (
       question = generateQuestionChance(theme);
       break;
     default:
-      question = generateQuestionMath(theme, points, difficulty);
+      question = generateQuestionMath(theme, qcm, points, difficulty);
       break;
   }
   return question;
@@ -115,24 +117,29 @@ interface Operation {
 
 const generateQuestionMath = (
   theme: number,
+  qcm?: boolean,
   points?: number,
   difficulty?: string,
   simple = false
 ) => {
-  const qcm = points ? points < 10 : true;
+  const isqcm = points
+    ? points < 10
+    : qcm === undefined
+    ? Math.random() < 0.5
+    : qcm;
   const difficultyQuestion = difficulty ? difficulty : getRandomDifficulties();
   const operation = simple
     ? generateOperationSimple()
     : generateOperation(difficultyQuestion);
-  const timeSimple = 15 - 0.5 * (points ?? 0);
-  const time = simple ? (timeSimple >= 4 ? timeSimple : 4) : 15;
+  const timeSimple = 15 - 0.04 * (points ?? 0);
+  const time = simple ? (timeSimple >= 1 ? timeSimple : 1) : 15;
   const response = {
     "de-DE": operation.result,
     "en-US": operation.result,
     "es-ES": operation.result,
     "fr-FR": operation.result,
   };
-  const responses = qcm
+  const responses = isqcm
     ? [...getResponseMathQCM(operation), response]
         .map((el) => ({ label: el }))
         .sort(() => Math.random() - 0.5)
@@ -150,9 +157,9 @@ const generateQuestionMath = (
     difficulty: difficultyQuestion,
     image: null,
     theme: theme,
-    isqcm: qcm,
+    isqcm: isqcm,
     responses: responses,
-    response: qcm ? responseQcm : response,
+    response: isqcm ? responseQcm : response,
     time: time,
   };
 };
@@ -275,17 +282,22 @@ const generateOperationSimple = (): Operation => {
 
 const generateQuestionMultiplication = (
   theme: number,
+  qcm?: boolean,
   points?: number,
   difficulty?: string,
   simple = false
 ) => {
-  const qcm = points ? points < 10 : true;
+  const isqcm = points
+    ? points < 10
+    : qcm === undefined
+    ? Math.random() < 0.5
+    : qcm;
   const difficultyQuestion = difficulty ? difficulty : getRandomDifficulties();
   const operation = simple
     ? generateMultiplicationSimple()
     : generateMultiplication(difficultyQuestion);
-  const timeSimple = 15 - 0.5 * (points ?? 0);
-  const time = simple ? (timeSimple >= 4 ? timeSimple : 4) : 15;
+  const timeSimple = 15 - 0.04 * (points ?? 0);
+  const time = simple ? (timeSimple >= 1 ? timeSimple : 1) : 15;
 
   const response = {
     "de-DE": operation.result,
@@ -293,7 +305,7 @@ const generateQuestionMultiplication = (
     "es-ES": operation.result,
     "fr-FR": operation.result,
   };
-  const responses = qcm
+  const responses = isqcm
     ? [...getResponseMathQCM(operation), response]
         .map((el) => ({ label: el }))
         .sort(() => Math.random() - 0.5)
@@ -311,9 +323,9 @@ const generateQuestionMultiplication = (
     difficulty: difficultyQuestion,
     image: null,
     theme: theme,
-    isqcm: qcm,
+    isqcm: isqcm,
     responses: responses,
-    response: qcm ? responseQcm : response,
+    response: isqcm ? responseQcm : response,
     time: time,
   };
 };

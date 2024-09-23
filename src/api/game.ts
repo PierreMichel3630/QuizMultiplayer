@@ -1,6 +1,7 @@
 import { BattleGameInsert, BattleGameUpdate } from "src/models/BattleGame";
 import { FilterGame } from "src/pages/HistoryGamePage";
 import { supabase } from "./supabase";
+import { ConfigTraining } from "src/pages/play/ConfigTrainingPage";
 
 export const SUPABASE_HISTORYGAMES_TABLE = "historygames";
 
@@ -56,9 +57,13 @@ export const selectInvitationBattleByUser = (uuid: string) =>
     .or(`player2.eq.${uuid},player1.eq.${uuid}`);
 
 //TRAINING GAME
-export const launchTrainingGame = (player: string, theme: number) =>
+export const launchTrainingGame = (
+  player: string,
+  theme: number,
+  configGame: ConfigTraining
+) =>
   supabase.functions.invoke(SUPABASE_LAUNCHTRAININGGAME_FUNCTION, {
-    body: { player: player, theme: theme },
+    body: { player: player, theme: theme, config: configGame },
   });
 
 export const getQuestionTrainingGame = (game: string) =>

@@ -2,7 +2,7 @@ import { Box, Container, Divider, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { px, viewHeight } from "csx";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useParams } from "react-router-dom";
 import { CardSignalQuestion } from "src/component/card/CardQuestion";
@@ -14,6 +14,7 @@ import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { SoloGame } from "src/models/Game";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import { ButtonColor } from "src/component/Button";
+import { SkeletonQuestion } from "src/component/skeleton/SkeletonQuestion";
 
 export default function GameSoloPage() {
   const { t } = useTranslation();
@@ -21,6 +22,9 @@ export default function GameSoloPage() {
   const navigate = useNavigate();
 
   const [game, setGame] = useState<undefined | SoloGame>(undefined);
+  const [maxIndex, setMaxIndex] = useState(10);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
 
   useEffect(() => {
     const getGame = () => {
@@ -33,6 +37,35 @@ export default function GameSoloPage() {
     getGame();
   }, [uuid]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!isEnd) {
+        setIsLoading(true);
+        if (
+          window.innerHeight + document.documentElement.scrollTop + 1700 <=
+          document.documentElement.offsetHeight
+        ) {
+          return;
+        }
+        setMaxIndex((prev) => prev + 10);
+      }
+    };
+    if (document) {
+      document.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+    };
+  }, [isEnd]);
+
+  const questions = useMemo(() => {
+    const allquestions = game ? [...game.questions].reverse() : [];
+    const newQuestion = [...allquestions].splice(0, maxIndex);
+    setIsLoading(false);
+    setIsEnd(newQuestion.length >= allquestions.length);
+    return newQuestion;
+  }, [game, maxIndex]);
+
   return (
     <Grid
       container
@@ -44,7 +77,7 @@ export default function GameSoloPage() {
       </Helmet>
       <BarNavigation title={t("commun.sologame")} quit={() => navigate(-1)} />
       <Grid item xs={12}>
-        <Container maxWidth="lg">
+        <Container maxWidth="md">
           <Box
             sx={{
               p: 1,
@@ -57,7 +90,7 @@ export default function GameSoloPage() {
                   <Grid item xs={12} sx={{ mb: 1 }}>
                     <ScoreThemeBlock theme={game.theme} score={game.points} />
                   </Grid>
-                  {game.questions.map((el, index) => (
+                  {questions.map((el, index) => (
                     <Fragment key={index}>
                       <Grid item xs={12}>
                         <CardSignalQuestion question={el} />
@@ -73,6 +106,26 @@ export default function GameSoloPage() {
                       </Grid>
                     </Fragment>
                   ))}
+                  {isLoading && (
+                    <>
+                      {Array.from(new Array(4)).map((_, index) => (
+                        <Fragment key={index}>
+                          <Grid item xs={12}>
+                            <SkeletonQuestion />
+                          </Grid>
+                          <Grid item xs={12}>
+                            <Divider
+                              sx={{
+                                borderBottomWidth: 5,
+                                borderColor: Colors.white,
+                                borderRadius: px(5),
+                              }}
+                            />
+                          </Grid>
+                        </Fragment>
+                      ))}
+                    </>
+                  )}
                 </Grid>
               </>
             )}
@@ -88,7 +141,7 @@ export default function GameSoloPage() {
         }}
       >
         <Container
-          maxWidth="lg"
+          maxWidth="md"
           sx={{
             backgroundColor: Colors.black,
           }}

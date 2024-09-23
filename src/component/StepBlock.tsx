@@ -3,7 +3,7 @@ import { percent } from "csx";
 import { Colors } from "src/style/Colors";
 
 interface Props {
-  number: number;
+  number?: number;
   label: JSX.Element;
 }
 
@@ -21,11 +21,13 @@ export const StepBlock = ({ number, label }: Props) => {
         backgroundColor: Colors.blue3,
       }}
     >
-      <Avatar sx={{ width: 30, height: 30, backgroundColor: Colors.white }}>
-        <Typography variant="h4" color="secondary">
-          {number}
-        </Typography>
-      </Avatar>
+      {number && (
+        <Avatar sx={{ width: 30, height: 30, backgroundColor: Colors.white }}>
+          <Typography variant="h4" color="secondary">
+            {number}
+          </Typography>
+        </Avatar>
+      )}
       {label}
     </Box>
   );

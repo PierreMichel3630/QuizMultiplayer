@@ -26,7 +26,7 @@ export default function AdminThemesPage() {
 
   const [theme, setTheme] = useState<Theme | undefined>(undefined);
   const [openModal, setOpenModal] = useState(false);
-  const [maxIndex, setMaxIndex] = useState(10);
+  const [maxIndex, setMaxIndex] = useState(20);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
 
@@ -55,12 +55,12 @@ export default function AdminThemesPage() {
     const handleScroll = () => {
       setIsLoading(true);
       if (
-        window.innerHeight + document.documentElement.scrollTop + 250 <=
+        window.innerHeight + document.documentElement.scrollTop + 1200 <=
         document.documentElement.offsetHeight
       ) {
         return;
       }
-      setMaxIndex((prev) => prev + 10);
+      setMaxIndex((prev) => prev + 20);
     };
     if (document) {
       document.addEventListener("scroll", handleScroll);

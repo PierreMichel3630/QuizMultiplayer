@@ -33,11 +33,11 @@ export const ResetPasswordForm = () => {
 
   const validationSchema = Yup.object().shape({
     password: Yup.string()
-      .min(6, t("form.register.minpassword"))
-      .required(t("form.register.requiredpassword")),
+      .min(6, t("form.resetpassword.minpassword"))
+      .required(t("form.resetpassword.requiredpassword")),
     confirmpassword: Yup.string().oneOf(
       [Yup.ref("password"), undefined],
-      t("form.register.passwordmatch")
+      t("form.resetpassword.passwordmatch")
     ),
   });
 
@@ -55,7 +55,9 @@ export const ResetPasswordForm = () => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
+        console.log(values);
         const { error } = await updatePassword(values.password);
+        console.log(error);
         if (error) {
           setSeverity("error");
           setMessage(t("commun.error"));
@@ -82,13 +84,26 @@ export const ResetPasswordForm = () => {
             </InputLabel>
             <OutlinedInput
               id="register-password-input"
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={formik.values.password}
               name="password"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
-              label={t("form.register.password")}
+              label={t("form.resetpassword.password")}
               inputProps={{}}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                    size="large"
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              }
             />
             {formik.touched.password && formik.errors.password && (
               <FormHelperText error id="register-error-email">

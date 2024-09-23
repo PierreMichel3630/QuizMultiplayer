@@ -1,7 +1,7 @@
 # QuizzBattle
 
 QuizzBattle permet de défier vos amis sur des quizz de différents thèmes.
-Disponible sur https://quizup-v2.web.app/
+Disponible sur https://quizbattle.fr/
 
 ## Technique
 

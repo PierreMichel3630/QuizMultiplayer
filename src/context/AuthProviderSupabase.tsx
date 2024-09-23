@@ -78,8 +78,13 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     if (user) {
       await updateProfil({ id: user.id, isonline: false });
     }
-    localStorage.clear();
+    clearLocalStorage();
     return signOut();
+  };
+
+  const clearLocalStorage = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("username");
   };
 
   useEffect(() => {
@@ -98,7 +103,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
 
   const deleteAccount = async () => {
     await deleteAccountUser();
-    localStorage.clear();
+    clearLocalStorage();
     setUser(null);
     setProfile(null);
   };

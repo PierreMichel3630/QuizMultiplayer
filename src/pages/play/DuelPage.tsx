@@ -179,213 +179,224 @@ export default function DuelPage() {
   }, [game, uuid]);
 
   return (
-    <Container
-      maxWidth="lg"
+    <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        height: viewHeight(100),
         backgroundColor: Colors.black,
-        p: 0,
       }}
     >
-      <Helmet>
-        <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
-      </Helmet>
-      <Box
+      <Container
+        maxWidth="md"
         sx={{
           display: "flex",
-          flex: "1 1 0",
           flexDirection: "column",
-          gap: 1,
+          height: viewHeight(100),
+          p: 0,
         }}
       >
-        {game ? (
-          <>
-            {game.status === "START" && question ? (
-              <Box
-                sx={{
-                  display: "flex",
-                  flex: "1 1 0",
-                  flexGrow: 1,
-                  flexDirection: "column",
-                  gap: 1,
-                  p: 1,
-                }}
-              >
-                <Box>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid
-                      item
-                      xs={5}
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        gap: 1,
-                      }}
-                    >
-                      <AvatarAccount
-                        avatar={game.player1.avatar.icon}
-                        size={50}
-                        color={COLORDUEL1}
-                      />
-                      <Box>
-                        <Typography
-                          variant="h6"
-                          sx={{
-                            color: COLORDUEL1,
-                            wordBreak: "break-all",
-                            fontSize: 9,
-                          }}
-                        >
-                          {game.player1.username}
-                        </Typography>
-                        <Typography variant="h2" sx={{ color: COLORDUEL1 }}>
-                          {game.ptsplayer1}
-                        </Typography>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={2}>
-                      {timer && (
-                        <Box sx={{ display: "flex", justifyContent: "center" }}>
-                          <RoundTimer
-                            time={timer}
-                            size={45}
-                            thickness={6}
-                            fontSize={15}
-                          />
+        <Helmet>
+          <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
+        </Helmet>
+        <Box
+          sx={{
+            display: "flex",
+            flex: "1 1 0",
+            flexDirection: "column",
+            gap: 1,
+          }}
+        >
+          {game ? (
+            <>
+              {game.status === "START" && question ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flex: "1 1 0",
+                    flexGrow: 1,
+                    flexDirection: "column",
+                    gap: 1,
+                    p: 1,
+                  }}
+                >
+                  <Box>
+                    <Grid container spacing={1} alignItems="center">
+                      <Grid
+                        item
+                        xs={5}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "flex-start",
+                          gap: 1,
+                        }}
+                      >
+                        <AvatarAccount
+                          avatar={game.player1.avatar.icon}
+                          size={50}
+                          color={COLORDUEL1}
+                        />
+                        <Box>
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              color: COLORDUEL1,
+                              wordBreak: "break-all",
+                              fontSize: 9,
+                            }}
+                          >
+                            {game.player1.username}
+                          </Typography>
+                          <Typography variant="h2" sx={{ color: COLORDUEL1 }}>
+                            {game.ptsplayer1}
+                          </Typography>
                         </Box>
-                      )}
+                      </Grid>
+                      <Grid item xs={2}>
+                        {timer && (
+                          <Box
+                            sx={{ display: "flex", justifyContent: "center" }}
+                          >
+                            <RoundTimer
+                              time={timer}
+                              size={45}
+                              thickness={6}
+                              fontSize={15}
+                            />
+                          </Box>
+                        )}
+                      </Grid>
+                      <Grid
+                        item
+                        xs={5}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "flex-end",
+                          gap: 1,
+                        }}
+                      >
+                        <Box>
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              color: COLORDUEL2,
+                              textAlign: "right",
+                              fontSize: 9,
+                            }}
+                          >
+                            {game.player2.username}
+                          </Typography>
+                          <Typography
+                            variant="h2"
+                            sx={{ color: COLORDUEL2, textAlign: "right" }}
+                          >
+                            {game.ptsplayer2}
+                          </Typography>
+                        </Box>
+                        <AvatarAccount
+                          avatar={game.player2.avatar.icon}
+                          size={50}
+                          color={COLORDUEL2}
+                        />
+                      </Grid>
                     </Grid>
-                    <Grid
-                      item
-                      xs={5}
+                  </Box>
+                  <Box
+                    sx={{
+                      flexGrow: 1,
+                      flex: "1 1 0",
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: px(5),
+                    }}
+                  >
+                    <VerticalTimer
+                      time={timer}
+                      color={COLORDUEL1}
+                      answer={
+                        responsePlayer1 ? responsePlayer1.time : undefined
+                      }
+                    />
+                    <Box
                       sx={{
                         display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-end",
-                        gap: 1,
+                        flexGrow: 1,
+                        flex: "1 1 0",
                       }}
                     >
-                      <Box>
-                        <Typography
-                          variant="h6"
-                          sx={{
-                            color: COLORDUEL2,
-                            textAlign: "right",
-                            fontSize: 9,
-                          }}
-                        >
-                          {game.player2.username}
-                        </Typography>
-                        <Typography
-                          variant="h2"
-                          sx={{ color: COLORDUEL2, textAlign: "right" }}
-                        >
-                          {game.ptsplayer2}
-                        </Typography>
+                      <Box
+                        sx={{
+                          flexGrow: 1,
+                          flex: "1 1 0",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "flex-end",
+                          gap: 1,
+                        }}
+                      >
+                        <QuestionDuelBlock question={question} />
+                        {question && (
+                          <>
+                            {question.isqcm ? (
+                              <QcmBlockDuelBlock
+                                question={question}
+                                response={response}
+                                responseMe={
+                                  isPlayer1 ? responsePlayer1 : responsePlayer2
+                                }
+                                responseAdv={
+                                  isPlayer1 ? responsePlayer2 : responsePlayer1
+                                }
+                                isPlayer1={isPlayer1}
+                                onSubmit={validateResponse}
+                              />
+                            ) : (
+                              <ResponseDuelBlock
+                                response={response}
+                                responsePlayer1={responsePlayer1}
+                                responsePlayer2={responsePlayer2}
+                                onSubmit={validateResponse}
+                              />
+                            )}
+                          </>
+                        )}
                       </Box>
-                      <AvatarAccount
-                        avatar={game.player2.avatar.icon}
-                        size={50}
-                        color={COLORDUEL2}
-                      />
-                    </Grid>
-                  </Grid>
+                    </Box>
+                    <VerticalTimer
+                      time={timer}
+                      color={COLORDUEL2}
+                      answer={
+                        responsePlayer2 ? responsePlayer2.time : undefined
+                      }
+                    />
+                  </Box>
                 </Box>
+              ) : (
                 <Box
                   sx={{
                     flexGrow: 1,
-                    flex: "1 1 0",
                     display: "flex",
                     flexDirection: "row",
-                    gap: px(5),
+                    gap: 1,
                   }}
                 >
-                  <VerticalTimer
-                    time={timer}
-                    color={COLORDUEL1}
-                    answer={responsePlayer1 ? responsePlayer1.time : undefined}
-                  />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexGrow: 1,
-                      flex: "1 1 0",
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        flexGrow: 1,
-                        flex: "1 1 0",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "flex-end",
-                        gap: 1,
-                      }}
-                    >
-                      <QuestionDuelBlock question={question} />
-                      {question && (
-                        <>
-                          {question.isqcm ? (
-                            <QcmBlockDuelBlock
-                              question={question}
-                              response={response}
-                              responseMe={
-                                isPlayer1 ? responsePlayer1 : responsePlayer2
-                              }
-                              responseAdv={
-                                isPlayer1 ? responsePlayer2 : responsePlayer1
-                              }
-                              isPlayer1={isPlayer1}
-                              onSubmit={validateResponse}
-                            />
-                          ) : (
-                            <ResponseDuelBlock
-                              response={response}
-                              responsePlayer1={responsePlayer1}
-                              responsePlayer2={responsePlayer2}
-                              onSubmit={validateResponse}
-                            />
-                          )}
-                        </>
-                      )}
-                    </Box>
-                  </Box>
-                  <VerticalTimer
-                    time={timer}
-                    color={COLORDUEL2}
-                    answer={responsePlayer2 ? responsePlayer2.time : undefined}
-                  />
+                  <WaitPlayerDuelGameBlock game={game} players={players} />
                 </Box>
-              </Box>
-            ) : (
-              <Box
-                sx={{
-                  flexGrow: 1,
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: 1,
-                }}
-              >
-                <WaitPlayerDuelGameBlock game={game} players={players} />
-              </Box>
-            )}
-          </>
-        ) : (
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: "flex",
-              flexDirection: "row",
-              gap: 1,
-            }}
-          >
-            <CircularLoading />
-          </Box>
-        )}
-      </Box>
-    </Container>
+              )}
+            </>
+          ) : (
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: "flex",
+                flexDirection: "row",
+                gap: 1,
+              }}
+            >
+              <CircularLoading />
+            </Box>
+          )}
+        </Box>
+      </Container>
+    </Box>
   );
 }

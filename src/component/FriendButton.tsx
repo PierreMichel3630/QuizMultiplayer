@@ -1,26 +1,21 @@
 import { Box, Typography } from "@mui/material";
 import { px } from "csx";
 import { t } from "i18next";
-import { deleteFriendById, insertFriend, updateFriend } from "src/api/friend";
+import { deleteFriendById, insertFriend } from "src/api/friend";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
-import {
-  FRIENDSTATUS,
-  Friend,
-  FriendInsert,
-  FriendUpdate,
-} from "src/models/Friend";
+import { FRIENDSTATUS, FriendInsert } from "src/models/Friend";
 import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "./Button";
 
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
+import MailIcon from "@mui/icons-material/Mail";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
-import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+
 interface Props {
   profile: Profile;
   small?: boolean;
@@ -87,69 +82,25 @@ export const FriendButton = ({ profile, small = false }: Props) => {
     }
   };
 
-  const confirmFriend = (friend: Friend, status: FRIENDSTATUS) => {
-    const value: FriendUpdate = {
-      id: friend.id,
-      status: status,
-    };
-    updateFriend(value).then(({ error }) => {
-      if (error) {
-        setSeverity("error");
-        setMessage(t("commun.error"));
-      } else {
-        setSeverity("success");
-        setMessage(
-          status === FRIENDSTATUS.VALID
-            ? t("alert.validatefriendrequest")
-            : t("alert.refusefriendrequest")
-        );
-        getFriends();
-      }
-    });
-  };
-
   return user && friend ? (
     friend.status === FRIENDSTATUS.PROGRESS ? (
       <>
         {user.id === friend.user2.id ? (
           <Box
             sx={{
-              cursor: "pointer",
               display: "flex",
+              gap: 1,
               alignItems: "center",
               justifyContent: "center",
-              p: px(5),
-              borderRadius: 1,
-              gap: 2,
+              backgroundColor: Colors.purple,
+              p: 1,
+              borderRadius: px(5),
             }}
           >
-            <Typography variant="h4" color="text.secondary">
-              {t("commun.waitinvitation")}
+            <MailIcon sx={{ color: Colors.white }} fontSize="small" />
+            <Typography variant="body1" color="text.secondary">
+              {t("commun.waitvalidation")}
             </Typography>
-            <Box sx={{ display: "flex", gap: 1 }}>
-              <Box
-                sx={{
-                  p: px(5),
-                  backgroundColor: Colors.green2,
-                  borderRadius: px(5),
-                  cursor: "pointer",
-                }}
-                onClick={() => confirmFriend(friend, FRIENDSTATUS.VALID)}
-              >
-                <CheckIcon sx={{ color: Colors.white }} />
-              </Box>
-              <Box
-                sx={{
-                  p: px(5),
-                  backgroundColor: Colors.red2,
-                  borderRadius: px(5),
-                  cursor: "pointer",
-                }}
-                onClick={() => confirmFriend(friend, FRIENDSTATUS.REFUSE)}
-              >
-                <CloseIcon sx={{ color: Colors.white }} />
-              </Box>
-            </Box>
           </Box>
         ) : (
           <Box
@@ -163,6 +114,7 @@ export const FriendButton = ({ profile, small = false }: Props) => {
               borderRadius: px(5),
             }}
           >
+            <MailIcon sx={{ color: Colors.white }} fontSize="small" />
             <Typography variant="body1" color="text.secondary">
               {t("commun.waitinvitation")}
             </Typography>

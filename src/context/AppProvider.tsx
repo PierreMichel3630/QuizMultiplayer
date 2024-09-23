@@ -49,6 +49,7 @@ const AppContext = createContext<{
   favorites: Array<Favorite>;
   refreshFavorites: () => void;
   categories: Array<CategoryWithThemes>;
+  isLoadingCategories: boolean;
   categoriesAdmin: Array<Category>;
   refreshCategories: () => void;
   countries: Array<Country>;
@@ -79,6 +80,7 @@ const AppContext = createContext<{
   themesAdmin: [],
   getThemes: () => {},
   categories: [],
+  isLoadingCategories: true,
   categoriesAdmin: [],
   refreshCategories: () => {},
   countries: [],
@@ -130,11 +132,13 @@ export const AppProvider = ({ children }: Props) => {
   );
   const [myaccomplishments, setMyaccomplishments] = useState<Array<number>>([]);
   const [isLoadingTheme, setIsLoadingTheme] = useState(true);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
   const getFavorite = useCallback(() => {
     if (user !== null) {
       selectMyFavorite(user.id).then(({ data }) => {
-        setFavorites(data as Array<Favorite>);
+        const value = data !== null ? (data as Array<Favorite>) : [];
+        setFavorites(value);
       });
     }
   }, [user]);
@@ -150,19 +154,19 @@ export const AppProvider = ({ children }: Props) => {
   const getFriends = useCallback(() => {
     if (user !== null) {
       selectFriendByProfileId(user.id).then(({ data }) => {
-        const friends = data as Array<Friend>;
-        setFriends(friends.filter((el) => el.status !== FRIENDSTATUS.REFUSE));
+        const value = data !== null ? (data as Array<Friend>) : [];
+        setFriends(value.filter((el) => el.status !== FRIENDSTATUS.REFUSE));
       });
     }
   }, [user]);
 
   const getThemes = useCallback(() => {
     setIsLoadingTheme(true);
-    selectThemes().then((res) => {
-      if (res.data) {
-        const resultats = (res.data as Array<Theme>).sort((a, b) =>
-          sortByName(language, a, b)
-        );
+    setIsLoadingCategories(true);
+    selectThemes().then(({ data }) => {
+      if (data) {
+        const value = data !== null ? (data as Array<Theme>) : [];
+        const resultats = value.sort((a, b) => sortByName(language, a, b));
         const filterResultats = [...resultats].filter((el) => el.enabled);
         const uniqTheme = uniqBy(filterResultats, (el) => el.id);
         const count = uniqTheme.length;
@@ -192,6 +196,7 @@ export const AppProvider = ({ children }: Props) => {
           return { ...el, themes };
         });
       setCategories(result);
+      setIsLoadingCategories(false);
     }
   }, [themes, language]);
 
@@ -200,51 +205,58 @@ export const AppProvider = ({ children }: Props) => {
   };
 
   const getCategoriesAdmin = () => {
-    selectCategories().then((res) => {
-      if (res.data) setCategoriesAdmin(res.data as Array<Category>);
+    selectCategories().then(({ data }) => {
+      const value = data !== null ? (data as Array<Category>) : [];
+      setCategoriesAdmin(value);
     });
   };
 
   const getAvatars = () => {
-    selectAvatar().then((res) => {
-      if (res.data) setAvatars(res.data as Array<Avatar>);
+    selectAvatar().then(({ data }) => {
+      const value = data !== null ? (data as Array<Avatar>) : [];
+      setAvatars(value);
     });
   };
 
   const getTitles = () => {
-    selectTitles().then((res) => {
-      if (res.data) setTitles(res.data as Array<Title>);
+    selectTitles().then(({ data }) => {
+      const value = data !== null ? (data as Array<Title>) : [];
+      setTitles(value);
     });
   };
 
   const getBadges = () => {
-    selectBadges().then((res) => {
-      if (res.data) setBadges(res.data as Array<Badge>);
+    selectBadges().then(({ data }) => {
+      const value = data !== null ? (data as Array<Badge>) : [];
+      setBadges(value);
     });
   };
 
   const getCountries = () => {
-    selectCountries().then((res) => {
-      setCountries(res.data as Array<Country>);
+    selectCountries().then(({ data }) => {
+      const value = data !== null ? (data as Array<Country>) : [];
+      setCountries(value);
     });
   };
 
   const getMessage = () => {
-    selectReportMessage().then((res) => {
-      setReportmessages(res.data as Array<ReportMessage>);
+    selectReportMessage().then(({ data }) => {
+      const value = data !== null ? (data as Array<ReportMessage>) : [];
+      setReportmessages(value);
     });
   };
 
   const getAccomplishments = () => {
     selectAccomplishment().then(({ data }) => {
-      setAccomplishments(data as Array<Accomplishment>);
+      const value = data !== null ? (data as Array<Accomplishment>) : [];
+      setAccomplishments(value);
     });
   };
 
   const getMyBadges = useCallback(() => {
     if (user) {
       selectTitleByProfile(user.id).then(({ data }) => {
-        const res = data as Array<TitleProfile>;
+        const res = data !== null ? (data as Array<TitleProfile>) : [];
         setMyTitles(res.map((el) => el.title));
       });
     }
@@ -257,7 +269,7 @@ export const AppProvider = ({ children }: Props) => {
   const getMyTitles = useCallback(() => {
     if (user) {
       selectBadgeByProfile(user.id).then(({ data }) => {
-        const res = data as Array<BadgeProfile>;
+        const res = data !== null ? (data as Array<BadgeProfile>) : [];
         setMyBadges(res.map((el) => el.badge));
       });
     }
@@ -270,7 +282,7 @@ export const AppProvider = ({ children }: Props) => {
   const getMyAccomplishments = useCallback(() => {
     if (user) {
       selectAccomplishmentByProfile(user.id).then(({ data }) => {
-        const res = data as Array<ProfileAccomplishment>;
+        const res = data !== null ? (data as Array<ProfileAccomplishment>) : [];
         setMyaccomplishments(res.map((el) => el.accomplishment));
       });
     }
@@ -324,6 +336,7 @@ export const AppProvider = ({ children }: Props) => {
         mytitles,
         getMyTitles,
         isLoadingTheme,
+        isLoadingCategories,
       }}
     >
       {children}

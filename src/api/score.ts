@@ -38,14 +38,23 @@ export const selectScoreByThemeAndPlayer = (player: string, theme: number) =>
     .eq("theme", theme)
     .maybeSingle();
 
-export const selectScore = (order: string, page: number, itemperpage = 25) => {
+export const selectScore = (
+  order: string,
+  page: number,
+  itemperpage = 25,
+  ids = [] as Array<number>
+) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
-  return supabase
+  let query = supabase
     .from(SUPABASE_SCORE_TABLE)
     .select("*, profile(*, avatar(*)), theme(*), uuidgame(uuid, created_at)")
     .gt(order, 0)
-    .not("profile", "in", `(${bots.join(",")})`)
+    .not("profile", "in", `(${bots.join(",")})`);
+  if (ids.length > 0) {
+    query = query.in("theme", ids);
+  }
+  return query
     .order(order, { ascending: false })
     .order("uuidgame(created_at)", { ascending: false })
     .range(from, to);

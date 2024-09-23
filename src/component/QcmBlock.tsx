@@ -102,10 +102,12 @@ export const QcmResponseBlock = ({
     [question]
   );
 
+  const isTypeImage = useMemo(() => question.type === "IMAGE", [question.type]);
+
   return (
     <Box
       sx={
-        question.type === "IMAGE"
+        isTypeImage
           ? {
               width: percent(100),
               flexGrow: 1,
@@ -153,6 +155,7 @@ export const QcmResponseBlock = ({
           <Paper
             key={index}
             sx={{
+              p: isTypeImage && !isMyAnswer ? 0 : "4px 12px",
               textAlign: "center",
               display: "flex",
               alignItems: "center",
@@ -167,7 +170,6 @@ export const QcmResponseBlock = ({
               "&:hover": {
                 cursor: response || myresponse ? "default" : "pointer",
               },
-              p: "4px 10px",
               minHeight: px(50),
             }}
             variant="outlined"
@@ -240,10 +242,12 @@ export const QcmResponseTrainingBlock = ({
     [question]
   );
 
+  const isTypeImage = useMemo(() => question.type === "IMAGE", [question.type]);
+
   return (
     <Box
       sx={
-        question.type === "IMAGE"
+        isTypeImage
           ? {
               width: percent(100),
               flexGrow: 1,
@@ -291,7 +295,7 @@ export const QcmResponseTrainingBlock = ({
           <Paper
             key={index}
             sx={{
-              p: "4px 12px",
+              p: isTypeImage && !isMyAnswer ? 0 : "4px 12px",
               minHeight: px(50),
               textAlign: "center",
               display: "flex",
@@ -384,10 +388,12 @@ export const QcmBlockDuelBlock = ({
     [question]
   );
 
+  const isTypeImage = useMemo(() => question.type === "IMAGE", [question.type]);
+
   return (
     <Box
       sx={
-        question.type === "IMAGE"
+        isTypeImage
           ? {
               width: percent(100),
               flexGrow: 1,
@@ -434,6 +440,7 @@ export const QcmBlockDuelBlock = ({
           color = responseAdv.result ? Colors.green : Colors.red;
         }
 
+        const isAnswer = isMyAnswer || isAnswerAdv;
         const isArrowRight =
           (isPlayer1 && isMyAnswer) || (!isPlayer1 && isAnswerAdv && hasAnswer);
         const isArrowLeft =
@@ -442,7 +449,7 @@ export const QcmBlockDuelBlock = ({
         return (
           <Paper
             sx={{
-              p: "4px 5px",
+              p: isTypeImage && !isAnswer ? 0 : "4px 12px",
               minHeight: px(50),
               textAlign: "center",
               display: "flex",
@@ -595,7 +602,9 @@ export const QcmBlockDuelResultBlock = ({
                 }}
               />
             )}
-            {res.image && <ImageQCMBlock src={res.image} border={border} />}
+            {res.image && (
+              <ImageQCMBlock src={res.image} border={border} width={150} />
+            )}
             {res.label && (
               <JsonLanguageBlock
                 variant="h3"

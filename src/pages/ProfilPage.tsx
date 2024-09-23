@@ -303,11 +303,15 @@ export default function ProfilPage() {
 
   const friendsAvatar = useMemo(
     () =>
-      profileFriends.reduce(
-        (acc, value) =>
-          value.user2.id === id ? [...acc, value.user1] : [...acc, value.user2],
-        [] as Array<Profile>
-      ),
+      profileFriends
+        .filter((el) => el.status === FRIENDSTATUS.VALID)
+        .reduce(
+          (acc, value) =>
+            value.user2.id === id
+              ? [...acc, value.user1]
+              : [...acc, value.user2],
+          [] as Array<Profile>
+        ),
     [profileFriends, id]
   );
 
@@ -732,8 +736,8 @@ export default function ProfilPage() {
 
             {!isEnd && (
               <>
-                {Array.from(new Array(2)).map((_, index) => (
-                  <Grid item xs={12} key={index}>
+                {Array.from(new Array(3)).map((_, index) => (
+                  <Grid item xs={12} sm={6} md={6} lg={4} key={index}>
                     <SkeletonProfilTheme />
                   </Grid>
                 ))}

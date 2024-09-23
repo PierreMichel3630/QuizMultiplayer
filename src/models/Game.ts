@@ -79,3 +79,14 @@ export interface HistoryGame {
   ptsplayer2: number | null;
   created_at: Date;
 }
+
+export interface HistoryGameAdmin {
+  uuid: string;
+  type: "SOLO" | "DUEL";
+  theme: Theme;
+  player1: Profile | null;
+  player2: Profile | null;
+  ptsplayer1: number;
+  ptsplayer2: number | null;
+  created_at: Date;
+}

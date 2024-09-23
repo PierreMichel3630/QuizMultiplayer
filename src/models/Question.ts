@@ -14,6 +14,7 @@ export interface QuestionEnd {
 }
 
 export interface Question {
+  typequestion: "DEFAULT" | "ORDER" | "IMAGE" | "MAPPOSITION";
   image?: string;
   extra?: JsonLanguage;
   audio?: string;
@@ -32,6 +33,10 @@ export interface Question {
     label?: ResponseLanguageString;
     image?: string;
   }>;
+  data: null | {
+    code: string;
+    map: string;
+  };
 }
 
 export interface QuestionPosition {
@@ -109,7 +114,7 @@ export interface QuestionSolo {
   audio?: string;
   extra?: JsonLanguage;
   question: JsonLanguage;
-  type: "DEFAULT" | "ORDER" | "IMAGE";
+  typequestion: "DEFAULT" | "ORDER" | "IMAGE" | "MAPPOSITION";
   time: number;
   difficulty: string;
   theme: Theme;
@@ -120,6 +125,10 @@ export interface QuestionSolo {
   }>;
   allresponse?: boolean;
   typeResponse: string;
+  data: null | {
+    code: string;
+    map: string;
+  };
 }
 
 export interface QuestionTraining {
@@ -128,7 +137,7 @@ export interface QuestionTraining {
   audio?: string;
   extra?: JsonLanguage;
   question: JsonLanguage;
-  type: "DEFAULT" | "ORDER" | "IMAGE";
+  typequestion: "DEFAULT" | "ORDER" | "IMAGE" | "MAPPOSITION";
   time: number;
   difficulty: string;
   theme: Theme;
@@ -141,6 +150,10 @@ export interface QuestionTraining {
   exact: boolean;
   typeResponse: string;
   allresponse: boolean;
+  data: null | {
+    code: string;
+    map: string;
+  };
 }
 
 export interface QuestionDuel {
@@ -148,7 +161,7 @@ export interface QuestionDuel {
   audio?: string;
   extra?: JsonLanguage;
   question: JsonLanguage;
-  type: "DEFAULT" | "ORDER" | "IMAGE";
+  typequestion: "DEFAULT" | "ORDER" | "IMAGE" | "MAPPOSITION";
   time: number;
   difficulty: string;
   theme: Theme;
@@ -157,4 +170,8 @@ export interface QuestionDuel {
     label?: ResponseLanguageString;
     image?: string;
   }>;
+  data: null | {
+    code: string;
+    map: string;
+  };
 }

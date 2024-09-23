@@ -1,4 +1,6 @@
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import HomeIcon from "@mui/icons-material/Home";
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import LightbulbIcon from "@mui/icons-material/Lightbulb";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
@@ -22,7 +24,6 @@ import { deleteFavoriteById, insertFavorite } from "src/api/favorite";
 import {
   launchDuelGame,
   launchSoloGame,
-  launchTrainingGame,
   matchmakingDuelGame,
 } from "src/api/game";
 import {
@@ -52,8 +53,6 @@ import { Score } from "src/models/Score";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import { getLevel } from "src/utils/calcul";
-import HomeIcon from "@mui/icons-material/Home";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 
 export default function ThemePage() {
   const { t } = useTranslation();
@@ -240,10 +239,8 @@ export default function ThemePage() {
   };
 
   const playTraining = () => {
-    if (uuid && id) {
-      launchTrainingGame(uuid, Number(id)).then(({ data }) => {
-        navigate(`/training/${data.uuid}`);
-      });
+    if (id) {
+      navigate(`/config/training/${id}`);
     }
   };
 

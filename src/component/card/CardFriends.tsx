@@ -60,7 +60,7 @@ export const CardFriends = ({ friends, loading }: Props) => {
             ) : (
               <>
                 {friends.map((friend, index) => (
-                  <Grid item xs={4} key={index}>
+                  <Grid item xs={4} sm={3} md={3} lg={2} key={index}>
                     <Link
                       to={`/profil/${friend.id}`}
                       style={{ textDecoration: "none" }}

@@ -6,7 +6,7 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -26,14 +26,15 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import { percent, px, viewHeight } from "csx";
 import { ButtonColor } from "src/component/Button";
+import { CardSignalQuestion } from "src/component/card/CardQuestion";
 import { LoadingDot } from "src/component/Loading";
+import { ReportModal } from "src/component/modal/ReportModal";
 import { QcmResponseTrainingBlock } from "src/component/QcmBlock";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { SoloGame, TrainingGame } from "src/models/Game";
 import { Colors } from "src/style/Colors";
+import { PreloadImages } from "src/utils/preload";
 import { verifyResponse } from "src/utils/response";
-import { CardSignalQuestion } from "src/component/card/CardQuestion";
-import { ReportModal } from "src/component/modal/ReportModal";
 
 export default function TrainingPage() {
   const { t } = useTranslation();
@@ -45,6 +46,9 @@ export default function TrainingPage() {
   const [question, setQuestion] = useState<undefined | QuestionTraining>(
     undefined
   );
+  const [nextQuestion, setNextQuestion] = useState<
+    undefined | QuestionTraining
+  >(undefined);
   const [questionReport, setQuestionReport] = useState<undefined | Question>(
     undefined
   );
@@ -54,13 +58,17 @@ export default function TrainingPage() {
   );
   const [audio, setAudio] = useState<undefined | HTMLAudioElement>(undefined);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingQuestion, setIsLoadingQuestion] = useState(true);
+  const [goNext, setGoNext] = useState(false);
   const [isEnd, setIsEnd] = useState(false);
   const [isAllQuestion, setIsAllQuestion] = useState(false);
+  const [isNextAllQuestion, setIsNextAllQuestion] = useState(false);
   const [numberQuestions, setNumberQuestions] = useState(0);
   const [goodAnswer, setGoodAnswer] = useState(0);
   const [myresponse, setMyresponse] = useState<string | number | undefined>(
     undefined
   );
+  const [images, setImages] = useState<Array<string>>([]);
 
   useEffect(() => {
     if (audio) {
@@ -69,31 +77,48 @@ export default function TrainingPage() {
     }
   }, [audio, sound]);
 
-  const getQuestion = useCallback(() => {
+  const getQuestion = (uuid: string, isfirstquestion = false) => {
     setMyresponse(undefined);
-    if (uuidGame) {
-      getQuestionTrainingGame(uuidGame).then(({ data }) => {
-        if (data) {
-          const questionSolo = data as QuestionTraining;
-          if (questionSolo.audio) {
-            const audio = new Audio(questionSolo.audio);
-            audio.play();
-            setAudio(audio);
-          }
-          setQuestion(questionSolo);
-          setResponse(undefined);
-          setIsLoading(false);
-          setIsAllQuestion(false);
-        } else {
-          setIsEnd(true);
-          setIsAllQuestion(true);
-          setIsLoading(false);
+    setIsLoadingQuestion(true);
+    getQuestionTrainingGame(uuid).then(({ data }) => {
+      if (data) {
+        const questionSolo = data as QuestionTraining;
+        let urls: Array<string> = [];
+        if (questionSolo.image) {
+          urls = [...urls, questionSolo.image];
         }
-      });
-    }
-  }, [uuidGame]);
+        if (questionSolo.typequestion === "IMAGE") {
+          const images = questionSolo.responses.reduce(
+            (acc, v) => (v.image ? [...acc, v.image] : acc),
+            [] as Array<string>
+          );
+          urls = [...urls, ...images];
+        }
+        setImages(urls);
+        setNextQuestion(questionSolo);
+        setIsAllQuestion(false);
+        if (isfirstquestion) {
+          setTimeout(() => {
+            setQuestion(questionSolo);
+            if (questionSolo.audio) {
+              const audio = new Audio(questionSolo.audio);
+              audio.play();
+              setAudio(audio);
+            }
+            setResponse(undefined);
+            setIsLoading(false);
+          }, 1500);
+        }
+      } else {
+        setIsEnd(true);
+        setIsNextAllQuestion(true);
+      }
+      setIsLoadingQuestion(false);
+    });
+  };
 
   const validateResponse = async (value: string | number) => {
+    setNextQuestion(undefined);
     setMyresponse(value);
     if (question) {
       let result = false;
@@ -115,11 +140,31 @@ export default function TrainingPage() {
         answer: value,
       });
       setMyresponse(undefined);
+      if (game) getQuestion(game.uuid);
     }
     if (audio) {
       audio.pause();
     }
   };
+
+  const changeQuestion = () => {
+    setGoNext(true);
+  };
+
+  useEffect(() => {
+    if (goNext && nextQuestion && isLoadingQuestion === false) {
+      setQuestion(nextQuestion);
+      if (nextQuestion.audio) {
+        const audio = new Audio(nextQuestion.audio);
+        audio.play();
+        setAudio(audio);
+      }
+      setResponse(undefined);
+      setIsLoading(false);
+      setGoNext(false);
+      setNextQuestion(undefined);
+    }
+  }, [goNext, nextQuestion, isLoadingQuestion, isNextAllQuestion]);
 
   const quit = () => {
     setIsEnd(true);
@@ -131,7 +176,7 @@ export default function TrainingPage() {
         selectTrainingGameById(uuidGame).then(({ data }) => {
           if (data !== null) {
             setGame(data as SoloGame);
-            getQuestion();
+            getQuestion(uuidGame, true);
           } else {
             navigate("/");
           }
@@ -139,7 +184,7 @@ export default function TrainingPage() {
       }
     };
     getGame();
-  }, [getQuestion, navigate, uuidGame]);
+  }, [navigate, uuidGame]);
 
   useEffect(() => {
     return () => {
@@ -155,216 +200,234 @@ export default function TrainingPage() {
     };
   }, [uuidGame]);
 
+  console.log(question);
+
   return (
-    <Container
-      maxWidth="lg"
+    <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        height: isEnd ? "auto" : viewHeight(100),
-        minHeight: isEnd ? viewHeight(100) : "auto",
-        p: 0,
         backgroundColor: Colors.black,
       }}
     >
-      <Helmet>
-        <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
-      </Helmet>
-
-      <Box
+      <Container
+        maxWidth="md"
         sx={{
           display: "flex",
-          flex: isEnd ? "auto" : "1 1 0",
-          p: 1,
           flexDirection: "column",
-          gap: 1,
+          height: isEnd ? "auto" : viewHeight(100),
+          minHeight: isEnd ? viewHeight(100) : "auto",
+          p: 0,
         }}
       >
-        {game && (
-          <Box>
-            <ScoreThemeBlock
-              theme={game.theme}
-              extra={
-                numberQuestions > 0 ? (
-                  <>
-                    <Typography variant="h2" color="text.secondary">
-                      {goodAnswer} / {numberQuestions}
-                    </Typography>
-                    <Typography variant="body1" color="text.secondary">
-                      ({((goodAnswer / numberQuestions) * 100).toFixed(0)} %)
-                    </Typography>
-                  </>
-                ) : undefined
-              }
-            />
-          </Box>
-        )}
+        <Helmet>
+          <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
+        </Helmet>
+        <PreloadImages urls={images} />
+
         <Box
           sx={{
-            flexGrow: 1,
             display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
             flex: isEnd ? "auto" : "1 1 0",
+            p: 1,
+            flexDirection: "column",
             gap: 1,
-            minHeight: 0,
           }}
         >
-          {isEnd ? (
-            <Box sx={{ display: "flex", width: percent(100), mb: 6 }}>
-              <Grid container spacing={1}>
-                {isAllQuestion && (
+          {game && (
+            <Box>
+              <ScoreThemeBlock
+                theme={game.theme}
+                extra={
+                  numberQuestions > 0 ? (
+                    <>
+                      <Typography variant="h2" color="text.secondary">
+                        {goodAnswer} / {numberQuestions}
+                      </Typography>
+                      <Typography variant="body1" color="text.secondary">
+                        ({((goodAnswer / numberQuestions) * 100).toFixed(0)} %)
+                      </Typography>
+                    </>
+                  ) : undefined
+                }
+              />
+            </Box>
+          )}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+              flex: isEnd ? "auto" : "1 1 0",
+              gap: 1,
+              minHeight: 0,
+            }}
+          >
+            {isEnd ? (
+              <Box sx={{ display: "flex", width: percent(100), mb: 6 }}>
+                <Grid container spacing={1}>
+                  {isAllQuestion && (
+                    <Grid item xs={12}>
+                      <Alert severity="warning" sx={{ width: percent(100) }}>
+                        {t("alert.allresponseanswer")}
+                      </Alert>
+                    </Grid>
+                  )}
                   <Grid item xs={12}>
-                    <Alert severity="warning" sx={{ width: percent(100) }}>
-                      {t("alert.allresponseanswer")}
-                    </Alert>
+                    <Divider
+                      sx={{
+                        borderBottomWidth: 5,
+                        borderColor: Colors.white,
+                        borderRadius: px(5),
+                      }}
+                    />
                   </Grid>
-                )}
-                <Grid item xs={12}>
-                  <Divider
+                  <Grid item xs={12}>
+                    <Grid container spacing={1} flexDirection="column-reverse">
+                      {questions.map((el, index) => (
+                        <Fragment key={index}>
+                          <Grid item xs={12}>
+                            <Divider
+                              sx={{
+                                borderBottomWidth: 5,
+                                borderColor: Colors.white,
+                                borderRadius: px(5),
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={12}>
+                            <CardSignalQuestion
+                              question={el as Question}
+                              report={() => setQuestionReport(el as Question)}
+                            />
+                          </Grid>
+                        </Fragment>
+                      ))}
+                    </Grid>
+                  </Grid>
+                  <Box
                     sx={{
-                      borderBottomWidth: 5,
-                      borderColor: Colors.white,
-                      borderRadius: px(5),
-                    }}
-                  />
-                  {questions.map((el, index) => (
-                    <Fragment key={index}>
-                      <Grid item xs={12}>
-                        <CardSignalQuestion
-                          question={el as Question}
-                          report={() => setQuestionReport(el as Question)}
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Divider
-                          sx={{
-                            borderBottomWidth: 5,
-                            borderColor: Colors.white,
-                            borderRadius: px(5),
-                          }}
-                        />
-                      </Grid>
-                    </Fragment>
-                  ))}
-                </Grid>
-                <Box
-                  sx={{
-                    position: "fixed",
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                  }}
-                >
-                  <Container
-                    maxWidth="lg"
-                    sx={{
-                      backgroundColor: Colors.black,
+                      position: "fixed",
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
                     }}
                   >
-                    <Box
+                    <Container
+                      maxWidth="md"
                       sx={{
-                        display: "flex",
-                        gap: 1,
-                        p: 1,
-                        flexDirection: "column",
+                        backgroundColor: Colors.black,
                       }}
                     >
-                      <ButtonColor
-                        value={Colors.red}
-                        label={t("commun.leave")}
-                        icon={ExitToAppIcon}
-                        onClick={() => navigate(-1)}
-                        variant="contained"
-                      />
-                    </Box>
-                  </Container>
-                </Box>
-              </Grid>
-            </Box>
-          ) : (
-            <>
-              {question && (
-                <>
-                  <QuestionTrainingBlock question={question} />
-                  {question && question.isqcm ? (
-                    <QcmResponseTrainingBlock
-                      myresponse={myresponse}
-                      response={response}
-                      question={question}
-                      onSubmit={validateResponse}
-                    />
-                  ) : (
-                    <>
-                      {response ? (
-                        <ResponseTrainingBlock response={response} />
-                      ) : (
-                        <InputResponseBlock
-                          myresponse={myresponse}
-                          onSubmit={validateResponse}
-                          typeResponse={question.typeResponse}
-                        />
-                      )}
-                    </>
-                  )}
-                </>
-              )}
-              {isLoading && (
-                <Box
-                  sx={{
-                    flexGrow: 1,
-                    flex: "1 1 0",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
-                    gap: 1,
-                    width: percent(100),
-                  }}
-                >
-                  <Typography variant="h4" color="text.secondary">
-                    {t("commun.launchpartie")}
-                  </Typography>
-                  <LoadingDot />
-                </Box>
-              )}
-              {!isLoading &&
-                (question === undefined || (question && response) || isEnd) && (
-                  <Box sx={{ display: "flex", width: percent(100) }}>
-                    <Grid container spacing={1}>
-                      {!isEnd && (
-                        <Grid item xs={12}>
-                          <ButtonColor
-                            value={Colors.blue2}
-                            label={t("commun.nextquestion")}
-                            icon={LastPageIcon}
-                            onClick={() => getQuestion()}
-                            variant="contained"
-                          />
-                        </Grid>
-                      )}
-                      <Grid item xs={12}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: 1,
+                          p: 1,
+                          flexDirection: "column",
+                        }}
+                      >
                         <ButtonColor
                           value={Colors.red}
                           label={t("commun.leave")}
                           icon={ExitToAppIcon}
-                          onClick={() => quit()}
+                          onClick={() =>
+                            game
+                              ? navigate(`/theme/${game.theme.id}`)
+                              : navigate(-1)
+                          }
                           variant="contained"
                         />
-                      </Grid>
-                    </Grid>
+                      </Box>
+                    </Container>
+                  </Box>
+                </Grid>
+              </Box>
+            ) : (
+              <>
+                {question && (
+                  <>
+                    <QuestionTrainingBlock question={question} />
+                    {question && question.isqcm ? (
+                      <QcmResponseTrainingBlock
+                        myresponse={myresponse}
+                        response={response}
+                        question={question}
+                        onSubmit={validateResponse}
+                      />
+                    ) : (
+                      <>
+                        {response ? (
+                          <ResponseTrainingBlock response={response} />
+                        ) : (
+                          <InputResponseBlock
+                            myresponse={myresponse}
+                            onSubmit={validateResponse}
+                            typeResponse={question.typeResponse}
+                          />
+                        )}
+                      </>
+                    )}
+                  </>
+                )}
+                {isLoading && (
+                  <Box
+                    sx={{
+                      flexGrow: 1,
+                      flex: "1 1 0",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      textAlign: "center",
+                      gap: 1,
+                      width: percent(100),
+                    }}
+                  >
+                    <Typography variant="h4" color="text.secondary">
+                      {t("commun.launchpartie")}
+                    </Typography>
+                    <LoadingDot />
                   </Box>
                 )}
-            </>
-          )}
+                {!isLoading &&
+                  (question === undefined ||
+                    (question && response) ||
+                    isEnd) && (
+                    <Box sx={{ display: "flex", width: percent(100) }}>
+                      <Grid container spacing={1}>
+                        {!isEnd && (
+                          <Grid item xs={12}>
+                            <ButtonColor
+                              value={Colors.blue2}
+                              label={t("commun.nextquestion")}
+                              icon={LastPageIcon}
+                              onClick={() => changeQuestion()}
+                              variant="contained"
+                            />
+                          </Grid>
+                        )}
+                        <Grid item xs={12}>
+                          <ButtonColor
+                            value={Colors.red}
+                            label={t("commun.leave")}
+                            icon={ExitToAppIcon}
+                            onClick={() => quit()}
+                            variant="contained"
+                          />
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  )}
+              </>
+            )}
+          </Box>
         </Box>
-      </Box>
-      <ReportModal
-        open={questionReport !== undefined}
-        close={() => setQuestionReport(undefined)}
-        question={questionReport}
-      />
-    </Container>
+        <ReportModal
+          open={questionReport !== undefined}
+          close={() => setQuestionReport(undefined)}
+          question={questionReport}
+        />
+      </Container>
+    </Box>
   );
 }

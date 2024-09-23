@@ -53,132 +53,137 @@ export default function RecapSoloPage() {
   };
 
   return (
-    <Container
-      maxWidth="lg"
+    <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
         backgroundColor: Colors.black,
-        p: 0,
-        minHeight: viewHeight(100),
       }}
     >
-      <Helmet>
-        <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
-      </Helmet>
-
-      <Box
+      <Container
+        maxWidth="md"
         sx={{
-          p: 1,
-          mb: px(140),
+          display: "flex",
+          flexDirection: "column",
+          p: 0,
+          minHeight: viewHeight(100),
         }}
       >
-        {game && (
-          <>
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
-                <ScoreThemeBlock theme={game.theme} score={game.points} />
-              </Grid>
-              {allquestion && (
+        <Helmet>
+          <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
+        </Helmet>
+
+        <Box
+          sx={{
+            p: 1,
+            mb: px(140),
+          }}
+        >
+          {game && (
+            <>
+              <Grid container spacing={1}>
                 <Grid item xs={12}>
-                  <Alert severity="warning">
-                    {t("alert.allresponseanswer")}
-                  </Alert>
+                  <ScoreThemeBlock theme={game.theme} score={game.points} />
                 </Grid>
-              )}
-              {
+                {allquestion && (
+                  <Grid item xs={12}>
+                    <Alert severity="warning">
+                      {t("alert.allresponseanswer")}
+                    </Alert>
+                  </Grid>
+                )}
+                {
+                  <Grid item xs={12}>
+                    <ExperienceSoloBlock
+                      theme={game.theme.id}
+                      xp={extra ? extra.xpplayer1 : undefined}
+                      player={game.player}
+                    />
+                  </Grid>
+                }
                 <Grid item xs={12}>
-                  <ExperienceSoloBlock
-                    theme={game.theme.id}
-                    xp={extra ? extra.xpplayer1 : undefined}
-                    player={game.player}
+                  <Divider
+                    sx={{
+                      borderBottomWidth: 5,
+                      borderColor: Colors.white,
+                      borderRadius: px(5),
+                    }}
                   />
                 </Grid>
-              }
-              <Grid item xs={12}>
-                <Divider
-                  sx={{
-                    borderBottomWidth: 5,
-                    borderColor: Colors.white,
-                    borderRadius: px(5),
-                  }}
-                />
+                {game.questions.map((el, index) => (
+                  <Fragment key={index}>
+                    <Grid item xs={12}>
+                      <CardSignalQuestion
+                        question={el}
+                        report={() => setQuestion(el)}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Divider
+                        sx={{
+                          borderBottomWidth: 5,
+                          borderColor: Colors.white,
+                          borderRadius: px(5),
+                        }}
+                      />
+                    </Grid>
+                  </Fragment>
+                ))}
               </Grid>
-              {game.questions.map((el, index) => (
-                <Fragment key={index}>
-                  <Grid item xs={12}>
-                    <CardSignalQuestion
-                      question={el}
-                      report={() => setQuestion(el)}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Divider
-                      sx={{
-                        borderBottomWidth: 5,
-                        borderColor: Colors.white,
-                        borderRadius: px(5),
-                      }}
-                    />
-                  </Grid>
-                </Fragment>
-              ))}
-            </Grid>
-            <Box
-              sx={{
-                position: "fixed",
-                bottom: 0,
-                left: 0,
-                right: 0,
-              }}
-            >
-              <Container
-                maxWidth="lg"
+              <Box
                 sx={{
-                  backgroundColor: Colors.black,
+                  position: "fixed",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
                 }}
               >
-                <Box
+                <Container
+                  maxWidth="md"
                   sx={{
-                    display: "flex",
-                    gap: 1,
-                    p: 1,
-                    flexDirection: "column",
+                    backgroundColor: Colors.black,
                   }}
                 >
-                  <ButtonColor
-                    value={Colors.red}
-                    label={t("commun.tryagain")}
-                    icon={ReplayIcon}
-                    onClick={() => playSolo()}
-                    variant="contained"
-                  />
-                  <ButtonColor
-                    value={Colors.blue}
-                    label={t("commun.return")}
-                    icon={KeyboardReturnIcon}
-                    onClick={() => navigate(`/theme/${game.theme.id}`)}
-                    variant="contained"
-                  />
-                  <ButtonColor
-                    value={Colors.green}
-                    label={t("commun.returnhome")}
-                    icon={HomeIcon}
-                    onClick={() => navigate("/")}
-                    variant="contained"
-                  />
-                </Box>
-              </Container>
-            </Box>
-          </>
-        )}
-      </Box>
-      <ReportModal
-        open={question !== undefined}
-        close={() => setQuestion(undefined)}
-        question={question}
-        sologame={game}
-      />
-    </Container>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 1,
+                      p: 1,
+                      flexDirection: "column",
+                    }}
+                  >
+                    <ButtonColor
+                      value={Colors.red}
+                      label={t("commun.tryagain")}
+                      icon={ReplayIcon}
+                      onClick={() => playSolo()}
+                      variant="contained"
+                    />
+                    <ButtonColor
+                      value={Colors.blue}
+                      label={t("commun.return")}
+                      icon={KeyboardReturnIcon}
+                      onClick={() => navigate(`/theme/${game.theme.id}`)}
+                      variant="contained"
+                    />
+                    <ButtonColor
+                      value={Colors.green}
+                      label={t("commun.returnhome")}
+                      icon={HomeIcon}
+                      onClick={() => navigate("/")}
+                      variant="contained"
+                    />
+                  </Box>
+                </Container>
+              </Box>
+            </>
+          )}
+        </Box>
+        <ReportModal
+          open={question !== undefined}
+          close={() => setQuestion(undefined)}
+          question={question}
+          sologame={game}
+        />
+      </Container>
+    </Box>
   );
 }

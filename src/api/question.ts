@@ -81,6 +81,10 @@ export const countQuestions = (filter: FilterQuestion) => {
     .from(SUPABASE_QUESTIONTHEME_TABLE)
     .select("*,question(*)", { count: "exact", head: true })
     .not("question", "is", null);
+
+  if (filter.difficulties.length > 0) {
+    query = query.in("question.difficulty", filter.difficulties);
+  }
   if (filter.ids.length > 0) {
     query = query.in("question.id", filter.ids);
   }

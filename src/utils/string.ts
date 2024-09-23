@@ -40,7 +40,15 @@ export const compareString = (a: string, b: string) =>
   );
 
 export const searchString = (search: string, value: string) => {
-  const compare = compareString(search, value);
-  const isInclude = normalizeString(value).includes(normalizeString(search));
+  const valueNormalize = value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+  const searchNormalize = search
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+  const compare = compareTwoStrings(valueNormalize, searchNormalize);
+  const isInclude = valueNormalize.includes(searchNormalize);
   return isInclude || compare > 0.6;
 };

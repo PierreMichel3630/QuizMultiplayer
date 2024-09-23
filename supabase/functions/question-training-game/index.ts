@@ -36,6 +36,14 @@ Deno.serve(async (req) => {
       .maybeSingle();
     const data = res.data;
     const id = data.id;
+    const config =
+      data.config !== null
+        ? data.config
+        : {
+            inputquestion: true,
+            qcmquestion: true,
+          };
+
     let themequestion = data.themequestion;
     if (themequestion.id === 271) {
       const { data } = await supabase
@@ -59,37 +67,46 @@ Deno.serve(async (req) => {
         : Math.random() < 0.5;
     let responsesQcm: Array<any> = [];
     if (isGenerate) {
-      newQuestion = generateQuestion(Number(themequestion.id));
+      let qcm: boolean | undefined = undefined;
+      if (!config.inputquestion && config.qcmquestion) {
+        qcm = true;
+      } else if (config.inputquestion && !config.qcmquestion) {
+        qcm = false;
+      }
+      newQuestion = generateQuestion(Number(themequestion.id), qcm);
       response = newQuestion.response;
     } else {
-      const { data } = await supabase
+      let query = supabase
         .from("randomquestion")
         .select("*, theme(*)")
         .eq("theme", themequestion.id)
-        .not("id", "in", `(${previousIdQuestion})`)
-        .limit(1)
-        .maybeSingle();
+        .not("id", "in", `(${previousIdQuestion})`);
+      if (!config.inputquestion && config.qcmquestion) {
+        query = query.or("isqcm.is.true,isqcm.is.null");
+      } else if (config.inputquestion && !config.qcmquestion) {
+        query = query.or("isqcm.is.false,isqcm.is.null");
+      }
+
+      const { data } = await query.limit(1).maybeSingle();
       newQuestion = data;
       if (data === null) {
-        const { data } = await supabase
-          .from("randomquestion")
-          .select("*, theme(*)")
-          .eq("theme", themequestion.id)
-          .not("id", "in", `(${previousIdQuestion})`)
-          .limit(1)
-          .maybeSingle();
-        newQuestion = data;
-        if (data === null) {
-          console.log(themequestion);
-          return new Response(null, {
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-            status: 204,
-          });
-        }
+        return new Response(null, {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 204,
+        });
       }
       if (newQuestion) {
-        const qcm =
-          newQuestion.isqcm === null ? Math.random() < 0.5 : newQuestion.isqcm;
+        let qcm = true;
+        if (config.inputquestion && config.qcmquestion) {
+          qcm =
+            newQuestion.isqcm === null
+              ? Math.random() < 0.5
+              : newQuestion.isqcm;
+        } else if (!config.inputquestion && config.qcmquestion) {
+          qcm = true;
+        } else if (config.inputquestion && !config.qcmquestion) {
+          qcm = false;
+        }
         newQuestion = { ...newQuestion, isqcm: qcm };
         response = newQuestion.response;
         if (qcm) {
@@ -209,10 +226,11 @@ Deno.serve(async (req) => {
       extra: newQuestion.extra,
       theme: newQuestion.theme,
       isqcm: newQuestion.isqcm,
-      type: newQuestion.typequestion,
+      typequestion: newQuestion.typequestion,
       typeResponse: newQuestion.typeresponselist,
       responses: newQuestion.responses,
       response: response,
+      data: newQuestion.data,
     };
 
     return new Response(JSON.stringify(dataSend), {

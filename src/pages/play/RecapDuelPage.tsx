@@ -32,35 +32,40 @@ export default function RecapDuelPage() {
   }, [uuidGame]);
 
   return (
-    <Container
-      maxWidth="lg"
+    <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: viewHeight(100),
         backgroundColor: Colors.black,
-        p: 0,
       }}
     >
-      <Helmet>
-        <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
-      </Helmet>
-
-      <Box
+      <Container
+        maxWidth="md"
         sx={{
-          p: 1,
+          display: "flex",
+          flexDirection: "column",
+          minHeight: viewHeight(100),
+          p: 0,
         }}
       >
-        {game && (
-          <>
-            {game.status === "END" ? (
-              <EndDuelGameBlock game={game} extra={extra} />
-            ) : (
-              <CancelDuelGameBlock game={game} />
-            )}
-          </>
-        )}
-      </Box>
-    </Container>
+        <Helmet>
+          <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
+        </Helmet>
+
+        <Box
+          sx={{
+            p: 1,
+          }}
+        >
+          {game && (
+            <>
+              {game.status === "END" ? (
+                <EndDuelGameBlock game={game} extra={extra} />
+              ) : (
+                <CancelDuelGameBlock game={game} />
+              )}
+            </>
+          )}
+        </Box>
+      </Container>
+    </Box>
   );
 }

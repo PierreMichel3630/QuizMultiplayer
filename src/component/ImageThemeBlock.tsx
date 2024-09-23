@@ -13,10 +13,11 @@ export const ImageThemeBlock = ({ theme, size = percent(100) }: Props) => {
         backgroundColor: theme.color,
         width: size,
         aspectRatio: "1/1",
-        borderRadius: px(5),
+        borderRadius: px(10),
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        border: "2px solid white",
       }}
     >
       <img

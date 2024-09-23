@@ -34,6 +34,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import SettingsIcon from "@mui/icons-material/Settings";
+import SecurityIcon from "@mui/icons-material/Security";
 import { HeadTitle } from "src/component/HeadTitle";
 import { useApp } from "src/context/AppProvider";
 import { FRIENDSTATUS } from "src/models/Friend";
@@ -108,6 +109,12 @@ export default function MenuPage() {
         label: t("commun.reportproblem"),
         icon: <ReportProblemIcon />,
         to: "/report",
+      },
+      {
+        value: "confidentiality",
+        label: t("confidentiality.title"),
+        icon: <SecurityIcon />,
+        to: "/confidentiality",
       },
     ],
     [t]
@@ -186,6 +193,12 @@ export default function MenuPage() {
         label: t("commun.reportproblem"),
         icon: <ReportProblemIcon />,
         to: "/report",
+      },
+      {
+        value: "confidentiality",
+        label: t("confidentiality.title"),
+        icon: <SecurityIcon />,
+        to: "/confidentiality",
       },
     ],
     [notifications, profile, t]

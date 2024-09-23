@@ -290,7 +290,7 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
         }}
       >
         <Container
-          maxWidth="lg"
+          maxWidth="md"
           sx={{
             backgroundColor: Colors.black,
           }}

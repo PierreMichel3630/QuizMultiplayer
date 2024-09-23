@@ -5,7 +5,7 @@ import moment from "moment";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { HistoryGame } from "src/models/Game";
+import { HistoryGame, HistoryGameAdmin } from "src/models/Game";
 import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
@@ -46,7 +46,16 @@ export const CardHistoryGame = ({ game, player }: Props) => {
         {isSolo ? (
           <>
             <Grid item xs={7} md={8}>
-              <JsonLanguageBlock variant="h2" value={game.theme.name} noWrap />
+              <Link
+                to={`/theme/${game.theme.id}`}
+                style={{ textDecoration: "none" }}
+              >
+                <JsonLanguageBlock
+                  variant="h2"
+                  value={game.theme.name}
+                  noWrap
+                />
+              </Link>
               <Typography variant="caption">
                 {moment(game.created_at).format("DD/MM/YYYY HH:mm")}
               </Typography>
@@ -85,18 +94,34 @@ export const CardHistoryGame = ({ game, player }: Props) => {
         ) : (
           <>
             <Grid item xs={5} md={6}>
-              <JsonLanguageBlock variant="h2" value={game.theme.name} noWrap />
+              <Link
+                to={`/theme/${game.theme.id}`}
+                style={{ textDecoration: "none" }}
+              >
+                <JsonLanguageBlock
+                  variant="h2"
+                  value={game.theme.name}
+                  noWrap
+                />
+              </Link>
               <Typography variant="caption">
                 {moment(game.created_at).format("DD/MM/YYYY HH:mm")}
               </Typography>
-              <Box sx={{ display: "flex", alignItems: "center", gap: px(3) }}>
-                <Typography variant="body1">{t("commun.versus")}</Typography>
-                <Typography variant="h6">
-                  {isPlayer1 && game.player2
-                    ? game.player2.username
-                    : game.player1.username}
-                </Typography>
-              </Box>
+              <Link
+                to={`/profil/${
+                  isPlayer1 && game.player2 ? game.player2.id : game.player1.id
+                }`}
+                style={{ textDecoration: "none" }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: px(3) }}>
+                  <Typography variant="body1">{t("commun.versus")}</Typography>
+                  <Typography variant="h6">
+                    {isPlayer1 && game.player2
+                      ? game.player2.username
+                      : game.player1.username}
+                  </Typography>
+                </Box>
+              </Link>
             </Grid>
             <Grid item xs={5}>
               <Box
@@ -142,7 +167,11 @@ export const CardHistoryGame = ({ game, player }: Props) => {
   );
 };
 
-export const CardHistoryGameAdmin = ({ game }: Props) => {
+interface PropsAdmin {
+  game: HistoryGameAdmin;
+}
+
+export const CardHistoryGameAdmin = ({ game }: PropsAdmin) => {
   const { t } = useTranslation();
 
   const isSolo = useMemo(() => game.type === "SOLO", [game.type]);
@@ -166,7 +195,11 @@ export const CardHistoryGameAdmin = ({ game }: Props) => {
                   <Typography variant="caption">
                     {moment(game.created_at).format("DD/MM/YYYY HH:mm")}
                   </Typography>
-                  <Typography variant="h6">{game.player1.username}</Typography>
+                  <Typography variant="h6">
+                    {game.player1 !== null
+                      ? game.player1.username
+                      : "NON CONNECTÉ"}
+                  </Typography>
                   <Box
                     sx={{
                       display: "flex",
@@ -208,7 +241,11 @@ export const CardHistoryGameAdmin = ({ game }: Props) => {
                     sx={{ display: "flex", alignItems: "center", gap: px(3) }}
                   >
                     <Typography variant="h6">
-                      {`${game.player1.username} ${t("commun.versus")} ${
+                      {`${
+                        game.player1 !== null
+                          ? game.player1.username
+                          : "NON CONNECTÉ"
+                      } ${t("commun.versus")} ${
                         game.player2 ? game.player2.username : "inconnu"
                       }`}
                     </Typography>

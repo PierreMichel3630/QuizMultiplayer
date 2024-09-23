@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Alert, Box, Divider, Grid, Typography } from "@mui/material";
 import { percent } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -22,6 +22,8 @@ import { NewBlock } from "src/component/NewBlock";
 import { RankingBlock } from "src/component/RankingBlock";
 import { SkeletonCategories } from "src/component/skeleton/SkeletonCategory";
 import { Colors } from "src/style/Colors";
+import { CardCategory } from "src/component/card/CardCategory";
+import { CategoriesBlock } from "src/component/CategoriesBlock";
 
 export default function ThemesPage() {
   const { t } = useTranslation();
@@ -42,6 +44,17 @@ export default function ThemesPage() {
     [themes, search, language.iso]
   );
 
+  const categoriesSearch = useMemo(
+    () =>
+      uniqBy(
+        [...categories]
+          .filter((el) => searchString(search, el.name[language.iso]))
+          .sort((a, b) => sortByName(language, a, b)),
+        (el) => el.id
+      ),
+    [categories, search, language]
+  );
+
   const categoriesFilter = useMemo(
     () =>
       [...categories]
@@ -53,7 +66,7 @@ export default function ThemesPage() {
   useEffect(() => {
     const handleScroll = () => {
       if (
-        window.innerHeight + document.documentElement.scrollTop + 250 <=
+        window.innerHeight + document.documentElement.scrollTop + 1000 <=
           document.documentElement.offsetHeight ||
         maxIndex >= categories.length
       ) {
@@ -192,24 +205,43 @@ export default function ThemesPage() {
             </Grid>
             {search !== "" ? (
               <>
-                <Grid item xs={12}>
-                  <Typography variant="h2">{t("commun.search")}</Typography>
-                </Grid>
-                {themesFilter.map((theme) => (
-                  <Grid item key={theme.id}>
-                    <CardTheme theme={theme} />
+                {categoriesSearch.length > 0 && (
+                  <>
+                    <Grid item xs={12}>
+                      <Typography variant="h2">
+                        {t("commun.categories")}
+                      </Typography>
+                    </Grid>
+                    {categoriesSearch.map((category) => (
+                      <Grid item key={category.id}>
+                        <CardCategory category={category} />
+                      </Grid>
+                    ))}
+                    <Grid item xs={12}>
+                      <Divider sx={{ borderBottomWidth: 5 }} />
+                    </Grid>
+                  </>
+                )}
+                {themesFilter.length > 0 && (
+                  <>
+                    <Grid item xs={12}>
+                      <Typography variant="h2">{t("commun.themes")}</Typography>
+                    </Grid>
+                    {themesFilter.map((theme) => (
+                      <Grid item key={theme.id}>
+                        <CardTheme theme={theme} />
+                      </Grid>
+                    ))}
+                  </>
+                )}
+                {themesFilter.length === 0 && categoriesSearch.length === 0 && (
+                  <Grid item xs={12}>
+                    <Alert severity="warning">{t("commun.noresult")}</Alert>
                   </Grid>
-                ))}
+                )}
               </>
             ) : (
               <>
-                {isLoadingTheme ? (
-                  <SkeletonCategories number={1} />
-                ) : (
-                  <Grid item xs={12}>
-                    <GameModeBlock />
-                  </Grid>
-                )}
                 {isLoadingTheme ? (
                   <SkeletonCategories number={1} />
                 ) : (
@@ -218,8 +250,18 @@ export default function ThemesPage() {
                   </Grid>
                 )}
                 <Grid item xs={12}>
+                  <CategoriesBlock />
+                </Grid>
+                <Grid item xs={12}>
                   <RankingBlock />
                 </Grid>
+                {isLoadingTheme ? (
+                  <SkeletonCategories number={1} />
+                ) : (
+                  <Grid item xs={12}>
+                    <GameModeBlock />
+                  </Grid>
+                )}
                 {categoriesFilter.map((category) => (
                   <Grid item xs={12} key={category.id}>
                     <CategoryBlock category={category} />

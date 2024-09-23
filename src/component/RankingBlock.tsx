@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   Button,
+  Container,
   Divider,
   Grid,
   Skeleton,
@@ -20,7 +21,11 @@ import { Colors } from "src/style/Colors";
 import { AvatarAccount } from "./avatar/AvatarAccount";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 
-export const RankingBlock = () => {
+interface Props {
+  themes?: Array<number>;
+}
+
+export const RankingBlock = ({ themes }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -30,13 +35,14 @@ export const RankingBlock = () => {
   useEffect(() => {
     const getRank = () => {
       setIsLoading(true);
-      selectScore("points", 0, 3).then(({ data }) => {
+      const ids = themes ? themes : [];
+      selectScore("points", 0, 3, ids).then(({ data }) => {
         setScores(data as Array<Score>);
         setIsLoading(false);
       });
     };
     getRank();
-  }, []);
+  }, [themes]);
 
   return (
     <Grid container spacing={1}>
@@ -73,28 +79,30 @@ export const RankingBlock = () => {
         {isLoading ? (
           <Box sx={{ display: "flex", gap: px(2), alignItems: "flex-end" }}>
             <Skeleton width={"100%"} height={170} />
-            <Skeleton width={"100%"} height={190} />
-            <Skeleton width={"100%"} height={160} />
+            <Skeleton width={"100%"} height={180} />
+            <Skeleton width={"100%"} height={150} />
           </Box>
         ) : (
           <Box>
-            <Grid container spacing={1}>
-              {scores[1] && (
-                <Grid item xs={4} sx={{ display: "flex" }}>
-                  <RankingGame score={scores[1]} rank={2} />
-                </Grid>
-              )}
-              {scores[0] && (
-                <Grid item xs={4} sx={{ display: "flex" }}>
-                  <RankingGame score={scores[0]} rank={1} />
-                </Grid>
-              )}
-              {scores[2] && (
-                <Grid item xs={4} sx={{ display: "flex" }}>
-                  <RankingGame score={scores[2]} rank={3} />
-                </Grid>
-              )}
-            </Grid>
+            <Container maxWidth="sm">
+              <Grid container spacing={1}>
+                {scores[1] && (
+                  <Grid item xs={4} sx={{ display: "flex" }}>
+                    <RankingGame score={scores[1]} rank={2} />
+                  </Grid>
+                )}
+                {scores[0] && (
+                  <Grid item xs={4} sx={{ display: "flex" }}>
+                    <RankingGame score={scores[0]} rank={1} />
+                  </Grid>
+                )}
+                {scores[2] && (
+                  <Grid item xs={4} sx={{ display: "flex" }}>
+                    <RankingGame score={scores[2]} rank={3} />
+                  </Grid>
+                )}
+              </Grid>
+            </Container>
           </Box>
         )}
       </Grid>
@@ -122,7 +130,7 @@ const RankingGame = ({ score, rank }: PropsRankingGame) => {
     switch (rank) {
       case 1:
         color = Colors.gold;
-        icon = <Avatar sx={{ width: 45, height: 45, p: px(5) }} src={rank1} />;
+        icon = <Avatar sx={{ width: 50, height: 50, p: px(5) }} src={rank1} />;
         break;
       case 2:
         color = Colors.silver;
@@ -130,7 +138,7 @@ const RankingGame = ({ score, rank }: PropsRankingGame) => {
         break;
       case 3:
         color = Colors.bronze;
-        icon = <Avatar sx={{ width: 45, height: 45, p: px(5) }} src={rank3} />;
+        icon = <Avatar sx={{ width: 40, height: 40, p: px(5) }} src={rank3} />;
         break;
     }
     return { color, icon };
@@ -162,14 +170,14 @@ const RankingGame = ({ score, rank }: PropsRankingGame) => {
             alignItems: "center",
           }}
         >
-          <AvatarAccount avatar={score.profile.avatar.icon} size={70} />
+          <AvatarAccount avatar={score.profile.avatar.icon} size={60} />
           <Typography variant="h6">{score.profile.username}</Typography>
         </Link>
       </Box>
       <Box
         sx={{
           width: percent(100),
-          height: px(180 - rank * 10),
+          height: px(170 - rank * 15),
           backgroundColor: rankCss.color,
           borderTopRightRadius: px(10),
           borderTopLeftRadius: px(10),
@@ -205,7 +213,7 @@ const RankingGame = ({ score, rank }: PropsRankingGame) => {
                 width: percent(100),
                 overflow: "hidden",
                 display: "-webkit-box",
-                WebkitLineClamp: 3,
+                WebkitLineClamp: 2,
                 WebkitBoxOrient: "vertical",
               }}
             />

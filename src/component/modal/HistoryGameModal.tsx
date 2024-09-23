@@ -300,7 +300,7 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
           }}
         >
           <Container
-            maxWidth="lg"
+            maxWidth="md"
             sx={{
               backgroundColor: Colors.white,
             }}

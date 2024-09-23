@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { FavoriteBlock } from "src/component/FavoriteBlock";
 import { HeadTitle } from "src/component/HeadTitle";
+import { RankingBlock } from "src/component/RankingBlock";
 import { CardTheme } from "src/component/card/CardTheme";
 import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
@@ -33,6 +34,14 @@ export default function CategoryPage() {
     [category, themes, language]
   );
 
+  const idthemes = useMemo(
+    () =>
+      themes
+        .filter((el) => category && el.category.id === category.id)
+        .map((el) => el.id),
+    [themes, category]
+  );
+
   const FirstThemesCategory = useMemo(
     () =>
       category
@@ -59,6 +68,11 @@ export default function CategoryPage() {
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1} justifyContent="center">
+            {idthemes.length > 0 && (
+              <Grid item xs={12}>
+                <RankingBlock themes={idthemes} />
+              </Grid>
+            )}
             <Grid item xs={12}>
               <FavoriteBlock category={category} />
             </Grid>

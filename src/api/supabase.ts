@@ -8,7 +8,7 @@ const options = {
 };
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, options);
 
-const URLPROD = "https://quizup-v2.web.app";
+const URLPROD = "https://quizbattle.fr";
 
 export const signUpWithEmail = (
   email: string,

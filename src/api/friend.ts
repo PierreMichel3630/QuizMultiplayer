@@ -40,5 +40,4 @@ export const selectFriendByProfileId = (id: string) =>
   supabase
     .from(SUPABASE_FRIEND_TABLE)
     .select("*, user1(*, avatar(*)), user2(*, avatar(*))")
-    .or(`user1.eq.${id},user2.eq.${id}`)
-    .eq("status", "VALID");
+    .or(`user1.eq.${id},user2.eq.${id}`);

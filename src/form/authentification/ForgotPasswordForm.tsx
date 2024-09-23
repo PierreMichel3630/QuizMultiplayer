@@ -12,7 +12,10 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
 import * as Yup from "yup";
 
-export const ForgotPasswordForm = () => {
+interface Props {
+  send: () => void;
+}
+export const ForgotPasswordForm = ({ send }: Props) => {
   const { t } = useTranslation();
   const { passwordReset } = useAuth();
   const { setMessage, setSeverity } = useMessage();
@@ -43,8 +46,7 @@ export const ForgotPasswordForm = () => {
           );
           setSeverity("error");
         } else {
-          setMessage(t("form.forgotpassword.successsendmail"));
-          setSeverity("success");
+          send();
         }
       } catch (e) {
         console.log(e);

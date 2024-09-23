@@ -61,8 +61,9 @@ async function getQuestion(supabase, game) {
       : Math.random() < 0.5;
   let responsesQcm: Array<any> = [];
   if (isGenerate) {
+    const qcm = points < 10;
     const difficulty = difficulties[difficulties.length - 1];
-    newQuestion = generateQuestion(Number(theme.id), points, difficulty);
+    newQuestion = generateQuestion(Number(theme.id), qcm, points, difficulty);
   } else {
     const resrandomquestion = await supabase
       .from("randomquestion")
@@ -275,10 +276,11 @@ Deno.serve(async (req) => {
           extra: question.extra,
           theme: question.theme,
           isqcm: question.isqcm,
-          type: question.typequestion,
+          typequestion: question.typequestion,
           responses: question.responses,
           time: question.time,
           typeResponse: question.typeresponselist,
+          data: question.data,
         }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },

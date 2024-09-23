@@ -45,7 +45,17 @@ export const ImageQuestionBlock = ({ src, border = false }: Props) => {
   );
 };
 
-export const ImageQCMBlock = ({ src, border = false }: Props) => {
+interface PropsImageQCMBlock {
+  src: string;
+  width?: number;
+  border?: boolean;
+}
+
+export const ImageQCMBlock = ({
+  src,
+  width = 200,
+  border = false,
+}: PropsImageQCMBlock) => {
   return (
     <Box
       sx={{
@@ -56,15 +66,15 @@ export const ImageQCMBlock = ({ src, border = false }: Props) => {
         justifyContent: "center",
         flexGrow: 1,
         flex: "1 1 0",
-        maxHeight: px(200),
+        maxHeight: px(width),
       }}
     >
       {border ? (
         <img
           src={src}
           style={{
-            maxHeight: percent(90),
-            maxWidth: percent(90),
+            maxHeight: percent(95),
+            maxWidth: percent(95),
             objectFit: "contain",
             border: "1px solid white",
           }}
@@ -73,8 +83,8 @@ export const ImageQCMBlock = ({ src, border = false }: Props) => {
         <img
           src={src}
           style={{
-            height: percent(80),
-            width: percent(80),
+            height: percent(95),
+            width: percent(95),
             objectFit: "contain",
           }}
         />
