@@ -1,4 +1,4 @@
-import { Avatar, Box, Container, Grid } from "@mui/material";
+import { Avatar, Box, Container, Grid, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -15,22 +15,34 @@ import { StatAccomplishment } from "src/models/Accomplishment";
 import { Badge } from "src/models/Badge";
 import { Colors } from "src/style/Colors";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import { useMessage } from "src/context/MessageProvider";
+import { buyItem } from "src/api/buy";
+import { ProfilHeader } from "src/component/ProfileHeader";
+import { ConfirmDialog } from "src/component/modal/ConfirmModal";
+import moneyIcon from "src/assets/money.svg";
+import { padding, px } from "csx";
 
-export default function BadgePage() {
+export default function BannerPage() {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
-  const { accomplishments, myaccomplishments } = useApp();
-  const { user } = useAuth();
+  const { profile, refreshProfil } = useAuth();
+  const { mybadges, getMyBadges, accomplishments, myaccomplishments } =
+    useApp();
+  const { setMessage, setSeverity } = useMessage();
 
   const [badge, setBadge] = useState<Badge | undefined>(undefined);
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     const getBadge = () => {
+      setLoading(true);
       if (id) {
         selectBadgeById(Number(id)).then(({ data }) => {
           setBadge(data as Badge);
+          setLoading(false);
         });
       }
     };
@@ -39,14 +51,56 @@ export default function BadgePage() {
 
   useEffect(() => {
     const getMyStat = () => {
-      if (user) {
-        selectStatAccomplishmentByProfile(user.id).then(({ data }) => {
+      if (profile) {
+        selectStatAccomplishmentByProfile(profile.id).then(({ data }) => {
           setStat(data as StatAccomplishment);
         });
       }
     };
     getMyStat();
-  }, [user]);
+  }, [profile]);
+
+  const verifyBuy = () => {
+    if (profile && badge) {
+      if (profile.money < badge.price) {
+        setSeverity("error");
+        setMessage(t("alert.noenoughtmoney"));
+      } else {
+        setOpenModal(true);
+      }
+    } else {
+      setSeverity("error");
+      setMessage(t("commun.error"));
+    }
+  };
+
+  const buy = () => {
+    if (profile && badge) {
+      if (profile.money < badge.price) {
+        setSeverity("error");
+        setMessage(t("alert.noenoughtmoney"));
+      } else {
+        buyItem("avatar", badge.id).then((_res) => {
+          setSeverity("success");
+          setMessage(t("alert.buyitem"));
+          getMyBadges();
+          refreshProfil();
+        });
+      }
+    } else {
+      setSeverity("error");
+      setMessage(t("commun.error"));
+    }
+    setOpenModal(false);
+  };
+
+  const isBuy = useMemo(
+    () =>
+      !loading &&
+      badge &&
+      mybadges.find((el) => el.id === badge.id) !== undefined,
+    [loading, mybadges, badge]
+  );
 
   const accomplishment = useMemo(
     () =>
@@ -62,34 +116,43 @@ export default function BadgePage() {
         <title>{`${t("pages.badge.title")} - ${t("appname")}`}</title>
       </Helmet>
       <BarNavigation title={t("pages.badge.title")} quit={() => navigate(-1)} />
+
       <Grid item xs={12}>
-        <Container maxWidth="lg">
-          <Box sx={{ p: 1, mt: 3 }}>
+        <Container maxWidth="md">
+          {badge && profile && (
+            <ProfilHeader profile={profile} badge={badge.icon} />
+          )}
+        </Container>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Container maxWidth="md" sx={{ mt: 2, mb: 12 }}>
+          {badge && (
             <Grid container spacing={2} justifyContent="center">
-              {badge && (
-                <Grid item>
-                  <Avatar
-                    sx={{
-                      width: 200,
-                      height: 200,
-                    }}
-                    src={badge.icon}
-                  />
-                </Grid>
-              )}
+              <Grid item>
+                <Avatar
+                  sx={{
+                    width: 120,
+                    height: 120,
+                  }}
+                  src={badge.icon}
+                />
+              </Grid>
 
               {accomplishment && (
                 <Grid item xs={12}>
-                  <CardAccomplishment
-                    accomplishment={accomplishment}
-                    stat={stat}
-                    isFinish={myaccomplishments.includes(accomplishment.id)}
-                    title
-                  />
+                  <Box sx={{ p: 2 }}>
+                    <CardAccomplishment
+                      accomplishment={accomplishment}
+                      stat={stat}
+                      isFinish={myaccomplishments.includes(accomplishment.id)}
+                      badge
+                    />
+                  </Box>
                 </Grid>
               )}
             </Grid>
-          </Box>
+          )}
         </Container>
       </Grid>
       <Box
@@ -103,15 +166,50 @@ export default function BadgePage() {
       >
         <Container maxWidth="lg">
           <Box sx={{ p: 1, display: "flex", flexDirection: "column", gap: 1 }}>
-            <ButtonColor
-              value={Colors.yellow}
-              label={t("commun.goaccomplishments")}
-              icon={EmojiEventsIcon}
-              variant="contained"
-              onClick={() => {
-                if (user) navigate(`/accomplishments/${user.id}`);
-              }}
-            />
+            {!loading && badge && !isBuy && !badge.isaccomplishment && (
+              <Box
+                sx={{
+                  backgroundColor: Colors.yellow2,
+                  p: padding(2, 5),
+                  borderRadius: px(5),
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+                onClick={verifyBuy}
+              >
+                <Typography variant="caption" color="text.secondary">
+                  {t("commun.buy")}
+                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography variant="h2" color="text.secondary">
+                    {badge.price}
+                  </Typography>
+                  <img src={moneyIcon} width={25} />
+                </Box>
+              </Box>
+            )}
+
+            {badge && badge.isaccomplishment && (
+              <ButtonColor
+                value={Colors.yellow}
+                label={t("commun.goaccomplishments")}
+                icon={EmojiEventsIcon}
+                variant="contained"
+                onClick={() => {
+                  if (profile) navigate(`/accomplishments/${profile.id}`);
+                }}
+              />
+            )}
             <ButtonColor
               value={Colors.blue3}
               label={t("commun.return")}
@@ -122,6 +220,13 @@ export default function BadgePage() {
           </Box>
         </Container>
       </Box>
+
+      <ConfirmDialog
+        title={t("commun.confirmbuy")}
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        onConfirm={buy}
+      />
     </Grid>
   );
 }

@@ -1,5 +1,6 @@
 import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
+import { Banner } from "./Banner";
 import { Title } from "./Title";
 
 export interface Profile {
@@ -10,6 +11,8 @@ export interface Profile {
   avatar: Avatar;
   badge: null | Badge;
   title: null | Title;
+  banner: null | Banner;
+  money: number;
   created_at: Date;
   last_seen_friend: Date;
   isadmin: boolean;

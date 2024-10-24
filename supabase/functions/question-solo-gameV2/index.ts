@@ -52,6 +52,10 @@ async function getQuestion(supabase, game) {
   const previousIdQuestion = game.questions.reduce((acc, v) => {
     return v.id ? [...acc, v.id] : acc;
   }, []);
+  const previousQuestion =
+    game.questions.length > 0
+      ? game.questions[game.questions.length - 1].id
+      : undefined;
   const player = game.player;
 
   let newQuestion: any = undefined;
@@ -65,14 +69,36 @@ async function getQuestion(supabase, game) {
     const difficulty = difficulties[difficulties.length - 1];
     newQuestion = generateQuestion(Number(theme.id), qcm, points, difficulty);
   } else {
-    const resrandomquestion = await supabase
+    let queryrandomquestion = supabase
       .from("randomquestion")
       .select("*, theme(*)")
       .eq("theme", themequestion.id)
       .in("difficulty", difficulties)
-      .not("id", "in", `(${previousIdQuestion})`)
-      .limit(1)
-      .maybeSingle();
+      .not("id", "in", `(${previousIdQuestion})`);
+
+    let result = undefined;
+    if (previousQuestion !== undefined) {
+      const respreviousresponse = await supabase
+        .from("question")
+        .select("response")
+        .eq("id", previousQuestion)
+        .maybeSingle();
+
+      if (respreviousresponse.data !== null) {
+        const response = respreviousresponse.data.response["fr-FR"];
+        if (Array.isArray(response)) {
+          result = response[0];
+        } else {
+          result = response;
+        }
+        queryrandomquestion = queryrandomquestion.neq(
+          "response->fr-FR->>0",
+          result
+        );
+      }
+    }
+
+    const resrandomquestion = await queryrandomquestion.limit(1).maybeSingle();
     if (resrandomquestion.error) throw resrandomquestion.error;
     newQuestion = resrandomquestion.data;
     if (newQuestion === null) {

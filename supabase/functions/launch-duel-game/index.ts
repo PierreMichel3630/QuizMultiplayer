@@ -82,7 +82,7 @@ Deno.serve(async (req) => {
             .update({ status: "START" })
             .eq("uuid", data.uuid)
             .select(
-              "*, theme!public_duelgame_theme_fkey(*),player1(*,avatar(*),title(*), badge(*)),player2(*,avatar(*),title(*), badge(*))"
+              "*, theme!public_duelgame_theme_fkey(*),player1(*,avatar(*),title(*), badge(*), banner(*)),player2(*,avatar(*),title(*), badge(*), banner(*))"
             )
             .maybeSingle();
           channel.send({

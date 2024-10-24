@@ -18,6 +18,8 @@ import { Avatar } from "src/models/Avatar";
 import { Badge } from "src/models/Badge";
 import { Profile } from "src/models/Profile";
 import { Title } from "src/models/Title";
+import { BannerSelector } from "src/component/BannerSelector";
+import { Banner } from "src/models/Banner";
 
 export default function PersonalizedPage() {
   const { t } = useTranslation();
@@ -30,12 +32,15 @@ export default function PersonalizedPage() {
   const { hash } = useLocation();
   const refBadge = useRef(null);
   const refTitle = useRef(null);
+  const refBanner = useRef(null);
 
   useEffect(() => {
     if (hash === "#badges") {
       executeScroll(refBadge);
     } else if (hash === "#titles") {
       executeScroll(refTitle);
+    } else if (hash === "#banners") {
+      executeScroll(refBanner);
     }
   }, [hash]);
 
@@ -72,7 +77,10 @@ export default function PersonalizedPage() {
 
   const changeBadge = async (value: Badge) => {
     if (user) {
-      const newProfil = { id: user.id, badge: value.id };
+      const newProfil = {
+        id: user.id,
+        badge: value.id,
+      };
       const { data, error } = await updateSelectProfil(newProfil);
       if (error) {
         setSeverity("error");
@@ -80,6 +88,27 @@ export default function PersonalizedPage() {
       } else {
         setSeverity("success");
         setMessage(t("alert.updatebadgesuccess"));
+        setProfile(data as Profile);
+      }
+    } else {
+      setSeverity("error");
+      setMessage(t("commun.error"));
+    }
+  };
+
+  const changeBanner = async (value: Banner | null) => {
+    if (user) {
+      const newProfil = {
+        id: user.id,
+        banner: value !== null ? value.id : null,
+      };
+      const { data, error } = await updateSelectProfil(newProfil);
+      if (error) {
+        setSeverity("error");
+        setMessage(t("commun.error"));
+      } else {
+        setSeverity("success");
+        setMessage(t("alert.updatebanneruccess"));
         setProfile(data as Profile);
       }
     } else {
@@ -167,6 +196,17 @@ export default function PersonalizedPage() {
             </Grid>
             <Grid item xs={12} md={8}>
               <BadgeSelector onSelect={changeBadge} />
+            </Grid>
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Typography variant="h4" ref={refBanner}>
+                {t("commun.banners")}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={8}>
+              <BannerSelector onSelect={changeBanner} />
             </Grid>
             <Grid item xs={12}>
               <Divider />

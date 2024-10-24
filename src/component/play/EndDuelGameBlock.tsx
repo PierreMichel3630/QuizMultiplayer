@@ -18,7 +18,7 @@ import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import ReplayIcon from "@mui/icons-material/Replay";
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Question } from "src/models/Question";
 import { CardSignalQuestion } from "../card/CardQuestion";
@@ -35,8 +35,13 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
   const navigate = useNavigate();
   const { uuid } = useUser();
   const { user } = useAuth();
+  const { refreshProfil } = useAuth();
 
   const [question, setQuestion] = useState<Question | undefined>(undefined);
+
+  useEffect(() => {
+    refreshProfil();
+  }, []);
 
   const gamebattle = useMemo(() => game.battlegame, [game]);
   const isPlayer1 = useMemo(() => game.player1.id === uuid, [uuid, game]);

@@ -9,6 +9,7 @@ import RecapDuelPage from "src/pages/play/RecapDuelPage";
 import RecapSoloPage from "src/pages/play/RecapSoloPage";
 import SoloPage from "src/pages/play/SoloPage";
 import TrainingPage from "src/pages/play/TrainingPage";
+import YtShortPage from "src/pages/play/YtShortPage";
 
 export const PlayRoutes = [
   {
@@ -18,6 +19,10 @@ export const PlayRoutes = [
         <DuelPage />
       </ProtectedRoute>
     ),
+  },
+  {
+    path: "/ytshort/:uuidGame",
+    element: <YtShortPage />,
   },
   {
     path: "/solo/:uuidGame",

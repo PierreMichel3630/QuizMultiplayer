@@ -24,6 +24,7 @@ const AuthContext = createContext<{
   user: User | null;
   profile: Profile | null;
   setProfile: (value: Profile) => void;
+  refreshProfil: () => void;
   login: (email: string, password: string) => Promise<AuthTokenResponse>;
   logout: () => Promise<{ error: AuthError | null }>;
   deleteAccount: () => void;
@@ -41,6 +42,7 @@ const AuthContext = createContext<{
   deleteAccount: () => {},
   profile: null,
   setProfile: () => {},
+  refreshProfil: () => {},
   login: (email: string, password: string) => signInWithEmail(email, password),
   logout: () => signOut(),
   passwordReset: (email: string) => passwordReset(email),
@@ -108,11 +110,20 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     setProfile(null);
   };
 
+  const refreshProfil = () => {
+    if (profile) {
+      getProfilById(profile.id).then(({ data }) => {
+        setProfile(data as Profile);
+      });
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
         profile,
         setProfile,
+        refreshProfil,
         user,
         login,
         logout,

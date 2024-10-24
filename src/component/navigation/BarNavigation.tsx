@@ -9,7 +9,6 @@ import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { percent, px } from "csx";
 import { Colors } from "src/style/Colors";
 import { AccountMenu } from "../header/AccountMenu";
-import { LanguagesMenu } from "../header/LanguageMenu";
 
 interface Props {
   title: string;
@@ -50,9 +49,6 @@ export const BarNavigation = ({ title, quit }: Props) => {
               <Typography variant="h2" sx={{ color: Colors.white }}>
                 {title}
               </Typography>
-            </Grid>
-            <Grid item>
-              <LanguagesMenu />
             </Grid>
             <Grid item>
               {user ? (

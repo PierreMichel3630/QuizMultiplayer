@@ -77,6 +77,12 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
       <Box
         sx={{
           backgroundColor: COLORDUEL1,
+          backgroundImage:
+            game.player1 && game.player1.banner
+              ? `url("/banner/${game.player1.banner.icon}")`
+              : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           height: percent(50),
           width: percent(100),
           display: "flex",
@@ -151,6 +157,12 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
       <Box
         sx={{
           backgroundColor: COLORDUEL2,
+          backgroundImage:
+            game.player2 && game.player2.banner
+              ? `url("/banner/${game.player2.banner.icon}")`
+              : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           height: percent(50),
           width: percent(100),
           display: "flex",

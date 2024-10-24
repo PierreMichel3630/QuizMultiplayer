@@ -1,12 +1,12 @@
 import { Alert, Box, Divider, Grid, Typography } from "@mui/material";
-import { percent } from "csx";
+import { percent, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
+import { CardTheme } from "src/component/card/CardTheme";
 import { CategoryBlock } from "src/component/CategoryBlock";
 import { FavoriteBlock } from "src/component/FavoriteBlock";
 import { BasicSearchInput } from "src/component/Input";
-import { CardTheme } from "src/component/card/CardTheme";
 
 import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
@@ -14,20 +14,26 @@ import { sortByName } from "src/utils/sort";
 import { searchString } from "src/utils/string";
 
 import { uniqBy } from "lodash";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ButtonColor } from "src/component/Button";
+import { CardCategory } from "src/component/card/CardCategory";
+import { CategoriesBlock } from "src/component/CategoriesBlock";
 import { GameModeBlock } from "src/component/GameModeBlock";
 import { HeadTitle } from "src/component/HeadTitle";
 import { NewBlock } from "src/component/NewBlock";
+import { PreviousGameBlock } from "src/component/PreviousGameBlock";
 import { RankingBlock } from "src/component/RankingBlock";
 import { SkeletonCategories } from "src/component/skeleton/SkeletonCategory";
+import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
-import { CardCategory } from "src/component/card/CardCategory";
-import { CategoriesBlock } from "src/component/CategoriesBlock";
+import { urlApple, urlGooglePlay } from "./help/InstallationPage";
+import googleplay from "src/assets/google-play.png";
+import AppleIcon from "@mui/icons-material/Apple";
 
 export default function ThemesPage() {
   const { t } = useTranslation();
   const { language } = useUser();
+  const { user } = useAuth();
   const { categories, themes, nbQuestions, nbThemes, isLoadingTheme } =
     useApp();
   const navigate = useNavigate();
@@ -104,6 +110,7 @@ export default function ThemesPage() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                gap: px(5),
               }}
             >
               <Box sx={{ display: "flex", gap: 1 }}>
@@ -161,14 +168,54 @@ export default function ThemesPage() {
                   onClick={() => navigate("/faq")}
                   noWrap
                 />
-                <ButtonColor
-                  value={Colors.white}
-                  label={t("commun.installation")}
-                  variant="outlined"
-                  typography="h6"
-                  onClick={() => navigate("/installation")}
-                  noWrap
-                />
+              </Box>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <Link
+                  to={urlGooglePlay}
+                  style={{
+                    textDecoration: "inherit",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      borderRadius: px(5),
+                      p: px(6),
+                      backgroundColor: Colors.black,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <img src={googleplay} style={{ width: px(20) }} />
+                    <Typography variant="h6" color="text.secondary">
+                      {t("commun.googleplay")}
+                    </Typography>
+                  </Box>
+                </Link>
+                <Link
+                  to={urlApple}
+                  style={{
+                    textDecoration: "inherit",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      borderRadius: px(5),
+                      p: px(6),
+                      backgroundColor: Colors.black,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <AppleIcon sx={{ color: "white", fontSize: px(20) }} />
+                    <Typography variant="h6" color="text.secondary">
+                      {t("commun.apple")}
+                    </Typography>
+                  </Box>
+                </Link>
               </Box>
             </Box>
           }
@@ -200,9 +247,11 @@ export default function ThemesPage() {
                 clear={() => setSearch("")}
               />
             </Grid>
-            <Grid item xs={12}>
-              <FavoriteBlock search={search} />
-            </Grid>
+            {user && (
+              <Grid item xs={12}>
+                <FavoriteBlock search={search} />
+              </Grid>
+            )}
             {search !== "" ? (
               <>
                 {categoriesSearch.length > 0 && (
@@ -227,11 +276,15 @@ export default function ThemesPage() {
                     <Grid item xs={12}>
                       <Typography variant="h2">{t("commun.themes")}</Typography>
                     </Grid>
-                    {themesFilter.map((theme) => (
-                      <Grid item key={theme.id}>
-                        <CardTheme theme={theme} />
+                    <Grid item xs={12}>
+                      <Grid container spacing={1}>
+                        {themesFilter.map((theme) => (
+                          <Grid item key={theme.id}>
+                            <CardTheme theme={theme} />
+                          </Grid>
+                        ))}
                       </Grid>
-                    ))}
+                    </Grid>
                   </>
                 )}
                 {themesFilter.length === 0 && categoriesSearch.length === 0 && (
@@ -242,6 +295,11 @@ export default function ThemesPage() {
               </>
             ) : (
               <>
+                {user && (
+                  <Grid item xs={12}>
+                    <PreviousGameBlock />
+                  </Grid>
+                )}
                 {isLoadingTheme ? (
                   <SkeletonCategories number={1} />
                 ) : (

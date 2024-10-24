@@ -126,8 +126,10 @@ export const sortByName = (language: Language, a: any, b: any) =>
 export const sortByTitle = (language: Language, a: Title, b: Title) =>
   a.name[language.iso].localeCompare(b.name[language.iso]);
 
-export const sortByUnlock = (a: { unlock: boolean }, b: { unlock: boolean }) =>
-  Number(b.unlock) - Number(a.unlock);
+export const sortByUnlock = (
+  a: { unlock: boolean; price: number },
+  b: { unlock: boolean; price: number }
+) => Number(b.unlock) - Number(a.unlock) || a.price - b.price;
 
 export const sortByGamesDesc = (a: { games: number }, b: { games: number }) =>
   b.games - a.games;

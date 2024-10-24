@@ -54,6 +54,7 @@
     "email": "Adresse email",
     "avatar": "Avatar",
     "avatars": "Avatars",
+    "banners": "Photos de couverture",
     "myparameters": "Mes Paramètres",
     "username": "Pseudonyme",
     "add": "Ajouter",
@@ -138,6 +139,7 @@
     "favorite": "Favoris",
     "addfavorite": "Ajouter aux favoris",
     "removefavorite": "Retirer des favoris",
+    "ytshort": "Prendre un short Youtube",
     "seequestions": "Voir les questions",
     "seequestion": "Voir la question",
     "seequestionimageerror": "Voir les images qui ne marche pas",
@@ -171,6 +173,7 @@
     "others": "Autres",
     "myaccomplishments": "Mes succès",
     "goaccomplishments": "Voir mes succès",
+    "unlockaccomplishments": "Débloquer via succès",
     "reward": "Récompense",
     "title": "Titre",
     "titles": "Titres",
@@ -241,7 +244,11 @@
     "goal": "Objectif",
     "configuration": "Configuration",
     "googleplay": "Google Play",
-    "letgo": "Commencer à jouer !!!"
+    "letgo": "Commencer à jouer !!!",
+    "previousgame": "Joué récemment",
+    "buy": "Acheter",
+    "confirmbuy": "Êtes vous sûrs de vouloir débloquer cet item ?",
+    "equip": "Sélectionner"
   },
   "offline": {
     "title": "Connectez-vous à Internet",
@@ -265,7 +272,8 @@
     "drawduel": "Nombre de matchs nuls en Duel",
     "defeatduel": "Nombre de défaites en Duel",
     "xp": "XP Total",
-    "bestgame": "Meilleur partie solo"
+    "bestgame": "Meilleur partie solo",
+    "bestrank": "Meilleur ranking duel"
   },
   "rules": {
     "step1": "Choisissez un thème",
@@ -422,6 +430,12 @@
     },
     "categories": {
       "title": "Catégories"
+    },
+    "banner": {
+      "title": "Photo"
+    },
+    "avatar": {
+      "title": "Avatar"
     }
   },
   "enum": {
@@ -561,6 +575,7 @@
     "deletefavorite": "Votre suppression a été pris en compte.",
     "updateavatarsuccess": "Votre modification d'avatar à été pris en compte.",
     "updatebadgesuccess": "Votre modification de badge à été pris en compte.",
+    "updatebanneruccess": "Votre modification de photo de couverture à été prise en compte.",
     "updatetitlesuccess": "Votre modification de titre à été pris en compte.",
     "updateorigincountrysuccess": "Votre modification de pays à été pris en compte.",
     "updateusernamesuccess": "Votre modification de pseudonyme à été pris en compte.",
@@ -568,7 +583,9 @@
     "sendfriendrequest": "Votre demande d'ami a été envoyé.",
     "validatefriendrequest": "Demande d'ami validée.",
     "refusefriendrequest": "Demande d'ami refusée.",
-    "updateemailsuccess": "Votre modification d'addresse mail est en cours. Veuillez confirmer sur votre ancien et nouveau email."
+    "updateemailsuccess": "Votre modification d'addresse mail est en cours. Veuillez confirmer sur votre ancien et nouveau email.",
+    "noenoughtmoney": "Vous n'avez pas assez pour débloquer cet item.",
+    "buyitem": "Votre achat à été pris en compte."
   },
   "confidentiality": {
     "title": "Politique de confidentialité",
@@ -577,7 +594,7 @@
       "title": "Mentions légales",
       "rules1": {
         "title": "Article 1 - Compte dans l'application",
-        "text": "L'utilisateur créant un compte sur l'application a la possibilité d'y accèder en se connectant grâce aux identifiants fournis lors de son inscription.L'utilisteur est entièrement responsable de la protection du mot de passe qu'il a choisi. Il est encouragé à utiliser des mots de passe complexes. En cas d'oubli de mot de passe, l'utilisateur a la possibilité d'en générer un nouveau en utilisant l'email fourni lors de son inscription. Ce mot de passe constitue la garantie de la confidentialité des informations contenues dans son compte et l'utilisateur s'interdit donc de le transmettre ou de le communiquer à un tiers. A défaut, l'éditeur de l'application ne pourra pas être tenu pour responsable des accès non autorisés au compte utilisateur. L'utilisateur connecté peut saisir des informations personnelles supplémentaires afin de personnalisé son compte : Pays d'origine. QuizBattle se réserve le droit exclusif de supprimer le compte de tout membre qui aurait contrevenu aux présentes conditions générales. Ladite suppression ne sera pas susceptible de constituer un dommage pour l'utilisateur exclu qui ne pourra prétendre à aucune indemnité de ce fait. Cette exclusion n'est pas exclusive de la possibilité, pour l'éditeur, d'entreprendre des poursuites d'ordre judiciaire à l'encontre du membre, lorsque les faits l'auront justifié."
+        "text": "L'utilisateur créant un compte sur l'application a la possibilité d'y accéder en se connectant grâce aux identifiants fournis lors de son inscription.L'utilisateur est entièrement responsable de la protection du mot de passe qu'il a choisi. Il est encouragé à utiliser des mots de passe complexes. En cas d'oubli de mot de passe, l'utilisateur a la possibilité d'en générer un nouveau en utilisant l'email fourni lors de son inscription. Ce mot de passe constitue la garantie de la confidentialité des informations contenues dans son compte et l'utilisateur s'interdit donc de le transmettre ou de le communiquer à un tiers. A défaut, l'éditeur de l'application ne pourra pas être tenu pour responsable des accès non autorisés au compte utilisateur. L'utilisateur connecté peut saisir des informations personnelles supplémentaires afin de personnaliser son compte : Pays d'origine. QuizBattle se réserve le droit exclusif de supprimer le compte de tout membre qui aurait contrevenu aux présentes conditions générales. Ladite suppression ne sera pas susceptible de constituer un dommage pour l'utilisateur exclu qui ne pourra prétendre à aucune indemnité de ce fait. Cette exclusion n'est pas exclusive de la possibilité, pour l'éditeur, d'entreprendre des poursuites d'ordre judiciaire à l'encontre du membre, lorsque les faits l'auront justifié."
       },
       "rules2": {
         "title": "Article 2 - Exonération de la responsabilité de l'éditeur dans le cadre de l'exécution du présent contrat",
@@ -589,11 +606,11 @@
       },
       "rules4": {
         "title": "Article 4 - Fermeture de compte",
-        "text": "Chaque utilisateur est libre de fermer son compte sur l'application. Pour ceci, l'utilisateur doit aller dans le menu Mes paramètres et cliquer sur le bouton supprimer mon compte. Toutes les données liées à l'utilisateur seront supprimé et aucune récupération de ses données ne sera alors possible."
+        "text": "Chaque utilisateur est libre de fermer son compte sur l'application. Pour ceci, l'utilisateur doit aller dans le menu Mes paramètres et cliquer sur le bouton supprimer mon compte. Toutes les données liées à l'utilisateur seront supprimées et aucune récupération de ses données ne sera alors possible."
       },
       "rules5": {
         "title": "Article 5 - Droit applicable et médiation",
-        "text": "Les présentes conditions générales sont soumises à l'application du droit Français. Elles peuvent être modifiées à tout moment par l'éditeur. Les conditions générales applicables à l'utilisateur sont celle en vigueur au jour de sa connexion sur l'application. L'éditeur s'engage bien évidemmment à conserver toutes ses anciennes conditions générales et à les faires parvenir à tout utilisateur qui en ferait la demande. Sauf dispositions d'ordre public, tous litiges qui pourraient survenir dans le cadre de l'exécution des présentes conditions générales pourront avant toute action judiciaire être soumis à l'appréciation de l'éditeur en vue d'un réglement amiable. Il est expressément rappelé que les demandes de règlement amiable ne suspendent pas les délais ouverts pour intenter les actions judiciaires. Sauf disposition contraire, d'ordre public, toute action judiciaire relative à l'exécution du présent contrat devra être soumise à la compétence des juridictions du ressort de la Cour d'appel saisie."
+        "text": "Les présentes conditions générales sont soumises à l'application du droit Français. Elles peuvent être modifiées à tout moment par l'éditeur. Les conditions générales applicables à l'utilisateur sont celles en vigueur au jour de sa connexion sur l'application. L'éditeur s'engage bien évidemment à conserver toutes ses anciennes conditions générales et à les faire parvenir à tout utilisateur qui en ferait la demande. Sauf dispositions d'ordre public, tous litiges qui pourraient survenir dans le cadre de l'exécution des présentes conditions générales pourront avant toute action judiciaire être soumis à l'appréciation de l'éditeur en vue d'un règlement amiable. Il est expressément rappelé que les demandes de règlement amiable ne suspendent pas les délais ouverts pour intenter les actions judiciaires. Sauf disposition contraire, d'ordre public, toute action judiciaire relative à l'exécution du présent contrat devra être soumise à la compétence des juridictions du ressort de la Cour d'appel saisie."
       }
     },
     "charte": {
@@ -604,7 +621,7 @@
       },
       "rules2": {
         "title": "Données personnelles",
-        "text": "QuizBattle collecte votre adresse email et votre mot de passe si vous créer un compte afin de vous authentifiez mais celle-ci reste confidentiel et n'est pas affiché à d'autre utilisateur. Vous pouvez personnaliser votre profil en ajoutant votre pays d'origine, et un identifiant ces informations seront publique au sein de l'application."
+        "text": "QuizBattle collecte votre adresse email et votre mot de passe si vous créez un compte afin de vous authentifier mais celle-ci reste confidentielle et n'est pas affichée à d'autres utilisateurs. Vous pouvez personnaliser votre profil en ajoutant votre pays d'origine, et un identifiant. Ces informations seront publiques au sein de l'application."
       },
       "rules3": {
         "title": "Données sauvegardées",
@@ -612,7 +629,7 @@
       },
       "rules4": {
         "title": "Achats",
-        "text": "QuizBattle est 100% gratuite et n'utilise aucun achat en ligne."
+        "text": "QuizBattle est 100% gratuit et n'utilise aucun achat en ligne."
       },
       "rules5": {
         "title": "Contact",

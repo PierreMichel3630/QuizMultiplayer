@@ -111,18 +111,14 @@ export const BadgeTitle = ({
       sx={{
         p: padding(3, 10),
         backgroundColor: color,
-        borderRadius: px(10),
         cursor: onClick ? "pointer" : "default",
         userSelect: "none",
+        textAlign: "center",
+        borderRadius: px(5),
       }}
       onClick={onClick}
     >
-      <JsonLanguageBlock
-        variant="caption"
-        fontSize={12}
-        color="text.secondary"
-        value={label}
-      />
+      <JsonLanguageBlock variant="h6" color="text.secondary" value={label} />
     </Box>
   );
 };

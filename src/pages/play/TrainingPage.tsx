@@ -6,7 +6,7 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -69,6 +69,7 @@ export default function TrainingPage() {
     undefined
   );
   const [images, setImages] = useState<Array<string>>([]);
+  const [maxIndex, setMaxIndex] = useState(2);
 
   useEffect(() => {
     if (audio) {
@@ -200,7 +201,29 @@ export default function TrainingPage() {
     };
   }, [uuidGame]);
 
-  console.log(question);
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsLoading(true);
+      if (
+        window.innerHeight + document.documentElement.scrollTop + 250 <=
+        document.documentElement.offsetHeight
+      ) {
+        return;
+      }
+      setMaxIndex((prev) => prev + 2);
+    };
+    if (document) {
+      document.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+    };
+  }, [questions, maxIndex]);
+
+  const questionsDisplay = useMemo(() => {
+    const start = questions.length - maxIndex;
+    return [...questions].splice(start, questions.length);
+  }, [questions, maxIndex]);
 
   return (
     <Box
@@ -283,7 +306,7 @@ export default function TrainingPage() {
                   </Grid>
                   <Grid item xs={12}>
                     <Grid container spacing={1} flexDirection="column-reverse">
-                      {questions.map((el, index) => (
+                      {questionsDisplay.map((el, index) => (
                         <Fragment key={index}>
                           <Grid item xs={12}>
                             <Divider

@@ -2,7 +2,7 @@ import { Alert, Box, Container, Divider, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { px, viewHeight } from "csx";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ButtonColor } from "src/component/Button";
@@ -15,8 +15,10 @@ import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { launchSoloGame, selectSoloGameById } from "src/api/game";
 import { ExperienceSoloBlock } from "src/component/ExperienceBlock";
+import { AddMoneyBlock } from "src/component/MoneyBlock";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { ReportModal } from "src/component/modal/ReportModal";
+import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { SoloGame } from "src/models/Game";
 
@@ -26,12 +28,18 @@ export default function RecapSoloPage() {
   const navigate = useNavigate();
   const { uuidGame } = useParams();
   const { uuid } = useUser();
+  const { refreshProfil } = useAuth();
 
   const [question, setQuestion] = useState<Question | undefined>(undefined);
   const [game, setGame] = useState<undefined | SoloGame>(undefined);
+  const [maxIndex, setMaxIndex] = useState(2);
 
   const allquestion = location.state ? location.state.allquestion : false;
   const extra = location.state ? location.state.extra : undefined;
+
+  useEffect(() => {
+    refreshProfil();
+  }, []);
 
   useEffect(() => {
     const getGame = () => {
@@ -51,6 +59,33 @@ export default function RecapSoloPage() {
       });
     }
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop + 250 <=
+        document.documentElement.offsetHeight
+      ) {
+        return;
+      }
+      setMaxIndex((prev) => prev + 2);
+    };
+    if (document) {
+      document.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+    };
+  }, [maxIndex]);
+
+  const questionsDisplay = useMemo(() => {
+    let res: Array<Question> = [];
+    if (game) {
+      const start = game.questions.length - maxIndex;
+      res = [...game.questions].splice(start, game.questions.length);
+    }
+    return res;
+  }, [game, maxIndex]);
 
   return (
     <Box
@@ -90,43 +125,43 @@ export default function RecapSoloPage() {
                     </Alert>
                   </Grid>
                 )}
-                {
-                  <Grid item xs={12}>
-                    <ExperienceSoloBlock
-                      theme={game.theme.id}
-                      xp={extra ? extra.xpplayer1 : undefined}
-                      player={game.player}
-                    />
-                  </Grid>
-                }
                 <Grid item xs={12}>
-                  <Divider
-                    sx={{
-                      borderBottomWidth: 5,
-                      borderColor: Colors.white,
-                      borderRadius: px(5),
-                    }}
+                  <ExperienceSoloBlock
+                    theme={game.theme.id}
+                    xp={extra ? extra.xpplayer1 : undefined}
+                    player={game.player}
                   />
                 </Grid>
-                {game.questions.map((el, index) => (
-                  <Fragment key={index}>
-                    <Grid item xs={12}>
-                      <CardSignalQuestion
-                        question={el}
-                        report={() => setQuestion(el)}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Divider
-                        sx={{
-                          borderBottomWidth: 5,
-                          borderColor: Colors.white,
-                          borderRadius: px(5),
-                        }}
-                      />
-                    </Grid>
-                  </Fragment>
-                ))}
+                <Grid
+                  item
+                  xs={12}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <AddMoneyBlock money={game.points * 10} />
+                </Grid>
+                <Grid item xs={12}>
+                  <Grid container spacing={1} flexDirection="column-reverse">
+                    {questionsDisplay.map((el, index) => (
+                      <Fragment key={index}>
+                        <Grid item xs={12}>
+                          <CardSignalQuestion
+                            question={el}
+                            report={() => setQuestion(el)}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Divider
+                            sx={{
+                              borderBottomWidth: 5,
+                              borderColor: Colors.white,
+                              borderRadius: px(5),
+                            }}
+                          />
+                        </Grid>
+                      </Fragment>
+                    ))}
+                  </Grid>
+                </Grid>
               </Grid>
               <Box
                 sx={{

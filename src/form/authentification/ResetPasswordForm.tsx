@@ -55,9 +55,7 @@ export const ResetPasswordForm = () => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
-        console.log(values);
         const { error } = await updatePassword(values.password);
-        console.log(error);
         if (error) {
           setSeverity("error");
           setMessage(t("commun.error"));

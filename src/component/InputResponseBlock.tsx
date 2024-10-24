@@ -43,8 +43,10 @@ export const InputResponseBlock = ({
           const arrayString = res.map((el) => el.value[language.iso]);
           setResponses(arrayString);
         });
+      } else {
+        setResponses([]);
       }
-    }, 300);
+    }, 200);
     return () => clearTimeout(timer);
   }, [value, typeResponse, language, myresponse]);
 

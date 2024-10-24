@@ -8,12 +8,13 @@ import { Colors } from "src/style/Colors";
 
 import googleplay from "src/assets/google-play.png";
 
+export const urlGooglePlay =
+  "https://play.google.com/store/apps/details?id=app.web.quizup_v2.twa&hl=fr";
+export const urlPc = "https://quizbattle.fr";
+export const urlApple = "https://quizbattle.fr/installation";
+
 export default function InstallationPage() {
   const { t } = useTranslation();
-
-  const urlGooglePlay =
-    "https://play.google.com/store/apps/details?id=app.web.quizup_v2.twa&hl=fr";
-  const urlPc = "https://quizbattle.fr";
 
   return (
     <Grid container>
@@ -23,6 +24,42 @@ export default function InstallationPage() {
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={2} justifyContent="center">
+            <Grid item xs={12}>
+              <Typography variant="h4">{t("installation.apple")}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <StepBlock
+                number={1}
+                label={
+                  <Typography variant="body1" color="text.secondary">
+                    {t("installation.apple1")}
+                  </Typography>
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <StepBlock
+                number={2}
+                label={
+                  <Typography variant="body1" color="text.secondary">
+                    {t("installation.apple2")}
+                  </Typography>
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <StepBlock
+                number={3}
+                label={
+                  <Typography variant="body1" color="text.secondary">
+                    {t("installation.apple3")}
+                  </Typography>
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Divider sx={{ borderBottomWidth: 5 }} />
+            </Grid>
             <Grid item xs={12}>
               <Typography variant="h4">{t("installation.android")}</Typography>
             </Grid>
@@ -62,42 +99,6 @@ export default function InstallationPage() {
                   </Typography>
                 </Box>
               </Link>
-            </Grid>
-            <Grid item xs={12}>
-              <Divider sx={{ borderBottomWidth: 5 }} />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h4">{t("installation.apple")}</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <StepBlock
-                number={1}
-                label={
-                  <Typography variant="body1" color="text.secondary">
-                    {t("installation.apple1")}
-                  </Typography>
-                }
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <StepBlock
-                number={2}
-                label={
-                  <Typography variant="body1" color="text.secondary">
-                    {t("installation.apple2")}
-                  </Typography>
-                }
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <StepBlock
-                number={3}
-                label={
-                  <Typography variant="body1" color="text.secondary">
-                    {t("installation.apple3")}
-                  </Typography>
-                }
-              />
             </Grid>
             <Grid item xs={12}>
               <Divider sx={{ borderBottomWidth: 5 }} />

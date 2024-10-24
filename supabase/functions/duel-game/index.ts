@@ -127,6 +127,9 @@ const getNewQuestion = async (
   const previousIdQuestion = questions.reduce((acc, v) => {
     return v.id ? [...acc, v.id] : acc;
   }, []);
+  const previousQuestion =
+    questions.length > 0 ? questions[questions.length - 1].id : undefined;
+
   const isGenerate =
     theme.generatequestion !== null
       ? theme.generatequestion
@@ -135,14 +138,31 @@ const getNewQuestion = async (
     question = generateQuestion(Number(theme.id), true);
     response = question.response;
   } else {
-    const res = await supabase
+    let query = supabase
       .from("randomquestion")
       .select("*, theme(*)")
       .eq("theme", theme.id)
-      .not("id", "in", `(${previousIdQuestion})`)
-      .limit(1)
-      .maybeSingle();
-    console.log(res);
+      .not("id", "in", `(${previousIdQuestion})`);
+    let result = undefined;
+    if (previousQuestion !== undefined) {
+      const respreviousresponse = await supabase
+        .from("question")
+        .select("response")
+        .eq("id", previousQuestion)
+        .maybeSingle();
+
+      if (respreviousresponse.data !== null) {
+        const response = respreviousresponse.data.response["fr-FR"];
+        if (Array.isArray(response)) {
+          result = response[0];
+        } else {
+          result = response;
+        }
+        query = query.neq("response->fr-FR->>0", result);
+      }
+    }
+
+    const res = await query.limit(1).maybeSingle();
     question = res.data;
     let responsesQcm: Array<any> = [];
     question.isqcm = question.isqcm === null ? true : question.isqcm;

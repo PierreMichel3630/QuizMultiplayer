@@ -33,6 +33,8 @@ export const AvatarAccount = ({
 
 interface PropsAvatarAccountBadge {
   profile: Profile;
+  avatar?: string;
+  badge?: string;
   size?: number;
   color?: string;
   backgroundColor?: string;
@@ -41,26 +43,28 @@ interface PropsAvatarAccountBadge {
 
 export const AvatarAccountBadge = ({
   profile,
+  avatar,
+  badge,
   backgroundColor = Colors.white,
   size = 30,
   color,
   level,
 }: PropsAvatarAccountBadge) => {
-  return profile.badge ? (
+  return badge || profile.badge ? (
     <Badge
       overlap="circular"
       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       badgeContent={
         <Avatar
           sx={{ width: size / 2.5, height: size / 2.5 }}
-          src={profile.badge.icon}
+          src={badge ? badge : profile.badge!.icon}
         />
       }
     >
       <Box sx={{ position: "relative" }}>
         <Avatar
           alt="Avatar"
-          src={profile.avatar.icon}
+          src={avatar ? avatar : profile.avatar.icon}
           sx={{
             width: size,
             height: size,
@@ -76,7 +80,7 @@ export const AvatarAccountBadge = ({
               transform: "translate(-50%, -50%)",
             }}
           >
-            <BadgeLevel level={level} size={size / 2.5} />
+            <BadgeLevel level={level} size={size / 3} />
           </Box>
         )}
       </Box>
@@ -85,7 +89,7 @@ export const AvatarAccountBadge = ({
     <Box sx={{ position: "relative" }}>
       <Avatar
         alt="Avatar"
-        src={profile.avatar.icon}
+        src={avatar ? avatar : profile.avatar.icon}
         sx={{
           width: size,
           height: size,
@@ -101,7 +105,7 @@ export const AvatarAccountBadge = ({
             transform: "translate(-50%, -50%)",
           }}
         >
-          <BadgeLevel level={level} size={size / 2.5} />
+          <BadgeLevel level={level} size={size / 3} />
         </Box>
       )}
     </Box>

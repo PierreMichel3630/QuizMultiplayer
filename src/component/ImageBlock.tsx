@@ -1,5 +1,6 @@
-import { Box } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 import { percent, px } from "csx";
+import { useEffect, useState } from "react";
 
 interface Props {
   src: string;
@@ -7,6 +8,23 @@ interface Props {
 }
 
 export const ImageQuestionBlock = ({ src, border = false }: Props) => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const image = new Image();
+
+    image.onload = () => {
+      setIsLoading(false);
+    };
+
+    image.src = src;
+
+    return () => {
+      image.onload = () => {};
+    };
+  }, [src]);
+
   return (
     <Box
       sx={{
@@ -19,27 +37,42 @@ export const ImageQuestionBlock = ({ src, border = false }: Props) => {
         flex: "1 1 0",
       }}
     >
-      {border ? (
-        <img
-          src={src}
-          loading="lazy"
-          style={{
-            maxHeight: percent(90),
-            maxWidth: percent(90),
-            objectFit: "contain",
-            border: "1px solid white",
-          }}
-        />
+      {isLoading ? (
+        <>
+          <Skeleton
+            variant="rectangular"
+            sx={{ bgcolor: "grey.800" }}
+            width={"90%"}
+            height={200}
+          />
+        </>
       ) : (
-        <img
-          src={src}
-          loading="lazy"
-          style={{
-            height: percent(80),
-            width: percent(80),
-            objectFit: "contain",
-          }}
-        />
+        <>
+          {border ? (
+            <img
+              src={src}
+              data-src={src}
+              loading="lazy"
+              style={{
+                maxHeight: percent(90),
+                maxWidth: percent(90),
+                objectFit: "contain",
+                border: "1px solid white",
+              }}
+            />
+          ) : (
+            <img
+              src={src}
+              data-src={src}
+              loading="lazy"
+              style={{
+                height: percent(80),
+                width: percent(80),
+                objectFit: "contain",
+              }}
+            />
+          )}
+        </>
       )}
     </Box>
   );

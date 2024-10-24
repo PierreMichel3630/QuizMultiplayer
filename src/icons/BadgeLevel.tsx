@@ -4,9 +4,10 @@ import { Colors } from "src/style/Colors";
 
 interface Props {
   level: number;
+  fontSize?: number;
   size?: number;
 }
-export const BadgeLevel = ({ level, size = 50 }: Props) => (
+export const BadgeLevel = ({ level, fontSize = 18, size = 40 }: Props) => (
   <Box sx={{ position: "relative", width: px(size), height: px(size) }}>
     <Box
       sx={{
@@ -14,10 +15,10 @@ export const BadgeLevel = ({ level, size = 50 }: Props) => (
         position: "absolute",
         top: percent(50),
         left: percent(50),
-        transform: "translate(-50%, -60%)",
+        transform: "translate(-50%, -50%)",
       }}
     >
-      <Typography variant="h4" color="text.secondary">
+      <Typography variant="h4" color="text.secondary" sx={{ fontSize }}>
         {level}
       </Typography>
     </Box>
@@ -29,7 +30,7 @@ const LevelIcon = createSvgIcon(
   <svg
     width="106"
     height="121"
-    viewBox="0 0 106 121"
+    viewBox="5 5 93 93"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >

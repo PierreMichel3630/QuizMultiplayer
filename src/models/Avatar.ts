@@ -1,5 +1,12 @@
 export interface Avatar {
   id: number;
   icon: string;
-  available: boolean;
+  price: number;
+  isaccomplishment: boolean;
+}
+
+export interface AvatarProfile {
+  id: number;
+  profile: string;
+  avatar: Avatar;
 }

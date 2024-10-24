@@ -53,6 +53,7 @@ import { Score } from "src/models/Score";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import { getLevel } from "src/utils/calcul";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 
 export default function ThemePage() {
   const { t } = useTranslation();
@@ -234,6 +235,14 @@ export default function ThemePage() {
     if (uuid && id) {
       launchSoloGame(uuid, Number(id)).then(({ data }) => {
         navigate(`/solo/${data.uuid}`);
+      });
+    }
+  };
+
+  const playYtShort = () => {
+    if (uuid && id) {
+      launchSoloGame(uuid, Number(id)).then(({ data }) => {
+        navigate(`/ytshort/${data.uuid}`);
       });
     }
   };
@@ -477,6 +486,19 @@ export default function ThemePage() {
                               variant="contained"
                             />
                           </Grid>
+
+                          {profile && profile.isadmin && (
+                            <Grid item xs={12}>
+                              <ButtonColor
+                                size="small"
+                                value={Colors.orange}
+                                label={t("commun.ytshort")}
+                                icon={YouTubeIcon}
+                                onClick={() => playYtShort()}
+                                variant="contained"
+                              />
+                            </Grid>
+                          )}
                           <Grid item xs={12}>
                             <ButtonColor
                               size="small"

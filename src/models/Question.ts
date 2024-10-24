@@ -1,3 +1,4 @@
+import { Point } from "react-simple-maps";
 import {
   JsonLanguage,
   JsonLanguageArray,
@@ -35,7 +36,9 @@ export interface Question {
   }>;
   data: null | {
     code: string;
-    map: string;
+    property: string;
+    zoom: number;
+    coordinates: Point;
   };
 }
 
@@ -127,7 +130,9 @@ export interface QuestionSolo {
   typeResponse: string;
   data: null | {
     code: string;
-    map: string;
+    property: string;
+    zoom: number;
+    coordinates: Point;
   };
 }
 
@@ -152,7 +157,9 @@ export interface QuestionTraining {
   allresponse: boolean;
   data: null | {
     code: string;
-    map: string;
+    property: string;
+    zoom: number;
+    coordinates: Point;
   };
 }
 
@@ -172,6 +179,8 @@ export interface QuestionDuel {
   }>;
   data: null | {
     code: string;
-    map: string;
+    property: string;
+    zoom: number;
+    coordinates: Point;
   };
 }

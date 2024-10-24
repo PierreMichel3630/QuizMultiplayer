@@ -6,6 +6,8 @@ import {
   Divider,
   Grid,
   Skeleton,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from "@mui/material";
 import { percent, px } from "csx";
@@ -16,6 +18,7 @@ import { selectScore } from "src/api/score";
 import rank1 from "src/assets/rank/rank1.png";
 import rank2 from "src/assets/rank/rank2.png";
 import rank3 from "src/assets/rank/rank3.png";
+import { ClassementScoreEnum } from "src/models/enum/ClassementEnum";
 import { Score } from "src/models/Score";
 import { Colors } from "src/style/Colors";
 import { AvatarAccount } from "./avatar/AvatarAccount";
@@ -31,18 +34,48 @@ export const RankingBlock = ({ themes }: Props) => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [scores, setScores] = useState<Array<Score>>([]);
+  const [tab, setTab] = useState(ClassementScoreEnum.points);
+
+  const options = useMemo(
+    () => [
+      {
+        label: t("commun.solo"),
+        value: ClassementScoreEnum.points,
+      },
+      {
+        label: t("commun.duel"),
+        value: ClassementScoreEnum.rank,
+      },
+    ],
+    [t]
+  );
 
   useEffect(() => {
     const getRank = () => {
       setIsLoading(true);
       const ids = themes ? themes : [];
-      selectScore("points", 0, 3, ids).then(({ data }) => {
+      selectScore(tab, 0, 3, ids).then(({ data }) => {
         setScores(data as Array<Score>);
         setIsLoading(false);
       });
     };
     getRank();
-  }, [themes]);
+  }, [themes, tab]);
+
+  const score0 = useMemo(
+    () => (scores.length > 0 ? scores[0] : undefined),
+    [scores]
+  );
+
+  const score1 = useMemo(
+    () => (scores.length > 1 ? scores[1] : undefined),
+    [scores]
+  );
+
+  const score2 = useMemo(
+    () => (scores.length > 2 ? scores[2] : undefined),
+    [scores]
+  );
 
   return (
     <Grid container spacing={1}>
@@ -68,12 +101,38 @@ export const RankingBlock = ({ themes }: Props) => {
           }}
           color="secondary"
           size="small"
-          onClick={() => navigate(`/ranking?sort=points`)}
+          onClick={() => navigate(`/ranking?sort=${tab}`)}
         >
           <Typography variant="h6" noWrap>
             {t("commun.seeall")}
           </Typography>
         </Button>
+      </Grid>
+      <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+        <ToggleButtonGroup
+          color="primary"
+          value={tab}
+          exclusive
+          onChange={(
+            _event: React.MouseEvent<HTMLElement>,
+            newValue: string
+          ) => {
+            setTab(newValue as ClassementScoreEnum);
+          }}
+          aria-label="typegame"
+        >
+          {options.map((option) => (
+            <ToggleButton
+              key={option.value}
+              value={option.value}
+              sx={{ p: "2px 8px" }}
+            >
+              <Typography variant="h6" noWrap>
+                {option.label}
+              </Typography>
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
       </Grid>
       <Grid item xs={12}>
         {isLoading ? (
@@ -86,19 +145,19 @@ export const RankingBlock = ({ themes }: Props) => {
           <Box>
             <Container maxWidth="sm">
               <Grid container spacing={1}>
-                {scores[1] && (
+                {score1 && (
                   <Grid item xs={4} sx={{ display: "flex" }}>
-                    <RankingGame score={scores[1]} rank={2} />
+                    <RankingGame score={score1} rank={2} value={score1[tab]} />
                   </Grid>
                 )}
-                {scores[0] && (
+                {score0 && (
                   <Grid item xs={4} sx={{ display: "flex" }}>
-                    <RankingGame score={scores[0]} rank={1} />
+                    <RankingGame score={score0} rank={1} value={score0[tab]} />
                   </Grid>
                 )}
-                {scores[2] && (
+                {score2 && (
                   <Grid item xs={4} sx={{ display: "flex" }}>
-                    <RankingGame score={scores[2]} rank={3} />
+                    <RankingGame score={score2} rank={3} value={score2[tab]} />
                   </Grid>
                 )}
               </Grid>
@@ -116,8 +175,9 @@ export const RankingBlock = ({ themes }: Props) => {
 interface PropsRankingGame {
   score: Score;
   rank: number;
+  value: number;
 }
-const RankingGame = ({ score, rank }: PropsRankingGame) => {
+const RankingGame = ({ score, rank, value }: PropsRankingGame) => {
   const rankCss = useMemo(() => {
     let color = Colors.grey4;
     let icon = (
@@ -219,7 +279,7 @@ const RankingGame = ({ score, rank }: PropsRankingGame) => {
             />
           </Link>
           <Typography variant="h2" color="text.secondary" component="span">
-            {score.points}
+            {value}
           </Typography>
         </Box>
       </Box>

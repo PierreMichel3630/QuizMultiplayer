@@ -1,5 +1,6 @@
 import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
+import { Banner } from "./Banner";
 import { JsonLanguage } from "./Language";
 import { Profile } from "./Profile";
 import { Title } from "./Title";
@@ -10,6 +11,7 @@ export interface Accomplishment {
   title: Title | null;
   badge: Badge | null;
   avatar: Avatar | null;
+  banner: Banner | null;
   value: number;
   champ: string;
   type: string;

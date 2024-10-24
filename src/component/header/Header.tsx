@@ -13,7 +13,6 @@ import { useTranslation } from "react-i18next";
 import logo from "src/assets/logo.svg";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { AccountMenu } from "./AccountMenu";
-import { LanguagesMenu } from "./LanguageMenu";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { SoundMenu } from "./SoundMenu";
@@ -55,7 +54,7 @@ export const Header = () => {
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
               <SoundMenu />
-              <LanguagesMenu />
+              {/*<LanguagesMenu />*/}
               {user ? (
                 <AccountMenu user={user} />
               ) : (

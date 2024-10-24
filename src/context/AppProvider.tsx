@@ -10,7 +10,7 @@ import {
   selectAccomplishment,
   selectAccomplishmentByProfile,
 } from "src/api/accomplishment";
-import { selectAvatar } from "src/api/avatar";
+import { selectAvatar, selectAvatarByProfile } from "src/api/avatar";
 import { selectBadgeByProfile, selectBadges } from "src/api/badge";
 import { selectCategories } from "src/api/category";
 import { selectCountries } from "src/api/country";
@@ -23,7 +23,7 @@ import {
   Accomplishment,
   ProfileAccomplishment,
 } from "src/models/Accomplishment";
-import { Avatar } from "src/models/Avatar";
+import { Avatar, AvatarProfile } from "src/models/Avatar";
 import { Badge, BadgeProfile } from "src/models/Badge";
 import { Category, CategoryWithThemes } from "src/models/Category";
 import { Country } from "src/models/Country";
@@ -35,6 +35,8 @@ import { Title, TitleProfile } from "src/models/Title";
 import { sortByName } from "src/utils/sort";
 import { useAuth } from "./AuthProviderSupabase";
 import { useUser } from "./UserProvider";
+import { Banner, BannerProfile } from "src/models/Banner";
+import { selectBannerByProfile, selectBanners } from "src/api/banner";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[];
@@ -60,10 +62,16 @@ const AppContext = createContext<{
   getMyAccomplishments: () => void;
   avatars: Array<Avatar>;
   getAvatars: () => void;
+  myavatars: Array<Avatar>;
+  getMyAvatars: () => void;
   badges: Array<Badge>;
   getBadges: () => void;
   mybadges: Array<Badge>;
   getMyBadges: () => void;
+  banners: Array<Banner>;
+  getBanners: () => void;
+  mybanners: Array<Banner>;
+  getMyBanners: () => void;
   titles: Array<Title>;
   getTitles: () => void;
   mytitles: Array<Title>;
@@ -91,10 +99,16 @@ const AppContext = createContext<{
   getMyAccomplishments: () => {},
   avatars: [],
   getAvatars: () => {},
+  myavatars: [],
+  getMyAvatars: () => {},
   badges: [],
   getBadges: () => {},
   mybadges: [],
   getMyBadges: () => {},
+  banners: [],
+  getBanners: () => {},
+  mybanners: [],
+  getMyBanners: () => {},
   titles: [],
   getTitles: () => {},
   mytitles: [],
@@ -113,8 +127,11 @@ export const AppProvider = ({ children }: Props) => {
   const [nbQuestions, setNbQuestions] = useState<undefined | number>(undefined);
   const [nbThemes, setNbThemes] = useState<undefined | number>(undefined);
   const [avatars, setAvatars] = useState<Array<Avatar>>([]);
+  const [myavatars, setMyAvatars] = useState<Array<Avatar>>([]);
   const [badges, setBadges] = useState<Array<Badge>>([]);
   const [mybadges, setMyBadges] = useState<Array<Badge>>([]);
+  const [banners, setBanners] = useState<Array<Banner>>([]);
+  const [mybanners, setMybanners] = useState<Array<Banner>>([]);
   const [titles, setTitles] = useState<Array<Title>>([]);
   const [mytitles, setMyTitles] = useState<Array<Title>>([]);
   const [friends, setFriends] = useState<Array<Friend>>([]);
@@ -232,6 +249,13 @@ export const AppProvider = ({ children }: Props) => {
     });
   };
 
+  const getBanners = () => {
+    selectBanners().then(({ data }) => {
+      const value = data !== null ? (data as Array<Banner>) : [];
+      setBanners(value);
+    });
+  };
+
   const getCountries = () => {
     selectCountries().then(({ data }) => {
       const value = data !== null ? (data as Array<Country>) : [];
@@ -265,6 +289,32 @@ export const AppProvider = ({ children }: Props) => {
   useEffect(() => {
     getMyBadges();
   }, [getMyBadges, user]);
+
+  const getMyAvatars = useCallback(() => {
+    if (user) {
+      selectAvatarByProfile(user.id).then(({ data }) => {
+        const res = data !== null ? (data as Array<AvatarProfile>) : [];
+        setMyAvatars(res.map((el) => el.avatar));
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    getMyAvatars();
+  }, [getMyAvatars, user]);
+
+  const getMyBanners = useCallback(() => {
+    if (user) {
+      selectBannerByProfile(user.id).then(({ data }) => {
+        const res = data !== null ? (data as Array<BannerProfile>) : [];
+        setMybanners(res.map((el) => el.banner));
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    getMyBanners();
+  }, [getMyBanners, user]);
 
   const getMyTitles = useCallback(() => {
     if (user) {
@@ -302,6 +352,7 @@ export const AppProvider = ({ children }: Props) => {
     getBadges();
     getTitles();
     getFriends();
+    getBanners();
   }, [getFriends, getThemes]);
 
   return (
@@ -327,10 +378,16 @@ export const AppProvider = ({ children }: Props) => {
         getMyAccomplishments,
         avatars,
         getAvatars,
+        myavatars,
+        getMyAvatars,
         badges,
         getBadges,
         mybadges,
         getMyBadges,
+        banners,
+        getBanners,
+        mybanners,
+        getMyBanners,
         titles,
         getTitles,
         mytitles,

@@ -3,6 +3,7 @@ import { FilterGame } from "src/pages/HistoryGamePage";
 import { supabase } from "./supabase";
 import { ConfigTraining } from "src/pages/play/ConfigTrainingPage";
 
+export const SUPABASE_PREVIOUSTHEMES_TABLE = "previousthemes";
 export const SUPABASE_HISTORYGAMES_TABLE = "historygames";
 
 export const SUPABASE_RESPONSESOLOGAME_FUNCTION = "response-solo-game";
@@ -131,7 +132,7 @@ export const selectDuelGameById = (uuid: string) =>
   supabase
     .from(SUPABASE_DUELGAME_TABLE)
     .select(
-      "*, player1(*, avatar(*), title(*), badge(*)), player2(*, avatar(*), title(*), badge(*)), theme!public_duelgame_theme_fkey(*)"
+      "*, player1(*, avatar(*), title(*), badge(*), banner(*)), player2(*, avatar(*), title(*), badge(*), banner(*)), theme!public_duelgame_theme_fkey(*)"
     )
     .eq("uuid", uuid)
     .maybeSingle();
@@ -157,6 +158,14 @@ export const matchmakingDuelGame = (player: string, theme: number) =>
   });
 
 // HISTORY
+
+export const selectLastXThemeByPlayer = (player: string, x: number) => {
+  return supabase
+    .from(SUPABASE_PREVIOUSTHEMES_TABLE)
+    .select("*")
+    .eq("player", player)
+    .limit(x);
+};
 
 export const selectGamesByPlayer = (
   filter: FilterGame,

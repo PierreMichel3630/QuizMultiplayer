@@ -1,4 +1,5 @@
 import { Box, Grid, Typography } from "@mui/material";
+import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function ConfidentialityPage() {
@@ -33,22 +34,22 @@ export default function ConfidentialityPage() {
         <Grid item xs={12} sx={{ textAlign: "center" }}>
           <Typography variant="h1">{t("confidentiality.title")}</Typography>
         </Grid>
-        {chartes.map((el) => (
-          <>
+        {chartes.map((el, index) => (
+          <Fragment key={index}>
             <Grid item xs={12}>
               <Typography variant="h2">{el.title}</Typography>
             </Grid>
-            {el.rules.map((rule) => (
-              <>
+            {el.rules.map((rule, i) => (
+              <Fragment key={i}>
                 <Grid item xs={12}>
                   <Typography variant="h4">{t(`${rule}.title`)}</Typography>
                 </Grid>
                 <Grid item xs={12}>
                   <Typography variant="body1">{t(`${rule}.text`)}</Typography>
                 </Grid>
-              </>
+              </Fragment>
             ))}
-          </>
+          </Fragment>
         ))}
       </Grid>
     </Box>

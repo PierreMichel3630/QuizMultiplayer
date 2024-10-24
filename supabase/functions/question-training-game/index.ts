@@ -57,6 +57,8 @@ Deno.serve(async (req) => {
     }
     const questions = data.questions;
     const previousIdQuestion = questions.map((el) => el.id).join(",");
+    const previousQuestion =
+      questions.length > 0 ? questions[questions.length - 1].id : undefined;
 
     let response = undefined;
 
@@ -85,6 +87,24 @@ Deno.serve(async (req) => {
         query = query.or("isqcm.is.true,isqcm.is.null");
       } else if (config.inputquestion && !config.qcmquestion) {
         query = query.or("isqcm.is.false,isqcm.is.null");
+      }
+      let result = undefined;
+      if (previousQuestion !== undefined) {
+        const respreviousresponse = await supabase
+          .from("question")
+          .select("response")
+          .eq("id", previousQuestion)
+          .maybeSingle();
+
+        if (respreviousresponse.data !== null) {
+          const response = respreviousresponse.data.response["fr-FR"];
+          if (Array.isArray(response)) {
+            result = response[0];
+          } else {
+            result = response;
+          }
+          query = query.neq("response->fr-FR->>0", result);
+        }
       }
 
       const { data } = await query.limit(1).maybeSingle();

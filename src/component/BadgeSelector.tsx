@@ -1,4 +1,4 @@
-import { Avatar, Box, Grid } from "@mui/material";
+import { Avatar, Box, Grid, Typography } from "@mui/material";
 import { useMemo } from "react";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
@@ -6,10 +6,12 @@ import { Badge } from "src/models/Badge";
 
 import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
-import { percent, viewHeight } from "csx";
+import { percent, px } from "csx";
 import { Link } from "react-router-dom";
 import { Colors } from "src/style/Colors";
 import { sortByUnlock } from "src/utils/sort";
+import { MoneyBlock } from "./MoneyBlock";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   onSelect: (value: Badge) => void;
@@ -18,33 +20,42 @@ interface Props {
 export const BadgeSelector = ({ onSelect }: Props) => {
   const { profile } = useAuth();
   const { badges, mybadges } = useApp();
+  const { t } = useTranslation();
 
-  const badgesUnlock = useMemo(() => {
+  const badgesVerify = useMemo(() => {
     const idUnlock = mybadges.map((el) => el.id);
     return [...badges]
       .map((badge) => ({
         ...badge,
-        unlock: idUnlock.includes(badge.id),
+        unlock:
+          badge.isaccomplishment || badge.price > 0
+            ? idUnlock.includes(badge.id)
+            : true,
       }))
       .sort(sortByUnlock);
   }, [mybadges, badges]);
 
-  return (
-    <Grid
-      container
-      spacing={1}
-      justifyContent="center"
-      sx={{ maxHeight: viewHeight(20), overflowX: "scroll" }}
-    >
-      {badgesUnlock.map((badge) => {
-        const isSelect =
-          profile && profile.badge && profile.badge.id === badge.id;
+  const badgesUnlock = useMemo(
+    () => [...badgesVerify].filter((el) => el.unlock),
+    [badgesVerify]
+  );
 
-        return (
-          <Grid item key={badge.id}>
-            <Box sx={{ position: "relative" }}>
-              {badge.unlock ? (
-                <>
+  const badgesLock = useMemo(
+    () => [...badgesVerify].filter((el) => !el.unlock),
+    [badgesVerify]
+  );
+
+  return (
+    <Grid container spacing={1}>
+      <Grid item xs={12}>
+        <Grid container spacing={1} justifyContent="center">
+          {badgesUnlock.map((badge) => {
+            const isSelect =
+              profile && profile.badge && profile.badge.id === badge.id;
+
+            return (
+              <Grid item key={badge.id}>
+                <Box sx={{ position: "relative" }}>
                   {isSelect && (
                     <CheckCircleTwoToneIcon
                       sx={{
@@ -68,38 +79,78 @@ export const BadgeSelector = ({ onSelect }: Props) => {
                     src={badge.icon}
                     onClick={() => onSelect(badge)}
                   />
-                </>
-              ) : (
-                <Link to={`/badge/${badge.id}`}>
-                  <Avatar
-                    sx={{
-                      width: 70,
-                      height: 70,
-                      opacity: 0.85,
-                    }}
-                    src={badge.icon}
-                  />
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: percent(50),
-                      left: percent(50),
-                      transform: "translate(-50%, -50%)",
+                </Box>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Grid>
+      <Grid item xs={12}>
+        <Grid container spacing={1} justifyContent="center">
+          {badgesLock.map((badge) => {
+            return (
+              <Grid item key={badge.id}>
+                <Box sx={{ position: "relative" }}>
+                  <Link
+                    to={`/badge/${badge.id}`}
+                    style={{
+                      textDecoration: "none",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: px(3),
+                      alignItems: "center",
                     }}
                   >
-                    <LockTwoToneIcon
+                    <Avatar
                       sx={{
-                        fontSize: 40,
-                        color: Colors.grey4,
+                        width: 70,
+                        height: 70,
                       }}
+                      src={badge.icon}
                     />
-                  </Box>
-                </Link>
-              )}
-            </Box>
-          </Grid>
-        );
-      })}
+                    {badge.price > 0 ? (
+                      <Box
+                        sx={{
+                          backgroundColor: Colors.grey4,
+                          p: "2px 5px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          borderRadius: px(5),
+                        }}
+                      >
+                        <MoneyBlock money={badge.price} variant="h6" />
+                      </Box>
+                    ) : (
+                      <Box
+                        sx={{
+                          backgroundColor: Colors.grey4,
+                          p: px(2),
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          borderRadius: px(5),
+                          maxWidth: px(80),
+                        }}
+                      >
+                        <LockTwoToneIcon
+                          sx={{
+                            fontSize: 20,
+                            color: Colors.black,
+                          }}
+                        />
+                        <Typography variant="caption" color="text.secondary">
+                          {t("commun.unlockaccomplishments")}
+                        </Typography>
+                      </Box>
+                    )}
+                  </Link>
+                </Box>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Grid>
     </Grid>
   );
 };

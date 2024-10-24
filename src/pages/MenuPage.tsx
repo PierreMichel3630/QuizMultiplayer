@@ -41,6 +41,7 @@ import { FRIENDSTATUS } from "src/models/Friend";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { getLevel } from "src/utils/calcul";
+import { MoneyBlock } from "src/component/MoneyBlock";
 
 interface Menu {
   value: string;
@@ -226,8 +227,12 @@ export default function MenuPage() {
           <Box
             sx={{
               p: 1,
-              backgroundColor: Colors.blue3,
-              backgroundImage: `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
+              backgroundImage:
+                profile && profile.banner
+                  ? `url("/banner/${profile.banner.icon}")`
+                  : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
               position: "relative",
               width: percent(100),
             }}
@@ -260,6 +265,19 @@ export default function MenuPage() {
                   />
                 )}
               </Grid>
+              {profile && (
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    color: "white",
+                  }}
+                >
+                  <MoneyBlock money={profile.money} />
+                </Grid>
+              )}
               {profile.country && (
                 <Grid
                   item

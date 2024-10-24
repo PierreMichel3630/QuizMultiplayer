@@ -1,24 +1,77 @@
 import { Box } from "@mui/material";
 import { percent } from "csx";
 import { useEffect, useRef, useState } from "react";
-import { ComposableMap, Geographies, Geography } from "react-simple-maps";
+import {
+  ComposableMap,
+  Geographies,
+  Geography,
+  Point,
+  ZoomableGroup,
+} from "react-simple-maps";
+import { Colors } from "src/style/Colors";
+import mapWorld from "src/assets/map/countries-50m.json";
+
+interface Position {
+  coordinates: Point;
+  zoom: number;
+}
 
 interface Props {
-  code: string;
-  url: string;
+  data: {
+    code: string;
+    property: string;
+    zoom: number;
+    coordinates: Point;
+  };
   width?: number;
   height?: number;
 }
 
-export const MapPositionBlock = ({ url, code, width, height }: Props) => {
+export const MapPositionBlock = ({ data, width, height }: Props) => {
   const refMap = useRef<HTMLDivElement | null>(null);
   const [heightCalculate, setHeightCalculate] = useState<number | undefined>(
     undefined
   );
+  const [strokeWidth, setStrokeWidth] = useState(10000);
 
   useEffect(() => {
     if (refMap.current) setHeightCalculate(refMap.current.clientHeight);
   }, [refMap]);
+  const [position, setPosition] = useState<Position>({
+    coordinates: data.coordinates,
+    zoom: data.zoom,
+  });
+
+  useEffect(() => {
+    let newStroke = 100;
+    if (position.zoom >= 3 && position.zoom < 5) {
+      newStroke = 70;
+    } else if (position.zoom >= 5 && position.zoom < 10) {
+      newStroke = 50;
+    } else if (position.zoom >= 10 && position.zoom < 20) {
+      newStroke = 30;
+    } else if (position.zoom >= 20 && position.zoom < 40) {
+      newStroke = 10;
+    } else if (position.zoom >= 40 && position.zoom < 80) {
+      newStroke = 5;
+    } else if (position.zoom >= 80 && position.zoom < 100) {
+      newStroke = 2;
+    } else if (position.zoom >= 100) {
+      newStroke = 1;
+    }
+    setStrokeWidth(newStroke);
+  }, [position.zoom]);
+
+  useEffect(() => {
+    setPosition({
+      coordinates: data.coordinates,
+      zoom: data.zoom,
+    });
+  }, [data]);
+
+  const handleMoveEnd = (position: Position) => {
+    setPosition(position);
+  };
 
   return height !== undefined ? (
     <Box
@@ -34,32 +87,55 @@ export const MapPositionBlock = ({ url, code, width, height }: Props) => {
       ref={refMap}
     >
       <ComposableMap
-        projection="geoAzimuthalEqualArea"
+        projection="geoMercator"
         projectionConfig={{
-          rotate: [-10.0, -53.0, 0],
-          scale: height + 100,
+          scale: 15000,
         }}
-        width={
-          width ? width : window.innerWidth > 884 ? 884 : window.innerWidth
-        }
-        height={height}
+        style={{
+          backgroundColor: Colors.lightgrey,
+          height: percent(100),
+          width: percent(100),
+        }}
+        width={80000}
+        height={60000}
+        fill="transparent"
+        stroke="white"
+        strokeWidth={strokeWidth}
       >
-        <Geographies geography={url}>
-          {({ geographies }) =>
-            geographies.map((geo) => {
-              const isCountry = geo.properties.ISO_A3 === code;
-              return (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  fill={isCountry ? "#ff1744" : "#FFF"}
-                  stroke="#616161"
-                  strokeWidth={1}
-                />
-              );
-            })
-          }
-        </Geographies>
+        <ZoomableGroup
+          maxZoom={200}
+          zoom={position.zoom}
+          center={position.coordinates}
+          onMoveEnd={handleMoveEnd}
+        >
+          <Geographies geography={mapWorld}>
+            {({ geographies }) =>
+              geographies.map((geo) => {
+                const isCountry = geo.properties["alpha3"] === data.code;
+                return (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    fill={isCountry ? "#ff1744" : Colors.grey5}
+                    stroke="#FFF"
+                    strokeWidth={1}
+                    style={{
+                      default: {
+                        outline: "none",
+                      },
+                      hover: {
+                        outline: "none",
+                      },
+                      pressed: {
+                        outline: "none",
+                      },
+                    }}
+                  />
+                );
+              })
+            }
+          </Geographies>
+        </ZoomableGroup>
       </ComposableMap>
     </Box>
   ) : (
@@ -76,32 +152,55 @@ export const MapPositionBlock = ({ url, code, width, height }: Props) => {
     >
       {heightCalculate && (
         <ComposableMap
-          projection="geoAzimuthalEqualArea"
+          projection="geoMercator"
           projectionConfig={{
-            rotate: [-10.0, -53.0, 0],
-            scale: heightCalculate + 100,
+            scale: 15000,
           }}
-          width={
-            width ? width : window.innerWidth > 884 ? 884 : window.innerWidth
-          }
-          height={height ? height : heightCalculate}
+          style={{
+            backgroundColor: Colors.lightgrey,
+            height: percent(100),
+            width: percent(100),
+          }}
+          width={80000}
+          height={60000}
+          fill="transparent"
+          stroke="white"
+          strokeWidth={strokeWidth}
         >
-          <Geographies geography={url}>
-            {({ geographies }) =>
-              geographies.map((geo) => {
-                const isCountry = geo.properties.ISO_A3 === code;
-                return (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    fill={isCountry ? "#ff1744" : "#FFF"}
-                    stroke="#616161"
-                    strokeWidth={2}
-                  />
-                );
-              })
-            }
-          </Geographies>
+          <ZoomableGroup
+            maxZoom={200}
+            zoom={position.zoom}
+            center={position.coordinates}
+            onMoveEnd={handleMoveEnd}
+          >
+            <Geographies geography={mapWorld}>
+              {({ geographies }) =>
+                geographies.map((geo) => {
+                  const isCountry = geo.properties["alpha3"] === data.code;
+                  return (
+                    <Geography
+                      key={geo.rsmKey}
+                      geography={geo}
+                      fill={isCountry ? "#ff1744" : Colors.grey5}
+                      stroke="#FFF"
+                      strokeWidth={1}
+                      style={{
+                        default: {
+                          outline: "none",
+                        },
+                        hover: {
+                          outline: "none",
+                        },
+                        pressed: {
+                          outline: "none",
+                        },
+                      }}
+                    />
+                  );
+                })
+              }
+            </Geographies>
+          </ZoomableGroup>
         </ComposableMap>
       )}
     </Box>

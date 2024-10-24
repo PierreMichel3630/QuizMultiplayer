@@ -25,12 +25,21 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
     [question]
   );
 
+  const isImage = useMemo(
+    () =>
+      question
+        ? question.typequestion === "IMAGE" &&
+          question.responses.length % 2 !== 0
+        : false,
+    [question]
+  );
+
   return (
     <Box
       sx={{
         width: percent(100),
-        flexGrow: 1,
-        flex: "1 1 0",
+        flexGrow: isImage ? "initial" : 1,
+        flex: isImage ? "initial" : "1 1 0",
         display: "flex",
         minHeight: 0,
         flexDirection: "column",
@@ -63,12 +72,7 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
             </Box>
           )}
           {question.typequestion === "MAPPOSITION" &&
-            question.data !== null && (
-              <MapPositionBlock
-                code={question.data.code}
-                url={question.data.map}
-              />
-            )}
+            question.data !== null && <MapPositionBlock data={question.data} />}
           {question.audio && <SoundBar />}
           {question.extra && (
             <JsonLanguageBlock
@@ -111,14 +115,22 @@ export const QuestionTrainingBlock = ({ question }: PropsTraining) => {
     [question]
   );
 
+  const isImage = useMemo(
+    () =>
+      question
+        ? question.typequestion === "IMAGE" &&
+          question.responses.length % 2 !== 0
+        : false,
+    [question]
+  );
+
   return (
     <Box
       sx={{
         width: percent(100),
-        flexGrow: 1,
-        flex: "1 1 0",
+        flexGrow: isImage ? "initial" : 1,
+        flex: isImage ? "initial" : "1 1 0",
         display: "flex",
-        minHeight: 0,
         flexDirection: "column",
         alignItems: "center",
         textAlign: "center",
@@ -149,12 +161,7 @@ export const QuestionTrainingBlock = ({ question }: PropsTraining) => {
             </Box>
           )}
           {question.typequestion === "MAPPOSITION" &&
-            question.data !== null && (
-              <MapPositionBlock
-                code={question.data.code}
-                url={question.data.map}
-              />
-            )}
+            question.data !== null && <MapPositionBlock data={question.data} />}
           {question.audio && <SoundBar />}
           {question.extra && (
             <JsonLanguageBlock
@@ -188,12 +195,22 @@ export const QuestionDuelBlock = ({ question }: PropsDuel) => {
     () => (question ? hasBorderImage(question.theme.id) : false),
     [question]
   );
+
+  const isImage = useMemo(
+    () =>
+      question
+        ? question.typequestion === "IMAGE" &&
+          question.responses.length % 2 !== 0
+        : false,
+    [question]
+  );
+
   return (
     <Box
       sx={{
         width: percent(100),
-        flexGrow: 1,
-        flex: "1 1 0",
+        flexGrow: isImage ? "initial" : 1,
+        flex: isImage ? "initial" : "1 1 0",
         display: "flex",
         minHeight: 0,
         flexDirection: "column",
@@ -237,12 +254,7 @@ export const QuestionDuelBlock = ({ question }: PropsDuel) => {
             </Box>
           )}
           {question.typequestion === "MAPPOSITION" &&
-            question.data !== null && (
-              <MapPositionBlock
-                code={question.data.code}
-                url={question.data.map}
-              />
-            )}
+            question.data !== null && <MapPositionBlock data={question.data} />}
           {question.audio && <SoundBar />}
         </>
       ) : (

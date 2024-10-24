@@ -36,7 +36,7 @@ export const ModesBlock = ({ summary = false }: Props) => {
       goal: t("modes.mode2.goal"),
       explain: t("modes.mode2.explain"),
     },
-    /*{
+    {
       color: Colors.blue2,
       icon: (
         <SupervisedUserCircleRoundedIcon
@@ -47,7 +47,7 @@ export const ModesBlock = ({ summary = false }: Props) => {
       title: t("modes.mode3.title"),
       goal: t("modes.mode3.goal"),
       explain: t("modes.mode3.explain"),
-    },*/
+    },
     {
       color: Colors.purple,
       icon: <FitnessCenterIcon fontSize="large" sx={{ color: Colors.white }} />,

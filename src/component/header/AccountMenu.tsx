@@ -1,6 +1,7 @@
 import {
   Box,
   Divider,
+  Grid,
   ListItemIcon,
   ListItemText,
   Menu,
@@ -15,9 +16,13 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import BrushIcon from "@mui/icons-material/Brush";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import ImageIcon from "@mui/icons-material/Image";
 import LogoutIcon from "@mui/icons-material/Logout";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+import ReportIcon from "@mui/icons-material/Report";
 import SettingsIcon from "@mui/icons-material/Settings";
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import { User } from "@supabase/supabase-js";
 import { important, px } from "csx";
 import { useTranslation } from "react-i18next";
@@ -26,10 +31,6 @@ import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { AvatarAccount } from "../avatar/AvatarAccount";
-import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
-import ReportIcon from "@mui/icons-material/Report";
-import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
-import ImageIcon from "@mui/icons-material/Image";
 
 const divCss = style({
   display: "flex",
@@ -193,10 +194,16 @@ export const AccountMenu = ({ user }: Props) => {
               <div className={divCss}>
                 <AvatarAccount avatar={profile.avatar.icon} size={50} />
                 <div>
-                  {profile && (
-                    <Typography variant="h6">{profile.username}</Typography>
-                  )}
-                  <Typography variant="caption">{user.email}</Typography>
+                  <Grid container sx={{ gap: px(2) }}>
+                    {profile && (
+                      <Grid item xs={12}>
+                        <Typography variant="h6">{profile.username}</Typography>
+                      </Grid>
+                    )}
+                    <Grid item xs={12}>
+                      <Typography variant="caption">{user.email}</Typography>
+                    </Grid>
+                  </Grid>
                 </div>
               </div>
             </MenuItem>

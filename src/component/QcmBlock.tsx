@@ -102,7 +102,10 @@ export const QcmResponseBlock = ({
     [question]
   );
 
-  const isTypeImage = useMemo(() => question.type === "IMAGE", [question.type]);
+  const isTypeImage = useMemo(
+    () => question.typequestion === "IMAGE",
+    [question.typequestion]
+  );
 
   return (
     <Box
@@ -242,7 +245,10 @@ export const QcmResponseTrainingBlock = ({
     [question]
   );
 
-  const isTypeImage = useMemo(() => question.type === "IMAGE", [question.type]);
+  const isTypeImage = useMemo(
+    () => question.typequestion === "IMAGE",
+    [question.typequestion]
+  );
 
   return (
     <Box
@@ -388,7 +394,10 @@ export const QcmBlockDuelBlock = ({
     [question]
   );
 
-  const isTypeImage = useMemo(() => question.type === "IMAGE", [question.type]);
+  const isTypeImage = useMemo(
+    () => question.typequestion === "IMAGE",
+    [question.typequestion]
+  );
 
   return (
     <Box
@@ -440,16 +449,18 @@ export const QcmBlockDuelBlock = ({
           color = responseAdv.result ? Colors.green : Colors.red;
         }
 
-        const isAnswer = isMyAnswer || isAnswerAdv;
+        const isAnswer = hasAnswer && (isMyAnswer || isAnswerAdv);
         const isArrowRight =
-          (isPlayer1 && isMyAnswer) || (!isPlayer1 && isAnswerAdv && hasAnswer);
+          hasAnswer &&
+          ((isPlayer1 && isMyAnswer) || (!isPlayer1 && isAnswerAdv));
         const isArrowLeft =
-          (!isPlayer1 && isMyAnswer) || (isPlayer1 && isAnswerAdv && hasAnswer);
+          hasAnswer &&
+          ((!isPlayer1 && isMyAnswer) || (isPlayer1 && isAnswerAdv));
 
         return (
           <Paper
             sx={{
-              p: isTypeImage && !isAnswer ? 0 : "4px 12px",
+              p: isTypeImage ? (isAnswer ? "4px 12px" : 0) : "4px 12px",
               minHeight: px(50),
               textAlign: "center",
               display: "flex",

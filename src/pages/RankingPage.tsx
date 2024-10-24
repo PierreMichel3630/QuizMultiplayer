@@ -24,24 +24,10 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { Score } from "src/models/Score";
 import { Theme } from "src/models/Theme";
+import { ClassementEnum } from "src/models/enum/ClassementEnum";
 import { Colors } from "src/style/Colors";
 import { getLevel } from "src/utils/calcul";
 
-enum ClassementEnum {
-  games = "games",
-  gamestenpts = "gamestenpts",
-  gamestwentypts = "gamestwentypts",
-  gamesfiftypts = "gamesfiftypts",
-  gameshundredpts = "gameshundredpts",
-  themetenpts = "themetenpts",
-  themetwentypts = "themetwentypts",
-  duelgames = "duelgames",
-  victoryduel = "victoryduel",
-  drawduel = "drawduel",
-  defeatduel = "defeatduel",
-  xp = "xp",
-  points = "points",
-}
 interface ValueOption {
   label: string;
   value: ClassementEnum;
@@ -85,6 +71,10 @@ export default function RankingPage() {
       {
         label: t("ranking.bestgame"),
         value: ClassementEnum.points,
+      },
+      {
+        label: t("ranking.bestrank"),
+        value: ClassementEnum.rank,
       },
       {
         label: t("ranking.xp"),
@@ -203,7 +193,7 @@ export default function RankingPage() {
   useEffect(() => {
     if (tab === 0) {
       setIsLoading(true);
-      if (option === ClassementEnum.points) {
+      if (option === ClassementEnum.points || option === ClassementEnum.rank) {
         selectScore(option, page, ITEMPERPAGE).then(({ data }) => {
           const res = data as Array<Score>;
           const newdata = res.map((el) => {
@@ -249,7 +239,7 @@ export default function RankingPage() {
 
   useEffect(() => {
     if (stat) {
-      if (option === ClassementEnum.points) {
+      if (option === ClassementEnum.points || option === ClassementEnum.rank) {
         // DO
       } else {
         const champ = stat[option];

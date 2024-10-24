@@ -14,7 +14,7 @@ export const selectAccomplishmentByProfile = (profile: string) =>
 export const selectAccomplishment = () =>
   supabase
     .from(SUPABASE_ACCOMPLISHMENT_TABLE)
-    .select("*, title(*), avatar(*), badge(*)")
+    .select("*, title(*), avatar(*), badge(*), banner(*)")
     .order("id", { ascending: true });
 
 export const selectStatAccomplishmentByProfile = (profile: string) =>
