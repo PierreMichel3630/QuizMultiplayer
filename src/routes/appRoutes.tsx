@@ -30,138 +30,173 @@ import HelpPage from "src/pages/help/HelpPage";
 import InstallationPage from "src/pages/help/InstallationPage";
 import ConfigTrainingPage from "src/pages/play/ConfigTrainingPage";
 
+import AvatarPage from "src/pages/AvatarPage";
+import BadgePage from "src/pages/BadgePage";
+import BannerPage from "src/pages/BannerPage";
+import TitlePage from "src/pages/TitlePage";
+
+import OutletPage from "src/pages/OutletPage";
+import PlayPage from "src/pages/PlayPage";
+
 export const AppRoutes = [
   {
     path: "/",
-    element: <ThemesPage />,
+    element: <OutletPage />,
+    children: [
+      {
+        path: "/",
+        element: <ThemesPage />,
+      },
+      {
+        path: "/favorite",
+        element: <FavoritePage />,
+      },
+      {
+        path: "/new",
+        element: <NewThemePage />,
+      },
+      {
+        path: "/categories",
+        element: <CategoriesPage />,
+      },
+      {
+        path: "/category/:id",
+        element: <CategoryPage />,
+      },
+      {
+        path: "/theme/:id",
+        element: <ThemePage />,
+      },
+      {
+        path: "/administration",
+        element: (
+          <ProtectedRoute>
+            <AdminPage />
+          </ProtectedRoute>
+        ),
+        children: [...AdminRoutes],
+      },
+      {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/register",
+        element: <RegisterPage />,
+      },
+      {
+        path: "/forgotpassword",
+        element: <ForgotPasswordPage />,
+      },
+      {
+        path: "/resetpassword",
+        element: <ResetPasswordPage />,
+      },
+      {
+        path: "/parameter",
+        element: (
+          <ProtectedRoute>
+            <ParameterPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/personalized",
+        element: (
+          <ProtectedRoute>
+            <PersonalizedPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/accomplishments",
+        element: <AccomplishmentPage />,
+      },
+      {
+        path: "/notifications",
+        element: (
+          <ProtectedRoute>
+            <NotificationPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/compare",
+        element: (
+          <ProtectedRoute>
+            <ComparePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/ranking",
+        element: <RankingPage />,
+      },
+      {
+        path: "/menu",
+        element: <MenuPage />,
+      },
+      {
+        path: "/report",
+        element: <ReportPage />,
+      },
+      {
+        path: "/profil/:id",
+        element: <ProfilPage />,
+      },
+      {
+        path: "/people",
+        element: <PeoplePage />,
+      },
+      {
+        path: "/confidentiality",
+        element: <ConfidentialityPage />,
+      },
+      {
+        path: "/help",
+        element: <HelpPage />,
+      },
+      {
+        path: "/faq",
+        element: <FAQPage />,
+      },
+      {
+        path: "/installation",
+        element: <InstallationPage />,
+      },
+      {
+        path: "/improve",
+        element: <ImprovePage />,
+      },
+      {
+        path: "/games",
+        element: <HistoryGamePage />,
+      },
+      {
+        path: "/config/training/:themeid",
+        element: <ConfigTrainingPage />,
+      },
+    ],
+  },
+  /*NO HEADER*/
+  {
+    path: "/badge/:id",
+    element: <BadgePage />,
   },
   {
-    path: "/favorite",
-    element: <FavoritePage />,
+    path: "/title/:id",
+    element: <TitlePage />,
   },
   {
-    path: "/new",
-    element: <NewThemePage />,
+    path: "/banner/:id",
+    element: <BannerPage />,
   },
   {
-    path: "/categories",
-    element: <CategoriesPage />,
+    path: "/avatar/:id",
+    element: <AvatarPage />,
   },
   {
-    path: "/category/:id",
-    element: <CategoryPage />,
-  },
-  {
-    path: "/theme/:id",
-    element: <ThemePage />,
-  },
-  {
-    path: "/administration",
-    element: (
-      <ProtectedRoute>
-        <AdminPage />
-      </ProtectedRoute>
-    ),
-    children: [...AdminRoutes],
-  },
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/register",
-    element: <RegisterPage />,
-  },
-  {
-    path: "/forgotpassword",
-    element: <ForgotPasswordPage />,
-  },
-  {
-    path: "/resetpassword",
-    element: <ResetPasswordPage />,
-  },
-  {
-    path: "/parameter",
-    element: (
-      <ProtectedRoute>
-        <ParameterPage />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/personalized",
-    element: (
-      <ProtectedRoute>
-        <PersonalizedPage />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/accomplishments/:id",
-    element: <AccomplishmentPage />,
-  },
-  {
-    path: "/notifications",
-    element: (
-      <ProtectedRoute>
-        <NotificationPage />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/compare",
-    element: (
-      <ProtectedRoute>
-        <ComparePage />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/ranking",
-    element: <RankingPage />,
-  },
-  {
-    path: "/menu",
-    element: <MenuPage />,
-  },
-  {
-    path: "/report",
-    element: <ReportPage />,
-  },
-  {
-    path: "/profil/:id",
-    element: <ProfilPage />,
-  },
-  {
-    path: "/people",
-    element: <PeoplePage />,
-  },
-  {
-    path: "/confidentiality",
-    element: <ConfidentialityPage />,
-  },
-  {
-    path: "/help",
-    element: <HelpPage />,
-  },
-  {
-    path: "/faq",
-    element: <FAQPage />,
-  },
-  {
-    path: "/installation",
-    element: <InstallationPage />,
-  },
-  {
-    path: "/improve",
-    element: <ImprovePage />,
-  },
-  {
-    path: "/games",
-    element: <HistoryGamePage />,
-  },
-  {
-    path: "/config/training/:themeid",
-    element: <ConfigTrainingPage />,
+    path: "/play",
+    element: <PlayPage />,
   },
 ];

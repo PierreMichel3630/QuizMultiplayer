@@ -33,7 +33,7 @@ export const DefaultTabs = ({ tab, onChange, values }: Props) => {
             sx={{
               p: padding(8, 5),
               minHeight: "auto",
-              color: Colors.black,
+              color: "text.primary",
               "&.Mui-selected": {
                 color: Colors.blue3,
               },

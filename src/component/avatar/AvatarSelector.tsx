@@ -45,9 +45,9 @@ export const AvatarSelector = ({ onSelect }: Props) => {
   );
 
   return (
-    <Grid container justifyContent="center">
+    <Grid container>
       <Grid item xs={12}>
-        <Grid container spacing={1} justifyContent="center">
+        <Grid container spacing={1} alignItems="center" justifyContent="center">
           {avatarsUnlock.map((avatar) => {
             const isSelect = profile && profile.avatar.id === avatar.id;
             return (
@@ -81,7 +81,7 @@ export const AvatarSelector = ({ onSelect }: Props) => {
         </Grid>
       </Grid>
       <Grid item xs={12}>
-        <Grid container spacing={1} justifyContent="center">
+        <Grid container spacing={1} alignItems="center" justifyContent="center">
           {avatarsLock.map((avatar) => {
             return (
               <Grid item key={avatar.id} sx={{ position: "relative" }}>

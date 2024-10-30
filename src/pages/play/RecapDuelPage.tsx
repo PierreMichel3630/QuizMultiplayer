@@ -10,6 +10,7 @@ import { CancelDuelGameBlock } from "src/component/play/CancelDuelGameBlock";
 import { EndDuelGameBlock } from "src/component/play/EndDuelGameBlock";
 import { DuelGame } from "src/models/DuelGame";
 import { Colors } from "src/style/Colors";
+import { CircularLoading } from "src/component/Loading";
 
 export default function RecapDuelPage() {
   const { t } = useTranslation();
@@ -18,13 +19,16 @@ export default function RecapDuelPage() {
 
   const extra = location.state ? location.state.extra : undefined;
 
-  const [game, setGame] = useState<undefined | DuelGame>(undefined);
+  const [game, setGame] = useState<null | DuelGame>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getGame = () => {
+      setLoading(true);
       if (uuidGame) {
         selectDuelGameById(uuidGame).then(({ data }) => {
           setGame(data as DuelGame);
+          setLoading(false);
         });
       }
     };
@@ -55,14 +59,18 @@ export default function RecapDuelPage() {
             p: 1,
           }}
         >
-          {game && (
-            <>
-              {game.status === "END" ? (
-                <EndDuelGameBlock game={game} extra={extra} />
-              ) : (
-                <CancelDuelGameBlock game={game} />
-              )}
-            </>
+          {loading ? (
+            <CircularLoading />
+          ) : (
+            game && (
+              <>
+                {game.status === "END" ? (
+                  <EndDuelGameBlock game={game} extra={extra} />
+                ) : (
+                  <CancelDuelGameBlock game={game} />
+                )}
+              </>
+            )
           )}
         </Box>
       </Container>

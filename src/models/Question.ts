@@ -62,6 +62,7 @@ export interface QuestionAdmin {
   validate: boolean;
   response: JsonLanguageArray;
   responses: Array<JsonLanguage>;
+  extra: JsonLanguage | null;
 }
 
 export interface QuestionInsertAdmin {

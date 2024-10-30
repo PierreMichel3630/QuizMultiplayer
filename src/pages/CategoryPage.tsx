@@ -59,6 +59,12 @@ export default function CategoryPage() {
             ? `${category.name[language.iso]} - ${t("appname")}`
             : t("appname")}
         </title>
+        {category && (
+          <meta
+            name="description"
+            content={`${t("appname")} Catégorie ${category.name[language.iso]}`}
+          />
+        )}
       </Helmet>
       {category && (
         <Grid item xs={12}>

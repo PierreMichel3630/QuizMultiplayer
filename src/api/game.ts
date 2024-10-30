@@ -110,6 +110,12 @@ export const responseSoloGame = (
 export const deleteDuelByUuid = (uuid: string) =>
   supabase.from(SUPABASE_DUELGAME_TABLE).delete().eq("uuid", uuid);
 
+export const cancelDuelByUuid = (uuid: string) =>
+  supabase
+    .from(SUPABASE_DUELGAME_TABLE)
+    .update({ status: "CANCEL" })
+    .eq("uuid", uuid);
+
 export const selectInvitationDuelByUuid = (uuids: Array<string>) =>
   supabase
     .from(SUPABASE_DUELGAME_TABLE)

@@ -5,6 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { HeadTitle } from "src/component/HeadTitle";
 import { ReportModal } from "src/component/modal/ReportModal";
+import { Colors } from "src/style/Colors";
 
 export default function ReportPage() {
   const { t } = useTranslation();
@@ -32,6 +33,7 @@ export default function ReportPage() {
                 variant="contained"
                 fullWidth
                 onClick={() => setOpen(true)}
+                sx={{ backgroundColor: Colors.grey2 }}
               >
                 <Typography variant="h6">
                   {t("commun.reportproblem")}

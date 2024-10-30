@@ -10,8 +10,6 @@ type Props = {
 export const UserContext = createContext<{
   uuid: string;
   setUuid: (uuid: string) => void;
-  username: string;
-  setUsername: (username: string) => void;
   language: Language;
   languages: Array<Language>;
   setLanguage: (language: Language) => void;
@@ -25,8 +23,6 @@ export const UserContext = createContext<{
       ? (localStorage.getItem("uuid")! as string)
       : crypto.randomUUID(),
   setUuid: () => {},
-  username: "Player 1",
-  setUsername: () => {},
   language:
     localStorage.getItem("language") !== null
       ? (JSON.parse(localStorage.getItem("language")!) as Language)
@@ -73,11 +69,6 @@ export const UserProvider = ({ children }: Props) => {
       ? Number(localStorage.getItem("sound")!)
       : 20
   );
-  const [username, setUsername] = useState(
-    localStorage.getItem("username") !== null
-      ? (localStorage.getItem("username")! as string)
-      : ""
-  );
 
   useEffect(() => {
     if (language) {
@@ -96,20 +87,22 @@ export const UserProvider = ({ children }: Props) => {
   }, [uuid]);
 
   useEffect(() => {
-    localStorage.setItem("username", username);
-  }, [username]);
-
-  useEffect(() => {
     localStorage.setItem("sound", sound.toString());
   }, [sound]);
+
+  useEffect(() => {
+    if (mode) {
+      localStorage.setItem("mode", mode);
+    } else {
+      localStorage.removeItem("mode");
+    }
+  }, [mode]);
 
   return (
     <UserContext.Provider
       value={{
         uuid,
         setUuid,
-        username,
-        setUsername,
         languages: LANGUAGES,
         language,
         setLanguage,

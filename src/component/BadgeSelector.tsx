@@ -48,7 +48,7 @@ export const BadgeSelector = ({ onSelect }: Props) => {
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
-        <Grid container spacing={1} justifyContent="center">
+        <Grid container spacing={1} alignItems="center" justifyContent="center">
           {badgesUnlock.map((badge) => {
             const isSelect =
               profile && profile.badge && profile.badge.id === badge.id;
@@ -86,7 +86,7 @@ export const BadgeSelector = ({ onSelect }: Props) => {
         </Grid>
       </Grid>
       <Grid item xs={12}>
-        <Grid container spacing={1} justifyContent="center">
+        <Grid container spacing={1} alignItems="center" justifyContent="center">
           {badgesLock.map((badge) => {
             return (
               <Grid item key={badge.id}>

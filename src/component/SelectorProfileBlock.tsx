@@ -36,7 +36,7 @@ export const SelectorProfileBlock = ({
             p: 1,
             cursor: "pointer",
             justifyContent: onDelete ? "space-between" : "center",
-            backgroundColor: Colors.lightgrey,
+            backgroundColor: Colors.grey,
             height: percent(100),
           }}
           onClick={() => {
@@ -61,7 +61,12 @@ export const SelectorProfileBlock = ({
           )}
         </Paper>
       ) : (
-        <Button variant="contained" fullWidth onClick={onChange}>
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={onChange}
+          sx={{ backgroundColor: Colors.grey2 }}
+        >
           <Typography variant="h6">{label}</Typography>
         </Button>
       )}

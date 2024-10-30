@@ -6,7 +6,7 @@
     "inputquestion": "Question avec Saisie clavier",
     "typequestion": "Type de question",
     "difficulties": "Difficultés",
-    "thememaintenance": "Actuellement en maintenance, le thème reviendra la plus rapidement possible.",
+    "thememaintenance": "Actuellement en maintenance, le thème reviendra le plus rapidement possible.",
     "images": "Images",
     "validatequestion": "Question Validé",
     "deniedquestion": "Question Non Valide",
@@ -136,6 +136,7 @@
     "no": "Non",
     "searchplayer": "Recherche de joueur",
     "seeall": "Voir tous",
+    "seeallaccomplishment": "Voir tous les succès",
     "favorite": "Favoris",
     "addfavorite": "Ajouter aux favoris",
     "removefavorite": "Retirer des favoris",
@@ -171,9 +172,11 @@
     "edit": "Modifier",
     "language": "Langue",
     "others": "Autres",
+    "accomplishments": "Succès",
     "myaccomplishments": "Mes succès",
     "goaccomplishments": "Voir mes succès",
     "unlockaccomplishments": "Débloquer via succès",
+    "unlock": "Débloquer",
     "reward": "Récompense",
     "title": "Titre",
     "titles": "Titres",
@@ -363,7 +366,7 @@
       "title": "Personnalisé votre profil"
     },
     "accomplishments": {
-      "title": "Mes récompenses"
+      "title": "Mes Succès"
     },
     "favorite": {
       "title": "Favoris"
@@ -520,6 +523,7 @@
     },
     "createquestion": {
       "isqcm": "QCM",
+      "extra": "Extra",
       "typequestion": "Type Question *",
       "validate": "Validée",
       "exact": "Exact",
@@ -568,6 +572,7 @@
     "updatequestion": "Votre modification de la question à été pris en compte.",
     "allresponseanswer": "Vous avez répondu à toutes les question du thème.",
     "nofriend": "Aucune demande d'ami.",
+    "noaccomplishment": "Aucun succès débloqué.",
     "nogame": "Aucun duel en cours.",
     "addreport": "Votre report a été pris en compte.",
     "deletefriend": "Votre suppression a été pris en compte.",
@@ -649,5 +654,11 @@
     "title": "Bienvenue sur QuizBattle",
     "explain": "QuizBattle est un jeu de quiz vous permettant de tester vos connaissances sur une multitude de thèmes grâce à 3 modes de jeu fun et gratuit.",
     "available": "Disponible sur"
+  },
+  "notification": {
+    "accomplishment": {
+      "message": "Vous avez debloqué le succès : ",
+      "button": "Voir le succès"
+    }
   }
 }

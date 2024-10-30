@@ -33,8 +33,7 @@ export default function AvatarPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { profile, refreshProfil } = useAuth();
-  const { myavatars, getMyAvatars, accomplishments, myaccomplishments } =
-    useApp();
+  const { myavatars, getMyAvatars, accomplishments } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
   const [avatar, setAvatar] = useState<Avatar | undefined>(undefined);
@@ -154,7 +153,6 @@ export default function AvatarPage() {
                     <CardAccomplishment
                       accomplishment={accomplishment}
                       stat={stat}
-                      isFinish={myaccomplishments.includes(accomplishment.id)}
                       badge
                     />
                   </Box>
@@ -170,7 +168,7 @@ export default function AvatarPage() {
           bottom: 0,
           left: 0,
           right: 0,
-          backgroundColor: "white",
+          backgroundColor: "background.paper",
         }}
       >
         <Container maxWidth="md">
@@ -214,7 +212,7 @@ export default function AvatarPage() {
                 icon={EmojiEventsIcon}
                 variant="contained"
                 onClick={() => {
-                  if (profile) navigate(`/accomplishments/${profile.id}`);
+                  navigate(`/accomplishments`);
                 }}
               />
             )}

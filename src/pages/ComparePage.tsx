@@ -218,8 +218,8 @@ export default function ComparePage() {
                   gap: px(5),
                   p: 1,
                   position: "sticky",
-                  top: px(56),
-                  backgroundColor: "white",
+                  top: px(62),
+                  backgroundColor: "background.paper",
                   width: percent(100),
                 }}
               >
@@ -299,7 +299,7 @@ export default function ComparePage() {
                         <Paper
                           sx={{
                             overflow: "hidden",
-                            backgroundColor: Colors.lightgrey,
+                            backgroundColor: Colors.grey,
                             height: percent(100),
                           }}
                         >

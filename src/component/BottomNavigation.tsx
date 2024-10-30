@@ -25,18 +25,23 @@ export const BottomNavigationBlock = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const { user } = useAuth();
-  const { friends } = useApp();
+  const { friends, myaccomplishments } = useApp();
   const navigate = useNavigate();
 
   const [menu, setMenu] = useState(location.pathname.split("/")[1]);
 
-  const notifications = useMemo(
+  const notificationsFriend = useMemo(
     () =>
       friends.filter(
         (el) =>
           el.status === FRIENDSTATUS.PROGRESS && user && user.id !== el.user1.id
       ).length,
     [friends, user]
+  );
+
+  const notifications = useMemo(
+    () => myaccomplishments.filter((el) => !el.validate).length,
+    [myaccomplishments]
   );
 
   useEffect(() => {
@@ -60,6 +65,9 @@ export const BottomNavigationBlock = () => {
         onChange={(_, newValue) => {
           setMenu(newValue);
         }}
+        sx={{
+          bgcolor: "background.paper",
+        }}
       >
         <BottomNavigationAction
           sx={{ p: padding(0, 5), minWidth: px(30) }}
@@ -73,7 +81,11 @@ export const BottomNavigationBlock = () => {
           sx={{ p: padding(0, 5), minWidth: px(30) }}
           value={"people"}
           label={t("commun.people")}
-          icon={<GroupsIcon />}
+          icon={
+            <Badge badgeContent={notificationsFriend} color="error">
+              <GroupsIcon />
+            </Badge>
+          }
           component={Link}
           to={"/people"}
         />
@@ -102,7 +114,7 @@ export const BottomNavigationBlock = () => {
       <Box
         sx={{
           p: 1,
-          backgroundColor: Colors.white,
+          bgcolor: "background.paper",
           borderRadius: "50%",
           position: "absolute",
           left: "50%",
@@ -111,7 +123,7 @@ export const BottomNavigationBlock = () => {
         }}
         onClick={() => navigate("/play")}
       >
-        <Fab color="secondary">
+        <Fab sx={{ backgroundColor: Colors.blue3 }}>
           <LogoIcon
             sx={{ color: Colors.white, ml: "2px", mt: "3px", fontSize: 30 }}
           />

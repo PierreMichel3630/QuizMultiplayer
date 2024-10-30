@@ -92,6 +92,10 @@ export default function ThemesPage() {
     <Grid container>
       <Helmet>
         <title>{`${t("pages.themes.title")} - ${t("appname")}`}</title>
+        <meta
+          name="description"
+          content="Testez vos connaissances. Jouez en Solo ou multijoueurs sur un quiz avec plus de 500 thèmes: Cinéma, Histoire, Géographie, Sports, ..."
+        />
       </Helmet>
       <Grid item xs={12}>
         <HeadTitle
@@ -234,10 +238,10 @@ export default function ThemesPage() {
               xs={12}
               sx={{
                 position: "sticky",
-                top: 55,
+                top: 62,
                 zIndex: 3,
                 pb: 1,
-                backgroundColor: Colors.white,
+                bgcolor: "background.paper",
               }}
             >
               <BasicSearchInput

@@ -180,41 +180,41 @@ export default function PersonalizedPage() {
             <Grid item xs={12}>
               <Divider />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12}>
               <Typography variant="h4">{t("commun.avatars")}</Typography>
             </Grid>
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12}>
               <AvatarSelector onSelect={changeAvatar} />
             </Grid>
             <Grid item xs={12}>
               <Divider />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12}>
               <Typography variant="h4" ref={refBadge}>
                 {t("commun.badges")}
               </Typography>
             </Grid>
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12}>
               <BadgeSelector onSelect={changeBadge} />
             </Grid>
             <Grid item xs={12}>
               <Divider />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12}>
               <Typography variant="h4" ref={refBanner}>
                 {t("commun.banners")}
               </Typography>
             </Grid>
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12}>
               <BannerSelector onSelect={changeBanner} />
             </Grid>
             <Grid item xs={12}>
               <Divider />
             </Grid>
-            <Grid item xs={12} md={4} ref={refTitle}>
+            <Grid item xs={12} ref={refTitle}>
               <Typography variant="h4">{t("commun.titles")}</Typography>
             </Grid>
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12}>
               <TitleSelector onSelect={changeTitle} />
             </Grid>
           </Grid>

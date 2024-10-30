@@ -57,6 +57,7 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
     allresponse: boolean;
     responses: Array<string>;
     isqcm: boolean | null;
+    extra: string;
   } = {
     exact: question ? question.exact : false,
     allresponse: question ? question.allresponse : false,
@@ -75,6 +76,7 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
       question && question.theme ? question.theme : theme ? theme : undefined,
     responses: question ? question.responses.map((el) => el["fr-FR"]) : [],
     isqcm: question ? question.isqcm : true,
+    extra: question && question.extra !== null ? question.extra["fr-FR"] : "",
   };
 
   const validationSchema = Yup.object().shape({
@@ -88,6 +90,7 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
     difficulty: Yup.string(),
     image: Yup.mixed().nullable(),
     theme: Yup.mixed().nullable(),
+    extra: Yup.string(),
   });
 
   const formik = useFormik({
@@ -121,6 +124,15 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
           difficulty: values.difficulty,
           typeResponse: values.typeResponse,
           isqcm: values.isqcm,
+          extra:
+            question && values.extra !== ""
+              ? {
+                  ...question.extra,
+                  "fr-FR": values.extra,
+                }
+              : question
+              ? question.extra
+              : null,
         };
         const { error, data } = question
           ? await updateQuestion({ id: question.id, ...newQuestion })
@@ -326,6 +338,31 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
             {formik.touched.question && formik.errors.question && (
               <FormHelperText error id="error-question">
                 {formik.errors.question}
+              </FormHelperText>
+            )}
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl
+            fullWidth
+            error={Boolean(formik.touched.extra && formik.errors.extra)}
+          >
+            <InputLabel htmlFor="extra-input">
+              {t("form.createquestion.extra")}
+            </InputLabel>
+            <OutlinedInput
+              id="extra-input"
+              type="text"
+              value={formik.values.extra}
+              name="extra"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              label={t("form.createquestion.extra")}
+              inputProps={{}}
+            />
+            {formik.touched.extra && formik.errors.extra && (
+              <FormHelperText error id="error-extra">
+                {formik.errors.extra}
               </FormHelperText>
             )}
           </FormControl>

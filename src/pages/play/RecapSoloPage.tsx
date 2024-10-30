@@ -21,6 +21,7 @@ import { ReportModal } from "src/component/modal/ReportModal";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { SoloGame } from "src/models/Game";
+import { useApp } from "src/context/AppProvider";
 
 export default function RecapSoloPage() {
   const { t } = useTranslation();
@@ -29,6 +30,7 @@ export default function RecapSoloPage() {
   const { uuidGame } = useParams();
   const { uuid } = useUser();
   const { refreshProfil } = useAuth();
+  const { getMyAccomplishments } = useApp();
 
   const [question, setQuestion] = useState<Question | undefined>(undefined);
   const [game, setGame] = useState<undefined | SoloGame>(undefined);
@@ -196,14 +198,20 @@ export default function RecapSoloPage() {
                       value={Colors.blue}
                       label={t("commun.return")}
                       icon={KeyboardReturnIcon}
-                      onClick={() => navigate(`/theme/${game.theme.id}`)}
+                      onClick={() => {
+                        getMyAccomplishments();
+                        navigate(`/theme/${game.theme.id}`);
+                      }}
                       variant="contained"
                     />
                     <ButtonColor
                       value={Colors.green}
                       label={t("commun.returnhome")}
                       icon={HomeIcon}
-                      onClick={() => navigate("/")}
+                      onClick={() => {
+                        getMyAccomplishments();
+                        navigate("/");
+                      }}
                       variant="contained"
                     />
                   </Box>

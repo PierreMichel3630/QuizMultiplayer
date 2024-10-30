@@ -1,6 +1,7 @@
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import { Box, Container, Grid, Typography } from "@mui/material";
+import { padding, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -8,6 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { buyItem } from "src/api/buy";
 import { selectTitleById } from "src/api/title";
+import moneyIcon from "src/assets/money.svg";
 import { BadgeTitle } from "src/component/Badge";
 import { ButtonColor } from "src/component/Button";
 import { CardAccomplishment } from "src/component/card/CardAccomplishment";
@@ -20,16 +22,13 @@ import { useMessage } from "src/context/MessageProvider";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { Title } from "src/models/Title";
 import { Colors } from "src/style/Colors";
-import moneyIcon from "src/assets/money.svg";
-import { padding, px } from "csx";
 
 export default function TitlePage() {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const { profile, refreshProfil } = useAuth();
-  const { mytitles, getMyTitles, accomplishments, myaccomplishments } =
-    useApp();
+  const { mytitles, getMyTitles, accomplishments } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
   const [title, setTitle] = useState<Title | undefined>(undefined);
@@ -139,7 +138,6 @@ export default function TitlePage() {
                     <CardAccomplishment
                       accomplishment={accomplishment}
                       stat={stat}
-                      isFinish={myaccomplishments.includes(accomplishment.id)}
                       badge
                     />
                   </Grid>
@@ -155,7 +153,7 @@ export default function TitlePage() {
           bottom: 0,
           left: 0,
           right: 0,
-          backgroundColor: "white",
+          backgroundColor: "background.paper",
         }}
       >
         <Container maxWidth="md">
@@ -199,7 +197,7 @@ export default function TitlePage() {
                 icon={EmojiEventsIcon}
                 variant="contained"
                 onClick={() => {
-                  if (profile) navigate(`/accomplishments/${profile.id}`);
+                  navigate(`/accomplishments`);
                 }}
               />
             )}

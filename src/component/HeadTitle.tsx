@@ -11,14 +11,14 @@ interface Props {
 }
 export const HeadTitle = ({ title, extra, sx }: Props) => {
   const [width, setWidth] = useState(
-    window.innerWidth > 1200 ? 1200 : window.innerWidth
+    window.innerWidth > 900 ? 900 : window.innerWidth
   );
   const proportionImg = 0.472;
   const HEIGHTMAX = 350;
 
   useEffect(() => {
     const handleResize = () => {
-      setWidth(window.innerWidth > 1200 ? 1200 : window.innerWidth);
+      setWidth(window.innerWidth > 900 ? 900 : window.innerWidth);
     };
 
     window.addEventListener("resize", handleResize);

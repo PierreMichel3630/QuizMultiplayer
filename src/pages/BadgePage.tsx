@@ -27,8 +27,7 @@ export default function BannerPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { profile, refreshProfil } = useAuth();
-  const { mybadges, getMyBadges, accomplishments, myaccomplishments } =
-    useApp();
+  const { mybadges, getMyBadges, accomplishments } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
   const [badge, setBadge] = useState<Badge | undefined>(undefined);
@@ -145,7 +144,6 @@ export default function BannerPage() {
                     <CardAccomplishment
                       accomplishment={accomplishment}
                       stat={stat}
-                      isFinish={myaccomplishments.includes(accomplishment.id)}
                       badge
                     />
                   </Box>
@@ -161,10 +159,10 @@ export default function BannerPage() {
           bottom: 0,
           left: 0,
           right: 0,
-          backgroundColor: "white",
+          backgroundColor: "background.paper",
         }}
       >
-        <Container maxWidth="lg">
+        <Container maxWidth="md">
           <Box sx={{ p: 1, display: "flex", flexDirection: "column", gap: 1 }}>
             {!loading && badge && !isBuy && !badge.isaccomplishment && (
               <Box
@@ -206,7 +204,7 @@ export default function BannerPage() {
                 icon={EmojiEventsIcon}
                 variant="contained"
                 onClick={() => {
-                  if (profile) navigate(`/accomplishments/${profile.id}`);
+                  navigate(`/accomplishments`);
                 }}
               />
             )}

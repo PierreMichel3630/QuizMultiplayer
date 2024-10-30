@@ -23,4 +23,5 @@ export enum StatusGameDuel {
   WAIT = "WAIT",
   END = "END",
   START = "START",
+  CANCEL = "CANCEL",
 }

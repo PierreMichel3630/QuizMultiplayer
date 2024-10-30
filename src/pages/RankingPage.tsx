@@ -279,6 +279,10 @@ export default function RankingPage() {
       </Helmet>
       <Grid item xs={12}>
         <HeadTitle title={t("commun.ranking")} />
+        <meta
+          name="description"
+          content="Comparez vos scores aux autres joueurs et voyez qui a le plus de connaissances"
+        />
       </Grid>
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>

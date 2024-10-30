@@ -33,7 +33,8 @@ export const CardHistoryGame = ({ game, player }: Props) => {
   }, [game, isPlayer1]);
 
   const color = useMemo(
-    () => (win === 0.5 ? Colors.black : win === 1 ? Colors.green : Colors.red),
+    () =>
+      win === 0.5 ? "text.primary" : win === 1 ? Colors.green : Colors.red,
     [win]
   );
 
@@ -83,10 +84,7 @@ export const CardHistoryGame = ({ game, player }: Props) => {
                   </Typography>
                 </Box>
                 <Link to={`/game/solo/${game.uuid}`} style={{ height: px(20) }}>
-                  <VisibilityIcon
-                    fontSize="small"
-                    sx={{ color: Colors.black }}
-                  />
+                  <VisibilityIcon fontSize="small" />
                 </Link>
               </Box>
             </Grid>
@@ -153,10 +151,7 @@ export const CardHistoryGame = ({ game, player }: Props) => {
                   </Typography>
                 </Box>
                 <Link to={`/game/duel/${game.uuid}`} style={{ height: px(20) }}>
-                  <VisibilityIcon
-                    fontSize="small"
-                    sx={{ color: Colors.black }}
-                  />
+                  <VisibilityIcon fontSize="small" />
                 </Link>
               </Box>
             </Grid>
@@ -222,7 +217,7 @@ export const CardHistoryGameAdmin = ({ game }: PropsAdmin) => {
                     to={`/game/solo/${game.uuid}`}
                     style={{ height: px(20) }}
                   >
-                    <VisibilityIcon sx={{ color: Colors.black }} />
+                    <VisibilityIcon />
                   </Link>
                 </Grid>
               </>

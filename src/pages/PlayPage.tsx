@@ -118,12 +118,12 @@ export default function PlayPage() {
       </Helmet>
       <BarNavigation title={t("pages.play.title")} />
       <Grid item xs={12}>
-        <Container maxWidth="lg">
-          <Box sx={{ p: 1, mt: px(150), mb: px(50), position: "relative" }}>
+        <Container maxWidth="md">
+          <Box sx={{ p: 1, mt: px(140), mb: px(50), position: "relative" }}>
             <Box
               sx={{
                 position: "fixed",
-                top: 50,
+                top: 65,
                 left: 0,
                 right: 0,
                 backgroundColor: "white",
@@ -131,7 +131,7 @@ export default function PlayPage() {
                 p: 2,
               }}
             >
-              <Container maxWidth="lg">
+              <Container maxWidth="md">
                 <Grid container spacing={1} justifyContent="center">
                   <Grid item xs={6}>
                     <ButtonColorSelect
@@ -210,7 +210,7 @@ export default function PlayPage() {
                 backgroundColor: "white",
               }}
             >
-              <Container maxWidth="lg">
+              <Container maxWidth="md">
                 <Box sx={{ p: 1 }}>
                   <ButtonColor
                     value={Colors.blue3}

@@ -4,14 +4,14 @@ import { appNoOutletRoutes } from "./appNoOutletRoutes";
 import { AppRoutes } from "./appRoutes";
 import { PlayRoutes } from "./playRoutes";
 
-import OutletPage from "src/pages/OutletPage";
+import GameOutlet from "src/pages/GameOutlet";
 
 export default function ThemeRoutes() {
   const HomeRoute = {
     path: "/",
-    element: <OutletPage />,
-    children: [...AppRoutes],
+    element: <GameOutlet />,
+    children: [...AppRoutes, ...appNoOutletRoutes],
   };
 
-  return useRoutes([HomeRoute, ...PlayRoutes, ...appNoOutletRoutes]);
+  return useRoutes([HomeRoute, ...PlayRoutes]);
 }

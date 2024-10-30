@@ -66,7 +66,7 @@ export const AccountMenu = ({ user }: Props) => {
         {
           name: t("commun.myaccomplishments"),
           icon: <EmojiEventsIcon />,
-          url: `/accomplishments/${user.id}`,
+          url: `/accomplishments`,
         },
         {
           name: t("commun.compare"),

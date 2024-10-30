@@ -296,6 +296,12 @@ export default function ThemePage() {
             ? `${theme.name[language.iso]} - ${t("appname")}`
             : t("appname")}
         </title>
+        {theme && (
+          <meta
+            name="description"
+            content={`${t("appname")} Quiz ${theme.name[language.iso]}`}
+          />
+        )}
       </Helmet>
       <Grid container>
         {loadingTheme ? (
@@ -688,7 +694,7 @@ export default function ThemePage() {
               p: 2,
             }}
           >
-            <Container maxWidth="lg">
+            <Container maxWidth="md">
               <Grid container spacing={1}>
                 <Grid item xs={12} sx={{ textAlign: "center" }}>
                   <Typography

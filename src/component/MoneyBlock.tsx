@@ -6,19 +6,21 @@ interface Props {
   money: number;
   variant?: Variant;
   color?: string;
+  width?: number;
 }
 
 export const MoneyBlock = ({
   money,
   variant = "h4",
   color = "text.secondary",
+  width = 18,
 }: Props) => {
   return (
     <Box sx={{ display: "flex", gap: 1, alignContent: "center" }}>
       <Typography variant={variant} color={color}>
         {money.toLocaleString("fr-FR")}
       </Typography>
-      <img src={moneyIcon} width={18} loading="lazy" />
+      <img src={moneyIcon} width={width} loading="lazy" />
     </Box>
   );
 };
@@ -27,13 +29,14 @@ export const AddMoneyBlock = ({
   money,
   variant = "h2",
   color = "text.secondary",
+  width = 25,
 }: Props) => {
   return (
     <Box sx={{ display: "flex", gap: 1, alignContent: "center" }}>
-      <Typography variant={variant} color={color}>
+      <Typography variant={variant} color={color} noWrap>
         + {money}
       </Typography>
-      <img src={moneyIcon} width={25} loading="lazy" />
+      <img src={moneyIcon} width={width} loading="lazy" />
     </Box>
   );
 };

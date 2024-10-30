@@ -34,14 +34,17 @@ export const MyCountryBlock = ({ profile, onChange, onDelete }: Props) => {
             p: px(5),
             cursor: "pointer",
             justifyContent: "space-between",
-            backgroundColor: Colors.lightgrey,
+            backgroundColor: Colors.grey,
           }}
           onClick={onChange}
         >
           <Avatar
-            alt="flag"
             src={myCountry.flag}
-            sx={{ width: px(25), height: px(25) }}
+            sx={{
+              width: 40,
+              height: 40,
+              border: `2px solid ${Colors.white}`,
+            }}
           />
           <JsonLanguageBlock variant="h6" value={myCountry.name} />
           <DeleteIcon sx={{ cursor: "pointer" }} onClick={onDelete} />

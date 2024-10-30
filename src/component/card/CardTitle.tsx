@@ -27,8 +27,8 @@ export const CardTitle = ({ titles, loading }: Props) => {
     <Paper
       sx={{
         overflow: "hidden",
-        backgroundColor: Colors.lightgrey,
         height: percent(100),
+        backgroundColor: Colors.grey,
       }}
     >
       <Grid container>

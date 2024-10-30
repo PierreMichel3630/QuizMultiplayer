@@ -95,7 +95,7 @@ export default function AdminGamesPage() {
         xs={12}
         sx={{
           position: "sticky",
-          top: px(55),
+          top: px(62),
           p: 1,
           backgroundColor: Colors.white,
           display: "flex",

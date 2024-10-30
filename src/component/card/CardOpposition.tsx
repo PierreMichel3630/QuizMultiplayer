@@ -22,8 +22,8 @@ export const CardOpposition = ({ opposition, opponent }: Props) => {
     <Paper
       sx={{
         overflow: "hidden",
-        backgroundColor: Colors.lightgrey,
         height: percent(100),
+        backgroundColor: Colors.grey,
       }}
     >
       <Grid container>

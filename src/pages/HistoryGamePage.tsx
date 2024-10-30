@@ -23,7 +23,6 @@ import { SkeletonGames } from "src/component/skeleton/SkeletonGame";
 import { HistoryGame } from "src/models/Game";
 import { Profile } from "src/models/Profile";
 import { Theme } from "src/models/Theme";
-import { Colors } from "src/style/Colors";
 
 export interface FilterGame {
   type: "ALL" | "DUEL" | "SOLO";
@@ -118,9 +117,9 @@ export default function HistoryGamePage() {
         xs={12}
         sx={{
           position: "sticky",
-          top: px(55),
+          top: px(62),
           p: 1,
-          backgroundColor: Colors.white,
+          backgroundColor: "background.paper",
           display: "flex",
           justifyContent: "center",
           zIndex: 10,

@@ -29,7 +29,7 @@ export const BarNavigation = ({ title, quit }: Props) => {
         zIndex: 100,
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth="md">
         <Box sx={{ p: px(5) }}>
           <Grid container alignItems="center" spacing={1}>
             <Grid

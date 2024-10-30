@@ -24,6 +24,7 @@ import { Question } from "src/models/Question";
 import { CardSignalQuestion } from "../card/CardQuestion";
 import { ReportModal } from "../modal/ReportModal";
 import { ExperienceBlock } from "../ExperienceBlock";
+import { useApp } from "src/context/AppProvider";
 
 interface Props {
   game: DuelGame;
@@ -36,6 +37,7 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
   const { uuid } = useUser();
   const { user } = useAuth();
   const { refreshProfil } = useAuth();
+  const { getMyAccomplishments } = useApp();
 
   const [question, setQuestion] = useState<Question | undefined>(undefined);
 
@@ -336,7 +338,10 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
                   value={Colors.green}
                   label={t("commun.returnhome")}
                   icon={HomeIcon}
-                  onClick={() => navigate("/")}
+                  onClick={() => {
+                    getMyAccomplishments();
+                    navigate("/");
+                  }}
                   variant="contained"
                 />
               </>

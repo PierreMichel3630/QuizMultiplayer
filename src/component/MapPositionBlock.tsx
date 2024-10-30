@@ -43,20 +43,18 @@ export const MapPositionBlock = ({ data, width, height }: Props) => {
   });
 
   useEffect(() => {
-    let newStroke = 100;
+    let newStroke = 50;
     if (position.zoom >= 3 && position.zoom < 5) {
-      newStroke = 70;
+      newStroke = 40;
     } else if (position.zoom >= 5 && position.zoom < 10) {
-      newStroke = 50;
-    } else if (position.zoom >= 10 && position.zoom < 20) {
       newStroke = 30;
+    } else if (position.zoom >= 10 && position.zoom < 20) {
+      newStroke = 20;
     } else if (position.zoom >= 20 && position.zoom < 40) {
       newStroke = 10;
     } else if (position.zoom >= 40 && position.zoom < 80) {
       newStroke = 5;
-    } else if (position.zoom >= 80 && position.zoom < 100) {
-      newStroke = 2;
-    } else if (position.zoom >= 100) {
+    } else if (position.zoom >= 80) {
       newStroke = 1;
     }
     setStrokeWidth(newStroke);
@@ -116,9 +114,9 @@ export const MapPositionBlock = ({ data, width, height }: Props) => {
                   <Geography
                     key={geo.rsmKey}
                     geography={geo}
-                    fill={isCountry ? "#ff1744" : Colors.grey5}
+                    fill={isCountry ? Colors.red3 : Colors.grey6}
                     stroke="#FFF"
-                    strokeWidth={1}
+                    strokeWidth={strokeWidth}
                     style={{
                       default: {
                         outline: "none",
@@ -157,7 +155,7 @@ export const MapPositionBlock = ({ data, width, height }: Props) => {
             scale: 15000,
           }}
           style={{
-            backgroundColor: Colors.lightgrey,
+            backgroundColor: Colors.lightBlue,
             height: percent(100),
             width: percent(100),
           }}
@@ -181,9 +179,9 @@ export const MapPositionBlock = ({ data, width, height }: Props) => {
                     <Geography
                       key={geo.rsmKey}
                       geography={geo}
-                      fill={isCountry ? "#ff1744" : Colors.grey5}
+                      fill={isCountry ? Colors.red3 : Colors.grey6}
                       stroke="#FFF"
-                      strokeWidth={1}
+                      strokeWidth={strokeWidth}
                       style={{
                         default: {
                           outline: "none",

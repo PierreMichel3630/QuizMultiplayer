@@ -10,12 +10,12 @@ import {
   BasicCardFriendProfile,
   BasicCardProfile,
 } from "src/component/card/CardProfile";
+import { FriendNotificationBlock } from "src/component/notification/FriendNotificationBlock";
 import { SkeletonPlayers } from "src/component/skeleton/SkeletonPlayer";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { FRIENDSTATUS } from "src/models/Friend";
 import { Profile } from "src/models/Profile";
-import { Colors } from "src/style/Colors";
 
 export default function PeoplePage() {
   const { t } = useTranslation();
@@ -112,22 +112,37 @@ export default function PeoplePage() {
     };
   }, [isEnd, isLoading, page]);
 
+  const invitationsfriends = useMemo(
+    () =>
+      friends.filter(
+        (el) =>
+          profile !== null &&
+          profile.id === el.user2.id &&
+          el.status === FRIENDSTATUS.PROGRESS
+      ),
+    [friends, profile]
+  );
+
   return (
     <Box sx={{ width: percent(100) }}>
       <Helmet>
         <title>{`${t("pages.people.title")} - ${t("appname")}`}</title>
+        <meta
+          name="description"
+          content="Faites-vous des amis et défiez-les à travers des quiz sur une multitude de thèmes."
+        />
       </Helmet>
       <Box
         sx={{
           position: "sticky",
-          top: 56,
+          top: 62,
           zIndex: 3,
           p: 1,
           width: percent(100),
-          backgroundColor: Colors.white,
+          bgcolor: "background.paper",
         }}
       >
-        <Container maxWidth="lg">
+        <Container maxWidth="md">
           <BasicSearchInput
             label={t("commun.search")}
             value={search}
@@ -138,6 +153,19 @@ export default function PeoplePage() {
       </Box>
       <Box sx={{ width: percent(100), p: 1 }}>
         <Grid container spacing={1} sx={{ position: "relative" }}>
+          {invitationsfriends.length > 0 && (
+            <>
+              <Grid item xs={12}>
+                <Typography variant="h2">{t("commun.myinvitation")}</Typography>
+              </Grid>
+              {invitationsfriends.map((friend) => (
+                <Grid item xs={12}>
+                  <FriendNotificationBlock key={friend.id} friend={friend} />
+                </Grid>
+              ))}
+            </>
+          )}
+
           {friendsFilter.length > 0 && (
             <>
               <Grid item xs={12}>

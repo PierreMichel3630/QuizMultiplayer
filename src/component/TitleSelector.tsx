@@ -47,9 +47,9 @@ export const TitleSelector = ({ onSelect }: Props) => {
   );
 
   return (
-    <Grid container spacing={1} justifyContent="center">
+    <Grid container spacing={1}>
       <Grid item xs={12}>
-        <Grid container spacing={1} justifyContent="center">
+        <Grid container spacing={1} alignItems="center">
           {titlesUnlock.map((title) => {
             const isSelect =
               profile && profile.title && profile.title.id === title.id;
@@ -92,7 +92,7 @@ export const TitleSelector = ({ onSelect }: Props) => {
         </Grid>
       </Grid>
       <Grid item xs={12}>
-        <Grid container spacing={1} justifyContent="center">
+        <Grid container spacing={1} alignItems="center">
           {titlesLock.map((title) => {
             return (
               <Grid item xs={12} sm={6} key={title.id}>

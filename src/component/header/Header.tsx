@@ -15,7 +15,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { AccountMenu } from "./AccountMenu";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { SoundMenu } from "./SoundMenu";
+import { ModeMenu } from "./ModeMenu";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ export const Header = () => {
     <Box sx={{ flexGrow: 1, pl: 1, pr: 1 }}>
       <AppBar position="fixed" color="secondary">
         <Container
-          maxWidth="lg"
+          maxWidth="md"
           sx={{ pl: important(px(5)), pr: important(px(5)) }}
         >
           <Toolbar id="toolbar" sx={{ p: important(px(0)), gap: px(8) }}>
@@ -53,8 +53,7 @@ export const Header = () => {
             </Link>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-              <SoundMenu />
-              {/*<LanguagesMenu />*/}
+              <ModeMenu />
               {user ? (
                 <AccountMenu user={user} />
               ) : (

@@ -2,60 +2,52 @@ import { Alert, Box, Divider, Grid, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import {
-  selectInvitationBattleByUser,
-  selectInvitationDuelByUser,
-} from "src/api/game";
+import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { HeadTitle } from "src/component/HeadTitle";
-import { BattleNotificationBlock } from "src/component/notification/BattleNotificationBlock";
-import { DuelNotificationBlock } from "src/component/notification/DuelNotificationBlock";
+import { AccomplishmentNotificationBlock } from "src/component/notification/AccomplishmentNotificationBlock";
 import { FriendNotificationBlock } from "src/component/notification/FriendNotificationBlock";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { useUser } from "src/context/UserProvider";
-import { BattleGame } from "src/models/BattleGame";
-import { DuelGame } from "src/models/DuelGame";
+import { StatAccomplishment } from "src/models/Accomplishment";
 import { FRIENDSTATUS } from "src/models/Friend";
 
 export default function NotificationPage() {
   const { t } = useTranslation();
-  const { friends, getFriends } = useApp();
-  const { user } = useAuth();
-  const { uuid } = useUser();
-  const [games, setGames] = useState<Array<DuelGame>>([]);
-  const [battles, setBattles] = useState<Array<BattleGame>>([]);
+  const { friends, getFriends, myaccomplishments } = useApp();
+  const { profile } = useAuth();
+
+  const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
 
   useEffect(() => {
     getFriends();
   }, [getFriends]);
 
+  useEffect(() => {
+    const getMyStat = () => {
+      if (profile) {
+        selectStatAccomplishmentByProfile(profile.id).then(({ data }) => {
+          setStat(data as StatAccomplishment);
+        });
+      }
+    };
+    getMyStat();
+  }, [profile]);
+
   const invitationsfriends = useMemo(
     () =>
       friends.filter(
         (el) =>
-          user !== null &&
-          user.id === el.user2.id &&
+          profile !== null &&
+          profile.id === el.user2.id &&
           el.status === FRIENDSTATUS.PROGRESS
       ),
-    [friends, user]
+    [friends, profile]
   );
 
-  const getGames = () => {
-    selectInvitationDuelByUser(uuid).then(({ data }) => {
-      setGames(data as Array<DuelGame>);
-    });
-  };
-
-  const getBattles = () => {
-    selectInvitationBattleByUser(uuid).then(({ data }) => {
-      setBattles(data as Array<BattleGame>);
-    });
-  };
-
-  useEffect(() => {
-    getGames();
-    getBattles();
-  }, [uuid]);
+  const accomplishmentsNotValidate = useMemo(
+    () => myaccomplishments.filter((el) => !el.validate),
+    [myaccomplishments]
+  );
 
   return (
     <Grid container spacing={1}>
@@ -71,45 +63,37 @@ export default function NotificationPage() {
             <Grid item xs={12}>
               <Typography variant="h2">{t("commun.friends")}</Typography>
             </Grid>
-            <Grid item xs={12}>
-              {invitationsfriends.length > 0 ? (
-                invitationsfriends.map((friend) => (
+            {invitationsfriends.length > 0 ? (
+              invitationsfriends.map((friend) => (
+                <Grid item xs={12}>
                   <FriendNotificationBlock key={friend.id} friend={friend} />
-                ))
-              ) : (
+                </Grid>
+              ))
+            ) : (
+              <Grid item xs={12}>
                 <Alert severity="info">{t("alert.nofriend")}</Alert>
-              )}
-            </Grid>
+              </Grid>
+            )}
             <Grid item xs={12}>
               <Divider sx={{ borderBottomWidth: 3 }} />
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h2">{t("commun.games")}</Typography>
+              <Typography variant="h2">
+                {t("commun.accomplishments")}
+              </Typography>
             </Grid>
-            {games.length > 0 || battles.length > 0 ? (
-              <>
-                {battles.map((battle) => (
-                  <Grid item xs={12} key={battle.uuid}>
-                    <BattleNotificationBlock
-                      key={battle.id}
-                      game={battle}
-                      refuse={() => getBattles()}
-                    />
-                  </Grid>
-                ))}
-                {games.map((game) => (
-                  <Grid item xs={12} key={game.uuid}>
-                    <DuelNotificationBlock
-                      key={game.id}
-                      game={game}
-                      refuse={() => getGames()}
-                    />
-                  </Grid>
-                ))}
-              </>
+            {accomplishmentsNotValidate.length > 0 ? (
+              accomplishmentsNotValidate.map((accomplishment) => (
+                <Grid item xs={12} key={accomplishment.id}>
+                  <AccomplishmentNotificationBlock
+                    value={accomplishment}
+                    stat={stat}
+                  />
+                </Grid>
+              ))
             ) : (
               <Grid item xs={12}>
-                <Alert severity="info">{t("alert.nogame")}</Alert>
+                <Alert severity="info">{t("alert.noaccomplishment")}</Alert>
               </Grid>
             )}
           </Grid>

@@ -2,7 +2,7 @@ import { Box, Paper, Typography } from "@mui/material";
 import { percent, px } from "csx";
 import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { deleteDuelByUuid } from "src/api/game";
+import { cancelDuelByUuid } from "src/api/game";
 import { DuelGame } from "src/models/DuelGame";
 import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
@@ -26,7 +26,7 @@ export const DuelNotificationBlock = ({ game, refuse }: Props) => {
   };
 
   const refuseDuel = async (uuid: string) => {
-    await deleteDuelByUuid(uuid);
+    await cancelDuelByUuid(uuid);
     if (refuse) refuse();
   };
 
@@ -36,6 +36,8 @@ export const DuelNotificationBlock = ({ game, refuse }: Props) => {
         p: px(5),
         width: percent(100),
         backgroundColor: Colors.black,
+        border: "2px solid white",
+        borderRadius: px(5),
       }}
     >
       <Box

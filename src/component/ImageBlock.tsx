@@ -54,8 +54,8 @@ export const ImageQuestionBlock = ({ src, border = false }: Props) => {
               data-src={src}
               loading="lazy"
               style={{
-                maxHeight: percent(90),
-                maxWidth: percent(90),
+                maxHeight: percent(100),
+                maxWidth: percent(100),
                 objectFit: "contain",
                 border: "1px solid white",
               }}
@@ -66,8 +66,8 @@ export const ImageQuestionBlock = ({ src, border = false }: Props) => {
               data-src={src}
               loading="lazy"
               style={{
-                height: percent(80),
-                width: percent(80),
+                maxHeight: percent(100),
+                maxWidth: percent(100),
                 objectFit: "contain",
               }}
             />

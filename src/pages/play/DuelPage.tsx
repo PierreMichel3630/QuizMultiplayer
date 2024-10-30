@@ -15,9 +15,10 @@ import { RoundTimer, VerticalTimer } from "src/component/Timer";
 import { AvatarAccount } from "src/component/avatar/AvatarAccount";
 import { WaitPlayerDuelGameBlock } from "src/component/play/WaitPlayerDuelGameBlock";
 import { useUser } from "src/context/UserProvider";
-import { DuelGame, ExtraDuelGame } from "src/models/DuelGame";
+import { DuelGame, DuelGameChange, ExtraDuelGame } from "src/models/DuelGame";
 import { QuestionDuel } from "src/models/Question";
 import { Response, ResponseDuel } from "src/models/Response";
+import { StatusGameDuel } from "src/models/enum";
 import { Colors } from "src/style/Colors";
 
 export const COLORDUEL1 = Colors.pink2;
@@ -77,6 +78,21 @@ export default function DuelPage() {
           const uuids = newState.uuid ? newState.uuid.map((el) => el.uuid) : [];
           setPlayers(uuids);
         })
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "duelgame",
+            filter: `player1=eq.${uuid}`,
+          },
+          (payload) => {
+            const game = payload.new as DuelGameChange;
+            if (game.status === StatusGameDuel.CANCEL) {
+              navigate(`/recapduel/${game.uuid}`);
+            }
+          }
+        )
         .on("broadcast", { event: "updategame" }, (value) => {
           const game = value.payload as DuelGame;
           setGame(game);

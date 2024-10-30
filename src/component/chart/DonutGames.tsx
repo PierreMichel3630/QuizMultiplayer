@@ -114,7 +114,7 @@ export const DonutGames = ({
 
   return (
     (loading || scores.length > 0) && (
-      <Paper sx={{ overflow: "hidden", backgroundColor: Colors.lightgrey }}>
+      <Paper sx={{ overflow: "hidden" }}>
         <Grid container>
           <Grid
             item

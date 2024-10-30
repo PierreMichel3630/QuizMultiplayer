@@ -285,7 +285,7 @@ export default function BattlePage() {
   }, [themes, maxIndex]);
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="md">
       <BarNavigation
         title="Jouer"
         quit={() => {
@@ -301,14 +301,14 @@ export default function BattlePage() {
             gap: 1,
             backgroundColor: "white",
             position: "sticky",
-            top: 52,
+            top: 62,
             left: 0,
             right: 0,
             zIndex: 2,
             p: 1,
           }}
         >
-          <Container maxWidth="lg">
+          <Container maxWidth="md">
             <Box
               sx={{
                 display: "flex",
@@ -398,7 +398,7 @@ export default function BattlePage() {
             zIndex: 10,
           }}
         >
-          <Container maxWidth="lg">
+          <Container maxWidth="md">
             <Box
               sx={{ p: 1, display: "flex", gap: 1, flexDirection: "column" }}
             >

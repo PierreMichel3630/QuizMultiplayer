@@ -143,7 +143,7 @@ export const RankingBlock = ({ themes }: Props) => {
           </Box>
         ) : (
           <Box>
-            <Container maxWidth="sm">
+            <Container maxWidth="md">
               <Grid container spacing={1}>
                 {score1 && (
                   <Grid item xs={4} sx={{ display: "flex" }}>

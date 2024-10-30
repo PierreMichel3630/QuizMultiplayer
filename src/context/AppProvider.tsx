@@ -58,7 +58,7 @@ const AppContext = createContext<{
   reportmessages: Array<ReportMessage>;
   accomplishments: Array<Accomplishment>;
   getAccomplishments: () => void;
-  myaccomplishments: Array<number>;
+  myaccomplishments: Array<ProfileAccomplishment>;
   getMyAccomplishments: () => void;
   avatars: Array<Avatar>;
   getAvatars: () => void;
@@ -147,7 +147,9 @@ export const AppProvider = ({ children }: Props) => {
   const [reportmessages, setReportmessages] = useState<Array<ReportMessage>>(
     []
   );
-  const [myaccomplishments, setMyaccomplishments] = useState<Array<number>>([]);
+  const [myaccomplishments, setMyaccomplishments] = useState<
+    Array<ProfileAccomplishment>
+  >([]);
   const [isLoadingTheme, setIsLoadingTheme] = useState(true);
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
@@ -279,9 +281,9 @@ export const AppProvider = ({ children }: Props) => {
 
   const getMyBadges = useCallback(() => {
     if (user) {
-      selectTitleByProfile(user.id).then(({ data }) => {
-        const res = data !== null ? (data as Array<TitleProfile>) : [];
-        setMyTitles(res.map((el) => el.title));
+      selectBadgeByProfile(user.id).then(({ data }) => {
+        const res = data !== null ? (data as Array<BadgeProfile>) : [];
+        setMyBadges(res.map((el) => el.badge));
       });
     }
   }, [user]);
@@ -318,9 +320,9 @@ export const AppProvider = ({ children }: Props) => {
 
   const getMyTitles = useCallback(() => {
     if (user) {
-      selectBadgeByProfile(user.id).then(({ data }) => {
-        const res = data !== null ? (data as Array<BadgeProfile>) : [];
-        setMyBadges(res.map((el) => el.badge));
+      selectTitleByProfile(user.id).then(({ data }) => {
+        const res = data !== null ? (data as Array<TitleProfile>) : [];
+        setMyTitles(res.map((el) => el.title));
       });
     }
   }, [user]);
@@ -333,7 +335,7 @@ export const AppProvider = ({ children }: Props) => {
     if (user) {
       selectAccomplishmentByProfile(user.id).then(({ data }) => {
         const res = data !== null ? (data as Array<ProfileAccomplishment>) : [];
-        setMyaccomplishments(res.map((el) => el.accomplishment));
+        setMyaccomplishments(res);
       });
     }
   }, [user]);

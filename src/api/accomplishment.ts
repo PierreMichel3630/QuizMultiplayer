@@ -8,7 +8,7 @@ export const SUPABASE_PROFILEACCOMPLISHMENT_TABLE = "profileaccomplishment";
 export const selectAccomplishmentByProfile = (profile: string) =>
   supabase
     .from(SUPABASE_PROFILEACCOMPLISHMENT_TABLE)
-    .select()
+    .select("*, accomplishment(*, title(*), avatar(*), badge(*), banner(*))")
     .eq("profile", profile);
 
 export const selectAccomplishment = () =>
@@ -40,3 +40,8 @@ export const selectStatAccomplishment = (
     .order("created_at", { ascending: true })
     .range(from, to);
 };
+
+export const unlockAccomplishment = (id: number) =>
+  supabase.functions.invoke("unlock-accomplishment", {
+    body: JSON.stringify({ id: id }),
+  });

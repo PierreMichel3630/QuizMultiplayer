@@ -15,6 +15,8 @@ export interface Accomplishment {
   value: number;
   champ: string;
   type: string;
+  xp: number;
+  gold: number;
 }
 
 export interface StatAccomplishment {
@@ -48,6 +50,8 @@ export enum StatAccomplishmentEnum {
 }
 
 export interface ProfileAccomplishment {
+  id: number;
   profile: string;
-  accomplishment: number;
+  accomplishment: Accomplishment;
+  validate: boolean;
 }

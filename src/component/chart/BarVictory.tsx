@@ -62,14 +62,14 @@ export const BarVictory = ({ victory, draw, defeat, color }: Props) => {
         <Typography
           variant="h4"
           component="span"
-          sx={{ color: color ? color : "initial" }}
+          sx={{ color: color ? color : "text.secondary" }}
         >
           {victory}{" "}
         </Typography>
         <Typography
           variant="body1"
           component="span"
-          sx={{ color: color ? color : "initial" }}
+          sx={{ color: color ? color : "text.secondary" }}
         >
           {t("commun.victory", { count: victory })}
         </Typography>
@@ -78,14 +78,14 @@ export const BarVictory = ({ victory, draw, defeat, color }: Props) => {
         <Typography
           variant="h4"
           component="span"
-          sx={{ color: color ? color : "initial" }}
+          sx={{ color: color ? color : "text.secondary" }}
         >
           {draw}{" "}
         </Typography>
         <Typography
           variant="body1"
           component="span"
-          sx={{ color: color ? color : "initial" }}
+          sx={{ color: color ? color : "text.secondary" }}
         >
           {t("commun.draw", { count: draw })}
         </Typography>
@@ -94,14 +94,14 @@ export const BarVictory = ({ victory, draw, defeat, color }: Props) => {
         <Typography
           variant="h4"
           component="span"
-          sx={{ color: color ? color : "initial" }}
+          sx={{ color: color ? color : "text.secondary" }}
         >
           {defeat}{" "}
         </Typography>
         <Typography
           variant="body1"
           component="span"
-          sx={{ color: color ? color : "initial" }}
+          sx={{ color: color ? color : "text.secondary" }}
         >
           {t("commun.defeat", { count: defeat })}
         </Typography>

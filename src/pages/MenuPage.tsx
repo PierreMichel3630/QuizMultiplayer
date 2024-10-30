@@ -30,18 +30,16 @@ import HistoryIcon from "@mui/icons-material/History";
 import InstallMobileIcon from "@mui/icons-material/InstallMobile";
 import LiveHelpIcon from "@mui/icons-material/LiveHelp";
 import LogoutIcon from "@mui/icons-material/Logout";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
-import SettingsIcon from "@mui/icons-material/Settings";
 import SecurityIcon from "@mui/icons-material/Security";
-import { HeadTitle } from "src/component/HeadTitle";
-import { useApp } from "src/context/AppProvider";
-import { FRIENDSTATUS } from "src/models/Friend";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
+import { HeadTitle } from "src/component/HeadTitle";
+import { MoneyBlock } from "src/component/MoneyBlock";
+import { useApp } from "src/context/AppProvider";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { getLevel } from "src/utils/calcul";
-import { MoneyBlock } from "src/component/MoneyBlock";
 
 interface Menu {
   value: string;
@@ -54,7 +52,7 @@ interface Menu {
 export default function MenuPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { friends } = useApp();
+  const { myaccomplishments } = useApp();
   const { user, profile, logout } = useAuth();
 
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
@@ -70,13 +68,9 @@ export default function MenuPage() {
     getMyStat();
   }, [user]);
 
-  const notifications = useMemo(
-    () =>
-      friends.filter(
-        (el) =>
-          el.status === FRIENDSTATUS.PROGRESS && user && user.id !== el.user1.id
-      ).length,
-    [friends, user]
+  const notificationsAccomplishment = useMemo(
+    () => myaccomplishments.filter((el) => !el.validate).length,
+    [myaccomplishments]
   );
 
   const menus: Array<Menu> = useMemo(
@@ -138,8 +132,12 @@ export default function MenuPage() {
       {
         value: "accomplishments",
         label: t("commun.myaccomplishments"),
-        icon: <EmojiEventsIcon />,
-        to: profile ? `/accomplishments/${profile.id}` : `/login`,
+        icon: (
+          <Badge badgeContent={notificationsAccomplishment} color="error">
+            <EmojiEventsIcon />
+          </Badge>
+        ),
+        to: profile ? `/accomplishments` : `/login`,
       },
       {
         value: "history",
@@ -154,16 +152,6 @@ export default function MenuPage() {
         value: "compare",
         to: "/compare",
         state: { profile1: profile },
-      },
-      {
-        value: "notifications",
-        label: t("commun.notifications"),
-        icon: (
-          <Badge badgeContent={notifications} color="error">
-            <NotificationsIcon />
-          </Badge>
-        ),
-        to: "/notifications",
       },
       {
         value: "parameter",
@@ -202,7 +190,7 @@ export default function MenuPage() {
         to: "/confidentiality",
       },
     ],
-    [notifications, profile, t]
+    [profile, t, notificationsAccomplishment]
   );
 
   const allMenu = useMemo(
@@ -295,6 +283,7 @@ export default function MenuPage() {
                     borderRadius: px(50),
                     backgroundColor: important(Colors.white),
                     borderWidth: important(px(2)),
+                    color: important(Colors.black),
                   }}
                   onClick={disconnect}
                 >
@@ -318,7 +307,6 @@ export default function MenuPage() {
                       state: menu.state,
                     })
                   }
-                  sx={{ backgroundColor: Colors.white }}
                 >
                   <ListItemButton>
                     <ListItemIcon>{menu.icon}</ListItemIcon>

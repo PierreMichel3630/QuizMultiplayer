@@ -511,8 +511,8 @@ export default function ProfilPage() {
               gap: px(5),
               p: 1,
               position: "sticky",
-              top: px(55),
-              backgroundColor: "white",
+              top: px(62),
+              bgcolor: "background.paper",
               width: percent(100),
               zIndex: 5,
             }}
@@ -535,7 +535,6 @@ export default function ProfilPage() {
                   <Paper
                     sx={{
                       overflow: "hidden",
-                      backgroundColor: Colors.lightgrey,
                       height: percent(100),
                     }}
                   >
@@ -619,7 +618,14 @@ export default function ProfilPage() {
                           />
                         </Link>
                       </Grid>
-                      <Grid item xs={12} sx={{ p: 1 }}>
+                      <Grid
+                        item
+                        xs={12}
+                        sx={{
+                          backgroundColor: Colors.grey,
+                          p: 1,
+                        }}
+                      >
                         <Grid
                           container
                           spacing={1}

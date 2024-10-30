@@ -39,10 +39,15 @@ Deno.serve(async (req) => {
     if (res2.error) throw res2.error;
 
     const res3 = await supabase.rpc("updatemoney", {
-      value: res.data.price,
+      value: -res.data.price,
       row_id: iduser,
     });
     if (res3.error) throw res3.error;
+
+    const profile = {
+      [type]: id,
+    };
+    await supabase.from("profiles").update(profile).eq("id", iduser);
 
     return new Response(JSON.stringify(true), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
