@@ -42,6 +42,7 @@ const endGame = async (
     defeatprop: result === 0 ? 1 : 0,
     elo: res.delta,
     xpprop: totalxp1,
+    points: pointsPlayer1,
   });
   await supabase.rpc("addgameduel", {
     player: player2,
@@ -51,6 +52,7 @@ const endGame = async (
     defeatprop: result === 1 ? 1 : 0,
     elo: -res.delta,
     xpprop: totalxp2,
+    points: pointsPlayer2,
   });
   await supabase.rpc("addopposition", {
     player1uuid: player1,

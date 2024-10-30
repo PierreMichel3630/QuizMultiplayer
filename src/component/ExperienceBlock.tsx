@@ -102,7 +102,7 @@ export const ExperienceBlock = ({ theme, xp }: Props) => {
     xp && (
       <Grid container spacing={1} justifyContent="center" alignItems="end">
         <Grid item>
-          <Typography variant="h4" color="text.secondary">
+          <Typography variant="h4" sx={{ color: Colors.white }}>
             {t("commun.level")} {myLevel}
           </Typography>
         </Grid>
@@ -115,7 +115,14 @@ export const ExperienceBlock = ({ theme, xp }: Props) => {
             }}
           >
             {xpLevel !== undefined && myXpLevel !== undefined && (
-              <Box sx={{ position: "absolute", right: 8, zIndex: 1 }}>
+              <Box
+                sx={{
+                  position: "absolute",
+                  right: 8,
+                  zIndex: 1,
+                  color: Colors.black,
+                }}
+              >
                 <Typography variant="h6" component="span">
                   {xpLevel - myXpLevel}
                 </Typography>
@@ -280,7 +287,7 @@ export const ExperienceSoloBlock = ({ theme, xp, player }: PropsSolo) => {
           </Grid>
         )}
         <Grid item>
-          <Typography variant="h4" color="text.secondary">
+          <Typography variant="h4" sx={{ color: Colors.white }}>
             {t("commun.level")} {myLevel}
           </Typography>
         </Grid>
@@ -293,7 +300,14 @@ export const ExperienceSoloBlock = ({ theme, xp, player }: PropsSolo) => {
             }}
           >
             {xpLevel !== undefined && myXpLevel !== undefined && (
-              <Box sx={{ position: "absolute", right: 8, zIndex: 1 }}>
+              <Box
+                sx={{
+                  position: "absolute",
+                  right: 8,
+                  zIndex: 1,
+                  color: Colors.black,
+                }}
+              >
                 <Typography variant="h6" component="span">
                   {xpLevel - myXpLevel}
                 </Typography>

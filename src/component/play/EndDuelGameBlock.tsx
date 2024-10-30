@@ -25,6 +25,7 @@ import { CardSignalQuestion } from "../card/CardQuestion";
 import { ReportModal } from "../modal/ReportModal";
 import { ExperienceBlock } from "../ExperienceBlock";
 import { useApp } from "src/context/AppProvider";
+import { AddMoneyBlock } from "../MoneyBlock";
 
 interface Props {
   game: DuelGame;
@@ -69,6 +70,11 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
     [isPlayer1, game]
   );
   const equality = useMemo(() => game.ptsplayer2 === game.ptsplayer1, [game]);
+  const money = useMemo(
+    () =>
+      isPlayer1 ? game.ptsplayer1 / 2 : isPlayer2 ? game.ptsplayer2 : undefined,
+    [game, isPlayer1, isPlayer2]
+  );
 
   const revenge = () => {
     const player1 = isPlayer1 ? game.player1.id : game.player2.id;
@@ -257,6 +263,11 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
         {xp && (
           <Grid item xs={12}>
             <ExperienceBlock theme={game.theme.id} xp={xp} />
+          </Grid>
+        )}
+        {money && (
+          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+            <AddMoneyBlock money={money} />
           </Grid>
         )}
         <Grid item xs={12}>

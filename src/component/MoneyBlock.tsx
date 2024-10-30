@@ -34,7 +34,7 @@ export const AddMoneyBlock = ({
   return (
     <Box sx={{ display: "flex", gap: 1, alignContent: "center" }}>
       <Typography variant={variant} color={color} noWrap>
-        + {money}
+        + {Math.round(money)}
       </Typography>
       <img src={moneyIcon} width={width} loading="lazy" />
     </Box>
