@@ -1,10 +1,17 @@
-import { Alert, Box, Container, Divider, Grid } from "@mui/material";
-import { useTranslation } from "react-i18next";
+import {
+  Alert,
+  Box,
+  Container,
+  Divider,
+  Grid,
+  Typography,
+} from "@mui/material";
+import { Trans, useTranslation } from "react-i18next";
 
 import { px, viewHeight } from "csx";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { ButtonColor } from "src/component/Button";
 import { CardSignalQuestion } from "src/component/card/CardQuestion";
 import { Question } from "src/models/Question";
@@ -14,14 +21,16 @@ import HomeIcon from "@mui/icons-material/Home";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { launchSoloGame, selectSoloGameById } from "src/api/game";
-import { ExperienceSoloBlock } from "src/component/ExperienceBlock";
+import { MyExperienceSoloBlock } from "src/component/ExperienceBlock";
 import { AddMoneyBlock } from "src/component/MoneyBlock";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { ReportModal } from "src/component/modal/ReportModal";
+import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { SoloGame } from "src/models/Game";
-import { useApp } from "src/context/AppProvider";
+import { BestScoreBlock } from "src/component/BestScoreBlock";
+import { RankingTableSoloDuel } from "src/component/table/RankingTable";
 
 export default function RecapSoloPage() {
   const { t } = useTranslation();
@@ -29,7 +38,7 @@ export default function RecapSoloPage() {
   const navigate = useNavigate();
   const { uuidGame } = useParams();
   const { uuid } = useUser();
-  const { refreshProfil } = useAuth();
+  const { refreshProfil, profile } = useAuth();
   const { getMyAccomplishments } = useApp();
 
   const [question, setQuestion] = useState<Question | undefined>(undefined);
@@ -118,7 +127,7 @@ export default function RecapSoloPage() {
             <>
               <Grid container spacing={1}>
                 <Grid item xs={12}>
-                  <ScoreThemeBlock theme={game.theme} score={game.points} />
+                  <ScoreThemeBlock theme={game.theme} />
                 </Grid>
                 {allquestion && (
                   <Grid item xs={12}>
@@ -128,18 +137,51 @@ export default function RecapSoloPage() {
                   </Grid>
                 )}
                 <Grid item xs={12}>
-                  <ExperienceSoloBlock
-                    theme={game.theme.id}
+                  <MyExperienceSoloBlock
                     xp={extra ? extra.xpplayer1 : undefined}
-                    player={game.player}
                   />
                 </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sx={{ display: "flex", justifyContent: "center" }}
-                >
-                  <AddMoneyBlock money={game.points * 10} />
+                {profile !== null ? (
+                  <Grid
+                    item
+                    xs={12}
+                    sx={{ display: "flex", justifyContent: "center" }}
+                  >
+                    <AddMoneyBlock
+                      money={game.points * 10}
+                      variant="h4"
+                      width={25}
+                    />
+                  </Grid>
+                ) : (
+                  <Grid item xs={12}>
+                    <Alert severity="warning">
+                      <Typography variant="body1">
+                        <Trans
+                          i18nKey={t("alert.notconnect")}
+                          values={{
+                            link: "Créer un compte",
+                            link2: "Se connecter",
+                          }}
+                          components={{
+                            anchor1: <Link to="/login" />,
+                            anchor2: <Link to="/register" />,
+                          }}
+                          style={{ color: "white" }}
+                        />
+                      </Typography>
+                    </Alert>
+                  </Grid>
+                )}
+                <Grid item xs={12}>
+                  <BestScoreBlock theme={game.theme} points={game.points} />
+                </Grid>
+                <Grid item xs={12}>
+                  <RankingTableSoloDuel
+                    theme={game.theme}
+                    max={3}
+                    mode="SOLO"
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   <Grid container spacing={1} flexDirection="column-reverse">

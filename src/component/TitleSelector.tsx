@@ -13,6 +13,7 @@ import { Colors } from "src/style/Colors";
 import { sortByUnlock } from "src/utils/sort";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 import { MoneyBlock } from "./MoneyBlock";
+import { SkeletonRectangulars } from "./skeleton/SkeletonRectangular";
 
 interface Props {
   onSelect: (value: Title) => void;
@@ -48,6 +49,9 @@ export const TitleSelector = ({ onSelect }: Props) => {
 
   return (
     <Grid container spacing={1}>
+      {titlesUnlock.length === 0 && titlesLock.length === 0 && (
+        <SkeletonRectangulars number={2} height={50} />
+      )}
       <Grid item xs={12}>
         <Grid container spacing={1} alignItems="center">
           {titlesUnlock.map((title) => {

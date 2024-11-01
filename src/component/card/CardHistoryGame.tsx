@@ -262,7 +262,7 @@ export const CardHistoryGameAdmin = ({ game }: PropsAdmin) => {
                     to={`/game/duel/${game.uuid}`}
                     style={{ height: px(20) }}
                   >
-                    <VisibilityIcon sx={{ color: Colors.black }} />
+                    <VisibilityIcon />
                   </Link>
                 </Grid>
               </>

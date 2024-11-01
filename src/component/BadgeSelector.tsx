@@ -7,11 +7,12 @@ import { Badge } from "src/models/Badge";
 import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import { percent, px } from "csx";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Colors } from "src/style/Colors";
 import { sortByUnlock } from "src/utils/sort";
 import { MoneyBlock } from "./MoneyBlock";
-import { useTranslation } from "react-i18next";
+import { SkeletonCirculars } from "./skeleton/SkeletonCircular";
 
 interface Props {
   onSelect: (value: Badge) => void;
@@ -47,6 +48,18 @@ export const BadgeSelector = ({ onSelect }: Props) => {
 
   return (
     <Grid container spacing={1}>
+      {badgesUnlock.length === 0 && badgesLock.length === 0 && (
+        <Grid item xs={12}>
+          <Grid
+            container
+            spacing={1}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <SkeletonCirculars number={8} size={60} />
+          </Grid>
+        </Grid>
+      )}
       <Grid item xs={12}>
         <Grid container spacing={1} alignItems="center" justifyContent="center">
           {badgesUnlock.map((badge) => {
@@ -73,8 +86,8 @@ export const BadgeSelector = ({ onSelect }: Props) => {
                   <Avatar
                     sx={{
                       cursor: "pointer",
-                      width: 70,
-                      height: 70,
+                      width: 60,
+                      height: 60,
                     }}
                     src={badge.icon}
                     onClick={() => onSelect(badge)}
@@ -103,8 +116,8 @@ export const BadgeSelector = ({ onSelect }: Props) => {
                   >
                     <Avatar
                       sx={{
-                        width: 70,
-                        height: 70,
+                        width: 60,
+                        height: 60,
                       }}
                       src={badge.icon}
                     />

@@ -1,6 +1,7 @@
 import {
   AppBar,
   Avatar,
+  Box,
   Dialog,
   DialogContent,
   Divider,
@@ -28,7 +29,6 @@ import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
 import { Country } from "src/models/Country";
 import { Profile } from "src/models/Profile";
-import { Colors } from "src/style/Colors";
 import { sortByName } from "src/utils/sort";
 import { searchString } from "src/utils/string";
 
@@ -111,7 +111,7 @@ export const SelectCountryModal = ({
           </IconButton>
         </Toolbar>
       </AppBar>
-      <DialogContent sx={{ p: 1, pt: 0 }} ref={ref}>
+      <DialogContent sx={{ p: 0, m: 0 }} ref={ref}>
         <Grid container spacing={1}>
           <Grid
             item
@@ -120,16 +120,17 @@ export const SelectCountryModal = ({
               position: "sticky",
               top: 0,
               zIndex: 3,
-              pb: 1,
-              backgroundColor: Colors.white,
+              backgroundColor: "background.paper",
             }}
           >
-            <BasicSearchInput
-              label={t("commun.search")}
-              value={value}
-              onChange={setValue}
-              clear={() => setValue("")}
-            />
+            <Box sx={{ p: 1 }}>
+              <BasicSearchInput
+                label={t("commun.search")}
+                value={value}
+                onChange={setValue}
+                clear={() => setValue("")}
+              />
+            </Box>
           </Grid>
           <Grid item xs={12}>
             <List sx={{ border: "none" }}>

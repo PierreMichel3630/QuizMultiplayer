@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
+import { Theme } from "src/models/Theme";
+import { useBreakpoint } from "src/utils/mediaQuery";
 import { sortByName } from "src/utils/sort";
 import { searchString } from "src/utils/string";
 import {
@@ -13,9 +15,7 @@ import {
   CardSelectTheme,
   CardTheme,
 } from "./card/CardTheme";
-import { Theme } from "src/models/Theme";
 import { SkeletonThemes } from "./skeleton/SkeletonTheme";
-import { useBreakpoint } from "src/utils/mediaQuery";
 
 interface Props {
   search?: string;

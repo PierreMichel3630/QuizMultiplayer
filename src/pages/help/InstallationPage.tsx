@@ -91,6 +91,7 @@ export default function InstallationPage() {
                     alignItems: "center",
                     gap: 1,
                     cursor: "pointer",
+                    border: "1px solid white",
                   }}
                 >
                   <img src={googleplay} style={{ width: px(25) }} />

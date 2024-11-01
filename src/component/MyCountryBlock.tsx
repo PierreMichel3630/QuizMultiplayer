@@ -7,6 +7,7 @@ import { Profile } from "src/models/Profile";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
 import { Colors } from "src/style/Colors";
+import { useMemo } from "react";
 
 interface Props {
   profile: Profile | null;
@@ -18,10 +19,14 @@ export const MyCountryBlock = ({ profile, onChange, onDelete }: Props) => {
   const { t } = useTranslation();
   const { countries } = useApp();
 
-  const myCountry =
-    profile && profile.country !== null
-      ? countries.find((el) => el.id === profile.country)
-      : undefined;
+  const myCountry = useMemo(
+    () =>
+      profile && profile.country !== null
+        ? countries.find((el) => el.id === profile.country)
+        : undefined,
+    [countries, profile]
+  );
+
   return (
     <Box>
       {myCountry ? (
@@ -50,7 +55,12 @@ export const MyCountryBlock = ({ profile, onChange, onDelete }: Props) => {
           <DeleteIcon sx={{ cursor: "pointer" }} onClick={onDelete} />
         </Paper>
       ) : (
-        <Button variant="contained" fullWidth onClick={onChange}>
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={onChange}
+          sx={{ backgroundColor: Colors.grey2 }}
+        >
           <Typography variant="h6">{t("commun.selectcountry")}</Typography>
         </Button>
       )}

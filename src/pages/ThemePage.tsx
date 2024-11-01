@@ -6,6 +6,7 @@ import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import StarIcon from "@mui/icons-material/Star";
 import SupervisedUserCircleRoundedIcon from "@mui/icons-material/SupervisedUserCircleRounded";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 import {
   Alert,
   Box,
@@ -26,40 +27,27 @@ import {
   launchSoloGame,
   matchmakingDuelGame,
 } from "src/api/game";
-import {
-  countPlayersByTheme,
-  selectScoreByThemeAndPlayer,
-  selectScoresByTheme,
-} from "src/api/score";
+import { countPlayersByTheme } from "src/api/score";
 import { selectThemeById } from "src/api/theme";
 import { ButtonColor } from "src/component/Button";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
-import { DefaultTabs } from "src/component/Tabs";
 import { ProposeQuestionModal } from "src/component/modal/ProposeQuestionModal";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
-import {
-  DataRanking,
-  DataRankingMe,
-  RankingTable,
-} from "src/component/table/RankingTable";
+import { RankingTableSoloDuel } from "src/component/table/RankingTable";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
 import { FavoriteInsert } from "src/models/Favorite";
 import { Profile } from "src/models/Profile";
-import { Score } from "src/models/Score";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
-import { getLevel } from "src/utils/calcul";
-import YouTubeIcon from "@mui/icons-material/YouTube";
 
 export default function ThemePage() {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
-  const ITEMPERPAGE = 10;
 
   const { uuid, language } = useUser();
   const { user, profile } = useAuth();
@@ -72,101 +60,10 @@ export default function ThemePage() {
   const [theme, setTheme] = useState<Theme | undefined>(undefined);
   const [loadingTheme, setLoadingTheme] = useState(true);
 
-  const [scores, setScores] = useState<Array<Score>>([]);
-  const [loadingScore, setLoadingScore] = useState(true);
-  const [myScore, setMyScore] = useState<Score | undefined>(undefined);
-
-  const [tab, setTab] = useState(0);
-  const tabs = [
-    { label: t("commun.solo") },
-    { label: t("commun.duel") },
-    { label: t("commun.level") },
-  ];
-
   const favorite = useMemo(
     () => favorites.find((el) => el.theme === Number(id)),
     [id, favorites]
   );
-
-  const dataDuel = useMemo(
-    () =>
-      scores.map((el) => ({
-        profile: el.profile,
-        value: el.rank,
-      })) as Array<DataRanking>,
-    [scores]
-  );
-  const dataMeDuel = useMemo(
-    () =>
-      myScore && profile
-        ? ({
-            profile: profile,
-            value: myScore.rank,
-          } as DataRankingMe)
-        : undefined,
-    [myScore, profile]
-  );
-
-  const dataSolo = useMemo(
-    () =>
-      scores.map((el) => ({
-        profile: el.profile,
-        value: el.points,
-        uuid: el.uuidgame !== null ? el.uuidgame.uuid : undefined,
-        extra: t("commun.pointsabbreviation"),
-      })) as Array<DataRanking>,
-    [scores, t]
-  );
-  const dataMeSolo = useMemo(
-    () =>
-      myScore && profile
-        ? ({
-            profile: profile,
-            value: myScore.points,
-            extra: t("commun.pointsabbreviation"),
-          } as DataRankingMe)
-        : undefined,
-    [myScore, profile, t]
-  );
-
-  const dataLvl = useMemo(
-    () =>
-      scores.map((el) => ({
-        profile: el.profile,
-        value: getLevel(el.xp),
-      })) as Array<DataRanking>,
-    [scores]
-  );
-  const dataMeLvl = useMemo(
-    () =>
-      myScore && profile
-        ? ({
-            profile: profile,
-            value: getLevel(myScore.xp),
-          } as DataRankingMe)
-        : undefined,
-    [myScore, profile]
-  );
-
-  const data = useMemo(() => {
-    let res = dataLvl;
-    if (tab === 0) {
-      res = dataSolo;
-    } else if (tab === 1) {
-      res = dataDuel;
-    }
-    return res;
-  }, [dataDuel, dataLvl, dataSolo, tab]);
-
-  const dataMe = useMemo(() => {
-    let res = dataMeLvl;
-    if (tab === 0) {
-      res = dataMeSolo;
-    } else if (tab === 1) {
-      res = dataMeDuel;
-    }
-    return res;
-  }, [dataMeDuel, dataMeLvl, dataMeSolo, tab]);
 
   useEffect(() => {
     const getPlayers = () => {
@@ -186,32 +83,6 @@ export default function ThemePage() {
     getTheme();
     getPlayers();
   }, [id]);
-
-  useEffect(() => {
-    const getScores = () => {
-      if (id) {
-        setLoadingScore(true);
-        const order = tab === 0 ? "points" : tab === 1 ? "rank" : "xp";
-        selectScoresByTheme(Number(id), order, ITEMPERPAGE).then(({ data }) => {
-          setScores(data as Array<Score>);
-          setLoadingScore(false);
-        });
-      }
-    };
-    getScores();
-  }, [id, tab]);
-
-  useEffect(() => {
-    const getMyRankSolo = () => {
-      if (id && uuid) {
-        selectScoreByThemeAndPlayer(uuid, Number(id)).then(({ data }) => {
-          const res = data as Score;
-          setMyScore(res);
-        });
-      }
-    };
-    getMyRankSolo();
-  }, [id, uuid]);
 
   const playFriend = async (profile: Profile) => {
     if (profile && id) {
@@ -586,42 +457,12 @@ export default function ThemePage() {
               <Grid
                 container
                 justifyContent="center"
-                columns={23}
+                columns={13}
                 sx={{
                   borderRadius: px(5),
                 }}
               >
-                <Grid item xs={7}>
-                  <Box sx={{ p: px(2), textAlign: "center" }}>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        color: Colors.lightgrey2,
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      {t("commun.mylevel")}
-                    </Typography>
-                    <Typography variant="h2" color="text.secondary">
-                      {myScore ? getLevel(myScore.xp) : "-"}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid
-                  item
-                  xs={1}
-                  sx={{ display: "flex", justifyContent: "center" }}
-                >
-                  <Divider
-                    orientation="vertical"
-                    variant="middle"
-                    flexItem
-                    sx={{
-                      borderColor: Colors.lightgrey2,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={7}>
+                <Grid item xs={6}>
                   <Box sx={{ p: px(2), textAlign: "center" }}>
                     <Typography
                       variant="h6"
@@ -651,7 +492,7 @@ export default function ThemePage() {
                     }}
                   />
                 </Grid>
-                <Grid item xs={7}>
+                <Grid item xs={6}>
                   <Box sx={{ p: px(2), textAlign: "center" }}>
                     <Typography
                       variant="h6"
@@ -670,17 +511,7 @@ export default function ThemePage() {
               </Grid>
             </Grid>
             <Grid item xs={12}>
-              <Box sx={{ p: 1 }}>
-                <DefaultTabs
-                  values={tabs}
-                  tab={tab}
-                  onChange={(value) => {
-                    setLoadingScore(true);
-                    setTab(value);
-                  }}
-                />
-                <RankingTable data={data} me={dataMe} loading={loadingScore} />
-              </Box>
+              <RankingTableSoloDuel theme={theme} />
             </Grid>
           </>
         ) : (

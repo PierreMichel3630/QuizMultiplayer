@@ -13,8 +13,10 @@ import { useUser } from "src/context/UserProvider";
 import { sortByName } from "src/utils/sort";
 import { searchString } from "src/utils/string";
 
+import AppleIcon from "@mui/icons-material/Apple";
 import { uniqBy } from "lodash";
 import { Link, useNavigate } from "react-router-dom";
+import googleplay from "src/assets/google-play.png";
 import { ButtonColor } from "src/component/Button";
 import { CardCategory } from "src/component/card/CardCategory";
 import { CategoriesBlock } from "src/component/CategoriesBlock";
@@ -27,8 +29,7 @@ import { SkeletonCategories } from "src/component/skeleton/SkeletonCategory";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
 import { urlApple, urlGooglePlay } from "./help/InstallationPage";
-import googleplay from "src/assets/google-play.png";
-import AppleIcon from "@mui/icons-material/Apple";
+import { ShareApplicationBlock } from "src/component/ShareApplicationBlock";
 
 export default function ThemesPage() {
   const { t } = useTranslation();
@@ -192,7 +193,7 @@ export default function ThemesPage() {
                     }}
                   >
                     <img src={googleplay} style={{ width: px(20) }} />
-                    <Typography variant="h6" color="text.secondary">
+                    <Typography variant="h6" color="text.secondary" noWrap>
                       {t("commun.googleplay")}
                     </Typography>
                   </Box>
@@ -250,6 +251,9 @@ export default function ThemesPage() {
                 value={search}
                 clear={() => setSearch("")}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <ShareApplicationBlock title={t("commun.shareapplication")} />
             </Grid>
             {user && (
               <Grid item xs={12}>

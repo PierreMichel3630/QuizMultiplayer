@@ -2,46 +2,43 @@ import { Box, Grid, Typography } from "@mui/material";
 import { padding, percent, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getProfilById } from "src/api/profile";
-import { selectScoreByThemeAndPlayer } from "src/api/score";
-import { useUser } from "src/context/UserProvider";
+import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
+import { useAuth } from "src/context/AuthProviderSupabase";
+import { StatAccomplishment } from "src/models/Accomplishment";
 import { ExtraDuelGameXP } from "src/models/DuelGame";
 import { ExtraSoloGameXP } from "src/models/Game";
-import { Profile } from "src/models/Profile";
-import { Score } from "src/models/Score";
 import { Colors } from "src/style/Colors";
 import { getExperienceByLevel, getLevel } from "src/utils/calcul";
 import { AvatarAccountBadge } from "./avatar/AvatarAccount";
 
 interface Props {
   xp?: ExtraDuelGameXP;
-  theme: number;
 }
 
-export const ExperienceBlock = ({ theme, xp }: Props) => {
+export const ExperienceBlock = ({ xp }: Props) => {
   const { t } = useTranslation();
-  const { uuid } = useUser();
-  const [myScore, setMyScore] = useState<Score | undefined>(undefined);
+  const { profile } = useAuth();
+
+  const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
 
   useEffect(() => {
-    const getScore = () => {
-      if (theme && uuid) {
-        selectScoreByThemeAndPlayer(uuid, theme).then(({ data }) => {
-          const res = data as Score;
-          setMyScore(res);
+    const getMyStat = () => {
+      if (profile) {
+        selectStatAccomplishmentByProfile(profile.id).then(({ data }) => {
+          setStat(data as StatAccomplishment);
         });
       }
     };
-    getScore();
-  }, [theme, uuid]);
+    getMyStat();
+  }, [profile]);
 
   const xpTotal = useMemo(() => {
     return xp ? xp.match + xp.matchscore + xp.victorybonus : 0;
   }, [xp]);
 
   const myLevel = useMemo(() => {
-    return myScore !== undefined ? getLevel(myScore.xp) : undefined;
-  }, [myScore]);
+    return stat !== undefined ? getLevel(stat.xp) : undefined;
+  }, [stat]);
 
   const xpLevel = useMemo(() => {
     const lvlCurrent =
@@ -54,10 +51,10 @@ export const ExperienceBlock = ({ theme, xp }: Props) => {
   const myXpLevel = useMemo(() => {
     const lvlCurrent =
       myLevel !== undefined ? getExperienceByLevel(myLevel) : 0;
-    return myLevel !== undefined && myScore !== undefined
-      ? myScore.xp - lvlCurrent
+    return myLevel !== undefined && stat !== undefined
+      ? stat.xp - lvlCurrent
       : undefined;
-  }, [myLevel, myScore]);
+  }, [myLevel, stat]);
 
   const pourcentage = useMemo(() => {
     return xpLevel !== undefined && myXpLevel !== undefined
@@ -184,44 +181,32 @@ export const ExperienceBlock = ({ theme, xp }: Props) => {
 
 interface PropsSolo {
   xp?: ExtraSoloGameXP;
-  player: string;
-  theme: number;
 }
 
-export const ExperienceSoloBlock = ({ theme, xp, player }: PropsSolo) => {
+export const MyExperienceSoloBlock = ({ xp }: PropsSolo) => {
   const { t } = useTranslation();
-  const [myScore, setMyScore] = useState<Score | undefined>(undefined);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const { profile } = useAuth();
+
+  const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
 
   useEffect(() => {
-    const getProfile = () => {
-      getProfilById(player).then(({ data }) => {
-        const res = data as Profile;
-        setProfile(res);
-      });
-    };
-    getProfile();
-  }, [player]);
-
-  useEffect(() => {
-    const getScore = () => {
-      if (theme && profile) {
-        selectScoreByThemeAndPlayer(profile.id, theme).then(({ data }) => {
-          const res = data as Score;
-          setMyScore(res);
+    const getMyStat = () => {
+      if (profile) {
+        selectStatAccomplishmentByProfile(profile.id).then(({ data }) => {
+          setStat(data as StatAccomplishment);
         });
       }
     };
-    getScore();
-  }, [theme, profile]);
+    getMyStat();
+  }, [profile]);
 
   const xpTotal = useMemo(() => {
     return xp ? xp.match + xp.matchscore : 0;
   }, [xp]);
 
   const myLevel = useMemo(() => {
-    return myScore !== undefined ? getLevel(myScore.xp) : undefined;
-  }, [myScore]);
+    return stat !== undefined ? getLevel(stat.xp) : undefined;
+  }, [stat]);
 
   const xpLevel = useMemo(() => {
     const lvlCurrent =
@@ -234,10 +219,10 @@ export const ExperienceSoloBlock = ({ theme, xp, player }: PropsSolo) => {
   const myXpLevel = useMemo(() => {
     const lvlCurrent =
       myLevel !== undefined ? getExperienceByLevel(myLevel) : 0;
-    return myLevel !== undefined && myScore !== undefined
-      ? myScore.xp - lvlCurrent
+    return myLevel !== undefined && stat !== undefined
+      ? stat.xp - lvlCurrent
       : undefined;
-  }, [myLevel, myScore]);
+  }, [myLevel, stat]);
 
   const pourcentage = useMemo(() => {
     return xpLevel !== undefined && myXpLevel !== undefined
@@ -281,7 +266,7 @@ export const ExperienceSoloBlock = ({ theme, xp, player }: PropsSolo) => {
           <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
             <AvatarAccountBadge
               profile={profile}
-              size={120}
+              size={100}
               color={Colors.pink}
             />
           </Grid>

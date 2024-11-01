@@ -228,7 +228,7 @@ export default function AdminQuestionsPage() {
               variant="outlined"
               shape="rounded"
               sx={{
-                backgroundColor: Colors.white,
+                backgroundColor: "background.paper",
               }}
             />
           )}

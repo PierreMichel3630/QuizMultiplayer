@@ -4,29 +4,20 @@ import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
-import {
-  selectStatAccomplishment,
-  selectStatAccomplishmentByProfile,
-} from "src/api/accomplishment";
+import { selectStatAccomplishment } from "src/api/accomplishment";
 import { selectScore, selectScoresByTheme } from "src/api/score";
 import { HeadTitle } from "src/component/HeadTitle";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { BasicSelect, SelectTheme } from "src/component/Select";
 import { DefaultTabs } from "src/component/Tabs";
-import {
-  DataRanking,
-  DataRankingMe,
-  RankingTable,
-} from "src/component/table/RankingTable";
+import { DataRanking, RankingTable } from "src/component/table/RankingTable";
 import { useApp } from "src/context/AppProvider";
-import { useAuth } from "src/context/AuthProviderSupabase";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { Score } from "src/models/Score";
 import { Theme } from "src/models/Theme";
 import { ClassementEnum } from "src/models/enum/ClassementEnum";
 import { Colors } from "src/style/Colors";
-import { getLevel } from "src/utils/calcul";
 
 interface ValueOption {
   label: string;
@@ -34,7 +25,6 @@ interface ValueOption {
 }
 export default function RankingPage() {
   const { t } = useTranslation();
-  const { user } = useAuth();
   const { themes } = useApp();
   const [searchParams] = useSearchParams();
 
@@ -44,14 +34,8 @@ export default function RankingPage() {
   const tabs = [{ label: t("commun.global") }, { label: t("commun.pertheme") }];
 
   const [tabTheme, setTabTheme] = useState(0);
-  const tabsTheme = [
-    { label: t("commun.solo") },
-    { label: t("commun.duel") },
-    { label: t("commun.level") },
-  ];
+  const tabsTheme = [{ label: t("commun.solo") }, { label: t("commun.duel") }];
 
-  const [mydata, setMyData] = useState<DataRankingMe | undefined>(undefined);
-  const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
   const [data, setData] = useState<Array<DataRanking>>([]);
   const [option, setOption] = useState<ClassementEnum>(
     searchParams.has("sort")
@@ -130,42 +114,35 @@ export default function RankingPage() {
 
   const dataDuel = useMemo(
     () =>
-      scores.map((el) => ({
+      scores.map((el, index) => ({
         profile: el.profile,
         value: el.rank,
+        rank: index + 1,
       })) as Array<DataRanking>,
     [scores]
   );
 
   const dataSolo = useMemo(
     () =>
-      scores.map((el) => ({
+      scores.map((el, index) => ({
         profile: el.profile,
         value: el.points,
         uuid: el.uuidgame !== null ? el.uuidgame.uuid : undefined,
         extra: t("commun.pointsabbreviation"),
+        rank: index + 1,
       })) as Array<DataRanking>,
     [scores, t]
   );
 
-  const dataLvl = useMemo(
-    () =>
-      scores.map((el) => ({
-        profile: el.profile,
-        value: getLevel(el.xp),
-      })) as Array<DataRanking>,
-    [scores]
-  );
-
   const dataTheme = useMemo(() => {
-    let res = dataLvl;
+    let res = dataDuel;
     if (tabTheme === 0) {
       res = dataSolo;
     } else if (tabTheme === 1) {
       res = dataDuel;
     }
     return res;
-  }, [dataDuel, dataLvl, dataSolo, tabTheme]);
+  }, [dataDuel, dataSolo, tabTheme]);
 
   useEffect(() => {
     if (themes.length > 0) setTheme(themes[0]);
@@ -196,12 +173,13 @@ export default function RankingPage() {
       if (option === ClassementEnum.points || option === ClassementEnum.rank) {
         selectScore(option, page, ITEMPERPAGE).then(({ data }) => {
           const res = data as Array<Score>;
-          const newdata = res.map((el) => {
+          const newdata = res.map((el, index) => {
             const champ = el[option];
             return {
               profile: el.profile,
               value: Array.isArray(champ) ? champ.length : champ,
               theme: el.theme,
+              rank: page * ITEMPERPAGE + index + 1,
             };
           });
           setIsEnd(newdata.length < ITEMPERPAGE);
@@ -211,11 +189,12 @@ export default function RankingPage() {
       } else {
         selectStatAccomplishment(option, page, ITEMPERPAGE).then(({ data }) => {
           const res = data as Array<StatAccomplishment>;
-          const newdata = res.map((el) => {
+          const newdata = res.map((el, index) => {
             const champ = el[option];
             return {
               profile: el.profile,
               value: Array.isArray(champ) ? champ.length : champ,
+              rank: page * ITEMPERPAGE + index + 1,
             };
           });
           setIsEnd(newdata.length < ITEMPERPAGE);
@@ -225,34 +204,6 @@ export default function RankingPage() {
       }
     }
   }, [option, page, tab]);
-
-  useEffect(() => {
-    const getMyStat = () => {
-      if (user) {
-        selectStatAccomplishmentByProfile(user.id).then(({ data }) => {
-          setStat(data as StatAccomplishment);
-        });
-      }
-    };
-    getMyStat();
-  }, [user]);
-
-  useEffect(() => {
-    if (stat) {
-      if (option === ClassementEnum.points || option === ClassementEnum.rank) {
-        // DO
-      } else {
-        const champ = stat[option];
-        setMyData({
-          profile: stat.profile,
-          rank: undefined,
-          value: Array.isArray(champ) ? champ.length : champ,
-        });
-      }
-    } else {
-      setMyData(undefined);
-    }
-  }, [stat, option]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -315,7 +266,7 @@ export default function RankingPage() {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <RankingTable data={data} me={mydata} loading={isLoading} />
+                  <RankingTable data={data} loading={isLoading} />
                 </Grid>
               </>
             ) : (

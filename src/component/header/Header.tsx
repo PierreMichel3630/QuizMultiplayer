@@ -1,11 +1,4 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  Container,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { AppBar, Box, Container, Toolbar, Typography } from "@mui/material";
 import { important, px } from "csx";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -15,6 +8,8 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { AccountMenu } from "./AccountMenu";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { Colors } from "src/style/Colors";
+import { ButtonColor } from "../Button";
 import { ModeMenu } from "./ModeMenu";
 
 export const Header = () => {
@@ -25,12 +20,24 @@ export const Header = () => {
 
   return (
     <Box sx={{ flexGrow: 1, pl: 1, pr: 1 }}>
-      <AppBar position="fixed" color="secondary">
+      <AppBar
+        position="fixed"
+        color="secondary"
+        sx={{
+          backgroundColor: Colors.blue3,
+        }}
+      >
         <Container
           maxWidth="md"
           sx={{ pl: important(px(5)), pr: important(px(5)) }}
         >
-          <Toolbar id="toolbar" sx={{ p: important(px(0)), gap: px(8) }}>
+          <Toolbar
+            id="toolbar"
+            sx={{
+              p: important(px(0)),
+              gap: px(8),
+            }}
+          >
             <Link
               to="/"
               style={{
@@ -58,13 +65,14 @@ export const Header = () => {
                 <AccountMenu user={user} />
               ) : (
                 <Box>
-                  <Button
-                    endIcon={<AccountCircleIcon />}
-                    onClick={() => navigate("login")}
+                  <ButtonColor
+                    value={Colors.black}
+                    label={t("commun.login")}
+                    icon={AccountCircleIcon}
                     variant="contained"
-                  >
-                    <Typography variant="body1">{t("commun.login")}</Typography>
-                  </Button>
+                    onClick={() => navigate("/login")}
+                    typography="h6"
+                  />
                 </Box>
               )}
             </Box>

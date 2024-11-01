@@ -1,5 +1,5 @@
 import { Avatar, Box, Divider, Grid, Typography } from "@mui/material";
-import { percent } from "csx";
+import { percent, px } from "csx";
 import { useTranslation } from "react-i18next";
 import { HeadTitle } from "src/component/HeadTitle";
 import { ModesBlock } from "src/component/ModeBlock";
@@ -7,6 +7,10 @@ import { RuleBlock } from "src/component/RuleBlock";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
 import WarningIcon from "@mui/icons-material/Warning";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import { Link } from "react-router-dom";
+
+export const urlYoutube = "https://www.youtube.com/@QuizBattleofficial";
 
 export default function HelpPage() {
   const { t } = useTranslation();
@@ -21,6 +25,44 @@ export default function HelpPage() {
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <Divider>
+                <Typography variant="h4">{t("commun.explainvideo")}</Typography>
+              </Divider>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Link
+                to={urlYoutube}
+                style={{
+                  textDecoration: "inherit",
+                }}
+              >
+                <Box
+                  sx={{
+                    borderRadius: px(5),
+                    p: "2px 10px",
+                    backgroundColor: Colors.black,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    cursor: "pointer",
+                    border: "1px solid white",
+                  }}
+                >
+                  <YouTubeIcon fontSize="large" sx={{ color: Colors.red }} />
+                  <Typography variant="h6" color="text.secondary">
+                    {t("commun.linkyt")}
+                  </Typography>
+                </Box>
+              </Link>
+            </Grid>
             <Grid item xs={12}>
               <Divider>
                 <Typography variant="h4">{t("commun.rules")}</Typography>

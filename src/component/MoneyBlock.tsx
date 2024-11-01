@@ -32,7 +32,14 @@ export const AddMoneyBlock = ({
   width = 25,
 }: Props) => {
   return (
-    <Box sx={{ display: "flex", gap: 1, alignContent: "center" }}>
+    <Box
+      sx={{
+        display: "flex",
+        gap: 1,
+        alignContent: "center",
+        alignItems: "center",
+      }}
+    >
       <Typography variant={variant} color={color} noWrap>
         + {Math.round(money)}
       </Typography>

@@ -40,6 +40,7 @@ import { MoneyBlock } from "src/component/MoneyBlock";
 import { useApp } from "src/context/AppProvider";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { getLevel } from "src/utils/calcul";
+import { ShareApplicationBlock } from "src/component/ShareApplicationBlock";
 
 interface Menu {
   value: string;
@@ -295,6 +296,9 @@ export default function MenuPage() {
         ) : (
           <HeadTitle title={t("commun.menus")} />
         )}
+        <Grid item xs={12} sx={{ p: 1 }}>
+          <ShareApplicationBlock title={t("commun.shareapplication")} />
+        </Grid>
         <Grid item xs={12}>
           <List>
             <Divider />

@@ -11,7 +11,6 @@ import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import { SkeletonCardReport } from "src/component/skeleton/SkeletonReport";
 import { useMessage } from "src/context/MessageProvider";
 import { Report } from "src/models/Report";
-import { Colors } from "src/style/Colors";
 
 export default function AdminReportPage() {
   const { t } = useTranslation();
@@ -117,7 +116,7 @@ export default function AdminReportPage() {
           variant="outlined"
           shape="rounded"
           sx={{
-            backgroundColor: Colors.white,
+            backgroundColor: "background.paper",
           }}
         />
       </Box>

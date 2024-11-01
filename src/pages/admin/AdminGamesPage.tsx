@@ -21,7 +21,6 @@ import { SelectorProfileBlock } from "src/component/SelectorProfileBlock";
 import { SkeletonGames } from "src/component/skeleton/SkeletonGame";
 import { HistoryGameAdmin } from "src/models/Game";
 import { Profile } from "src/models/Profile";
-import { Colors } from "src/style/Colors";
 
 export interface FilterGameAdmin {
   type: "ALL" | "DUEL" | "SOLO";
@@ -97,7 +96,7 @@ export default function AdminGamesPage() {
           position: "sticky",
           top: px(62),
           p: 1,
-          backgroundColor: Colors.white,
+          backgroundColor: "background.paper",
           display: "flex",
           justifyContent: "center",
           zIndex: 10,

@@ -12,6 +12,7 @@ import { Banner } from "src/models/Banner";
 import { Colors } from "src/style/Colors";
 import { sortByUnlock } from "src/utils/sort";
 import { MoneyBlock } from "./MoneyBlock";
+import { SkeletonRectangulars } from "./skeleton/SkeletonRectangular";
 
 interface Props {
   onSelect: (value: Banner | null) => void;
@@ -77,6 +78,9 @@ export const BannerSelector = ({ onSelect }: Props) => {
           )}
         </Box>
       </Grid>
+      {bannersUnlock.length === 0 && bannersLock.length === 0 && (
+        <SkeletonRectangulars number={2} height={MAXHEIGHT} />
+      )}
       {bannersUnlock.map((banner) => {
         const isSelect =
           profile && profile.banner && profile.banner.id === banner.id;
@@ -119,7 +123,10 @@ export const BannerSelector = ({ onSelect }: Props) => {
         return (
           <Grid item xs={12} sm={6} key={banner.id}>
             <Box sx={{ position: "relative" }}>
-              <Link to={`/banner/${banner.id}`}>
+              <Link
+                to={`/banner/${banner.id}`}
+                style={{ textDecoration: "none" }}
+              >
                 <Box sx={{ display: "flex", flexDirection: "column" }}>
                   <img
                     src={image}

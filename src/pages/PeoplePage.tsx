@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { searchProfilePagination } from "src/api/profile";
 import { BasicSearchInput } from "src/component/Input";
+import { ShareApplicationBlock } from "src/component/ShareApplicationBlock";
 import {
   BasicCardFriendProfile,
   BasicCardProfile,
@@ -153,13 +154,16 @@ export default function PeoplePage() {
       </Box>
       <Box sx={{ width: percent(100), p: 1 }}>
         <Grid container spacing={1} sx={{ position: "relative" }}>
+          <Grid item xs={12}>
+            <ShareApplicationBlock title={t("commun.sharefriend")} />
+          </Grid>
           {invitationsfriends.length > 0 && (
             <>
               <Grid item xs={12}>
                 <Typography variant="h2">{t("commun.myinvitation")}</Typography>
               </Grid>
               {invitationsfriends.map((friend) => (
-                <Grid item xs={12}>
+                <Grid item xs={12} key={friend.id}>
                   <FriendNotificationBlock key={friend.id} friend={friend} />
                 </Grid>
               ))}
@@ -176,6 +180,10 @@ export default function PeoplePage() {
                   <BasicCardFriendProfile profile={friend} />
                 </Grid>
               ))}
+            </>
+          )}
+          {(friendsFilter.length > 0 || invitationsfriends.length > 0) && (
+            <>
               <Grid item xs={12}>
                 <Divider sx={{ borderBottomWidth: 3 }} />
               </Grid>

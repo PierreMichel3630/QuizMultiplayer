@@ -11,6 +11,7 @@ import { sortByUnlock } from "src/utils/sort";
 import { MoneyBlock } from "../MoneyBlock";
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import { useTranslation } from "react-i18next";
+import { SkeletonCirculars } from "../skeleton/SkeletonCircular";
 
 interface Props {
   onSelect: (value: AvatarInterface) => void;
@@ -46,6 +47,18 @@ export const AvatarSelector = ({ onSelect }: Props) => {
 
   return (
     <Grid container>
+      {avatarsUnlock.length === 0 && avatarsLock.length === 0 && (
+        <Grid item xs={12}>
+          <Grid
+            container
+            spacing={1}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <SkeletonCirculars number={8} size={60} />
+          </Grid>
+        </Grid>
+      )}
       <Grid item xs={12}>
         <Grid container spacing={1} alignItems="center" justifyContent="center">
           {avatarsUnlock.map((avatar) => {
@@ -69,8 +82,8 @@ export const AvatarSelector = ({ onSelect }: Props) => {
                 <Avatar
                   sx={{
                     cursor: "pointer",
-                    width: 70,
-                    height: 70,
+                    width: 60,
+                    height: 60,
                   }}
                   src={avatar.icon}
                   onClick={() => onSelect(avatar)}
@@ -98,8 +111,8 @@ export const AvatarSelector = ({ onSelect }: Props) => {
                   <Avatar
                     sx={{
                       cursor: "pointer",
-                      width: 70,
-                      height: 70,
+                      width: 60,
+                      height: 60,
                     }}
                     src={avatar.icon}
                   />

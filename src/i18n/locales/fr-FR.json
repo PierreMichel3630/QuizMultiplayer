@@ -251,7 +251,14 @@
     "previousgame": "Joué récemment",
     "buy": "Acheter",
     "confirmbuy": "Êtes vous sûrs de vouloir débloquer cet item ?",
-    "equip": "Sélectionner"
+    "equip": "Sélectionner",
+    "explainvideo": "Vidéo explicative",
+    "linkyt": "Lien vers Youtube",
+    "share": "Partager",
+    "shareapplication": "Partager l'application",
+    "sharefriend": "Partager à un ami",
+    "copy": "Copier",
+    "sharetext": "Si vous trouvez l'application intéressante, n'hésitez pas à la partager à votre entourage, afin d'agrandir la communauté. Merci de votre aide."
   },
   "offline": {
     "title": "Connectez-vous à Internet",
@@ -590,7 +597,8 @@
     "refusefriendrequest": "Demande d'ami refusée.",
     "updateemailsuccess": "Votre modification d'addresse mail est en cours. Veuillez confirmer sur votre ancien et nouveau email.",
     "noenoughtmoney": "Vous n'avez pas assez pour débloquer cet item.",
-    "buyitem": "Votre achat à été pris en compte."
+    "buyitem": "Votre achat à été pris en compte.",
+    "notconnect": "Vous n'êtes pas connecté, vos scores ne seront pas sauvegardés. <br> <anchor1>{{link}}</anchor1> ou <anchor2>{{link2}}</anchor2>"
   },
   "confidentiality": {
     "title": "Politique de confidentialité",

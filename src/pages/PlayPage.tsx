@@ -69,7 +69,7 @@ export default function PlayPage() {
     const handleScroll = () => {
       setIsLoading(true);
       if (
-        window.innerHeight + document.documentElement.scrollTop + 250 <=
+        window.innerHeight + document.documentElement.scrollTop + 1000 <=
         document.documentElement.offsetHeight
       ) {
         return;
@@ -119,14 +119,14 @@ export default function PlayPage() {
       <BarNavigation title={t("pages.play.title")} />
       <Grid item xs={12}>
         <Container maxWidth="md">
-          <Box sx={{ p: 1, mt: px(140), mb: px(50), position: "relative" }}>
+          <Box sx={{ p: 1, mt: px(150), mb: px(50), position: "relative" }}>
             <Box
               sx={{
                 position: "fixed",
-                top: 65,
+                top: 62,
                 left: 0,
                 right: 0,
-                backgroundColor: "white",
+                backgroundColor: "background.paper",
                 zIndex: 2,
                 p: 2,
               }}
@@ -207,7 +207,7 @@ export default function PlayPage() {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                backgroundColor: "white",
+                backgroundColor: "background.paper",
               }}
             >
               <Container maxWidth="md">

@@ -145,6 +145,7 @@ export const CardSelectTheme = ({
         borderRadius: px(5),
         gap: px(5),
         position: "relative",
+        height: percent(100),
       }}
     >
       {select && (

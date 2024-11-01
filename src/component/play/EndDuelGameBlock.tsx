@@ -26,6 +26,7 @@ import { ReportModal } from "../modal/ReportModal";
 import { ExperienceBlock } from "../ExperienceBlock";
 import { useApp } from "src/context/AppProvider";
 import { AddMoneyBlock } from "../MoneyBlock";
+import { RankingTableSoloDuel } from "../table/RankingTable";
 
 interface Props {
   game: DuelGame;
@@ -72,7 +73,11 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
   const equality = useMemo(() => game.ptsplayer2 === game.ptsplayer1, [game]);
   const money = useMemo(
     () =>
-      isPlayer1 ? game.ptsplayer1 / 2 : isPlayer2 ? game.ptsplayer2 : undefined,
+      isPlayer1
+        ? game.ptsplayer1 / 2
+        : isPlayer2
+        ? game.ptsplayer2 / 2
+        : undefined,
     [game, isPlayer1, isPlayer2]
   );
 
@@ -262,7 +267,7 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
         </Grid>
         {xp && (
           <Grid item xs={12}>
-            <ExperienceBlock theme={game.theme.id} xp={xp} />
+            <ExperienceBlock xp={xp} />
           </Grid>
         )}
         {money && (
@@ -270,6 +275,9 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
             <AddMoneyBlock money={money} />
           </Grid>
         )}
+        <Grid item xs={12}>
+          <RankingTableSoloDuel theme={game.theme} max={3} mode="DUEL" />
+        </Grid>
         <Grid item xs={12}>
           <Divider
             sx={{

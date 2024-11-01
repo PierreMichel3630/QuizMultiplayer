@@ -1,12 +1,12 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "src/context/AuthProviderSupabase";
 
 import { Helmet } from "react-helmet-async";
-import { useLocation } from "react-router-dom";
 import { updateSelectProfil } from "src/api/profile";
 import { BadgeSelector } from "src/component/BadgeSelector";
+import { BannerSelector } from "src/component/BannerSelector";
 import { HeadTitle } from "src/component/HeadTitle";
 import { MyCountryBlock } from "src/component/MyCountryBlock";
 import { TitleSelector } from "src/component/TitleSelector";
@@ -16,10 +16,10 @@ import { useApp } from "src/context/AppProvider";
 import { useMessage } from "src/context/MessageProvider";
 import { Avatar } from "src/models/Avatar";
 import { Badge } from "src/models/Badge";
+import { Banner } from "src/models/Banner";
 import { Profile } from "src/models/Profile";
 import { Title } from "src/models/Title";
-import { BannerSelector } from "src/component/BannerSelector";
-import { Banner } from "src/models/Banner";
+import { SkeletonRectangular } from "src/component/skeleton/SkeletonRectangular";
 
 export default function PersonalizedPage() {
   const { t } = useTranslation();
@@ -28,29 +28,6 @@ export default function PersonalizedPage() {
   const { getMyTitles, getMyBadges } = useApp();
 
   const [openCountry, setOpenCountry] = useState(false);
-
-  const { hash } = useLocation();
-  const refBadge = useRef(null);
-  const refTitle = useRef(null);
-  const refBanner = useRef(null);
-
-  useEffect(() => {
-    if (hash === "#badges") {
-      executeScroll(refBadge);
-    } else if (hash === "#titles") {
-      executeScroll(refTitle);
-    } else if (hash === "#banners") {
-      executeScroll(refBanner);
-    }
-  }, [hash]);
-
-  const executeScroll = (ref: any) => {
-    const top = ref.current.offsetTop;
-    window.scrollTo({
-      top: top - 70,
-      behavior: "smooth",
-    });
-  };
 
   useEffect(() => {
     getMyTitles();
@@ -170,13 +147,19 @@ export default function PersonalizedPage() {
                 {t("commun.myorigincountry")}
               </Typography>
             </Grid>
-            <Grid item xs={12} md={8}>
-              <MyCountryBlock
-                profile={profile}
-                onChange={() => setOpenCountry(true)}
-                onDelete={() => changeCountry(null)}
-              />
-            </Grid>
+            {profile ? (
+              <Grid item xs={12} md={8}>
+                <MyCountryBlock
+                  profile={profile}
+                  onChange={() => setOpenCountry(true)}
+                  onDelete={() => changeCountry(null)}
+                />
+              </Grid>
+            ) : (
+              <Grid item xs={12} md={8}>
+                <SkeletonRectangular height={40} />
+              </Grid>
+            )}
             <Grid item xs={12}>
               <Divider />
             </Grid>
@@ -190,9 +173,7 @@ export default function PersonalizedPage() {
               <Divider />
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h4" ref={refBadge}>
-                {t("commun.badges")}
-              </Typography>
+              <Typography variant="h4">{t("commun.badges")}</Typography>
             </Grid>
             <Grid item xs={12}>
               <BadgeSelector onSelect={changeBadge} />
@@ -201,9 +182,7 @@ export default function PersonalizedPage() {
               <Divider />
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h4" ref={refBanner}>
-                {t("commun.banners")}
-              </Typography>
+              <Typography variant="h4">{t("commun.banners")}</Typography>
             </Grid>
             <Grid item xs={12}>
               <BannerSelector onSelect={changeBanner} />
@@ -211,7 +190,7 @@ export default function PersonalizedPage() {
             <Grid item xs={12}>
               <Divider />
             </Grid>
-            <Grid item xs={12} ref={refTitle}>
+            <Grid item xs={12}>
               <Typography variant="h4">{t("commun.titles")}</Typography>
             </Grid>
             <Grid item xs={12}>

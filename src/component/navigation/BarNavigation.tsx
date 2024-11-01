@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid, Typography } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
@@ -8,6 +8,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { percent, px } from "csx";
 import { Colors } from "src/style/Colors";
+import { ButtonColor } from "../Button";
 import { AccountMenu } from "../header/AccountMenu";
 
 interface Props {
@@ -27,6 +28,9 @@ export const BarNavigation = ({ title, quit }: Props) => {
         width: percent(100),
         backgroundColor: Colors.blue3,
         zIndex: 100,
+        height: 62,
+        display: "flex",
+        alignItems: "center",
       }}
     >
       <Container maxWidth="md">
@@ -55,13 +59,14 @@ export const BarNavigation = ({ title, quit }: Props) => {
                 <AccountMenu user={user} />
               ) : (
                 <Box>
-                  <Button
-                    endIcon={<AccountCircleIcon />}
-                    onClick={() => navigate("login")}
+                  <ButtonColor
+                    value={Colors.black}
+                    label={t("commun.login")}
+                    icon={AccountCircleIcon}
                     variant="contained"
-                  >
-                    <Typography variant="body1">{t("commun.login")}</Typography>
-                  </Button>
+                    onClick={() => navigate("/login")}
+                    typography="h6"
+                  />
                 </Box>
               )}
             </Grid>

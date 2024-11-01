@@ -47,7 +47,6 @@ export const FriendNotificationBlock = ({ friend }: Props) => {
         zIndex: 1,
         p: 1,
         width: percent(100),
-        backgroundColor: Colors.lightgrey,
       }}
     >
       <Box
