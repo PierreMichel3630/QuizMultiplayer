@@ -24,12 +24,12 @@ import { GameModeBlock } from "src/component/GameModeBlock";
 import { HeadTitle } from "src/component/HeadTitle";
 import { NewBlock } from "src/component/NewBlock";
 import { PreviousGameBlock } from "src/component/PreviousGameBlock";
-import { RankingBlock } from "src/component/RankingBlock";
+import { RankingTop5Block } from "src/component/RankingBlock";
+import { ShareApplicationBlock } from "src/component/ShareApplicationBlock";
 import { SkeletonCategories } from "src/component/skeleton/SkeletonCategory";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
 import { urlApple, urlGooglePlay } from "./help/InstallationPage";
-import { ShareApplicationBlock } from "src/component/ShareApplicationBlock";
 
 export default function ThemesPage() {
   const { t } = useTranslation();
@@ -319,7 +319,7 @@ export default function ThemesPage() {
                   <CategoriesBlock />
                 </Grid>
                 <Grid item xs={12}>
-                  <RankingBlock />
+                  <RankingTop5Block />
                 </Grid>
                 {isLoadingTheme ? (
                   <SkeletonCategories number={1} />

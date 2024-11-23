@@ -18,7 +18,7 @@ export const HeadTitle = ({ title, extra, sx }: Props) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setWidth(window.innerWidth > 900 ? 900 : window.innerWidth);
+      setWidth(window.outerWidth > 900 ? 900 : window.outerWidth);
     };
 
     window.addEventListener("resize", handleResize);

@@ -8,6 +8,7 @@ import { useUser } from "src/context/UserProvider";
 import { Colors } from "./Colors";
 import { MessageProvider } from "src/context/MessageProvider";
 import Routes from "../routes";
+import ScrollToTop from "src/component/navigation/ScrollToTop";
 
 export const ThemeBlock = () => {
   const { mode } = useUser();
@@ -167,6 +168,7 @@ export const ThemeBlock = () => {
       <MessageProvider>
         <CssBaseline />
         <BrowserRouter>
+          <ScrollToTop />
           <Routes />
         </BrowserRouter>
       </MessageProvider>

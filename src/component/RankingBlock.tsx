@@ -14,15 +14,23 @@ import { percent, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
+import { selectGamesByTime } from "src/api/game";
 import { selectScore } from "src/api/score";
 import rank1 from "src/assets/rank/rank1.png";
 import rank2 from "src/assets/rank/rank2.png";
 import rank3 from "src/assets/rank/rank3.png";
-import { ClassementScoreEnum } from "src/models/enum/ClassementEnum";
+import {
+  ClassementScoreEnum,
+  ClassementTimeEnum,
+} from "src/models/enum/ClassementEnum";
+import { HistorySoloGame } from "src/models/Game";
 import { Score } from "src/models/Score";
 import { Colors } from "src/style/Colors";
 import { AvatarAccount } from "./avatar/AvatarAccount";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
+import { DataRanking, RankingTable } from "./table/RankingTable";
+import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 
 interface Props {
   themes?: Array<number>;
@@ -284,5 +292,176 @@ const RankingGame = ({ score, rank, value }: PropsRankingGame) => {
         </Box>
       </Box>
     </Box>
+  );
+};
+
+export const RankingTop5Block = () => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const [tab, setTab] = useState(ClassementScoreEnum.points);
+  const [tabTime, setTabTime] = useState(ClassementTimeEnum.week);
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState<Array<DataRanking>>([]);
+
+  const options = useMemo(
+    () => [
+      {
+        icon: <PlayCircleIcon />,
+        label: t("commun.solo"),
+        value: ClassementScoreEnum.points,
+      },
+      {
+        icon: <OfflineBoltIcon />,
+        label: t("commun.duel"),
+        value: ClassementScoreEnum.rank,
+      },
+    ],
+    [t]
+  );
+
+  const optionsTime = useMemo(
+    () => [
+      {
+        label: t("commun.week"),
+        value: ClassementTimeEnum.week,
+      },
+      {
+        label: t("commun.month"),
+        value: ClassementTimeEnum.month,
+      },
+      {
+        label: t("commun.alltime"),
+        value: ClassementTimeEnum.alltime,
+      },
+    ],
+    [t]
+  );
+
+  useEffect(() => {
+    setIsLoading(true);
+    setData([]);
+    if (
+      tab === ClassementScoreEnum.rank ||
+      (tab === ClassementScoreEnum.points &&
+        tabTime === ClassementTimeEnum.alltime)
+    ) {
+      selectScore(tab, 0, 5).then(({ data }) => {
+        const res = data as Array<Score>;
+        const newdata = res.map((el, index) => {
+          const champ = el[tab];
+          return {
+            profile: el.profile,
+            value: Array.isArray(champ) ? champ.length : champ,
+            theme: el.theme,
+            rank: index + 1,
+          };
+        });
+        setData(newdata);
+        setIsLoading(false);
+      });
+    } else {
+      selectGamesByTime(tabTime, 5).then(({ data }) => {
+        const res = data as Array<HistorySoloGame>;
+        const newdata = res.map((el, index) => {
+          return {
+            profile: el.profile,
+            value: el.points,
+            theme: el.theme,
+            rank: index + 1,
+          };
+        });
+        setData(newdata);
+        setIsLoading(false);
+      });
+    }
+  }, [tab, tabTime]);
+
+  return (
+    <Grid container spacing={1}>
+      <Grid item xs={6}>
+        <Typography variant="h2">{t("commun.ranking")}</Typography>
+      </Grid>
+      <Grid item xs={6} sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <ToggleButtonGroup
+          color="primary"
+          value={tab}
+          exclusive
+          onChange={(
+            _event: React.MouseEvent<HTMLElement>,
+            newValue: string
+          ) => {
+            setTab(newValue as ClassementScoreEnum);
+          }}
+          aria-label="typegame"
+        >
+          {options.map((option) => (
+            <ToggleButton
+              key={option.value}
+              value={option.value}
+              sx={{
+                p: "2px 8px",
+              }}
+            >
+              {option.icon}
+              <Typography variant="h6" noWrap>
+                {option.label}
+              </Typography>
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
+      </Grid>
+      {tab === ClassementScoreEnum.points && (
+        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <ToggleButtonGroup
+            color="primary"
+            value={tabTime}
+            exclusive
+            onChange={(
+              _event: React.MouseEvent<HTMLElement>,
+              newValue: string
+            ) => {
+              if (newValue !== null) setTabTime(newValue as ClassementTimeEnum);
+            }}
+            aria-label="timegame"
+          >
+            {optionsTime.map((option) => (
+              <ToggleButton
+                key={option.value}
+                value={option.value}
+                sx={{ p: "2px 8px" }}
+              >
+                <Typography variant="h6" noWrap>
+                  {option.label}
+                </Typography>
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        </Grid>
+      )}
+      <Grid item xs={12}>
+        <RankingTable data={data} loading={isLoading} />
+      </Grid>
+      <Grid item xs={12}>
+        <Button
+          variant="outlined"
+          sx={{
+            minWidth: "auto",
+            textTransform: "uppercase",
+            "&:hover": {
+              border: "2px solid currentColor",
+            },
+          }}
+          color="secondary"
+          size="small"
+          fullWidth
+          onClick={() => navigate(`/ranking?sort=${tab}`)}
+        >
+          <Typography variant="h6" noWrap>
+            {t("commun.seeall")}
+          </Typography>
+        </Button>
+      </Grid>
+    </Grid>
   );
 };

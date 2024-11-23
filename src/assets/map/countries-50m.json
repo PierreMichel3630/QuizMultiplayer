@@ -86255,7 +86255,7 @@
           "arcs": [[-486, -926, 954, -866]],
           "properties": {
             "name": "Kosovo",
-            "alpha3": "XXX"
+            "alpha3": "UNK"
           },
           "type": "Polygon"
         },

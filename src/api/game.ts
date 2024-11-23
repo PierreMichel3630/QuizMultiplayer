@@ -2,9 +2,12 @@ import { BattleGameInsert, BattleGameUpdate } from "src/models/BattleGame";
 import { FilterGame } from "src/pages/HistoryGamePage";
 import { supabase } from "./supabase";
 import { ConfigTraining } from "src/pages/play/ConfigTrainingPage";
+import { ClassementTimeEnum } from "src/models/enum/ClassementEnum";
+import moment from "moment";
 
 export const SUPABASE_PREVIOUSTHEMES_TABLE = "previousthemes";
 export const SUPABASE_HISTORYGAMES_TABLE = "historygames";
+export const SUPABASE_HISTORYSOLOGAMES_TABLE = "historysologames";
 
 export const SUPABASE_RESPONSESOLOGAME_FUNCTION = "response-solo-game";
 export const SUPABASE_LAUNCHSOLOGAME_FUNCTION = "launch-solo-gameV2";
@@ -15,11 +18,10 @@ export const SUPABASE_QUESTIONTRAININGGAME_FUNCTION = "question-training-game";
 export const SUPABASE_TRAININGGAME_TABLE = "traininggame";
 
 export const SUPABASE_DUELGAME_TABLE = "duelgame";
-export const SUPABASE_LAUNCHDUELGAME_FUNCTION = "launch-duel-game";
-export const SUPABASE_MATCHMAKINGDUELGAME_FUNCTION = "matchmaking-duel-game";
+export const SUPABASE_LAUNCHDUELGAME_FUNCTION = "launch-duel-gameV2";
+export const SUPABASE_MATCHMAKINGDUELGAME_FUNCTION = "matchmaking-duel-gameV2";
 
 export const SUPABASE_BATTLEGAME_TABLE = "battlegame";
-export const SUPABASE_LAUNCHBATTLEGAME_FUNCTION = "matchmaking-duel-game";
 
 //BATTLE GAME
 
@@ -232,4 +234,24 @@ export const selectGames = (
   }
   query = query.range(from, to);
   return query;
+};
+
+export const selectGamesByTime = (time: ClassementTimeEnum, limit: number) => {
+  const dateEnd = moment();
+  let dateStart = moment().subtract(7, "days");
+  if (time === ClassementTimeEnum.day) {
+    dateStart = moment().subtract(1, "days");
+  } else if (time === ClassementTimeEnum.week) {
+    dateStart = moment().subtract(7, "days");
+  } else if (time === ClassementTimeEnum.month) {
+    dateStart = moment().subtract(1, "months");
+  }
+
+  return supabase
+    .from(SUPABASE_HISTORYSOLOGAMES_TABLE)
+    .select("*, theme!sologame_themequestion_fkey(*)")
+    .lt("time", dateEnd.toISOString())
+    .gt("time", dateStart.toISOString())
+    .order("points", { ascending: false })
+    .limit(limit);
 };

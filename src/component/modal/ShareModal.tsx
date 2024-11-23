@@ -12,11 +12,14 @@ import {
 import { useTranslation } from "react-i18next";
 
 import CloseIcon from "@mui/icons-material/Close";
+import ShareIcon from "@mui/icons-material/Share";
 import { important, px } from "csx";
+import { useMemo } from "react";
 import googleplay from "src/assets/google-play.png";
 import logo from "src/assets/logo.svg";
 import { urlGooglePlay, urlPc } from "src/pages/help/InstallationPage";
 import { Colors } from "src/style/Colors";
+import { ButtonColor } from "../Button";
 import { CopyTextBlock } from "../CopyTextBlock";
 
 interface Props {
@@ -28,6 +31,31 @@ export const ShareModal = ({ open, close }: Props) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+
+  const data = useMemo(
+    () => ({
+      title: t("share.title"),
+      text: t("share.text"),
+      url: urlPc,
+    }),
+    [t]
+  );
+
+  const canBrowserShareData = useMemo(() => {
+    if (!navigator.share || !navigator.canShare) {
+      return false;
+    }
+
+    return navigator.canShare(data);
+  }, [data]);
+
+  const shareApplication = async () => {
+    try {
+      await navigator.share(data);
+    } catch (e) {
+      console.error(`Error: ${e}`);
+    }
+  };
 
   return (
     <Dialog
@@ -52,6 +80,19 @@ export const ShareModal = ({ open, close }: Props) => {
           <Grid item xs={12} sx={{ mb: 2 }}>
             <Typography variant="body1">{t("commun.sharetext")}</Typography>
           </Grid>
+          {canBrowserShareData && (
+            <Grid item xs={12}>
+              <ButtonColor
+                typography="h6"
+                iconSize={20}
+                value={Colors.blue3}
+                label={t("commun.shareapplication")}
+                icon={ShareIcon}
+                variant="contained"
+                onClick={shareApplication}
+              />
+            </Grid>
+          )}
           <Grid
             item
             xs={2}

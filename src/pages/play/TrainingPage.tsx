@@ -20,7 +20,11 @@ import { QuestionTrainingBlock } from "src/component/QuestionBlock";
 import { ResponseTrainingBlock } from "src/component/ResponseBlock";
 import { useUser } from "src/context/UserProvider";
 import { Question, QuestionTraining } from "src/models/Question";
-import { ResponseLanguage, ResponseTraining } from "src/models/Response";
+import {
+  MyResponse,
+  ResponseLanguage,
+  ResponseTraining,
+} from "src/models/Response";
 
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import LastPageIcon from "@mui/icons-material/LastPage";
@@ -69,7 +73,7 @@ export default function TrainingPage() {
     undefined
   );
   const [images, setImages] = useState<Array<string>>([]);
-  const [maxIndex, setMaxIndex] = useState(2);
+  const [maxIndex, setMaxIndex] = useState(5);
 
   useEffect(() => {
     if (audio) {
@@ -118,27 +122,36 @@ export default function TrainingPage() {
     });
   };
 
-  const validateResponse = async (value: string | number) => {
+  const validateResponse = async (value: MyResponse) => {
+    const myResponseValue = value.value;
     setNextQuestion(undefined);
-    setMyresponse(value);
+    setMyresponse(myResponseValue);
     if (question) {
       let result = false;
       if (question.isqcm) {
         result = Number(question.response) === Number(value);
       } else {
         const response = question.response as ResponseLanguage;
-        result = verifyResponse(response[language.iso], value, question.exact);
+        result = verifyResponse(
+          response[language.iso],
+          myResponseValue,
+          question.exact ? question.exact : value.exact
+        );
       }
       setQuestions((prev) => [
+        {
+          ...question,
+          resultPlayer1: result,
+          responsePlayer1: myResponseValue,
+        },
         ...prev,
-        { ...question, resultPlayer1: result, responsePlayer1: value },
       ]);
       setGoodAnswer((prev) => (result ? prev + 1 : prev));
       setNumberQuestions((prev) => prev + 1);
       setResponse({
         response: question.response,
         result: result,
-        answer: value,
+        answer: myResponseValue,
       });
       setMyresponse(undefined);
       if (game) getQuestion(game.uuid);
@@ -206,7 +219,8 @@ export default function TrainingPage() {
       setIsLoading(true);
       if (
         window.innerHeight + document.documentElement.scrollTop + 250 <=
-        document.documentElement.offsetHeight
+          document.documentElement.offsetHeight ||
+        questions.length <= maxIndex
       ) {
         return;
       }
@@ -221,8 +235,7 @@ export default function TrainingPage() {
   }, [questions, maxIndex]);
 
   const questionsDisplay = useMemo(() => {
-    const start = questions.length - maxIndex;
-    return [...questions].splice(start, questions.length);
+    return [...questions].splice(0, maxIndex);
   }, [questions, maxIndex]);
 
   return (
@@ -305,9 +318,15 @@ export default function TrainingPage() {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <Grid container spacing={1} flexDirection="column-reverse">
+                    <Grid container spacing={1}>
                       {questionsDisplay.map((el, index) => (
                         <Fragment key={index}>
+                          <Grid item xs={12}>
+                            <CardSignalQuestion
+                              question={el as Question}
+                              report={() => setQuestionReport(el as Question)}
+                            />
+                          </Grid>
                           <Grid item xs={12}>
                             <Divider
                               sx={{
@@ -315,12 +334,6 @@ export default function TrainingPage() {
                                 borderColor: Colors.white,
                                 borderRadius: px(5),
                               }}
-                            />
-                          </Grid>
-                          <Grid item xs={12}>
-                            <CardSignalQuestion
-                              question={el as Question}
-                              report={() => setQuestionReport(el as Question)}
                             />
                           </Grid>
                         </Fragment>

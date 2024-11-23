@@ -19,3 +19,10 @@ export enum ClassementScoreEnum {
   points = "points",
   rank = "rank",
 }
+
+export enum ClassementTimeEnum {
+  alltime = "alltime",
+  day = "day",
+  week = "week",
+  month = "month",
+}

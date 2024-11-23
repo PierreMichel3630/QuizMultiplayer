@@ -224,7 +224,7 @@ export const RankingTable = ({ data, loading = false }: Props) => {
                 );
               })}
               {loading &&
-                Array.from(new Array(10)).map((_, index) => (
+                Array.from(new Array(5)).map((_, index) => (
                   <TableRow key={index}>
                     <TableCell align="left" sx={{ p: px(4) }}>
                       <Skeleton variant="circular" width={30} height={30} />

@@ -62,3 +62,8 @@ export interface ResponseImageUpdate {
   response: ResponseLanguageString;
   image: string;
 }
+
+export interface MyResponse {
+  value: string | number;
+  exact: boolean;
+}

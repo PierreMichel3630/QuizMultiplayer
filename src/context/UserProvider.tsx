@@ -31,7 +31,7 @@ export const UserContext = createContext<{
   setLanguage: () => {},
   sound: 20,
   setSound: () => {},
-  mode: "light",
+  mode: "dark",
   setMode: () => {},
 });
 
@@ -60,7 +60,7 @@ export const UserProvider = ({ children }: Props) => {
   const [mode, setMode] = useState<"light" | "dark">(
     localStorage.getItem("mode") !== null
       ? (localStorage.getItem("mode")! as "light" | "dark")
-      : "light"
+      : "dark"
   );
 
   const [language, setLanguage] = useState<Language>(getLanguage());

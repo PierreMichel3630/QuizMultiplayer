@@ -22,7 +22,7 @@ export default function GameSoloPage() {
   const navigate = useNavigate();
 
   const [game, setGame] = useState<undefined | SoloGame>(undefined);
-  const [maxIndex, setMaxIndex] = useState(10);
+  const [maxIndex, setMaxIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
 
@@ -30,7 +30,12 @@ export default function GameSoloPage() {
     const getGame = () => {
       if (uuid) {
         selectSoloGameById(uuid).then(({ data }) => {
-          setGame(data as SoloGame);
+          const soloGame = data as SoloGame;
+          setGame(soloGame);
+          const questionsMap = [...soloGame.questions]
+            .splice(0, 3)
+            .filter((el) => el.typequestion === "MAPPOSITION");
+          setMaxIndex(questionsMap.length === 3 ? 3 : 5);
         });
       }
     };
@@ -42,12 +47,12 @@ export default function GameSoloPage() {
       if (!isEnd) {
         setIsLoading(true);
         if (
-          window.innerHeight + document.documentElement.scrollTop + 1700 <=
+          window.innerHeight + document.documentElement.scrollTop + 400 <=
           document.documentElement.offsetHeight
         ) {
           return;
         }
-        setMaxIndex((prev) => prev + 10);
+        setMaxIndex((prev) => prev + 3);
       }
     };
     if (document) {
@@ -106,9 +111,9 @@ export default function GameSoloPage() {
                       </Grid>
                     </Fragment>
                   ))}
-                  {isLoading && (
+                  {!isEnd && isLoading && (
                     <>
-                      {Array.from(new Array(4)).map((_, index) => (
+                      {Array.from(new Array(1)).map((_, index) => (
                         <Fragment key={index}>
                           <Grid item xs={12}>
                             <SkeletonQuestion />

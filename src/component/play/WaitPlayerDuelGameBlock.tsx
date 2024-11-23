@@ -17,6 +17,8 @@ import { useState, useEffect, useMemo } from "react";
 import { selectScoreByThemeAndPlayer } from "src/api/score";
 import { Score } from "src/models/Score";
 import { getLevel } from "src/utils/calcul";
+import { StatAccomplishment } from "src/models/Accomplishment";
+import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 
 interface Props {
   game: DuelGame;
@@ -27,8 +29,14 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
 
   const [loadingP2, setLoadingP2] = useState(true);
   const [scoreP2, setScoreP2] = useState<Score | null>(null);
+  const [statP2, setStatP2] = useState<StatAccomplishment | undefined>(
+    undefined
+  );
   const [loadingP1, setLoadingP1] = useState(true);
   const [scoreP1, setScoreP1] = useState<Score | null>(null);
+  const [statP1, setStatP1] = useState<StatAccomplishment | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     const getRank = () => {
@@ -40,6 +48,12 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
         }
       );
     };
+    const getLevel = () => {
+      selectStatAccomplishmentByProfile(game.player1.id).then(({ data }) => {
+        setStatP1(data as StatAccomplishment);
+      });
+    };
+    getLevel();
     getRank();
   }, [game.player1, game.theme]);
 
@@ -55,16 +69,24 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
         );
       }
     };
+    const getLevel = () => {
+      if (game.player2 !== null) {
+        selectStatAccomplishmentByProfile(game.player2.id).then(({ data }) => {
+          setStatP2(data as StatAccomplishment);
+        });
+      }
+    };
+    getLevel();
     getRank();
   }, [game.player2, game.theme]);
 
   const lvlP1 = useMemo(
-    () => (scoreP1 !== null ? getLevel(scoreP1.xp) : undefined),
-    [scoreP1]
+    () => (statP1 ? getLevel(statP1.xp) : undefined),
+    [statP1]
   );
   const lvlP2 = useMemo(
-    () => (scoreP2 !== null ? getLevel(scoreP2.xp) : undefined),
-    [scoreP2]
+    () => (statP2 ? getLevel(statP2.xp) : undefined),
+    [statP2]
   );
 
   return (

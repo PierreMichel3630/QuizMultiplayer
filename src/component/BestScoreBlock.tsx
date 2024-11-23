@@ -7,6 +7,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { Score } from "src/models/Score";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
+import { ShareScoreIcon } from "./ShareApplicationBlock";
 
 interface Props {
   theme: Theme;
@@ -51,6 +52,7 @@ export const BestScoreBlock = ({ theme, points }: Props) => {
         >
           {points}
         </Typography>
+        <ShareScoreIcon score={points} theme={theme} />
       </Grid>
       {myScore && (
         <Grid

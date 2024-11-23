@@ -1,5 +1,6 @@
 import { Box, Grid, Paper } from "@mui/material";
 import {
+  MyResponse,
   Response,
   ResponseDuel,
   ResponseSolo,
@@ -217,7 +218,7 @@ interface PropsResponseTraining {
   myresponse: string | number | undefined;
   question: QuestionTraining;
   response?: ResponseTraining;
-  onSubmit: (value: string | number) => void;
+  onSubmit: (value: MyResponse) => void;
 }
 
 export const QcmResponseTrainingBlock = ({
@@ -322,7 +323,10 @@ export const QcmResponseTrainingBlock = ({
             onClick={() => {
               if (!response && !isClick) {
                 setIsClick(true);
-                onSubmit(index);
+                onSubmit({
+                  value: index,
+                  exact: true,
+                });
               }
             }}
           >

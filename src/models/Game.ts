@@ -80,6 +80,17 @@ export interface HistoryGame {
   created_at: Date;
 }
 
+export interface HistorySoloGame {
+  id: number;
+  points: number;
+  questions: Array<Question>;
+  profile: Profile;
+  theme: Theme;
+  themequestion: Theme;
+  uuid: string;
+  status: StatusGameSolo;
+}
+
 export interface HistoryGameAdmin {
   uuid: string;
   type: "SOLO" | "DUEL";

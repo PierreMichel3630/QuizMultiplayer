@@ -258,7 +258,11 @@
     "shareapplication": "Partager l'application",
     "sharefriend": "Partager à un ami",
     "copy": "Copier",
-    "sharetext": "Si vous trouvez l'application intéressante, n'hésitez pas à la partager à votre entourage, afin d'agrandir la communauté. Merci de votre aide."
+    "sharetext": "Si vous trouvez l'application intéressante, n'hésitez pas à la partager à votre entourage, afin d'agrandir la communauté. Merci de votre aide.",
+    "day": "Jour",
+    "week": "Semaine",
+    "alltime": "All Time",
+    "month": "Mois"
   },
   "offline": {
     "title": "Connectez-vous à Internet",
@@ -668,5 +672,10 @@
       "message": "Vous avez debloqué le succès : ",
       "button": "Voir le succès"
     }
+  },
+  "share": {
+    "title": "Quizbattle",
+    "score": "Rejoins Quizbattle et viens battre mon score {{score}} sur le thème {{theme}}.",
+    "text": "Rejoins Quizbattle et viens me défier sur une multitude de thèmes."
   }
 }

@@ -20,8 +20,8 @@
     "path": "D:\\Developpement\\QuizMultiplayer\\android.keystore",
     "alias": "android"
   },
-  "appVersionName": "V6.2.1",
-  "appVersionCode": 30,
+  "appVersionName": "V6.2.2",
+  "appVersionCode": 31,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://quizup-v2.web.app/manifest.webmanifest",
@@ -39,5 +39,5 @@
   "fingerprints": [],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "appVersion": "V6.2.1"
+  "appVersion": "V6.2.2"
 }

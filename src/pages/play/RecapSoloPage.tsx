@@ -43,7 +43,7 @@ export default function RecapSoloPage() {
 
   const [question, setQuestion] = useState<Question | undefined>(undefined);
   const [game, setGame] = useState<undefined | SoloGame>(undefined);
-  const [maxIndex, setMaxIndex] = useState(2);
+  const [maxIndex, setMaxIndex] = useState(5);
 
   const allquestion = location.state ? location.state.allquestion : false;
   const extra = location.state ? location.state.extra : undefined;

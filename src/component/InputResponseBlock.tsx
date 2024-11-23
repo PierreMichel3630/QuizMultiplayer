@@ -13,11 +13,11 @@ import { Colors } from "src/style/Colors";
 import { HealthBlock } from "./HealthBlock";
 import { isMobile } from "react-device-detect";
 import { searchResponseByTypeAndValue } from "src/api/response";
-import { ResponseUpdate } from "src/models/Response";
+import { MyResponse, ResponseUpdate } from "src/models/Response";
 import { useUser } from "src/context/UserProvider";
 
 interface Props {
-  onSubmit: (value: string) => void;
+  onSubmit: (value: MyResponse) => void;
   health?: number;
   typeResponse?: string;
   myresponse: string | number | undefined;
@@ -74,7 +74,10 @@ export const InputResponseBlock = ({
               key={index}
               onClick={() => {
                 setValue(response);
-                onSubmit(response);
+                onSubmit({
+                  value: response,
+                  exact: true,
+                });
               }}
             >
               <Typography variant="h2" color="text.secondary">
@@ -118,7 +121,10 @@ export const InputResponseBlock = ({
                 autoComplete="off"
                 onSubmit={(event) => {
                   event.preventDefault();
-                  onSubmit(value);
+                  onSubmit({
+                    value: value,
+                    exact: false,
+                  });
                   setValue("");
                 }}
               >

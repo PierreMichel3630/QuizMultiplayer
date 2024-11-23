@@ -121,7 +121,7 @@ const AppContext = createContext<{
 export const useApp = () => useContext(AppContext);
 
 export const AppProvider = ({ children }: Props) => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { language } = useUser();
 
   const [nbQuestions, setNbQuestions] = useState<undefined | number>(undefined);
@@ -186,7 +186,10 @@ export const AppProvider = ({ children }: Props) => {
       if (data) {
         const value = data !== null ? (data as Array<Theme>) : [];
         const resultats = value.sort((a, b) => sortByName(language, a, b));
-        const filterResultats = [...resultats].filter((el) => el.enabled);
+        const filterResultats =
+          profile && profile.isadmin
+            ? [...resultats]
+            : [...resultats].filter((el) => el.enabled);
         const uniqTheme = uniqBy(filterResultats, (el) => el.id);
         const count = uniqTheme.length;
         const questions = uniqTheme
@@ -199,7 +202,7 @@ export const AppProvider = ({ children }: Props) => {
         setIsLoadingTheme(false);
       }
     });
-  }, [language]);
+  }, [language, profile]);
 
   useEffect(() => {
     if (themes.length > 0) {

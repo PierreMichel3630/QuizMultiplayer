@@ -66,6 +66,12 @@ export default function SoloPage() {
             }
             setImages(urls);
 
+            let audio = undefined;
+            if (questionSolo.audio) {
+              audio = new Audio(questionSolo.audio);
+              audio.load();
+            }
+
             setTimeout(async () => {
               if (questionSolo.allresponse === true) {
                 navigate(`/recapsolo/${game.uuid}`, {
@@ -75,8 +81,7 @@ export default function SoloPage() {
                   },
                 });
               } else {
-                if (questionSolo.audio) {
-                  const audio = new Audio(questionSolo.audio);
+                if (audio) {
                   setAudio(audio);
                 }
                 setQuestion(questionSolo);
@@ -177,6 +182,11 @@ export default function SoloPage() {
       audio.volume = sound / 100;
       audio.play();
     }
+    return () => {
+      if (audio) {
+        audio.pause();
+      }
+    };
   }, [audio, sound]);
 
   const scrollTop = () => {

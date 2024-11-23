@@ -1,7 +1,7 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { RealtimeChannel, RealtimePresenceState } from "@supabase/supabase-js";
 import { px, viewHeight } from "csx";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -20,6 +20,7 @@ import { QuestionDuel } from "src/models/Question";
 import { Response, ResponseDuel } from "src/models/Response";
 import { StatusGameDuel } from "src/models/enum";
 import { Colors } from "src/style/Colors";
+import { PreloadImages } from "src/utils/preload";
 
 export const COLORDUEL1 = Colors.pink2;
 export const COLORDUEL2 = Colors.blue;
@@ -45,6 +46,7 @@ export default function DuelPage() {
   const [responsePlayer2, setResponsePlayer2] = useState<
     undefined | ResponseDuel
   >(undefined);
+  const [images, setImages] = useState<Array<string>>([]);
 
   useEffect(() => {
     const getGame = () => {
@@ -61,10 +63,39 @@ export default function DuelPage() {
     getGame();
   }, [navigate, uuidGame]);
 
+  const idPlayer1 = useMemo(
+    () => (game && game.player1 ? game.player1.id : null),
+    [game]
+  );
+  const idPlayer2 = useMemo(
+    () => (game && game.player2 ? game.player2.id : null),
+    [game]
+  );
+
+  const getBroadcastValidate = useCallback(
+    (res: ResponseDuel) => {
+      if (res.uuid === idPlayer1) {
+        setResponsePlayer1(res);
+      } else if (res.uuid === idPlayer2) {
+        setResponsePlayer2(res);
+      }
+      setGame((prev) =>
+        prev
+          ? {
+              ...prev,
+              ptsplayer1: res.ptsplayer1,
+              ptsplayer2: res.ptsplayer2,
+            }
+          : undefined
+      );
+    },
+    [idPlayer1, idPlayer2]
+  );
+
   useEffect(() => {
-    if (game) {
+    if (uuidGame) {
       const channel = supabase
-        .channel(game.uuid, {
+        .channel(uuidGame, {
           config: {
             presence: {
               key: "uuid",
@@ -87,29 +118,48 @@ export default function DuelPage() {
             filter: `player1=eq.${uuid}`,
           },
           (payload) => {
-            const game = payload.new as DuelGameChange;
-            if (game.status === StatusGameDuel.CANCEL) {
-              navigate(`/recapduel/${game.uuid}`);
+            const res = payload.new as DuelGameChange;
+            if (res.status === StatusGameDuel.CANCEL) {
+              navigate(`/recapduel/${res.uuid}`);
             }
           }
         )
         .on("broadcast", { event: "updategame" }, (value) => {
-          const game = value.payload as DuelGame;
-          setGame(game);
+          const res = value.payload as DuelGame;
+          setGame(res);
         })
         .on("broadcast", { event: "question" }, (value) => {
           const questionduel = value.payload as QuestionDuel;
+          let urls: Array<string> = [];
+          let audio = undefined;
           if (questionduel.audio) {
-            const audio = new Audio(questionduel.audio);
-            audio.volume = sound / 100;
-            audio.play();
-            setAudio(audio);
+            audio = new Audio(questionduel.audio);
+            audio.load();
           }
-          setTimer(questionduel.time);
-          setQuestion(questionduel);
-          setResponse(undefined);
-          setResponsePlayer1(undefined);
-          setResponsePlayer2(undefined);
+
+          if (questionduel.image) {
+            urls = [...urls, questionduel.image];
+          }
+          if (questionduel.typequestion === "IMAGE") {
+            const images = questionduel.responses.reduce(
+              (acc, v) => (v.image ? [...acc, v.image] : acc),
+              [] as Array<string>
+            );
+            urls = [...urls, ...images];
+          }
+          setImages(urls);
+          setTimeout(async () => {
+            if (audio) {
+              audio.volume = sound / 100;
+              audio.play();
+              setAudio(audio);
+            }
+            setTimer(questionduel.time);
+            setQuestion(questionduel);
+            setResponse(undefined);
+            setResponsePlayer1(undefined);
+            setResponsePlayer2(undefined);
+          }, 2000);
         })
         .on("broadcast", { event: "endquestion" }, (value) => {
           setTimer(undefined);
@@ -117,22 +167,7 @@ export default function DuelPage() {
         })
         .on("broadcast", { event: "validate" }, (value) => {
           const res = value.payload as ResponseDuel;
-          if (game) {
-            if (res.uuid === game.player1.id) {
-              setResponsePlayer1(res);
-            } else if (res.uuid === game.player2.id) {
-              setResponsePlayer2(res);
-            }
-            setGame((prev) =>
-              prev
-                ? {
-                    ...prev,
-                    ptsplayer1: res.ptsplayer1,
-                    ptsplayer2: res.ptsplayer2,
-                  }
-                : undefined
-            );
-          }
+          getBroadcastValidate(res);
         })
         .on("broadcast", { event: "end" }, (value) => {
           const res = value.payload as {
@@ -140,7 +175,7 @@ export default function DuelPage() {
           };
           channel.unsubscribe();
           setTimeout(() => {
-            navigate(`/recapduel/${game.uuid}`, {
+            navigate(`/recapduel/${uuidGame}`, {
               state: {
                 extra: res.extra,
               },
@@ -148,7 +183,7 @@ export default function DuelPage() {
           }, 2000);
         })
         .on("broadcast", { event: "cancel" }, () => {
-          navigate(`/recapduel/${game.uuid}`);
+          navigate(`/recapduel/${uuidGame}`);
         })
         .subscribe(async (status) => {
           if (status !== "SUBSCRIBED") {
@@ -164,7 +199,7 @@ export default function DuelPage() {
         }
       };
     }
-  }, [game, navigate, uuid, audio, sound]);
+  }, [uuidGame, navigate, uuid, audio, sound, getBroadcastValidate]);
 
   const validateResponse = async (value: string | number) => {
     if (channel && game && language && uuid) {
@@ -212,6 +247,7 @@ export default function DuelPage() {
         <Helmet>
           <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
         </Helmet>
+        <PreloadImages urls={images} />
         <Box
           sx={{
             display: "flex",

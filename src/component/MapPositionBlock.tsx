@@ -8,8 +8,8 @@ import {
   Point,
   ZoomableGroup,
 } from "react-simple-maps";
-import { Colors } from "src/style/Colors";
 import mapWorld from "src/assets/map/countries-50m.json";
+import { Colors } from "src/style/Colors";
 
 interface Position {
   coordinates: Point;
@@ -81,6 +81,8 @@ export const MapPositionBlock = ({ data, width, height }: Props) => {
           ? 884
           : window.innerWidth,
         height: height,
+        cursor: "pointer",
+        pointerEvents: "none",
       }}
       ref={refMap}
     >
@@ -101,10 +103,9 @@ export const MapPositionBlock = ({ data, width, height }: Props) => {
         strokeWidth={strokeWidth}
       >
         <ZoomableGroup
-          maxZoom={200}
+          maxZoom={400}
           zoom={position.zoom}
           center={position.coordinates}
-          onMoveEnd={handleMoveEnd}
         >
           <Geographies geography={mapWorld}>
             {({ geographies }) =>
@@ -166,7 +167,7 @@ export const MapPositionBlock = ({ data, width, height }: Props) => {
           strokeWidth={strokeWidth}
         >
           <ZoomableGroup
-            maxZoom={200}
+            maxZoom={400}
             zoom={position.zoom}
             center={position.coordinates}
             onMoveEnd={handleMoveEnd}
