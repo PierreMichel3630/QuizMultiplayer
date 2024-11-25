@@ -44,6 +44,7 @@ export const Colors = {
   yellow: yellow[800],
   yellow2: yellow[900],
   yellow3: yellow[200],
+  yellow4: yellow[500],
   orange: orange[900],
   orange2: orange[300],
   black: "#000",

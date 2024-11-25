@@ -24,6 +24,7 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const uuid = body.game;
     const value = body.response;
+    const exact = body.exact;
     const language = body.language;
 
     const sologame = await supabase
@@ -48,7 +49,7 @@ Deno.serve(async (req) => {
           result = verifyResponse(
             question.response[language],
             value,
-            question.exact
+            exact ? exact : question.exact
           );
         }
       }

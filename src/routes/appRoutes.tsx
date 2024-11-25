@@ -77,18 +77,6 @@ export const AppRoutes = [
         children: [...AdminRoutes],
       },
       {
-        path: "/login",
-        element: <LoginPage />,
-      },
-      {
-        path: "/register",
-        element: <RegisterPage />,
-      },
-      {
-        path: "/forgotpassword",
-        element: <ForgotPasswordPage />,
-      },
-      {
         path: "/resetpassword",
         element: <ResetPasswordPage />,
       },
@@ -179,6 +167,18 @@ export const AppRoutes = [
     ],
   },
   /*NO HEADER*/
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/forgotpassword",
+    element: <ForgotPasswordPage />,
+  },
+  {
+    path: "/register",
+    element: <RegisterPage />,
+  },
   {
     path: "/badge/:id",
     element: <BadgePage />,

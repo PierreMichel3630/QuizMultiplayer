@@ -1,5 +1,4 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
-import { px } from "csx";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { selectLastXThemeByPlayer } from "src/api/game";
@@ -99,7 +98,7 @@ export const PreviousGameBlock = () => {
           <Box
             sx={{
               display: "flex",
-              gap: px(5),
+              gap: 1,
               overflowX: "auto",
               scrollbarWidth: "none",
             }}

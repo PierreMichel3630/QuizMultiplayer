@@ -75,7 +75,7 @@ interface PropsResponse {
   myresponse: string | number | undefined;
   question: QuestionSolo;
   response?: ResponseSolo;
-  onSubmit: (value: string | number) => void;
+  onSubmit: (value: MyResponse) => void;
 }
 
 export const QcmResponseBlock = ({
@@ -181,7 +181,10 @@ export const QcmResponseBlock = ({
               event.preventDefault();
               if (!response && !isClick) {
                 setIsClick(true);
-                onSubmit(index);
+                onSubmit({
+                  value: index,
+                  exact: true,
+                });
               }
             }}
           >

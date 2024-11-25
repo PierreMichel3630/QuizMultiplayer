@@ -461,6 +461,7 @@
     }
   },
   "form": {
+    "mandatoryvalue": "* Champs obligatoires",
     "login": {
       "email": "Adresse email",
       "password": "Mot de passe",
@@ -490,7 +491,8 @@
       "requiredmail": "Veuillez saisir une adresse mail",
       "formatmail": "Veuillez saisir une adresse mail valide",
       "alreadyaccount": "Déjà un compte ?",
-      "connect": "Connectez-vous"
+      "connect": "Connectez-vous",
+      "errorcreatemail": "L'adresse email est déjà utilisée"
     },
     "forgotpassword": {
       "forgotpassword": "Mot de passe oublié ?",

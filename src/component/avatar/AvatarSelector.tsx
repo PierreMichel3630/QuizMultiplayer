@@ -12,6 +12,7 @@ import { MoneyBlock } from "../MoneyBlock";
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import { useTranslation } from "react-i18next";
 import { SkeletonCirculars } from "../skeleton/SkeletonCircular";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 interface Props {
   onSelect: (value: AvatarInterface) => void;
@@ -158,6 +159,55 @@ export const AvatarSelector = ({ onSelect }: Props) => {
           })}
         </Grid>
       </Grid>
+    </Grid>
+  );
+};
+
+interface PropsLogin {
+  avatars: Array<AvatarInterface>;
+  avatar: number;
+  onSelect: (value: AvatarInterface) => void;
+}
+
+export const AvatarLoginSelector = ({
+  avatars,
+  avatar,
+  onSelect,
+}: PropsLogin) => {
+  return (
+    <Grid container spacing={1} alignItems="center" justifyContent="center">
+      {avatars.map((el) => {
+        const isSelect = avatar === el.id;
+        const color = isSelect ? Colors.green2 : "transparent";
+        return (
+          <Grid item key={el.id} sx={{ position: "relative" }}>
+            {isSelect && (
+              <CheckCircleOutlineIcon
+                sx={{
+                  color: Colors.green2,
+                  position: "absolute",
+                  backgroundColor: "white",
+                  borderRadius: percent(50),
+                  top: 0,
+                  right: 0,
+                  transform: "translate(0%, 0%)",
+                  zIndex: 2,
+                }}
+              />
+            )}
+            <Avatar
+              sx={{
+                cursor: "pointer",
+                width: 60,
+                height: 60,
+                border: `3px solid ${color}`,
+              }}
+              src={el.icon}
+              onClick={() => onSelect(el)}
+            />
+          </Grid>
+        );
+      })}
     </Grid>
   );
 };

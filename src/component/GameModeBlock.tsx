@@ -86,7 +86,6 @@ export const GameModeBlock = () => {
                   justifyContent: "center",
                   flexDirection: "column",
                   cursor: "pointer",
-                  background: "rgba(255,255,255,.15)",
                   borderRadius: px(5),
                   gap: px(2),
                 }}

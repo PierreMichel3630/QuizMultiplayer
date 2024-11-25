@@ -1,8 +1,10 @@
-import { Button, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import { useTranslation } from "react-i18next";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 export const GoHomeButton = () => {
   const { t } = useTranslation();
@@ -18,5 +20,25 @@ export const GoHomeButton = () => {
         {t("commun.backhome")}
       </Typography>
     </Button>
+  );
+};
+
+export const GoBackButtonIcon = () => {
+  const navigate = useNavigate();
+
+  return (
+    <Box onClick={() => navigate("/")} sx={{ cursor: "pointer" }}>
+      <KeyboardArrowLeftIcon fontSize="large" />
+    </Box>
+  );
+};
+
+export const QuitHomeButton = () => {
+  const navigate = useNavigate();
+
+  return (
+    <Box onClick={() => navigate("/")} sx={{ cursor: "pointer" }}>
+      <CancelIcon fontSize="large" />
+    </Box>
   );
 };

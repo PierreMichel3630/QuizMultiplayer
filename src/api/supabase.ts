@@ -14,7 +14,8 @@ export const signUpWithEmail = (
   email: string,
   password: string,
   username: string,
-  avatar: number
+  avatar: number | null,
+  country: number | null
 ) =>
   supabase.auth.signUp({
     email,
@@ -23,6 +24,7 @@ export const signUpWithEmail = (
       data: {
         username,
         avatar,
+        country,
       },
     },
   });

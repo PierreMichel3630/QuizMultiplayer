@@ -1,5 +1,5 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "src/context/AuthProviderSupabase";
 
@@ -11,7 +11,7 @@ import { HeadTitle } from "src/component/HeadTitle";
 import { MyCountryBlock } from "src/component/MyCountryBlock";
 import { TitleSelector } from "src/component/TitleSelector";
 import { AvatarSelector } from "src/component/avatar/AvatarSelector";
-import { SelectCountryModal } from "src/component/modal/SelectCountryModal";
+import { SkeletonRectangular } from "src/component/skeleton/SkeletonRectangular";
 import { useApp } from "src/context/AppProvider";
 import { useMessage } from "src/context/MessageProvider";
 import { Avatar } from "src/models/Avatar";
@@ -19,15 +19,12 @@ import { Badge } from "src/models/Badge";
 import { Banner } from "src/models/Banner";
 import { Profile } from "src/models/Profile";
 import { Title } from "src/models/Title";
-import { SkeletonRectangular } from "src/component/skeleton/SkeletonRectangular";
 
 export default function PersonalizedPage() {
   const { t } = useTranslation();
   const { setMessage, setSeverity } = useMessage();
   const { user, profile, setProfile } = useAuth();
   const { getMyTitles, getMyBadges } = useApp();
-
-  const [openCountry, setOpenCountry] = useState(false);
 
   useEffect(() => {
     getMyTitles();
@@ -128,7 +125,6 @@ export default function PersonalizedPage() {
       setSeverity("error");
       setMessage(t("commun.error"));
     }
-    setOpenCountry(false);
   };
 
   return (
@@ -150,8 +146,8 @@ export default function PersonalizedPage() {
             {profile ? (
               <Grid item xs={12} md={8}>
                 <MyCountryBlock
-                  profile={profile}
-                  onChange={() => setOpenCountry(true)}
+                  country={profile ? profile.country : null}
+                  onChange={(value) => changeCountry(value)}
                   onDelete={() => changeCountry(null)}
                 />
               </Grid>
@@ -199,13 +195,6 @@ export default function PersonalizedPage() {
           </Grid>
         </Box>
       </Grid>
-      {openCountry && (
-        <SelectCountryModal
-          open={openCountry}
-          close={() => setOpenCountry(false)}
-          onValid={changeCountry}
-        />
-      )}
     </Grid>
   );
 }

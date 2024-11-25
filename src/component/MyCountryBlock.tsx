@@ -1,30 +1,29 @@
-import { Avatar, Box, Button, Paper, Typography } from "@mui/material";
+import { Box, Button, Paper, Typography } from "@mui/material";
+import { px } from "csx";
 import { useApp } from "src/context/AppProvider";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
-import { px } from "csx";
-import { Profile } from "src/models/Profile";
 
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Colors } from "src/style/Colors";
-import { useMemo } from "react";
+import { SelectCountryModal } from "./modal/SelectCountryModal";
 
 interface Props {
-  profile: Profile | null;
-  onChange: () => void;
+  country: number | null;
+  onChange: (value: number) => void;
   onDelete: () => void;
 }
 
-export const MyCountryBlock = ({ profile, onChange, onDelete }: Props) => {
+export const MyCountryBlock = ({ country, onChange, onDelete }: Props) => {
   const { t } = useTranslation();
   const { countries } = useApp();
+  const [open, setOpen] = useState(false);
 
   const myCountry = useMemo(
     () =>
-      profile && profile.country !== null
-        ? countries.find((el) => el.id === profile.country)
-        : undefined,
-    [countries, profile]
+      country !== null ? countries.find((el) => el.id === country) : undefined,
+    [countries, country]
   );
 
   return (
@@ -41,28 +40,37 @@ export const MyCountryBlock = ({ profile, onChange, onDelete }: Props) => {
             justifyContent: "space-between",
             backgroundColor: Colors.grey,
           }}
-          onClick={onChange}
+          onClick={() => setOpen(true)}
         >
-          <Avatar
+          <img
             src={myCountry.flag}
-            sx={{
-              width: 40,
-              height: 40,
-              border: `2px solid ${Colors.white}`,
+            style={{
+              maxHeight: 30,
+              border: `1px solid ${Colors.grey}`,
             }}
           />
-          <JsonLanguageBlock variant="h6" value={myCountry.name} />
+          <JsonLanguageBlock variant="h4" value={myCountry.name} />
           <DeleteIcon sx={{ cursor: "pointer" }} onClick={onDelete} />
         </Paper>
       ) : (
         <Button
           variant="contained"
           fullWidth
-          onClick={onChange}
+          onClick={() => setOpen(true)}
           sx={{ backgroundColor: Colors.grey2 }}
         >
           <Typography variant="h6">{t("commun.selectcountry")}</Typography>
         </Button>
+      )}
+      {open && (
+        <SelectCountryModal
+          open={open}
+          close={() => setOpen(false)}
+          onValid={(value) => {
+            onChange(value);
+            setOpen(false);
+          }}
+        />
       )}
     </Box>
   );

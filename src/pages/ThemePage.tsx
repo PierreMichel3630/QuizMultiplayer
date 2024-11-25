@@ -1,10 +1,10 @@
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import HomeIcon from "@mui/icons-material/Home";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-import LightbulbIcon from "@mui/icons-material/Lightbulb";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import StarIcon from "@mui/icons-material/Star";
+import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import SupervisedUserCircleRoundedIcon from "@mui/icons-material/SupervisedUserCircleRounded";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import {
@@ -16,7 +16,7 @@ import {
   Skeleton,
   Typography,
 } from "@mui/material";
-import { percent, px } from "csx";
+import { important, percent, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -34,6 +34,7 @@ import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { ProposeQuestionModal } from "src/component/modal/ProposeQuestionModal";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
+import { GoBackButtonIcon } from "src/component/navigation/GoBackButton";
 import { RankingTableSoloDuel } from "src/component/table/RankingTable";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
@@ -190,51 +191,29 @@ export default function ThemePage() {
                 alignItems="center"
                 sx={{ zIndex: 10 }}
               >
-                <Grid
-                  item
-                  display={{ xs: "none", sm: "block" }}
-                  sm={12}
-                  sx={{ textAlign: "center" }}
-                >
+                <Grid item xs={12} sx={{ mb: 1 }}>
                   <Skeleton
                     variant="rectangular"
-                    width={70}
-                    height={20}
+                    width="100%"
+                    height={25}
                     sx={{ bgcolor: "grey.800" }}
                   />
                 </Grid>
-                <Grid item xs={3} sm={3} md={2}>
+                <Grid item xs={5}>
                   <Skeleton
                     variant="rectangular"
                     width={"100%"}
-                    height={70}
+                    height={150}
                     sx={{ bgcolor: "grey.800" }}
                   />
                 </Grid>
-                <Grid
-                  item
-                  display={{ xs: "block", sm: "none" }}
-                  xs={8}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Skeleton
-                    variant="rectangular"
-                    width={"70%"}
-                    height={35}
-                    sx={{ bgcolor: "grey.800" }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={9} md={10}>
+                <Grid item xs={7}>
                   <Grid container spacing={1}>
                     <Grid item xs={12}>
                       <Skeleton
                         variant="rectangular"
                         width={"100%"}
-                        height={40}
+                        height={35}
                         sx={{ bgcolor: "grey.800" }}
                       />
                     </Grid>
@@ -242,7 +221,7 @@ export default function ThemePage() {
                       <Skeleton
                         variant="rectangular"
                         width={"100%"}
-                        height={40}
+                        height={35}
                         sx={{ bgcolor: "grey.800" }}
                       />
                     </Grid>
@@ -250,7 +229,7 @@ export default function ThemePage() {
                       <Skeleton
                         variant="rectangular"
                         width={"100%"}
-                        height={40}
+                        height={35}
                         sx={{ bgcolor: "grey.800" }}
                       />
                     </Grid>
@@ -258,15 +237,7 @@ export default function ThemePage() {
                       <Skeleton
                         variant="rectangular"
                         width={"100%"}
-                        height={40}
-                        sx={{ bgcolor: "grey.800" }}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Skeleton
-                        variant="rectangular"
-                        width={"100%"}
-                        height={40}
+                        height={35}
                         sx={{ bgcolor: "grey.800" }}
                       />
                     </Grid>
@@ -289,32 +260,46 @@ export default function ThemePage() {
                   <Grid container spacing={1} alignItems="center">
                     <Grid
                       item
-                      display={{ xs: "none", sm: "block" }}
-                      sm={12}
-                      sx={{ textAlign: "center" }}
+                      xs={12}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        mb: 1,
+                        textAlign: "center",
+                      }}
                     >
+                      <GoBackButtonIcon />
                       <JsonLanguageBlock
-                        variant="h1"
+                        variant="h2"
                         color="text.secondary"
+                        sx={{ fontSize: important(px(25)) }}
                         value={theme.name}
                       />
+                      {favorite ? (
+                        <StarIcon
+                          sx={{
+                            fontSize: 45,
+                            color: Colors.yellow4,
+                            cursor: "pointer",
+                          }}
+                          onClick={() => addFavorite()}
+                        />
+                      ) : (
+                        <StarBorderOutlinedIcon
+                          sx={{
+                            fontSize: 45,
+                            color: Colors.yellow4,
+                            cursor: "pointer",
+                          }}
+                          onClick={() => addFavorite()}
+                        />
+                      )}
                     </Grid>
-                    <Grid item xs={3} sm={3} md={2}>
+                    <Grid item xs={5}>
                       <ImageThemeBlock theme={theme} />
                     </Grid>
-                    <Grid
-                      item
-                      display={{ xs: "block", sm: "none" }}
-                      xs={8}
-                      sx={{ textAlign: "center" }}
-                    >
-                      <JsonLanguageBlock
-                        variant="h1"
-                        color="text.secondary"
-                        value={theme.name}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={9} md={10}>
+                    <Grid item xs={7}>
                       <Grid container spacing={1}>
                         {!theme.enabled && (
                           <Grid item xs={12}>
@@ -384,23 +369,7 @@ export default function ThemePage() {
                                 />
                               </Grid>
                             )}
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                size="small"
-                                value={
-                                  favorite ? Colors.greyDarkMode : Colors.yellow
-                                }
-                                label={
-                                  favorite
-                                    ? t("commun.removefavorite")
-                                    : t("commun.addfavorite")
-                                }
-                                icon={StarIcon}
-                                onClick={() => addFavorite()}
-                                variant="contained"
-                              />
-                            </Grid>
-                            {user && (
+                            {/*user && (
                               <Grid item xs={12}>
                                 <ButtonColor
                                   size="small"
@@ -417,7 +386,7 @@ export default function ThemePage() {
                                   variant="contained"
                                 />
                               </Grid>
-                            )}
+                            )*/}
                           </>
                         ) : (
                           <>

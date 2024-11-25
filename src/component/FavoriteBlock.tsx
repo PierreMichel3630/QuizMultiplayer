@@ -123,7 +123,7 @@ export const FavoriteBlock = ({ search, category }: Props) => {
           <Box
             sx={{
               display: "flex",
-              gap: px(5),
+              gap: 1,
               overflowX: "auto",
               scrollbarWidth: "none",
             }}

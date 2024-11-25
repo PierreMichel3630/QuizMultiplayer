@@ -10,7 +10,7 @@ import { QuestionSoloBlock } from "src/component/QuestionBlock";
 import { ResponseSoloBlock } from "src/component/ResponseBlock";
 import { useUser } from "src/context/UserProvider";
 import { QuestionSolo } from "src/models/Question";
-import { ResponseSolo } from "src/models/Response";
+import { MyResponse, ResponseSolo } from "src/models/Response";
 
 import { percent, viewHeight } from "csx";
 import { LoadingDot } from "src/component/Loading";
@@ -117,13 +117,19 @@ export default function YtShortPage() {
   );
 
   const validateResponse = useCallback(
-    async (value: string | number | undefined) => {
-      setMyresponse(value);
+    async (value: MyResponse | undefined) => {
+      const myResponseValue = value ? value.value : undefined;
+      setMyresponse(myResponseValue);
       setTimer(undefined);
       clearTimeout(timeoutQuestion);
       if (game && language) {
         const { data } = await supabase.functions.invoke("response-solo-game", {
-          body: { game: game.uuid, response: value, language: language.iso },
+          body: {
+            game: game.uuid,
+            response: myResponseValue,
+            language: language.iso,
+            exact: value ? value.exact : undefined,
+          },
         });
         const res = data as ResponseSolo;
         setMyresponse(undefined);

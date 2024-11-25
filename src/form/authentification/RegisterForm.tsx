@@ -7,19 +7,23 @@ import {
   InputAdornment,
   InputLabel,
   OutlinedInput,
+  Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signUpWithEmail } from "src/api/supabase";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
+import { useApp } from "src/context/AppProvider";
+import { AvatarLoginSelector } from "src/component/avatar/AvatarSelector";
+import { MyCountryBlock } from "src/component/MyCountryBlock";
 
 export const RegisterForm = () => {
   const { t } = useTranslation();
@@ -27,12 +31,19 @@ export const RegisterForm = () => {
   const { login } = useAuth();
   const { setUuid } = useUser();
   const { setMessage, setSeverity } = useMessage();
+  const { avatars } = useApp();
+
+  const avatarsDisplay = useMemo(() => {
+    return [...avatars].filter((el) => el.price === 0 && !el.isaccomplishment);
+  }, [avatars]);
 
   const initialValue = {
     email: "",
     username: "",
     password: "",
     submit: null,
+    avatar: 1,
+    country: null,
   };
 
   const validationSchema = Yup.object().shape({
@@ -64,11 +75,16 @@ export const RegisterForm = () => {
           values.email,
           values.password,
           values.username,
-          1
+          values.avatar,
+          values.country
         );
         if (error) {
           setSeverity("error");
-          setMessage(t("commun.error"));
+          setMessage(
+            error.status === 422
+              ? t("form.register.errorcreatemail")
+              : t("commun.error")
+          );
         } else {
           const {
             data: { user, session },
@@ -92,7 +108,15 @@ export const RegisterForm = () => {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <Grid container spacing={1}>
+      <Grid container spacing={1} justifyContent="center">
+        <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <Typography variant="h4">
+            {t("form.register.createaccount")}
+          </Typography>
+        </Grid>
+        <Grid item xs={12} sx={{ textAlign: "right" }}>
+          <Typography variant="caption">{t("form.mandatoryvalue")}</Typography>
+        </Grid>
         <Grid item xs={12}>
           <FormControl
             fullWidth
@@ -181,6 +205,26 @@ export const RegisterForm = () => {
             )}
           </FormControl>
         </Grid>
+        <Grid item xs={12} sx={{ mt: 1 }}>
+          <Typography variant="h6">{t("commun.myorigincountry")}</Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <MyCountryBlock
+            country={formik.values.country}
+            onChange={(value) => formik.setFieldValue(`country`, value)}
+            onDelete={() => formik.setFieldValue(`country`, null)}
+          />
+        </Grid>
+        <Grid item xs={12} sx={{ mt: 1 }}>
+          <Typography variant="h6">{t("commun.avatars")}</Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <AvatarLoginSelector
+            avatars={avatarsDisplay}
+            avatar={formik.values.avatar}
+            onSelect={(value) => formik.setFieldValue(`avatar`, value.id)}
+          />
+        </Grid>
         {formik.errors.submit && (
           <Grid item xs={12}>
             <FormHelperText error>{formik.errors.submit}</FormHelperText>
@@ -198,6 +242,18 @@ export const RegisterForm = () => {
           >
             {t("form.register.continue")}
           </Button>
+        </Grid>
+        <Grid item>
+          <Typography variant="body1">
+            {t("form.register.alreadyaccount")}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Link to="/login">
+            <Typography variant="body1" sx={{ textDecoration: "underline" }}>
+              {t("form.register.connect")}
+            </Typography>
+          </Link>
         </Grid>
       </Grid>
     </form>

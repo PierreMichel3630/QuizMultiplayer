@@ -1,47 +1,69 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { LoginForm } from "src/form/authentification/LoginForm";
 
+import { px, viewHeight } from "csx";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
-import { HeadTitle } from "src/component/HeadTitle";
+import logo from "src/assets/logo.svg";
+import { QuitHomeButton } from "src/component/navigation/GoBackButton";
+import { Colors } from "src/style/Colors";
 
 export default function LoginPage() {
   const { t } = useTranslation();
 
   return (
-    <Grid container spacing={1}>
+    <Container
+      maxWidth="xs"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: viewHeight(100),
+        p: 0,
+      }}
+    >
       <Helmet>
         <title>{`${t("pages.login.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
-        <HeadTitle title={t("form.login.connect")} />
-      </Grid>
-      <Grid item xs={12}>
-        <Box sx={{ p: 1 }}>
-          <Grid container spacing={1} justifyContent="center">
-            <Grid item xs={12}>
-              <LoginForm />
-            </Grid>
-            <Grid item>
-              <Typography variant="body1">
-                {t("form.login.haveaccount")}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Link to="/register">
-                <Typography
-                  variant="body1"
-                  sx={{ textDecoration: "underline" }}
-                >
-                  {t("form.login.createaccount")}
-                </Typography>
-              </Link>
-            </Grid>
-          </Grid>
+      <Box
+        sx={{
+          display: "flex",
+          flex: "1 1 0",
+          flexDirection: "column",
+          justifyContent: "center",
+          p: 1,
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 3,
+            border: `2px solid ${Colors.grey3}`,
+            borderRadius: px(15),
+            p: 2,
+            position: "relative",
+          }}
+        >
+          <Box sx={{ position: "absolute", top: 0, right: 0 }}>
+            <QuitHomeButton />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+            }}
+          >
+            <img src={logo} width={45} height={45} loading="lazy" />
+            <Typography variant="h2">{t("appname")}</Typography>
+          </Box>
+          <Box>
+            <LoginForm />
+          </Box>
         </Box>
-      </Grid>
-    </Grid>
+      </Box>
+    </Container>
   );
 }

@@ -1,5 +1,4 @@
 import { Box, Button, Divider, Grid, Typography } from "@mui/material";
-import { px } from "csx";
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -109,7 +108,7 @@ export const NewBlock = () => {
           <Box
             sx={{
               display: "flex",
-              gap: px(10),
+              gap: 1,
               overflowX: "auto",
               scrollbarWidth: "none",
             }}
