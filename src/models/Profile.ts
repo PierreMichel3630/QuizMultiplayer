@@ -1,13 +1,14 @@
 import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
 import { Banner } from "./Banner";
+import { Country } from "./Country";
 import { Title } from "./Title";
 
 export interface Profile {
   id: string;
   username: string;
   color: string;
-  country: null | number;
+  country: null | Country;
   avatar: Avatar;
   badge: null | Badge;
   title: null | Title;

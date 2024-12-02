@@ -47,7 +47,7 @@ export const SelectCountryModal = ({
 }: Props) => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const { language } = useUser();
   const { countries } = useApp();
 
@@ -97,7 +97,7 @@ export const SelectCountryModal = ({
     <Dialog
       onClose={close}
       open={open}
-      maxWidth="lg"
+      maxWidth="xs"
       fullWidth
       fullScreen={fullScreen}
     >
@@ -140,9 +140,11 @@ export const SelectCountryModal = ({
                   <ListItem disablePadding>
                     <ListItemButton onClick={() => onValid(el.id)}>
                       <ListItemIcon>
-                        {profile && profile.country === el.id && (
-                          <CheckCircleIcon color="success" />
-                        )}
+                        {profile &&
+                          profile.country !== null &&
+                          profile.country.id === el.id && (
+                            <CheckCircleIcon color="success" />
+                          )}
                       </ListItemIcon>
                       <ListItemIcon>
                         <Avatar

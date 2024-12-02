@@ -27,10 +27,9 @@ import { HistorySoloGame } from "src/models/Game";
 import { Score } from "src/models/Score";
 import { Colors } from "src/style/Colors";
 import { AvatarAccount } from "./avatar/AvatarAccount";
+import { GroupButtonTime, GroupButtonTypeGame } from "./button/ButtonGroup";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 import { DataRanking, RankingTable } from "./table/RankingTable";
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 
 interface Props {
   themes?: Array<number>;
@@ -304,40 +303,6 @@ export const RankingTop5Block = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<Array<DataRanking>>([]);
 
-  const options = useMemo(
-    () => [
-      {
-        icon: <PlayCircleIcon />,
-        label: t("commun.solo"),
-        value: ClassementScoreEnum.points,
-      },
-      {
-        icon: <OfflineBoltIcon />,
-        label: t("commun.duel"),
-        value: ClassementScoreEnum.rank,
-      },
-    ],
-    [t]
-  );
-
-  const optionsTime = useMemo(
-    () => [
-      {
-        label: t("commun.week"),
-        value: ClassementTimeEnum.week,
-      },
-      {
-        label: t("commun.month"),
-        value: ClassementTimeEnum.month,
-      },
-      {
-        label: t("commun.alltime"),
-        value: ClassementTimeEnum.alltime,
-      },
-    ],
-    [t]
-  );
-
   useEffect(() => {
     setIsLoading(true);
     setData([]);
@@ -378,65 +343,26 @@ export const RankingTop5Block = () => {
   }, [tab, tabTime]);
 
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={1} alignItems="center">
       <Grid item xs={6}>
         <Typography variant="h2">{t("commun.ranking")}</Typography>
       </Grid>
       <Grid item xs={6} sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <ToggleButtonGroup
-          color="primary"
-          value={tab}
-          exclusive
-          onChange={(
-            _event: React.MouseEvent<HTMLElement>,
-            newValue: string
-          ) => {
-            setTab(newValue as ClassementScoreEnum);
+        <GroupButtonTypeGame
+          selected={tab}
+          onChange={(value) => {
+            setTab(value);
           }}
-          aria-label="typegame"
-        >
-          {options.map((option) => (
-            <ToggleButton
-              key={option.value}
-              value={option.value}
-              sx={{
-                p: "2px 8px",
-              }}
-            >
-              {option.icon}
-              <Typography variant="h6" noWrap>
-                {option.label}
-              </Typography>
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
+        />
       </Grid>
       {tab === ClassementScoreEnum.points && (
-        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-          <ToggleButtonGroup
-            color="primary"
-            value={tabTime}
-            exclusive
-            onChange={(
-              _event: React.MouseEvent<HTMLElement>,
-              newValue: string
-            ) => {
-              if (newValue !== null) setTabTime(newValue as ClassementTimeEnum);
+        <Grid item xs={12}>
+          <GroupButtonTime
+            selected={tabTime}
+            onChange={(value) => {
+              setTabTime(value);
             }}
-            aria-label="timegame"
-          >
-            {optionsTime.map((option) => (
-              <ToggleButton
-                key={option.value}
-                value={option.value}
-                sx={{ p: "2px 8px" }}
-              >
-                <Typography variant="h6" noWrap>
-                  {option.label}
-                </Typography>
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
+          />
         </Grid>
       )}
       <Grid item xs={12}>

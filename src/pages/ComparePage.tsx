@@ -11,7 +11,6 @@ import {
   selectScoresByProfile,
 } from "src/api/score";
 import { selectTitleByProfile } from "src/api/title";
-import { HeadTitle } from "src/component/HeadTitle";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { BasicSearchInput } from "src/component/Input";
 import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
@@ -170,9 +169,6 @@ export default function ComparePage() {
       <Helmet>
         <title>{`${t("pages.compare.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
-        <HeadTitle title={t("pages.compare.title")} />
-      </Grid>
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>

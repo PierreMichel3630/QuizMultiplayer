@@ -108,7 +108,7 @@ export const ProfilHeader = ({
         )}
         {profile.country && (
           <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-            <CountryBlock id={profile.country} color="text.secondary" />
+            <CountryBlock country={profile.country} color="text.secondary" />
           </Grid>
         )}
       </Grid>

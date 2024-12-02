@@ -2,7 +2,7 @@ import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { Profile } from "src/models/Profile";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-import { percent, px } from "csx";
+import { padding, percent, px } from "csx";
 import { Colors } from "src/style/Colors";
 import { AvatarAccount } from "./avatar/AvatarAccount";
 import { useTranslation } from "react-i18next";
@@ -33,7 +33,7 @@ export const SelectorProfileBlock = ({
             display: "flex",
             alignItems: "center",
             gap: 2,
-            p: 1,
+            p: padding(2, 5),
             cursor: "pointer",
             justifyContent: onDelete ? "space-between" : "center",
             backgroundColor: Colors.grey,
@@ -45,7 +45,7 @@ export const SelectorProfileBlock = ({
             }
           }}
         >
-          <AvatarAccount avatar={profile.avatar.icon} size={30} />
+          <AvatarAccount avatar={profile.avatar.icon} size={40} />
           <Typography variant="h4" sx={{ wordBreak: "break-all" }}>
             {profile.username}
           </Typography>

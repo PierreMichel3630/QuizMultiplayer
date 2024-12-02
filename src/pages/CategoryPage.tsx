@@ -4,7 +4,6 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { FavoriteBlock } from "src/component/FavoriteBlock";
-import { HeadTitle } from "src/component/HeadTitle";
 import { RankingBlock } from "src/component/RankingBlock";
 import { CardTheme } from "src/component/card/CardTheme";
 import { useApp } from "src/context/AppProvider";
@@ -66,11 +65,6 @@ export default function CategoryPage() {
           />
         )}
       </Helmet>
-      {category && (
-        <Grid item xs={12}>
-          <HeadTitle title={category.name[language.iso]} />
-        </Grid>
-      )}
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1} justifyContent="center">

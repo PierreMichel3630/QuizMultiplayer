@@ -39,7 +39,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 
 export interface DataRanking {
   profile: Profile;
-  value: number;
+  value: number | JSX.Element;
   uuid?: string;
   extra?: string;
   date?: Date;
@@ -79,10 +79,15 @@ export const RankingTable = ({ data, loading = false }: Props) => {
     [data]
   );
 
-  const getIcon = (rank: number) => {
+  const getIcon = (rank: number, colorText: string) => {
     let icon = (
       <Avatar sx={{ bgcolor: Colors.grey, width: 25, height: 25 }}>
-        <Typography variant="h6" color="text.primary">
+        <Typography
+          variant="h6"
+          sx={{
+            color: colorText,
+          }}
+        >
           {rank}
         </Typography>
       </Avatar>
@@ -120,19 +125,23 @@ export const RankingTable = ({ data, loading = false }: Props) => {
               {data.map((el, index) => {
                 const isMe = profile && el.profile.id === profile.id;
                 const isFriend = idFriend.includes(el.profile.id);
+                const color = isMe
+                  ? Colors.blue3
+                  : isFriend
+                  ? Colors.purple
+                  : "initial";
+                const colorText =
+                  isMe || isFriend ? Colors.white : "text.primary";
+
                 return (
                   <Fragment key={index}>
                     <TableRow
                       sx={{
-                        backgroundColor: isMe
-                          ? Colors.blue3
-                          : isFriend
-                          ? Colors.purple
-                          : "initial",
+                        backgroundColor: color,
                       }}
                     >
                       <TableCell align="left" sx={{ p: px(4) }}>
-                        {getIcon(el.rank)}
+                        {getIcon(el.rank, colorText)}
                       </TableCell>
                       <TableCell sx={{ p: px(4) }}>
                         <Link
@@ -152,13 +161,20 @@ export const RankingTable = ({ data, loading = false }: Props) => {
                         >
                           <Typography
                             variant={el.theme ? "h4" : "h6"}
-                            color={"text.primary"}
+                            sx={{
+                              color: colorText,
+                            }}
                           >
                             {el.profile.username}
                           </Typography>
                         </Link>
                         {el.date && (
-                          <Typography variant="caption">
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: colorText,
+                            }}
+                          >
                             {moment(el.date).format("DD/MM/YYYY HH:mm")}
                           </Typography>
                         )}
@@ -178,6 +194,9 @@ export const RankingTable = ({ data, loading = false }: Props) => {
                               <JsonLanguageBlock
                                 variant="body1"
                                 value={el.theme.name}
+                                sx={{
+                                  color: colorText,
+                                }}
                               />
                             </Box>
                           </Link>
@@ -186,16 +205,20 @@ export const RankingTable = ({ data, loading = false }: Props) => {
                       <TableCell align="right" sx={{ p: px(4) }}>
                         <Typography
                           variant="h2"
-                          color="text.primary"
                           component="span"
+                          sx={{
+                            color: colorText,
+                          }}
                         >
                           {el.value}
                         </Typography>
                         {el.extra && (
                           <Typography
                             variant="body1"
-                            color="text.primary"
                             component="span"
+                            sx={{
+                              color: colorText,
+                            }}
                           >
                             {el.extra}
                           </Typography>

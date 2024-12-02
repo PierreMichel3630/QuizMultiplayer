@@ -75,7 +75,7 @@
     "noresultfriends": "Vous n'avez pas encore d'ami.",
     "noresultgame": "Aucune partie jouée.",
     "myrecord": "Best",
-    "hi": "Bonjour",
+    "hi": "Bonjour, {{username}}",
     "deleteaccountmessage": "Attention vous êtes sur le point de supprimer votre compte, cette action est définitive et immédiate, tous vos informations personnelles, ainsi que vos classements, records, ... seront supprimé.",
     "mystatistics": "Mes Statistiques",
     "gamesplay": "Parties jouées",
@@ -262,7 +262,9 @@
     "day": "Jour",
     "week": "Semaine",
     "alltime": "All Time",
-    "month": "Mois"
+    "month": "Mois",
+    "darkmode": "Mode sombre",
+    "lightmode": "Mode clair"
   },
   "offline": {
     "title": "Connectez-vous à Internet",

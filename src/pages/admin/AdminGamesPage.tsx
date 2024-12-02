@@ -1,33 +1,20 @@
-import {
-  Alert,
-  Box,
-  Grid,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Theme } from "src/models/Theme";
 
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import { padding, px } from "csx";
+import { px } from "csx";
 import { useCallback, useEffect, useState } from "react";
 import { selectGames } from "src/api/game";
+import { GroupButtonAllTypeGame } from "src/component/button/ButtonGroup";
 import { CardHistoryGameAdmin } from "src/component/card/CardHistoryGame";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { AutocompleteTheme } from "src/component/Select";
 import { SelectorProfileBlock } from "src/component/SelectorProfileBlock";
 import { SkeletonGames } from "src/component/skeleton/SkeletonGame";
+import { GameModeEnum } from "src/models/enum/GameEnum";
 import { HistoryGameAdmin } from "src/models/Game";
-import { Profile } from "src/models/Profile";
+import { FilterGame } from "../HistoryGamePage";
 
-export interface FilterGameAdmin {
-  type: "ALL" | "DUEL" | "SOLO";
-  themes: Array<Theme>;
-  player?: Profile;
-  opponent?: Profile;
-}
 export default function AdminGamesPage() {
   const { t } = useTranslation();
 
@@ -37,10 +24,10 @@ export default function AdminGamesPage() {
   const [page, setPage] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState<FilterGameAdmin>({
-    type: "ALL",
+  const [filter, setFilter] = useState<FilterGame>({
+    type: GameModeEnum.all,
     themes: [],
-    player: undefined,
+    player: null,
     opponent: undefined,
   });
   const [openModalFriend1, setOpenModalFriend1] = useState(false);
@@ -104,49 +91,25 @@ export default function AdminGamesPage() {
       >
         <Grid container spacing={1} justifyContent="center" alignItems="center">
           <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-            <ToggleButtonGroup
-              color="primary"
-              value={filter.type}
-              exclusive
-              onChange={(
-                _event: React.MouseEvent<HTMLElement>,
-                newType: "ALL" | "DUEL" | "SOLO"
-              ) => {
+            <GroupButtonAllTypeGame
+              selected={filter.type}
+              onChange={(value) => {
                 setFilter((prev) => ({
                   ...prev,
-                  type: newType,
-                  opponent: newType === "DUEL" ? prev.opponent : undefined,
+                  type: value,
                 }));
               }}
-            >
-              <ToggleButton value="ALL" sx={{ p: padding(5, 10) }}>
-                <Typography variant="h6">{t("commun.all")}</Typography>
-              </ToggleButton>
-              <ToggleButton value="SOLO" sx={{ p: padding(5, 10) }}>
-                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                  <PlayCircleIcon fontSize="small" />
-                  <Typography variant="h6">{t("commun.solo")}</Typography>
-                </Box>
-              </ToggleButton>
-              <ToggleButton value="DUEL" sx={{ p: padding(5, 10) }}>
-                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                  <OfflineBoltIcon fontSize="small" />
-                  <Typography variant="h6">{t("commun.duel")}</Typography>
-                </Box>
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </Grid>
-          <Grid item xs={filter.type === "DUEL" ? 6 : 12}>
-            <SelectorProfileBlock
-              label={t("commun.selectplayer")}
-              profile={filter.player}
-              onChange={() => setOpenModalFriend1(true)}
-              onDelete={() =>
-                setFilter((prev) => ({ ...prev, player: undefined }))
-              }
             />
           </Grid>
-          {filter.type === "DUEL" && (
+          <Grid item xs={filter.type === GameModeEnum.duel ? 6 : 12}>
+            <SelectorProfileBlock
+              label={t("commun.selectplayer")}
+              profile={filter.player !== null ? filter.player : undefined}
+              onChange={() => setOpenModalFriend1(true)}
+              onDelete={() => setFilter((prev) => ({ ...prev, player: null }))}
+            />
+          </Grid>
+          {filter.type === GameModeEnum.duel && (
             <Grid item xs={6}>
               <SelectorProfileBlock
                 label={t("commun.selectopponent")}

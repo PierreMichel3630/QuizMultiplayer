@@ -13,31 +13,39 @@ import { useUser } from "src/context/UserProvider";
 import { sortByName } from "src/utils/sort";
 import { searchString } from "src/utils/string";
 
-import AppleIcon from "@mui/icons-material/Apple";
 import { uniqBy } from "lodash";
-import { Link, useNavigate } from "react-router-dom";
-import googleplay from "src/assets/google-play.png";
-import { ButtonColor } from "src/component/Button";
 import { CardCategory } from "src/component/card/CardCategory";
 import { CategoriesBlock } from "src/component/CategoriesBlock";
 import { GameModeBlock } from "src/component/GameModeBlock";
-import { HeadTitle } from "src/component/HeadTitle";
 import { NewBlock } from "src/component/NewBlock";
 import { PreviousGameBlock } from "src/component/PreviousGameBlock";
 import { RankingTop5Block } from "src/component/RankingBlock";
-import { ShareApplicationBlock } from "src/component/ShareApplicationBlock";
 import { SkeletonCategories } from "src/component/skeleton/SkeletonCategory";
 import { useAuth } from "src/context/AuthProviderSupabase";
+
+import googleplay from "src/assets/google-play.png";
+import AppleIcon from "@mui/icons-material/Apple";
+import { ButtonColor } from "src/component/Button";
 import { Colors } from "src/style/Colors";
+import { HeadTitle } from "src/component/HeadTitle";
+import { Link, useNavigate } from "react-router-dom";
 import { urlApple, urlGooglePlay } from "./help/InstallationPage";
+import { test } from "../api/test";
 
 export default function ThemesPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
   const { language } = useUser();
   const { user } = useAuth();
-  const { categories, themes, nbQuestions, nbThemes, isLoadingTheme } =
-    useApp();
-  const navigate = useNavigate();
+  const {
+    categories,
+    nbQuestions,
+    nbThemes,
+    themes,
+    isLoadingTheme,
+    headerSize,
+  } = useApp();
 
   const [search, setSearch] = useState("");
   const [maxIndex, setMaxIndex] = useState(5);
@@ -71,6 +79,7 @@ export default function ThemesPage() {
   );
 
   useEffect(() => {
+    test();
     const handleScroll = () => {
       if (
         window.innerHeight + document.documentElement.scrollTop + 1000 <=
@@ -98,139 +107,142 @@ export default function ThemesPage() {
           content="Testez vos connaissances. Jouez en Solo ou multijoueurs sur un quiz avec plus de 500 thèmes: Cinéma, Histoire, Géographie, Sports, ..."
         />
       </Helmet>
-      <Grid item xs={12}>
-        <HeadTitle
-          title={t("appname")}
-          sx={{
-            fontFamily: ["Kalam", "cursive"].join(","),
-            fontSize: 80,
-            fontWeight: 700,
-            "@media (max-width:600px)": {
-              fontSize: 50,
-            },
-          }}
-          extra={
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: px(5),
-              }}
-            >
-              <Box sx={{ display: "flex", gap: 1 }}>
-                {nbQuestions && (
-                  <Box>
-                    <Typography
-                      variant="h6"
-                      component="span"
-                      color="text.secondary"
-                    >
-                      {`${nbQuestions}  `}
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      component="span"
-                      color="text.secondary"
-                    >
-                      {t("commun.questions")}
-                    </Typography>
-                  </Box>
-                )}
-                {nbThemes && (
-                  <Box>
-                    <Typography
-                      variant="h6"
-                      component="span"
-                      color="text.secondary"
-                    >
-                      {`${nbThemes}  `}
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      component="span"
-                      color="text.secondary"
-                    >
-                      {t("commun.themes")}
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <ButtonColor
-                  value={Colors.white}
-                  label={t("commun.howtoplay")}
-                  variant="outlined"
-                  typography="h6"
-                  onClick={() => navigate("/help")}
-                  noWrap
-                />
-                <ButtonColor
-                  value={Colors.white}
-                  label={t("commun.faq")}
-                  variant="outlined"
-                  typography="h6"
-                  onClick={() => navigate("/faq")}
-                  noWrap
-                />
-              </Box>
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <Link
-                  to={urlGooglePlay}
-                  style={{
-                    textDecoration: "inherit",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      borderRadius: px(5),
-                      p: px(6),
-                      backgroundColor: Colors.black,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                      cursor: "pointer",
+      {user === null && (
+        <Grid item xs={12}>
+          <HeadTitle
+            title={t("appname")}
+            sx={{
+              fontFamily: ["Kalam", "cursive"].join(","),
+              fontSize: 80,
+              fontWeight: 700,
+              "@media (max-width:600px)": {
+                fontSize: 50,
+              },
+            }}
+            extra={
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: px(5),
+                }}
+              >
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  {nbQuestions && (
+                    <Box>
+                      <Typography
+                        variant="h6"
+                        component="span"
+                        color="text.secondary"
+                      >
+                        {`${nbQuestions}  `}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        component="span"
+                        color="text.secondary"
+                      >
+                        {t("commun.questions")}
+                      </Typography>
+                    </Box>
+                  )}
+                  {nbThemes && (
+                    <Box>
+                      <Typography
+                        variant="h6"
+                        component="span"
+                        color="text.secondary"
+                      >
+                        {`${nbThemes}  `}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        component="span"
+                        color="text.secondary"
+                      >
+                        {t("commun.themes")}
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  <ButtonColor
+                    value={Colors.white}
+                    label={t("commun.howtoplay")}
+                    variant="outlined"
+                    typography="h6"
+                    onClick={() => navigate("/help")}
+                    noWrap
+                  />
+                  <ButtonColor
+                    value={Colors.white}
+                    label={t("commun.faq")}
+                    variant="outlined"
+                    typography="h6"
+                    onClick={() => navigate("/faq")}
+                    noWrap
+                  />
+                </Box>
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  <Link
+                    to={urlGooglePlay}
+                    style={{
+                      textDecoration: "inherit",
                     }}
                   >
-                    <img src={googleplay} style={{ width: px(20) }} />
-                    <Typography variant="h6" color="text.secondary" noWrap>
-                      {t("commun.googleplay")}
-                    </Typography>
-                  </Box>
-                </Link>
-                <Link
-                  to={urlApple}
-                  style={{
-                    textDecoration: "inherit",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      borderRadius: px(5),
-                      p: px(6),
-                      backgroundColor: Colors.black,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                      cursor: "pointer",
+                    <Box
+                      sx={{
+                        borderRadius: px(5),
+                        p: px(6),
+                        backgroundColor: Colors.black,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        cursor: "pointer",
+                      }}
+                    >
+                      <img src={googleplay} style={{ width: px(20) }} />
+                      <Typography variant="h6" color="text.secondary" noWrap>
+                        {t("commun.googleplay")}
+                      </Typography>
+                    </Box>
+                  </Link>
+                  <Link
+                    to={urlApple}
+                    style={{
+                      textDecoration: "inherit",
                     }}
                   >
-                    <AppleIcon sx={{ color: "white", fontSize: px(20) }} />
-                    <Typography variant="h6" color="text.secondary">
-                      {t("commun.apple")}
-                    </Typography>
-                  </Box>
-                </Link>
+                    <Box
+                      sx={{
+                        borderRadius: px(5),
+                        p: px(6),
+                        backgroundColor: Colors.black,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        cursor: "pointer",
+                      }}
+                    >
+                      <AppleIcon sx={{ color: "white", fontSize: px(20) }} />
+                      <Typography variant="h6" color="text.secondary">
+                        {t("commun.apple")}
+                      </Typography>
+                    </Box>
+                  </Link>
+                </Box>
               </Box>
-            </Box>
-          }
-        />
-      </Grid>
+            }
+          />
+        </Grid>
+      )}
       <Grid item xs={12}>
         <Box
           sx={{
             width: percent(100),
             p: 1,
+            position: "relative",
           }}
         >
           <Grid container spacing={1}>
@@ -239,7 +251,7 @@ export default function ThemesPage() {
               xs={12}
               sx={{
                 position: "sticky",
-                top: 62,
+                top: headerSize,
                 zIndex: 3,
                 pb: 1,
                 bgcolor: "background.paper",
@@ -251,9 +263,6 @@ export default function ThemesPage() {
                 value={search}
                 clear={() => setSearch("")}
               />
-            </Grid>
-            <Grid item xs={12}>
-              <ShareApplicationBlock title={t("commun.shareapplication")} />
             </Grid>
             {user && (
               <Grid item xs={12}>

@@ -6,7 +6,7 @@ export const SUPABASE_PROFILE_TABLE = "profiles";
 export const getProfilById = (uuid: string) =>
   supabase
     .from(SUPABASE_PROFILE_TABLE)
-    .select("*, avatar(*), badge(*), title(*), banner(*)")
+    .select("*, avatar(*), badge(*), title(*), banner(*), country(*)")
     .eq("id", uuid)
     .single();
 
@@ -18,7 +18,7 @@ export const updateSelectProfil = (profil: ProfileUpdate) =>
     .from(SUPABASE_PROFILE_TABLE)
     .update(profil)
     .eq("id", profil.id)
-    .select("*, avatar(*), badge(*), title(*), banner(*)")
+    .select("*, avatar(*), badge(*), title(*), banner(*), country(*)")
     .single();
 
 export const searchProfile = (search: string, notin: Array<string>) =>

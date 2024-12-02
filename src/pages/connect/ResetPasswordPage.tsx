@@ -7,9 +7,8 @@ import { ResetPasswordForm } from "src/form/authentification/ResetPasswordForm";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { HeadTitle } from "src/component/HeadTitle";
-import { Colors } from "src/style/Colors";
 import { ButtonColor } from "src/component/Button";
+import { Colors } from "src/style/Colors";
 
 export default function ResetPasswordPage() {
   const { t } = useTranslation();
@@ -33,9 +32,6 @@ export default function ResetPasswordPage() {
       <Helmet>
         <title>{`${t("pages.resetpassword.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
-        <HeadTitle title={t("form.resetpassword.resetpassword")} />
-      </Grid>
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>

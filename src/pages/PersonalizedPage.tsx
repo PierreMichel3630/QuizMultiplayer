@@ -7,7 +7,6 @@ import { Helmet } from "react-helmet-async";
 import { updateSelectProfil } from "src/api/profile";
 import { BadgeSelector } from "src/component/BadgeSelector";
 import { BannerSelector } from "src/component/BannerSelector";
-import { HeadTitle } from "src/component/HeadTitle";
 import { MyCountryBlock } from "src/component/MyCountryBlock";
 import { TitleSelector } from "src/component/TitleSelector";
 import { AvatarSelector } from "src/component/avatar/AvatarSelector";
@@ -133,9 +132,6 @@ export default function PersonalizedPage() {
         <title>{`${t("pages.perzonalised.title")} - ${t("appname")}`}</title>
       </Helmet>
       <Grid item xs={12}>
-        <HeadTitle title={t("commun.personalizedprofile")} />
-      </Grid>
-      <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
             <Grid item xs={12} md={4}>
@@ -146,7 +142,7 @@ export default function PersonalizedPage() {
             {profile ? (
               <Grid item xs={12} md={8}>
                 <MyCountryBlock
-                  country={profile ? profile.country : null}
+                  country={profile.country}
                   onChange={(value) => changeCountry(value)}
                   onDelete={() => changeCountry(null)}
                 />

@@ -90,7 +90,7 @@ Deno.serve(async (req) => {
         })
         .eq("uuid", duelgame.uuid)
         .select(
-          "*,theme!public_duelgame_theme_fkey(*),player1(*,avatar(*),title(*), badge(*), banner(*)),player2(*,avatar(*),title(*), badge(*), banner(*))"
+          "*,theme!public_duelgame_theme_fkey(*),player1(*,avatar(*),title(*), badge(*), banner(*), country(*)),player2(*,avatar(*),title(*), badge(*), banner(*), country(*))"
         )
         .maybeSingle();
       channel.send({
@@ -200,7 +200,7 @@ Deno.serve(async (req) => {
         })
         .eq("uuid", duelgame.uuid)
         .select(
-          "*,theme!public_duelgame_theme_fkey(*),player1(*,avatar(*),title(*), badge(*), banner(*)),player2(*,avatar(*),title(*), badge(*), banner(*))"
+          "*,theme!public_duelgame_theme_fkey(*),player1(*,avatar(*),title(*), badge(*), banner(*), country(*)),player2(*,avatar(*),title(*), badge(*), banner(*), country(*))"
         )
         .maybeSingle();
       console.log(data);

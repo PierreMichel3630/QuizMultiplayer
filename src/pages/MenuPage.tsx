@@ -273,7 +273,10 @@ export default function MenuPage() {
                   xs={12}
                   sx={{ display: "flex", justifyContent: "center" }}
                 >
-                  <CountryBlock id={profile.country} color="text.secondary" />
+                  <CountryBlock
+                    country={profile.country}
+                    color="text.secondary"
+                  />
                 </Grid>
               )}
               <Grid item xs={12}>

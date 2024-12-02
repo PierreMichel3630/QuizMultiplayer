@@ -11,7 +11,6 @@ import HistoryGamePage from "src/pages/HistoryGamePage";
 import ImprovePage from "src/pages/ImprovePage";
 import MenuPage from "src/pages/MenuPage";
 import NewThemePage from "src/pages/NewThemePage";
-import NotificationPage from "src/pages/NotificationPage";
 import ParameterPage from "src/pages/ParameterPage";
 import PeoplePage from "src/pages/PeoplePage";
 import PersonalizedPage from "src/pages/PersonalizedPage";
@@ -35,6 +34,7 @@ import BadgePage from "src/pages/BadgePage";
 import BannerPage from "src/pages/BannerPage";
 import TitlePage from "src/pages/TitlePage";
 
+import MyProfilPage from "src/pages/MyProfilPage";
 import OutletPage from "src/pages/OutletPage";
 import PlayPage from "src/pages/PlayPage";
 
@@ -82,11 +82,7 @@ export const AppRoutes = [
       },
       {
         path: "/parameter",
-        element: (
-          <ProtectedRoute>
-            <ParameterPage />
-          </ProtectedRoute>
-        ),
+        element: <ParameterPage />,
       },
       {
         path: "/personalized",
@@ -99,14 +95,6 @@ export const AppRoutes = [
       {
         path: "/accomplishments",
         element: <AccomplishmentPage />,
-      },
-      {
-        path: "/notifications",
-        element: (
-          <ProtectedRoute>
-            <NotificationPage />
-          </ProtectedRoute>
-        ),
       },
       {
         path: "/compare",
@@ -127,6 +115,14 @@ export const AppRoutes = [
       {
         path: "/report",
         element: <ReportPage />,
+      },
+      {
+        path: "/myprofile",
+        element: (
+          <ProtectedRoute>
+            <MyProfilPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/profil/:id",

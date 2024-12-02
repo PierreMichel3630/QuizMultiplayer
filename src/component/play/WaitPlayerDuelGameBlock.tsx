@@ -134,7 +134,10 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           )}
           <LabelRankBlock loading={loadingP1} score={scoreP1} />
           {game.player1.country && (
-            <CountryBlock id={game.player1.country} color="text.secondary" />
+            <CountryBlock
+              country={game.player1.country}
+              color="text.secondary"
+            />
           )}
           <StatusPlayerGame
             ready={
@@ -211,7 +214,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
               <LabelRankBlock loading={loadingP2} score={scoreP2} />
               {game.player2.country && (
                 <CountryBlock
-                  id={game.player2.country}
+                  country={game.player2.country}
                   color="text.secondary"
                 />
               )}

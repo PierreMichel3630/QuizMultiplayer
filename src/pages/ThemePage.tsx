@@ -257,7 +257,12 @@ export default function ThemePage() {
                     backgroundColor: Colors.black,
                   }}
                 >
-                  <Grid container spacing={1} alignItems="center">
+                  <Grid
+                    container
+                    spacing={1}
+                    alignItems="center"
+                    justifyContent="center"
+                  >
                     <Grid
                       item
                       xs={12}
@@ -296,10 +301,10 @@ export default function ThemePage() {
                         />
                       )}
                     </Grid>
-                    <Grid item xs={5}>
+                    <Grid item xs={5} sm={3} md={3} lg={3}>
                       <ImageThemeBlock theme={theme} />
                     </Grid>
-                    <Grid item xs={7}>
+                    <Grid item xs={7} sm={6} md={6} lg={6}>
                       <Grid container spacing={1}>
                         {!theme.enabled && (
                           <Grid item xs={12}>

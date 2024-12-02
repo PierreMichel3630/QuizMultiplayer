@@ -88,7 +88,7 @@ export const CardAccomplishment = ({
 
   return (
     <Paper
-      elevation={5}
+      elevation={12}
       sx={{
         p: 1,
         backgroundColor: isFinish ? Colors.green : "initial",

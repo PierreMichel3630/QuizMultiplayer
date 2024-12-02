@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { CardTheme } from "src/component/card/CardTheme";
-import { HeadTitle } from "src/component/HeadTitle";
 import { RankingBlock } from "src/component/RankingBlock";
 import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
@@ -31,9 +30,6 @@ export default function FavoritePage() {
       <Helmet>
         <title>{`${t("pages.favorite.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
-        <HeadTitle title={t("commun.favorite")} />
-      </Grid>
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1} justifyContent="center">

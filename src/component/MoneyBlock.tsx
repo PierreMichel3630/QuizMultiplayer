@@ -20,7 +20,7 @@ export const MoneyBlock = ({
       <Typography variant={variant} color={color}>
         {money.toLocaleString("fr-FR")}
       </Typography>
-      <img src={moneyIcon} width={width} loading="lazy" />
+      <img src={moneyIcon} width={width} />
     </Box>
   );
 };

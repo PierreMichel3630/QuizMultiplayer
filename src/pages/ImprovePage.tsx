@@ -2,7 +2,6 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 import { percent } from "csx";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { HeadTitle } from "src/component/HeadTitle";
 
 import { DiscordIcon } from "src/icons/DiscordIcon";
 
@@ -15,9 +14,6 @@ export default function ImprovePage() {
       <Helmet>
         <title>{`${t("pages.improve.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
-        <HeadTitle title={t("pages.improve.title")} />
-      </Grid>
       <Grid item xs={12}>
         <Box sx={{ width: percent(100), p: 1, mt: 2 }}>
           <Grid container spacing={1}>

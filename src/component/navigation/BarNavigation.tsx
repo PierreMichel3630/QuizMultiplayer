@@ -1,15 +1,9 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-import { useTranslation } from "react-i18next";
-import { useAuth } from "src/context/AuthProviderSupabase";
-
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { percent, px } from "csx";
 import { Colors } from "src/style/Colors";
-import { ButtonColor } from "../Button";
-import { AccountMenu } from "../header/AccountMenu";
 
 interface Props {
   title: string;
@@ -17,9 +11,6 @@ interface Props {
 }
 export const BarNavigation = ({ title, quit }: Props) => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
-
-  const { user } = useAuth();
   return (
     <Box
       sx={{
@@ -53,22 +44,6 @@ export const BarNavigation = ({ title, quit }: Props) => {
               <Typography variant="h2" sx={{ color: Colors.white }}>
                 {title}
               </Typography>
-            </Grid>
-            <Grid item>
-              {user ? (
-                <AccountMenu user={user} />
-              ) : (
-                <Box>
-                  <ButtonColor
-                    value={Colors.black}
-                    label={t("commun.login")}
-                    icon={AccountCircleIcon}
-                    variant="contained"
-                    onClick={() => navigate("/login")}
-                    typography="h6"
-                  />
-                </Box>
-              )}
             </Grid>
           </Grid>
         </Box>

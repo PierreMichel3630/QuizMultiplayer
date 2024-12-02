@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Profile } from "src/models/Profile";
+import { GameModeEnum } from "src/models/enum/GameEnum";
 
 interface Props {
   opposition: { games: number; victory: number; draw: number; defeat: number };
@@ -46,7 +47,7 @@ export const CardOpposition = ({ opposition, opponent }: Props) => {
             to={`/games`}
             state={{
               player: profile,
-              type: "DUEL",
+              type: GameModeEnum.duel,
               opponent: opponent,
             }}
             style={{

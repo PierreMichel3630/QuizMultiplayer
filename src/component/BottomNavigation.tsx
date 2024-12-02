@@ -12,41 +12,29 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AppsIcon from "@mui/icons-material/Apps";
-import GroupsIcon from "@mui/icons-material/Groups";
-import MenuIcon from "@mui/icons-material/Menu";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { padding, px } from "csx";
-import { useApp } from "src/context/AppProvider";
-import { useAuth } from "src/context/AuthProviderSupabase";
-import { Colors } from "src/style/Colors";
-import { FRIENDSTATUS } from "src/models/Friend";
 import { LogoIcon } from "src/icons/LogoIcon";
+import { Colors } from "src/style/Colors";
+import { useApp } from "src/context/AppProvider";
 
 export const BottomNavigationBlock = () => {
   const { t } = useTranslation();
   const location = useLocation();
-  const { user } = useAuth();
-  const { friends, myaccomplishments } = useApp();
   const navigate = useNavigate();
+  const { myaccomplishments } = useApp();
 
   const [menu, setMenu] = useState(location.pathname.split("/")[1]);
-
-  const notificationsFriend = useMemo(
-    () =>
-      friends.filter(
-        (el) =>
-          el.status === FRIENDSTATUS.PROGRESS && user && user.id !== el.user1.id
-      ).length,
-    [friends, user]
-  );
-
-  const notifications = useMemo(
-    () => myaccomplishments.filter((el) => !el.validate).length,
-    [myaccomplishments]
-  );
 
   useEffect(() => {
     setMenu(location.pathname.split("/")[1]);
   }, [location.pathname]);
+
+  const notificationsAccomplishment = useMemo(
+    () => myaccomplishments.filter((el) => !el.validate).length,
+    [myaccomplishments]
+  );
 
   return (
     <Paper
@@ -79,36 +67,32 @@ export const BottomNavigationBlock = () => {
         />
         <BottomNavigationAction
           sx={{ p: padding(0, 5), minWidth: px(30) }}
-          value={"people"}
-          label={t("commun.people")}
+          value={"accomplishments"}
+          label={t("commun.accomplishments")}
           icon={
-            <Badge badgeContent={notificationsFriend} color="error">
-              <GroupsIcon />
+            <Badge badgeContent={notificationsAccomplishment} color="error">
+              <EmojiEventsIcon />
             </Badge>
           }
           component={Link}
-          to={"/people"}
+          to={`/accomplishments`}
         />
         <BottomNavigationAction sx={{ width: px(50) }} />
         <BottomNavigationAction
           sx={{ p: padding(0, 5), minWidth: px(30) }}
-          value={"profil"}
-          label={t("commun.profile")}
-          icon={<AccountCircleIcon />}
+          value={"ranking"}
+          label={t("commun.ranking")}
           component={Link}
-          to={user ? `/profil/${user.id}` : "/login"}
+          icon={<BarChartIcon />}
+          to={"/ranking"}
         />
         <BottomNavigationAction
           sx={{ p: padding(0, 5), minWidth: px(30) }}
-          value={"menu"}
-          label={t("commun.menus")}
+          value={"myprofile"}
+          label={t("commun.profile")}
+          icon={<AccountCircleIcon />}
           component={Link}
-          icon={
-            <Badge badgeContent={notifications} color="error">
-              <MenuIcon />
-            </Badge>
-          }
-          to={"/menu"}
+          to={"/myprofile"}
         />
       </BottomNavigation>
       <Box

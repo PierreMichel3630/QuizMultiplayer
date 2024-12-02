@@ -1,5 +1,5 @@
 import { Box, createSvgIcon, Typography } from "@mui/material";
-import { percent, px } from "csx";
+import { important, percent, px } from "csx";
 import { Colors } from "src/style/Colors";
 
 interface Props {
@@ -18,7 +18,11 @@ export const BadgeLevel = ({ level, fontSize = 18, size = 40 }: Props) => (
         transform: "translate(-50%, -50%)",
       }}
     >
-      <Typography variant="h4" color="text.secondary" sx={{ fontSize }}>
+      <Typography
+        variant="h4"
+        color="text.secondary"
+        sx={{ fontSize: important(px(fontSize)) }}
+      >
         {level}
       </Typography>
     </Box>

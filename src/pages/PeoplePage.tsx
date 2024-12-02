@@ -20,7 +20,7 @@ import { Profile } from "src/models/Profile";
 
 export default function PeoplePage() {
   const { t } = useTranslation();
-  const { friends } = useApp();
+  const { friends, headerSize } = useApp();
   const { profile } = useAuth();
 
   const ITEMPERPAGE = 25;
@@ -136,7 +136,7 @@ export default function PeoplePage() {
       <Box
         sx={{
           position: "sticky",
-          top: 62,
+          top: headerSize,
           zIndex: 3,
           p: 1,
           width: percent(100),

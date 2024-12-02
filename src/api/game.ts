@@ -4,6 +4,7 @@ import { supabase } from "./supabase";
 import { ConfigTraining } from "src/pages/play/ConfigTrainingPage";
 import { ClassementTimeEnum } from "src/models/enum/ClassementEnum";
 import moment from "moment";
+import { GameModeEnum } from "src/models/enum/GameEnum";
 
 export const SUPABASE_PREVIOUSTHEMES_TABLE = "previousthemes";
 export const SUPABASE_HISTORYGAMES_TABLE = "historygames";
@@ -140,7 +141,7 @@ export const selectDuelGameById = (uuid: string) =>
   supabase
     .from(SUPABASE_DUELGAME_TABLE)
     .select(
-      "*, player1(*, avatar(*), title(*), badge(*), banner(*)), player2(*, avatar(*), title(*), badge(*), banner(*)), theme!public_duelgame_theme_fkey(*)"
+      "*, player1(*, avatar(*), title(*), badge(*), banner(*), country(*)), player2(*, avatar(*), title(*), badge(*), banner(*), country(*)), theme!public_duelgame_theme_fkey(*)"
     )
     .eq("uuid", uuid)
     .maybeSingle();
@@ -182,7 +183,10 @@ export const selectGamesByPlayer = (
 ) => {
   const player = filter.player ? filter.player.id : undefined;
   const opponent = filter.opponent ? filter.opponent.id : undefined;
-  const types = filter.type === "ALL" ? ["SOLO", "DUEL"] : [filter.type];
+  const types =
+    filter.type === GameModeEnum.all
+      ? ["SOLO", "DUEL"]
+      : [filter.type.toUpperCase()];
   const themes = filter.themes.map((el) => el.id);
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
@@ -212,7 +216,10 @@ export const selectGames = (
 ) => {
   const player = filter.player ? filter.player.id : undefined;
   const opponent = filter.opponent ? filter.opponent.id : undefined;
-  const types = filter.type === "ALL" ? ["SOLO", "DUEL"] : [filter.type];
+  const types =
+    filter.type === GameModeEnum.all
+      ? ["SOLO", "DUEL"]
+      : [filter.type.toUpperCase()];
   const themes = filter.themes.map((el) => el.id);
   const from = page * itemperpage;
   const to = from + itemperpage - 1;

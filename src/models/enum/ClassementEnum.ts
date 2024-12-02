@@ -26,3 +26,8 @@ export enum ClassementTimeEnum {
   week = "week",
   month = "month",
 }
+
+export enum ClassementModeEnum {
+  global = "global",
+  pertheme = "pertheme",
+}

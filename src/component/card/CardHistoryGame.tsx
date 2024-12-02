@@ -5,24 +5,24 @@ import moment from "moment";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { useAuth } from "src/context/AuthProviderSupabase";
 import { HistoryGame, HistoryGameAdmin } from "src/models/Game";
 import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
-import { Profile } from "src/models/Profile";
 
 interface Props {
   game: HistoryGame;
-  player?: Profile;
 }
 
-export const CardHistoryGame = ({ game, player }: Props) => {
+export const CardHistoryGame = ({ game }: Props) => {
   const { t } = useTranslation();
+  const { profile } = useAuth();
 
   const isSolo = useMemo(() => game.type === "SOLO", [game.type]);
   const isPlayer1 = useMemo(
-    () => player && game.player1.id === player.id,
-    [game, player]
+    () => profile && game.player1.id === profile.id,
+    [game, profile]
   );
   const win = useMemo(() => {
     const eq = game.ptsplayer1 === game.ptsplayer2;

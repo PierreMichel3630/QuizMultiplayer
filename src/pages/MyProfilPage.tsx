@@ -1,9 +1,7 @@
 import { Alert, Box, Divider, Grid, Paper, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { getProfilById } from "src/api/profile";
-import { ButtonColor } from "src/component/Button";
+import { Link, useNavigate } from "react-router-dom";
 import { CountryBlock } from "src/component/CountryBlock";
 import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
 import { Profile } from "src/models/Profile";
@@ -12,12 +10,8 @@ import { Colors } from "src/style/Colors";
 import { percent, px } from "csx";
 import { Helmet } from "react-helmet-async";
 import { selectBadgeByProfile } from "src/api/badge";
-import {
-  selectOppositionByOpponent,
-  selectScoresByProfile,
-} from "src/api/score";
+import { selectScoresByProfile } from "src/api/score";
 import { selectTitleByProfile } from "src/api/title";
-import { FriendButton } from "src/component/FriendButton";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { BarVictory } from "src/component/chart/BarVictory";
@@ -25,7 +19,7 @@ import { DonutGames } from "src/component/chart/DonutGames";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { Badge, BadgeProfile } from "src/models/Badge";
-import { Opposition, Score } from "src/models/Score";
+import { Score } from "src/models/Score";
 import { Title, TitleProfile } from "src/models/Title";
 import {
   sortByDuelGamesDesc,
@@ -37,40 +31,34 @@ import {
   sortByXP,
 } from "src/utils/sort";
 
-import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { selectFriendByProfileId } from "src/api/friend";
 import { BasicSearchInput } from "src/component/Input";
 import { SortButton } from "src/component/SortBlock";
-import { StatusProfileBlock } from "src/component/StatusProfileBlock";
 import { CardBadge } from "src/component/card/CardBadge";
 import { CardFriends } from "src/component/card/CardFriends";
-import { CardOpposition } from "src/component/card/CardOpposition";
 import { CardTitle } from "src/component/card/CardTitle";
 import { SkeletonAvatarPlayer } from "src/component/skeleton/SkeletonPlayer";
 import { SkeletonProfilTheme } from "src/component/skeleton/SkeletonTheme";
-import { useApp } from "src/context/AppProvider";
+import { BadgeLevel } from "src/icons/BadgeLevel";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { Friend, FRIENDSTATUS } from "src/models/Friend";
 import { getLevel } from "src/utils/calcul";
 import { searchString } from "src/utils/string";
+import { useApp } from "src/context/AppProvider";
 
-export default function ProfilPage() {
+export default function MyProfilPage() {
   const { t } = useTranslation();
-  const { id } = useParams();
-  const { uuid, language } = useUser();
+  const { language } = useUser();
   const { user, profile } = useAuth();
+  const { headerSize } = useApp();
   const navigate = useNavigate();
-  const { friends, headerSize } = useApp();
 
-  const [profileUser, setProfileUser] = useState<Profile | undefined>(
-    undefined
-  );
   const [scores, setScores] = useState<Array<Score>>([]);
   const [titles, setTitles] = useState<Array<Title>>([]);
   const [badges, setBadges] = useState<Array<Badge>>([]);
-  const [oppositions, setOppositions] = useState<Array<Opposition>>([]);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("alphabetical");
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
@@ -78,39 +66,10 @@ export default function ProfilPage() {
   const [isLoadingScore, setIsLoadingScore] = useState(true);
   const [isLoadingTitle, setIsLoadingTitle] = useState(true);
   const [isLoadingBadge, setIsLoadingBadge] = useState(true);
-  const [isLoadingOppositions, setIsLoadingOppositions] = useState(true);
   const [isLoadingFriends, setIsLoadingFriends] = useState(true);
-  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
   const [isEnd, setIsEnd] = useState(true);
   const [maxIndex, setMaxIndex] = useState(10);
-
-  const isMe = useMemo(() => id === uuid, [id, uuid]);
-  const friend = useMemo(
-    () =>
-      friends.find(
-        (el) =>
-          user &&
-          profileUser &&
-          ((el.user1.id === user.id && el.user2.id === profileUser.id) ||
-            (el.user2.id === user.id && el.user1.id === profileUser.id))
-      ),
-    [friends, user, profileUser]
-  );
-
-  const totalOpposition = useMemo(
-    () =>
-      oppositions.reduce(
-        (acc, value) => ({
-          games: acc.games + value.games,
-          victory: acc.victory + value.victory,
-          draw: acc.draw + value.draw,
-          defeat: acc.defeat + value.defeat,
-        }),
-        { games: 0, victory: 0, draw: 0, defeat: 0 }
-      ),
-    [oppositions]
-  );
 
   const sorts = [
     { value: "alphabetical", label: t("sort.alphabetical"), sort: setSort },
@@ -122,25 +81,21 @@ export default function ProfilPage() {
   ];
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [id]);
-
-  useEffect(() => {
     const getStats = () => {
-      if (id) {
-        selectStatAccomplishmentByProfile(id).then(({ data }) => {
+      if (user) {
+        selectStatAccomplishmentByProfile(user.id).then(({ data }) => {
           setStat(data as StatAccomplishment);
         });
       }
     };
     getStats();
-  }, [id]);
+  }, [user]);
 
   useEffect(() => {
     const getScore = () => {
       setIsLoadingScore(true);
-      if (id) {
-        selectScoresByProfile(id).then(({ data }) => {
+      if (user) {
+        selectScoresByProfile(user.id).then(({ data }) => {
           const res = data as Array<Score>;
           setScores(res.sort(sortByDuelGamesDesc));
           setIsLoadingScore(false);
@@ -148,13 +103,13 @@ export default function ProfilPage() {
       }
     };
     getScore();
-  }, [id]);
+  }, [user]);
 
   useEffect(() => {
     const getTitles = () => {
       setIsLoadingTitle(true);
-      if (id) {
-        selectTitleByProfile(id).then(({ data }) => {
+      if (user) {
+        selectTitleByProfile(user.id).then(({ data }) => {
           const res = data as Array<TitleProfile>;
           setTitles(res.map((el) => el.title));
           setIsLoadingTitle(false);
@@ -162,13 +117,13 @@ export default function ProfilPage() {
       }
     };
     getTitles();
-  }, [id]);
+  }, [user]);
 
   useEffect(() => {
     const getBadges = () => {
       setIsLoadingBadge(true);
-      if (id) {
-        selectBadgeByProfile(id).then(({ data }) => {
+      if (user) {
+        selectBadgeByProfile(user.id).then(({ data }) => {
           const res = data as Array<BadgeProfile>;
           setBadges(res.map((el) => el.badge));
           setIsLoadingBadge(false);
@@ -176,13 +131,13 @@ export default function ProfilPage() {
       }
     };
     getBadges();
-  }, [id]);
+  }, [user]);
 
   useEffect(() => {
     const getFriends = () => {
       setIsLoadingFriends(true);
-      if (id) {
-        selectFriendByProfileId(id).then(({ data }) => {
+      if (user) {
+        selectFriendByProfileId(user.id).then(({ data }) => {
           const friends = data as Array<Friend>;
           setProfileFriends(
             friends.filter((el) => el.status !== FRIENDSTATUS.REFUSE)
@@ -192,43 +147,7 @@ export default function ProfilPage() {
       }
     };
     getFriends();
-  }, [id]);
-
-  useEffect(() => {
-    const getOpposition = () => {
-      setIsLoadingOppositions(true);
-      if (id) {
-        selectOppositionByOpponent(uuid, id).then(({ data }) => {
-          setOppositions(data as Array<Opposition>);
-          setIsLoadingOppositions(false);
-        });
-      }
-    };
-    getOpposition();
-  }, [id, uuid]);
-
-  useEffect(() => {
-    const getProfile = () => {
-      setIsLoadingProfile(true);
-      if (id) {
-        getProfilById(id).then(({ data }) => {
-          setProfileUser(data as Profile);
-          setIsLoadingProfile(false);
-        });
-      }
-    };
-    getProfile();
-  }, [id]);
-
-  const compare = () => {
-    if (user) {
-      navigate(`/compare`, {
-        state: { profile1: profile, profile2: profileUser },
-      });
-    } else {
-      navigate(`/login`);
-    }
-  };
+  }, [user]);
 
   const totalSolo = useMemo(
     () => scores.reduce((acc, value) => acc + value.games, 0),
@@ -255,16 +174,8 @@ export default function ProfilPage() {
 
   const level = useMemo(() => (stat ? getLevel(stat.xp) : undefined), [stat]);
 
-  const scoresWithRankAndOpposition = useMemo(() => {
-    const result = scores.map((score) => {
-      const opposition = oppositions.find((el) => el.theme === score.theme.id);
-      return { ...score, opposition: opposition };
-    });
-    return result;
-  }, [scores, oppositions]);
-
   const scoresDisplay = useMemo(() => {
-    let res = [...scoresWithRankAndOpposition].filter((el) =>
+    let res = [...scores].filter((el) =>
       searchString(search, el.theme.name[language.iso])
     );
     switch (sort) {
@@ -292,20 +203,22 @@ export default function ProfilPage() {
     }
     setIsEnd(res.length <= maxIndex);
     return [...res].splice(0, maxIndex);
-  }, [scoresWithRankAndOpposition, search, language, sort, maxIndex]);
+  }, [scores, sort, maxIndex, search, language]);
 
   const friendsAvatar = useMemo(
     () =>
-      profileFriends
-        .filter((el) => el.status === FRIENDSTATUS.VALID)
-        .reduce(
-          (acc, value) =>
-            value.user2.id === id
-              ? [...acc, value.user1]
-              : [...acc, value.user2],
-          [] as Array<Profile>
-        ),
-    [profileFriends, id]
+      user
+        ? profileFriends
+            .filter((el) => el.status === FRIENDSTATUS.VALID)
+            .reduce(
+              (acc, value) =>
+                value.user2.id === user.id
+                  ? [...acc, value.user1]
+                  : [...acc, value.user2],
+              [] as Array<Profile>
+            )
+        : [],
+    [profileFriends, user]
   );
 
   useEffect(() => {
@@ -324,22 +237,20 @@ export default function ProfilPage() {
     return () => {
       document.removeEventListener("scroll", handleScroll);
     };
-  }, [scoresWithRankAndOpposition, maxIndex]);
+  }, [maxIndex]);
 
   return (
     <Box>
       <Helmet>
-        <title>{`${profileUser ? profileUser.username : ""} - ${t(
-          "appname"
-        )}`}</title>
+        <title>{`${profile ? profile.username : ""} - ${t("appname")}`}</title>
       </Helmet>
       <Box
         sx={{
           p: 1,
           backgroundColor: Colors.blue3,
           backgroundImage:
-            profileUser && profileUser.banner
-              ? `url("/banner/${profileUser.banner.icon}")`
+            profile && profile.banner
+              ? `url("/banner/${profile.banner.icon}")`
               : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -348,9 +259,9 @@ export default function ProfilPage() {
       >
         <Grid container spacing={1} justifyContent="center">
           <Grid item sx={{ mb: 1 }}>
-            {profileUser && !isLoadingProfile ? (
+            {profile ? (
               <AvatarAccountBadge
-                profile={profileUser}
+                profile={profile}
                 size={120}
                 color={Colors.white}
                 backgroundColor={Colors.grey2}
@@ -360,7 +271,7 @@ export default function ProfilPage() {
               <SkeletonAvatarPlayer size={120} />
             )}
           </Grid>
-          {profileUser && !isLoadingProfile && (
+          {profile && (
             <>
               <Grid
                 item
@@ -370,13 +281,13 @@ export default function ProfilPage() {
                 }}
               >
                 <Typography variant="h2" color="text.secondary">
-                  {profileUser.username}
+                  {profile.username}
                 </Typography>
-                {profileUser.title && (
+                {profile.title && (
                   <JsonLanguageBlock
                     variant="caption"
                     color="text.secondary"
-                    value={profileUser.title.name}
+                    value={profile.title.name}
                   />
                 )}
               </Grid>
@@ -398,57 +309,27 @@ export default function ProfilPage() {
                   </Typography>
                 </Grid>
               )}
-              {!isMe && friend && (
-                <Grid
-                  item
-                  xs={12}
-                  sx={{ display: "flex", justifyContent: "center" }}
-                >
-                  <StatusProfileBlock
-                    online={profileUser.isonline}
-                    color="text.secondary"
-                  />
-                </Grid>
-              )}
-              {profileUser.country && (
+              {profile && profile.country && (
                 <Grid
                   item
                   xs={12}
                   sx={{ display: "flex", justifyContent: "center" }}
                 >
                   <CountryBlock
-                    country={profileUser.country}
+                    country={profile.country}
                     color="text.secondary"
                   />
                 </Grid>
               )}
-              {!isMe && (
-                <>
-                  <Grid item xs={12}>
-                    <ButtonColor
-                      value={Colors.blue}
-                      label={t("commun.compare")}
-                      icon={CompareArrowsIcon}
-                      variant="contained"
-                      onClick={compare}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FriendButton profile={profileUser} />
-                  </Grid>
-                </>
-              )}
             </>
           )}
         </Grid>
-        {isMe && (
-          <Box sx={{ position: "absolute", top: 10, right: 10 }}>
-            <EditIcon
-              sx={{ cursor: "pointer", color: Colors.white }}
-              onClick={() => navigate("/personalized")}
-            />
-          </Box>
-        )}
+        <Box sx={{ position: "absolute", top: 10, right: 10 }}>
+          <EditIcon
+            sx={{ cursor: "pointer", color: Colors.white }}
+            onClick={() => navigate("/personalized")}
+          />
+        </Box>
       </Box>
       <Box sx={{ p: 1 }}>
         <Grid container spacing={1}>
@@ -466,20 +347,12 @@ export default function ProfilPage() {
           <Grid item xs={12}>
             <CardFriends friends={friendsAvatar} loading={isLoadingFriends} />
           </Grid>
-          {profileUser && totalOpposition.games > 0 && (
-            <Grid item xs={12}>
-              <CardOpposition
-                opposition={totalOpposition}
-                opponent={profileUser}
-                loading={isLoadingOppositions}
-              />
-            </Grid>
-          )}
           <Grid item xs={12}>
             <DonutGames
               scores={scores}
               totalScore={totalScore}
               totalSolo={totalSolo}
+              profile={profile ?? undefined}
               loading={isLoadingScore}
             />
           </Grid>
@@ -512,6 +385,7 @@ export default function ProfilPage() {
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
             {scoresDisplay.map((score) => {
+              const lvl = getLevel(score.xp);
               return (
                 <Grid item xs={12} sm={6} md={6} lg={4} key={score.id}>
                   <Paper
@@ -544,19 +418,61 @@ export default function ProfilPage() {
                             to={`/theme/${score.theme.id}`}
                             style={{ textDecoration: "none" }}
                           >
-                            <ImageThemeBlock theme={score.theme} size={50} />
+                            <ImageThemeBlock theme={score.theme} size={60} />
                           </Link>
                           <Box>
                             <JsonLanguageBlock
                               variant="h2"
                               sx={{
                                 wordWrap: "anywhere",
+                                fontSize: 18,
                               }}
                               color="text.secondary"
                               value={score.theme.name}
                             />
+                            <Box
+                              sx={{
+                                display: "flex",
+                                gap: 1,
+                                alignItems: "center",
+                              }}
+                            >
+                              <BadgeLevel level={lvl} size={40} />
+                              <Box>
+                                <Typography
+                                  variant="h4"
+                                  component="span"
+                                  color="text.secondary"
+                                >
+                                  {score.xp}
+                                </Typography>
+                                <Typography
+                                  variant="caption"
+                                  component="span"
+                                  color="text.secondary"
+                                >
+                                  {t("commun.xpabbreviation")}
+                                </Typography>
+                              </Box>
+                            </Box>
                           </Box>
                         </Box>
+                        <Link
+                          to={`/games`}
+                          state={{
+                            player: profile,
+                            themes: [score.theme],
+                          }}
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <VisibilityIcon
+                            fontSize="large"
+                            sx={{ color: "white" }}
+                          />
+                        </Link>
                       </Grid>
                       <Grid
                         item
@@ -604,29 +520,9 @@ export default function ProfilPage() {
                               </Grid>
                             </>
                           )}
-
-                          {score.opposition && (
-                            <>
-                              <Grid item xs={12}>
-                                <Divider sx={{ borderBottomWidth: 3 }} />
-                              </Grid>
-                              <Grid item xs={12}>
-                                <Typography variant="h4" component="span">
-                                  {t("commun.opposition")}
-                                </Typography>
-                              </Grid>
-                              <Grid item xs={12}>
-                                <BarVictory
-                                  victory={score.opposition.victory}
-                                  draw={score.opposition.draw}
-                                  defeat={score.opposition.defeat}
-                                />
-                              </Grid>
-                            </>
-                          )}
                           {score && score.games > 0 && (
                             <>
-                              {(score.opposition || score.duelgames > 0) && (
+                              {score.duelgames > 0 && (
                                 <Grid item xs={12}>
                                   <Divider sx={{ borderBottomWidth: 3 }} />
                                 </Grid>

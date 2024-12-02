@@ -18,12 +18,12 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Link, useNavigate } from "react-router-dom";
 import { signUpWithEmail } from "src/api/supabase";
+import { AvatarLoginSelector } from "src/component/avatar/AvatarSelector";
+import { RegisterCountryBlock } from "src/component/MyCountryBlock";
+import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
-import { useApp } from "src/context/AppProvider";
-import { AvatarLoginSelector } from "src/component/avatar/AvatarSelector";
-import { MyCountryBlock } from "src/component/MyCountryBlock";
 
 export const RegisterForm = () => {
   const { t } = useTranslation();
@@ -209,7 +209,7 @@ export const RegisterForm = () => {
           <Typography variant="h6">{t("commun.myorigincountry")}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <MyCountryBlock
+          <RegisterCountryBlock
             country={formik.values.country}
             onChange={(value) => formik.setFieldValue(`country`, value)}
             onDelete={() => formik.setFieldValue(`country`, null)}

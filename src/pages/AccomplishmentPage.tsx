@@ -10,14 +10,19 @@ import { CardAccomplishment } from "src/component/card/CardAccomplishment";
 import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
 
 import award from "src/assets/award.png";
-import { HeadTitle } from "src/component/HeadTitle";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
+import { px } from "csx";
 
 export default function AccomplishmentPage() {
   const { t } = useTranslation();
-  const { accomplishments, myaccomplishments, getMyAccomplishments } = useApp();
+  const {
+    accomplishments,
+    myaccomplishments,
+    getMyAccomplishments,
+    headerSize,
+  } = useApp();
   const { profile } = useAuth();
   const [accomplishmentsGroupBy, setAccomplishmentsGroupBy] = useState<
     Dictionary<Array<Accomplishment>>
@@ -60,9 +65,6 @@ export default function AccomplishmentPage() {
         />
       </Helmet>
       <Grid item xs={12}>
-        <HeadTitle title={t("pages.accomplishments.title")} />
-      </Grid>
-      <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
             <Grid item xs={12}>
@@ -95,7 +97,16 @@ export default function AccomplishmentPage() {
                   : 0;
               return (
                 <Fragment key={index}>
-                  <Grid item xs={12}>
+                  <Grid
+                    item
+                    xs={12}
+                    sx={{
+                      position: "sticky",
+                      top: headerSize,
+                      backgroundColor: "background.paper",
+                      pb: px(10),
+                    }}
+                  >
                     <Box
                       sx={{
                         p: 1,
@@ -105,6 +116,7 @@ export default function AccomplishmentPage() {
                         justifyContent: "center",
                         alignItems: "center",
                         gap: 3,
+                        border: "2px solid white",
                       }}
                     >
                       <Grid container spacing={1} alignItems="center">

@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import {
@@ -79,6 +80,7 @@ const AppContext = createContext<{
   nbQuestions?: number;
   nbThemes?: number;
   isLoadingTheme: boolean;
+  headerSize: number;
 }>({
   friends: [],
   getFriends: () => {},
@@ -116,6 +118,7 @@ const AppContext = createContext<{
   nbQuestions: undefined,
   nbThemes: undefined,
   isLoadingTheme: true,
+  headerSize: 77,
 });
 
 export const useApp = () => useContext(AppContext);
@@ -152,6 +155,8 @@ export const AppProvider = ({ children }: Props) => {
   >([]);
   const [isLoadingTheme, setIsLoadingTheme] = useState(true);
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+
+  const headerSize = useMemo(() => (user ? 77 : 50), [user]);
 
   const getFavorite = useCallback(() => {
     if (user !== null) {
@@ -399,6 +404,7 @@ export const AppProvider = ({ children }: Props) => {
         getMyTitles,
         isLoadingTheme,
         isLoadingCategories,
+        headerSize,
       }}
     >
       {children}

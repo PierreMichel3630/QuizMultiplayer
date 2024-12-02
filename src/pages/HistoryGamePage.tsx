@@ -1,38 +1,33 @@
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import {
-  Alert,
-  Box,
-  Grid,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from "@mui/material";
-import { padding, px } from "csx";
+import { Alert, Box, Grid } from "@mui/material";
+import { px } from "csx";
 import { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { selectGamesByPlayer } from "src/api/game";
+import { GroupButtonAllTypeGame } from "src/component/button/ButtonGroup";
 import { CardHistoryGame } from "src/component/card/CardHistoryGame";
-import { HeadTitle } from "src/component/HeadTitle";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { AutocompleteTheme } from "src/component/Select";
 import { SelectorProfileBlock } from "src/component/SelectorProfileBlock";
 import { SkeletonGames } from "src/component/skeleton/SkeletonGame";
+import { useAuth } from "src/context/AuthProviderSupabase";
+import { GameModeEnum } from "src/models/enum/GameEnum";
 import { HistoryGame } from "src/models/Game";
 import { Profile } from "src/models/Profile";
 import { Theme } from "src/models/Theme";
 
 export interface FilterGame {
-  type: "ALL" | "DUEL" | "SOLO";
+  type: GameModeEnum;
   themes: Array<Theme>;
-  player?: Profile;
+  player: Profile | null;
   opponent?: Profile;
 }
 export default function HistoryGamePage() {
   const { t } = useTranslation();
   const location = useLocation();
+
+  const { profile } = useAuth();
 
   const ITEMPERPAGE = 10;
 
@@ -41,25 +36,25 @@ export default function HistoryGamePage() {
   const [isEnd, setIsEnd] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<FilterGame>({
-    type: "ALL",
+    type: GameModeEnum.all,
     themes: [],
-    player: undefined,
+    player: profile,
     opponent: undefined,
   });
-  const [openModalFriend1, setOpenModalFriend1] = useState(false);
-  const [openModalFriend2, setOpenModalFriend2] = useState(false);
+  const [openModalFriend, setOpenModalFriend] = useState(false);
 
   useEffect(() => {
     if (location.state) {
       setFilter((prev) => ({
         ...prev,
-        player: location.state.player,
+        player: profile,
         opponent: location.state.opponent,
-        themes: location.state.themes ? location.state.themes : [],
-        type: location.state.type ? location.state.type : "ALL",
+        type: location.state.type
+          ? (location.state.type as GameModeEnum)
+          : GameModeEnum.all,
       }));
     }
-  }, [location.state]);
+  }, [location.state, profile]);
 
   const getGames = useCallback(() => {
     setIsLoading(true);
@@ -109,9 +104,6 @@ export default function HistoryGamePage() {
       <Helmet>
         <title>{`${t("pages.history.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12} sx={{ mb: 1 }}>
-        <HeadTitle title={t("pages.history.title")} />
-      </Grid>
       <Grid
         item
         xs={12}
@@ -127,54 +119,22 @@ export default function HistoryGamePage() {
       >
         <Grid container spacing={1} justifyContent="center" alignItems="center">
           <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-            <ToggleButtonGroup
-              color="primary"
-              value={filter.type}
-              exclusive
-              onChange={(
-                _event: React.MouseEvent<HTMLElement>,
-                newType: "ALL" | "DUEL" | "SOLO"
-              ) => {
+            <GroupButtonAllTypeGame
+              selected={filter.type}
+              onChange={(value) => {
                 setFilter((prev) => ({
                   ...prev,
-                  type: newType,
-                  opponent: newType === "DUEL" ? prev.opponent : undefined,
+                  type: value,
                 }));
               }}
-            >
-              <ToggleButton value="ALL" sx={{ p: padding(5, 10) }}>
-                <Typography variant="h6">{t("commun.all")}</Typography>
-              </ToggleButton>
-              <ToggleButton value="SOLO" sx={{ p: padding(5, 10) }}>
-                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                  <PlayCircleIcon fontSize="small" />
-                  <Typography variant="h6">{t("commun.solo")}</Typography>
-                </Box>
-              </ToggleButton>
-              <ToggleButton value="DUEL" sx={{ p: padding(5, 10) }}>
-                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                  <OfflineBoltIcon fontSize="small" />
-                  <Typography variant="h6">{t("commun.duel")}</Typography>
-                </Box>
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </Grid>
-          <Grid item xs={filter.type === "DUEL" ? 6 : 12}>
-            <SelectorProfileBlock
-              label={t("commun.selectplayer")}
-              profile={filter.player}
-              onChange={() => setOpenModalFriend1(true)}
-              onDelete={() =>
-                setFilter((prev) => ({ ...prev, player: undefined }))
-              }
             />
           </Grid>
-          {filter.type === "DUEL" && (
-            <Grid item xs={6}>
+          {filter.type === GameModeEnum.duel && (
+            <Grid item xs={12}>
               <SelectorProfileBlock
                 label={t("commun.selectopponent")}
                 profile={filter.opponent}
-                onChange={() => setOpenModalFriend2(true)}
+                onChange={() => setOpenModalFriend(true)}
                 onDelete={() =>
                   setFilter((prev) => ({ ...prev, opponent: undefined }))
                 }
@@ -196,7 +156,7 @@ export default function HistoryGamePage() {
           <Grid container spacing={1}>
             {games.map((game) => (
               <Grid item xs={12} key={game.uuid}>
-                <CardHistoryGame game={game} player={filter.player} />
+                <CardHistoryGame game={game} />
               </Grid>
             ))}
             {isLoading && <SkeletonGames number={10} />}
@@ -209,22 +169,13 @@ export default function HistoryGamePage() {
         </Box>
       </Grid>
       <SelectFriendModal
-        open={openModalFriend1}
-        close={() => setOpenModalFriend1(false)}
-        onValid={(profile) => {
-          setFilter((prev) => ({ ...prev, player: profile }));
-          setOpenModalFriend1(false);
-        }}
-        withMe={true}
-      />
-      <SelectFriendModal
-        open={openModalFriend2}
-        close={() => setOpenModalFriend2(false)}
+        open={openModalFriend}
+        close={() => setOpenModalFriend(false)}
         onValid={(profile) => {
           setFilter((prev) => ({ ...prev, opponent: profile }));
-          setOpenModalFriend2(false);
+          setOpenModalFriend(false);
         }}
-        withMe={false}
+        withMe={true}
       />
     </Grid>
   );

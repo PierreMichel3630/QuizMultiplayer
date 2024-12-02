@@ -1,4 +1,4 @@
-import { Container, Grid, Toolbar } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { Header } from "src/component/header/Header";
 
@@ -22,12 +22,20 @@ export default function OutletPage() {
   return (
     <>
       <Grid container>
-        <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+          sx={{
+            backgroundColor: "background.paper",
+            zIndex: 100,
+            position: "sticky",
+            top: 0,
+          }}
+        >
           <Header />
         </Grid>
         <Grid item xs={12} sx={{ marginBottom: 8 }}>
           <Container maxWidth="md" sx={{ p: 0 }}>
-            <Toolbar />
             {online ? <Outlet /> : <OfflineBlock />}
           </Container>
         </Grid>
