@@ -1,4 +1,5 @@
 import { Box, Grid, Paper } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 import {
   MyResponse,
   Response,
@@ -7,9 +8,11 @@ import {
   ResponseTraining,
 } from "src/models/Response";
 import { Colors } from "src/style/Colors";
+import { hasBorderImage } from "src/utils/theme";
+import { ImageQCMBlock } from "./ImageBlock";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 
-import { percent, px } from "csx";
+import { padding, percent, px } from "csx";
 import {
   Question,
   QuestionDuel,
@@ -19,9 +22,6 @@ import {
 
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { useEffect, useMemo, useState } from "react";
-import { ImageQCMBlock } from "./ImageBlock";
-import { hasBorderImage } from "src/utils/theme";
 
 interface Props {
   question: QuestionSolo;
@@ -237,8 +237,8 @@ export const QcmResponseTrainingBlock = ({
 
   const columns = useMemo(() => {
     const modulo = question.responses.length % 2;
-    return modulo === 0 ? 2 : 1;
-  }, [question.responses.length]);
+    return question.image === null || modulo !== 0 ? 1 : 2;
+  }, [question]);
 
   const rows = useMemo(() => {
     return question.responses.length / columns;
@@ -267,11 +267,12 @@ export const QcmResponseTrainingBlock = ({
               alignItems: "center",
               textAlign: "center",
               justifyContent: "flex-end",
-              gap: px(4),
+              gap: px(12),
               display: "grid",
               gridTemplateRows: `repeat(${rows}, 1fr)`,
               gridTemplateColumns: `repeat(${columns}, ${100 / columns}%)`,
               gridAutoRows: "minmax(80px, auto)",
+              mb: 1,
             }
           : {
               width: percent(100),
@@ -279,10 +280,11 @@ export const QcmResponseTrainingBlock = ({
               alignItems: "center",
               textAlign: "center",
               justifyContent: "center",
-              gap: px(4),
+              gap: px(12),
               display: "grid",
               gridTemplateRows: `repeat(${rows}, 1fr)`,
               gridTemplateColumns: `repeat(${columns}, ${100 / columns}%)`,
+              mb: 1,
             }
       }
     >
@@ -292,28 +294,32 @@ export const QcmResponseTrainingBlock = ({
         const isMyAnswer =
           (response && Number(response.answer) === index) ||
           Number(myresponse) === index;
-        let color = Colors.grey;
+        let color: string = Colors.white;
         if (isCorrectResponse) {
-          color = Colors.green2;
+          color = Colors.correctanswer;
         } else if (isMyAnswer && response !== undefined) {
-          color = Colors.red2;
+          color = Colors.wronganswer;
         } else if (isMyAnswer && response === undefined) {
-          color = Colors.grey4;
+          color = Colors.waitanswer;
         }
+
+        const colorText =
+          isCorrectResponse || isMyAnswer ? Colors.white : Colors.black;
 
         return (
           <Paper
             key={index}
             sx={{
-              p: isTypeImage && !isMyAnswer ? 0 : "4px 12px",
+              p: padding(10, 20),
               minHeight: px(50),
               textAlign: "center",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               position: "relative",
-              borderColor: Colors.white,
+              borderColor: "#9e9e9e",
               borderWidth: 1,
+              borderRadius: px(15),
               borderStyle: "solid",
               backgroundColor: color,
               height: percent(100),
@@ -321,8 +327,9 @@ export const QcmResponseTrainingBlock = ({
               "&:hover": {
                 cursor: response || myresponse ? "default" : "pointer",
               },
+              boxShadow: `2px 4px ${color}5A`,
+              zIndex: 5,
             }}
-            variant="outlined"
             onClick={() => {
               if (!response && !isClick) {
                 setIsClick(true);
@@ -333,26 +340,12 @@ export const QcmResponseTrainingBlock = ({
               }
             }}
           >
-            {isMyAnswer && (
-              <ArrowRightIcon
-                viewBox="10 7 5 10"
-                sx={{
-                  fontSize: 15,
-                  position: "absolute",
-                  top: percent(50),
-                  translate: "0 -50%",
-                  left: 0,
-                  color: Colors.white,
-                }}
-              />
-            )}
             {r.image && <ImageQCMBlock src={r.image} border={border} />}
             {r.label && (
               <JsonLanguageBlock
                 variant="h3"
                 value={r.label}
-                color={"text.secondary"}
-                sx={{ wordBreak: "break-word" }}
+                sx={{ wordBreak: "break-word", color: colorText }}
               />
             )}
           </Paper>

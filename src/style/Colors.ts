@@ -47,10 +47,14 @@ export const Colors = {
   yellow4: yellow[500],
   orange: orange[900],
   orange2: orange[300],
-  black: "#000",
-  white: "#fff",
+  black: "#000000",
+  white: "#FFFFFF",
   gold: yellow[700],
   silver: grey[500],
   bronze: "#CD7F32",
   blue3: "#01b5da",
+
+  correctanswer: "#08c469",
+  wronganswer: "#fc4a3d",
+  waitanswer: grey[600],
 };

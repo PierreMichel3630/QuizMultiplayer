@@ -23,14 +23,13 @@ import { RankingTop5Block } from "src/component/RankingBlock";
 import { SkeletonCategories } from "src/component/skeleton/SkeletonCategory";
 import { useAuth } from "src/context/AuthProviderSupabase";
 
-import googleplay from "src/assets/google-play.png";
 import AppleIcon from "@mui/icons-material/Apple";
-import { ButtonColor } from "src/component/Button";
-import { Colors } from "src/style/Colors";
-import { HeadTitle } from "src/component/HeadTitle";
 import { Link, useNavigate } from "react-router-dom";
+import googleplay from "src/assets/google-play.png";
+import { ButtonColor } from "src/component/Button";
+import { HeadTitle } from "src/component/HeadTitle";
+import { Colors } from "src/style/Colors";
 import { urlApple, urlGooglePlay } from "./help/InstallationPage";
-import { test } from "../api/test";
 
 export default function ThemesPage() {
   const { t } = useTranslation();
@@ -79,7 +78,6 @@ export default function ThemesPage() {
   );
 
   useEffect(() => {
-    test();
     const handleScroll = () => {
       if (
         window.innerHeight + document.documentElement.scrollTop + 1000 <=

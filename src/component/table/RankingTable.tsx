@@ -236,7 +236,7 @@ export const RankingTable = ({ data, loading = false }: Props) => {
                             >
                               <VisibilityIcon
                                 fontSize="small"
-                                sx={{ color: "text.primary" }}
+                                sx={{ color: colorText }}
                               />
                             </Link>
                           )}

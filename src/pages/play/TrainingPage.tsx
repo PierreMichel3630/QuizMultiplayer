@@ -15,9 +15,6 @@ import {
   getQuestionTrainingGame,
   selectTrainingGameById,
 } from "src/api/game";
-import { InputResponseBlock } from "src/component/InputResponseBlock";
-import { QuestionTrainingBlock } from "src/component/QuestionBlock";
-import { ResponseTrainingBlock } from "src/component/ResponseBlock";
 import { useUser } from "src/context/UserProvider";
 import { Question, QuestionTraining } from "src/models/Question";
 import {
@@ -33,7 +30,7 @@ import { ButtonColor } from "src/component/Button";
 import { CardSignalQuestion } from "src/component/card/CardQuestion";
 import { LoadingDot } from "src/component/Loading";
 import { ReportModal } from "src/component/modal/ReportModal";
-import { QcmResponseTrainingBlock } from "src/component/QcmBlock";
+import { QuestionBlock } from "src/component/question/QuestionBlock";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { SoloGame, TrainingGame } from "src/models/Game";
 import { Colors } from "src/style/Colors";
@@ -380,31 +377,13 @@ export default function TrainingPage() {
               </Box>
             ) : (
               <>
-                {question && (
-                  <>
-                    <QuestionTrainingBlock question={question} />
-                    {question && question.isqcm ? (
-                      <QcmResponseTrainingBlock
-                        myresponse={myresponse}
-                        response={response}
-                        question={question}
-                        onSubmit={validateResponse}
-                      />
-                    ) : (
-                      <>
-                        {response ? (
-                          <ResponseTrainingBlock response={response} />
-                        ) : (
-                          <InputResponseBlock
-                            myresponse={myresponse}
-                            onSubmit={validateResponse}
-                            typeResponse={question.typeResponse}
-                          />
-                        )}
-                      </>
-                    )}
-                  </>
-                )}
+                <QuestionBlock
+                  myresponse={myresponse}
+                  response={response}
+                  question={question}
+                  onSubmit={validateResponse}
+                />
+
                 {isLoading && (
                   <Box
                     sx={{
