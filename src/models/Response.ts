@@ -4,6 +4,11 @@ export interface Response {
   response: ResponseLanguage;
 }
 
+export interface ResponseQCM {
+  label?: ResponseLanguageString;
+  image?: string;
+}
+
 export interface ResponseSolo {
   response: number | ResponseLanguage;
   result: boolean;

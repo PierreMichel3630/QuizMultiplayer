@@ -14,23 +14,23 @@ import { Helmet } from "react-helmet-async";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { ButtonColor } from "src/component/Button";
 import { CardSignalQuestion } from "src/component/card/CardQuestion";
-import { Question } from "src/models/Question";
+import { QuestionResult } from "src/models/Question";
 import { Colors } from "src/style/Colors";
 
 import HomeIcon from "@mui/icons-material/Home";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { launchSoloGame, selectSoloGameById } from "src/api/game";
+import { BestScoreBlock } from "src/component/BestScoreBlock";
 import { MyExperienceSoloBlock } from "src/component/ExperienceBlock";
 import { AddMoneyBlock } from "src/component/MoneyBlock";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { ReportModal } from "src/component/modal/ReportModal";
+import { RankingTableSoloDuel } from "src/component/table/RankingTable";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
-import { SoloGame } from "src/models/Game";
-import { BestScoreBlock } from "src/component/BestScoreBlock";
-import { RankingTableSoloDuel } from "src/component/table/RankingTable";
+import { SoloGameResult } from "src/models/Game";
 
 export default function RecapSoloPage() {
   const { t } = useTranslation();
@@ -41,8 +41,10 @@ export default function RecapSoloPage() {
   const { refreshProfil, profile } = useAuth();
   const { getMyAccomplishments } = useApp();
 
-  const [question, setQuestion] = useState<Question | undefined>(undefined);
-  const [game, setGame] = useState<undefined | SoloGame>(undefined);
+  const [question, setQuestion] = useState<QuestionResult | undefined>(
+    undefined
+  );
+  const [game, setGame] = useState<undefined | SoloGameResult>(undefined);
   const [maxIndex, setMaxIndex] = useState(5);
 
   const allquestion = location.state ? location.state.allquestion : false;
@@ -56,7 +58,7 @@ export default function RecapSoloPage() {
     const getGame = () => {
       if (uuidGame) {
         selectSoloGameById(uuidGame).then(({ data }) => {
-          setGame(data as SoloGame);
+          setGame(data as SoloGameResult);
         });
       }
     };
@@ -90,7 +92,7 @@ export default function RecapSoloPage() {
   }, [maxIndex]);
 
   const questionsDisplay = useMemo(() => {
-    let res: Array<Question> = [];
+    let res: Array<QuestionResult> = [];
     if (game) {
       const start = game.questions.length - maxIndex;
       res = [...game.questions].splice(start, game.questions.length);

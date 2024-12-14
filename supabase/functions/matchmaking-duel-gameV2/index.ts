@@ -167,19 +167,22 @@ Deno.serve(async (req) => {
     if (data.status === "WAIT") {
       const DIFFELOMAX = 200;
       const scoresBots = scores.data.filter((el) => el.profile !== player);
+      console.log("scoresBots : ", scoresBots);
       const botProche = scoresBots.reduce((prev, curr) =>
         Math.abs(curr.rank - eloPlayer) < Math.abs(prev.rank - eloPlayer)
           ? curr
           : prev
       );
+      console.log("botProche : ", botProche);
       const botsAvailable = scoresBots.filter(
         (el) => el.rank > eloPlayer - DIFFELOMAX && el.rank < eloPlayer + 200
       );
+      console.log("botsAvailable", botsAvailable);
       const bot =
         botsAvailable.length > 0
           ? botsAvailable[Math.floor(Math.random() * botsAvailable.length)]
           : botProche;
-      console.log(bot);
+      console.log("bot", bot);
       let themequestion = body.theme;
       if (theme === 272) {
         const { data } = await supabase

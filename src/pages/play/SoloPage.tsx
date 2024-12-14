@@ -5,17 +5,14 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { selectSoloGameById } from "src/api/game";
 import { supabase } from "src/api/supabase";
-import { InputResponseBlock } from "src/component/InputResponseBlock";
-import { QuestionSoloBlock } from "src/component/QuestionBlock";
-import { ResponseSoloBlock } from "src/component/ResponseBlock";
 import { useUser } from "src/context/UserProvider";
 import { QuestionSolo } from "src/models/Question";
 import { MyResponse, ResponseSolo } from "src/models/Response";
 
 import { percent, viewHeight } from "csx";
 import { LoadingDot } from "src/component/Loading";
-import { QcmResponseBlock } from "src/component/QcmBlock";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
+import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
 import { SoloGame } from "src/models/Game";
 import { StatusGameSolo } from "src/models/enum";
 import { Colors } from "src/style/Colors";
@@ -244,29 +241,13 @@ export default function SoloPage() {
             }}
           >
             {question ? (
-              <>
-                <QuestionSoloBlock question={question} timer={timer} />
-                {question && question.isqcm ? (
-                  <QcmResponseBlock
-                    myresponse={myresponse}
-                    response={response}
-                    question={question}
-                    onSubmit={validateResponse}
-                  />
-                ) : (
-                  <>
-                    {response ? (
-                      <ResponseSoloBlock response={response} />
-                    ) : (
-                      <InputResponseBlock
-                        myresponse={myresponse}
-                        onSubmit={validateResponse}
-                        typeResponse={question.typeResponse}
-                      />
-                    )}
-                  </>
-                )}
-              </>
+              <QuestionResponseBlock
+                myresponse={myresponse}
+                response={response}
+                question={question}
+                onSubmit={validateResponse}
+                timer={timer}
+              />
             ) : (
               <Box
                 sx={{

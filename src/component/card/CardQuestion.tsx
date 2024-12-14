@@ -1,6 +1,10 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { percent, px } from "csx";
-import { Question, QuestionAdmin, QuestionUpdate } from "src/models/Question";
+import {
+  QuestionAdmin,
+  QuestionResult,
+  QuestionUpdate,
+} from "src/models/Question";
 import { Difficulty } from "src/models/enum";
 import { ImageQuestionBlock } from "../ImageBlock";
 import {
@@ -19,9 +23,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useMemo } from "react";
 import { hasBorderImage } from "src/utils/theme";
 import { ImageThemeBlock } from "../ImageThemeBlock";
+import { MapPositionBlock } from "../MapPositionBlock";
 import { QcmBlockDuelResultBlock } from "../QcmBlock";
 import { ValidateButton } from "../button/ValidateButton";
-import { MapPositionBlock } from "../MapPositionBlock";
 
 interface Props {
   question: QuestionAdmin;
@@ -128,7 +132,7 @@ export const CardAdminQuestion = ({
 };
 
 interface PropsCardSignalQuestion {
-  question: Question;
+  question: QuestionResult;
   report?: () => void;
   color?: string;
 }

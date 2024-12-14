@@ -4,35 +4,18 @@ import { Colors } from "src/style/Colors";
 
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { ImageQCMBlock } from "../ImageBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
-import { JsonLanguage } from "src/models/Language";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useUser } from "src/context/UserProvider";
-import { useMemo } from "react";
-import { Point } from "react-simple-maps";
-import { Theme } from "src/models/Theme";
-
-export interface Question {
-  image?: string;
-  audio?: string;
-  extra?: JsonLanguage;
-  question: JsonLanguage;
-  typequestion: "DEFAULT" | "ORDER" | "IMAGE" | "MAPPOSITION";
-  time: number;
-  difficulty: string;
-  theme: Theme;
-  isqcm: boolean;
-  responses: Array<ResponseQCM>;
-  allresponse?: boolean;
-  typeResponse: string;
-  data: null | {
-    code: string;
-    property: string;
-    zoom: number;
-    coordinates: Point;
-  };
-}
+import { JsonLanguage } from "src/models/Language";
+import { Question } from "src/models/Question";
+import { ResponseDuel } from "src/models/Response";
+import { ImageQCMBlock } from "../ImageBlock";
+import {
+  JsonLanguageArrayOrStringBlock,
+  JsonLanguageBlock,
+} from "../JsonLanguageBlock";
+import { InputResponseBlock } from "./InputResponseBlock";
 
 export interface ResponseLanguage {
   [iso: string]: Array<string> | string;
@@ -43,7 +26,7 @@ export interface ResponseLanguageString {
 }
 
 export interface Answer {
-  value: number;
+  value: string | number;
   exact: boolean;
 }
 
@@ -51,16 +34,6 @@ export interface Response {
   response: number | ResponseLanguage;
   result: boolean;
   answer: number | string;
-}
-
-export interface ResponseQCM {
-  label?: ResponseLanguageString;
-  image?: string;
-}
-
-export interface MyResponse {
-  value: string | number;
-  exact: boolean;
 }
 
 interface ResponsesQCMBlockProps {
@@ -76,10 +49,21 @@ export const ResponsesQCMBlock = ({
   response,
   onSubmit,
 }: ResponsesQCMBlockProps) => {
+  const [hasAnswer, setHasAnswer] = useState(false);
+
+  useEffect(() => {
+    setHasAnswer(false);
+  }, [question]);
+
+  const hasImage = useMemo(
+    () => question.image || question.typequestion === "MAPPOSITION",
+    [question]
+  );
+
   const columns = useMemo(() => {
     const responsesImage = [...question.responses].filter((el) => el.image);
-    return question.image !== null || responsesImage.length > 0 ? 2 : 1;
-  }, [question]);
+    return hasImage || responsesImage.length > 0 ? 2 : 1;
+  }, [question, hasImage]);
 
   const rows = useMemo(() => {
     return question.responses.length / columns;
@@ -88,21 +72,17 @@ export const ResponsesQCMBlock = ({
   return (
     <Box
       sx={
-        question.image
+        hasImage
           ? {
               width: percent(100),
-              flexGrow: 1,
-              flex: "1 1 0",
-              minHeight: 0,
               flexDirection: "column",
               alignItems: "center",
               textAlign: "center",
-              justifyContent: "flex-end",
-              gap: px(12),
+              justifyContent: "center",
+              gap: px(6 / columns),
               display: "grid",
               gridTemplateRows: `repeat(${rows}, 1fr)`,
               gridTemplateColumns: `repeat(${columns}, ${100 / columns}%)`,
-              gridAutoRows: "minmax(80px, auto)",
               mb: 1,
             }
           : {
@@ -110,8 +90,8 @@ export const ResponsesQCMBlock = ({
               flexDirection: "column",
               alignItems: "center",
               textAlign: "center",
-              justifyContent: "center",
-              gap: px(12),
+              justifyContent: "flex-end",
+              gap: px(6 / columns),
               display: "grid",
               gridTemplateRows: `repeat(${rows}, 1fr)`,
               gridTemplateColumns: `repeat(${columns}, ${100 / columns}%)`,
@@ -125,7 +105,7 @@ export const ResponsesQCMBlock = ({
         const isMyAnswer =
           (response && Number(response.answer) === index) ||
           Number(myresponse) === index;
-        let color: string = Colors.white;
+        let color: string = Colors.black2;
         if (isCorrectResponse) {
           color = Colors.correctanswer;
         } else if (isMyAnswer && response !== undefined) {
@@ -142,7 +122,11 @@ export const ResponsesQCMBlock = ({
             image={r.image}
             answer1={false}
             answer2={false}
-            onSubmit={onSubmit}
+            hasAnswer={hasAnswer}
+            onSubmit={(value) => {
+              setHasAnswer(true);
+              onSubmit(value);
+            }}
           />
         );
       })}
@@ -157,6 +141,7 @@ interface ResponseQCMBlockProps {
   index: number;
   answer1: boolean;
   answer2: boolean;
+  hasAnswer: boolean;
   onSubmit: (value: Answer) => void;
 }
 
@@ -167,6 +152,7 @@ export const ResponseQCMBlock = ({
   label,
   answer1 = false,
   answer2 = false,
+  hasAnswer = false,
   onSubmit,
 }: ResponseQCMBlockProps) => {
   return (
@@ -193,10 +179,12 @@ export const ResponseQCMBlock = ({
       variant="outlined"
       onClick={(event) => {
         event.preventDefault();
-        onSubmit({
-          value: index,
-          exact: true,
-        });
+        if (!hasAnswer) {
+          onSubmit({
+            value: index,
+            exact: true,
+          });
+        }
       }}
     >
       {answer1 && (
@@ -217,7 +205,7 @@ export const ResponseQCMBlock = ({
         <JsonLanguageBlock
           variant="h3"
           value={label}
-          sx={{ wordBreak: "break-word", color: Colors.black }}
+          sx={{ wordBreak: "break-word", color: Colors.white }}
         />
       )}
       {answer2 && (
@@ -274,5 +262,114 @@ export const ResponseInputBlock = ({ response }: ResponseInputBlockProps) => {
         {label}
       </Typography>
     </Paper>
+  );
+};
+
+interface ResponseDuelProps {
+  response?: Response;
+  responsePlayer1?: ResponseDuel;
+  responsePlayer2?: ResponseDuel;
+  onSubmit: (value: Answer) => void;
+}
+
+export const ResponseDuelBlock = ({
+  response,
+  responsePlayer1,
+  responsePlayer2,
+  onSubmit,
+}: ResponseDuelProps) => {
+  const { uuid } = useUser();
+
+  const isPlayer1 = responsePlayer1 && uuid === responsePlayer1.uuid;
+  const isPlayer2 = responsePlayer2 && uuid === responsePlayer2.uuid;
+  const hasAnswer =
+    response ||
+    (responsePlayer1 && responsePlayer1.uuid === uuid) ||
+    (responsePlayer2 && responsePlayer2.uuid === uuid);
+
+  return (
+    <>
+      {!hasAnswer ? (
+        <InputResponseBlock onSubmit={onSubmit} />
+      ) : (
+        <>
+          {response && (
+            <Paper
+              sx={{
+                p: 1,
+                backgroundColor: Colors.green,
+                borderRadius: px(10),
+                textAlign: "center",
+                width: percent(100),
+                userSelect: "none",
+              }}
+            >
+              <JsonLanguageArrayOrStringBlock
+                variant="h2"
+                color="text.secondary"
+                value={response.response}
+              />
+            </Paper>
+          )}
+          {responsePlayer1 && (response || isPlayer1) && (
+            <Paper
+              sx={{
+                p: 1,
+                backgroundColor: responsePlayer1.result
+                  ? Colors.green
+                  : Colors.red,
+                borderRadius: px(10),
+                textAlign: "center",
+                width: percent(100),
+                position: "relative",
+                userSelect: "none",
+              }}
+            >
+              <ArrowRightIcon
+                sx={{
+                  fontSize: 50,
+                  position: "absolute",
+                  top: percent(50),
+                  translate: "0 -50%",
+                  left: 0,
+                  color: Colors.white,
+                }}
+              />
+              <Typography variant="h2" color="text.secondary">
+                {responsePlayer1.answer}
+              </Typography>
+            </Paper>
+          )}
+          {responsePlayer2 && (response || isPlayer2) && (
+            <Paper
+              sx={{
+                p: 1,
+                backgroundColor: responsePlayer2.result
+                  ? Colors.green
+                  : Colors.red,
+                borderRadius: px(10),
+                textAlign: "center",
+                width: percent(100),
+                position: "relative",
+                color: Colors.white,
+              }}
+            >
+              <Typography variant="h2" color="text.secondary">
+                {responsePlayer2.answer}
+              </Typography>
+              <ArrowLeftIcon
+                sx={{
+                  fontSize: 50,
+                  position: "absolute",
+                  top: percent(50),
+                  translate: "0 -50%",
+                  right: 0,
+                }}
+              />
+            </Paper>
+          )}
+        </>
+      )}
+    </>
   );
 };

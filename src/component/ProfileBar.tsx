@@ -151,42 +151,54 @@ export const ProfileBar = () => {
                   <Badge badgeContent={notificationsFriend} color="error">
                     <Box
                       sx={{
-                        p: padding(2, 8),
+                        p: padding(1, 5),
                         border: "2px solid",
                         borderColor: Colors.white,
                         borderRadius: px(5),
                         display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
-                      <PeopleIcon sx={{ color: Colors.white }} />
+                      <PeopleIcon
+                        sx={{ color: Colors.white, fontSize: px(25) }}
+                      />
                     </Box>
                   </Badge>
                 </Link>
                 <Link to={`/parameter`}>
                   <Box
                     sx={{
-                      p: padding(2, 8),
+                      p: padding(1, 5),
                       border: "2px solid",
                       borderColor: Colors.white,
                       borderRadius: px(5),
                       display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
-                    <SettingsIcon sx={{ color: Colors.white }} />
+                    <SettingsIcon
+                      sx={{ color: Colors.white, fontSize: px(25) }}
+                    />
                   </Box>
                 </Link>
                 <Box
                   sx={{
-                    p: padding(2, 8),
+                    p: padding(1, 5),
                     border: "2px solid",
                     borderColor: Colors.white,
                     borderRadius: px(5),
                     display: "flex",
                     cursor: "pointer",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                   onClick={disconnect}
                 >
-                  <PowerSettingsNewIcon sx={{ color: Colors.white }} />
+                  <PowerSettingsNewIcon
+                    sx={{ color: Colors.white, fontSize: px(25) }}
+                  />
                 </Box>
               </Box>
             </Box>

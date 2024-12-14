@@ -4,42 +4,15 @@ import {
   JsonLanguageArray,
   JsonLanguageArrayOrString,
 } from "./Language";
-import { ResponseLanguage, ResponseLanguageString } from "./Response";
+import { ResponseQCM } from "./Response";
 import { Theme } from "./Theme";
+import { TypeQuestionEnum } from "./enum/TypeQuestionEnum";
 
 export interface QuestionEnd {
   image?: string;
   question: JsonLanguage;
   difficulty: string;
   response: JsonLanguageArrayOrString;
-}
-
-export interface Question {
-  typequestion: "DEFAULT" | "ORDER" | "IMAGE" | "MAPPOSITION";
-  image?: string;
-  extra?: JsonLanguage;
-  audio?: string;
-  isqcm: boolean;
-  question: JsonLanguage;
-  response: JsonLanguage;
-  resultPlayer1?: boolean;
-  responsePlayer1?: string;
-  responsePlayer2?: string;
-  resultPlayer2?: boolean;
-  theme: Theme;
-  difficulty: string;
-  id: number;
-  allresponse: boolean;
-  responses: Array<{
-    label?: ResponseLanguageString;
-    image?: string;
-  }>;
-  data: null | {
-    code: string;
-    property: string;
-    zoom: number;
-    coordinates: Point;
-  };
 }
 
 export interface QuestionPosition {
@@ -113,49 +86,21 @@ export interface QuestionUpdate {
   responses?: Array<JsonLanguage>;
 }
 
-export interface QuestionSolo {
-  image?: string;
-  audio?: string;
-  extra?: JsonLanguage;
-  question: JsonLanguage;
-  typequestion: "DEFAULT" | "ORDER" | "IMAGE" | "MAPPOSITION";
-  time: number;
-  difficulty: string;
-  theme: Theme;
-  isqcm: boolean;
-  responses: Array<{
-    label?: ResponseLanguageString;
-    image?: string;
-  }>;
-  allresponse?: boolean;
-  typeResponse: string;
-  data: null | {
-    code: string;
-    property: string;
-    zoom: number;
-    coordinates: Point;
-  };
-}
-
-export interface QuestionTraining {
+export interface Question {
   id: number;
+  typequestion: TypeQuestionEnum;
   image?: string;
-  audio?: string;
   extra?: JsonLanguage;
-  question: JsonLanguage;
-  typequestion: "DEFAULT" | "ORDER" | "IMAGE" | "MAPPOSITION";
-  time: number;
-  difficulty: string;
-  theme: Theme;
+  audio?: string;
   isqcm: boolean;
-  responses: Array<{
-    label?: ResponseLanguageString;
-    image?: string;
-  }>;
-  response: number | ResponseLanguage;
-  exact: boolean;
+  time: number;
+  question: JsonLanguage;
+  theme: Theme;
+  difficulty: string;
   typeResponse: string;
   allresponse: boolean;
+  exact: boolean;
+  responses: Array<ResponseQCM>;
   data: null | {
     code: string;
     property: string;
@@ -164,24 +109,23 @@ export interface QuestionTraining {
   };
 }
 
-export interface QuestionDuel {
-  image?: string;
-  audio?: string;
-  extra?: JsonLanguage;
-  question: JsonLanguage;
-  typequestion: "DEFAULT" | "ORDER" | "IMAGE" | "MAPPOSITION";
-  time: number;
-  difficulty: string;
-  theme: Theme;
-  isqcm: boolean;
-  responses: Array<{
-    label?: ResponseLanguageString;
-    image?: string;
-  }>;
-  data: null | {
-    code: string;
-    property: string;
-    zoom: number;
-    coordinates: Point;
-  };
+export interface QuestionResult extends Question {
+  response: JsonLanguage;
+  resultPlayer1?: boolean;
+  responsePlayer1?: string | number;
+  responsePlayer2?: string | number;
+  resultPlayer2?: boolean;
 }
+
+export interface QuestionTraining extends Question {
+  response: JsonLanguage;
+}
+
+export interface QuestionDuel extends Question {
+  resultPlayer1?: boolean;
+  responsePlayer1?: string;
+  responsePlayer2?: string;
+  resultPlayer2?: boolean;
+}
+
+export interface QuestionSolo extends Question {}

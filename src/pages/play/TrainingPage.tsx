@@ -16,7 +16,7 @@ import {
   selectTrainingGameById,
 } from "src/api/game";
 import { useUser } from "src/context/UserProvider";
-import { Question, QuestionTraining } from "src/models/Question";
+import { QuestionResult, QuestionTraining } from "src/models/Question";
 import {
   MyResponse,
   ResponseLanguage,
@@ -28,10 +28,10 @@ import LastPageIcon from "@mui/icons-material/LastPage";
 import { percent, px, viewHeight } from "csx";
 import { ButtonColor } from "src/component/Button";
 import { CardSignalQuestion } from "src/component/card/CardQuestion";
+import { HeaderTrainingGame } from "src/component/HeaderTrainingGame";
 import { LoadingDot } from "src/component/Loading";
 import { ReportModal } from "src/component/modal/ReportModal";
-import { QuestionBlock } from "src/component/question/QuestionBlock";
-import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
+import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
 import { SoloGame, TrainingGame } from "src/models/Game";
 import { Colors } from "src/style/Colors";
 import { PreloadImages } from "src/utils/preload";
@@ -50,10 +50,10 @@ export default function TrainingPage() {
   const [nextQuestion, setNextQuestion] = useState<
     undefined | QuestionTraining
   >(undefined);
-  const [questionReport, setQuestionReport] = useState<undefined | Question>(
-    undefined
-  );
-  const [questions, setQuestions] = useState<Array<QuestionTraining>>([]);
+  const [questionReport, setQuestionReport] = useState<
+    undefined | QuestionResult
+  >(undefined);
+  const [questions, setQuestions] = useState<Array<QuestionResult>>([]);
   const [response, setResponse] = useState<undefined | ResponseTraining>(
     undefined
   );
@@ -64,8 +64,8 @@ export default function TrainingPage() {
   const [isEnd, setIsEnd] = useState(false);
   const [isAllQuestion, setIsAllQuestion] = useState(false);
   const [isNextAllQuestion, setIsNextAllQuestion] = useState(false);
-  const [numberQuestions, setNumberQuestions] = useState(0);
   const [goodAnswer, setGoodAnswer] = useState(0);
+  const [badAnswer, setBadAnswer] = useState(0);
   const [myresponse, setMyresponse] = useState<string | number | undefined>(
     undefined
   );
@@ -126,7 +126,7 @@ export default function TrainingPage() {
     if (question) {
       let result = false;
       if (question.isqcm) {
-        result = Number(question.response) === Number(value);
+        result = Number(question.response) === Number(myResponseValue);
       } else {
         const response = question.response as ResponseLanguage;
         result = verifyResponse(
@@ -144,7 +144,7 @@ export default function TrainingPage() {
         ...prev,
       ]);
       setGoodAnswer((prev) => (result ? prev + 1 : prev));
-      setNumberQuestions((prev) => prev + 1);
+      setBadAnswer((prev) => (result ? prev : prev + 1));
       setResponse({
         response: question.response,
         result: result,
@@ -265,25 +265,11 @@ export default function TrainingPage() {
             gap: 1,
           }}
         >
-          {game && (
-            <Box>
-              <ScoreThemeBlock
-                theme={game.theme}
-                extra={
-                  numberQuestions > 0 ? (
-                    <>
-                      <Typography variant="h2" color="text.secondary">
-                        {goodAnswer} / {numberQuestions}
-                      </Typography>
-                      <Typography variant="body1" color="text.secondary">
-                        ({((goodAnswer / numberQuestions) * 100).toFixed(0)} %)
-                      </Typography>
-                    </>
-                  ) : undefined
-                }
-              />
-            </Box>
-          )}
+          <HeaderTrainingGame
+            theme={game?.theme}
+            goodAnswer={goodAnswer}
+            badAnswer={badAnswer}
+          />
           <Box
             sx={{
               flexGrow: 1,
@@ -320,8 +306,8 @@ export default function TrainingPage() {
                         <Fragment key={index}>
                           <Grid item xs={12}>
                             <CardSignalQuestion
-                              question={el as Question}
-                              report={() => setQuestionReport(el as Question)}
+                              question={el}
+                              report={() => setQuestionReport(el)}
                             />
                           </Grid>
                           <Grid item xs={12}>
@@ -377,7 +363,7 @@ export default function TrainingPage() {
               </Box>
             ) : (
               <>
-                <QuestionBlock
+                <QuestionResponseBlock
                   myresponse={myresponse}
                   response={response}
                   question={question}

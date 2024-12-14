@@ -5,11 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import {
-  Accomplishment,
-  StatAccomplishment,
-  StatAccomplishmentEnum,
-} from "src/models/Accomplishment";
+import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
 import { ImageThemeBlock } from "../ImageThemeBlock";
@@ -21,6 +17,7 @@ import { unlockAccomplishment } from "src/api/accomplishment";
 import { AddMoneyBlock } from "../MoneyBlock";
 import { AddXpBlock } from "../XpBlock";
 import { px } from "csx";
+import { StatAccomplishmentEnum } from "src/models/enum/StatAccomplishmentEnum";
 
 interface Props {
   accomplishment: Accomplishment;

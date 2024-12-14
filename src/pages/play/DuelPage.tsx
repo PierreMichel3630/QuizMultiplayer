@@ -8,16 +8,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import { selectDuelGameById } from "src/api/game";
 import { supabase } from "src/api/supabase";
 import { CircularLoading } from "src/component/Loading";
-import { QcmBlockDuelBlock } from "src/component/QcmBlock";
 import { QuestionDuelBlock } from "src/component/QuestionBlock";
-import { ResponseDuelBlock } from "src/component/ResponseBlock";
 import { RoundTimer, VerticalTimer } from "src/component/Timer";
 import { AvatarAccount } from "src/component/avatar/AvatarAccount";
 import { WaitPlayerDuelGameBlock } from "src/component/play/WaitPlayerDuelGameBlock";
+import { QuestionBlock } from "src/component/question/QuestionBlock";
+import { QuestionResponseDuelBlock } from "src/component/question/QuestionResponseBlock";
 import { useUser } from "src/context/UserProvider";
 import { DuelGame, DuelGameChange, ExtraDuelGame } from "src/models/DuelGame";
 import { QuestionDuel } from "src/models/Question";
-import { Response, ResponseDuel } from "src/models/Response";
+import { MyResponse, Response, ResponseDuel } from "src/models/Response";
 import { StatusGameDuel } from "src/models/enum";
 import { Colors } from "src/style/Colors";
 import { PreloadImages } from "src/utils/preload";
@@ -201,13 +201,13 @@ export default function DuelPage() {
     }
   }, [uuidGame, navigate, uuid, audio, sound, getBroadcastValidate]);
 
-  const validateResponse = async (value: string | number) => {
-    if (channel && game && language && uuid) {
+  const validateResponse = async (value: MyResponse | undefined) => {
+    if (channel && game && language && uuid && value) {
       channel.send({
         type: "broadcast",
         event: "response",
         payload: {
-          response: value,
+          response: value.value,
           language: language.iso,
           uuid: uuid,
         },
@@ -352,75 +352,15 @@ export default function DuelPage() {
                       </Grid>
                     </Grid>
                   </Box>
-                  <Box
-                    sx={{
-                      flexGrow: 1,
-                      flex: "1 1 0",
-                      display: "flex",
-                      flexDirection: "row",
-                      gap: px(5),
-                    }}
-                  >
-                    <VerticalTimer
-                      time={timer}
-                      color={COLORDUEL1}
-                      answer={
-                        responsePlayer1 ? responsePlayer1.time : undefined
-                      }
-                    />
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexGrow: 1,
-                        flex: "1 1 0",
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          flexGrow: 1,
-                          flex: "1 1 0",
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "flex-end",
-                          gap: 1,
-                        }}
-                      >
-                        <QuestionDuelBlock question={question} />
-                        {question && (
-                          <>
-                            {question.isqcm ? (
-                              <QcmBlockDuelBlock
-                                question={question}
-                                response={response}
-                                responseMe={
-                                  isPlayer1 ? responsePlayer1 : responsePlayer2
-                                }
-                                responseAdv={
-                                  isPlayer1 ? responsePlayer2 : responsePlayer1
-                                }
-                                isPlayer1={isPlayer1}
-                                onSubmit={validateResponse}
-                              />
-                            ) : (
-                              <ResponseDuelBlock
-                                response={response}
-                                responsePlayer1={responsePlayer1}
-                                responsePlayer2={responsePlayer2}
-                                onSubmit={validateResponse}
-                              />
-                            )}
-                          </>
-                        )}
-                      </Box>
-                    </Box>
-                    <VerticalTimer
-                      time={timer}
-                      color={COLORDUEL2}
-                      answer={
-                        responsePlayer2 ? responsePlayer2.time : undefined
-                      }
-                    />
-                  </Box>
+                  <QuestionResponseDuelBlock
+                    question={question}
+                    response={response}
+                    responsePlayer1={responsePlayer1}
+                    responsePlayer2={responsePlayer2}
+                    timer={timer}
+                    onSubmit={validateResponse}
+                    isPlayer1={isPlayer1}
+                  />
                 </Box>
               ) : (
                 <Box

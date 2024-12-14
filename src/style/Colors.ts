@@ -48,6 +48,7 @@ export const Colors = {
   orange: orange[900],
   orange2: orange[300],
   black: "#000000",
+  black2: grey[900],
   white: "#FFFFFF",
   gold: yellow[700],
   silver: grey[500],

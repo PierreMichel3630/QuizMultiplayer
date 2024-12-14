@@ -77,15 +77,19 @@ export const AdminButton = () => {
       <>
         <Box
           sx={{
-            p: padding(2, 8),
+            p: padding(1, 5),
             border: "2px solid",
             borderColor: Colors.white,
             borderRadius: px(5),
             display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
           onClick={handleOpenUserMenu}
         >
-          <AdminPanelSettingsIcon sx={{ color: Colors.white }} />
+          <AdminPanelSettingsIcon
+            sx={{ color: Colors.white, fontSize: px(25) }}
+          />
         </Box>
         <Menu
           sx={{ mt: "35px", pt: 0, pb: 0 }}

@@ -1,6 +1,6 @@
 import { JsonLanguage } from "./Language";
 import { Profile } from "./Profile";
-import { Question } from "./Question";
+import { Question, QuestionResult } from "./Question";
 import { Theme, ThemeDifficulty } from "./Theme";
 import { StatusGameSolo } from "./enum";
 
@@ -32,6 +32,10 @@ export interface SoloGame {
   themequestion: Theme;
   uuid: string;
   status: StatusGameSolo;
+}
+
+export interface SoloGameResult extends SoloGame {
+  questions: Array<QuestionResult>;
 }
 
 export interface AllQuestionSoloGame {
