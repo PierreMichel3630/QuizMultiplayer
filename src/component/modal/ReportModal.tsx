@@ -23,7 +23,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
 import { DuelGame } from "src/models/DuelGame";
 import { SoloGame } from "src/models/Game";
-import { Question } from "src/models/Question";
+import { QuestionResult } from "src/models/Question";
 import { ReportInsert } from "src/models/Report";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
@@ -33,7 +33,7 @@ import { CardSignalQuestion } from "../card/CardQuestion";
 interface Props {
   open: boolean;
   close: () => void;
-  question?: Question;
+  question?: QuestionResult;
   sologame?: SoloGame;
   duelgame?: DuelGame;
 }

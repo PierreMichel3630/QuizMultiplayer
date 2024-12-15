@@ -14,9 +14,9 @@ import { LoadingDot } from "src/component/Loading";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
 import { SoloGame } from "src/models/Game";
-import { StatusGameSolo } from "src/models/enum";
 import { Colors } from "src/style/Colors";
 import { PreloadImages } from "src/utils/preload";
+import { StatusGameSolo } from "src/models/enum/StatusGame";
 
 export default function SoloPage() {
   const { t } = useTranslation();
@@ -63,7 +63,7 @@ export default function SoloPage() {
             }
             setImages(urls);
 
-            let audio = undefined;
+            let audio: HTMLAudioElement | undefined = undefined;
             if (questionSolo.audio) {
               audio = new Audio(questionSolo.audio);
               audio.load();

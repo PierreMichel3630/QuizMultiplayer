@@ -12,13 +12,13 @@ import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { LoadingDot } from "../Loading";
 import { LabelRankBlock } from "../RankBlock";
-import { StatusGameDuel } from "src/models/enum";
 import { useState, useEffect, useMemo } from "react";
 import { selectScoreByThemeAndPlayer } from "src/api/score";
 import { Score } from "src/models/Score";
 import { getLevel } from "src/utils/calcul";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
+import { StatusGameDuel } from "src/models/enum/StatusGame";
 
 interface Props {
   game: DuelGame;

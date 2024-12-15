@@ -15,7 +15,6 @@ import {
 import { padding, percent, px } from "csx";
 import { SyntheticEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Difficulty, colorDifficulty } from "src/models/enum";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import LockIcon from "@mui/icons-material/Lock";
@@ -33,6 +32,7 @@ import { ImageThemeBlock } from "./ImageThemeBlock";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 import ClearIcon from "@mui/icons-material/Clear";
 import { BasicSearchInput } from "./Input";
+import { colorDifficulty, Difficulty } from "src/models/enum/DifficultyEnum";
 
 interface Props {
   value: Difficulty;

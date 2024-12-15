@@ -1,8 +1,8 @@
+import { StatusGameSolo } from "./enum/StatusGame";
 import { JsonLanguage } from "./Language";
 import { Profile } from "./Profile";
 import { Question, QuestionResult } from "./Question";
 import { Theme, ThemeDifficulty } from "./Theme";
-import { StatusGameSolo } from "./enum";
 
 export interface Game {
   id: number;
@@ -17,7 +17,7 @@ export interface Game {
 
 export interface TrainingGame {
   id: number;
-  questions: Array<Question>;
+  questions: Array<QuestionResult>;
   player: string;
   theme: Theme;
   uuid: string;
@@ -26,7 +26,7 @@ export interface TrainingGame {
 export interface SoloGame {
   id: number;
   points: number;
-  questions: Array<Question>;
+  questions: Array<QuestionResult>;
   player: string;
   theme: Theme;
   themequestion: Theme;

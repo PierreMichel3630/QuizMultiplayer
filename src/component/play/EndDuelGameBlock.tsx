@@ -19,12 +19,12 @@ import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { useAuth } from "src/context/AuthProviderSupabase";
-import { Question } from "src/models/Question";
-import { CardSignalQuestion } from "../card/CardQuestion";
-import { ReportModal } from "../modal/ReportModal";
-import { ExperienceBlock } from "../ExperienceBlock";
 import { useApp } from "src/context/AppProvider";
+import { useAuth } from "src/context/AuthProviderSupabase";
+import { QuestionResult } from "src/models/Question";
+import { CardSignalQuestion } from "../card/CardQuestion";
+import { ExperienceBlock } from "../ExperienceBlock";
+import { ReportModal } from "../modal/ReportModal";
 import { AddMoneyBlock } from "../MoneyBlock";
 import { RankingTableSoloDuel } from "../table/RankingTable";
 
@@ -41,7 +41,9 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
   const { refreshProfil } = useAuth();
   const { getMyAccomplishments } = useApp();
 
-  const [question, setQuestion] = useState<Question | undefined>(undefined);
+  const [question, setQuestion] = useState<QuestionResult | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     refreshProfil();

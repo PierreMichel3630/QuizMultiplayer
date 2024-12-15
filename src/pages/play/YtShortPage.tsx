@@ -17,9 +17,9 @@ import { LoadingDot } from "src/component/Loading";
 import { QcmResponseBlock } from "src/component/QcmBlock";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { SoloGame } from "src/models/Game";
-import { StatusGameSolo } from "src/models/enum";
 import { Colors } from "src/style/Colors";
 import { PreloadImages } from "src/utils/preload";
+import { StatusGameSolo } from "src/models/enum/StatusGame";
 
 export default function YtShortPage() {
   const { t } = useTranslation();

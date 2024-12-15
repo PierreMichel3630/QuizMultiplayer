@@ -1,6 +1,6 @@
 import { Category } from "./Category";
+import { Difficulty } from "./enum/DifficultyEnum";
 import { JsonLanguage } from "./Language";
-import { Difficulty } from "./enum";
 
 export interface Theme {
   id: number;

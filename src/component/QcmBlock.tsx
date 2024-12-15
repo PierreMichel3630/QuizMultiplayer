@@ -14,8 +14,8 @@ import { JsonLanguageBlock } from "./JsonLanguageBlock";
 
 import { padding, percent, px } from "csx";
 import {
-  Question,
   QuestionDuel,
+  QuestionResult,
   QuestionSolo,
   QuestionTraining,
 } from "src/models/Question";
@@ -528,7 +528,7 @@ export const QcmBlockDuelBlock = ({
 };
 
 interface PropsQcmBlockDuelResultBlock {
-  question: Question;
+  question: QuestionResult;
 }
 
 export const QcmBlockDuelResultBlock = ({

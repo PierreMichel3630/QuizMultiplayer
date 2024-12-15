@@ -5,7 +5,6 @@ import {
   QuestionResult,
   QuestionUpdate,
 } from "src/models/Question";
-import { Difficulty } from "src/models/enum";
 import { ImageQuestionBlock } from "../ImageBlock";
 import {
   JsonLanguageArrayOrStringBlock,
@@ -26,6 +25,7 @@ import { ImageThemeBlock } from "../ImageThemeBlock";
 import { MapPositionBlock } from "../MapPositionBlock";
 import { QcmBlockDuelResultBlock } from "../QcmBlock";
 import { ValidateButton } from "../button/ValidateButton";
+import { Difficulty } from "src/models/enum/DifficultyEnum";
 
 interface Props {
   question: QuestionAdmin;

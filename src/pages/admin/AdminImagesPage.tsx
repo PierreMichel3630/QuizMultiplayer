@@ -11,7 +11,6 @@ import { ButtonColor } from "src/component/Button";
 import { ImageQuestionBlock } from "src/component/ImageBlock";
 import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
-import { FilterQuestion } from "./AdminQuestionsPage";
 
 export interface FilterGameAdmin {
   type: "ALL" | "DUEL" | "SOLO";
@@ -34,13 +33,6 @@ export default function AdminImagesPage() {
   const [count, setCount] = useState<number>(1);
   const [page, setPage] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Array<QuestionImage>>([]);
-  const [filter, setFilter] = useState<FilterQuestion>({
-    themes: [],
-    isImage: true,
-    ids: [],
-    validate: true,
-    difficulties: [],
-  });
 
   useEffect(() => {
     const newPage = searchParams.get("page") as string | null;
@@ -48,10 +40,16 @@ export default function AdminImagesPage() {
   }, [searchParams]);
 
   const getCountQuestion = useCallback(() => {
-    countQuestionsAdmin(filter).then(({ count }) => {
+    countQuestionsAdmin({
+      themes: [],
+      isImage: true,
+      ids: [],
+      validate: true,
+      difficulties: [],
+    }).then(({ count }) => {
       setCount(count ?? 0);
     });
-  }, [filter]);
+  }, []);
 
   useEffect(() => {
     getCountQuestion();

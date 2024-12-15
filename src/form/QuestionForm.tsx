@@ -28,9 +28,9 @@ import { ImageQuestionBlock } from "src/component/ImageBlock";
 import { InputEnter } from "src/component/Input";
 import { SelectDifficulty } from "src/component/Select";
 import { useMessage } from "src/context/MessageProvider";
+import { Difficulty } from "src/models/enum/DifficultyEnum";
 import { QuestionAdmin } from "src/models/Question";
 import { Theme } from "src/models/Theme";
-import { Difficulty } from "src/models/enum";
 import { Colors } from "src/style/Colors";
 import * as Yup from "yup";
 

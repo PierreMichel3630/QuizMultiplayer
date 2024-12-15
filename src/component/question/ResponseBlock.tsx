@@ -9,13 +9,8 @@ import { useTranslation } from "react-i18next";
 import { useUser } from "src/context/UserProvider";
 import { JsonLanguage } from "src/models/Language";
 import { Question } from "src/models/Question";
-import { ResponseDuel } from "src/models/Response";
 import { ImageQCMBlock } from "../ImageBlock";
-import {
-  JsonLanguageArrayOrStringBlock,
-  JsonLanguageBlock,
-} from "../JsonLanguageBlock";
-import { InputResponseBlock } from "./InputResponseBlock";
+import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 export interface ResponseLanguage {
   [iso: string]: Array<string> | string;
@@ -116,6 +111,7 @@ export const ResponsesQCMBlock = ({
 
         return (
           <ResponseQCMBlock
+            key={index}
             color={color}
             index={index}
             label={r.label}
@@ -262,114 +258,5 @@ export const ResponseInputBlock = ({ response }: ResponseInputBlockProps) => {
         {label}
       </Typography>
     </Paper>
-  );
-};
-
-interface ResponseDuelProps {
-  response?: Response;
-  responsePlayer1?: ResponseDuel;
-  responsePlayer2?: ResponseDuel;
-  onSubmit: (value: Answer) => void;
-}
-
-export const ResponseDuelBlock = ({
-  response,
-  responsePlayer1,
-  responsePlayer2,
-  onSubmit,
-}: ResponseDuelProps) => {
-  const { uuid } = useUser();
-
-  const isPlayer1 = responsePlayer1 && uuid === responsePlayer1.uuid;
-  const isPlayer2 = responsePlayer2 && uuid === responsePlayer2.uuid;
-  const hasAnswer =
-    response ||
-    (responsePlayer1 && responsePlayer1.uuid === uuid) ||
-    (responsePlayer2 && responsePlayer2.uuid === uuid);
-
-  return (
-    <>
-      {!hasAnswer ? (
-        <InputResponseBlock onSubmit={onSubmit} />
-      ) : (
-        <>
-          {response && (
-            <Paper
-              sx={{
-                p: 1,
-                backgroundColor: Colors.green,
-                borderRadius: px(10),
-                textAlign: "center",
-                width: percent(100),
-                userSelect: "none",
-              }}
-            >
-              <JsonLanguageArrayOrStringBlock
-                variant="h2"
-                color="text.secondary"
-                value={response.response}
-              />
-            </Paper>
-          )}
-          {responsePlayer1 && (response || isPlayer1) && (
-            <Paper
-              sx={{
-                p: 1,
-                backgroundColor: responsePlayer1.result
-                  ? Colors.green
-                  : Colors.red,
-                borderRadius: px(10),
-                textAlign: "center",
-                width: percent(100),
-                position: "relative",
-                userSelect: "none",
-              }}
-            >
-              <ArrowRightIcon
-                sx={{
-                  fontSize: 50,
-                  position: "absolute",
-                  top: percent(50),
-                  translate: "0 -50%",
-                  left: 0,
-                  color: Colors.white,
-                }}
-              />
-              <Typography variant="h2" color="text.secondary">
-                {responsePlayer1.answer}
-              </Typography>
-            </Paper>
-          )}
-          {responsePlayer2 && (response || isPlayer2) && (
-            <Paper
-              sx={{
-                p: 1,
-                backgroundColor: responsePlayer2.result
-                  ? Colors.green
-                  : Colors.red,
-                borderRadius: px(10),
-                textAlign: "center",
-                width: percent(100),
-                position: "relative",
-                color: Colors.white,
-              }}
-            >
-              <Typography variant="h2" color="text.secondary">
-                {responsePlayer2.answer}
-              </Typography>
-              <ArrowLeftIcon
-                sx={{
-                  fontSize: 50,
-                  position: "absolute",
-                  top: percent(50),
-                  translate: "0 -50%",
-                  right: 0,
-                }}
-              />
-            </Paper>
-          )}
-        </>
-      )}
-    </>
   );
 };

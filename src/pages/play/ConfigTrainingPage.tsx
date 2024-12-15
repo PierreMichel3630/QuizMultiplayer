@@ -24,7 +24,6 @@ export default function ConfigTrainingPage() {
   const navigate = useNavigate();
 
   const [theme, setTheme] = useState<Theme | undefined>(undefined);
-  const [loadingTheme, setLoadingTheme] = useState(true);
 
   const [configGame, setConfigGame] = useState({
     inputquestion: false,
@@ -41,11 +40,9 @@ export default function ConfigTrainingPage() {
 
   useEffect(() => {
     const getTheme = () => {
-      setLoadingTheme(true);
       if (themeid) {
         selectThemeById(Number(themeid)).then((res) => {
           if (res.data) setTheme(res.data as Theme);
-          setLoadingTheme(false);
         });
       }
     };

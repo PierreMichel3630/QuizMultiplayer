@@ -5,7 +5,7 @@ import { Theme, ThemeDifficulty } from "src/models/Theme";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 import { useEffect, useState } from "react";
 import { SelectDifficulty } from "./Select";
-import { Difficulty } from "src/models/enum";
+import { Difficulty } from "src/models/enum/DifficultyEnum";
 
 interface Props {
   themes: Array<Theme>;

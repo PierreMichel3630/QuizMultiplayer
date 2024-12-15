@@ -20,7 +20,7 @@ export const testImages = (questions: Array<QuestionImage>) => {
 };
 
 const testImage = (question: QuestionImage) => {
-  return new Promise(function imgPromise(resolve, reject) {
+  return new Promise(function imgPromise(resolve) {
     const imgElement = new Image();
     imgElement.addEventListener("load", function imgOnLoad() {
       resolve({

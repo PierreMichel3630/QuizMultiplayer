@@ -6,7 +6,7 @@ import { CircularLoading } from "../Loading";
 import { MapPositionBlock } from "../MapPositionBlock";
 import { SoundBar } from "../SoundBar";
 import { Timer } from "../Timer";
-import { Question } from "./ResponseBlock";
+import { Question } from "src/models/Question";
 
 interface Props {
   question: Question;

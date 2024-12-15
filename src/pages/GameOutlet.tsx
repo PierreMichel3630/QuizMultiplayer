@@ -17,7 +17,7 @@ import { BattleNotificationBlock } from "src/component/notification/BattleNotifi
 import { DuelNotificationBlock } from "src/component/notification/DuelNotificationBlock";
 import { useApp } from "src/context/AppProvider";
 import { BattleGame, BattleGameChange } from "src/models/BattleGame";
-import { StatusGameDuel } from "src/models/enum";
+import { StatusGameDuel } from "src/models/enum/StatusGame";
 
 export default function GameOutlet() {
   const { uuid } = useUser();

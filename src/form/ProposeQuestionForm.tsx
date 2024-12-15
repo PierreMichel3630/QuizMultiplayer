@@ -15,9 +15,9 @@ import { insertQuestion, insertQuestionTheme } from "src/api/question";
 import { ButtonColor } from "src/component/Button";
 import { SelectDifficulty } from "src/component/Select";
 import { useMessage } from "src/context/MessageProvider";
+import { Difficulty } from "src/models/enum/DifficultyEnum";
 import { QuestionInsert } from "src/models/Question";
 import { Theme } from "src/models/Theme";
-import { Difficulty } from "src/models/enum";
 import { Colors } from "src/style/Colors";
 import * as Yup from "yup";
 
@@ -81,6 +81,8 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
           })),
           image: null,
           typeResponse: null,
+          allresponse: false,
+          exact: false,
         };
         insertQuestion(newQuestion).then(async ({ error, data }) => {
           if (error) {

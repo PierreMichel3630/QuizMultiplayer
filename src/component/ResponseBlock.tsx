@@ -11,11 +11,11 @@ import {
 import { Colors } from "src/style/Colors";
 
 import { useTranslation } from "react-i18next";
-import { InputResponseBlock } from "./InputResponseBlock";
 import { JsonLanguageArrayOrStringBlock } from "./JsonLanguageBlock";
 
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import { InputResponseBlock } from "./question/InputResponseBlock";
 
 interface ResponseProps {
   response: ResponseLanguage;
@@ -151,7 +151,9 @@ export const ResponseDuelBlock = ({
   return (
     <>
       {!hasAnswer ? (
-        <InputResponseBlock onSubmit={onSubmit} />
+        <InputResponseBlock
+          onSubmit={(value) => onSubmit(value.value as string)}
+        />
       ) : (
         <>
           {response && (
