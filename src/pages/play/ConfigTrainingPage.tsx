@@ -68,7 +68,7 @@ export default function ConfigTrainingPage() {
           <Grid container spacing={3}>
             {theme && (
               <>
-                <Grid item xs={12} sx={{ textAlign: "center", mt: 4 }}>
+                <Grid item xs={12} sx={{ textAlign: "center", mt: 1 }}>
                   <Typography variant="h1" color="text.secondary">
                     {t("commun.modetraining")}
                   </Typography>
@@ -81,7 +81,6 @@ export default function ConfigTrainingPage() {
                     gap: 2,
                     alignItems: "center",
                     justifyContent: "center",
-                    mb: 4,
                   }}
                 >
                   <ImageThemeBlock theme={theme} size={40} />

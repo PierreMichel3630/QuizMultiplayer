@@ -45,7 +45,7 @@ export default function BattlePage() {
   const { uuidGame } = useParams();
   const { user } = useAuth();
   const { language } = useUser();
-  const { themes } = useApp();
+  const { headerSize, themes } = useApp();
   const navigate = useNavigate();
 
   const [game, setGame] = useState<BattleGame | null>(null);
@@ -301,7 +301,7 @@ export default function BattlePage() {
             gap: 1,
             backgroundColor: "white",
             position: "sticky",
-            top: 62,
+            top: headerSize,
             left: 0,
             right: 0,
             zIndex: 2,

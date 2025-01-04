@@ -552,6 +552,7 @@ Deno.serve(async (req) => {
             result: result,
             answer: payload.response,
             uuid,
+            correctanswer: response,
             time: delayResponse,
             ptsplayer1: pointsPlayer1,
             ptsplayer2: pointsPlayer2,

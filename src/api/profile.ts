@@ -45,3 +45,8 @@ export const searchProfilePagination = (
     .order("lower_name", { ascending: true })
     .range(from, to);
 };
+
+export const countProfile = () =>
+  supabase
+    .from(SUPABASE_PROFILE_TABLE)
+    .select("*", { count: "exact", head: true });

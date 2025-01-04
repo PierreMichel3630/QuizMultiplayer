@@ -21,6 +21,7 @@ import { CardBadge } from "src/component/card/CardBadge";
 import { CardTitle } from "src/component/card/CardTitle";
 import { BarVictory } from "src/component/chart/BarVictory";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
+import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
 import { Badge, BadgeProfile } from "src/models/Badge";
 import { Profile } from "src/models/Profile";
@@ -41,6 +42,7 @@ export default function ComparePage() {
   const { t } = useTranslation();
   const { language } = useUser();
   const location = useLocation();
+  const { headerSize } = useApp();
 
   const [profile1, setProfile1] = useState<Profile | undefined>(
     location.state ? location.state.profile1 : undefined
@@ -214,7 +216,7 @@ export default function ComparePage() {
                   gap: px(5),
                   p: 1,
                   position: "sticky",
-                  top: px(62),
+                  top: headerSize,
                   backgroundColor: "background.paper",
                   width: percent(100),
                 }}

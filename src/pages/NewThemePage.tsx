@@ -1,12 +1,13 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import { uniqBy } from "lodash";
 import moment from "moment";
 import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { CardTheme } from "src/component/card/CardTheme";
-import { RankingBlock } from "src/component/RankingBlock";
+import { PageCategoryBlock } from "src/component/page/PageCategoryBlock";
 import { useApp } from "src/context/AppProvider";
+import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { MAX_DAY_NEW_THEME } from "src/utils/config";
 import { sortByCreatedAt } from "src/utils/sort";
 
 export default function NewThemePage() {
@@ -16,13 +17,21 @@ export default function NewThemePage() {
   const themesNew = useMemo(() => {
     return uniqBy(
       themes
-        .filter((el) => moment().diff(el.created_at, "days") < 7)
-        .sort(sortByCreatedAt),
+        .filter(
+          (el) => moment().diff(el.created_at, "days") < MAX_DAY_NEW_THEME
+        )
+        .sort(sortByCreatedAt)
+        .map((el) => ({
+          id: el.id,
+          name: el.name,
+          image: el.image,
+          color: el.color,
+          link: `/theme/${el.id}`,
+          type: TypeCardEnum.THEME,
+        })),
       (el) => el.id
     );
   }, [themes]);
-
-  const idthemes = useMemo(() => themesNew.map((el) => el.id), [themesNew]);
 
   return (
     <Grid container>
@@ -30,23 +39,7 @@ export default function NewThemePage() {
         <title>{`${t("pages.new.title")} - ${t("appname")}`}</title>
       </Helmet>
       <Grid item xs={12}>
-        <Box sx={{ p: 1 }}>
-          <Grid container spacing={1} justifyContent="center">
-            {idthemes.length > 0 && (
-              <Grid item xs={12}>
-                <RankingBlock themes={idthemes} />
-              </Grid>
-            )}
-            <Grid item xs={12}>
-              <Typography variant="h2">{t("commun.themes")}</Typography>
-            </Grid>
-            {themesNew.map((theme) => (
-              <Grid item key={theme.id}>
-                <CardTheme theme={theme} />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
+        <PageCategoryBlock title={t("pages.new.title")} values={themesNew} />
       </Grid>
     </Grid>
   );

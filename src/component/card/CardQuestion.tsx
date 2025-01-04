@@ -19,13 +19,11 @@ import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
 
 import EditIcon from "@mui/icons-material/Edit";
-import { useMemo } from "react";
-import { hasBorderImage } from "src/utils/theme";
+import { Difficulty } from "src/models/enum/DifficultyEnum";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { MapPositionBlock } from "../MapPositionBlock";
 import { QcmBlockDuelResultBlock } from "../QcmBlock";
 import { ValidateButton } from "../button/ValidateButton";
-import { Difficulty } from "src/models/enum/DifficultyEnum";
 
 interface Props {
   question: QuestionAdmin;
@@ -143,12 +141,6 @@ export const CardSignalQuestion = ({
 }: PropsCardSignalQuestion) => {
   const { t } = useTranslation();
 
-  const border = useMemo(
-    () =>
-      question && question.theme ? hasBorderImage(question.theme.id) : false,
-    [question]
-  );
-
   return (
     <Box
       sx={{
@@ -184,8 +176,8 @@ export const CardSignalQuestion = ({
           </Grid>
         )}
         {question.image && (
-          <Grid item xs={12} sx={{ maxWidth: percent(80), maxHeight: px(250) }}>
-            <ImageQuestionBlock src={question.image} border={border} />
+          <Grid item xs={12} sx={{ maxWidth: percent(80) }}>
+            <ImageQuestionBlock src={question.image} />
           </Grid>
         )}
         <Grid item xs={12} sx={{ textAlign: "center" }}>

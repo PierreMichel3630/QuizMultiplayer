@@ -1,10 +1,10 @@
-import { Box, Container, Divider, Grid, Typography } from "@mui/material";
+import { Box, Container, Divider, Grid } from "@mui/material";
 import { percent } from "csx";
 import { uniqBy } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { searchProfilePagination } from "src/api/profile";
+import { countProfile, searchProfilePagination } from "src/api/profile";
 import { BasicSearchInput } from "src/component/Input";
 import { ShareApplicationBlock } from "src/component/ShareApplicationBlock";
 import {
@@ -13,10 +13,12 @@ import {
 } from "src/component/card/CardProfile";
 import { FriendNotificationBlock } from "src/component/notification/FriendNotificationBlock";
 import { SkeletonPlayers } from "src/component/skeleton/SkeletonPlayer";
+import { TitleCount } from "src/component/title/TitleCount";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { FRIENDSTATUS } from "src/models/Friend";
 import { Profile } from "src/models/Profile";
+import { sortByUsername } from "src/utils/sort";
 
 export default function PeoplePage() {
   const { t } = useTranslation();
@@ -28,8 +30,18 @@ export default function PeoplePage() {
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState("");
   const [players, setPlayers] = useState<Array<Profile>>([]);
+  const [nbPlayers, setNbPlayers] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
+
+  useEffect(() => {
+    const countPlayers = () => {
+      countProfile().then(({ count }) => {
+        setNbPlayers(count ?? 0);
+      });
+    };
+    countPlayers();
+  }, []);
 
   useEffect(() => {
     const getPlayers = () => {
@@ -76,9 +88,11 @@ export default function PeoplePage() {
     [friendsProfile]
   );
   const friendsFilter = useMemo(() => {
-    const friends = friendsProfile.filter((el) =>
-      el.username.toLocaleLowerCase().includes(search.toLocaleLowerCase())
-    );
+    const friends = friendsProfile
+      .filter((el) =>
+        el.username.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+      )
+      .sort(sortByUsername);
     return uniqBy(friends, (el) => el.id);
   }, [friendsProfile, search]);
 
@@ -160,7 +174,10 @@ export default function PeoplePage() {
           {invitationsfriends.length > 0 && (
             <>
               <Grid item xs={12}>
-                <Typography variant="h2">{t("commun.myinvitation")}</Typography>
+                <TitleCount
+                  title={t("commun.myinvitation")}
+                  count={invitationsfriends.length}
+                />
               </Grid>
               {invitationsfriends.map((friend) => (
                 <Grid item xs={12} key={friend.id}>
@@ -173,7 +190,10 @@ export default function PeoplePage() {
           {friendsFilter.length > 0 && (
             <>
               <Grid item xs={12}>
-                <Typography variant="h2">{t("commun.myfriends")}</Typography>
+                <TitleCount
+                  title={t("commun.myfriends")}
+                  count={friendsFilter.length}
+                />
               </Grid>
               {friendsFilter.map((friend, index) => (
                 <Grid item key={index} xs={12}>
@@ -188,7 +208,7 @@ export default function PeoplePage() {
                 <Divider sx={{ borderBottomWidth: 3 }} />
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="h2">{t("commun.players")}</Typography>
+                <TitleCount title={t("commun.players")} count={nbPlayers} />
               </Grid>
             </>
           )}

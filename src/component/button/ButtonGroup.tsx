@@ -50,7 +50,7 @@ export const GroupButton = ({ options, selected, onChange }: Props) => {
               key={index}
               sx={{
                 borderRadius: px(50),
-                p: padding(2, 20),
+                p: padding(2, 12),
                 color: isSelect ? Colors.white : "text.primary",
                 backgroundColor: isSelect ? color : "initial",
                 cursor: "pointer",

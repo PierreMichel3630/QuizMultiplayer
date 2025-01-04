@@ -2,7 +2,6 @@ import { Alert, Box, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Theme } from "src/models/Theme";
 
-import { px } from "csx";
 import { useCallback, useEffect, useState } from "react";
 import { selectGames } from "src/api/game";
 import { GroupButtonAllTypeGame } from "src/component/button/ButtonGroup";
@@ -11,12 +10,14 @@ import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { AutocompleteTheme } from "src/component/Select";
 import { SelectorProfileBlock } from "src/component/SelectorProfileBlock";
 import { SkeletonGames } from "src/component/skeleton/SkeletonGame";
+import { useApp } from "src/context/AppProvider";
 import { GameModeEnum } from "src/models/enum/GameEnum";
 import { HistoryGameAdmin } from "src/models/Game";
 import { FilterGame } from "../HistoryGamePage";
 
 export default function AdminGamesPage() {
   const { t } = useTranslation();
+  const { headerSize } = useApp();
 
   const ITEMPERPAGE = 25;
 
@@ -81,7 +82,7 @@ export default function AdminGamesPage() {
         xs={12}
         sx={{
           position: "sticky",
-          top: px(62),
+          top: headerSize,
           p: 1,
           backgroundColor: "background.paper",
           display: "flex",

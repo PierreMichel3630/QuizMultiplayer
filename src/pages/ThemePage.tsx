@@ -3,8 +3,6 @@ import HomeIcon from "@mui/icons-material/Home";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import StarIcon from "@mui/icons-material/Star";
-import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import SupervisedUserCircleRoundedIcon from "@mui/icons-material/SupervisedUserCircleRounded";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import {
@@ -16,7 +14,7 @@ import {
   Skeleton,
   Typography,
 } from "@mui/material";
-import { important, percent, px } from "csx";
+import { percent, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -31,11 +29,10 @@ import { countPlayersByTheme } from "src/api/score";
 import { selectThemeById } from "src/api/theme";
 import { ButtonColor } from "src/component/Button";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { ProposeQuestionModal } from "src/component/modal/ProposeQuestionModal";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
-import { GoBackButtonIcon } from "src/component/navigation/GoBackButton";
 import { RankingTableSoloDuel } from "src/component/table/RankingTable";
+import { TitleBlock } from "src/component/title/Title";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
@@ -263,43 +260,12 @@ export default function ThemePage() {
                     alignItems="center"
                     justifyContent="center"
                   >
-                    <Grid
-                      item
-                      xs={12}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        mb: 1,
-                        textAlign: "center",
-                      }}
-                    >
-                      <GoBackButtonIcon />
-                      <JsonLanguageBlock
-                        variant="h2"
-                        color="text.secondary"
-                        sx={{ fontSize: important(px(25)) }}
-                        value={theme.name}
+                    <Grid item xs={12}>
+                      <TitleBlock
+                        title={theme.name}
+                        addFavorite={addFavorite}
+                        favorite={favorite !== undefined}
                       />
-                      {favorite ? (
-                        <StarIcon
-                          sx={{
-                            fontSize: 45,
-                            color: Colors.yellow4,
-                            cursor: "pointer",
-                          }}
-                          onClick={() => addFavorite()}
-                        />
-                      ) : (
-                        <StarBorderOutlinedIcon
-                          sx={{
-                            fontSize: 45,
-                            color: Colors.yellow4,
-                            cursor: "pointer",
-                          }}
-                          onClick={() => addFavorite()}
-                        />
-                      )}
                     </Grid>
                     <Grid item xs={5} sm={3} md={3} lg={3}>
                       <ImageThemeBlock theme={theme} />

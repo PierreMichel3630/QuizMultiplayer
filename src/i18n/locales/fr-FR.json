@@ -269,7 +269,9 @@
     "alltime": "All Time",
     "month": "Mois",
     "darkmode": "Mode sombre",
-    "lightmode": "Mode clair"
+    "lightmode": "Mode clair",
+    "updated": "Mis à jour",
+    "finishtheme": "Thèmes terminés"
   },
   "offline": {
     "title": "Connectez-vous à Internet",
@@ -386,6 +388,9 @@
     "accomplishments": {
       "title": "Mes Succès"
     },
+    "previousgame": {
+      "title": "Joué récemment"
+    },
     "favorite": {
       "title": "Favoris"
     },
@@ -445,6 +450,9 @@
     },
     "new": {
       "title": "Nouveautés"
+    },
+    "updated": {
+      "title": "Mis à jour"
     },
     "resetpassword": {
       "title": "Réinitaliser votre mot de passe"

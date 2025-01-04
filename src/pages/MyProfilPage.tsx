@@ -32,7 +32,6 @@ import {
 } from "src/utils/sort";
 
 import EditIcon from "@mui/icons-material/Edit";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { selectFriendByProfileId } from "src/api/friend";
 import { BasicSearchInput } from "src/component/Input";
@@ -42,12 +41,12 @@ import { CardFriends } from "src/component/card/CardFriends";
 import { CardTitle } from "src/component/card/CardTitle";
 import { SkeletonAvatarPlayer } from "src/component/skeleton/SkeletonPlayer";
 import { SkeletonProfilTheme } from "src/component/skeleton/SkeletonTheme";
-import { BadgeLevel } from "src/icons/BadgeLevel";
+import { useApp } from "src/context/AppProvider";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { Friend, FRIENDSTATUS } from "src/models/Friend";
 import { getLevel } from "src/utils/calcul";
 import { searchString } from "src/utils/string";
-import { useApp } from "src/context/AppProvider";
+import { CardFinishTheme } from "src/component/card/CardFinishTheme";
 
 export default function MyProfilPage() {
   const { t } = useTranslation();
@@ -345,6 +344,9 @@ export default function MyProfilPage() {
             <CardTitle titles={titleOrder} loading={isLoadingTitle} />
           </Grid>
           <Grid item xs={12}>
+            <CardFinishTheme scores={scores} loading={isLoadingScore} />
+          </Grid>
+          <Grid item xs={12}>
             <CardFriends friends={friendsAvatar} loading={isLoadingFriends} />
           </Grid>
           <Grid item xs={12}>
@@ -385,7 +387,6 @@ export default function MyProfilPage() {
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
             {scoresDisplay.map((score) => {
-              const lvl = getLevel(score.xp);
               return (
                 <Grid item xs={12} sm={6} md={6} lg={4} key={score.id}>
                   <Paper
@@ -418,7 +419,7 @@ export default function MyProfilPage() {
                             to={`/theme/${score.theme.id}`}
                             style={{ textDecoration: "none" }}
                           >
-                            <ImageThemeBlock theme={score.theme} size={60} />
+                            <ImageThemeBlock theme={score.theme} size={40} />
                           </Link>
                           <Box>
                             <JsonLanguageBlock
@@ -430,49 +431,8 @@ export default function MyProfilPage() {
                               color="text.secondary"
                               value={score.theme.name}
                             />
-                            <Box
-                              sx={{
-                                display: "flex",
-                                gap: 1,
-                                alignItems: "center",
-                              }}
-                            >
-                              <BadgeLevel level={lvl} size={40} />
-                              <Box>
-                                <Typography
-                                  variant="h4"
-                                  component="span"
-                                  color="text.secondary"
-                                >
-                                  {score.xp}
-                                </Typography>
-                                <Typography
-                                  variant="caption"
-                                  component="span"
-                                  color="text.secondary"
-                                >
-                                  {t("commun.xpabbreviation")}
-                                </Typography>
-                              </Box>
-                            </Box>
                           </Box>
                         </Box>
-                        <Link
-                          to={`/games`}
-                          state={{
-                            player: profile,
-                            themes: [score.theme],
-                          }}
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <VisibilityIcon
-                            fontSize="large"
-                            sx={{ color: "white" }}
-                          />
-                        </Link>
                       </Grid>
                       <Grid
                         item

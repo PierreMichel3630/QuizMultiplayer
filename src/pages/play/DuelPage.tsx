@@ -8,16 +8,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { selectDuelGameById } from "src/api/game";
 import { supabase } from "src/api/supabase";
 import { CircularLoading } from "src/component/Loading";
-import { QcmBlockDuelBlock } from "src/component/QcmBlock";
-import { QuestionDuelBlock } from "src/component/QuestionBlock";
-import { ResponseDuelBlock } from "src/component/ResponseBlock";
 import { RoundTimer, VerticalTimer } from "src/component/Timer";
 import { AvatarAccount } from "src/component/avatar/AvatarAccount";
 import { WaitPlayerDuelGameBlock } from "src/component/play/WaitPlayerDuelGameBlock";
+import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
+import { Answer, Response } from "src/component/question/ResponseBlock";
 import { useUser } from "src/context/UserProvider";
 import { DuelGame, DuelGameChange, ExtraDuelGame } from "src/models/DuelGame";
 import { QuestionDuel } from "src/models/Question";
-import { Response, ResponseDuel } from "src/models/Response";
+import { ResponseDuel } from "src/models/Response";
 import { StatusGameDuel } from "src/models/enum/StatusGame";
 import { Colors } from "src/style/Colors";
 import { PreloadImages } from "src/utils/preload";
@@ -63,6 +62,10 @@ export default function DuelPage() {
     getGame();
   }, [navigate, uuidGame]);
 
+  const isPlayer1 = useMemo(() => {
+    return uuid === game?.player1.id;
+  }, [game, uuid]);
+
   const idPlayer1 = useMemo(
     () => (game && game.player1 ? game.player1.id : null),
     [game]
@@ -76,8 +79,22 @@ export default function DuelPage() {
     (res: ResponseDuel) => {
       if (res.uuid === idPlayer1) {
         setResponsePlayer1(res);
+        if (isPlayer1) {
+          setResponse({
+            responseplayer1: res.answer,
+            response: res.correctanswer,
+            result: res.result,
+          });
+        }
       } else if (res.uuid === idPlayer2) {
         setResponsePlayer2(res);
+        if (!isPlayer1) {
+          setResponse({
+            responseplayer2: res.answer,
+            response: res.correctanswer,
+            result: res.result,
+          });
+        }
       }
       setGame((prev) =>
         prev
@@ -89,7 +106,7 @@ export default function DuelPage() {
           : undefined
       );
     },
-    [idPlayer1, idPlayer2]
+    [idPlayer1, idPlayer2, isPlayer1]
   );
 
   useEffect(() => {
@@ -162,8 +179,9 @@ export default function DuelPage() {
           }, 2000);
         })
         .on("broadcast", { event: "endquestion" }, (value) => {
+          const res = value.payload as Response;
           setTimer(undefined);
-          setResponse(value.payload as Response);
+          setResponse((prev) => ({ ...res, ...prev }));
         })
         .on("broadcast", { event: "validate" }, (value) => {
           const res = value.payload as ResponseDuel;
@@ -201,13 +219,13 @@ export default function DuelPage() {
     }
   }, [uuidGame, navigate, uuid, audio, sound, getBroadcastValidate]);
 
-  const validateResponse = async (value: string | number) => {
+  const validateResponse = async (value: Answer) => {
     if (channel && game && language && uuid) {
       channel.send({
         type: "broadcast",
         event: "response",
         payload: {
-          response: value,
+          response: value.value,
           language: language.iso,
           uuid: uuid,
         },
@@ -225,9 +243,33 @@ export default function DuelPage() {
     }
   }, [audio, sound]);
 
-  const isPlayer1 = useMemo(() => {
-    return uuid === game?.player1.id;
-  }, [game, uuid]);
+  const responseP1 = useMemo(
+    () =>
+      isPlayer1
+        ? responsePlayer1
+          ? responsePlayer1.answer
+          : undefined
+        : response
+        ? responsePlayer1
+          ? responsePlayer1.answer
+          : undefined
+        : undefined,
+    [isPlayer1, responsePlayer1, response]
+  );
+
+  const responseP2 = useMemo(
+    () =>
+      !isPlayer1
+        ? responsePlayer2
+          ? responsePlayer2.answer
+          : undefined
+        : response
+        ? responsePlayer2
+          ? responsePlayer2.answer
+          : undefined
+        : undefined,
+    [isPlayer1, responsePlayer2, response]
+  );
 
   return (
     <Box
@@ -385,32 +427,14 @@ export default function DuelPage() {
                           gap: 1,
                         }}
                       >
-                        <QuestionDuelBlock question={question} />
-                        {question && (
-                          <>
-                            {question.isqcm ? (
-                              <QcmBlockDuelBlock
-                                question={question}
-                                response={response}
-                                responseMe={
-                                  isPlayer1 ? responsePlayer1 : responsePlayer2
-                                }
-                                responseAdv={
-                                  isPlayer1 ? responsePlayer2 : responsePlayer1
-                                }
-                                isPlayer1={isPlayer1}
-                                onSubmit={validateResponse}
-                              />
-                            ) : (
-                              <ResponseDuelBlock
-                                response={response}
-                                responsePlayer1={responsePlayer1}
-                                responsePlayer2={responsePlayer2}
-                                onSubmit={validateResponse}
-                              />
-                            )}
-                          </>
-                        )}
+                        <QuestionResponseBlock
+                          responseplayer1={responseP1}
+                          responseplayer2={responseP2}
+                          response={response}
+                          question={question}
+                          onSubmit={validateResponse}
+                          timer={timer}
+                        />
                       </Box>
                     </Box>
                     <VerticalTimer

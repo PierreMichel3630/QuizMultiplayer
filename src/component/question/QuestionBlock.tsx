@@ -33,7 +33,7 @@ export const QuestionBlock = ({ question, timer }: Props) => {
           <JsonLanguageBlock
             variant="h2"
             color="text.secondary"
-            sx={{ fontSize: important(px(35)) }}
+            sx={{ fontSize: important(px(30)), wordBreak: "break-word" }}
             value={question.question}
           />
           {question.image && (
@@ -43,6 +43,8 @@ export const QuestionBlock = ({ question, timer }: Props) => {
                 flex: "1 1 0",
                 minHeight: 0,
                 display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 flexDirection: "column",
                 width: percent(100),
               }}

@@ -1,16 +1,17 @@
-import { Box, Divider, Grid, Typography } from "@mui/material";
-import { percent, px } from "csx";
+import { Box, Divider, Grid } from "@mui/material";
+import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { JsonLanguage } from "src/models/Language";
-import { JsonLanguageBlock } from "./JsonLanguageBlock";
-import { useMemo } from "react";
-import { useApp } from "src/context/AppProvider";
-import { CardTheme } from "./card/CardTheme";
-import { useAuth } from "src/context/AuthProviderSupabase";
-import { insertBattleGame } from "src/api/game";
 import { useNavigate } from "react-router-dom";
+import { insertBattleGame } from "src/api/game";
+import { useApp } from "src/context/AppProvider";
+import { useAuth } from "src/context/AuthProviderSupabase";
+import { JsonLanguage } from "src/models/Language";
+import { CardImage } from "./card/CardImage";
+import { TitleCount } from "./title/TitleCount";
+import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
 
 interface Mode {
+  id: number;
   image: string;
   color: string;
   name: JsonLanguage;
@@ -23,20 +24,7 @@ export const GameModeBlock = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const modes: Array<Mode> = [
-    {
-      image:
-        "https://cperjgnbmoqyyqgkyqws.supabase.co/storage/v1/object/public/theme/mode/swords.png",
-      color: "#a569bd",
-      name: {
-        "fr-FR": "Combat contre un ami",
-        "en-US": "Fight against a friend",
-      },
-      onClick: () => launchBattleGame(),
-    },
-  ];
-
-  const launchBattleGame = async () => {
+  const launchBattleGame = useCallback(async () => {
     if (user) {
       const insertValue = {
         player1: user.id,
@@ -46,80 +34,73 @@ export const GameModeBlock = () => {
     } else {
       navigate(`/login`);
     }
-  };
+  }, [user, navigate]);
+
+  const modes: Array<Mode> = useMemo(
+    () => [
+      {
+        id: 0,
+        image:
+          "https://cperjgnbmoqyyqgkyqws.supabase.co/storage/v1/object/public/theme/mode/swords.png",
+        color: "#a569bd",
+        name: {
+          "fr-FR": "Combat contre un ami",
+          "en-US": "Fight against a friend",
+        },
+        onClick: () => launchBattleGame(),
+      },
+    ],
+    [launchBattleGame]
+  );
 
   const themesDisplay = useMemo(() => {
     const idThemes = [271, 272];
 
-    return themes.filter((el) => idThemes.includes(el.id));
+    return themes
+      .filter((el) => idThemes.includes(el.id))
+      .map((el) => ({
+        id: el.id,
+        name: el.name,
+        image: el.image,
+        color: el.color,
+        link: `/theme/${el.id}`,
+        type: TypeCardEnum.THEME,
+      }));
   }, [themes]);
+
+  const count = useMemo(
+    () => themesDisplay.length + modes.length,
+    [themesDisplay, modes]
+  );
 
   return (
     <Grid container spacing={1}>
-      <Grid
-        item
-        xs={12}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <Typography variant="h2">{t("commun.gamemode")}</Typography>
+      <Grid item xs={12}>
+        <TitleCount title={t("commun.gamemode")} count={count} />
       </Grid>
       <Grid item xs={12}>
         <Box
           sx={{
             display: "flex",
-            gap: px(5),
+            gap: 1,
             overflowX: "auto",
             scrollbarWidth: "none",
           }}
         >
           {modes.map((mode, index) => (
-            <Box key={index} sx={{ maxWidth: px(100) }}>
-              <Box
-                onClick={() => mode.onClick()}
-                sx={{
-                  width: percent(100),
-                  display: "flex",
-                  justifyContent: "center",
-                  flexDirection: "column",
-                  cursor: "pointer",
-                  borderRadius: px(5),
-                  gap: px(2),
-                }}
-              >
-                <Box
-                  sx={{
-                    backgroundColor: mode.color,
-                    width: 90,
-                    aspectRatio: "1/1",
-                    borderRadius: px(5),
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <img
-                    src={mode.image}
-                    loading="lazy"
-                    style={{
-                      maxWidth: percent(90),
-                      maxHeight: Number.isFinite(90) ? Number(90) * 0.9 : 90,
-                    }}
-                  />
-                </Box>
-                <JsonLanguageBlock
-                  variant="h6"
-                  sx={{ textAlign: "center" }}
-                  value={mode.name}
-                />
-              </Box>
+            <Box
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                mode.onClick();
+              }}
+              key={index}
+            >
+              <CardImage value={mode} />
             </Box>
           ))}
           {themesDisplay.map((theme) => (
-            <CardTheme key={theme.id} theme={theme} />
+            <CardImage key={theme.id} value={theme} />
           ))}
         </Box>
       </Grid>

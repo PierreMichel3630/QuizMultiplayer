@@ -1,21 +1,28 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
-import { FavoriteBlock } from "src/component/FavoriteBlock";
-import { RankingBlock } from "src/component/RankingBlock";
-import { CardTheme } from "src/component/card/CardTheme";
+import { useNavigate, useParams } from "react-router-dom";
+import { deleteFavoriteById, insertFavorite } from "src/api/favorite";
+import { PageCategoryBlock } from "src/component/page/PageCategoryBlock";
 import { useApp } from "src/context/AppProvider";
+import { useAuth } from "src/context/AuthProviderSupabase";
+import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
+import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { FavoriteInsert } from "src/models/Favorite";
 import { sortByName } from "src/utils/sort";
 
 export default function CategoryPage() {
   const { t } = useTranslation();
   const { id } = useParams();
+  const navigate = useNavigate();
+
+  const { user } = useAuth();
   const { language } = useUser();
-  const { categories, themes } = useApp();
+  const { categories, themes, favorites, refreshFavorites } = useApp();
+  const { setMessage, setSeverity } = useMessage();
 
   const [category, setCategory] = useState<Category | undefined>(undefined);
 
@@ -33,14 +40,6 @@ export default function CategoryPage() {
     [category, themes, language]
   );
 
-  const idthemes = useMemo(
-    () =>
-      themes
-        .filter((el) => category && el.category.id === category.id)
-        .map((el) => el.id),
-    [themes, category]
-  );
-
   const FirstThemesCategory = useMemo(
     () =>
       category
@@ -49,7 +48,59 @@ export default function CategoryPage() {
     [category, themes]
   );
 
-  const themesDisplay = [...FirstThemesCategory, ...themesCategory];
+  const themesDisplay = useMemo(
+    () =>
+      [...FirstThemesCategory, ...themesCategory].map((el) => ({
+        id: el.id,
+        name: el.name,
+        image: el.image,
+        color: el.color,
+        link: `/theme/${el.id}`,
+        type: TypeCardEnum.THEME,
+      })),
+    [FirstThemesCategory, themesCategory]
+  );
+
+  const favorite = useMemo(
+    () => favorites.find((el) => el.category === Number(id)),
+    [id, favorites]
+  );
+
+  const addFavorite = () => {
+    if (user) {
+      if (category) {
+        if (favorite) {
+          deleteFavoriteById(favorite.id).then(({ error }) => {
+            if (error) {
+              setSeverity("error");
+              setMessage(t("commun.error"));
+            } else {
+              setSeverity("success");
+              setMessage(t("alert.deletefavorite"));
+              refreshFavorites();
+            }
+          });
+        } else {
+          const newFavorite: FavoriteInsert = {
+            category: category.id,
+          };
+          insertFavorite(newFavorite).then(({ error }) => {
+            if (error) {
+              setSeverity("error");
+              setMessage(t("commun.error"));
+            } else {
+              setSeverity("success");
+              setMessage(t("alert.addfavorite"));
+              refreshFavorites();
+            }
+          });
+        }
+      }
+    } else {
+      navigate(`/login`);
+    }
+  };
+
   return (
     <Grid container>
       <Helmet>
@@ -66,26 +117,12 @@ export default function CategoryPage() {
         )}
       </Helmet>
       <Grid item xs={12}>
-        <Box sx={{ p: 1 }}>
-          <Grid container spacing={1} justifyContent="center">
-            {idthemes.length > 0 && (
-              <Grid item xs={12}>
-                <RankingBlock themes={idthemes} />
-              </Grid>
-            )}
-            <Grid item xs={12}>
-              <FavoriteBlock category={category} />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h2">{t("commun.themes")}</Typography>
-            </Grid>
-            {themesDisplay.map((theme) => (
-              <Grid item key={theme.id}>
-                <CardTheme theme={theme} />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
+        <PageCategoryBlock
+          title={category?.name}
+          values={themesDisplay}
+          addFavorite={addFavorite}
+          favorite={favorite !== undefined}
+        />
       </Grid>
     </Grid>
   );

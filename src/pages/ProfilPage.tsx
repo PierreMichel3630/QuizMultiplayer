@@ -55,6 +55,7 @@ import { StatAccomplishment } from "src/models/Accomplishment";
 import { Friend, FRIENDSTATUS } from "src/models/Friend";
 import { getLevel } from "src/utils/calcul";
 import { searchString } from "src/utils/string";
+import { CardFinishTheme } from "src/component/card/CardFinishTheme";
 
 export default function ProfilPage() {
   const { t } = useTranslation();
@@ -462,6 +463,9 @@ export default function ProfilPage() {
           </Grid>
           <Grid item xs={12}>
             <CardTitle titles={titleOrder} loading={isLoadingTitle} />
+          </Grid>
+          <Grid item xs={12}>
+            <CardFinishTheme scores={scores} loading={isLoadingScore} />
           </Grid>
           <Grid item xs={12}>
             <CardFriends friends={friendsAvatar} loading={isLoadingFriends} />

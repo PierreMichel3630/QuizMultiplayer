@@ -8,7 +8,6 @@ import {
   ResponseTraining,
 } from "src/models/Response";
 import { Colors } from "src/style/Colors";
-import { hasBorderImage } from "src/utils/theme";
 import { ImageQCMBlock } from "./ImageBlock";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 
@@ -29,10 +28,6 @@ interface Props {
 }
 
 export const QcmBlock = ({ question, onSubmit }: Props) => {
-  const border = useMemo(
-    () => (question ? hasBorderImage(question.theme.id) : false),
-    [question]
-  );
   return (
     <Grid container spacing={1}>
       {question.responses.map((response, index) => (
@@ -54,9 +49,7 @@ export const QcmBlock = ({ question, onSubmit }: Props) => {
             variant="outlined"
             onClick={() => onSubmit(index)}
           >
-            {response.image && (
-              <ImageQCMBlock src={response.image} border={border} />
-            )}
+            {response.image && <ImageQCMBlock src={response.image} />}
             {response.label && (
               <JsonLanguageBlock
                 variant="h2"
@@ -97,11 +90,6 @@ export const QcmResponseBlock = ({
   const rows = useMemo(() => {
     return question.responses.length / columns;
   }, [question.responses.length, columns]);
-
-  const border = useMemo(
-    () => (question ? hasBorderImage(question.theme.id) : false),
-    [question]
-  );
 
   const isTypeImage = useMemo(
     () => question.typequestion === "IMAGE",
@@ -201,7 +189,7 @@ export const QcmResponseBlock = ({
                 }}
               />
             )}
-            {r.image && <ImageQCMBlock src={r.image} border={border} />}
+            {r.image && <ImageQCMBlock src={r.image} />}
             {r.label && (
               <JsonLanguageBlock
                 variant="h3"
@@ -243,11 +231,6 @@ export const QcmResponseTrainingBlock = ({
   const rows = useMemo(() => {
     return question.responses.length / columns;
   }, [question.responses.length, columns]);
-
-  const border = useMemo(
-    () => (question ? hasBorderImage(question.theme.id) : false),
-    [question]
-  );
 
   const isTypeImage = useMemo(
     () => question.typequestion === "IMAGE",
@@ -340,7 +323,7 @@ export const QcmResponseTrainingBlock = ({
               }
             }}
           >
-            {r.image && <ImageQCMBlock src={r.image} border={border} />}
+            {r.image && <ImageQCMBlock src={r.image} />}
             {r.label && (
               <JsonLanguageBlock
                 variant="h3"
@@ -388,11 +371,6 @@ export const QcmBlockDuelBlock = ({
   const rows = useMemo(() => {
     return question.responses.length / columns;
   }, [question.responses.length, columns]);
-
-  const border = useMemo(
-    () => (question ? hasBorderImage(question.theme.id) : false),
-    [question]
-  );
 
   const isTypeImage = useMemo(
     () => question.typequestion === "IMAGE",
@@ -499,7 +477,7 @@ export const QcmBlockDuelBlock = ({
                 }}
               />
             )}
-            {res.image && <ImageQCMBlock src={res.image} border={border} />}
+            {res.image && <ImageQCMBlock src={res.image} />}
             {res.label && (
               <JsonLanguageBlock
                 variant="h3"
@@ -547,11 +525,6 @@ export const QcmBlockDuelResultBlock = ({
   const rows = useMemo(() => {
     return question.responses.length / columns;
   }, [question.responses.length, columns]);
-
-  const border = useMemo(
-    () => (question ? hasBorderImage(question.theme.id) : false),
-    [question]
-  );
 
   return (
     <Box
@@ -613,9 +586,7 @@ export const QcmBlockDuelResultBlock = ({
                 }}
               />
             )}
-            {res.image && (
-              <ImageQCMBlock src={res.image} border={border} width={150} />
-            )}
+            {res.image && <ImageQCMBlock src={res.image} />}
             {res.label && (
               <JsonLanguageBlock
                 variant="h3"

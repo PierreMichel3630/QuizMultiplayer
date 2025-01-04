@@ -5,10 +5,9 @@ import { QuestionDuel, QuestionSolo } from "src/models/Question";
 import { ImageQuestionBlock } from "./ImageBlock";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 import { CircularLoading } from "./Loading";
+import { MapPositionBlock } from "./MapPositionBlock";
 import { SoundBar } from "./SoundBar";
 import { Timer } from "./Timer";
-import { hasBorderImage } from "src/utils/theme";
-import { MapPositionBlock } from "./MapPositionBlock";
 
 interface PropsSolo {
   question?: QuestionSolo;
@@ -18,10 +17,6 @@ interface PropsSolo {
 export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
   const image = useMemo(
     () => (question ? question.image : undefined),
-    [question]
-  );
-  const border = useMemo(
-    () => (question ? hasBorderImage(question.theme.id) : false),
     [question]
   );
 
@@ -68,7 +63,7 @@ export const QuestionSoloBlock = ({ question, timer }: PropsSolo) => {
                 width: percent(100),
               }}
             >
-              <ImageQuestionBlock src={image} border={border} />
+              <ImageQuestionBlock src={image} />
             </Box>
           )}
           {question.typequestion === "MAPPOSITION" &&
@@ -110,10 +105,6 @@ export const QuestionTrainingBlock = ({ question }: PropsTraining) => {
     () => (question ? question.image : undefined),
     [question]
   );
-  const border = useMemo(
-    () => (question ? hasBorderImage(question.theme.id) : false),
-    [question]
-  );
 
   const isImage = useMemo(
     () =>
@@ -157,7 +148,7 @@ export const QuestionTrainingBlock = ({ question }: PropsTraining) => {
                 width: percent(100),
               }}
             >
-              <ImageQuestionBlock src={image} border={border} />
+              <ImageQuestionBlock src={image} />
             </Box>
           )}
           {question.typequestion === "MAPPOSITION" &&
@@ -189,10 +180,6 @@ interface PropsDuel {
 export const QuestionDuelBlock = ({ question }: PropsDuel) => {
   const image = useMemo(
     () => (question ? question.image : undefined),
-    [question]
-  );
-  const border = useMemo(
-    () => (question ? hasBorderImage(question.theme.id) : false),
     [question]
   );
 
@@ -250,7 +237,7 @@ export const QuestionDuelBlock = ({ question }: PropsDuel) => {
                 width: percent(100),
               }}
             >
-              <ImageQuestionBlock src={image} border={border} />
+              <ImageQuestionBlock src={image} />
             </Box>
           )}
           {question.typequestion === "MAPPOSITION" &&

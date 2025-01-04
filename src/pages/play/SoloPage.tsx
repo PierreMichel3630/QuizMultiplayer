@@ -1,5 +1,5 @@
 import { Box, Container, Typography } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,16 +7,17 @@ import { selectSoloGameById } from "src/api/game";
 import { supabase } from "src/api/supabase";
 import { useUser } from "src/context/UserProvider";
 import { QuestionSolo } from "src/models/Question";
-import { MyResponse, ResponseSolo } from "src/models/Response";
+import { ResponseSolo } from "src/models/Response";
 
 import { percent, viewHeight } from "csx";
 import { LoadingDot } from "src/component/Loading";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
+import { Answer, Response } from "src/component/question/ResponseBlock";
 import { SoloGame } from "src/models/Game";
+import { StatusGameSolo } from "src/models/enum/StatusGame";
 import { Colors } from "src/style/Colors";
 import { PreloadImages } from "src/utils/preload";
-import { StatusGameSolo } from "src/models/enum/StatusGame";
 
 export default function SoloPage() {
   const { t } = useTranslation();
@@ -27,7 +28,7 @@ export default function SoloPage() {
   const [game, setGame] = useState<undefined | SoloGame>(undefined);
 
   const [question, setQuestion] = useState<undefined | QuestionSolo>(undefined);
-  const [response, setResponse] = useState<undefined | ResponseSolo>(undefined);
+  const [response, setResponse] = useState<undefined | Response>(undefined);
   const [score, setScore] = useState<number>(0);
   const [timer, setTimer] = useState<undefined | number>(undefined);
   const [audio, setAudio] = useState<undefined | HTMLAudioElement>(undefined);
@@ -119,7 +120,7 @@ export default function SoloPage() {
   );
 
   const validateResponse = useCallback(
-    async (value: MyResponse | undefined) => {
+    async (value: Answer) => {
       const myResponseValue = value ? value.value : undefined;
       setMyresponse(myResponseValue);
       setTimer(undefined);
@@ -136,7 +137,11 @@ export default function SoloPage() {
         const res = data as ResponseSolo;
         setMyresponse(undefined);
         setTimer(undefined);
-        setResponse(res);
+        setResponse({
+          response: res.response,
+          result: res.result,
+          responseplayer1: res.answer,
+        });
         setScore(res.points);
         scrollTop();
         if (res.result) {
@@ -196,6 +201,12 @@ export default function SoloPage() {
     window.scrollTo(0, 0);
   };
 
+  const responseP1 = useMemo(
+    () =>
+      myresponse ? myresponse : response ? response.responseplayer1 : undefined,
+    [myresponse, response]
+  );
+
   return (
     <Box
       sx={{
@@ -242,7 +253,7 @@ export default function SoloPage() {
           >
             {question ? (
               <QuestionResponseBlock
-                myresponse={myresponse}
+                responseplayer1={responseP1}
                 response={response}
                 question={question}
                 onSubmit={validateResponse}

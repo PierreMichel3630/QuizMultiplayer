@@ -202,7 +202,7 @@ export const AppProvider = ({ children }: Props) => {
           .reduce((acc, v) => acc + v.questions, 0);
         setNbThemes(count);
         setNbQuestions(questions);
-        setThemesAdmin(resultats);
+        setThemesAdmin(filterResultats);
         setThemes(filterResultats);
         setIsLoadingTheme(false);
       }

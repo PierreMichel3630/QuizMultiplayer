@@ -1,12 +1,5 @@
-import {
-  Alert,
-  Box,
-  Container,
-  Divider,
-  Grid,
-  Typography,
-} from "@mui/material";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Box, Container, Grid, Typography } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -17,25 +10,22 @@ import {
 } from "src/api/game";
 import { useUser } from "src/context/UserProvider";
 import { QuestionResult, QuestionTraining } from "src/models/Question";
-import {
-  MyResponse,
-  ResponseLanguage,
-  ResponseTraining,
-} from "src/models/Response";
+import { ResponseLanguage } from "src/models/Response";
 
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import LastPageIcon from "@mui/icons-material/LastPage";
-import { percent, px, viewHeight } from "csx";
+import { percent, viewHeight } from "csx";
 import { ButtonColor } from "src/component/Button";
-import { CardSignalQuestion } from "src/component/card/CardQuestion";
-import { HeaderTrainingGame } from "src/component/HeaderTrainingGame";
 import { LoadingDot } from "src/component/Loading";
-import { ReportModal } from "src/component/modal/ReportModal";
+import { EndTrainingGameBlock } from "src/component/play/training/EndTrainingGameBlock";
+import { HeaderTrainingGame } from "src/component/play/training/HeaderTrainingGame";
 import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
+import { Answer, Response } from "src/component/question/ResponseBlock";
 import { SoloGame, TrainingGame } from "src/models/Game";
 import { Colors } from "src/style/Colors";
 import { PreloadImages } from "src/utils/preload";
 import { verifyResponse } from "src/utils/response";
+
+import LastPageIcon from "@mui/icons-material/LastPage";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 export default function TrainingPage() {
   const { t } = useTranslation();
@@ -50,13 +40,8 @@ export default function TrainingPage() {
   const [nextQuestion, setNextQuestion] = useState<
     undefined | QuestionTraining
   >(undefined);
-  const [questionReport, setQuestionReport] = useState<
-    undefined | QuestionResult
-  >(undefined);
   const [questions, setQuestions] = useState<Array<QuestionResult>>([]);
-  const [response, setResponse] = useState<undefined | ResponseTraining>(
-    undefined
-  );
+  const [response, setResponse] = useState<undefined | Response>(undefined);
   const [audio, setAudio] = useState<undefined | HTMLAudioElement>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingQuestion, setIsLoadingQuestion] = useState(true);
@@ -70,7 +55,6 @@ export default function TrainingPage() {
     undefined
   );
   const [images, setImages] = useState<Array<string>>([]);
-  const [maxIndex, setMaxIndex] = useState(5);
 
   useEffect(() => {
     if (audio) {
@@ -119,7 +103,7 @@ export default function TrainingPage() {
     });
   };
 
-  const validateResponse = async (value: MyResponse) => {
+  const validateResponse = async (value: Answer) => {
     const myResponseValue = value.value;
     setNextQuestion(undefined);
     setMyresponse(myResponseValue);
@@ -148,7 +132,7 @@ export default function TrainingPage() {
       setResponse({
         response: question.response,
         result: result,
-        answer: myResponseValue,
+        responseplayer1: myResponseValue,
       });
       setMyresponse(undefined);
       if (game) getQuestion(game.uuid);
@@ -211,29 +195,11 @@ export default function TrainingPage() {
     };
   }, [uuidGame]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsLoading(true);
-      if (
-        window.innerHeight + document.documentElement.scrollTop + 250 <=
-          document.documentElement.offsetHeight ||
-        questions.length <= maxIndex
-      ) {
-        return;
-      }
-      setMaxIndex((prev) => prev + 2);
-    };
-    if (document) {
-      document.addEventListener("scroll", handleScroll);
-    }
-    return () => {
-      document.removeEventListener("scroll", handleScroll);
-    };
-  }, [questions, maxIndex]);
-
-  const questionsDisplay = useMemo(() => {
-    return [...questions].splice(0, maxIndex);
-  }, [questions, maxIndex]);
+  const responseP1 = useMemo(
+    () =>
+      myresponse ? myresponse : response ? response.responseplayer1 : undefined,
+    [myresponse, response]
+  );
 
   return (
     <Box
@@ -281,153 +247,80 @@ export default function TrainingPage() {
               minHeight: 0,
             }}
           >
-            {isEnd ? (
-              <Box sx={{ display: "flex", width: percent(100), mb: 6 }}>
-                <Grid container spacing={1}>
-                  {isAllQuestion && (
-                    <Grid item xs={12}>
-                      <Alert severity="warning" sx={{ width: percent(100) }}>
-                        {t("alert.allresponseanswer")}
-                      </Alert>
-                    </Grid>
-                  )}
-                  <Grid item xs={12}>
-                    <Divider
-                      sx={{
-                        borderBottomWidth: 5,
-                        borderColor: Colors.white,
-                        borderRadius: px(5),
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Grid container spacing={1}>
-                      {questionsDisplay.map((el, index) => (
-                        <Fragment key={index}>
-                          <Grid item xs={12}>
-                            <CardSignalQuestion
-                              question={el}
-                              report={() => setQuestionReport(el)}
-                            />
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Divider
-                              sx={{
-                                borderBottomWidth: 5,
-                                borderColor: Colors.white,
-                                borderRadius: px(5),
-                              }}
-                            />
-                          </Grid>
-                        </Fragment>
-                      ))}
-                    </Grid>
-                  </Grid>
-                  <Box
-                    sx={{
-                      position: "fixed",
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                    }}
-                  >
-                    <Container
-                      maxWidth="md"
-                      sx={{
-                        backgroundColor: Colors.black,
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          gap: 1,
-                          p: 1,
-                          flexDirection: "column",
-                        }}
-                      >
-                        <ButtonColor
-                          value={Colors.red}
-                          label={t("commun.leave")}
-                          icon={ExitToAppIcon}
-                          onClick={() =>
-                            game
-                              ? navigate(`/theme/${game.theme.id}`)
-                              : navigate(-1)
-                          }
-                          variant="contained"
-                        />
-                      </Box>
-                    </Container>
-                  </Box>
-                </Grid>
+            {isLoading ? (
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  flex: "1 1 0",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  gap: 1,
+                  width: percent(100),
+                }}
+              >
+                <Typography variant="h4" color="text.secondary">
+                  {t("commun.launchpartie")}
+                </Typography>
+                <LoadingDot />
               </Box>
             ) : (
               <>
-                <QuestionResponseBlock
-                  myresponse={myresponse}
-                  response={response}
-                  question={question}
-                  onSubmit={validateResponse}
-                />
-
-                {isLoading && (
-                  <Box
-                    sx={{
-                      flexGrow: 1,
-                      flex: "1 1 0",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      textAlign: "center",
-                      gap: 1,
-                      width: percent(100),
-                    }}
-                  >
-                    <Typography variant="h4" color="text.secondary">
-                      {t("commun.launchpartie")}
-                    </Typography>
-                    <LoadingDot />
-                  </Box>
-                )}
-                {!isLoading &&
-                  (question === undefined ||
-                    (question && response) ||
-                    isEnd) && (
-                    <Box sx={{ display: "flex", width: percent(100) }}>
-                      <Grid container spacing={1}>
-                        {!isEnd && (
+                {isEnd ? (
+                  <EndTrainingGameBlock
+                    questions={questions}
+                    game={game}
+                    isAllQuestion={isAllQuestion}
+                  />
+                ) : (
+                  <>
+                    <QuestionResponseBlock
+                      responseplayer1={responseP1}
+                      response={response}
+                      question={question}
+                      onSubmit={validateResponse}
+                    />
+                    {(question === undefined ||
+                      (question && response) ||
+                      isEnd) && (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          width: percent(100),
+                        }}
+                      >
+                        <Grid container spacing={1}>
+                          {!isEnd && (
+                            <Grid item xs={12}>
+                              <ButtonColor
+                                value={Colors.blue2}
+                                label={t("commun.nextquestion")}
+                                icon={LastPageIcon}
+                                onClick={() => changeQuestion()}
+                                variant="contained"
+                              />
+                            </Grid>
+                          )}
                           <Grid item xs={12}>
                             <ButtonColor
-                              value={Colors.blue2}
-                              label={t("commun.nextquestion")}
-                              icon={LastPageIcon}
-                              onClick={() => changeQuestion()}
+                              value={Colors.red}
+                              label={t("commun.leave")}
+                              icon={ExitToAppIcon}
+                              onClick={() => quit()}
                               variant="contained"
                             />
                           </Grid>
-                        )}
-                        <Grid item xs={12}>
-                          <ButtonColor
-                            value={Colors.red}
-                            label={t("commun.leave")}
-                            icon={ExitToAppIcon}
-                            onClick={() => quit()}
-                            variant="contained"
-                          />
                         </Grid>
-                      </Grid>
-                    </Box>
-                  )}
+                      </Box>
+                    )}
+                  </>
+                )}
               </>
             )}
           </Box>
         </Box>
-        <ReportModal
-          open={questionReport !== undefined}
-          close={() => setQuestionReport(undefined)}
-          question={questionReport}
-        />
       </Container>
     </Box>
   );

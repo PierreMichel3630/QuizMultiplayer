@@ -37,6 +37,8 @@ import TitlePage from "src/pages/TitlePage";
 import MyProfilPage from "src/pages/MyProfilPage";
 import OutletPage from "src/pages/OutletPage";
 import PlayPage from "src/pages/PlayPage";
+import PreviousThemePage from "src/pages/PreviousThemePage";
+import UpdatedThemePage from "src/pages/UpdatedThemePage";
 
 export const AppRoutes = [
   {
@@ -52,8 +54,16 @@ export const AppRoutes = [
         element: <FavoritePage />,
       },
       {
+        path: "/previousgame",
+        element: <PreviousThemePage />,
+      },
+      {
         path: "/new",
         element: <NewThemePage />,
+      },
+      {
+        path: "/updated",
+        element: <UpdatedThemePage />,
       },
       {
         path: "/categories",

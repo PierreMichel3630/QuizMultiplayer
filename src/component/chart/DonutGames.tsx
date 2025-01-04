@@ -219,7 +219,7 @@ export const DonutGames = ({
                           navigate(`/games`, {
                             state: {
                               player: profile,
-                              type: type.toUpperCase(),
+                              type: type,
                             },
                           })
                         }

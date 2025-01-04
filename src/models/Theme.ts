@@ -13,6 +13,7 @@ export interface Theme {
   isfirst: boolean;
   enabled: boolean;
   created_at: Date;
+  modify_at: Date;
 }
 
 export interface ThemeInsert {

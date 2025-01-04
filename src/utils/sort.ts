@@ -115,6 +115,11 @@ export const sortByCreatedAt = (
   b: { created_at: Date }
 ) => moment(b.created_at).diff(moment(a.created_at));
 
+export const sortByModifyAt = (
+  a: { modify_at: Date },
+  b: { modify_at: Date }
+) => moment(b.modify_at).diff(moment(a.modify_at));
+
 export const sortByDuelGamesDesc = (
   a: { duelgames: number },
   b: { duelgames: number }
@@ -136,3 +141,8 @@ export const sortByGamesDesc = (a: { games: number }, b: { games: number }) =>
 
 export const sortByUsValue = (a: { usvalue: string }, b: { usvalue: string }) =>
   a.usvalue.localeCompare(b.usvalue);
+
+export const sortByUsername = (
+  a: { username: string },
+  b: { username: string }
+) => a.username.localeCompare(b.username);

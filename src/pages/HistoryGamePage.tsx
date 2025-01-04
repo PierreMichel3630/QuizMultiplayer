@@ -1,5 +1,4 @@
 import { Alert, Box, Grid } from "@mui/material";
-import { px } from "csx";
 import { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -11,6 +10,7 @@ import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { AutocompleteTheme } from "src/component/Select";
 import { SelectorProfileBlock } from "src/component/SelectorProfileBlock";
 import { SkeletonGames } from "src/component/skeleton/SkeletonGame";
+import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { GameModeEnum } from "src/models/enum/GameEnum";
 import { HistoryGame } from "src/models/Game";
@@ -27,6 +27,7 @@ export default function HistoryGamePage() {
   const { t } = useTranslation();
   const location = useLocation();
 
+  const { headerSize } = useApp();
   const { profile } = useAuth();
 
   const ITEMPERPAGE = 10;
@@ -109,7 +110,7 @@ export default function HistoryGamePage() {
         xs={12}
         sx={{
           position: "sticky",
-          top: px(62),
+          top: headerSize,
           p: 1,
           backgroundColor: "background.paper",
           display: "flex",

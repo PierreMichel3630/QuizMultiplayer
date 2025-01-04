@@ -28,6 +28,7 @@ export interface ResponseDuel {
   result: boolean;
   time: number;
   answer: string | number;
+  correctanswer: ResponseLanguage | number;
   ptsplayer1: number;
   ptsplayer2: number;
 }

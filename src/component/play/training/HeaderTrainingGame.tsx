@@ -1,8 +1,8 @@
 import { Typography } from "@mui/material";
 import { useMemo } from "react";
+import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 
 import { Theme } from "src/models/Theme";
-import { ScoreThemeBlock } from "./ScoreThemeBlock";
 
 interface Props {
   goodAnswer: number;
