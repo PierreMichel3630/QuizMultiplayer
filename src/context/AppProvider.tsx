@@ -38,6 +38,7 @@ import { useAuth } from "./AuthProviderSupabase";
 import { useUser } from "./UserProvider";
 import { Banner, BannerProfile } from "src/models/Banner";
 import { selectBannerByProfile, selectBanners } from "src/api/banner";
+import { countPlayers } from "src/api/profile";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[];
@@ -79,6 +80,7 @@ const AppContext = createContext<{
   getMyTitles: () => void;
   nbQuestions?: number;
   nbThemes?: number;
+  nbPlayers?: number;
   isLoadingTheme: boolean;
   headerSize: number;
 }>({
@@ -117,6 +119,7 @@ const AppContext = createContext<{
   getMyTitles: () => {},
   nbQuestions: undefined,
   nbThemes: undefined,
+  nbPlayers: undefined,
   isLoadingTheme: true,
   headerSize: 77,
 });
@@ -129,6 +132,7 @@ export const AppProvider = ({ children }: Props) => {
 
   const [nbQuestions, setNbQuestions] = useState<undefined | number>(undefined);
   const [nbThemes, setNbThemes] = useState<undefined | number>(undefined);
+  const [nbPlayers, setNbPlayers] = useState<undefined | number>(undefined);
   const [avatars, setAvatars] = useState<Array<Avatar>>([]);
   const [myavatars, setMyAvatars] = useState<Array<Avatar>>([]);
   const [badges, setBadges] = useState<Array<Badge>>([]);
@@ -157,6 +161,15 @@ export const AppProvider = ({ children }: Props) => {
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
   const headerSize = useMemo(() => (user ? 77 : 50), [user]);
+
+  useEffect(() => {
+    const getCountPlayer = () => {
+      countPlayers().then(({ count }) => {
+        setNbPlayers(count ?? undefined);
+      });
+    };
+    getCountPlayer();
+  }, []);
 
   const getFavorite = useCallback(() => {
     if (user !== null) {
@@ -202,7 +215,7 @@ export const AppProvider = ({ children }: Props) => {
           .reduce((acc, v) => acc + v.questions, 0);
         setNbThemes(count);
         setNbQuestions(questions);
-        setThemesAdmin(filterResultats);
+        setThemesAdmin(resultats);
         setThemes(filterResultats);
         setIsLoadingTheme(false);
       }
@@ -405,6 +418,7 @@ export const AppProvider = ({ children }: Props) => {
         isLoadingTheme,
         isLoadingCategories,
         headerSize,
+        nbPlayers,
       }}
     >
       {children}

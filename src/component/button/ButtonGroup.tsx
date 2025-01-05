@@ -1,3 +1,4 @@
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import { Box, Typography } from "@mui/material";
@@ -6,13 +7,12 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ClassementEnum,
-  ClassementModeEnum,
   ClassementScoreEnum,
-  ClassementTimeEnum,
+  ClassementSoloModeEnum,
+  ClassementTimeEnum
 } from "src/models/enum/ClassementEnum";
 import { GameModeEnum } from "src/models/enum/GameEnum";
 import { Colors } from "src/style/Colors";
-import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 
 interface Props {
   selected: string;
@@ -31,7 +31,7 @@ export const GroupButton = ({ options, selected, onChange }: Props) => {
       sx={{
         display: "flex",
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: "center"
       }}
     >
       <Box
@@ -186,39 +186,6 @@ export const GroupButtonTime = ({
   );
 };
 
-interface PropsGroupButtonMode {
-  selected: ClassementModeEnum;
-  onChange: (value: ClassementModeEnum) => void;
-}
-export const GroupButtonMode = ({
-  selected,
-  onChange,
-}: PropsGroupButtonMode) => {
-  const { t } = useTranslation();
-
-  const options = useMemo(
-    () => [
-      {
-        label: t("commun.global"),
-        value: ClassementModeEnum.global,
-      },
-      {
-        label: t("commun.pertheme"),
-        value: ClassementModeEnum.pertheme,
-      },
-    ],
-    [t]
-  );
-
-  return (
-    <GroupButton
-      options={options}
-      selected={selected}
-      onChange={(value) => onChange(value as ClassementModeEnum)}
-    />
-  );
-};
-
 interface PropsGroupButtonClassement {
   selected: ClassementEnum;
   onChange: (value: ClassementEnum) => void;
@@ -258,6 +225,47 @@ export const GroupButtonClassement = ({
       options={options}
       selected={selected}
       onChange={(value) => onChange(value as ClassementEnum)}
+    />
+  );
+};
+
+interface PropsGroupButtonSoloRanking {
+  selected: ClassementSoloModeEnum;
+  onChange: (value: ClassementSoloModeEnum) => void;
+}
+export const GroupButtonSoloRanking = ({
+  selected,
+  onChange,
+}: PropsGroupButtonSoloRanking) => {
+  const { t } = useTranslation();
+
+  const options = useMemo(
+    () => [
+      {
+        label: t("commun.week"),
+        value: ClassementTimeEnum.week,
+      },
+      {
+        label: t("commun.month"),
+        value: ClassementTimeEnum.month,
+      },
+      {
+        label: t("commun.alltime"),
+        value: ClassementTimeEnum.alltime,
+      },
+      {
+        label: t("commun.finishtheme"),
+        value: ClassementSoloModeEnum.finishtheme,
+      },
+    ],
+    [t]
+  );
+
+  return (
+    <GroupButton
+      options={options}
+      selected={selected}
+      onChange={(value) => onChange(value as ClassementSoloModeEnum)}
     />
   );
 };

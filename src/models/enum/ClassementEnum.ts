@@ -27,7 +27,18 @@ export enum ClassementTimeEnum {
   month = "month",
 }
 
-export enum ClassementModeEnum {
-  global = "global",
-  pertheme = "pertheme",
+export enum ClassementSoloModeEnum {
+  games = "games",
+  gamestenpts = "gamestenpts",
+  gamestwentypts = "gamestwentypts",
+  gamesfiftypts = "gamesfiftypts",
+  gameshundredpts = "gameshundredpts",
+  themetenpts = "themetenpts",
+  themetwentypts = "themetwentypts",
+  alltime = "alltime",
+  day = "day",
+  week = "week",
+  month = "month",
+  finishtheme = "finishtheme",
+  xp = "xp",
 }

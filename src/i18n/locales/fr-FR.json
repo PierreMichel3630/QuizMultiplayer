@@ -271,7 +271,10 @@
     "darkmode": "Mode sombre",
     "lightmode": "Mode clair",
     "updated": "Mis à jour",
-    "finishtheme": "Thèmes terminés"
+    "finishtheme": "Thèmes terminés",
+    "unlockaccomplishmentplayer": "{{percent}}% des joueurs ont débloqués",
+    "perdate": "Par Date",
+    "other": "Autre"
   },
   "offline": {
     "title": "Connectez-vous à Internet",
@@ -296,7 +299,8 @@
     "defeatduel": "Nombre de défaites en Duel",
     "xp": "XP Total",
     "bestgame": "Meilleur partie solo",
-    "bestrank": "Meilleur ranking duel"
+    "bestrank": "Meilleur ranking duel",
+    "finishtheme": "Thèmes terminés"
   },
   "rules": {
     "step1": "Choisissez un thème",

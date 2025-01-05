@@ -87,7 +87,7 @@ export const BottomNavigationBlock = () => {
           to={"/ranking"}
         />
         <BottomNavigationAction
-          sx={{ p: padding(0, 5), minWidth: px(30) }}
+          sx={{ p: padding(0, 5), minWidth: px(30), fontSize: px(10) }}
           value={"myprofile"}
           label={t("commun.profile")}
           icon={<AccountCircleIcon />}

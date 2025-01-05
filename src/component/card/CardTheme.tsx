@@ -1,3 +1,4 @@
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Avatar,
   AvatarGroup,
@@ -10,17 +11,16 @@ import {
   Typography,
 } from "@mui/material";
 import { percent, px } from "csx";
+import { ChangeEvent, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useApp } from "src/context/AppProvider";
 import { Theme, ThemeUpdate } from "src/models/Theme";
+import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
-import { Colors } from "src/style/Colors";
-import { ChangeEvent, useMemo } from "react";
 
-import EditIcon from "@mui/icons-material/Edit";
-import StarIcon from "@mui/icons-material/Star";
 import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
-import { useApp } from "src/context/AppProvider";
+import StarIcon from "@mui/icons-material/Star";
 
 interface Props {
   theme: Theme;
@@ -30,16 +30,15 @@ interface Props {
 
 export const CardTheme = ({ theme, link, width = 95 }: Props) => {
   const navigate = useNavigate();
-  const { favorites } = useApp();
+  const {favorites} = useApp()
 
   const goTheme = () => {
-    navigate(link ?? `/theme/${theme.id}`);
+    navigate(link??`/theme/${theme.id}`);
   };
 
-  const isFavorite = useMemo(
-    () => favorites.some((favorite) => favorite.theme === theme.id),
-    [favorites, theme]
-  );
+  const isFavorite = useMemo(() => 
+    favorites.some(favorite => favorite.theme === theme.id)
+  , [favorites, theme])
 
   return (
     <Box
@@ -51,9 +50,9 @@ export const CardTheme = ({ theme, link, width = 95 }: Props) => {
         cursor: "pointer",
         borderRadius: px(10),
         gap: px(2),
-        mt: 1,
+        mt:1,
         width: width,
-        position: "relative",
+        position: "relative"
       }}
     >
       <ImageThemeBlock theme={theme} size={width} />
@@ -65,23 +64,23 @@ export const CardTheme = ({ theme, link, width = 95 }: Props) => {
           display: "-webkit-box",
           WebkitLineClamp: 3,
           WebkitBoxOrient: "vertical",
-          textAlign: "center",
+          textAlign: "center"
         }}
         value={theme.name}
       />
-      {isFavorite && (
+      {isFavorite &&
         <StarIcon
           sx={{
             position: "absolute",
-            top: 0,
-            right: 0,
+            top:0, 
+            right:0,
             transform: "translate(25%, -25%)",
             fontSize: 40,
             color: Colors.yellow4,
-            stroke: Colors.white,
+            stroke: Colors.white
           }}
         />
-      )}
+      }
     </Box>
   );
 };
@@ -170,6 +169,7 @@ export const CardSelectTheme = ({
         cursor: "pointer",
         p: px(5),
         mt: px(5),
+        background: "rgba(255,255,255,.15)",
         borderRadius: px(5),
         gap: px(5),
         position: "relative",

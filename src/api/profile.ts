@@ -50,3 +50,8 @@ export const countProfile = () =>
   supabase
     .from(SUPABASE_PROFILE_TABLE)
     .select("*", { count: "exact", head: true });
+
+export const countPlayers = () =>
+  supabase
+    .from(SUPABASE_PROFILE_TABLE)
+    .select("*", { count: "exact", head: true });

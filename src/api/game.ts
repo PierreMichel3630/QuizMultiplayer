@@ -243,7 +243,13 @@ export const selectGames = (
   return query;
 };
 
-export const selectGamesByTime = (time: ClassementTimeEnum, limit: number) => {
+export const selectGamesByTime = (
+  time: ClassementTimeEnum,
+  page: number,
+  itemperpage = 25
+) => {
+  const from = page * itemperpage;
+  const to = from + itemperpage - 1;
   const dateEnd = moment();
   let dateStart = moment().subtract(7, "days");
   if (time === ClassementTimeEnum.day) {
@@ -260,5 +266,5 @@ export const selectGamesByTime = (time: ClassementTimeEnum, limit: number) => {
     .lt("time", dateEnd.toISOString())
     .gt("time", dateStart.toISOString())
     .order("points", { ascending: false })
-    .limit(limit);
+    .range(from, to);
 };

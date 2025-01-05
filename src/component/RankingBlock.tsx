@@ -1,6 +1,7 @@
-import { Divider, Grid, Typography } from "@mui/material";
+import { Button, Divider, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { selectGamesByTime } from "src/api/game";
 import { selectScore } from "src/api/score";
 import {
@@ -15,6 +16,7 @@ import { DataRanking, RankingTable } from "./table/RankingTable";
 interface Props {
   themes?: Array<number>;
 }
+
 export const RankingBlock = ({ themes }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [tab, setTab] = useState(ClassementScoreEnum.points);
@@ -71,6 +73,7 @@ export const RankingBlock = ({ themes }: Props) => {
 
 export const RankingTop5Block = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [tab, setTab] = useState(ClassementScoreEnum.points);
   const [tabTime, setTabTime] = useState(ClassementTimeEnum.week);
@@ -100,7 +103,7 @@ export const RankingTop5Block = () => {
         setIsLoading(false);
       });
     } else {
-      selectGamesByTime(tabTime, 5).then(({ data }) => {
+      selectGamesByTime(tabTime, 0, 5).then(({ data }) => {
         const res = data as Array<HistorySoloGame>;
         const newdata = res.map((el, index) => {
           return {
@@ -141,6 +144,26 @@ export const RankingTop5Block = () => {
       )}
       <Grid item xs={12}>
         <RankingTable data={data} loading={isLoading} />
+      </Grid>
+      <Grid item xs={12}>
+        <Button
+          variant="outlined"
+          sx={{
+            minWidth: "auto",
+            textTransform: "uppercase",
+            "&:hover": {
+              border: "2px solid currentColor",
+            },
+          }}
+          color="secondary"
+          size="small"
+          fullWidth
+          onClick={() => navigate(`/ranking?sort=${tab}`)}
+        >
+          <Typography variant="h6" noWrap>
+            {t("commun.seeall")}
+          </Typography>
+        </Button>
       </Grid>
     </Grid>
   );

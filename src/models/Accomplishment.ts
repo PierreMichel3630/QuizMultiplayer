@@ -17,6 +17,7 @@ export interface Accomplishment {
   type: string;
   xp: number;
   gold: number;
+  nbplayers: number;
 }
 
 export interface StatAccomplishment {
@@ -33,6 +34,21 @@ export interface StatAccomplishment {
   drawduel: number;
   defeatduel: number;
   xp: number;
+  points: number;
+}
+
+export enum StatAccomplishmentEnum {
+  games = "games",
+  gamestenpts = "gamestenpts",
+  gamestwentypts = "gamestwentypts",
+  gamesfiftypts = "gamesfiftypts",
+  gameshundredpts = "gameshundredpts",
+  themetenpts = "themetenpts",
+  themetwentypts = "themetwentypts",
+  duelgames = "duelgames",
+  victoryduel = "victoryduel",
+  drawduel = "drawduel",
+  defeatduel = "defeatduel",
 }
 
 export interface ProfileAccomplishment {

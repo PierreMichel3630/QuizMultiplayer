@@ -5,7 +5,11 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
+import {
+  Accomplishment,
+  StatAccomplishment,
+  StatAccomplishmentEnum,
+} from "src/models/Accomplishment";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
 import { ImageThemeBlock } from "../ImageThemeBlock";
@@ -13,11 +17,11 @@ import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { px } from "csx";
 import { unlockAccomplishment } from "src/api/accomplishment";
+import { BarAccomplishment } from "../bar/Bar";
 import { AddMoneyBlock } from "../MoneyBlock";
 import { AddXpBlock } from "../XpBlock";
-import { px } from "csx";
-import { StatAccomplishmentEnum } from "src/models/enum/StatAccomplishmentEnum";
 
 interface Props {
   accomplishment: Accomplishment;
@@ -63,7 +67,7 @@ export const CardAccomplishment = ({
   );
 
   const isFinish = useMemo(
-    () => myaccomplishment !== undefined && myaccomplishment.validate,
+    () => myaccomplishment?.validate,
     [myaccomplishment]
   );
 
@@ -90,7 +94,7 @@ export const CardAccomplishment = ({
         p: 1,
         backgroundColor: isFinish ? Colors.green : "initial",
         color: isFinish ? Colors.white : "text.primary",
-        border: isUnlock ? `3px solid ${Colors.purple}` : "initial",
+        border: isUnlock ? `3px solid ${Colors.purple}` : "2px solid white",
       }}
     >
       <Grid container spacing={1} alignItems="center">
@@ -100,7 +104,12 @@ export const CardAccomplishment = ({
         {badge && accomplishment.badge && (
           <Grid item>
             <Link to={`/personalized#badges`}>
-              <img src={accomplishment.badge.icon} width={40} loading="lazy" />
+              <img
+                alt="badge"
+                src={accomplishment.badge.icon}
+                width={40}
+                loading="lazy"
+              />
             </Link>
           </Grid>
         )}
@@ -177,6 +186,9 @@ export const CardAccomplishment = ({
             </Grid>
           </Grid>
         )}
+        <Grid item xs={12}>
+          <BarAccomplishment value={accomplishment.nbplayers} />
+        </Grid>
         {isUnlock && (
           <Grid item xs={12}>
             <ButtonColor

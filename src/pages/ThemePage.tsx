@@ -267,18 +267,19 @@ export default function ThemePage() {
                         favorite={favorite !== undefined}
                       />
                     </Grid>
+                    {!theme.enabled && (
+                      <Grid item xs={12}>
+                        <Alert severity="error">
+                          {t("commun.thememaintenance")}
+                        </Alert>
+                      </Grid>
+                    )}
                     <Grid item xs={5} sm={3} md={3} lg={3}>
                       <ImageThemeBlock theme={theme} />
                     </Grid>
                     <Grid item xs={7} sm={6} md={6} lg={6}>
                       <Grid container spacing={1}>
-                        {!theme.enabled && (
-                          <Grid item xs={12}>
-                            <Alert severity="error">
-                              {t("commun.thememaintenance")}
-                            </Alert>
-                          </Grid>
-                        )}
+                        
                         {theme.enabled || (profile && profile.isadmin) ? (
                           <>
                             <Grid item xs={12}>

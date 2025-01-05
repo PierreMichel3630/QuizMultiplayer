@@ -15,27 +15,28 @@ import { AvatarAccount } from "../avatar/AvatarAccount";
 
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { percent, px } from "csx";
+import moment from "moment";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import rank1 from "src/assets/rank/rank1.png";
-import rank2 from "src/assets/rank/rank2.png";
-import rank3 from "src/assets/rank/rank3.png";
-import { Profile } from "src/models/Profile";
-import { Colors } from "src/style/Colors";
-import { Theme } from "src/models/Theme";
-import { ImageThemeBlock } from "../ImageThemeBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { useTranslation } from "react-i18next";
-import { DefaultTabs } from "../Tabs";
+import { Link } from "react-router-dom";
 import {
   selectRankingDuelByTheme,
   selectRankingSoloByTheme,
 } from "src/api/ranking";
-import { Ranking } from "src/models/Ranking";
-import moment from "moment";
+import rank1 from "src/assets/rank/rank1.png";
+import rank2 from "src/assets/rank/rank2.png";
+import rank3 from "src/assets/rank/rank3.png";
 import { useApp } from "src/context/AppProvider";
-import { FRIENDSTATUS } from "src/models/Friend";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { FRIENDSTATUS } from "src/models/Friend";
+import { Profile } from "src/models/Profile";
+import { Ranking } from "src/models/Ranking";
+import { Theme } from "src/models/Theme";
+import { Colors } from "src/style/Colors";
+import { CountryImageBlock } from "../CountryBlock";
+import { ImageThemeBlock } from "../ImageThemeBlock";
+import { JsonLanguageBlock } from "../JsonLanguageBlock";
+import { DefaultTabs } from "../Tabs";
 
 export interface DataRanking {
   profile: Profile;
@@ -107,29 +108,27 @@ export const RankingTable = ({ data, loading = false }: Props) => {
   };
 
   return (
-    <>
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
       {data.length === 0 && !loading ? (
-        <Alert severity="warning">{t("commun.noresultgame")}</Alert>
+        <Alert severity="warning" sx={{width: percent(100)}}>{t("commun.noresultgame")}</Alert>
       ) : (
         <TableContainer
           component={Paper}
           sx={{
             bgcolor: Colors.grey,
             width: percent(100),
+            maxWidth: px(600),
             borderTopLeftRadius: px(0),
             borderTopRightRadius: px(0),
           }}
         >
-          <Table size="small">
+          <Table size="small" sx={{ tableLayout: "fixed" }}>
             <TableBody>
               {data.map((el, index) => {
                 const isMe = profile && el.profile.id === profile.id;
                 const isFriend = idFriend.includes(el.profile.id);
-                const color = isMe
-                  ? Colors.blue3
-                  : isFriend
-                  ? Colors.purple
-                  : "initial";
+                const colorFriend = isFriend ? Colors.purple : "initial";
+                const color = isMe ? Colors.blue3 : colorFriend;
                 const colorText =
                   isMe || isFriend ? Colors.white : "text.primary";
 
@@ -140,10 +139,13 @@ export const RankingTable = ({ data, loading = false }: Props) => {
                         backgroundColor: color,
                       }}
                     >
-                      <TableCell align="left" sx={{ p: px(4) }}>
+                      <TableCell
+                        align="left"
+                        sx={{ p: px(4), width: "min-content" }}
+                      >
                         {getIcon(el.rank, colorText)}
                       </TableCell>
-                      <TableCell sx={{ p: px(4) }}>
+                      <TableCell sx={{ p: px(4), width: "min-content" }}>
                         <Link
                           to={`/profil/${el.profile.id}`}
                           style={{ textDecoration: "inherit" }}
@@ -154,78 +156,112 @@ export const RankingTable = ({ data, loading = false }: Props) => {
                           />
                         </Link>
                       </TableCell>
-                      <TableCell align="left" sx={{ p: px(4) }}>
-                        <Link
-                          to={`/profil/${el.profile.id}`}
-                          style={{ textDecoration: "inherit" }}
-                        >
-                          <Typography
-                            variant={el.theme ? "h4" : "h6"}
-                            sx={{
-                              color: colorText,
-                            }}
-                          >
-                            {el.profile.username}
-                          </Typography>
-                        </Link>
-                        {el.date && (
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              color: colorText,
-                            }}
-                          >
-                            {moment(el.date).format("DD/MM/YYYY HH:mm")}
-                          </Typography>
-                        )}
-                        {el.theme && (
-                          <Link
-                            to={`/theme/${el.theme.id}`}
-                            style={{ textDecoration: "inherit" }}
-                          >
-                            <Box
-                              sx={{
-                                display: "flex",
-                                gap: px(4),
-                                alignItems: "center",
-                              }}
-                            >
-                              <ImageThemeBlock theme={el.theme} size={20} />
-                              <JsonLanguageBlock
-                                variant="body1"
-                                value={el.theme.name}
-                                sx={{
-                                  color: colorText,
-                                }}
-                              />
-                            </Box>
-                          </Link>
-                        )}
-                      </TableCell>
-                      <TableCell align="right" sx={{ p: px(4) }}>
-                        <Typography
-                          variant="h2"
-                          component="span"
+                      <TableCell
+                        align="left"
+                        sx={{
+                          p: px(4),
+                        }}
+                      >
+                        <Box
                           sx={{
-                            color: colorText,
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: px(4),
                           }}
                         >
-                          {el.value}
-                        </Typography>
-                        {el.extra && (
+                          <Link
+                            to={`/profil/${el.profile.id}`}
+                            style={{
+                              textDecoration: "inherit",
+                              display: "flex",
+                              gap: px(8),
+                              alignItems: "center",
+                            }}
+                          >
+                            {el.profile.country && (
+                              <CountryImageBlock country={el.profile.country} />
+                            )}
+                            <Typography
+                              variant={el.theme ? "h4" : "h6"}
+                              sx={{
+                                color: colorText,
+                              }}
+                              noWrap
+                            >
+                              {el.profile.username}
+                            </Typography>
+                          </Link>
+                          {el.date && (
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                color: colorText,
+                              }}
+                            >
+                              {moment(el.date).format("DD/MM/YYYY HH:mm")}
+                            </Typography>
+                          )}
+                          {el.theme && (
+                            <Link
+                              to={`/theme/${el.theme.id}`}
+                              style={{ textDecoration: "inherit" }}
+                            >
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  gap: px(4),
+                                  alignItems: "center",
+                                }}
+                              >
+                                <ImageThemeBlock theme={el.theme} size={20} />
+                                <JsonLanguageBlock
+                                  variant="body1"
+                                  value={el.theme.name}
+                                  sx={{
+                                    color: colorText,
+                                    overflow: "hidden",
+                                    display: "block",
+                                    lineClamp: 1,
+                                    boxOrient: "vertical",
+                                    textOverflow: "ellipsis",
+                                  }}
+                                  noWrap
+                                />
+                              </Box>
+                            </Link>
+                          )}
+                        </Box>
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        sx={{ p: px(4), width: "min-content", minWidth: px(50) }}
+                      >
+                        <Box>
                           <Typography
-                            variant="body1"
+                            variant="h2"
                             component="span"
                             sx={{
                               color: colorText,
                             }}
+                            noWrap
                           >
-                            {el.extra}
+                            {el.value}
                           </Typography>
-                        )}
+                          {el.extra && (
+                            <Typography
+                              variant="body1"
+                              component="span"
+                              sx={{
+                                color: colorText,
+                              }}
+                            >
+                              {el.extra}
+                            </Typography>
+                          )}
+                        </Box>
                       </TableCell>
                       {hasGame && (
-                        <TableCell sx={{ p: px(4), width: px(40) }}>
+                        <TableCell sx={{ p: px(4) }} width={50}>
                           {el.uuid && (
                             <Link
                               to={`/game/solo/${el.uuid}`}
@@ -267,7 +303,7 @@ export const RankingTable = ({ data, loading = false }: Props) => {
           </Table>
         </TableContainer>
       )}
-    </>
+    </Box>
   );
 };
 

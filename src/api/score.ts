@@ -48,7 +48,7 @@ export const selectScore = (
   const to = from + itemperpage - 1;
   let query = supabase
     .from(SUPABASE_SCORE_TABLE)
-    .select("*, profile(*, avatar(*)), theme(*), uuidgame(uuid, created_at)")
+    .select("*, profile(*, avatar(*), country(*)), theme(*), uuidgame(uuid, created_at)")
     .gt(order, 0)
     .not("profile", "in", `(${bots.join(",")})`);
   if (ids.length > 0) {
