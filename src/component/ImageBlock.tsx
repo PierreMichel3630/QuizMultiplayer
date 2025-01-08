@@ -9,10 +9,12 @@ interface Props {
 
 export const ImageQuestionBlock = ({ src }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [hasBorder, setHasBorder] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
     const image = new Image();
+    setHasBorder(src.includes("https://flagcdn.com/"));
 
     image.onload = () => {
       setIsLoading(false);
@@ -28,14 +30,10 @@ export const ImageQuestionBlock = ({ src }: Props) => {
   return (
     <Box
       sx={{
-        width: percent(100),
-        maxHeight: percent(100),
+        height: percent(100),
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: Colors.white,
-        borderRadius: px(10),
-        padding: px(10),
       }}
     >
       {isLoading ? (
@@ -54,13 +52,18 @@ export const ImageQuestionBlock = ({ src }: Props) => {
             maxHeight: percent(100),
             maxWidth: percent(100),
             objectFit: "contain",
-            border: "2px solid black",
+            backgroundColor: Colors.white,
+            borderRadius: px(10),
+            padding: px(5),
+            outline: hasBorder ? "1px solid black" : "none",
+            outlineOffset: "-5px",
           }}
         />
       )}
     </Box>
   );
 };
+
 
 interface PropsImageQCMBlock {
   src: string;

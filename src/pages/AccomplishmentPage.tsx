@@ -71,7 +71,7 @@ export default function AccomplishmentPage() {
               <Grid container spacing={1} alignItems="center">
                 {accomplishmentsToUnlock.map((accomplishment) => {
                   return (
-                    <Grid item xs={12} key={accomplishment.id}>
+                    <Grid item xs={12} lg={6} key={accomplishment.id}>
                       <CardAccomplishment
                         accomplishment={accomplishment}
                         stat={stat}
@@ -162,7 +162,7 @@ export default function AccomplishmentPage() {
                   </Grid>
                   {accomplishments.map((accomplishment) => {
                     return (
-                      <Grid item xs={12} key={accomplishment.id}>
+                      <Grid item xs={12} md={6} key={accomplishment.id}>
                         <CardAccomplishment
                           accomplishment={accomplishment}
                           stat={stat}

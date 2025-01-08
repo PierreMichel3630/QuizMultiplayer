@@ -117,7 +117,6 @@ export const RankingTable = ({ data, loading = false }: Props) => {
           sx={{
             bgcolor: Colors.grey,
             width: percent(100),
-            maxWidth: px(600),
             borderTopLeftRadius: px(0),
             borderTopRightRadius: px(0),
           }}
@@ -141,11 +140,11 @@ export const RankingTable = ({ data, loading = false }: Props) => {
                     >
                       <TableCell
                         align="left"
-                        sx={{ p: px(4), width: "min-content" }}
+                        sx={{ p: px(4), width: px(40) }}
                       >
                         {getIcon(el.rank, colorText)}
                       </TableCell>
-                      <TableCell sx={{ p: px(4), width: "min-content" }}>
+                      <TableCell sx={{ p: px(4), width: px(50) }}>
                         <Link
                           to={`/profil/${el.profile.id}`}
                           style={{ textDecoration: "inherit" }}
@@ -234,7 +233,7 @@ export const RankingTable = ({ data, loading = false }: Props) => {
                       </TableCell>
                       <TableCell
                         align="right"
-                        sx={{ p: px(4), width: "min-content", minWidth: px(50) }}
+                        sx={{ p: px(4), width: px(60)  }}
                       >
                         <Box>
                           <Typography

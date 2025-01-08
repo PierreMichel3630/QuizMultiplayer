@@ -3,7 +3,6 @@ import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
 import { selectStatAccomplishment } from "src/api/accomplishment";
 import { selectGamesByTime } from "src/api/game";
 import { getRankingFinishTheme } from "src/api/ranking";
@@ -29,15 +28,10 @@ import { getLevel } from "src/utils/calcul";
 export default function RankingPage() {
   const { t } = useTranslation();
   const { headerSize } = useApp();
-  const [searchParams] = useSearchParams();
 
   const ITEMPERPAGE = 25;
 
-  const [type, setType] = useState(
-    searchParams.has("sort")
-      ? (searchParams.get("sort") as ClassementEnum)
-      : ClassementEnum.points
-  );
+  const [type, setType] = useState(ClassementEnum.points);
   const [data, setData] = useState<Array<DataRanking>>([]);
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -133,11 +127,11 @@ export default function RankingPage() {
           setData((prev) => [...prev, ...newdata]);
           setIsLoading(false);
         });
-      } else {
+      } else if (tabSoloMode !== ClassementSoloModeEnum.alltime && tabSoloMode !== ClassementSoloModeEnum.day && tabSoloMode !== ClassementSoloModeEnum.month && tabSoloMode !== ClassementSoloModeEnum.week && tabSoloMode !== ClassementSoloModeEnum.finishtheme) {
         selectStatAccomplishment(tabSoloMode, page, ITEMPERPAGE).then(({ data }) => {
           const res = data as Array<StatAccomplishment>;
           const newdata = res.map((el, index) => {
-            const champ : any = el[tabSoloMode]
+            const champ : any =  el[tabSoloMode]
             return {
               profile: el.profile,
               value: Array.isArray(champ) ? champ.length : champ,

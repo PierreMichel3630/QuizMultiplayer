@@ -17,7 +17,7 @@ import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { px } from "csx";
+import { percent, px } from "csx";
 import { unlockAccomplishment } from "src/api/accomplishment";
 import { BarAccomplishment } from "../bar/Bar";
 import { AddMoneyBlock } from "../MoneyBlock";
@@ -95,9 +95,10 @@ export const CardAccomplishment = ({
         backgroundColor: isFinish ? Colors.green : "initial",
         color: isFinish ? Colors.white : "text.primary",
         border: isUnlock ? `3px solid ${Colors.purple}` : "2px solid white",
+        height: percent(100),
       }}
     >
-      <Grid container spacing={1} alignItems="center">
+      <Grid container spacing={1} alignItems="center" sx={{height: percent(100)}}>
         <Grid item xs={12}>
           <JsonLanguageBlock variant="h4" value={accomplishment.label} />
         </Grid>

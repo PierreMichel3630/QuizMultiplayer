@@ -59,7 +59,8 @@ export const ResponsesQCMBlock = ({
 
   const columns = useMemo(() => {
     const responsesImage = [...question.responses].filter((el) => el.image);
-    return hasImage || responsesImage.length > 0 ? 2 : 1;
+    const isPairResponses = question.responses.length % 2 === 0;
+    return (hasImage || responsesImage.length > 0) && isPairResponses ? 2 : 1;
   }, [question, hasImage]);
 
   const rows = useMemo(() => {

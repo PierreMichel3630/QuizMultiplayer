@@ -176,7 +176,7 @@ export const CardSignalQuestion = ({
           </Grid>
         )}
         {question.image && (
-          <Grid item xs={12} sx={{ maxWidth: percent(80) }}>
+          <Grid item xs={12} sx={{ maxWidth: percent(80), maxHeight: px(300)  }}>
             <ImageQuestionBlock src={question.image} />
           </Grid>
         )}
