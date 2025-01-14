@@ -1,7 +1,7 @@
 import { Alert, Box, Divider, Grid, Paper, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { CountryBlock } from "src/component/CountryBlock";
 import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
 import { Profile } from "src/models/Profile";
@@ -31,12 +31,13 @@ import {
   sortByXP,
 } from "src/utils/sort";
 
-import EditIcon from "@mui/icons-material/Edit";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { selectFriendByProfileId } from "src/api/friend";
 import { BasicSearchInput } from "src/component/Input";
+import { ShopItems } from "src/component/ShopBlock";
 import { SortButton } from "src/component/SortBlock";
 import { CardBadge } from "src/component/card/CardBadge";
+import { CardFinishTheme } from "src/component/card/CardFinishTheme";
 import { CardFriends } from "src/component/card/CardFriends";
 import { CardTitle } from "src/component/card/CardTitle";
 import { SkeletonAvatarPlayer } from "src/component/skeleton/SkeletonPlayer";
@@ -46,14 +47,12 @@ import { StatAccomplishment } from "src/models/Accomplishment";
 import { Friend, FRIENDSTATUS } from "src/models/Friend";
 import { getLevel } from "src/utils/calcul";
 import { searchString } from "src/utils/string";
-import { CardFinishTheme } from "src/component/card/CardFinishTheme";
 
 export default function MyProfilPage() {
   const { t } = useTranslation();
   const { language } = useUser();
   const { user, profile } = useAuth();
   const { headerSize } = useApp();
-  const navigate = useNavigate();
 
   const [scores, setScores] = useState<Array<Score>>([]);
   const [titles, setTitles] = useState<Array<Title>>([]);
@@ -290,24 +289,6 @@ export default function MyProfilPage() {
                   />
                 )}
               </Grid>
-              {stat && (
-                <Grid item>
-                  <Typography
-                    variant="h4"
-                    component="span"
-                    color="text.secondary"
-                  >
-                    {stat.xp}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    component="span"
-                    color="text.secondary"
-                  >
-                    {t("commun.xpabbreviation")}
-                  </Typography>
-                </Grid>
-              )}
               {profile && profile.country && (
                 <Grid
                   item
@@ -323,15 +304,12 @@ export default function MyProfilPage() {
             </>
           )}
         </Grid>
-        <Box sx={{ position: "absolute", top: 10, right: 10 }}>
-          <EditIcon
-            sx={{ cursor: "pointer", color: Colors.white }}
-            onClick={() => navigate("/personalized")}
-          />
-        </Box>
       </Box>
       <Box sx={{ p: 1 }}>
         <Grid container spacing={1}>
+          <Grid item xs={12}>
+            <ShopItems />
+          </Grid>
           {!isLoadingScore && scores.length === 0 && (
             <Grid item xs={12}>
               <Alert severity="warning">{t("commun.noresultgame")}</Alert>
@@ -344,9 +322,6 @@ export default function MyProfilPage() {
             <CardTitle titles={titleOrder} loading={isLoadingTitle} />
           </Grid>
           <Grid item xs={12}>
-            <CardFinishTheme scores={scores} loading={isLoadingScore} />
-          </Grid>
-          <Grid item xs={12}>
             <CardFriends friends={friendsAvatar} loading={isLoadingFriends} />
           </Grid>
           <Grid item xs={12}>
@@ -357,6 +332,9 @@ export default function MyProfilPage() {
               profile={profile ?? undefined}
               loading={isLoadingScore}
             />
+          </Grid>
+          <Grid item xs={12}>
+            <CardFinishTheme scores={scores} loading={isLoadingScore} />
           </Grid>
         </Grid>
       </Box>

@@ -6,7 +6,7 @@ import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 interface Props {
   title: string | JsonLanguage;
-  count: number;
+  count?: number;
 }
 
 export const TitleCount = ({ title, count }: Props) => {
@@ -29,7 +29,7 @@ export const TitleCount = ({ title, count }: Props) => {
           noWrap
         />
       )}
-      <BadgeCount count={count} />
+      {count && <BadgeCount count={count} />}
     </Box>
   );
 };

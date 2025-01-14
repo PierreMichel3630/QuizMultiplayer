@@ -21,11 +21,12 @@ import { SkeletonCategories } from "src/component/skeleton/SkeletonCategory";
 import { useAuth } from "src/context/AuthProviderSupabase";
 
 import BoltIcon from "@mui/icons-material/Bolt";
+import { uniqBy } from "lodash";
 import { CardImage, ICardImage } from "src/component/card/CardImage";
 import { HeaderApp } from "src/component/header/HeaderApp";
-import { Colors } from "src/style/Colors";
-import { uniqBy } from "lodash";
+import { ShopBlock } from "src/component/ShopBlock";
 import { UpdatedThemeBlock } from "src/component/theme/UpdatedThemeBlock";
+import { Colors } from "src/style/Colors";
 
 export default function ThemesPage() {
   const { t } = useTranslation();
@@ -180,6 +181,9 @@ export default function ThemesPage() {
                 </Grid>
                 <Grid item xs={12}>
                   <CategoriesBlock />
+                </Grid>
+                <Grid item xs={12}>
+                  <ShopBlock />
                 </Grid>
                 <Grid item xs={12}>
                   <RankingTop5Block />

@@ -1,9 +1,8 @@
 import { Alert, Box, Divider, Grid, Paper, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getProfilById } from "src/api/profile";
-import { ButtonColor } from "src/component/Button";
 import { CountryBlock } from "src/component/CountryBlock";
 import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
 import { Profile } from "src/models/Profile";
@@ -17,7 +16,6 @@ import {
   selectScoresByProfile,
 } from "src/api/score";
 import { selectTitleByProfile } from "src/api/title";
-import { FriendButton } from "src/component/FriendButton";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { BarVictory } from "src/component/chart/BarVictory";
@@ -37,14 +35,14 @@ import {
   sortByXP,
 } from "src/utils/sort";
 
-import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
-import EditIcon from "@mui/icons-material/Edit";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { selectFriendByProfileId } from "src/api/friend";
 import { BasicSearchInput } from "src/component/Input";
+import { ProfileAction } from "src/component/ProfileAction";
 import { SortButton } from "src/component/SortBlock";
 import { StatusProfileBlock } from "src/component/StatusProfileBlock";
 import { CardBadge } from "src/component/card/CardBadge";
+import { CardFinishTheme } from "src/component/card/CardFinishTheme";
 import { CardFriends } from "src/component/card/CardFriends";
 import { CardOpposition } from "src/component/card/CardOpposition";
 import { CardTitle } from "src/component/card/CardTitle";
@@ -55,14 +53,12 @@ import { StatAccomplishment } from "src/models/Accomplishment";
 import { Friend, FRIENDSTATUS } from "src/models/Friend";
 import { getLevel } from "src/utils/calcul";
 import { searchString } from "src/utils/string";
-import { CardFinishTheme } from "src/component/card/CardFinishTheme";
 
 export default function ProfilPage() {
   const { t } = useTranslation();
   const { id } = useParams();
   const { uuid, language } = useUser();
-  const { user, profile } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const { friends, headerSize } = useApp();
 
   const [profileUser, setProfileUser] = useState<Profile | undefined>(
@@ -221,16 +217,6 @@ export default function ProfilPage() {
     getProfile();
   }, [id]);
 
-  const compare = () => {
-    if (user) {
-      navigate(`/compare`, {
-        state: { profile1: profile, profile2: profileUser },
-      });
-    } else {
-      navigate(`/login`);
-    }
-  };
-
   const totalSolo = useMemo(
     () => scores.reduce((acc, value) => acc + value.games, 0),
     [scores]
@@ -381,24 +367,6 @@ export default function ProfilPage() {
                   />
                 )}
               </Grid>
-              {stat && (
-                <Grid item>
-                  <Typography
-                    variant="h4"
-                    component="span"
-                    color="text.secondary"
-                  >
-                    {stat.xp}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    component="span"
-                    color="text.secondary"
-                  >
-                    {t("commun.xpabbreviation")}
-                  </Typography>
-                </Grid>
-              )}
               {!isMe && friend && (
                 <Grid
                   item
@@ -423,36 +391,15 @@ export default function ProfilPage() {
                   />
                 </Grid>
               )}
-              {!isMe && (
-                <>
-                  <Grid item xs={12}>
-                    <ButtonColor
-                      value={Colors.blue}
-                      label={t("commun.compare")}
-                      icon={CompareArrowsIcon}
-                      variant="contained"
-                      onClick={compare}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FriendButton profile={profileUser} />
-                  </Grid>
-                </>
-              )}
             </>
           )}
         </Grid>
-        {isMe && (
-          <Box sx={{ position: "absolute", top: 10, right: 10 }}>
-            <EditIcon
-              sx={{ cursor: "pointer", color: Colors.white }}
-              onClick={() => navigate("/personalized")}
-            />
-          </Box>
-        )}
       </Box>
       <Box sx={{ p: 1 }}>
         <Grid container spacing={1}>
+          <Grid item xs={12}>
+            <ProfileAction profileUser={profileUser} />
+          </Grid>
           {!isLoadingScore && scores.length === 0 && (
             <Grid item xs={12}>
               <Alert severity="warning">{t("commun.noresultgame")}</Alert>
@@ -465,10 +412,10 @@ export default function ProfilPage() {
             <CardTitle titles={titleOrder} loading={isLoadingTitle} />
           </Grid>
           <Grid item xs={12}>
-            <CardFinishTheme scores={scores} loading={isLoadingScore} />
+            <CardFriends friends={friendsAvatar} loading={isLoadingFriends} />
           </Grid>
           <Grid item xs={12}>
-            <CardFriends friends={friendsAvatar} loading={isLoadingFriends} />
+            <CardFinishTheme scores={scores} loading={isLoadingScore} />
           </Grid>
           {profileUser && totalOpposition.games > 0 && (
             <Grid item xs={12}>

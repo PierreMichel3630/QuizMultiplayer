@@ -66,16 +66,20 @@ export default function AvatarPage() {
   }, [profile]);
 
   const verifyBuy = () => {
-    if (profile && avatar) {
-      if (profile.money < avatar.price) {
-        setSeverity("error");
-        setMessage(t("alert.noenoughtmoney"));
+    if(profile) {
+      if (avatar) {
+        if (profile.money < avatar.price) {
+          setSeverity("error");
+          setMessage(t("alert.noenoughtmoney"));
+        } else {
+          setOpenModal(true);
+        }
       } else {
-        setOpenModal(true);
+        setSeverity("error");
+        setMessage(t("commun.error"));
       }
-    } else {
-      setSeverity("error");
-      setMessage(t("commun.error"));
+    }  else {
+      navigate(`/login`);
     }
   };
 

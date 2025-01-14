@@ -15,6 +15,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { RoundButton } from "./button/RoundButton";
 
 interface Props {
   profile: Profile;
@@ -151,6 +152,98 @@ export const FriendButton = ({ profile, small = false }: Props) => {
       }}
       typography={small ? "body1" : undefined}
       iconSize={small ? 15 : undefined}
+    />
+  );
+};
+
+interface PropsFriendProfilButton {
+  profile: Profile;
+}
+
+export const FriendProfilButton = ({ profile }: PropsFriendProfilButton) => {
+  const { user } = useAuth();
+  const { friends, getFriends } = useApp();
+  const { setMessage, setSeverity } = useMessage();
+  const navigate = useNavigate();
+
+  const friend = useMemo(
+    () =>
+      friends.find(
+        (el) =>
+          user &&
+          ((el.user1.id === user.id && el.user2.id === profile.id) ||
+            (el.user2.id === user.id && el.user1.id === profile.id))
+      ),
+    [friends, profile.id, user]
+  );
+
+  const deleteFriend = () => {
+    const friend = friends.find(
+      (el) =>
+        el.status === FRIENDSTATUS.VALID &&
+        (el.user1.id === profile.id || el.user2.id === profile.id)
+    );
+    if (friend) {
+      deleteFriendById(friend.id).then((res) => {
+        if (res.error) {
+          setSeverity("error");
+          setMessage(t("commun.error"));
+        } else {
+          setSeverity("success");
+          setMessage(t("alert.deletefriend"));
+          getFriends();
+        }
+      });
+    } else {
+      setSeverity("error");
+      setMessage(t("commun.error"));
+    }
+  };
+
+  const addToFriend = () => {
+    if (user !== null) {
+      const invitation: FriendInsert = {
+        user1: user.id,
+        user2: profile.id,
+      };
+      insertFriend(invitation).then(({ error }) => {
+        if (error) {
+          setSeverity("error");
+          setMessage(t("commun.error"));
+        } else {
+          setSeverity("success");
+          setMessage(t("alert.sendfriendrequest"));
+          getFriends();
+        }
+      });
+    } else {
+      navigate(`/login`);
+    }
+  };
+
+  return user && friend ? (
+    friend.status !== FRIENDSTATUS.PROGRESS && (
+      <RoundButton
+        title={t("commun.deletefriend")}
+        icon={<RemoveCircleIcon />}
+        onClick={(ev) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          deleteFriend();
+        }}
+        color={Colors.red}
+      />
+    )
+  ) : (
+    <RoundButton
+      title={t("commun.addtofriend")}
+      icon={<AddCircleIcon />}
+      onClick={(ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        addToFriend();
+      }}
+      color={Colors.green}
     />
   );
 };

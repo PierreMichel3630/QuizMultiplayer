@@ -9,7 +9,7 @@ import { StatAccomplishment } from "src/models/Accomplishment";
 import { FRIENDSTATUS } from "src/models/Friend";
 import { getLevel } from "src/utils/calcul";
 import { AvatarAccountBadge } from "./avatar/AvatarAccount";
-import { CountryBlock } from "./CountryBlock";
+import { CountryImageBlock } from "./CountryBlock";
 import { MoneyBlock } from "./MoneyBlock";
 
 import PeopleIcon from "@mui/icons-material/People";
@@ -65,12 +65,14 @@ export const ProfileBar = () => {
       }}
     >
       {profile ? (
-        <AvatarAccountBadge
-          avatar={profile.avatar.icon}
-          size={60}
-          level={level}
-          profile={profile}
-        />
+        <Link to={`/personalized`} style={{ textDecoration: "none" }}>
+          <AvatarAccountBadge
+            avatar={profile.avatar.icon}
+            size={60}
+            level={level}
+            profile={profile}
+          />
+        </Link>
       ) : (
         <SkeletonCircular size={60} />
       )}
@@ -83,8 +85,16 @@ export const ProfileBar = () => {
           width: percent(100),
         }}
       >
-        <Box sx={{ maxWidth: percent(100) }}>
-          <Link to={`/myprofile`} style={{ textDecoration: "none" }}>
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+          {profile?.country && (
+            <Link to={`/personalized`} style={{ textDecoration: "none" }}>
+              <CountryImageBlock country={profile.country} size={30} />
+            </Link>
+          )}
+          <Link
+            to={`/myprofile`}
+            style={{ textDecoration: "none", maxWidth: "calc(100% -30px)" }}
+          >
             {profile ? (
               <Typography
                 variant="h2"
@@ -118,24 +128,9 @@ export const ProfileBar = () => {
             }}
           >
             {profile ? (
-              <>
-                {profile.country && (
-                  <Link to={`/personalized`} style={{ textDecoration: "none" }}>
-                    <CountryBlock
-                      country={profile.country}
-                      color="text.secondary"
-                      size={25}
-                    />
-                  </Link>
-                )}
-              </>
-            ) : (
-              <Skeleton animation="wave" width={90} />
-            )}
-            {profile ? (
               <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
                 <Link to={`/personalized`} style={{ textDecoration: "none" }}>
-                  <MoneyBlock money={profile.money} variant="body1" />
+                  <MoneyBlock money={profile.money} variant="h4" width={22} />
                 </Link>
               </Box>
             ) : (

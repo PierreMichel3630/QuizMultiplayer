@@ -110,6 +110,12 @@ export const sortByXP = (a: { xp: number }, b: { xp: number }) => {
   return valueB - valueA;
 };
 
+export const sortByPriceDesc = (a: { price: number }, b: { price: number }) => {
+  const valueA = a.price;
+  const valueB = b.price;
+  return valueA - valueB;
+};
+
 export const sortByCreatedAt = (
   a: { created_at: Date },
   b: { created_at: Date }

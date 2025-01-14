@@ -160,7 +160,7 @@ export const AppProvider = ({ children }: Props) => {
   const [isLoadingTheme, setIsLoadingTheme] = useState(true);
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
-  const headerSize = useMemo(() => (user ? 77 : 50), [user]);
+  const headerSize = useMemo(() => (user ? 72 : 50), [user]);
 
   useEffect(() => {
     const getCountPlayer = () => {

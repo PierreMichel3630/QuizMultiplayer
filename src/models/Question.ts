@@ -47,7 +47,6 @@ export interface QuestionInsertAdmin {
   typeResponse: string | null;
   isqcm: boolean | null;
   typequestion: string;
-  validate: boolean;
   allresponse: boolean;
   exact: boolean;
 }

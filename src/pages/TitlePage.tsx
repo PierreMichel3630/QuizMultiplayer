@@ -61,16 +61,20 @@ export default function TitlePage() {
   }, [profile]);
 
   const verifyBuy = () => {
-    if (profile && title) {
-      if (profile.money < title.price) {
-        setSeverity("error");
-        setMessage(t("alert.noenoughtmoney"));
+    if(profile) {
+      if (title) {
+        if (profile.money < title.price) {
+          setSeverity("error");
+          setMessage(t("alert.noenoughtmoney"));
+        } else {
+          setOpenModal(true);
+        }
       } else {
-        setOpenModal(true);
+        setSeverity("error");
+        setMessage(t("commun.error"));
       }
-    } else {
-      setSeverity("error");
-      setMessage(t("commun.error"));
+    }  else {
+      navigate(`/login`);
     }
   };
 

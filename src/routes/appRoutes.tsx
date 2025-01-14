@@ -39,6 +39,12 @@ import OutletPage from "src/pages/OutletPage";
 import PlayPage from "src/pages/PlayPage";
 import PreviousThemePage from "src/pages/PreviousThemePage";
 import UpdatedThemePage from "src/pages/UpdatedThemePage";
+import ShopPage from "src/pages/shop/ShopPage";
+import AvatarsPage from "src/pages/shop/AvatarsPage";
+import TitlesPage from "src/pages/shop/TitlesPage";
+import BadgesPage from "src/pages/shop/BadgesPages";
+import BannersPage from "src/pages/shop/BannersPage";
+import WheelPage from "src/pages/WheelPage";
 
 export const AppRoutes = [
   {
@@ -170,6 +176,27 @@ export const AppRoutes = [
         path: "/config/training/:themeid",
         element: <ConfigTrainingPage />,
       },
+      /* SHOP */
+      {
+        path: "/shop",
+        element: <ShopPage />,
+      },
+      {
+        path: "/avatars",
+        element: <AvatarsPage />,
+      },
+      {
+        path: "/banners",
+        element: <BannersPage />,
+      },
+      {
+        path: "/badges",
+        element: <BadgesPage />,
+      },
+      {
+        path: "/titles",
+        element: <TitlesPage />,
+      },
     ],
   },
   /*NO HEADER*/
@@ -204,5 +231,9 @@ export const AppRoutes = [
   {
     path: "/play",
     element: <PlayPage />,
+  },
+  {
+    path: "/wheel",
+    element: <WheelPage />,
   },
 ];

@@ -1,4 +1,4 @@
-import { Box, Divider, Grid, Typography } from "@mui/material";
+import { Box, Container, Divider, Grid, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "src/context/AuthProviderSupabase";
@@ -18,12 +18,20 @@ import { Badge } from "src/models/Badge";
 import { Banner } from "src/models/Banner";
 import { Profile } from "src/models/Profile";
 import { Title } from "src/models/Title";
+import { ProfilHeader } from "src/component/ProfileHeader";
+import { ButtonColor } from "src/component/Button";
+import { Colors } from "src/style/Colors";
+
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import { useNavigate } from "react-router-dom";
 
 export default function PersonalizedPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
   const { setMessage, setSeverity } = useMessage();
   const { user, profile, setProfile } = useAuth();
-  const { getMyTitles, getMyBadges } = useApp();
+  const { getMyTitles, getMyBadges, headerSize } = useApp();
 
   useEffect(() => {
     getMyTitles();
@@ -131,6 +139,20 @@ export default function PersonalizedPage() {
       <Helmet>
         <title>{`${t("pages.perzonalised.title")} - ${t("appname")}`}</title>
       </Helmet>
+      <Grid
+        item
+        xs={12}
+        sx={{
+          position: "sticky",
+          top: headerSize,
+          zIndex: 100,
+          pb: 1,
+        }}
+      >
+        <Container maxWidth="md">
+          {profile && <ProfilHeader profile={profile} />}
+        </Container>
+      </Grid>
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
@@ -162,6 +184,16 @@ export default function PersonalizedPage() {
               <AvatarSelector onSelect={changeAvatar} />
             </Grid>
             <Grid item xs={12}>
+              <ButtonColor
+                fullWidth
+                value={Colors.green}
+                label={t("commun.unlocknewavatars")}
+                icon={LockOpenIcon}
+                variant="contained"
+                onClick={() => navigate("/shop")}
+              />
+            </Grid>
+            <Grid item xs={12}>
               <Divider />
             </Grid>
             <Grid item xs={12}>
@@ -169,6 +201,16 @@ export default function PersonalizedPage() {
             </Grid>
             <Grid item xs={12}>
               <BadgeSelector onSelect={changeBadge} />
+            </Grid>
+            <Grid item xs={12}>
+              <ButtonColor
+                fullWidth
+                value={Colors.green}
+                label={t("commun.unlocknewbadges")}
+                icon={LockOpenIcon}
+                variant="contained"
+                onClick={() => navigate("/shop")}
+              />
             </Grid>
             <Grid item xs={12}>
               <Divider />
@@ -180,6 +222,16 @@ export default function PersonalizedPage() {
               <BannerSelector onSelect={changeBanner} />
             </Grid>
             <Grid item xs={12}>
+              <ButtonColor
+                fullWidth
+                value={Colors.green}
+                label={t("commun.unlocknewbanners")}
+                icon={LockOpenIcon}
+                variant="contained"
+                onClick={() => navigate("/shop")}
+              />
+            </Grid>
+            <Grid item xs={12}>
               <Divider />
             </Grid>
             <Grid item xs={12}>
@@ -187,6 +239,16 @@ export default function PersonalizedPage() {
             </Grid>
             <Grid item xs={12}>
               <TitleSelector onSelect={changeTitle} />
+            </Grid>
+            <Grid item xs={12}>
+              <ButtonColor
+                fullWidth
+                value={Colors.green}
+                label={t("commun.unlocknewtitles")}
+                icon={LockOpenIcon}
+                variant="contained"
+                onClick={() => navigate("/shop")}
+              />
             </Grid>
           </Grid>
         </Box>

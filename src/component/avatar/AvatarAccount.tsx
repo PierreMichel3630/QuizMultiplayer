@@ -80,7 +80,7 @@ export const AvatarAccountBadge = ({
               transform: "translate(-50%, -50%)",
             }}
           >
-            <BadgeLevel level={level} size={size / 3} fontSize={size / 5} />
+            <BadgeLevel level={level} size={size / 3} fontSize={size / 6} />
           </Box>
         )}
       </Box>
@@ -105,7 +105,7 @@ export const AvatarAccountBadge = ({
             transform: "translate(-50%, -50%)",
           }}
         >
-          <BadgeLevel level={level} size={size / 2.5} fontSize={size / 5} />
+          <BadgeLevel level={level} size={size / 3} fontSize={size / 6} />
         </Box>
       )}
     </Box>

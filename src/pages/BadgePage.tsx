@@ -60,18 +60,23 @@ export default function BannerPage() {
   }, [profile]);
 
   const verifyBuy = () => {
-    if (profile && badge) {
-      if (profile.money < badge.price) {
-        setSeverity("error");
-        setMessage(t("alert.noenoughtmoney"));
+    if(profile) {
+      if ( badge) {
+        if (profile.money < badge.price) {
+          setSeverity("error");
+          setMessage(t("alert.noenoughtmoney"));
+        } else {
+          setOpenModal(true);
+        }
       } else {
-        setOpenModal(true);
+        setSeverity("error");
+        setMessage(t("commun.error"));
       }
-    } else {
-      setSeverity("error");
-      setMessage(t("commun.error"));
+    }  else {
+      navigate(`/login`);
     }
   };
+  
 
   const buy = () => {
     if (profile && badge) {

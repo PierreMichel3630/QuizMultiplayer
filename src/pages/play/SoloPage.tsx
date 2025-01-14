@@ -39,15 +39,6 @@ export default function SoloPage() {
   const [myresponse, setMyresponse] = useState<string | number | undefined>(
     undefined
   );
-  const [timeoutsId, setTimeoutsId] = useState<Array<NodeJS.Timeout>>([]);
-
-  useEffect(() => {
-    return () => {
-      timeoutsId.forEach((el) => {
-        clearTimeout(el);
-      });
-    };
-  }, [timeoutsId]);
 
   const generateQuestion = useCallback(
     (game: undefined | SoloGame, delay: number) => {
@@ -79,7 +70,7 @@ export default function SoloPage() {
               audio.load();
             }
 
-            const idTimeout = setTimeout(async () => {
+            setTimeout(async () => {
               if (questionSolo.allresponse === true) {
                 navigate(`/recapsolo/${game.uuid}`, {
                   state: {
@@ -120,10 +111,8 @@ export default function SoloPage() {
                   }, 1500);
                 }, questionSolo.time * 1000);
                 setTimeoutQuestion(newtimeoutQuestion);
-                setTimeoutsId((prev) => [...prev, newtimeoutQuestion]);
               }
             }, delay);
-            setTimeoutsId((prev) => [...prev, idTimeout]);
           });
       }
     },

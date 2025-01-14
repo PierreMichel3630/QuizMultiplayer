@@ -52,7 +52,6 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
     question: string;
     response: Array<string>;
     typequestion: string;
-    validate: boolean;
     exact: boolean;
     allresponse: boolean;
     responses: Array<string>;
@@ -61,7 +60,6 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
   } = {
     exact: question ? question.exact : false,
     allresponse: question ? question.allresponse : false,
-    validate: question ? question.validate : false,
     question: question ? question.question["fr-FR"] : "",
     typequestion: question ? question.typequestion : "DEFAULT",
     response: question
@@ -119,7 +117,6 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
           exact: values.exact,
           allresponse: values.allresponse,
           typequestion: values.typequestion,
-          validate: values.validate,
           image: values.image ? values.image : null,
           difficulty: values.difficulty,
           typeResponse: values.typeResponse,
@@ -184,7 +181,7 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
         </Grid>
         <Grid item xs={12}>
           <FormGroup>
-            <FormControlLabel
+            {/*<FormControlLabel
               control={
                 <Switch
                   checked={formik.values.validate}
@@ -193,7 +190,7 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
                 />
               }
               label={t("form.createquestion.validate")}
-            />
+            />*/}
             <FormControlLabel
               control={
                 <Switch

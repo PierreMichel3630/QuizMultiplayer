@@ -60,36 +60,40 @@ export default function BannerPage() {
   }, [profile]);
 
   const verifyBuy = () => {
-    if (profile && banner) {
-      if (profile.money < banner.price) {
-        setSeverity("error");
-        setMessage(t("alert.noenoughtmoney"));
+    if(profile) {
+      if (banner) {
+        if (profile.money < banner.price) {
+          setSeverity("error");
+          setMessage(t("alert.noenoughtmoney"));
+        } else {
+          setOpenModal(true);
+        }
       } else {
-        setOpenModal(true);
+        setSeverity("error");
+        setMessage(t("commun.error"));
       }
-    } else {
-      setSeverity("error");
-      setMessage(t("commun.error"));
+    }  else {
+      navigate(`/login`);
     }
   };
 
   const buy = () => {
-    if (profile && banner) {
-      if (profile.money < banner.price) {
-        setSeverity("error");
-        setMessage(t("alert.noenoughtmoney"));
+      if (profile && banner) {
+        if (profile.money < banner.price) {
+          setSeverity("error");
+          setMessage(t("alert.noenoughtmoney"));
+        } else {
+          buyItem("banner", banner.id).then((_res) => {
+            setSeverity("success");
+            setMessage(t("alert.buyitem"));
+            getMyBanners();
+            refreshProfil();
+          });
+        }
       } else {
-        buyItem("banner", banner.id).then((_res) => {
-          setSeverity("success");
-          setMessage(t("alert.buyitem"));
-          getMyBanners();
-          refreshProfil();
-        });
+        setSeverity("error");
+        setMessage(t("commun.error"));
       }
-    } else {
-      setSeverity("error");
-      setMessage(t("commun.error"));
-    }
     setOpenModal(false);
   };
 
