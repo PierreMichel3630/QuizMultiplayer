@@ -13,15 +13,14 @@ interface Props {
 
 export const BadgeSelector = ({ onSelect }: Props) => {
   const { profile } = useAuth();
-  const { mybadges } = useApp();
+  const { myBadges } = useApp();
 
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
         <Grid container spacing={1} alignItems="center" justifyContent="center">
-          {mybadges.map((badge) => {
-            const isSelect =
-              profile && profile.badge && profile.badge.id === badge.id;
+          {myBadges.map((badge) => {
+            const isSelect = profile?.badge && profile.badge.id === badge.id;
 
             return (
               <Grid item key={badge.id}>

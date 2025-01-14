@@ -3,7 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
+import {
+  selectAccomplishmentByBadge,
+  selectStatAccomplishmentByProfile,
+} from "src/api/accomplishment";
 import { selectBadgeById } from "src/api/badge";
 import { ButtonColor } from "src/component/Button";
 import { CardAccomplishment } from "src/component/card/CardAccomplishment";
@@ -11,7 +14,7 @@ import { BarNavigation } from "src/component/navigation/BarNavigation";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-import { StatAccomplishment } from "src/models/Accomplishment";
+import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
 import { Badge } from "src/models/Badge";
 import { Colors } from "src/style/Colors";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
@@ -27,10 +30,13 @@ export default function BannerPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { profile, refreshProfil } = useAuth();
-  const { mybadges, getMyBadges, accomplishments } = useApp();
+  const { myBadges, getMyBadges } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
   const [badge, setBadge] = useState<Badge | undefined>(undefined);
+  const [accomplishment, setAccomplishment] = useState<
+    Accomplishment | undefined
+  >(undefined);
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
@@ -59,9 +65,20 @@ export default function BannerPage() {
     getMyStat();
   }, [profile]);
 
+  useEffect(() => {
+    const getAccomplishment = () => {
+      if (badge) {
+        selectAccomplishmentByBadge(badge.id).then(({ data }) => {
+          setAccomplishment(data);
+        });
+      }
+    };
+    getAccomplishment();
+  }, [badge]);
+
   const verifyBuy = () => {
-    if(profile) {
-      if ( badge) {
+    if (profile) {
+      if (badge) {
         if (profile.money < badge.price) {
           setSeverity("error");
           setMessage(t("alert.noenoughtmoney"));
@@ -72,11 +89,10 @@ export default function BannerPage() {
         setSeverity("error");
         setMessage(t("commun.error"));
       }
-    }  else {
+    } else {
       navigate(`/login`);
     }
   };
-  
 
   const buy = () => {
     if (profile && badge) {
@@ -102,16 +118,8 @@ export default function BannerPage() {
     () =>
       !loading &&
       badge &&
-      mybadges.find((el) => el.id === badge.id) !== undefined,
-    [loading, mybadges, badge]
-  );
-
-  const accomplishment = useMemo(
-    () =>
-      badge
-        ? accomplishments.find((el) => el.badge && el.badge.id === badge.id)
-        : undefined,
-    [accomplishments, badge]
+      myBadges.find((el) => el.id === badge.id) !== undefined,
+    [loading, myBadges, badge]
   );
 
   return (

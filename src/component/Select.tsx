@@ -17,22 +17,19 @@ import { SyntheticEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import LockIcon from "@mui/icons-material/Lock";
+import ClearIcon from "@mui/icons-material/Clear";
 import { uniqBy } from "lodash";
 import { useApp } from "src/context/AppProvider";
-import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
-import { LANGUAGESQUESTION, Language } from "src/models/Language";
+import { colorDifficulty, Difficulty } from "src/models/enum/DifficultyEnum";
+import { Language, LANGUAGESQUESTION } from "src/models/Language";
 import { Theme } from "src/models/Theme";
-import { Colors } from "src/style/Colors";
 import { sortByName } from "src/utils/sort";
 import { AutocompleteInputTheme } from "./Autocomplete";
 import { ImageThemeBlock } from "./ImageThemeBlock";
-import { JsonLanguageBlock } from "./JsonLanguageBlock";
-import ClearIcon from "@mui/icons-material/Clear";
 import { BasicSearchInput } from "./Input";
-import { colorDifficulty, Difficulty } from "src/models/enum/DifficultyEnum";
+import { JsonLanguageBlock } from "./JsonLanguageBlock";
 
 interface Props {
   value: Difficulty;
@@ -383,56 +380,6 @@ export const BasicSelect = ({
             {option.label}
           </MenuItem>
         ))}
-      </Select>
-    </FormControl>
-  );
-};
-
-interface PropsSelectTitle {
-  onChange: (value: number) => void;
-}
-
-export const SelectTitle = ({ onChange }: PropsSelectTitle) => {
-  const { t } = useTranslation();
-  const { titles, mytitles } = useApp();
-  const { profile } = useAuth();
-  const { language } = useUser();
-
-  const titlesUnlock = useMemo(() => mytitles.map((el) => el.id), [mytitles]);
-
-  const options = useMemo(() => {
-    return titles
-      .sort((a, b) => {
-        const isALock = titlesUnlock.includes(a.id);
-        const isBLock = titlesUnlock.includes(b.id);
-        return Number(isBLock) - Number(isALock) || sortByName(language, a, b);
-      })
-      .map((el) => ({ value: el.id.toString(), label: el.name }));
-  }, [titles, titlesUnlock, language]);
-
-  return (
-    <FormControl fullWidth>
-      <InputLabel id="label-title-select">{t("commun.selecttitle")}</InputLabel>
-      <Select
-        labelId="label-title-select"
-        id="title-select"
-        value={
-          profile && profile.title ? profile.title.id.toString() : undefined
-        }
-        label={t("commun.selecttitle")}
-        onChange={(event: SelectChangeEvent) =>
-          onChange(Number(event.target.value))
-        }
-      >
-        {options.map((option) => {
-          const isLock = !titlesUnlock.includes(Number(option.value));
-          return (
-            <MenuItem key={option.value} value={option.value} disabled={isLock}>
-              {isLock && <LockIcon sx={{ color: Colors.lightgrey2 }} />}
-              <JsonLanguageBlock variant="body1" value={option.label} />
-            </MenuItem>
-          );
-        })}
       </Select>
     </FormControl>
   );

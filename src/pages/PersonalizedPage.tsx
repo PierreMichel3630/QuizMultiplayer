@@ -24,6 +24,7 @@ import { Colors } from "src/style/Colors";
 
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { useNavigate } from "react-router-dom";
+import { Country } from "src/models/Country";
 
 export default function PersonalizedPage() {
   const { t } = useTranslation();
@@ -116,9 +117,12 @@ export default function PersonalizedPage() {
     }
   };
 
-  const changeCountry = async (id: number | null) => {
+  const changeCountry = async (country: Country | null) => {
     if (user) {
-      const newProfil = { id: user.id, country: id };
+      const newProfil = {
+        id: user.id,
+        country: country !== null ? country.id : null,
+      };
       const { data, error } = await updateSelectProfil(newProfil);
       if (error) {
         setSeverity("error");

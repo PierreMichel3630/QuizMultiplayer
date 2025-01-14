@@ -43,31 +43,29 @@ export const TitleBlock = ({ title, favorite = false, addFavorite }: Props) => {
           />
         )}
       </Grid>
-      <Grid item sx={{ minWidth: px(60) }}>
-        {addFavorite && (
-          <>
-            {favorite ? (
-              <StarIcon
-                sx={{
-                  fontSize: 45,
-                  color: Colors.yellow4,
-                  cursor: "pointer",
-                }}
-                onClick={() => addFavorite()}
-              />
-            ) : (
-              <StarBorderOutlinedIcon
-                sx={{
-                  fontSize: 45,
-                  color: Colors.yellow4,
-                  cursor: "pointer",
-                }}
-                onClick={() => addFavorite()}
-              />
-            )}
-          </>
-        )}
-      </Grid>
+      {addFavorite && (
+        <Grid item sx={{ minWidth: px(60) }}>
+          {favorite ? (
+            <StarIcon
+              sx={{
+                fontSize: 45,
+                color: Colors.yellow4,
+                cursor: "pointer",
+              }}
+              onClick={() => addFavorite()}
+            />
+          ) : (
+            <StarBorderOutlinedIcon
+              sx={{
+                fontSize: 45,
+                color: Colors.yellow4,
+                cursor: "pointer",
+              }}
+              onClick={() => addFavorite()}
+            />
+          )}
+        </Grid>
+      )}
     </Grid>
   );
 };

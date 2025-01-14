@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import { percent } from "csx";
 import { Outlet } from "react-router-dom";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   selectInvitationBattleByUser,
   selectInvitationBattleByUuid,
@@ -18,11 +18,12 @@ import { DuelNotificationBlock } from "src/component/notification/DuelNotificati
 import { useApp } from "src/context/AppProvider";
 import { BattleGame, BattleGameChange } from "src/models/BattleGame";
 import { StatusGameDuel } from "src/models/enum/StatusGame";
+import { useAuth } from "src/context/AuthProviderSupabase";
 
 export default function GameOutlet() {
   const { uuid } = useUser();
-  const { getAccomplishments, getBadges, getTitles, getThemes, getFriends } =
-    useApp();
+  const { user } = useAuth();
+  const { getFriends } = useApp();
 
   const [gamesChange, setGamesChange] = useState<Array<DuelGameChange>>([]);
   const [games, setGames] = useState<Array<DuelGame>>([]);
@@ -32,54 +33,56 @@ export default function GameOutlet() {
   const [battles, setBattles] = useState<Array<BattleGame>>([]);
 
   useEffect(() => {
-    getAccomplishments();
-    getBadges();
-    getTitles();
-    getThemes();
-  }, []);
-
-  useEffect(() => {
     const getGamesUuid = () => {
       const uuids = gamesChange.map((el) => el.uuid);
-      selectInvitationDuelByUuid(uuids).then(({ data }) => {
-        const value = data !== null ? (data as Array<DuelGame>) : [];
-        setGames(value);
-      });
+      if (uuids.length > 0) {
+        selectInvitationDuelByUuid(uuids).then(({ data }) => {
+          const value = data !== null ? (data as Array<DuelGame>) : [];
+          setGames(value);
+        });
+      }
     };
     getGamesUuid();
   }, [gamesChange]);
 
-  const getGames = () => {
-    selectInvitationDuelByUser(uuid).then(({ data }) => {
-      const value = data !== null ? (data as Array<DuelGame>) : [];
-      setGames(value);
-    });
-  };
+  const getGames = useCallback(() => {
+    if (user) {
+      selectInvitationDuelByUser(user.id).then(({ data }) => {
+        const value = data !== null ? (data as Array<DuelGame>) : [];
+        setGames(value);
+      });
+    }
+  }, [user]);
+
   useEffect(() => {
     getGames();
-  }, []);
+  }, [getGames]);
 
   useEffect(() => {
     const getBattleGamesUuid = () => {
       const uuids = battlesChange.map((el) => el.uuid);
-      selectInvitationBattleByUuid(uuids).then(({ data }) => {
-        const value = data !== null ? (data as Array<BattleGame>) : [];
-        setBattles(value);
-      });
+      if (uuids.length > 0) {
+        selectInvitationBattleByUuid(uuids).then(({ data }) => {
+          const value = data !== null ? (data as Array<BattleGame>) : [];
+          setBattles(value);
+        });
+      }
     };
     getBattleGamesUuid();
   }, [battlesChange]);
 
-  const getBattles = () => {
-    selectInvitationBattleByUser(uuid).then(({ data }) => {
-      const value = data !== null ? (data as Array<BattleGame>) : [];
-      setBattles(value);
-    });
-  };
+  const getBattles = useCallback(() => {
+    if (user) {
+      selectInvitationBattleByUser(user.id).then(({ data }) => {
+        const value = data !== null ? (data as Array<BattleGame>) : [];
+        setBattles(value);
+      });
+    }
+  }, [user]);
 
   useEffect(() => {
     getBattles();
-  }, []);
+  }, [getBattles]);
 
   useEffect(() => {
     const channel = supabase

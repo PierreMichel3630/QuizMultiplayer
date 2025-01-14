@@ -11,7 +11,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
+import {
+  selectAccomplishmentByAvatar,
+  selectStatAccomplishmentByProfile,
+} from "src/api/accomplishment";
 import { selectAvatarById } from "src/api/avatar";
 import { buyItem } from "src/api/buy";
 import moneyIcon from "src/assets/money.svg";
@@ -23,7 +26,7 @@ import { ProfilHeader } from "src/component/ProfileHeader";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
-import { StatAccomplishment } from "src/models/Accomplishment";
+import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
 import { Avatar } from "src/models/Avatar";
 import { Colors } from "src/style/Colors";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
@@ -33,10 +36,13 @@ export default function AvatarPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { profile, refreshProfil } = useAuth();
-  const { myavatars, getMyAvatars, accomplishments } = useApp();
+  const { myAvatars, getMyAvatars } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
   const [avatar, setAvatar] = useState<Avatar | undefined>(undefined);
+  const [accomplishment, setAccomplishment] = useState<
+    Accomplishment | undefined
+  >(undefined);
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
@@ -65,8 +71,19 @@ export default function AvatarPage() {
     getMyStat();
   }, [profile]);
 
+  useEffect(() => {
+    const getAccomplishment = () => {
+      if (avatar) {
+        selectAccomplishmentByAvatar(avatar.id).then(({ data }) => {
+          setAccomplishment(data);
+        });
+      }
+    };
+    getAccomplishment();
+  }, [avatar]);
+
   const verifyBuy = () => {
-    if(profile) {
+    if (profile) {
       if (avatar) {
         if (profile.money < avatar.price) {
           setSeverity("error");
@@ -78,7 +95,7 @@ export default function AvatarPage() {
         setSeverity("error");
         setMessage(t("commun.error"));
       }
-    }  else {
+    } else {
       navigate(`/login`);
     }
   };
@@ -107,16 +124,8 @@ export default function AvatarPage() {
     () =>
       !loading &&
       avatar &&
-      myavatars.find((el) => el.id === avatar.id) !== undefined,
-    [loading, myavatars, avatar]
-  );
-
-  const accomplishment = useMemo(
-    () =>
-      avatar && avatar.isaccomplishment
-        ? accomplishments.find((el) => el.avatar && el.avatar.id === avatar.id)
-        : undefined,
-    [accomplishments, avatar]
+      myAvatars.find((el) => el.id === avatar.id) !== undefined,
+    [loading, myAvatars, avatar]
   );
 
   return (

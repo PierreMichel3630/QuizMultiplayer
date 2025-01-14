@@ -5,6 +5,13 @@ export const SUPABASE_AVATAR_TABLE = "avatar";
 
 export const selectAvatar = () => supabase.from(SUPABASE_AVATAR_TABLE).select();
 
+export const selectAvatarFree = () =>
+  supabase
+    .from(SUPABASE_AVATAR_TABLE)
+    .select()
+    .eq("price", 0)
+    .eq("isaccomplishment", false);
+
 export const selectAvatarByProfile = (profile: string) =>
   supabase
     .from(SUPABASE_AVATARPROFILE_TABLE)

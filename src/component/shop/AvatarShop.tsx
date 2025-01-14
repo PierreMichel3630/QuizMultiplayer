@@ -2,16 +2,17 @@ import { Avatar, Box } from "@mui/material";
 import { px } from "csx";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { useApp } from "src/context/AppProvider";
 import { Avatar as IAvatar } from "src/models/Avatar";
 import { Colors } from "src/style/Colors";
 import { useBreakpoint } from "src/utils/mediaQuery";
 import { MoneyBlock } from "../MoneyBlock";
 import { SkeletonAvatars } from "../skeleton/SkeletonShop";
 
-export const AvatarShopBlock = () => {
+interface PropsAvatarShopBlock {
+  avatars: Array<IAvatar>;
+}
+export const AvatarShopBlock = ({ avatars }: PropsAvatarShopBlock) => {
   const breakpoint = useBreakpoint();
-  const { avatars } = useApp();
 
   const ref = useRef<HTMLDivElement | null>(null);
   const [maxIndex, setMaxIndex] = useState(5);

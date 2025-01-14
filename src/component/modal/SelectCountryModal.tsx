@@ -25,7 +25,7 @@ import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
-import { useApp } from "src/context/AppProvider";
+import { selectCountries } from "src/api/country";
 import { useUser } from "src/context/UserProvider";
 import { Country } from "src/models/Country";
 import { Profile } from "src/models/Profile";
@@ -35,7 +35,7 @@ import { searchString } from "src/utils/string";
 interface Props {
   open: boolean;
   close: () => void;
-  onValid: (id: number) => void;
+  onValid: (id: Country) => void;
   profile?: Profile;
 }
 
@@ -49,7 +49,18 @@ export const SelectCountryModal = ({
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const { language } = useUser();
-  const { countries } = useApp();
+
+  const [countries, setCountries] = useState<Array<Country>>([]);
+
+  useEffect(() => {
+    const getCountries = () => {
+      selectCountries().then(({ data }) => {
+        const value = data !== null ? (data as Array<Country>) : [];
+        setCountries(value);
+      });
+    };
+    getCountries();
+  }, []);
 
   const ref = useRef<HTMLDivElement | null>(null);
   const [value, setValue] = useState("");
@@ -138,7 +149,7 @@ export const SelectCountryModal = ({
               {[...countriesFilter].splice(0, maxIndex).map((el) => (
                 <Fragment key={el.id}>
                   <ListItem disablePadding>
-                    <ListItemButton onClick={() => onValid(el.id)}>
+                    <ListItemButton onClick={() => onValid(el)}>
                       <ListItemIcon>
                         {profile &&
                           profile.country !== null &&

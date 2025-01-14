@@ -5,7 +5,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
+import {
+  selectAccomplishmentByBanner,
+  selectStatAccomplishmentByProfile,
+} from "src/api/accomplishment";
 import { selectBannerById } from "src/api/banner";
 import { buyItem } from "src/api/buy";
 import moneyIcon from "src/assets/money.svg";
@@ -17,7 +20,7 @@ import { ProfilHeader } from "src/component/ProfileHeader";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
-import { StatAccomplishment } from "src/models/Accomplishment";
+import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
 import { Banner } from "src/models/Banner";
 import { Colors } from "src/style/Colors";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
@@ -27,10 +30,13 @@ export default function BannerPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { profile, refreshProfil } = useAuth();
-  const { mybanners, getMyBanners, accomplishments } = useApp();
+  const { mybanners, getMyBanners } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
   const [banner, setBanner] = useState<Banner | undefined>(undefined);
+  const [accomplishment, setAccomplishment] = useState<
+    Accomplishment | undefined
+  >(undefined);
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
@@ -59,8 +65,19 @@ export default function BannerPage() {
     getMyStat();
   }, [profile]);
 
+  useEffect(() => {
+    const getAccomplishment = () => {
+      if (banner) {
+        selectAccomplishmentByBanner(banner.id).then(({ data }) => {
+          setAccomplishment(data);
+        });
+      }
+    };
+    getAccomplishment();
+  }, [banner]);
+
   const verifyBuy = () => {
-    if(profile) {
+    if (profile) {
       if (banner) {
         if (profile.money < banner.price) {
           setSeverity("error");
@@ -72,28 +89,28 @@ export default function BannerPage() {
         setSeverity("error");
         setMessage(t("commun.error"));
       }
-    }  else {
+    } else {
       navigate(`/login`);
     }
   };
 
   const buy = () => {
-      if (profile && banner) {
-        if (profile.money < banner.price) {
-          setSeverity("error");
-          setMessage(t("alert.noenoughtmoney"));
-        } else {
-          buyItem("banner", banner.id).then((_res) => {
-            setSeverity("success");
-            setMessage(t("alert.buyitem"));
-            getMyBanners();
-            refreshProfil();
-          });
-        }
-      } else {
+    if (profile && banner) {
+      if (profile.money < banner.price) {
         setSeverity("error");
-        setMessage(t("commun.error"));
+        setMessage(t("alert.noenoughtmoney"));
+      } else {
+        buyItem("banner", banner.id).then((_res) => {
+          setSeverity("success");
+          setMessage(t("alert.buyitem"));
+          getMyBanners();
+          refreshProfil();
+        });
       }
+    } else {
+      setSeverity("error");
+      setMessage(t("commun.error"));
+    }
     setOpenModal(false);
   };
 
@@ -103,14 +120,6 @@ export default function BannerPage() {
       banner &&
       mybanners.find((el) => el.id === banner.id) !== undefined,
     [loading, mybanners, banner]
-  );
-
-  const accomplishment = useMemo(
-    () =>
-      banner
-        ? accomplishments.find((el) => el.banner && el.banner.id === banner.id)
-        : undefined,
-    [accomplishments, banner]
   );
 
   return (

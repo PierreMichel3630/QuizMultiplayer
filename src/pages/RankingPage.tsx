@@ -7,9 +7,7 @@ import { selectStatAccomplishment } from "src/api/accomplishment";
 import { selectGamesByTime } from "src/api/game";
 import { getRankingFinishTheme } from "src/api/ranking";
 import { selectScore } from "src/api/score";
-import {
-  GroupButtonClassement
-} from "src/component/button/ButtonGroup";
+import { GroupButtonClassement } from "src/component/button/ButtonGroup";
 import { ButtonRankingSolo } from "src/component/button/ButtonRankingSolo";
 import { DataRanking, RankingTable } from "src/component/table/RankingTable";
 import { useApp } from "src/context/AppProvider";
@@ -21,7 +19,7 @@ import { Score } from "src/models/Score";
 import {
   ClassementEnum,
   ClassementSoloModeEnum,
-  ClassementTimeEnum
+  ClassementTimeEnum,
 } from "src/models/enum/ClassementEnum";
 import { getLevel } from "src/utils/calcul";
 
@@ -36,15 +34,19 @@ export default function RankingPage() {
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
-  const [tabSoloMode, setTabSoloMode] = useState(ClassementSoloModeEnum.alltime);
+  const [tabSoloMode, setTabSoloMode] = useState(
+    ClassementSoloModeEnum.alltime
+  );
 
   useEffect(() => {
     if (!isEnd) {
       if (
         type === ClassementEnum.points &&
-        (tabSoloMode === ClassementSoloModeEnum.day || tabSoloMode === ClassementSoloModeEnum.week || tabSoloMode === ClassementSoloModeEnum.month)
+        (tabSoloMode === ClassementSoloModeEnum.day ||
+          tabSoloMode === ClassementSoloModeEnum.week ||
+          tabSoloMode === ClassementSoloModeEnum.month)
       ) {
-        const time = ClassementTimeEnum.alltime
+        const time = ClassementTimeEnum.alltime;
         selectGamesByTime(time, page, ITEMPERPAGE).then(({ data }) => {
           const res = data as Array<HistorySoloGame>;
           const newdata = res.map((el, index) => ({
@@ -58,7 +60,8 @@ export default function RankingPage() {
           setIsLoading(false);
         });
       } else if (
-        type === ClassementEnum.points && tabSoloMode === ClassementSoloModeEnum.alltime
+        type === ClassementEnum.points &&
+        tabSoloMode === ClassementSoloModeEnum.alltime
       ) {
         selectScore(type, page, ITEMPERPAGE).then(({ data }) => {
           const res = data as Array<Score>;
@@ -90,9 +93,7 @@ export default function RankingPage() {
           setData((prev) => [...prev, ...newdata]);
           setIsLoading(false);
         });
-      } else if (
-        type === ClassementEnum.rank
-      ) {
+      } else if (type === ClassementEnum.rank) {
         selectScore(type, page, ITEMPERPAGE).then(({ data }) => {
           const res = data as Array<Score>;
           const newdata = res.map((el, index) => {
@@ -112,14 +113,12 @@ export default function RankingPage() {
         selectStatAccomplishment(type, page, ITEMPERPAGE).then(({ data }) => {
           const res = data as Array<StatAccomplishment>;
           const newdata = res.map((el, index) => {
-            const value : any = el[type]
+            const value: any = el[type];
             return {
               profile: el.profile,
-              value: <BadgeLevel
-                level={getLevel(value)}
-                size={35}
-                fontSize={15}
-              />,
+              value: (
+                <BadgeLevel level={getLevel(value)} size={35} fontSize={15} />
+              ),
               rank: page * ITEMPERPAGE + index + 1,
             };
           });
@@ -127,21 +126,29 @@ export default function RankingPage() {
           setData((prev) => [...prev, ...newdata]);
           setIsLoading(false);
         });
-      } else if (tabSoloMode !== ClassementSoloModeEnum.alltime && tabSoloMode !== ClassementSoloModeEnum.day && tabSoloMode !== ClassementSoloModeEnum.month && tabSoloMode !== ClassementSoloModeEnum.week && tabSoloMode !== ClassementSoloModeEnum.finishtheme) {
-        selectStatAccomplishment(tabSoloMode, page, ITEMPERPAGE).then(({ data }) => {
-          const res = data as Array<StatAccomplishment>;
-          const newdata = res.map((el, index) => {
-            const champ : any =  el[tabSoloMode]
-            return {
-              profile: el.profile,
-              value: Array.isArray(champ) ? champ.length : champ,
-              rank: page * ITEMPERPAGE + index + 1,
-            };
-          });
-          setIsEnd(newdata.length < ITEMPERPAGE);
-          setData((prev) => [...prev, ...newdata]);
-          setIsLoading(false);
-        });
+      } else if (
+        tabSoloMode !== ClassementSoloModeEnum.alltime &&
+        tabSoloMode !== ClassementSoloModeEnum.day &&
+        tabSoloMode !== ClassementSoloModeEnum.month &&
+        tabSoloMode !== ClassementSoloModeEnum.week &&
+        tabSoloMode !== ClassementSoloModeEnum.finishtheme
+      ) {
+        selectStatAccomplishment(tabSoloMode, page, ITEMPERPAGE).then(
+          ({ data }) => {
+            const res = data as Array<StatAccomplishment>;
+            const newdata = res.map((el, index) => {
+              const champ: any = el[tabSoloMode];
+              return {
+                profile: el.profile,
+                value: Array.isArray(champ) ? champ.length : champ,
+                rank: page * ITEMPERPAGE + index + 1,
+              };
+            });
+            setIsEnd(newdata.length < ITEMPERPAGE);
+            setData((prev) => [...prev, ...newdata]);
+            setIsLoading(false);
+          }
+        );
       }
     }
   }, [page, type, tabSoloMode, isEnd]);
@@ -199,15 +206,17 @@ export default function RankingPage() {
             setType(value);
           }}
         />
-        {type === ClassementEnum.points &&
-          <ButtonRankingSolo value={tabSoloMode} onChange={(value) => {
+        {type === ClassementEnum.points && (
+          <ButtonRankingSolo
+            value={tabSoloMode}
+            onChange={(value) => {
               setIsEnd(false);
               setPage(0);
               setData([]);
               setTabSoloMode(value);
             }}
           />
-        }
+        )}
       </Grid>
 
       <Grid item xs={12}>

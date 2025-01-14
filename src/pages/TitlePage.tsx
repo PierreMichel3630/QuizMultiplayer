@@ -6,7 +6,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
+import {
+  selectAccomplishmentByTitle,
+  selectStatAccomplishmentByProfile,
+} from "src/api/accomplishment";
 import { buyItem } from "src/api/buy";
 import { selectTitleById } from "src/api/title";
 import moneyIcon from "src/assets/money.svg";
@@ -19,7 +22,7 @@ import { ProfilHeader } from "src/component/ProfileHeader";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
-import { StatAccomplishment } from "src/models/Accomplishment";
+import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
 import { Title } from "src/models/Title";
 import { Colors } from "src/style/Colors";
 
@@ -28,10 +31,13 @@ export default function TitlePage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { profile, refreshProfil } = useAuth();
-  const { mytitles, getMyTitles, accomplishments } = useApp();
+  const { myTitles, getMyTitles } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
   const [title, setTitle] = useState<Title | undefined>(undefined);
+  const [accomplishment, setAccomplishment] = useState<
+    Accomplishment | undefined
+  >(undefined);
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
@@ -60,8 +66,19 @@ export default function TitlePage() {
     getMyStat();
   }, [profile]);
 
+  useEffect(() => {
+    const getAccomplishment = () => {
+      if (title) {
+        selectAccomplishmentByTitle(title.id).then(({ data }) => {
+          setAccomplishment(data);
+        });
+      }
+    };
+    getAccomplishment();
+  }, [title]);
+
   const verifyBuy = () => {
-    if(profile) {
+    if (profile) {
       if (title) {
         if (profile.money < title.price) {
           setSeverity("error");
@@ -73,7 +90,7 @@ export default function TitlePage() {
         setSeverity("error");
         setMessage(t("commun.error"));
       }
-    }  else {
+    } else {
       navigate(`/login`);
     }
   };
@@ -102,16 +119,8 @@ export default function TitlePage() {
     () =>
       !loading &&
       title &&
-      mytitles.find((el) => el.id === title.id) !== undefined,
-    [loading, mytitles, title]
-  );
-
-  const accomplishment = useMemo(
-    () =>
-      title
-        ? accomplishments.find((el) => el.title && el.title.id === title.id)
-        : undefined,
-    [accomplishments, title]
+      myTitles.find((el) => el.id === title.id) !== undefined,
+    [loading, myTitles, title]
   );
 
   return (

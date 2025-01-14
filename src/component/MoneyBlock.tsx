@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { Variant } from "@mui/material/styles/createTypography";
+import { px } from "csx";
 import moneyIcon from "src/assets/money.svg";
 
 interface Props {
@@ -16,11 +17,11 @@ export const MoneyBlock = ({
   width = 18,
 }: Props) => {
   return (
-    <Box sx={{ display: "flex", gap: 1, alignContent: "center" }}>
+    <Box sx={{ display: "flex", gap: px(5), alignItems: "center" }}>
       <Typography variant={variant} color={color}>
         {money.toLocaleString("fr-FR")}
       </Typography>
-      <img src={moneyIcon} width={width} />
+      <img alt="money logo" src={moneyIcon} width={width} />
     </Box>
   );
 };

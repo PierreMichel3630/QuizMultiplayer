@@ -2,12 +2,12 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
 import { Avatar, Grid } from "@mui/material";
 import { percent } from "csx";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { selectAvatarFree } from "src/api/avatar";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Avatar as AvatarInterface } from "src/models/Avatar";
 import { Colors } from "src/style/Colors";
-import { sortByUnlock } from "src/utils/sort";
 import { SkeletonCirculars } from "../skeleton/SkeletonCircular";
 
 interface Props {
@@ -16,29 +16,26 @@ interface Props {
 
 export const AvatarSelector = ({ onSelect }: Props) => {
   const { profile } = useAuth();
-  const { avatars, myavatars } = useApp();
+  const { myAvatars } = useApp();
 
-  const avatarsVerify = useMemo(() => {
-    const idUnlock = myavatars.map((el) => el.id);
-    return [...avatars]
-      .map((avatar) => ({
-        ...avatar,
-        unlock:
-          avatar.isaccomplishment || avatar.price > 0
-            ? idUnlock.includes(avatar.id)
-            : true,
-      }))
-      .sort(sortByUnlock);
-  }, [myavatars, avatars]);
+  const [avatars, setAvatars] = useState<Array<AvatarInterface>>([]);
 
-  const avatarsUnlock = useMemo(
-    () => [...avatarsVerify].filter((el) => el.unlock),
-    [avatarsVerify]
-  );
+  useEffect(() => {
+    const getAvatars = () => {
+      selectAvatarFree().then(({ data }) => {
+        setAvatars(data ?? []);
+      });
+    };
+    getAvatars();
+  }, []);
+
+  const avatarsDisplay = useMemo(() => {
+    return [...avatars, ...myAvatars];
+  }, [myAvatars, avatars]);
 
   return (
     <Grid container>
-      {avatarsUnlock.length === 0 && (
+      {avatarsDisplay.length === 0 && (
         <Grid item xs={12}>
           <Grid
             container
@@ -52,7 +49,7 @@ export const AvatarSelector = ({ onSelect }: Props) => {
       )}
       <Grid item xs={12}>
         <Grid container spacing={1} alignItems="center" justifyContent="center">
-          {avatarsUnlock.map((avatar) => {
+          {avatarsDisplay.map((avatar) => {
             const isSelect = profile && profile.avatar.id === avatar.id;
             return (
               <Grid item key={avatar.id} sx={{ position: "relative" }}>

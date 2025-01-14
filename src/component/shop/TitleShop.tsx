@@ -9,13 +9,15 @@ import { MoneyBlock } from "../MoneyBlock";
 
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useApp } from "src/context/AppProvider";
 import { useBreakpoint } from "src/utils/mediaQuery";
 import { SkeletonTitles } from "../skeleton/SkeletonShop";
 
-export const TitleShopBlock = () => {
+interface PropsTitleShopBlock {
+  titles: Array<Title>;
+}
+
+export const TitleShopBlock = ({ titles }: PropsTitleShopBlock) => {
   const breakpoint = useBreakpoint();
-  const { titles } = useApp();
 
   const ref = useRef<HTMLDivElement | null>(null);
   const [maxIndex, setMaxIndex] = useState(5);

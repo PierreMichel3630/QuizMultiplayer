@@ -14,13 +14,13 @@ interface Props {
 
 export const TitleSelector = ({ onSelect }: Props) => {
   const { profile } = useAuth();
-  const { mytitles } = useApp();
+  const { myTitles } = useApp();
 
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
         <Grid container spacing={1} alignItems="center">
-          {mytitles.map((title) => {
+          {myTitles.map((title) => {
             const isSelect =
               profile && profile.title && profile.title.id === title.id;
 

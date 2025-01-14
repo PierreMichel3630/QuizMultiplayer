@@ -129,7 +129,7 @@ export const ProfileBar = () => {
           >
             {profile ? (
               <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
-                <Link to={`/personalized`} style={{ textDecoration: "none" }}>
+                <Link to={`/shop`} style={{ textDecoration: "none" }}>
                   <MoneyBlock money={profile.money} variant="h4" width={22} />
                 </Link>
               </Box>

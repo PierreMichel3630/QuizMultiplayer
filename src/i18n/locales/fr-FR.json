@@ -282,7 +282,8 @@
     "other": "Autre",
     "seeshop": "Voir la boutique",
     "rewardwheel": "Roue de la chance",
-    "customizedprofile": "Customiser votre profil"
+    "customizedprofile": "Customiser votre profil",
+    "shop": "Boutique"
   },
   "offline": {
     "title": "Connectez-vous à Internet",

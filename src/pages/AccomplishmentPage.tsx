@@ -5,7 +5,10 @@ import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet-async";
 
 import { Dictionary, groupBy } from "lodash";
-import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
+import {
+  selectAccomplishment,
+  selectStatAccomplishmentByProfile,
+} from "src/api/accomplishment";
 import { CardAccomplishment } from "src/component/card/CardAccomplishment";
 import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
 
@@ -17,13 +20,11 @@ import { px } from "csx";
 
 export default function AccomplishmentPage() {
   const { t } = useTranslation();
-  const {
-    accomplishments,
-    myaccomplishments,
-    getMyAccomplishments,
-    headerSize,
-  } = useApp();
+  const { myaccomplishments, headerSize } = useApp();
   const { profile } = useAuth();
+  const [accomplishments, setAccomplishments] = useState<Array<Accomplishment>>(
+    []
+  );
   const [accomplishmentsGroupBy, setAccomplishmentsGroupBy] = useState<
     Dictionary<Array<Accomplishment>>
   >({});
@@ -52,7 +53,13 @@ export default function AccomplishmentPage() {
   }, [accomplishments]);
 
   useEffect(() => {
-    getMyAccomplishments();
+    const getAccomplishments = () => {
+      selectAccomplishment().then(({ data }) => {
+        const value = data !== null ? (data as Array<Accomplishment>) : [];
+        setAccomplishments(value);
+      });
+    };
+    getAccomplishments();
   }, []);
 
   return (

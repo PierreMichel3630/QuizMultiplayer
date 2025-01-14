@@ -183,13 +183,13 @@ export default function ThemesPage() {
                   <CategoriesBlock />
                 </Grid>
                 <Grid item xs={12}>
+                  <GameModeBlock />
+                </Grid>
+                <Grid item xs={12}>
                   <ShopBlock />
                 </Grid>
                 <Grid item xs={12}>
                   <RankingTop5Block />
-                </Grid>
-                <Grid item xs={12}>
-                  <GameModeBlock />
                 </Grid>
                 {categoriesFilter.map((category) => (
                   <Grid item xs={12} key={category.id}>

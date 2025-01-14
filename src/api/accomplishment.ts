@@ -18,6 +18,38 @@ export const selectAccomplishment = () =>
     .select("*, title(*), avatar(*), badge(*), banner(*)")
     .order("id", { ascending: true });
 
+export const selectAccomplishmentByAvatar = (avatar: number) =>
+  supabase
+    .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
+    .select("*, title(*), avatar(*), badge(*), banner(*)")
+    .eq("avatar.id", avatar)
+    .not("avatar", "is", null)
+    .maybeSingle();
+
+export const selectAccomplishmentByBadge = (id: number) =>
+  supabase
+    .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
+    .select("*, title(*), avatar(*), badge(*), banner(*)")
+    .eq("badge.id", id)
+    .not("badge", "is", null)
+    .maybeSingle();
+
+export const selectAccomplishmentByTitle = (id: number) =>
+  supabase
+    .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
+    .select("*, title(*), avatar(*), badge(*), banner(*)")
+    .eq("title.id", id)
+    .not("title", "is", null)
+    .maybeSingle();
+
+export const selectAccomplishmentByBanner = (id: number) =>
+  supabase
+    .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
+    .select("*, title(*), avatar(*), badge(*), banner(*)")
+    .eq("banner.id", id)
+    .not("banner", "is", null)
+    .maybeSingle();
+
 export const selectStatAccomplishmentByProfile = (profile: string) =>
   supabase
     .from(SUPABASE_STATACCOMPLISHMENT_TABLE)

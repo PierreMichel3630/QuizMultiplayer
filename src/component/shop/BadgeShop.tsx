@@ -8,13 +8,15 @@ import { MoneyBlock } from "../MoneyBlock";
 
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useApp } from "src/context/AppProvider";
 import { useBreakpoint } from "src/utils/mediaQuery";
 import { SkeletonBadges } from "../skeleton/SkeletonShop";
 
-export const BadgeShopBlock = () => {
+interface PropsBadgeShopBlock {
+  badges: Array<Badge>;
+}
+
+export const BadgeShopBlock = ({ badges }: PropsBadgeShopBlock) => {
   const breakpoint = useBreakpoint();
-  const { badges } = useApp();
 
   const ref = useRef<HTMLDivElement | null>(null);
   const [maxIndex, setMaxIndex] = useState(5);
