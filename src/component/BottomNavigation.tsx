@@ -3,8 +3,7 @@ import {
   BottomNavigation,
   BottomNavigationAction,
   Box,
-  Fab,
-  Paper,
+  Paper
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -15,9 +14,9 @@ import AppsIcon from "@mui/icons-material/Apps";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { important, padding, px } from "csx";
+import { useApp } from "src/context/AppProvider";
 import { LogoIcon } from "src/icons/LogoIcon";
 import { Colors } from "src/style/Colors";
-import { useApp } from "src/context/AppProvider";
 
 export const BottomNavigationBlock = () => {
   const { t } = useTranslation();

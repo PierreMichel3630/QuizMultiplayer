@@ -69,7 +69,7 @@ export const AvatarAccountBadge = ({
             width: size,
             height: size,
             border: color ? `${size / 20}px solid ${Colors.black2}` : "none",
-            backgroundColor: Colors.white,
+            backgroundColor: backgroundColor,
             "&>img": {
               width: percent(90),
               height: percent(90),
