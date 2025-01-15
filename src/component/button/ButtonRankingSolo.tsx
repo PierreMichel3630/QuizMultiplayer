@@ -1,9 +1,4 @@
-import {
-  Box,
-  Menu,
-  MenuItem,
-  Typography
-} from "@mui/material";
+import { Box, Menu, MenuItem, Typography } from "@mui/material";
 import { Fragment, useMemo, useState } from "react";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -12,12 +7,11 @@ import { useTranslation } from "react-i18next";
 import { ClassementSoloModeEnum } from "src/models/enum/ClassementEnum";
 import { Colors } from "src/style/Colors";
 
-
 interface Props {
-  value: ClassementSoloModeEnum
-  onChange: (value: ClassementSoloModeEnum) => void
+  value: ClassementSoloModeEnum;
+  onChange: (value: ClassementSoloModeEnum) => void;
 }
-export const ButtonRankingSolo = ({value, onChange} : Props) => {
+export const ButtonRankingSolo = ({ value, onChange }: Props) => {
   const { t } = useTranslation();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -63,28 +57,30 @@ export const ButtonRankingSolo = ({value, onChange} : Props) => {
       {
         label: t("ranking.gamestenpts"),
         value: ClassementSoloModeEnum.gamestenpts,
-      }
+      },
     ],
     [t]
   );
 
-  const handleClose = ()=> {
-    setOpenDate(false)
-    setOpenOther(false)
-  }
+  const handleClose = () => {
+    setOpenDate(false);
+    setOpenOther(false);
+  };
 
-  const select = (value : ClassementSoloModeEnum) => {
-    handleClose()
-    onChange(value)
-  }
+  const select = (value: ClassementSoloModeEnum) => {
+    handleClose();
+    onChange(value);
+  };
 
-  const isSelectDate = useMemo(() => (
-    optionsDate.find(el => el.value === value)
-  ), [value, optionsDate])
+  const isSelectDate = useMemo(
+    () => optionsDate.find((el) => el.value === value),
+    [value, optionsDate]
+  );
 
-  const isSelectOther = useMemo(() => (
-    optionsOther.find(el => el.value === value)
-  ), [value, optionsOther])
+  const isSelectOther = useMemo(
+    () => optionsOther.find((el) => el.value === value),
+    [value, optionsOther]
+  );
 
   return (
     <Fragment>
@@ -116,7 +112,7 @@ export const ButtonRankingSolo = ({value, onChange} : Props) => {
             }}
             onClick={(event: React.MouseEvent<HTMLDivElement>) => {
               setAnchorEl(event.currentTarget);
-              setOpenDate(true)
+              setOpenDate(true);
             }}
           >
             <Typography variant="h6">{t("commun.perdate")}</Typography>
@@ -135,7 +131,7 @@ export const ButtonRankingSolo = ({value, onChange} : Props) => {
             }}
             onClick={(event: React.MouseEvent<HTMLDivElement>) => {
               setAnchorEl(event.currentTarget);
-              setOpenOther(true)
+              setOpenOther(true);
             }}
           >
             <Typography variant="h6">{t("commun.other")}</Typography>
@@ -149,8 +145,9 @@ export const ButtonRankingSolo = ({value, onChange} : Props) => {
         open={openDate}
         onClose={handleClose}
       >
-        {optionsDate.map(option => (
+        {optionsDate.map((option, index) => (
           <MenuItem
+            key={index}
             selected={option.value === value}
             onClick={() => select(option.value)}
           >
@@ -164,8 +161,9 @@ export const ButtonRankingSolo = ({value, onChange} : Props) => {
         open={openOther}
         onClose={handleClose}
       >
-        {optionsOther.map(option => (
+        {optionsOther.map((option, index) => (
           <MenuItem
+            key={index}
             selected={option.value === value}
             onClick={() => select(option.value)}
           >
@@ -173,7 +171,6 @@ export const ButtonRankingSolo = ({value, onChange} : Props) => {
           </MenuItem>
         ))}
       </Menu>
-     
     </Fragment>
   );
 };

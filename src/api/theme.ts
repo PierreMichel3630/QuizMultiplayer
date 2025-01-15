@@ -2,6 +2,7 @@ import { ThemeInsert, ThemeUpdate } from "src/models/Theme";
 import { supabase } from "./supabase";
 
 export const SUPABASE_THEME_TABLE = "theme";
+export const SUPABASE_THEMESHOP_TABLE = "themeshop";
 export const SUPABASE_VUETHEME_TABLE = "viewtheme";
 
 export const selectThemes = () =>
@@ -26,3 +27,6 @@ export const updateTheme = (value: ThemeUpdate) =>
 
 export const insertTheme = (value: ThemeInsert) =>
   supabase.from(SUPABASE_THEME_TABLE).insert(value).select().single();
+
+export const selectThemesShop = () =>
+  supabase.from(SUPABASE_THEMESHOP_TABLE).select("*");

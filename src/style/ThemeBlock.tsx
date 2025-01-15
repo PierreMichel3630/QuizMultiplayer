@@ -71,6 +71,12 @@ export const ThemeBlock = () => {
                   color: Colors.blue3,
                 },
               },
+              label: {
+                fontSize: "0.75rem",
+                "&.Mui-selected": {
+                  fontSize: "0.75rem",
+                },
+              },
             },
           },
           MuiButton: {

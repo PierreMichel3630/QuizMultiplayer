@@ -68,8 +68,13 @@ export const AvatarAccountBadge = ({
           sx={{
             width: size,
             height: size,
-            border: color ? `${size / 15}px solid ${color}` : "none",
-            backgroundColor: backgroundColor,
+            border: color ? `${size / 20}px solid ${Colors.black2}` : "none",
+            backgroundColor: Colors.white,
+            "&>img": {
+              width: percent(90),
+              height: percent(90),
+              transform: "translate(0%, 3px)",
+            },
           }}
         />
         {level !== undefined && (
@@ -93,8 +98,13 @@ export const AvatarAccountBadge = ({
         sx={{
           width: size,
           height: size,
-          border: color ? `${size / 15}px solid ${color}` : "none",
-          backgroundColor: backgroundColor,
+          border: color ? `${size / 20}px solid ${Colors.black2}` : "none",
+          backgroundColor: Colors.white,
+          "&>img": {
+            width: percent(90),
+            height: percent(90),
+            transform: "translate(0%, 3px)",
+          },
         }}
       />
       {level !== undefined && (

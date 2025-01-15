@@ -31,6 +31,7 @@ import { Country } from "src/models/Country";
 import { Profile } from "src/models/Profile";
 import { sortByName } from "src/utils/sort";
 import { searchString } from "src/utils/string";
+import { Colors } from "src/style/Colors";
 
 interface Props {
   open: boolean;
@@ -158,10 +159,14 @@ export const SelectCountryModal = ({
                           )}
                       </ListItemIcon>
                       <ListItemIcon>
-                        <Avatar
+                        <img
                           alt="flag"
                           src={el.flag}
-                          sx={{ width: px(30), height: px(30) }}
+                          style={{
+                            maxHeight: 40,
+                            maxWidth: 40,
+                            border: `1px solid ${Colors.grey}`,
+                          }}
                         />
                       </ListItemIcon>
                       <ListItemText

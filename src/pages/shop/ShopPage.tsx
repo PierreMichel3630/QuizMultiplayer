@@ -5,17 +5,20 @@ import { useTranslation } from "react-i18next";
 import { selectAvatar } from "src/api/avatar";
 import { selectBadges } from "src/api/badge";
 import { selectBanners } from "src/api/banner";
+import { selectThemesShop } from "src/api/theme";
 import { selectTitles } from "src/api/title";
 import { CountBlock } from "src/component/CountBlock";
 import { AvatarShopBlock } from "src/component/shop/AvatarShop";
 import { BadgeShopBlock } from "src/component/shop/BadgeShop";
 import { BannerShopBlock } from "src/component/shop/BannerShop";
 import { TitleShopBlock } from "src/component/shop/TitleShop";
+import { ThemeShopBlock } from "src/component/theme/ThemeShopBlock";
 import { TitleBlock } from "src/component/title/Title";
 import { useApp } from "src/context/AppProvider";
 import { Avatar } from "src/models/Avatar";
 import { Badge } from "src/models/Badge";
 import { Banner } from "src/models/Banner";
+import { ThemeShop } from "src/models/Theme";
 import { Title } from "src/models/Title";
 import { sortByPriceDesc } from "src/utils/sort";
 
@@ -27,6 +30,7 @@ export default function ShopPage() {
   const [badges, setBadges] = useState<Array<Badge>>([]);
   const [banners, setBanners] = useState<Array<Banner>>([]);
   const [titles, setTitles] = useState<Array<Title>>([]);
+  const [themesShop, setThemesShop] = useState<Array<ThemeShop>>([]);
 
   useEffect(() => {
     const getAvatars = () => {
@@ -53,10 +57,17 @@ export default function ShopPage() {
         setTitles(value);
       });
     };
+    const getThemes = () => {
+      selectThemesShop().then(({ data }) => {
+        const value = data !== null ? (data as Array<ThemeShop>) : [];
+        setThemesShop(value);
+      });
+    };
     getTitles();
     getBanners();
     getBadges();
     getAvatars();
+    getThemes();
   }, []);
 
   const avatarsDisplay = useMemo(() => {
@@ -89,7 +100,7 @@ export default function ShopPage() {
 
   return (
     <Box sx={{ p: 2 }}>
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
         <Helmet>
           <title>{`${t("pages.shop.title")} - ${t("appname")}`}</title>
         </Helmet>
@@ -132,6 +143,11 @@ export default function ShopPage() {
             <TitleShopBlock titles={titlesDisplay} />
           </CountBlock>
         </Grid>
+        {themesShop.map((theme) => (
+          <Grid item xs={12} key={theme.id}>
+            <ThemeShopBlock theme={theme} />
+          </Grid>
+        ))}
       </Grid>
     </Box>
   );

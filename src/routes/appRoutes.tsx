@@ -45,6 +45,7 @@ import TitlesPage from "src/pages/shop/TitlesPage";
 import BadgesPage from "src/pages/shop/BadgesPages";
 import BannersPage from "src/pages/shop/BannersPage";
 import WheelPage from "src/pages/WheelPage";
+import ShopThemePage from "src/pages/shop/ShopThemePage";
 
 export const AppRoutes = [
   {
@@ -196,6 +197,10 @@ export const AppRoutes = [
       {
         path: "/titles",
         element: <TitlesPage />,
+      },
+      {
+        path: "/theme/:id/shop",
+        element: <ShopThemePage />,
       },
     ],
   },

@@ -115,6 +115,9 @@ export default function SoloPage() {
             }, delay);
           });
       }
+      return () => {
+        console.log("Bye");
+      };
     },
     [navigate]
   );

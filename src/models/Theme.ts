@@ -48,3 +48,8 @@ export interface QuestionThemeInsert {
   question: number;
   theme: number;
 }
+
+export interface ThemeShop {
+  id: number;
+  name: JsonLanguage;
+}

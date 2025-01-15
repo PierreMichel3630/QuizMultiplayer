@@ -14,7 +14,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AppsIcon from "@mui/icons-material/Apps";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import { padding, px } from "csx";
+import { important, padding, px } from "csx";
 import { LogoIcon } from "src/icons/LogoIcon";
 import { Colors } from "src/style/Colors";
 import { useApp } from "src/context/AppProvider";
@@ -87,7 +87,11 @@ export const BottomNavigationBlock = () => {
           to={"/ranking"}
         />
         <BottomNavigationAction
-          sx={{ p: padding(0, 5), minWidth: px(30), fontSize: px(10) }}
+          sx={{
+            p: padding(0, 5),
+            minWidth: px(30),
+            fontSize: important(px(10)),
+          }}
           value={"myprofile"}
           label={t("commun.profile")}
           icon={<AccountCircleIcon />}
@@ -104,14 +108,20 @@ export const BottomNavigationBlock = () => {
           left: "50%",
           transform: "translate(-40%, -100%)",
           cursor: "pointer",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: Colors.blue3,
+          width: px(70),
+          height: px(70),
+          border: "5px solid",
+          borderColor: "background.paper",
         }}
         onClick={() => navigate("/play")}
       >
-        <Fab sx={{ backgroundColor: Colors.blue3 }}>
-          <LogoIcon
-            sx={{ color: Colors.white, ml: "2px", mt: "3px", fontSize: 30 }}
-          />
-        </Fab>
+        <LogoIcon
+          sx={{ color: Colors.white, ml: "2px", mt: "3px", fontSize: 40 }}
+        />
       </Box>
     </Paper>
   );

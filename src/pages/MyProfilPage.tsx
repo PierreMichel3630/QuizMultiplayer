@@ -278,7 +278,11 @@ export default function MyProfilPage() {
                   textAlign: "center",
                 }}
               >
-                <Typography variant="h2" color="text.secondary">
+                <Typography
+                  variant="h2"
+                  color="text.secondary"
+                  sx={{ textShadow: "1px 1px 2px black" }}
+                >
                   {profile.username}
                 </Typography>
                 {profile.title && (
@@ -286,6 +290,7 @@ export default function MyProfilPage() {
                     variant="caption"
                     color="text.secondary"
                     value={profile.title.name}
+                    sx={{ textShadow: "1px 1px 2px black" }}
                   />
                 )}
               </Grid>

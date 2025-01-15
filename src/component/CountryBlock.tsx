@@ -32,6 +32,7 @@ export const CountryBlock = ({
           lineClamp: 1,
           boxOrient: "vertical",
           textOverflow: "ellipsis",
+          textShadow: "1px 1px 2px black",
         }}
         noWrap
         value={country.name}
