@@ -1,5 +1,8 @@
 import { Box } from "@mui/material";
 import { percent, px } from "csx";
+import { useMemo } from "react";
+import { useUser } from "src/context/UserProvider";
+import { Colors } from "src/style/Colors";
 
 interface Props {
   value: { image: string | JSX.Element; color: string };
@@ -7,6 +10,13 @@ interface Props {
 }
 
 export const ImageCard = ({ value, size = percent(100) }: Props) => {
+  const { mode } = useUser();
+
+  const borderColor = useMemo(
+    () => (mode === "dark" ? Colors.white : Colors.black),
+    [mode]
+  );
+
   return (
     <Box
       sx={{
@@ -17,7 +27,8 @@ export const ImageCard = ({ value, size = percent(100) }: Props) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        border: "2px solid white",
+        border: "2px solid",
+        borderColor,
       }}
     >
       {typeof value.image === "string" ? (

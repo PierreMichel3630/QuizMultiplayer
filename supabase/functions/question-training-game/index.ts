@@ -22,6 +22,7 @@ Deno.serve(async (req) => {
   const body = await req.json();
   const uuidgame = body.game;
   const endgame = body.delete;
+  console.log(uuidgame);
   if (endgame) {
     await supabase.from("traininggame").delete().eq("uuid", uuidgame);
     return new Response(null, {
@@ -122,8 +123,6 @@ Deno.serve(async (req) => {
             newQuestion.isqcm === null
               ? Math.random() < 0.5
               : newQuestion.isqcm;
-        } else if (!config.inputquestion && config.qcmquestion) {
-          qcm = true;
         } else if (config.inputquestion && !config.qcmquestion) {
           qcm = false;
         }
@@ -132,12 +131,20 @@ Deno.serve(async (req) => {
         if (qcm) {
           if (newQuestion.typequestion === "ORDER") {
             const res = await supabase
-              .from("order")
+              .from("responseorder")
               .select("*")
               .eq("type", newQuestion.typeResponse)
-              .limit(4);
+              .limit(2);
             responsesQcm = [...res.data]
-              .map((el) => ({ label: el.name }))
+              .map((el) => ({
+                label: el.name,
+                image: el.image,
+                extra: {
+                  value: el.value,
+                  type: el.typedata,
+                  format: el.formatdata,
+                },
+              }))
               .sort(() => Math.random() - 0.5);
             const responseOrder =
               newQuestion.order === "ASC"

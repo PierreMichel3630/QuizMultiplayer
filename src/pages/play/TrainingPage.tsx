@@ -196,8 +196,7 @@ export default function TrainingPage() {
   }, [uuidGame]);
 
   const responseP1 = useMemo(
-    () =>
-      myresponse ? myresponse : response ? response.responseplayer1 : undefined,
+    () => myresponse ?? (response ? response.responseplayer1 : undefined),
     [myresponse, response]
   );
 

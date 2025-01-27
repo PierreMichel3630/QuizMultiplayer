@@ -1,5 +1,5 @@
 import { Box, Paper, Typography } from "@mui/material";
-import { percent, px, viewHeight } from "csx";
+import { important, percent, px, viewHeight } from "csx";
 import { Colors } from "src/style/Colors";
 
 import { useEffect, useMemo, useState } from "react";
@@ -10,6 +10,11 @@ import { Question } from "src/models/Question";
 import { ImageQCMBlock } from "../ImageBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { ArrowLeft, ArrowRight } from "../icon/Arrow";
+import { TypeQuestionEnum } from "src/models/enum/TypeQuestionEnum";
+import { TypeResponseEnum } from "src/models/enum/TypeResponseEnum";
+import { TypeDataEnum } from "src/models/enum/TypeDataEnum";
+import { ExtraResponse } from "src/models/Response";
+import { ExtraResponseBlock } from "../response/ExtraResponseBlock";
 
 export interface ResponseLanguage {
   [iso: string]: Array<string> | string;
@@ -52,15 +57,24 @@ export const ResponsesQCMBlock = ({
     setHasAnswer(false);
   }, [question]);
 
+  const isQuestionOrder = useMemo(
+    () => question.typequestion === TypeQuestionEnum.ORDER,
+    [question]
+  );
+
   const hasImage = useMemo(
-    () => question.image || question.typequestion === "MAPPOSITION",
+    () => question.image ?? question.typequestion === "MAPPOSITION",
     [question]
   );
 
   const columns = useMemo(() => {
     const responsesImage = [...question.responses].filter((el) => el.image);
     const isPairResponses = question.responses.length % 2 === 0;
-    return (hasImage || responsesImage.length > 0) && isPairResponses ? 2 : 1;
+    return question.typequestion !== TypeQuestionEnum.ORDER &&
+      (hasImage || responsesImage.length > 0) &&
+      isPairResponses
+      ? 2
+      : 1;
   }, [question, hasImage]);
 
   const rows = useMemo(() => {
@@ -71,7 +85,9 @@ export const ResponsesQCMBlock = ({
     <Box
       sx={{
         width: percent(100),
-        maxHeight: viewHeight(50),
+        maxHeight: isQuestionOrder ? "auto" : viewHeight(50),
+        flexGrow: isQuestionOrder ? 1 : "initial",
+        flex: isQuestionOrder ? "1 1 0" : "initial",
         flexDirection: "column",
         alignItems: "center",
         textAlign: "center",
@@ -89,24 +105,35 @@ export const ResponsesQCMBlock = ({
         const isAnswerP1 = Number(responseplayer1) === index;
         const isAnswerP2 = Number(responseplayer2) === index;
         let color: string = Colors.black2;
+        let borderColor: string = Colors.white;
         if (isCorrectResponse) {
           color = Colors.correctanswer;
+          borderColor = Colors.correctanswerborder;
         } else if ((isAnswerP1 || isAnswerP2) && response !== undefined) {
           color = Colors.wronganswer;
+          borderColor = Colors.wronganswerborder;
         } else if ((isAnswerP1 || isAnswerP2) && response === undefined) {
           color = Colors.waitanswer;
+          borderColor = Colors.waitanswerborder;
         }
 
         return (
           <ResponseQCMBlock
             key={index}
             color={color}
+            borderColor={borderColor}
             index={index}
             label={r.label}
+            extra={response ? r.extra : undefined}
             image={r.image}
             answer1={isAnswerP1}
             answer2={isAnswerP2}
             hasAnswer={hasAnswer}
+            type={
+              isQuestionOrder
+                ? TypeResponseEnum.ORDER
+                : TypeResponseEnum.DEFAULT
+            }
             onSubmit={(value) => {
               setHasAnswer(true);
               onSubmit(value);
@@ -122,36 +149,50 @@ interface ResponseQCMBlockProps {
   color: string;
   image?: string;
   label?: JsonLanguage;
+  extra?: ExtraResponse;
+  borderColor?: string;
   index: number;
   answer1: boolean;
   answer2: boolean;
   hasAnswer: boolean;
+  type: TypeResponseEnum;
   onSubmit: (value: Answer) => void;
 }
 
 export const ResponseQCMBlock = ({
   index,
   color,
+  borderColor = Colors.white,
   image,
   label,
+  extra,
   answer1 = false,
   answer2 = false,
   hasAnswer = false,
+  type = TypeResponseEnum.DEFAULT,
   onSubmit,
 }: ResponseQCMBlockProps) => {
+  const padding = type === TypeResponseEnum.DEFAULT && !image ? "4px 12px" : 0;
+  const isOrder = type === TypeResponseEnum.ORDER;
+  const backgroundImage = isOrder ? image : undefined;
+  const textShadow = isOrder ? "1px 1px 10px black" : "none";
+  const imageDisplay = isOrder ? undefined : image;
   return (
     <Paper
       key={index}
       sx={{
-        p: image ? 0 : "4px 12px",
+        p: padding,
         textAlign: "center",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         position: "relative",
         backgroundColor: color,
-        borderColor: Colors.white,
-        borderWidth: 1,
+        borderColor: borderColor,
+        backgroundImage: `url("${backgroundImage}")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        borderWidth: isOrder ? 10 : 1,
         borderStyle: "solid",
         height: percent(100),
         userSelect: "none",
@@ -184,14 +225,23 @@ export const ResponseQCMBlock = ({
           <ArrowRight size={18} />
         </Box>
       )}
-      {image && <ImageQCMBlock src={image} />}
-      {label && (
-        <JsonLanguageBlock
-          variant="h3"
-          value={label}
-          sx={{ wordBreak: "break-word", color: Colors.white }}
-        />
-      )}
+      {imageDisplay && <ImageQCMBlock src={imageDisplay} />}
+      <Box>
+        {label && (
+          <JsonLanguageBlock
+            variant="h3"
+            component="p"
+            value={label}
+            sx={{
+              wordBreak: "break-word",
+              color: Colors.white,
+              textShadow: textShadow,
+              fontSize: isOrder ? important(px(40)) : "initial",
+            }}
+          />
+        )}
+        {extra && <ExtraResponseBlock extra={extra} />}
+      </Box>
       {answer2 && (
         <Box
           sx={{
@@ -225,9 +275,7 @@ export const ResponseInputBlock = ({
   const value =
     typeof response.response === "number"
       ? response.response
-      : response.response[language.iso]
-      ? response.response[language.iso]
-      : response.response["fr-FR"];
+      : response.response[language.iso] ?? response.response["fr-FR"];
 
   const label = Array.isArray(value) ? value[0] ?? "" : value;
 

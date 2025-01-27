@@ -36,67 +36,69 @@ export const CardFinishTheme = ({ scores, loading }: Props) => {
   }, [scores, themes]);
 
   return (
-    <Paper
-      sx={{
-        overflow: "hidden",
-        height: percent(100),
-        backgroundColor: Colors.grey,
-      }}
-    >
-      <Grid container>
-        <Grid
-          item
-          xs={12}
-          sx={{
-            backgroundColor: Colors.blue3,
-            p: px(10),
-            display: "flex",
-            gap: 1,
-            alignItems: "center",
-          }}
-        >
-          <Typography variant="h2" color="text.secondary">
-            {t("commun.finishtheme")}
-          </Typography>
-          {!loading && (
-            <Typography variant="h4" color="text.secondary">
-              ({themesFinish.length})
+    themesFinish.length > 0 && (
+      <Paper
+        sx={{
+          overflow: "hidden",
+          height: percent(100),
+          backgroundColor: Colors.grey,
+        }}
+      >
+        <Grid container>
+          <Grid
+            item
+            xs={12}
+            sx={{
+              backgroundColor: Colors.blue3,
+              p: px(10),
+              display: "flex",
+              gap: 1,
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="h2" color="text.secondary">
+              {t("commun.finishtheme")}
             </Typography>
-          )}
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sx={{
-            display: "flex",
-            p: 1,
-            maxHeight: viewHeight(15),
-            overflowX: "scroll",
-          }}
-        >
-          <Grid container spacing={1} justifyContent="center">
-            {loading ? (
-              <>
-                {Array.from(new Array(6)).map((_, index) => (
-                  <Grid item key={index}>
-                    <Skeleton variant="circular" width={45} height={45} />
-                  </Grid>
-                ))}
-              </>
-            ) : (
-              <>
-                {themesFinish.map((theme) => (
-                  <Grid item key={theme.id}>
-                    <Link to={`/theme/${theme.id}`}>
-                      <ImageThemeBlock theme={theme} size={35} />
-                    </Link>
-                  </Grid>
-                ))}
-              </>
+            {!loading && (
+              <Typography variant="h4" color="text.secondary">
+                ({themesFinish.length})
+              </Typography>
             )}
           </Grid>
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: "flex",
+              p: 1,
+              maxHeight: viewHeight(15),
+              overflowX: "scroll",
+            }}
+          >
+            <Grid container spacing={1} justifyContent="center">
+              {loading ? (
+                <>
+                  {Array.from(new Array(6)).map((_, index) => (
+                    <Grid item key={index}>
+                      <Skeleton variant="circular" width={45} height={45} />
+                    </Grid>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {themesFinish.map((theme) => (
+                    <Grid item key={theme.id}>
+                      <Link to={`/theme/${theme.id}`}>
+                        <ImageThemeBlock theme={theme} size={35} />
+                      </Link>
+                    </Grid>
+                  ))}
+                </>
+              )}
+            </Grid>
+          </Grid>
         </Grid>
-      </Grid>
-    </Paper>
+      </Paper>
+    )
   );
 };

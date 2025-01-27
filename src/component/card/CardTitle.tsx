@@ -19,7 +19,7 @@ export const CardTitle = ({ titles, loading }: Props) => {
   const { language } = useUser();
 
   const titleOrder = useMemo(
-    () => titles.sort((a, b) => sortByTitle(language, a, b)),
+    () => [...titles].sort((a, b) => sortByTitle(language, a, b)),
     [titles, language]
   );
 
@@ -73,8 +73,8 @@ export const CardTitle = ({ titles, loading }: Props) => {
                 </>
               ) : (
                 <>
-                  {titleOrder.map((title) => (
-                    <Grid item key={title.id}>
+                  {titleOrder.map((title, index) => (
+                    <Grid item key={index}>
                       <Link
                         to={`/title/${title.id}`}
                         style={{ textDecoration: "none" }}

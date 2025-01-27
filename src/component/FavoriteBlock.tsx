@@ -129,9 +129,9 @@ export const FavoriteSelectBlock = ({
           >
             {themesDisplay.map((theme, index) => (
               <CardSelectTheme
+                width={90}
                 key={index}
                 theme={theme}
-                select={selected.includes(theme.id)}
                 onSelect={() => select(theme)}
               />
             ))}

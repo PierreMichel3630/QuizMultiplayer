@@ -71,6 +71,7 @@ export const ProfileBar = () => {
             size={60}
             level={level}
             profile={profile}
+            color={Colors.blue4}
           />
         </Link>
       ) : (

@@ -10,6 +10,7 @@ import { ImageCard } from "../image/ImageCard";
 import { useApp } from "src/context/AppProvider";
 import { useMemo } from "react";
 import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { useUser } from "src/context/UserProvider";
 
 export interface ICardImage {
   id: number;
@@ -25,9 +26,15 @@ interface Props {
   width?: number;
 }
 
-export const CardImage = ({ value, width = 95 }: Props) => {
+export const CardImage = ({ value, width = 90 }: Props) => {
   const navigate = useNavigate();
   const { favorites } = useApp();
+  const { mode } = useUser();
+
+  const borderColor = useMemo(
+    () => (mode === "dark" ? Colors.white : Colors.black),
+    [mode]
+  );
 
   const isFavorite = useMemo(
     () =>
@@ -80,7 +87,7 @@ export const CardImage = ({ value, width = 95 }: Props) => {
             transform: "translate(25%, -25%)",
             fontSize: 40,
             color: Colors.yellow4,
-            stroke: Colors.white,
+            stroke: borderColor,
           }}
         />
       )}

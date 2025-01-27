@@ -1,7 +1,6 @@
-import { Button, Divider, Grid, Typography } from "@mui/material";
+import { Box, Container, Divider, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import { selectGamesByTime } from "src/api/game";
 import { selectScore } from "src/api/score";
 import {
@@ -73,7 +72,6 @@ export const RankingBlock = ({ themes }: Props) => {
 
 export const RankingTop5Block = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const [tab, setTab] = useState(ClassementScoreEnum.points);
   const [tabTime, setTabTime] = useState(ClassementTimeEnum.week);
@@ -143,27 +141,18 @@ export const RankingTop5Block = () => {
         </Grid>
       )}
       <Grid item xs={12}>
-        <RankingTable data={data} loading={isLoading} />
-      </Grid>
-      <Grid item xs={12}>
-        <Button
-          variant="outlined"
-          sx={{
-            minWidth: "auto",
-            textTransform: "uppercase",
-            "&:hover": {
-              border: "2px solid currentColor",
-            },
-          }}
-          color="secondary"
-          size="small"
-          fullWidth
-          onClick={() => navigate(`/ranking?sort=${tab}`)}
-        >
-          <Typography variant="h6" noWrap>
-            {t("commun.seeall")}
-          </Typography>
-        </Button>
+        <Container maxWidth="sm">
+          <Box sx={{ p: 1 }}>
+            <RankingTable
+              data={data}
+              loading={isLoading}
+              navigation={{
+                link: `/ranking?sort=${tab}`,
+                label: t("commun.seemore"),
+              }}
+            />
+          </Box>
+        </Container>
       </Grid>
     </Grid>
   );

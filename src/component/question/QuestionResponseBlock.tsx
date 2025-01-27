@@ -30,7 +30,7 @@ export const QuestionResponseBlock = ({
       {question && (
         <>
           <QuestionBlock question={question} timer={timer} />
-          {question && question.isqcm ? (
+          {question?.isqcm ? (
             <ResponsesQCMBlock
               responseplayer1={responseplayer1}
               responseplayer2={responseplayer2}

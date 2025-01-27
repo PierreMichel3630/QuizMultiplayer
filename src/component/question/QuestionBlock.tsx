@@ -7,6 +7,8 @@ import { MapPositionBlock } from "../MapPositionBlock";
 import { SoundBar } from "../SoundBar";
 import { Timer } from "../Timer";
 import { Question } from "src/models/Question";
+import { useMemo } from "react";
+import { TypeQuestionEnum } from "src/models/enum/TypeQuestionEnum";
 
 interface Props {
   question: Question;
@@ -14,12 +16,16 @@ interface Props {
 }
 
 export const QuestionBlock = ({ question, timer }: Props) => {
+  const isQuestionOrder = useMemo(
+    () => question.typequestion === TypeQuestionEnum.ORDER,
+    [question]
+  );
   return (
     <Box
       sx={{
         width: percent(100),
-        flexGrow: 1,
-        flex: "1 1 0",
+        flexGrow: isQuestionOrder ? "initial" : 1,
+        flex: isQuestionOrder ? "initial" : "1 1 0",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

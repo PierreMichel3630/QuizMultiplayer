@@ -77,14 +77,23 @@ export const ProfilHeader = ({
             textAlign: "center",
           }}
         >
-          <Typography variant="h2" color="text.secondary">
+          <Typography
+            variant="h2"
+            color="text.secondary"
+            sx={{
+              textShadow: "1px 1px 2px black",
+            }}
+          >
             {profile.username}
           </Typography>
           {(title || profile.title) && (
             <JsonLanguageBlock
               variant="caption"
               color="text.secondary"
-              value={title ? title : profile.title!.name}
+              value={title ?? profile.title!.name}
+              sx={{
+                textShadow: "1px 1px 2px black",
+              }}
             />
           )}
         </Grid>

@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -46,7 +46,7 @@ export default function RankingPage() {
           tabSoloMode === ClassementSoloModeEnum.week ||
           tabSoloMode === ClassementSoloModeEnum.month)
       ) {
-        const time = ClassementTimeEnum.alltime;
+        const time = tabSoloMode as unknown as ClassementTimeEnum;
         selectGamesByTime(time, page, ITEMPERPAGE).then(({ data }) => {
           const res = data as Array<HistorySoloGame>;
           const newdata = res.map((el, index) => ({
@@ -60,8 +60,9 @@ export default function RankingPage() {
           setIsLoading(false);
         });
       } else if (
-        type === ClassementEnum.points &&
-        tabSoloMode === ClassementSoloModeEnum.alltime
+        (type === ClassementEnum.points &&
+          tabSoloMode === ClassementSoloModeEnum.alltime) ||
+        type === ClassementEnum.rank
       ) {
         selectScore(type, page, ITEMPERPAGE).then(({ data }) => {
           const res = data as Array<Score>;
@@ -89,22 +90,6 @@ export default function RankingPage() {
             value: el.nbtheme,
             rank: page * ITEMPERPAGE + index + 1,
           }));
-          setIsEnd(newdata.length < ITEMPERPAGE);
-          setData((prev) => [...prev, ...newdata]);
-          setIsLoading(false);
-        });
-      } else if (type === ClassementEnum.rank) {
-        selectScore(type, page, ITEMPERPAGE).then(({ data }) => {
-          const res = data as Array<Score>;
-          const newdata = res.map((el, index) => {
-            const champ = el[type];
-            return {
-              profile: el.profile,
-              value: Array.isArray(champ) ? champ.length : champ,
-              theme: el.theme,
-              rank: page * ITEMPERPAGE + index + 1,
-            };
-          });
           setIsEnd(newdata.length < ITEMPERPAGE);
           setData((prev) => [...prev, ...newdata]);
           setIsLoading(false);
@@ -220,13 +205,15 @@ export default function RankingPage() {
       </Grid>
 
       <Grid item xs={12}>
-        <Box sx={{ p: 1 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <RankingTable data={data} loading={!isEnd} />
+        <Container maxWidth="sm">
+          <Box sx={{ p: 1 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <RankingTable data={data} loading={!isEnd} />
+              </Grid>
             </Grid>
-          </Grid>
-        </Box>
+          </Box>
+        </Container>
       </Grid>
     </Grid>
   );

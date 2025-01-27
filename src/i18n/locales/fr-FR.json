@@ -141,6 +141,7 @@
     "no": "Non",
     "searchplayer": "Recherche de joueur",
     "seeall": "Voir tous",
+    "seemore": "Voir la suite",
     "seeallaccomplishment": "Voir tous les succès",
     "favorite": "Favoris",
     "addfavorite": "Ajouter aux favoris",
@@ -208,6 +209,7 @@
     "pertype": "Par type",
     "selectplayer": "Sélectionner un joueur",
     "selectopponent": "Sélectionner un adversaire",
+    "selectgamemode": "Sélectionner un mode de jeu",
     "global": "Global",
     "victory": "Victoire",
     "defeat": "Défaite",
@@ -283,7 +285,8 @@
     "seeshop": "Voir la boutique",
     "rewardwheel": "Roue de la chance",
     "customizedprofile": "Customiser votre profil",
-    "shop": "Boutique"
+    "shop": "Boutique",
+    "selectopponenttext": "Non obligatoire, sans choix vous jouerez contre un adversaire aléatoire."
   },
   "offline": {
     "title": "Connectez-vous à Internet",

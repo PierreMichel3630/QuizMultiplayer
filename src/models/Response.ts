@@ -1,3 +1,4 @@
+import { TypeDataEnum } from "./enum/TypeDataEnum";
 import { ExtraSoloGame } from "./Game";
 
 export interface Response {
@@ -7,6 +8,13 @@ export interface Response {
 export interface ResponseQCM {
   label?: ResponseLanguageString;
   image?: string;
+  extra?: ExtraResponse;
+}
+
+export interface ExtraResponse {
+  value: string;
+  type: TypeDataEnum;
+  format: "MM/YYYY";
 }
 
 export interface ResponseSolo {

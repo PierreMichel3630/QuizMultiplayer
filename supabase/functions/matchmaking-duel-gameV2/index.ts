@@ -132,7 +132,6 @@ Deno.serve(async (req) => {
       .maybeSingle();
     matchmaking = resMatchmaking.data;
   }
-  let timeoutId: any = undefined;
   const channel = supabase
     .channel(duelgame.uuid, {
       config: {
@@ -141,21 +140,9 @@ Deno.serve(async (req) => {
         },
       },
     })
-    .on("presence", { event: "leave" }, async ({ key, leftPresences }) => {
-      const isLeaving = leftPresences.find((el) => el.uuid === player);
-      if (isLeaving) {
-        if (duelgame) {
-          await supabase.from("duelgame").delete().eq("id", duelgame.id);
-        }
-        if (matchmaking) {
-          await supabase.from("matchmaking").delete().eq("id", matchmaking.id);
-        }
-        if (timeoutId) clearTimeout(timeoutId);
-      }
-    })
     .subscribe();
 
-  timeoutId = setTimeout(async () => {
+  setTimeout(async () => {
     const { data } = await supabase
       .from("duelgame")
       .select()
@@ -167,22 +154,18 @@ Deno.serve(async (req) => {
     if (data.status === "WAIT") {
       const DIFFELOMAX = 200;
       const scoresBots = scores.data.filter((el) => el.profile !== player);
-      console.log("scoresBots : ", scoresBots);
       const botProche = scoresBots.reduce((prev, curr) =>
         Math.abs(curr.rank - eloPlayer) < Math.abs(prev.rank - eloPlayer)
           ? curr
           : prev
       );
-      console.log("botProche : ", botProche);
       const botsAvailable = scoresBots.filter(
         (el) => el.rank > eloPlayer - DIFFELOMAX && el.rank < eloPlayer + 200
       );
-      console.log("botsAvailable", botsAvailable);
       const bot =
         botsAvailable.length > 0
           ? botsAvailable[Math.floor(Math.random() * botsAvailable.length)]
           : botProche;
-      console.log("bot", bot);
       let themequestion = body.theme;
       if (theme === 272) {
         const { data } = await supabase
@@ -194,7 +177,7 @@ Deno.serve(async (req) => {
           .maybeSingle();
         themequestion = data.id;
       }
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("duelgame")
         .update({
           player2: bot.profile,
@@ -206,8 +189,6 @@ Deno.serve(async (req) => {
           "*,theme!public_duelgame_theme_fkey(*),player1(*,avatar(*),title(*), badge(*), banner(*), country(*)),player2(*,avatar(*),title(*), badge(*), banner(*), country(*))"
         )
         .maybeSingle();
-      console.log(data);
-      console.log(error);
       channel.send({
         type: "broadcast",
         event: "updategame",

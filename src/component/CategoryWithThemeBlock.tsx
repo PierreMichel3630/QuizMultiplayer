@@ -12,7 +12,7 @@ export const CategoryWithThemeBlock = ({ category }: Props) => {
   const { language } = useUser();
 
   const themesCategory = useMemo(
-    () => category.themes.sort((a, b) => sortByName(language, a, b)),
+    () => [...category.themes].sort((a, b) => sortByName(language, a, b)),
     [category, language]
   );
 

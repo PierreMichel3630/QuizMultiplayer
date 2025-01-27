@@ -2,6 +2,7 @@ import {
   Alert,
   Avatar,
   Box,
+  Button,
   Paper,
   Skeleton,
   Table,
@@ -18,7 +19,7 @@ import { percent, px } from "csx";
 import moment from "moment";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   selectRankingDuelByTheme,
   selectRankingSoloByTheme,
@@ -50,12 +51,17 @@ export interface DataRanking {
 interface Props {
   data: Array<DataRanking>;
   loading?: boolean;
+  navigation?: {
+    link: string;
+    label: string;
+  };
 }
 
-export const RankingTable = ({ data, loading = false }: Props) => {
+export const RankingTable = ({ data, navigation, loading = false }: Props) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const { friends } = useApp();
+  const navigate = useNavigate();
 
   const idFriend = useMemo(
     () =>
@@ -110,7 +116,9 @@ export const RankingTable = ({ data, loading = false }: Props) => {
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
       {data.length === 0 && !loading ? (
-        <Alert severity="warning" sx={{width: percent(100)}}>{t("commun.noresultgame")}</Alert>
+        <Alert severity="warning" sx={{ width: percent(100) }}>
+          {t("commun.noresultgame")}
+        </Alert>
       ) : (
         <TableContainer
           component={Paper}
@@ -138,10 +146,7 @@ export const RankingTable = ({ data, loading = false }: Props) => {
                         backgroundColor: color,
                       }}
                     >
-                      <TableCell
-                        align="left"
-                        sx={{ p: px(4), width: px(40) }}
-                      >
+                      <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
                         {getIcon(el.rank, colorText)}
                       </TableCell>
                       <TableCell sx={{ p: px(4), width: px(50) }}>
@@ -231,10 +236,7 @@ export const RankingTable = ({ data, loading = false }: Props) => {
                           )}
                         </Box>
                       </TableCell>
-                      <TableCell
-                        align="right"
-                        sx={{ p: px(4), width: px(60)  }}
-                      >
+                      <TableCell align="right" sx={{ p: px(4), width: px(60) }}>
                         <Box>
                           <Typography
                             variant="h2"
@@ -284,20 +286,44 @@ export const RankingTable = ({ data, loading = false }: Props) => {
               {loading &&
                 Array.from(new Array(5)).map((_, index) => (
                   <TableRow key={index}>
-                    <TableCell align="left" sx={{ p: px(4) }}>
+                    <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
                       <Skeleton variant="circular" width={30} height={30} />
                     </TableCell>
-                    <TableCell align="left" sx={{ p: px(4) }}>
+                    <TableCell align="left" sx={{ p: px(4), width: px(50) }}>
                       <Skeleton variant="circular" width={30} height={30} />
                     </TableCell>
                     <TableCell align="left" sx={{ p: px(4) }}>
                       <Skeleton variant="rectangular" width={100} height={20} />
                     </TableCell>
-                    <TableCell align="right" sx={{ p: px(4) }}>
+                    <TableCell align="right" sx={{ p: px(4), width: px(60) }}>
                       <Skeleton variant="rectangular" width={40} height={25} />
                     </TableCell>
                   </TableRow>
                 ))}
+              {navigation && (
+                <TableRow>
+                  <TableCell colSpan={4} sx={{ p: px(2) }}>
+                    <Button
+                      variant="outlined"
+                      sx={{
+                        minWidth: "auto",
+                        textTransform: "uppercase",
+                        "&:hover": {
+                          border: "2px solid currentColor",
+                        },
+                      }}
+                      color="secondary"
+                      size="small"
+                      fullWidth
+                      onClick={() => navigate(navigation.link)}
+                    >
+                      <Typography variant="h6" noWrap>
+                        {navigation.label}
+                      </Typography>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>

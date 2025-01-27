@@ -165,11 +165,10 @@ export const AppProvider = ({ children }: Props) => {
     selectThemes().then(({ data }) => {
       if (data) {
         const value = data !== null ? (data as Array<Theme>) : [];
-        const resultats = value.sort((a, b) => sortByName(language, a, b));
-        const filterResultats =
-          profile && profile.isadmin
-            ? [...resultats]
-            : [...resultats].filter((el) => el.enabled);
+        const resultats = [...value].sort((a, b) => sortByName(language, a, b));
+        const filterResultats = profile?.isadmin
+          ? [...resultats]
+          : [...resultats].filter((el) => el.enabled);
         const uniqTheme = uniqBy(filterResultats, (el) => el.id);
         const count = uniqTheme.length;
         const questions = uniqTheme
@@ -191,7 +190,7 @@ export const AppProvider = ({ children }: Props) => {
         (el) => el.id
       );
       const themesByCategorie = groupBy(themes, "category.id");
-      const result = categories
+      const result = [...categories]
         .sort((a, b) => sortByName(language, a, b))
         .map((el) => {
           const themes = themesByCategorie[el.id];

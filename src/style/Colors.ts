@@ -29,6 +29,8 @@ export const Colors = {
   lightBlue: lightBlue[100],
   blue: lightBlue[200],
   blue2: blue[400],
+  blue3: "#01b5da",
+  blue4: blue[700],
   green: green[400],
   green2: green[800],
   teal: teal[300],
@@ -53,9 +55,11 @@ export const Colors = {
   gold: yellow[700],
   silver: grey[500],
   bronze: "#CD7F32",
-  blue3: "#01b5da",
 
   correctanswer: "#08c469",
+  correctanswerborder: green["A200"],
   wronganswer: "#fc4a3d",
+  wronganswerborder: red[500],
   waitanswer: grey[600],
+  waitanswerborder: grey[200],
 };
