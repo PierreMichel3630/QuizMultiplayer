@@ -1,7 +1,7 @@
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import { Box, Container, Divider, Grid, Typography } from "@mui/material";
 import { t } from "i18next";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useParams } from "react-router-dom";
 import { launchTrainingGame } from "src/api/game";
@@ -22,6 +22,13 @@ export default function ConfigTrainingPage() {
   const { themeid } = useParams();
   const { uuid } = useUser();
   const navigate = useNavigate();
+  const { mode } = useUser();
+
+  const isDarkMode = useMemo(() => mode === "dark", [mode]);
+  const color = useMemo(
+    () => (isDarkMode ? Colors.white : Colors.black),
+    [isDarkMode]
+  );
 
   const [theme, setTheme] = useState<Theme | undefined>(undefined);
 
@@ -50,11 +57,7 @@ export default function ConfigTrainingPage() {
   }, [themeid]);
 
   return (
-    <Box
-      sx={{
-        backgroundColor: Colors.black,
-      }}
-    >
+    <Box>
       <Container maxWidth="md" sx={{ minHeight: "calc(100vh - 120px)" }}>
         <Helmet>
           <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
@@ -69,7 +72,7 @@ export default function ConfigTrainingPage() {
             {theme && (
               <>
                 <Grid item xs={12} sx={{ textAlign: "center", mt: 1 }}>
-                  <Typography variant="h1" color="text.secondary">
+                  <Typography variant="h1">
                     {t("commun.modetraining")}
                   </Typography>
                 </Grid>
@@ -88,25 +91,23 @@ export default function ConfigTrainingPage() {
                     variant="h1"
                     sx={{ fontSize: "20px !important" }}
                     value={theme.name}
-                    color="text.secondary"
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <Divider
                     sx={{
                       "&::before": {
-                        borderTop: "2px solid white",
+                        borderTop: `2px solid ${color}`,
                       },
                       "&::after": {
-                        borderTop: "2px solid white",
+                        borderTop: `2px solid ${color}`,
                       },
                     }}
                   >
                     <Typography
                       variant="h4"
-                      color="text.secondary"
                       sx={{
-                        border: "2px solid white",
+                        border: `2px solid ${color}`,
                         padding: "5px 10px",
                         borderRadius: "25px",
                       }}
@@ -116,7 +117,7 @@ export default function ConfigTrainingPage() {
                   </Divider>
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography variant="body1" color="text.secondary">
+                  <Typography variant="body1">
                     {t("modes.mode4.explain")}
                   </Typography>
                 </Grid>
@@ -124,18 +125,17 @@ export default function ConfigTrainingPage() {
                   <Divider
                     sx={{
                       "&::before": {
-                        borderTop: "2px solid white",
+                        borderTop: `2px solid ${color}`,
                       },
                       "&::after": {
-                        borderTop: "2px solid white",
+                        borderTop: `2px solid ${color}`,
                       },
                     }}
                   >
                     <Typography
                       variant="h4"
-                      color="text.secondary"
                       sx={{
-                        border: "2px solid white",
+                        border: `2px solid ${color}`,
                         padding: "5px 10px",
                         borderRadius: "25px",
                       }}
@@ -161,9 +161,7 @@ export default function ConfigTrainingPage() {
                       }
                       color="default"
                     />
-                    <Typography variant="h4" color="text.secondary">
-                      {t("commun.qcm")}
-                    </Typography>
+                    <Typography variant="h4">{t("commun.qcm")}</Typography>
                   </Box>
                 </Grid>
                 <Grid item xs={12}>
@@ -183,7 +181,7 @@ export default function ConfigTrainingPage() {
                       }
                       color="default"
                     />
-                    <Typography variant="h4" color="text.secondary">
+                    <Typography variant="h4">
                       {t("commun.inputquestion")}
                     </Typography>
                   </Box>

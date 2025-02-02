@@ -21,6 +21,7 @@ import {
 
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import { useUser } from "src/context/UserProvider";
 
 interface Props {
   question: QuestionSolo;
@@ -512,6 +513,9 @@ interface PropsQcmBlockDuelResultBlock {
 export const QcmBlockDuelResultBlock = ({
   question,
 }: PropsQcmBlockDuelResultBlock) => {
+  const { mode } = useUser();
+
+  const isDarkMode = useMemo(() => mode === "dark", [mode]);
   const response = question.response;
 
   const responsePlayer1 = question.responsePlayer1;
@@ -542,9 +546,10 @@ export const QcmBlockDuelResultBlock = ({
           responsePlayer1 !== undefined && Number(responsePlayer1) === index;
         const isArrowLeft =
           responsePlayer2 !== undefined && Number(responsePlayer2) === index;
+        let color: string = isDarkMode ? Colors.black2 : Colors.white;
+        const arrowColor: string = isDarkMode ? Colors.white : Colors.black2;
+        let borderColor: string = isDarkMode ? Colors.white : Colors.black2;
 
-        let color = Colors.grey;
-        let borderColor = Colors.white;
         if (isCorrectResponse) {
           color = Colors.green;
           borderColor = Colors.white;
@@ -582,18 +587,12 @@ export const QcmBlockDuelResultBlock = ({
                   top: percent(50),
                   translate: "0 -50%",
                   left: 0,
-                  color: Colors.white,
+                  color: arrowColor,
                 }}
               />
             )}
             {res.image && <ImageQCMBlock src={res.image} />}
-            {res.label && (
-              <JsonLanguageBlock
-                variant="h3"
-                color="text.secondary"
-                value={res.label}
-              />
-            )}
+            {res.label && <JsonLanguageBlock variant="h3" value={res.label} />}
             {isArrowLeft && (
               <ArrowLeftIcon
                 viewBox="10 7 5 10"
@@ -603,7 +602,7 @@ export const QcmBlockDuelResultBlock = ({
                   top: percent(50),
                   translate: "0 -50%",
                   right: 0,
-                  color: Colors.white,
+                  color: arrowColor,
                 }}
               />
             )}

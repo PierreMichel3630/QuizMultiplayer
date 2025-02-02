@@ -23,10 +23,10 @@ export const HeaderTrainingGame = ({ theme, goodAnswer, badAnswer }: Props) => {
         extra={
           numberQuestions > 0 ? (
             <>
-              <Typography variant="h2" color="text.secondary">
+              <Typography variant="h2">
                 {goodAnswer} / {numberQuestions}
               </Typography>
-              <Typography variant="body1" color="text.secondary">
+              <Typography variant="body1">
                 ({((goodAnswer / numberQuestions) * 100).toFixed(0)} %)
               </Typography>
             </>

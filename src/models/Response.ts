@@ -14,7 +14,7 @@ export interface ResponseQCM {
 export interface ExtraResponse {
   value: string;
   type: TypeDataEnum;
-  format: "MM/YYYY";
+  format: string;
 }
 
 export interface ResponseSolo {

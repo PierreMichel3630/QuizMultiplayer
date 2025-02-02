@@ -10,7 +10,6 @@ import HomeIcon from "@mui/icons-material/Home";
 import { px } from "csx";
 import { useNavigate } from "react-router-dom";
 import { launchDuelGame, matchmakingDuelGame } from "src/api/game";
-import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
 import { ButtonColor } from "../Button";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
@@ -122,13 +121,12 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
           </Box>
           <JsonLanguageBlock
             variant="h2"
-            color="text.secondary"
             sx={{ wordBreak: "break-all" }}
             value={game.theme.name}
           />
         </Grid>
         <Grid item xs={12} sx={{ textAlign: "center" }}>
-          <Typography variant="h1" color="text.secondary">
+          <Typography variant="h1">
             {equality
               ? t("commun.equality")
               : hasWin
@@ -147,34 +145,32 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
           }}
         >
           <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-            <Typography variant="h2" sx={{ color: COLORDUEL1, fontSize: 35 }}>
+            <Typography
+              variant="h2"
+              sx={{ color: Colors.colorDuel1, fontSize: 35 }}
+            >
               {game.ptsplayer1}
             </Typography>
             <AvatarAccountBadge
               profile={game.player1}
               size={60}
-              color={COLORDUEL1}
+              color={Colors.colorDuel1}
             />
           </Box>
           <Box sx={{ textAlign: "end" }}>
-            <Typography variant="h4" sx={{ color: COLORDUEL1 }}>
+            <Typography variant="h4" sx={{ color: Colors.colorDuel1 }}>
               {game.player1.username}
             </Typography>
             {game.player1.title && (
               <JsonLanguageBlock
                 variant="caption"
-                color="text.secondary"
                 value={game.player1.title.name}
               />
             )}
             <Box>
               {extra && (
                 <>
-                  <Typography
-                    variant="h6"
-                    component="span"
-                    color="text.secondary"
-                  >
+                  <Typography variant="h6" component="span">
                     {extra.eloPlayer1} {t("commun.points")}
                   </Typography>
                   <Typography
@@ -205,7 +201,7 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
             alignItems: "center",
           }}
         >
-          <BoltIcon sx={{ fontSize: 50, color: Colors.white }} />
+          <BoltIcon sx={{ fontSize: 50, color: "text.primary" }} />
         </Grid>
         <Grid
           item
@@ -221,31 +217,29 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
             <AvatarAccountBadge
               profile={game.player2}
               size={60}
-              color={COLORDUEL2}
+              color={Colors.colorDuel2}
             />
-            <Typography variant="h2" sx={{ color: COLORDUEL2, fontSize: 35 }}>
+            <Typography
+              variant="h2"
+              sx={{ color: Colors.colorDuel2, fontSize: 35 }}
+            >
               {game.ptsplayer2}
             </Typography>
           </Box>
           <Box>
-            <Typography variant="h4" sx={{ color: COLORDUEL2 }}>
+            <Typography variant="h4" sx={{ color: Colors.colorDuel2 }}>
               {game.player2.username}
             </Typography>
             {game.player2.title && (
               <JsonLanguageBlock
                 variant="caption"
-                color="text.secondary"
                 value={game.player2.title.name}
               />
             )}
             <Box>
               {extra && (
                 <>
-                  <Typography
-                    variant="h6"
-                    component="span"
-                    color="text.secondary"
-                  >
+                  <Typography variant="h6" component="span">
                     {extra.eloPlayer2} {t("commun.points")}
                   </Typography>
                   <Typography
@@ -301,7 +295,6 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
               <Divider
                 sx={{
                   borderBottomWidth: 3,
-                  borderColor: Colors.white,
                   borderRadius: px(5),
                 }}
               />
@@ -320,7 +313,7 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
         <Container
           maxWidth="md"
           sx={{
-            backgroundColor: Colors.black,
+            backgroundColor: "background.paper",
           }}
         >
           <Box

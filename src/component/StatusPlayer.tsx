@@ -16,15 +16,27 @@ export const StatusPlayerGame = ({ ready }: Props) => {
     <Box sx={{ display: "flex", gap: 1 }}>
       {ready ? (
         <>
-          <CheckIcon sx={{ color: Colors.white }} />
-          <Typography variant="h6" color="text.secondary">
+          <CheckIcon sx={{ color: Colors.white, stroke: "black" }} />
+          <Typography
+            variant="h6"
+            color="text.secondary"
+            sx={{
+              textShadow: "1px 1px 2px black",
+            }}
+          >
             {t("commun.ready")}
           </Typography>
         </>
       ) : (
         <>
-          <LoadingDot />
-          <Typography variant="h6" color="text.secondary">
+          <LoadingDot color={Colors.white} />
+          <Typography
+            variant="h6"
+            color="text.secondary"
+            sx={{
+              textShadow: "1px 1px 2px black",
+            }}
+          >
             {t("commun.wait")}
           </Typography>
         </>

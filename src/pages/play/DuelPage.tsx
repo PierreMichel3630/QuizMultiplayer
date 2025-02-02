@@ -21,9 +21,6 @@ import { StatusGameDuel } from "src/models/enum/StatusGame";
 import { Colors } from "src/style/Colors";
 import { PreloadImages } from "src/utils/preload";
 
-export const COLORDUEL1 = Colors.pink2;
-export const COLORDUEL2 = Colors.blue;
-
 export default function DuelPage() {
   const { t } = useTranslation();
   const { uuidGame } = useParams();
@@ -67,11 +64,11 @@ export default function DuelPage() {
   }, [game, uuid]);
 
   const idPlayer1 = useMemo(
-    () => (game && game.player1 ? game.player1.id : null),
+    () => (game?.player1 ? game.player1.id : null),
     [game]
   );
   const idPlayer2 = useMemo(
-    () => (game && game.player2 ? game.player2.id : null),
+    () => (game?.player2 ? game.player2.id : null),
     [game]
   );
 
@@ -272,11 +269,7 @@ export default function DuelPage() {
   );
 
   return (
-    <Box
-      sx={{
-        backgroundColor: Colors.black,
-      }}
-    >
+    <Box>
       <Container
         maxWidth="md"
         sx={{
@@ -326,20 +319,23 @@ export default function DuelPage() {
                         <AvatarAccount
                           avatar={game.player1.avatar.icon}
                           size={50}
-                          color={COLORDUEL1}
+                          color={Colors.colorDuel1}
                         />
                         <Box>
                           <Typography
                             variant="h6"
                             sx={{
-                              color: COLORDUEL1,
+                              color: Colors.colorDuel1,
                               wordBreak: "break-all",
                               fontSize: 9,
                             }}
                           >
                             {game.player1.username}
                           </Typography>
-                          <Typography variant="h2" sx={{ color: COLORDUEL1 }}>
+                          <Typography
+                            variant="h2"
+                            sx={{ color: Colors.colorDuel1 }}
+                          >
                             {game.ptsplayer1}
                           </Typography>
                         </Box>
@@ -372,7 +368,7 @@ export default function DuelPage() {
                           <Typography
                             variant="h6"
                             sx={{
-                              color: COLORDUEL2,
+                              color: Colors.colorDuel2,
                               textAlign: "right",
                               fontSize: 9,
                             }}
@@ -381,7 +377,10 @@ export default function DuelPage() {
                           </Typography>
                           <Typography
                             variant="h2"
-                            sx={{ color: COLORDUEL2, textAlign: "right" }}
+                            sx={{
+                              color: Colors.colorDuel2,
+                              textAlign: "right",
+                            }}
                           >
                             {game.ptsplayer2}
                           </Typography>
@@ -389,7 +388,7 @@ export default function DuelPage() {
                         <AvatarAccount
                           avatar={game.player2.avatar.icon}
                           size={50}
-                          color={COLORDUEL2}
+                          color={Colors.colorDuel2}
                         />
                       </Grid>
                     </Grid>
@@ -405,7 +404,7 @@ export default function DuelPage() {
                   >
                     <VerticalTimer
                       time={timer}
-                      color={COLORDUEL1}
+                      color={Colors.colorDuel1}
                       answer={
                         responsePlayer1 ? responsePlayer1.time : undefined
                       }
@@ -433,13 +432,12 @@ export default function DuelPage() {
                           response={response}
                           question={question}
                           onSubmit={validateResponse}
-                          timer={timer}
                         />
                       </Box>
                     </Box>
                     <VerticalTimer
                       time={timer}
-                      color={COLORDUEL2}
+                      color={Colors.colorDuel2}
                       answer={
                         responsePlayer2 ? responsePlayer2.time : undefined
                       }

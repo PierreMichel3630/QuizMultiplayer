@@ -5,15 +5,14 @@ import { Colors } from "src/style/Colors";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useUser } from "src/context/UserProvider";
-import { JsonLanguage } from "src/models/Language";
-import { Question } from "src/models/Question";
-import { ImageQCMBlock } from "../ImageBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
-import { ArrowLeft, ArrowRight } from "../icon/Arrow";
 import { TypeQuestionEnum } from "src/models/enum/TypeQuestionEnum";
 import { TypeResponseEnum } from "src/models/enum/TypeResponseEnum";
-import { TypeDataEnum } from "src/models/enum/TypeDataEnum";
+import { JsonLanguage } from "src/models/Language";
+import { Question } from "src/models/Question";
 import { ExtraResponse } from "src/models/Response";
+import { ArrowLeft, ArrowRight } from "../icon/Arrow";
+import { ImageQCMBlock } from "../ImageBlock";
+import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { ExtraResponseBlock } from "../response/ExtraResponseBlock";
 
 export interface ResponseLanguage {
@@ -51,6 +50,9 @@ export const ResponsesQCMBlock = ({
   response,
   onSubmit,
 }: ResponsesQCMBlockProps) => {
+  const { mode } = useUser();
+
+  const isDarkMode = useMemo(() => mode === "dark", [mode]);
   const [hasAnswer, setHasAnswer] = useState(false);
 
   useEffect(() => {
@@ -104,8 +106,9 @@ export const ResponsesQCMBlock = ({
           response && Number(response.response) === index;
         const isAnswerP1 = Number(responseplayer1) === index;
         const isAnswerP2 = Number(responseplayer2) === index;
-        let color: string = Colors.black2;
-        let borderColor: string = Colors.white;
+        let color: string = isDarkMode ? Colors.black2 : Colors.white;
+        const arrowColor: string = isDarkMode ? Colors.white : Colors.black2;
+        let borderColor: string = isDarkMode ? Colors.white : Colors.black2;
         if (isCorrectResponse) {
           color = Colors.correctanswer;
           borderColor = Colors.correctanswerborder;
@@ -129,6 +132,7 @@ export const ResponsesQCMBlock = ({
             answer1={isAnswerP1}
             answer2={isAnswerP2}
             hasAnswer={hasAnswer}
+            arrowColor={arrowColor}
             type={
               isQuestionOrder
                 ? TypeResponseEnum.ORDER
@@ -151,6 +155,7 @@ interface ResponseQCMBlockProps {
   label?: JsonLanguage;
   extra?: ExtraResponse;
   borderColor?: string;
+  arrowColor?: string;
   index: number;
   answer1: boolean;
   answer2: boolean;
@@ -170,6 +175,7 @@ export const ResponseQCMBlock = ({
   answer2 = false,
   hasAnswer = false,
   type = TypeResponseEnum.DEFAULT,
+  arrowColor = Colors.white,
   onSubmit,
 }: ResponseQCMBlockProps) => {
   const padding = type === TypeResponseEnum.DEFAULT && !image ? "4px 12px" : 0;
@@ -222,7 +228,7 @@ export const ResponseQCMBlock = ({
             display: "flex",
           }}
         >
-          <ArrowRight size={18} />
+          <ArrowRight size={18} color={arrowColor} />
         </Box>
       )}
       {imageDisplay && <ImageQCMBlock src={imageDisplay} />}
@@ -234,7 +240,6 @@ export const ResponseQCMBlock = ({
             value={label}
             sx={{
               wordBreak: "break-word",
-              color: Colors.white,
               textShadow: textShadow,
               fontSize: isOrder ? important(px(40)) : "initial",
             }}
@@ -252,7 +257,7 @@ export const ResponseQCMBlock = ({
             display: "flex",
           }}
         >
-          <ArrowLeft size={18} />
+          <ArrowLeft size={18} color={arrowColor} />
         </Box>
       )}
     </Paper>

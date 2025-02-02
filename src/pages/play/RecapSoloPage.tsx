@@ -101,11 +101,7 @@ export default function RecapSoloPage() {
   }, [game, maxIndex]);
 
   return (
-    <Box
-      sx={{
-        backgroundColor: Colors.black,
-      }}
-    >
+    <Box>
       <Container
         maxWidth="md"
         sx={{
@@ -199,7 +195,6 @@ export default function RecapSoloPage() {
                           <Divider
                             sx={{
                               borderBottomWidth: 5,
-                              borderColor: Colors.white,
                               borderRadius: px(5),
                             }}
                           />
@@ -220,7 +215,7 @@ export default function RecapSoloPage() {
                 <Container
                   maxWidth="md"
                   sx={{
-                    backgroundColor: Colors.black,
+                    backgroundColor: "background.paper",
                   }}
                 >
                   <Box

@@ -10,7 +10,6 @@ import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 
 import BoltIcon from "@mui/icons-material/Bolt";
 import HomeIcon from "@mui/icons-material/Home";
-import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
 import { ButtonColor } from "../Button";
 import { LabelRankBlock } from "../RankBlock";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
@@ -79,18 +78,15 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
           </Box>
           <JsonLanguageBlock
             variant="h2"
-            color="text.secondary"
             sx={{ wordBreak: "break-all" }}
             value={game.theme.name}
           />
         </Grid>
         <Grid item xs={12} sx={{ textAlign: "center" }}>
-          <Typography variant="h1" color="text.secondary">
-            {t("commun.cancelgame")}
-          </Typography>
+          <Typography variant="h1">{t("commun.cancelgame")}</Typography>
         </Grid>
         <Grid item xs={12} sx={{ textAlign: "center" }}>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant="body1">
             {t("commun.opponentdontjoin")}
           </Typography>
         </Grid>
@@ -107,15 +103,14 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
           <AvatarAccountBadge
             profile={game.player1}
             size={80}
-            color={COLORDUEL1}
+            color={Colors.colorDuel1}
           />
-          <Typography variant="h4" sx={{ color: COLORDUEL1 }}>
+          <Typography variant="h4" sx={{ color: Colors.colorDuel1 }}>
             {game.player1.username}
           </Typography>
           {game.player1.title && (
             <JsonLanguageBlock
               variant="caption"
-              color="text.secondary"
               value={game.player1.title.name}
             />
           )}
@@ -145,15 +140,14 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
           <AvatarAccountBadge
             profile={game.player2}
             size={80}
-            color={COLORDUEL2}
+            color={Colors.colorDuel2}
           />
-          <Typography variant="h4" sx={{ color: COLORDUEL2 }}>
+          <Typography variant="h4" sx={{ color: Colors.colorDuel2 }}>
             {game.player2.username}
           </Typography>
           {game.player2.title && (
             <JsonLanguageBlock
               variant="caption"
-              color="text.secondary"
               value={game.player2.title.name}
             />
           )}

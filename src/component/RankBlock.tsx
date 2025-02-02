@@ -14,42 +14,119 @@ export const LabelRankBlock = ({ score, loading }: Props) => {
       {score ? (
         <>
           <Box>
-            <Typography variant="h4" color="text.secondary" component="span">
+            <Typography
+              variant="h4"
+              color="text.secondary"
+              component="span"
+              sx={{
+                textShadow: "1px 1px 2px black",
+              }}
+            >
               {score.rank}
             </Typography>
-            <Typography variant="body1" color="text.secondary" component="span">
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              component="span"
+              sx={{
+                textShadow: "1px 1px 2px black",
+              }}
+            >
               {` ${t("commun.points")} `}
             </Typography>
           </Box>
           <Box>
-            <Typography variant="h4" color="text.secondary" component="span">
+            <Typography
+              variant="h4"
+              color="text.secondary"
+              component="span"
+              sx={{
+                textShadow: "1px 1px 2px black",
+              }}
+            >
               {score.victory}
             </Typography>
-            <Typography variant="h6" color="text.secondary" component="span">
+            <Typography
+              variant="h6"
+              color="text.secondary"
+              component="span"
+              sx={{
+                textShadow: "1px 1px 2px black",
+              }}
+            >
               {t("commun.victoryabbreviation")}
             </Typography>
-            <Typography variant="h2" color="text.secondary" component="span">
+            <Typography
+              variant="h2"
+              color="text.secondary"
+              component="span"
+              sx={{
+                textShadow: "1px 1px 2px black",
+              }}
+            >
               {` - `}
             </Typography>
-            <Typography variant="h4" color="text.secondary" component="span">
+            <Typography
+              variant="h4"
+              color="text.secondary"
+              component="span"
+              sx={{
+                textShadow: "1px 1px 2px black",
+              }}
+            >
               {score.draw}
             </Typography>
-            <Typography variant="h6" color="text.secondary" component="span">
+            <Typography
+              variant="h6"
+              color="text.secondary"
+              component="span"
+              sx={{
+                textShadow: "1px 1px 2px black",
+              }}
+            >
               {t("commun.drawabbreviation")}
             </Typography>
-            <Typography variant="h4" color="text.secondary" component="span">
+            <Typography
+              variant="h4"
+              color="text.secondary"
+              component="span"
+              sx={{
+                textShadow: "1px 1px 2px black",
+              }}
+            >
               {` - `}
             </Typography>
-            <Typography variant="h4" color="text.secondary" component="span">
+            <Typography
+              variant="h4"
+              color="text.secondary"
+              component="span"
+              sx={{
+                textShadow: "1px 1px 2px black",
+              }}
+            >
               {score.defeat}
             </Typography>
-            <Typography variant="h6" color="text.secondary" component="span">
+            <Typography
+              variant="h6"
+              color="text.secondary"
+              component="span"
+              sx={{
+                textShadow: "1px 1px 2px black",
+              }}
+            >
               {t("commun.defeatabbreviation")}
             </Typography>
           </Box>
         </>
       ) : (
-        <Typography variant="h4" color="text.secondary" component="span">
+        <Typography
+          variant="h4"
+          color="text.secondary"
+          component="span"
+          sx={{
+            textShadow: "1px 1px 2px black",
+          }}
+        >
           {loading ? "" : t("commun.notrank")}
         </Typography>
       )}

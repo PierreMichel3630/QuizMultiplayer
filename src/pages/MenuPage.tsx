@@ -33,14 +33,13 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import SecurityIcon from "@mui/icons-material/Security";
-import SettingsIcon from "@mui/icons-material/Settings";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { HeadTitle } from "src/component/HeadTitle";
 import { MoneyBlock } from "src/component/MoneyBlock";
+import { ShareApplicationBlock } from "src/component/ShareApplicationBlock";
 import { useApp } from "src/context/AppProvider";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { getLevel } from "src/utils/calcul";
-import { ShareApplicationBlock } from "src/component/ShareApplicationBlock";
 
 interface Menu {
   value: string;
@@ -155,12 +154,6 @@ export default function MenuPage() {
         state: { profile1: profile },
       },
       {
-        value: "parameter",
-        label: t("commun.myparameter"),
-        icon: <SettingsIcon />,
-        to: "/parameter",
-      },
-      {
         value: "faq",
         label: t("commun.faq"),
         icon: <LiveHelpIcon />,
@@ -216,10 +209,9 @@ export default function MenuPage() {
           <Box
             sx={{
               p: 1,
-              backgroundImage:
-                profile && profile.banner
-                  ? `url("/banner/${profile.banner.icon}")`
-                  : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
+              backgroundImage: profile?.banner
+                ? `url("/banner/${profile.banner.icon}")`
+                : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
               backgroundSize: "cover",
               backgroundPosition: "center",
               position: "relative",

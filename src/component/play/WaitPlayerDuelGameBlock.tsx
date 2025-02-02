@@ -5,28 +5,24 @@ import { Colors } from "src/style/Colors";
 import { StatusPlayerGame } from "../StatusPlayer";
 import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 
-import { useTranslation } from "react-i18next";
-import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
+import { useEffect, useMemo, useState } from "react";
+import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
+import { selectScoreByThemeAndPlayer } from "src/api/score";
+import { StatAccomplishment } from "src/models/Accomplishment";
+import { Score } from "src/models/Score";
+import { StatusGameDuel } from "src/models/enum/StatusGame";
+import { getLevel } from "src/utils/calcul";
 import { CountryBlock } from "../CountryBlock";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
-import { LoadingDot } from "../Loading";
 import { LabelRankBlock } from "../RankBlock";
-import { useState, useEffect, useMemo } from "react";
-import { selectScoreByThemeAndPlayer } from "src/api/score";
-import { Score } from "src/models/Score";
-import { getLevel } from "src/utils/calcul";
-import { StatAccomplishment } from "src/models/Accomplishment";
-import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
-import { StatusGameDuel } from "src/models/enum/StatusGame";
+import { SearchPlayerBlock } from "./SearchPlayerBlock";
 
 interface Props {
   game: DuelGame;
   players: Array<string>;
 }
 export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
-  const { t } = useTranslation();
-
   const [loadingP2, setLoadingP2] = useState(true);
   const [scoreP2, setScoreP2] = useState<Score | null>(null);
   const [statP2, setStatP2] = useState<StatAccomplishment | undefined>(
@@ -98,11 +94,10 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
     >
       <Box
         sx={{
-          backgroundColor: COLORDUEL1,
-          backgroundImage:
-            game.player1 && game.player1.banner
-              ? `url("/banner/${game.player1.banner.icon}")`
-              : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
+          backgroundColor: Colors.colorDuel1,
+          backgroundImage: game.player1?.banner
+            ? `url("/banner/${game.player1.banner.icon}")`
+            : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           height: percent(50),
@@ -122,7 +117,13 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           level={lvlP1}
         />
         <Box>
-          <Typography variant="h2" color="text.secondary">
+          <Typography
+            variant="h2"
+            color="text.secondary"
+            sx={{
+              textShadow: "1px 1px 2px black",
+            }}
+          >
             {game.player1.username}
           </Typography>
           {game.player1.title && (
@@ -130,6 +131,9 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
               variant="caption"
               color="text.secondary"
               value={game.player1.title.name}
+              sx={{
+                textShadow: "1px 1px 2px black",
+              }}
             />
           )}
           <LabelRankBlock loading={loadingP1} score={scoreP1} />
@@ -181,27 +185,37 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
       </Box>
       <Box
         sx={{
-          backgroundColor: COLORDUEL2,
-          backgroundImage:
-            game.player2 && game.player2.banner
-              ? `url("/banner/${game.player2.banner.icon}")`
-              : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
+          backgroundColor: Colors.colorDuel2,
+          backgroundImage: game.player2?.banner
+            ? `url("/banner/${game.player2.banner.icon}")`
+            : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           height: percent(50),
           width: percent(100),
           display: "flex",
           alignItems: "center",
-          gap: 2,
           justifyContent: "flex-end",
-          p: 5,
           borderTop: "5px solid white",
         }}
       >
         {game.player2 !== null ? (
-          <>
+          <Box sx={{
+              display: "flex",
+              alignItems: "center",
+              p: 5,
+              gap: 2,
+              justifyContent: "flex-end",
+            }}
+          >
             <Box sx={{ textAlign: "left" }}>
-              <Typography variant="h2" color="text.secondary">
+              <Typography
+                variant="h2"
+                color="text.secondary"
+                sx={{
+                  textShadow: "1px 1px 2px black",
+                }}
+              >
                 {game.player2.username}
               </Typography>
               {game.player2.title && (
@@ -209,6 +223,9 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
                   variant="caption"
                   color="text.secondary"
                   value={game.player2.title.name}
+                  sx={{
+                    textShadow: "1px 1px 2px black",
+                  }}
                 />
               )}
               <LabelRankBlock loading={loadingP2} score={scoreP2} />
@@ -231,14 +248,11 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
               color={Colors.white}
               level={lvlP2}
             />
-          </>
+          </Box>
         ) : (
-          <>
-            <LoadingDot />
-            <Typography variant="h6" color="text.secondary">
-              {t("commun.searchplayer")}
-            </Typography>
-          </>
+          <Box>
+            <SearchPlayerBlock />
+          </Box>
         )}
       </Box>
     </Box>

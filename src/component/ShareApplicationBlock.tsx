@@ -43,7 +43,7 @@ export const ShareScoreIcon = ({ score, theme }: PropsScore) => {
   const themeText = useMemo(() => {
     const themeLanguage = theme.name[language.iso];
     const themeFR = theme.name["fr-FR"];
-    return themeLanguage ? themeLanguage : themeFR;
+    return themeLanguage ?? themeFR;
   }, [language, theme]);
 
   const data = useMemo(

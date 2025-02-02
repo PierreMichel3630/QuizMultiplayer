@@ -15,7 +15,7 @@ export const ScoreThemeBlock = ({
   theme,
   score,
   extra,
-  color = "text.secondary",
+  color = "text.primary",
 }: Props) => {
   const { t } = useTranslation();
 

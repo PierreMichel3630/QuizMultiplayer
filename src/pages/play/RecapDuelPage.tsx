@@ -6,11 +6,10 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useParams } from "react-router-dom";
 import { selectDuelGameById } from "src/api/game";
+import { CircularLoading } from "src/component/Loading";
 import { CancelDuelGameBlock } from "src/component/play/CancelDuelGameBlock";
 import { EndDuelGameBlock } from "src/component/play/EndDuelGameBlock";
 import { DuelGame } from "src/models/DuelGame";
-import { Colors } from "src/style/Colors";
-import { CircularLoading } from "src/component/Loading";
 
 export default function RecapDuelPage() {
   const { t } = useTranslation();
@@ -36,11 +35,7 @@ export default function RecapDuelPage() {
   }, [uuidGame]);
 
   return (
-    <Box
-      sx={{
-        backgroundColor: Colors.black,
-      }}
-    >
+    <Box>
       <Container
         maxWidth="md"
         sx={{

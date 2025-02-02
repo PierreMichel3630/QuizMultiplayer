@@ -55,3 +55,9 @@ export const countPlayers = () =>
   supabase
     .from(SUPABASE_PROFILE_TABLE)
     .select("*", { count: "exact", head: true });
+
+export const countPlayersSameUsername = (username: string) =>
+  supabase
+    .from(SUPABASE_PROFILE_TABLE)
+    .select("*", { count: "exact", head: true })
+    .eq("username", username);

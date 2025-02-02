@@ -29,6 +29,7 @@ import { countPlayersByTheme } from "src/api/score";
 import { selectThemeById } from "src/api/theme";
 import { ButtonColor } from "src/component/Button";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
+import { InfoBlock } from "src/component/InfoBlock";
 import { ProposeQuestionModal } from "src/component/modal/ProposeQuestionModal";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { RankingTableSoloDuel } from "src/component/table/RankingTable";
@@ -66,7 +67,7 @@ export default function ThemePage() {
   useEffect(() => {
     const getPlayers = () => {
       countPlayersByTheme(Number(id)).then(({ count }) => {
-        setPlayers(count ? count : undefined);
+        setPlayers(count ?? undefined);
       });
     };
     const getTheme = () => {
@@ -251,7 +252,6 @@ export default function ThemePage() {
                   sx={{
                     display: "flex",
                     p: 1,
-                    backgroundColor: Colors.black,
                   }}
                 >
                   <Grid
@@ -279,8 +279,7 @@ export default function ThemePage() {
                     </Grid>
                     <Grid item xs={7} sm={6} md={6} lg={6}>
                       <Grid container spacing={1}>
-                        
-                        {theme.enabled || (profile && profile.isadmin) ? (
+                        {theme.enabled || profile?.isadmin ? (
                           <>
                             <Grid item xs={12}>
                               <ButtonColor
@@ -341,24 +340,6 @@ export default function ThemePage() {
                                 />
                               </Grid>
                             )}
-                            {/*user && (
-                              <Grid item xs={12}>
-                                <ButtonColor
-                                  size="small"
-                                  value={Colors.pink2}
-                                  label={t("commun.proposequestion")}
-                                  icon={LightbulbIcon}
-                                  onClick={() => {
-                                    if (user) {
-                                      setOpenProposeQuestion(true);
-                                    } else {
-                                      navigate(`/login`);
-                                    }
-                                  }}
-                                  variant="contained"
-                                />
-                              </Grid>
-                            )*/}
                           </>
                         ) : (
                           <>
@@ -392,13 +373,7 @@ export default function ThemePage() {
         )}
         {loadingTheme || theme ? (
           <>
-            <Grid
-              item
-              xs={12}
-              sx={{
-                backgroundColor: Colors.black,
-              }}
-            >
+            <Grid item xs={12}>
               <Grid
                 container
                 justifyContent="center"
@@ -408,20 +383,10 @@ export default function ThemePage() {
                 }}
               >
                 <Grid item xs={6}>
-                  <Box sx={{ p: px(2), textAlign: "center" }}>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        color: Colors.lightgrey2,
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      {t("commun.players")}
-                    </Typography>
-                    <Typography variant="h2" color="text.secondary">
-                      {players ? players : "-"}
-                    </Typography>
-                  </Box>
+                  <InfoBlock
+                    title={t("commun.players")}
+                    value={players ?? "-"}
+                  />
                 </Grid>
                 <Grid
                   item
@@ -433,25 +398,15 @@ export default function ThemePage() {
                     variant="middle"
                     flexItem
                     sx={{
-                      borderColor: Colors.lightgrey2,
+                      borderColor: Colors.grey5,
                     }}
                   />
                 </Grid>
                 <Grid item xs={6}>
-                  <Box sx={{ p: px(2), textAlign: "center" }}>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        color: Colors.lightgrey2,
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      {t("commun.questions")}
-                    </Typography>
-                    <Typography variant="h2" color="text.secondary">
-                      {theme ? theme.questions : "-"}
-                    </Typography>
-                  </Box>
+                  <InfoBlock
+                    title={t("commun.questions")}
+                    value={theme ? theme.questions : "-"}
+                  />
                 </Grid>
               </Grid>
             </Grid>

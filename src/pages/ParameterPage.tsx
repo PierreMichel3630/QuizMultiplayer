@@ -97,7 +97,7 @@ export default function ParameterPage() {
                       <BaseInput
                         value={username}
                         clear={() => setUsername("")}
-                        onChange={(value) => setUsername(value)}
+                        onChange={(event) => setUsername(event.target.value)}
                       />
                     </Grid>
                     {profile && profile.username !== username && (
@@ -124,8 +124,8 @@ export default function ParameterPage() {
                       <BaseInput
                         value={email}
                         clear={() => setEmail(user ? user.email ?? "" : "")}
-                        onChange={(value) => {
-                          setEmail(value);
+                        onChange={(event) => {
+                          setEmail(event.target.value);
                         }}
                       />
                     </Grid>

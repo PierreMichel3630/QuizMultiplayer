@@ -215,11 +215,7 @@ export const RoundTimer = ({
           justifyContent: "center",
         }}
       >
-        <Typography
-          variant="h2"
-          component="div"
-          sx={{ color: "white", fontSize: fontSize }}
-        >
+        <Typography variant="h2" component="div" sx={{ fontSize: fontSize }}>
           {timeValue < 0 ? 0 : Math.floor(timeValue)}
         </Typography>
       </Box>

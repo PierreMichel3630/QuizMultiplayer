@@ -217,7 +217,7 @@ export const RankingTable = ({ data, navigation, loading = false }: Props) => {
                                   alignItems: "center",
                                 }}
                               >
-                                <ImageThemeBlock theme={el.theme} size={20} />
+                                <ImageThemeBlock theme={el.theme} size={20} border={false} />
                                 <JsonLanguageBlock
                                   variant="body1"
                                   value={el.theme.name}

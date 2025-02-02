@@ -520,6 +520,10 @@
       "createaccountgoogle": "Créer un compte via Google",
       "continue": "Continuer",
       "requiredusername": "Veuillez saisir un pseudonyme",
+      "minusername": "Le pseudonyme doit contenir au moins 3 caractères.",
+      "maxusername": "Le pseudonyme doit contenir au maximun 155 caractères.",
+      "nospaceusername": "Le pseudonyme ne doit pas contenir d'espace.",
+      "duplicateusername": "Le pseudonyme est déjà utilisé.",
       "requiredpassword": "Veuillez saisir un mot de passe",
       "minpassword": "Veuillez saisir un mot de passe de plus de 6 caractères",
       "requiredmail": "Veuillez saisir une adresse mail",
@@ -638,7 +642,9 @@
     "updateemailsuccess": "Votre modification d'addresse mail est en cours. Veuillez confirmer sur votre ancien et nouveau email.",
     "noenoughtmoney": "Vous n'avez pas assez pour débloquer cet item.",
     "buyitem": "Votre achat à été pris en compte.",
-    "notconnect": "Vous n'êtes pas connecté, vos scores ne seront pas sauvegardés. <br> <anchor1>{{link}}</anchor1> ou <anchor2>{{link2}}</anchor2>"
+    "usernametooshort": "Votre nom d'utilisateur doit contenir au moins 4 caractères.",
+    "notconnect": "Vous n'êtes pas connecté, vos scores ne seront pas sauvegardés. <br> <anchor1>{{link}}</anchor1> ou <anchor2>{{link2}}</anchor2>",
+    "duplicateusername": "Le pseudonyme est déjà utilisé."
   },
   "confidentiality": {
     "title": "Politique de confidentialité",

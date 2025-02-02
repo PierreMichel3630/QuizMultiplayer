@@ -1,26 +1,38 @@
 import { Box } from "@mui/material";
 import { percent, px } from "csx";
+import { useMemo } from "react";
+import { useUser } from "src/context/UserProvider";
+import { Colors } from "src/style/Colors";
 
 interface Props {
   theme: { image: string; color: string };
   size?: string | number;
+  border?: boolean;
 }
 
-export const ImageThemeBlock = ({ theme, size = percent(100) }: Props) => {
+export const ImageThemeBlock = ({ theme, size = percent(100), border = true }: Props) => {
+  const { mode } = useUser();
+
+  const borderColor = useMemo(
+    () => (mode === "dark" ? Colors.white : Colors.black),
+    [mode]
+  );
+
   return (
     <Box
       sx={{
         backgroundColor: theme.color,
         width: size,
         aspectRatio: "1/1",
-        borderRadius: px(10),
+        borderRadius: px(5),
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        border: "2px solid white",
+        border: border ? `2px solid ${borderColor}` : "none",
       }}
     >
       <img
+        alt="logo theme"
         src={theme.image}
         srcSet={theme.image}
         loading="lazy"

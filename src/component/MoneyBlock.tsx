@@ -29,7 +29,7 @@ export const MoneyBlock = ({
 export const AddMoneyBlock = ({
   money,
   variant = "h2",
-  color = "text.secondary",
+  color = "text.primary",
   width = 25,
 }: Props) => {
   return (

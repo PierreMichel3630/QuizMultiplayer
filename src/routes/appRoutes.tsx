@@ -11,7 +11,6 @@ import HistoryGamePage from "src/pages/HistoryGamePage";
 import ImprovePage from "src/pages/ImprovePage";
 import MenuPage from "src/pages/MenuPage";
 import NewThemePage from "src/pages/NewThemePage";
-import ParameterPage from "src/pages/ParameterPage";
 import PeoplePage from "src/pages/PeoplePage";
 import PersonalizedPage from "src/pages/PersonalizedPage";
 import ProfilPage from "src/pages/ProfilPage";
@@ -96,10 +95,6 @@ export const AppRoutes = [
       {
         path: "/resetpassword",
         element: <ResetPasswordPage />,
-      },
-      {
-        path: "/parameter",
-        element: <ParameterPage />,
       },
       {
         path: "/personalized",

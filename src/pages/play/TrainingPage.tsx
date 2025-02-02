@@ -201,11 +201,7 @@ export default function TrainingPage() {
   );
 
   return (
-    <Box
-      sx={{
-        backgroundColor: Colors.black,
-      }}
-    >
+    <Box>
       <Container
         maxWidth="md"
         sx={{
@@ -260,9 +256,7 @@ export default function TrainingPage() {
                   width: percent(100),
                 }}
               >
-                <Typography variant="h4" color="text.secondary">
-                  {t("commun.launchpartie")}
-                </Typography>
+                <Typography variant="h4">{t("commun.launchpartie")}</Typography>
                 <LoadingDot />
               </Box>
             ) : (

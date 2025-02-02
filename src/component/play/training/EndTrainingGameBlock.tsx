@@ -87,7 +87,6 @@ export const EndTrainingGameBlock = ({
                   <Divider
                     sx={{
                       borderBottomWidth: 5,
-                      borderColor: Colors.white,
                       borderRadius: px(5),
                     }}
                   />
@@ -107,7 +106,7 @@ export const EndTrainingGameBlock = ({
           <Container
             maxWidth="md"
             sx={{
-              backgroundColor: Colors.black,
+              backgroundColor: "background.paper",
             }}
           >
             <Box

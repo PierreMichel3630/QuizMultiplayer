@@ -260,8 +260,6 @@ export const selectGamesByTime = (
     dateStart = moment().subtract(1, "months");
   }
 
-  console.log(time);
-
   return supabase
     .from(SUPABASE_HISTORYSOLOGAMES_TABLE)
     .select("*, theme!sologame_themequestion_fkey(*)")

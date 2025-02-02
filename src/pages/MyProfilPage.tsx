@@ -28,6 +28,7 @@ import {
   sortByPointsDesc,
   sortByRankDesc,
   sortByTitle,
+  sortByUsername,
   sortByXP,
 } from "src/utils/sort";
 
@@ -215,6 +216,7 @@ export default function MyProfilPage() {
                   : [...acc, value.user2],
               [] as Array<Profile>
             )
+            .sort(sortByUsername)
         : [],
     [profileFriends, user]
   );
@@ -246,10 +248,9 @@ export default function MyProfilPage() {
         sx={{
           p: 1,
           backgroundColor: Colors.blue3,
-          backgroundImage:
-            profile && profile.banner
-              ? `url("/banner/${profile.banner.icon}")`
-              : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
+          backgroundImage: profile?.banner
+            ? `url("/banner/${profile.banner.icon}")`
+            : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           position: "relative",
@@ -294,7 +295,7 @@ export default function MyProfilPage() {
                   />
                 )}
               </Grid>
-              {profile && profile.country && (
+              {profile?.country && (
                 <Grid
                   item
                   xs={12}

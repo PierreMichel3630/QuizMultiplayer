@@ -32,6 +32,7 @@ import {
   sortByPointsDesc,
   sortByRankDesc,
   sortByTitle,
+  sortByUsername,
   sortByXP,
 } from "src/utils/sort";
 
@@ -139,7 +140,7 @@ export default function ProfilPage() {
       if (id) {
         selectScoresByProfile(id).then(({ data }) => {
           const res = data as Array<Score>;
-          setScores(res.sort(sortByDuelGamesDesc));
+          setScores([...res].sort(sortByDuelGamesDesc));
           setIsLoadingScore(false);
         });
       }
@@ -236,7 +237,7 @@ export default function ProfilPage() {
   );
 
   const titleOrder = useMemo(
-    () => titles.sort((a, b) => sortByTitle(language, a, b)),
+    () => [...titles].sort((a, b) => sortByTitle(language, a, b)),
     [titles, language]
   );
 
@@ -291,7 +292,8 @@ export default function ProfilPage() {
               ? [...acc, value.user1]
               : [...acc, value.user2],
           [] as Array<Profile>
-        ),
+        )
+        .sort(sortByUsername),
     [profileFriends, id]
   );
 
@@ -324,10 +326,9 @@ export default function ProfilPage() {
         sx={{
           p: 1,
           backgroundColor: Colors.blue3,
-          backgroundImage:
-            profileUser && profileUser.banner
-              ? `url("/banner/${profileUser.banner.icon}")`
-              : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
+          backgroundImage: profileUser?.banner
+            ? `url("/banner/${profileUser.banner.icon}")`
+            : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           position: "relative",

@@ -10,6 +10,7 @@ import { ExtraSoloGameXP } from "src/models/Game";
 import { Colors } from "src/style/Colors";
 import { getExperienceByLevel, getLevel } from "src/utils/calcul";
 import { AvatarAccountBadge } from "./avatar/AvatarAccount";
+import { useUser } from "src/context/UserProvider";
 
 interface Props {
   xp?: ExtraDuelGameXP;
@@ -18,6 +19,8 @@ interface Props {
 export const ExperienceBlock = ({ xp }: Props) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
+  const { mode } = useUser();
+  const isDarkMode = useMemo(() => mode === "dark", [mode]);
 
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
 
@@ -99,7 +102,7 @@ export const ExperienceBlock = ({ xp }: Props) => {
     xp && (
       <Grid container spacing={1} justifyContent="center" alignItems="end">
         <Grid item>
-          <Typography variant="h4" sx={{ color: Colors.white }}>
+          <Typography variant="h4">
             {t("commun.level")} {myLevel}
           </Typography>
         </Grid>
@@ -120,10 +123,18 @@ export const ExperienceBlock = ({ xp }: Props) => {
                   color: Colors.black,
                 }}
               >
-                <Typography variant="h6" component="span">
+                <Typography
+                  variant="h6"
+                  component="span"
+                  color={isDarkMode ? Colors.black2 : Colors.white}
+                >
                   {xpLevel - myXpLevel}
                 </Typography>
-                <Typography variant="caption" component="span">
+                <Typography
+                  variant="caption"
+                  component="span"
+                  color={isDarkMode ? Colors.black2 : Colors.white}
+                >
                   {t("commun.xpnextlevel")}
                 </Typography>
               </Box>
@@ -132,7 +143,7 @@ export const ExperienceBlock = ({ xp }: Props) => {
               sx={{
                 height: px(20),
                 width: percent(100),
-                backgroundColor: Colors.white,
+                backgroundColor: isDarkMode ? Colors.white : Colors.black2,
                 borderRadius: px(25),
               }}
             />
@@ -186,6 +197,8 @@ interface PropsSolo {
 export const MyExperienceSoloBlock = ({ xp }: PropsSolo) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
+  const { mode } = useUser();
+  const isDarkMode = useMemo(() => mode === "dark", [mode]);
 
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
 
@@ -272,7 +285,7 @@ export const MyExperienceSoloBlock = ({ xp }: PropsSolo) => {
           </Grid>
         )}
         <Grid item>
-          <Typography variant="h4" sx={{ color: Colors.white }}>
+          <Typography variant="h4">
             {t("commun.level")} {myLevel}
           </Typography>
         </Grid>
@@ -290,13 +303,20 @@ export const MyExperienceSoloBlock = ({ xp }: PropsSolo) => {
                   position: "absolute",
                   right: 8,
                   zIndex: 1,
-                  color: Colors.black,
                 }}
               >
-                <Typography variant="h6" component="span">
+                <Typography
+                  variant="h6"
+                  component="span"
+                  color={isDarkMode ? Colors.black2 : Colors.white}
+                >
                   {xpLevel - myXpLevel}
                 </Typography>
-                <Typography variant="caption" component="span">
+                <Typography
+                  variant="caption"
+                  component="span"
+                  color={isDarkMode ? Colors.black2 : Colors.white}
+                >
                   {t("commun.xpnextlevel")}
                 </Typography>
               </Box>
@@ -305,7 +325,7 @@ export const MyExperienceSoloBlock = ({ xp }: PropsSolo) => {
               sx={{
                 height: px(20),
                 width: percent(100),
-                backgroundColor: Colors.white,
+                backgroundColor: isDarkMode ? Colors.white : Colors.black2,
                 borderRadius: px(25),
               }}
             />
@@ -372,7 +392,7 @@ const ExperienceGainBlock = ({
         gap: px(2),
       }}
     >
-      <Typography variant="h6" color="text.secondary" textTransform="uppercase">
+      <Typography variant="h6" textTransform="uppercase">
         {title}
       </Typography>
       <Box

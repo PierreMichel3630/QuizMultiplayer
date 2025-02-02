@@ -15,7 +15,6 @@ import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { BarNavigation } from "src/component/navigation/BarNavigation";
 import { DuelGame } from "src/models/DuelGame";
-import { COLORDUEL1, COLORDUEL2 } from "./play/DuelPage";
 import { ButtonColor } from "src/component/Button";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 
@@ -56,138 +55,136 @@ export default function GameDuelPage() {
             }}
           >
             {game && (
-              <>
-                <Grid container spacing={1}>
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 1,
-                    }}
-                  >
-                    <Box sx={{ width: px(70) }}>
-                      <ImageThemeBlock theme={game.theme} />
-                    </Box>
-                    <JsonLanguageBlock
-                      variant="h2"
-                      color="text.secondary"
-                      sx={{ wordBreak: "break-all" }}
-                      value={game.theme.name}
-                    />
-                  </Grid>
-                  <Grid
-                    item
-                    xs={5}
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-end",
-                      gap: 1,
-                    }}
-                  >
-                    <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                      <Typography
-                        variant="h2"
-                        sx={{ color: COLORDUEL1, fontSize: 35 }}
-                      >
-                        {game.ptsplayer1}
-                      </Typography>
-                      <AvatarAccountBadge
-                        profile={game.player1}
-                        size={60}
-                        color={COLORDUEL1}
-                      />
-                    </Box>
-                    <Box sx={{ textAlign: "end" }}>
-                      <Typography variant="h4" sx={{ color: COLORDUEL1 }}>
-                        {game.player1.username}
-                      </Typography>
-                      {game.player1.title && (
-                        <JsonLanguageBlock
-                          variant="caption"
-                          color="text.secondary"
-                          value={game.player1.title.name}
-                        />
-                      )}
-                    </Box>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={2}
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <BoltIcon sx={{ fontSize: 50, color: Colors.white }} />
-                  </Grid>
-                  <Grid
-                    item
-                    xs={5}
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-start",
-                      gap: 1,
-                    }}
-                  >
-                    <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                      <AvatarAccountBadge
-                        profile={game.player2}
-                        size={60}
-                        color={COLORDUEL2}
-                      />
-                      <Typography
-                        variant="h2"
-                        sx={{ color: COLORDUEL2, fontSize: 35 }}
-                      >
-                        {game.ptsplayer2}
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="h4" sx={{ color: COLORDUEL2 }}>
-                        {game.player2.username}
-                      </Typography>
-                      {game.player2.title && (
-                        <JsonLanguageBlock
-                          variant="caption"
-                          color="text.secondary"
-                          value={game.player2.title.name}
-                        />
-                      )}
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Divider
-                      sx={{
-                        borderBottomWidth: 5,
-                        borderColor: Colors.white,
-                        borderRadius: px(5),
-                      }}
-                    />
-                  </Grid>
-                  {game.questions.map((el) => (
-                    <Fragment key={el.id}>
-                      <Grid item xs={12}>
-                        <CardSignalQuestion question={el} />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Divider
-                          sx={{
-                            borderBottomWidth: 3,
-                            borderColor: Colors.white,
-                            borderRadius: px(5),
-                          }}
-                        />
-                      </Grid>
-                    </Fragment>
-                  ))}
+              <Grid container spacing={1}>
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                  }}
+                >
+                  <Box sx={{ width: px(70) }}>
+                    <ImageThemeBlock theme={game.theme} />
+                  </Box>
+                  <JsonLanguageBlock
+                    variant="h2"
+                    color="text.secondary"
+                    sx={{ wordBreak: "break-all" }}
+                    value={game.theme.name}
+                  />
                 </Grid>
-              </>
+                <Grid
+                  item
+                  xs={5}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-end",
+                    gap: 1,
+                  }}
+                >
+                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                    <Typography
+                      variant="h2"
+                      sx={{ color: Colors.colorDuel1, fontSize: 35 }}
+                    >
+                      {game.ptsplayer1}
+                    </Typography>
+                    <AvatarAccountBadge
+                      profile={game.player1}
+                      size={60}
+                      color={Colors.colorDuel1}
+                    />
+                  </Box>
+                  <Box sx={{ textAlign: "end" }}>
+                    <Typography variant="h4" sx={{ color: Colors.colorDuel1 }}>
+                      {game.player1.username}
+                    </Typography>
+                    {game.player1.title && (
+                      <JsonLanguageBlock
+                        variant="caption"
+                        color="text.secondary"
+                        value={game.player1.title.name}
+                      />
+                    )}
+                  </Box>
+                </Grid>
+                <Grid
+                  item
+                  xs={2}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <BoltIcon sx={{ fontSize: 50, color: Colors.white }} />
+                </Grid>
+                <Grid
+                  item
+                  xs={5}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    gap: 1,
+                  }}
+                >
+                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                    <AvatarAccountBadge
+                      profile={game.player2}
+                      size={60}
+                      color={Colors.colorDuel2}
+                    />
+                    <Typography
+                      variant="h2"
+                      sx={{ color: Colors.colorDuel2, fontSize: 35 }}
+                    >
+                      {game.ptsplayer2}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="h4" sx={{ color: Colors.colorDuel2 }}>
+                      {game.player2.username}
+                    </Typography>
+                    {game.player2.title && (
+                      <JsonLanguageBlock
+                        variant="caption"
+                        color="text.secondary"
+                        value={game.player2.title.name}
+                      />
+                    )}
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Divider
+                    sx={{
+                      borderBottomWidth: 5,
+                      borderColor: Colors.white,
+                      borderRadius: px(5),
+                    }}
+                  />
+                </Grid>
+                {game.questions.map((el) => (
+                  <Fragment key={el.id}>
+                    <Grid item xs={12}>
+                      <CardSignalQuestion question={el} />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Divider
+                        sx={{
+                          borderBottomWidth: 3,
+                          borderColor: Colors.white,
+                          borderRadius: px(5),
+                        }}
+                      />
+                    </Grid>
+                  </Fragment>
+                ))}
+              </Grid>
             )}
           </Box>
         </Container>

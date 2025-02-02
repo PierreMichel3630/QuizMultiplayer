@@ -11,7 +11,7 @@ interface Props {
 export const ExtraResponseBlock = ({ extra }: Props) => {
   const value =
     extra.type === TypeDataEnum.DATE
-      ? moment(extra.value).format(extra.format)
+      ? moment(extra.value, extra.format).format(extra.format)
       : extra.value;
   return (
     <Typography

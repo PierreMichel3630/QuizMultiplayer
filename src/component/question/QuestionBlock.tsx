@@ -38,7 +38,6 @@ export const QuestionBlock = ({ question, timer }: Props) => {
         <>
           <JsonLanguageBlock
             variant="h2"
-            color="text.secondary"
             sx={{ fontSize: important(px(30)), wordBreak: "break-word" }}
             value={question.question}
           />
@@ -64,7 +63,6 @@ export const QuestionBlock = ({ question, timer }: Props) => {
           {question.extra && (
             <JsonLanguageBlock
               variant="caption"
-              color="text.secondary"
               sx={{
                 fontSize: 18,
                 fontStyle: "italic",

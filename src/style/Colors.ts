@@ -46,7 +46,7 @@ export const Colors = {
   yellow: yellow[800],
   yellow2: yellow[900],
   yellow3: yellow[200],
-  yellow4: yellow[500],
+  yellow4: yellow[600],
   orange: orange[900],
   orange2: orange[300],
   black: "#000000",
@@ -62,4 +62,6 @@ export const Colors = {
   wronganswerborder: red[500],
   waitanswer: grey[600],
   waitanswerborder: grey[200],
+  colorDuel1: pink[300],
+  colorDuel2: lightBlue[200],
 };

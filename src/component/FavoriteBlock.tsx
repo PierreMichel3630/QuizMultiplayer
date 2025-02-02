@@ -80,7 +80,6 @@ interface PropsSelect {
   search?: string;
 }
 export const FavoriteSelectBlock = ({
-  selected,
   select,
   search,
 }: PropsSelect) => {

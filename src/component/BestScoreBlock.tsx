@@ -1,12 +1,11 @@
 import { Grid, Typography } from "@mui/material";
 import { important, px } from "csx";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { selectScoreByThemeAndPlayer } from "src/api/score";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Score } from "src/models/Score";
 import { Theme } from "src/models/Theme";
-import { Colors } from "src/style/Colors";
 import { ShareScoreIcon } from "./ShareApplicationBlock";
 
 interface Props {
@@ -43,13 +42,8 @@ export const BestScoreBlock = ({ theme, points }: Props) => {
           gap: 1,
         }}
       >
-        <Typography variant="h6" sx={{ color: Colors.white }}>
-          {t("commun.score")} :{" "}
-        </Typography>
-        <Typography
-          variant="h2"
-          sx={{ color: Colors.white, fontSize: important(px(35)) }}
-        >
+        <Typography variant="h6">{t("commun.score")} : </Typography>
+        <Typography variant="h2" sx={{ fontSize: important(px(35)) }}>
           {points}
         </Typography>
         <ShareScoreIcon score={points} theme={theme} />
@@ -65,13 +59,8 @@ export const BestScoreBlock = ({ theme, points }: Props) => {
             gap: 1,
           }}
         >
-          <Typography variant="h6" sx={{ color: Colors.white }}>
-            {t("commun.bestscore")} :{" "}
-          </Typography>
-          <Typography
-            variant="h2"
-            sx={{ color: Colors.white, fontSize: important(px(35)) }}
-          >
+          <Typography variant="h6">{t("commun.bestscore")} : </Typography>
+          <Typography variant="h2" sx={{ fontSize: important(px(35)) }}>
             {myScore.points}
           </Typography>
         </Grid>

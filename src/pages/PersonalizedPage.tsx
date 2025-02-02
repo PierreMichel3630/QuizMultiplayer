@@ -7,7 +7,9 @@ import { Helmet } from "react-helmet-async";
 import { updateSelectProfil } from "src/api/profile";
 import { BadgeSelector } from "src/component/BadgeSelector";
 import { BannerSelector } from "src/component/BannerSelector";
+import { ButtonColor } from "src/component/Button";
 import { MyCountryBlock } from "src/component/MyCountryBlock";
+import { ProfilHeader } from "src/component/ProfileHeader";
 import { TitleSelector } from "src/component/TitleSelector";
 import { AvatarSelector } from "src/component/avatar/AvatarSelector";
 import { SkeletonRectangular } from "src/component/skeleton/SkeletonRectangular";
@@ -18,13 +20,14 @@ import { Badge } from "src/models/Badge";
 import { Banner } from "src/models/Banner";
 import { Profile } from "src/models/Profile";
 import { Title } from "src/models/Title";
-import { ProfilHeader } from "src/component/ProfileHeader";
-import { ButtonColor } from "src/component/Button";
 import { Colors } from "src/style/Colors";
 
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { useNavigate } from "react-router-dom";
+import { UsernameInput } from "src/component/input/UsernameInput";
 import { Country } from "src/models/Country";
+import { EmailInput } from "src/component/input/EmailInput";
+import { DeleteAccountButton } from "src/component/button/DeleteAcccountButton";
 
 export default function PersonalizedPage() {
   const { t } = useTranslation();
@@ -160,6 +163,12 @@ export default function PersonalizedPage() {
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <UsernameInput />
+            </Grid>
+            <Grid item xs={12}>
+              <EmailInput />
+            </Grid>
             <Grid item xs={12} md={4}>
               <Typography variant="h4">
                 {t("commun.myorigincountry")}
@@ -253,6 +262,12 @@ export default function PersonalizedPage() {
                 variant="contained"
                 onClick={() => navigate("/shop")}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>
+            <Grid item xs={12} sx={{ mt: 2 }}>
+              <DeleteAccountButton />
             </Grid>
           </Grid>
         </Box>

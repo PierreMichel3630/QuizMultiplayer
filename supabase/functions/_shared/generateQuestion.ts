@@ -203,7 +203,7 @@ const generateQuestionEquationSimple = (
 
   const a = getRandomElement(valuesOfA);
   const x = res / a;
-  const response = { 
+  const response = {
     "de-DE": x,
     "en-US": x,
     "es-ES": x,
@@ -328,7 +328,6 @@ const generateQuestionOperationSimple = (
       operation = generateSubstraction("FACILE");
       break;
   }
-  console.log(operation)
 
   const timeSimple = 15 - 0.2 * (points ?? 0);
   const time = timeSimple >= 1 ? timeSimple : 1;
@@ -422,9 +421,9 @@ const generateDivision = (difficulty: string): Operation => {
       number2 = randomIntFromInterval(100, 1000);
       break;
   }
-  const x = number1 * number2
+  const x = number1 * number2;
   const operation = `${x} ${operator} ${number2}`;
-  const res = x / number2
+  const res = x / number2;
 
   return {
     value: convertToString(operation),
@@ -578,10 +577,12 @@ const getResponseMathQCM = (operation: Operation) => {
       results.push(correctResult + value);
     });
   } else if (operator === Operator.DIVISION) {
-    const randomSomme = [-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,1,2,3,4,5,6,7,8,9,10];
+    const randomSomme = [
+      -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+    ];
     randomSomme.forEach((value) => {
-      const res = correctResult + value
-      if(res > 0) {
+      const res = correctResult + value;
+      if (res > 0) {
         results.push(correctResult + value);
       }
     });
@@ -619,8 +620,8 @@ const getResponseMathQCM = (operation: Operation) => {
 };
 
 const getRandomResponse = (result: number) => {
-  const results : Array<number> = [];
-  const randomChiffre : Array<number> = [1, 2, 3, 4, 5, -1, -2, -3, -4, -5];
+  const results: Array<number> = [];
+  const randomChiffre: Array<number> = [1, 2, 3, 4, 5, -1, -2, -3, -4, -5];
   randomChiffre.forEach((value) => {
     results.push(result + value);
   });

@@ -3,7 +3,6 @@ import {
   BottomNavigation,
   BottomNavigationAction,
   Box,
-  Paper
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -36,15 +35,15 @@ export const BottomNavigationBlock = () => {
   );
 
   return (
-    <Paper
+    <Box
       sx={{
         position: "fixed",
         bottom: 0,
         left: 0,
         right: 0,
         zIndex: 10,
+        borderTop: `2px solid ${Colors.lightgrey}`,
       }}
-      elevation={24}
     >
       <BottomNavigation
         showLabels
@@ -100,28 +99,54 @@ export const BottomNavigationBlock = () => {
       </BottomNavigation>
       <Box
         sx={{
-          p: 1,
-          bgcolor: "background.paper",
-          borderRadius: "50%",
+          p: px(5),
           position: "absolute",
           left: "50%",
           transform: "translate(-40%, -100%)",
           cursor: "pointer",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: Colors.blue3,
-          width: px(70),
-          height: px(70),
-          border: "5px solid",
-          borderColor: "background.paper",
+          bgcolor: "background.paper",
+          borderRadius: "50%",
         }}
         onClick={() => navigate("/play")}
       >
-        <LogoIcon
-          sx={{ color: Colors.white, ml: "2px", mt: "3px", fontSize: 40 }}
-        />
+        <Box
+          sx={{
+            backgroundColor: Colors.blue3,
+            width: px(60),
+            height: px(60),
+            borderRadius: "50%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <LogoIcon
+            sx={{ color: Colors.white, ml: "2px", mt: "3px", fontSize: 40 }}
+          />
+        </Box>
       </Box>
-    </Paper>
+      <Box
+        sx={{
+          p: px(5),
+          position: "absolute",
+          left: "50%",
+          transform: "translate(-40%, -100%)",
+          cursor: "pointer",
+          bgcolor: "background.paper",
+          borderRadius: "50%",
+          border: `2px solid ${Colors.lightgrey}`,
+          zIndex: -1,
+        }}
+        onClick={() => navigate("/play")}
+      >
+        <Box
+          sx={{
+            width: px(60),
+            height: px(60),
+            borderRadius: "50%",
+          }}
+        ></Box>
+      </Box>
+    </Box>
   );
 };

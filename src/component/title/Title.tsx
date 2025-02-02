@@ -7,6 +7,8 @@ import { GoBackButtonIcon } from "../navigation/GoBackButton";
 
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
+import { useUser } from "src/context/UserProvider";
+import { useMemo } from "react";
 
 interface Props {
   title: JsonLanguage | string;
@@ -15,6 +17,14 @@ interface Props {
 }
 
 export const TitleBlock = ({ title, favorite = false, addFavorite }: Props) => {
+  const { mode } = useUser();
+
+  const isDarkMode = useMemo(() => mode === "dark", [mode]);
+  const colorBorderFavorite = useMemo(
+    () => (isDarkMode ? Colors.yellow4 : Colors.black),
+    [isDarkMode]
+  );
+
   return (
     <Grid
       container
@@ -27,17 +37,12 @@ export const TitleBlock = ({ title, favorite = false, addFavorite }: Props) => {
       </Grid>
       <Grid item xs sx={{ textAlign: "center" }}>
         {typeof title === "string" ? (
-          <Typography
-            variant="h2"
-            color="text.secondary"
-            sx={{ fontSize: important(px(25)) }}
-          >
+          <Typography variant="h2" sx={{ fontSize: important(px(25)) }}>
             {title}
           </Typography>
         ) : (
           <JsonLanguageBlock
             variant="h2"
-            color="text.secondary"
             sx={{ fontSize: important(px(25)) }}
             value={title}
           />
@@ -48,16 +53,17 @@ export const TitleBlock = ({ title, favorite = false, addFavorite }: Props) => {
           {favorite ? (
             <StarIcon
               sx={{
-                fontSize: 45,
+                fontSize: 50,
                 color: Colors.yellow4,
                 cursor: "pointer",
+                stroke: colorBorderFavorite,
               }}
               onClick={() => addFavorite()}
             />
           ) : (
             <StarBorderOutlinedIcon
               sx={{
-                fontSize: 45,
+                fontSize: 50,
                 color: Colors.yellow4,
                 cursor: "pointer",
               }}

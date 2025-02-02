@@ -16,7 +16,6 @@ import { QuestionResponseBlock } from "src/component/question/QuestionResponseBl
 import { Answer, Response } from "src/component/question/ResponseBlock";
 import { SoloGame } from "src/models/Game";
 import { StatusGameSolo } from "src/models/enum/StatusGame";
-import { Colors } from "src/style/Colors";
 import { PreloadImages } from "src/utils/preload";
 
 export default function SoloPage() {
@@ -115,9 +114,6 @@ export default function SoloPage() {
             }, delay);
           });
       }
-      return () => {
-        console.log("Bye");
-      };
     },
     [navigate]
   );
@@ -205,17 +201,12 @@ export default function SoloPage() {
   };
 
   const responseP1 = useMemo(
-    () =>
-      myresponse ? myresponse : response ? response.responseplayer1 : undefined,
+    () => myresponse ?? (response ? response.responseplayer1 : undefined),
     [myresponse, response]
   );
 
   return (
-    <Box
-      sx={{
-        backgroundColor: Colors.black,
-      }}
-    >
+    <Box>
       <Container
         maxWidth="md"
         sx={{
@@ -276,9 +267,7 @@ export default function SoloPage() {
                   width: percent(100),
                 }}
               >
-                <Typography variant="h4" color="text.secondary">
-                  {t("commun.launchpartie")}
-                </Typography>
+                <Typography variant="h4">{t("commun.launchpartie")}</Typography>
                 <LoadingDot />
               </Box>
             )}
