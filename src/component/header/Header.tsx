@@ -8,6 +8,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
 import { ProfileBar } from "../ProfileBar";
+import { DarkModeButton } from "../button/DarkModeButton";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ export const Header = () => {
             <Box
               sx={{ display: "flex", gap: 1, p: 1, justifyContent: "flex-end" }}
             >
+              <DarkModeButton />
               <ButtonColor
                 value={Colors.black}
                 label={t("commun.login")}

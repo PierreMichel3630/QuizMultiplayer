@@ -284,9 +284,11 @@
     "other": "Autre",
     "seeshop": "Voir la boutique",
     "rewardwheel": "Roue de la chance",
+    "launch": "Lancer",
     "customizedprofile": "Customiser votre profil",
     "shop": "Boutique",
-    "selectopponenttext": "Non obligatoire, sans choix vous jouerez contre un adversaire aléatoire."
+    "selectopponenttext": "Non obligatoire, sans choix vous jouerez contre un adversaire aléatoire.",
+    "nextlaunch": "Prochain lancer"
   },
   "offline": {
     "title": "Connectez-vous à Internet",
@@ -484,6 +486,9 @@
     },
     "shop": {
       "title": "Boutique"
+    },
+    "wheel": {
+      "title": "Roue de la chance"
     }
   },
   "enum": {
@@ -719,5 +724,12 @@
     "title": "Quizbattle",
     "score": "Rejoins Quizbattle et viens battre mon score {{score}} sur le thème {{theme}}.",
     "text": "Rejoins Quizbattle et viens me défier sur une multitude de thèmes."
+  },
+  "wheel": {
+    "gain1gold": "Gagner 1 Quizcoin",
+    "gain10gold": "Gagner 10 Quizcoin",
+    "gain100gold": "Gagner 100 Quizcoin",
+    "gain250gold": "Gagner 250 Quizcoin",
+    "gain500gold": "Gagner 500 Quizcoin"
   }
 }

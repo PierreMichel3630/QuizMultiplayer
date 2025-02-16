@@ -107,7 +107,7 @@ export const ReportModal = ({
           </IconButton>
         </Toolbar>
       </AppBar>
-      <DialogContent sx={{ backgroundColor: Colors.black, p: 1 }}>
+      <DialogContent sx={{  p: 1 }}>
         <Grid container spacing={3}>
           {question && (
             <Grid item xs={12}>
@@ -121,25 +121,6 @@ export const ReportModal = ({
               label={t("commun.typeproblem")}
               placeholder={t("commun.typeproblem")}
               fullWidth
-              sx={{
-                color: important(Colors.white),
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: important(Colors.white),
-                },
-                "& .MuiInputBase-input": {
-                  color: Colors.white,
-                },
-                "& .Mui-focused": {
-                  color: Colors.white,
-                },
-                "& .MuiInputLabel-root": {
-                  color: important(Colors.white),
-                },
-                "& .MuiSelect-icon": {
-                  color: Colors.white,
-                },
-              }}
-              helperText={type === "" && t("commun.selecttypeerror")}
               onChange={changeType}
             >
               {reportmessages.map((message) => (
@@ -158,21 +139,6 @@ export const ReportModal = ({
               rows={4}
               value={description}
               onChange={changeDescription}
-              sx={{
-                color: important(Colors.white),
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: important(Colors.white),
-                },
-                "& .MuiOutlinedInput-root": {
-                  color: Colors.white,
-                },
-                "& .Mui-focused": {
-                  color: Colors.white,
-                },
-                "& .MuiInputLabel-root": {
-                  color: important(Colors.white),
-                },
-              }}
             />
           </Grid>
           <Grid item xs={12}>

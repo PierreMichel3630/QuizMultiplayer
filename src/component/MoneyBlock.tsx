@@ -44,7 +44,7 @@ export const AddMoneyBlock = ({
       <Typography variant={variant} color={color} noWrap>
         + {Math.round(money)}
       </Typography>
-      <img src={moneyIcon} width={width} loading="lazy" />
+      <img alt="money logo" src={moneyIcon} width={width} loading="lazy" />
     </Box>
   );
 };
