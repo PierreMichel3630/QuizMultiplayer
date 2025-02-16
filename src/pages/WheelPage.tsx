@@ -81,21 +81,19 @@ export default function WheelPage() {
                 gap: 2,
               }}
             >
-              {profile?.wheellaunch && (
-                <TimeLeftBlock
-                  intervalHours={24}
-                  lastDate={profile?.wheellaunch}
-                  onLaunch={() => {
-                    if (profile) {
-                      launchWheel().then(({ data }) => {
-                        setWheelResult(data);
-                      });
-                    } else {
-                      navigate("/login");
-                    }
-                  }}
-                />
-              )}
+              <TimeLeftBlock
+                intervalHours={24}
+                lastDate={profile?.wheellaunch}
+                onLaunch={() => {
+                  if (profile) {
+                    launchWheel().then(({ data }) => {
+                      setWheelResult(data);
+                    });
+                  } else {
+                    navigate("/login");
+                  }
+                }}
+              />
             </Box>
           </Box>
         </Box>

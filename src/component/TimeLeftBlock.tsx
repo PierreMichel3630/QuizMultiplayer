@@ -13,7 +13,7 @@ import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 
 interface Props {
   intervalHours: number;
-  lastDate: Date;
+  lastDate?: Date;
   onLaunch: () => void;
 }
 
@@ -27,11 +27,14 @@ export const TimeLeftBlock = ({ intervalHours, lastDate, onLaunch }: Props) => {
   const [diffSeconds, setDiffSeconds] = useState(0);
 
   const diffSecondsDefault = useMemo(
-    () => moment().diff(moment(lastDate), "seconds"),
+    () => (lastDate ? moment().diff(moment(lastDate), "seconds") : 0),
     [intervalHours, lastDate]
   );
 
-  const isDisplay = useMemo(() => diffSeconds > 0, [diffSeconds]);
+  const isDisplay = useMemo(
+    () => (lastDate ? diffSeconds > 0 : false),
+    [lastDate, diffSeconds]
+  );
 
   const hours = useMemo(() => {
     const result = Math.floor(diffSeconds / 3600);
