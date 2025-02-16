@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { Variant } from "@mui/material/styles/createTypography";
-import { px } from "csx";
+import { important, px } from "csx";
 import moneyIcon from "src/assets/money.svg";
 
 interface Props {
@@ -8,6 +8,7 @@ interface Props {
   variant?: Variant;
   color?: string;
   width?: number;
+  fontSize?: number;
 }
 
 export const MoneyBlock = ({
@@ -31,6 +32,7 @@ export const AddMoneyBlock = ({
   variant = "h2",
   color = "text.primary",
   width = 25,
+  fontSize,
 }: Props) => {
   return (
     <Box
@@ -41,7 +43,12 @@ export const AddMoneyBlock = ({
         alignItems: "center",
       }}
     >
-      <Typography variant={variant} color={color} noWrap>
+      <Typography
+        variant={variant}
+        color={color}
+        sx={{ fontSize: fontSize ? important(px(fontSize)) : "auto" }}
+        noWrap
+      >
         + {Math.round(money)}
       </Typography>
       <img alt="money logo" src={moneyIcon} width={width} loading="lazy" />

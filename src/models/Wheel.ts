@@ -10,8 +10,10 @@ export interface WheelResult {
         previous: number
         actual: number
     },
-    option: {
-        value: number,
-        type: TypeWheelEnum
-    }
+    option: WheelOption
+}
+
+export interface WheelOption {
+    value: number,
+    type: TypeWheelEnum
 }

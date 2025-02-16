@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useUser } from "src/context/UserProvider";
 import { TypeWheelEnum } from "src/models/enum/TypeWheelEnum";
+import { WheelOption } from "src/models/Wheel";
 import { Colors } from "src/style/Colors";
 
 interface OptionWheel {
@@ -12,9 +13,10 @@ interface OptionWheel {
 }
 
 interface Props {
-  launch: boolean;
+  result?: WheelOption;
+  onFinish: () => void;
 }
-export const AnimateWheel = ({ launch }: Props) => {
+export const AnimateWheel = ({ result, onFinish }: Props) => {
   const { mode } = useUser();
   const [angle, setAngle] = useState(0);
 
@@ -111,23 +113,48 @@ export const AnimateWheel = ({ launch }: Props) => {
     [colorText, colorBackground]
   );
 
-  const updateAnimationState = useCallback(() => {
+  const updateAnimationState = useCallback((finishAngle: number) => {
     let tour = 0;
-    let diffAngle = 0;
+    let vitesse = 0;
+    let VITESSEMAX = 5;
+    let VITESSEMIN = 2;
+    let DIFFANGLE = 2;
     const interval = setInterval(() => {
-      //console.log(diffAngle);
-      if (diffAngle < 0) clearInterval(interval);
-      setAngle((prev) => prev + diffAngle);
-      tour < 30 ? diffAngle++ : diffAngle--;
+      if (tour < 150) {
+        setAngle(tour * vitesse);
+        if (vitesse < VITESSEMAX) vitesse += 1;
+      } else if (tour >= 150 && tour < 200) {
+        setAngle(tour * vitesse);
+        if (vitesse > VITESSEMIN) vitesse -= 1;
+      } else {
+        const angle = (DIFFANGLE * tour) % 360;
+        const angleNext = (DIFFANGLE * (tour + 1)) % 360;
+        if (angle < finishAngle && angleNext >= finishAngle) {
+          setAngle(finishAngle);
+          clearInterval(interval);
+          onFinish();
+        } else {
+          setAngle(angle);
+        }
+      }
       tour++;
-    }, 100);
+    }, options.length);
   }, []);
 
   useEffect(() => {
-    if (launch) {
-      updateAnimationState();
+    if (result) {
+      const anglePerOption = 360 / options.length;
+      const optionsValid = options.reduce(
+        (acc, el, i) =>
+          el.type === result.type && Number(result.value) === Number(el.value)
+            ? [...acc, i]
+            : [...acc],
+        [] as Array<number>
+      );
+      const angleResult = optionsValid[0] * anglePerOption + anglePerOption / 2;
+      updateAnimationState(angleResult);
     }
-  }, [launch, updateAnimationState]);
+  }, [result, updateAnimationState]);
 
   return <Wheel angle={angle} options={options} />;
 };
@@ -140,8 +167,8 @@ interface PropsWheel {
 export const Wheel = ({ angle, options }: PropsWheel) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const divCanvasRef = useRef<HTMLDivElement | null>(null);
-  const srcXp = "/src/assets/xp.svg";
-  const srcGold = "/src/assets/money.svg";
+  const srcXp = "https://quizbattle.fr/xp.svg";
+  const srcGold = "https://quizbattle.fr/money.svg";
 
   const [width, setWidth] = useState(300);
 
@@ -201,8 +228,6 @@ export const Wheel = ({ angle, options }: PropsWheel) => {
       contextCanvas.fillStyle = color;
 
       contextCanvas.fill();
-      contextCanvas.strokeStyle = "white";
-      contextCanvas.stroke();
 
       // Draw the name in the sector
       contextCanvas.save();
@@ -238,7 +263,7 @@ export const Wheel = ({ angle, options }: PropsWheel) => {
     contextCanvas.lineWidth = 4;
     contextCanvas.strokeStyle = "grey";
     contextCanvas.stroke();
-    contextCanvas.rotate(rotation * (Math.PI / 180));
+    contextCanvas.rotate(rotation + 90 * (Math.PI / 180));
     contextCanvas.beginPath();
     contextCanvas.moveTo(0, -canvas.width * 0.15);
     contextCanvas.lineTo(canvas.width * 0.09, 0);
@@ -260,7 +285,10 @@ export const Wheel = ({ angle, options }: PropsWheel) => {
         ref={canvasRef}
         width={width}
         height={width}
-        style={{ borderRadius: "50%", border: "5px solid white" }}
+        style={{
+          borderRadius: "50%",
+          border: "5px solid white",
+        }}
       />
     </Box>
   );
