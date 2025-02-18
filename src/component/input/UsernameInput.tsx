@@ -94,11 +94,11 @@ export const UsernameInput = () => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <FormControl fullWidth error={Boolean(formik.errors.username)}>
-        <Grid container spacing={1}>
-          <Grid item xs={12} md={4} lg={3}>
+        <Grid container spacing={1} alignItems="center">
+          <Grid item xs={12} md={4}>
             <Typography variant="h4">{t("commun.username")}</Typography>
           </Grid>
-          <Grid item xs={12} md={8} lg={7}>
+          <Grid item xs={12} md={8}>
             <OutlinedInput
               id="register-username-input"
               type="text"

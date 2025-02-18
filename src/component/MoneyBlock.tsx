@@ -4,7 +4,7 @@ import { important, px } from "csx";
 import moneyIcon from "src/assets/money.svg";
 
 interface Props {
-  money: number;
+  money: number | string;
   variant?: Variant;
   color?: string;
   width?: number;
@@ -49,7 +49,7 @@ export const AddMoneyBlock = ({
         sx={{ fontSize: fontSize ? important(px(fontSize)) : "auto" }}
         noWrap
       >
-        + {Math.round(money)}
+        + {money}
       </Typography>
       <img alt="money logo" src={moneyIcon} width={width} loading="lazy" />
     </Box>

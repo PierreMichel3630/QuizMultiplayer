@@ -90,49 +90,47 @@ export default function GameSoloPage() {
             }}
           >
             {game && (
-              <>
-                <Grid container spacing={1}>
-                  <Grid item xs={12} sx={{ mb: 1 }}>
-                    <ScoreThemeBlock theme={game.theme} score={game.points} />
-                  </Grid>
-                  {questions.map((el, index) => (
-                    <Fragment key={index}>
-                      <Grid item xs={12}>
-                        <CardSignalQuestion question={el} />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Divider
-                          sx={{
-                            borderBottomWidth: 5,
-                            borderColor: Colors.white,
-                            borderRadius: px(5),
-                          }}
-                        />
-                      </Grid>
-                    </Fragment>
-                  ))}
-                  {!isEnd && isLoading && (
-                    <>
-                      {Array.from(new Array(1)).map((_, index) => (
-                        <Fragment key={index}>
-                          <Grid item xs={12}>
-                            <SkeletonQuestion />
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Divider
-                              sx={{
-                                borderBottomWidth: 5,
-                                borderColor: Colors.white,
-                                borderRadius: px(5),
-                              }}
-                            />
-                          </Grid>
-                        </Fragment>
-                      ))}
-                    </>
-                  )}
+              <Grid container spacing={1}>
+                <Grid item xs={12} sx={{ mb: 1 }}>
+                  <ScoreThemeBlock theme={game.theme} score={game.points} />
                 </Grid>
-              </>
+                {questions.map((el, index) => (
+                  <Fragment key={index}>
+                    <Grid item xs={12}>
+                      <CardSignalQuestion question={el} />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Divider
+                        sx={{
+                          borderBottomWidth: 5,
+                          borderColor: Colors.white,
+                          borderRadius: px(5),
+                        }}
+                      />
+                    </Grid>
+                  </Fragment>
+                ))}
+                {!isEnd && isLoading && (
+                  <>
+                    {Array.from(new Array(1)).map((_, index) => (
+                      <Fragment key={index}>
+                        <Grid item xs={12}>
+                          <SkeletonQuestion />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Divider
+                            sx={{
+                              borderBottomWidth: 5,
+                              borderColor: Colors.white,
+                              borderRadius: px(5),
+                            }}
+                          />
+                        </Grid>
+                      </Fragment>
+                    ))}
+                  </>
+                )}
+              </Grid>
             )}
           </Box>
         </Container>

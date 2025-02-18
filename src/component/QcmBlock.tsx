@@ -22,6 +22,7 @@ import {
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { useUser } from "src/context/UserProvider";
+import { ExtraResponseBlock } from "./response/ExtraResponseBlock";
 
 interface Props {
   question: QuestionSolo;
@@ -591,8 +592,15 @@ export const QcmBlockDuelResultBlock = ({
                 }}
               />
             )}
-            {res.image && <ImageQCMBlock src={res.image} />}
-            {res.label && <JsonLanguageBlock variant="h3" value={res.label} />}
+            <Box>
+              {res.image && <ImageQCMBlock src={res.image} />}
+              {res.label && (
+                <JsonLanguageBlock variant="h3" value={res.label} />
+              )}
+              {res.extra && (
+                <ExtraResponseBlock extra={res.extra} shadow={false} />
+              )}
+            </Box>
             {isArrowLeft && (
               <ArrowLeftIcon
                 viewBox="10 7 5 10"

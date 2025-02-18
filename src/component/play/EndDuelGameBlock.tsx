@@ -268,7 +268,7 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
         )}
         {money && (
           <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-            <AddMoneyBlock money={money} />
+            <AddMoneyBlock money={Math.round(money)} />
           </Grid>
         )}
         <Grid item xs={12}>

@@ -5,7 +5,7 @@ import { important, px } from "csx";
 import xpIcon from "src/assets/xp.svg";
 
 interface Props {
-  xp: number;
+  xp: number | string;
   variant?: Variant;
   color?: string;
 }
@@ -28,7 +28,7 @@ export const AddXpBlock = ({
 };
 
 interface PropsAddXpImageBlock {
-  xp: number;
+  xp: number | string;
   variant?: Variant;
   color?: string;
   width?: number;

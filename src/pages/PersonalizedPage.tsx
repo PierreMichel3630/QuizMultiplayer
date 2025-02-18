@@ -162,7 +162,7 @@ export default function PersonalizedPage() {
       </Grid>
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
-          <Grid container spacing={1}>
+          <Grid container spacing={1} alignItems="center">
             <Grid item xs={12}>
               <UsernameInput />
             </Grid>
