@@ -14,5 +14,7 @@ export interface WheelResult {
 
 export interface WheelOption {
   value: string;
+  color: string;
+  text: string;
   type: TypeWheelEnum;
 }

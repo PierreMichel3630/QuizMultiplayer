@@ -98,11 +98,11 @@ export const sortByPointsDesc = (
   b: { points: number }
 ) => b.points - a.points;
 
-export const sortByRankDesc = (a: { rank: number }, b: { rank: number }) => {
-  const valueA = a.rank;
-  const valueB = b.rank;
-  return valueB - valueA;
-};
+export const sortByRankDesc = (a: { rank: number }, b: { rank: number }) =>
+  b.rank - a.rank;
+
+export const sortByRankAsc = (a: { rank: number }, b: { rank: number }) =>
+  a.rank - b.rank;
 
 export const sortByXP = (a: { xp: number }, b: { xp: number }) => {
   const valueA = a.xp;

@@ -1,12 +1,12 @@
-import { Box, Button, Typography } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import { useEffect, useMemo, useState } from "react";
-import moment from "moment";
-import { useUser } from "src/context/UserProvider";
+import { Box, Typography } from "@mui/material";
 import { padding, percent, px } from "csx";
-import { Colors } from "src/style/Colors";
+import moment from "moment";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "src/context/UserProvider";
+import { Colors } from "src/style/Colors";
 import { ButtonColor } from "./Button";
 
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
@@ -25,6 +25,7 @@ export const TimeLeftBlock = ({ intervalHours, lastDate, onLaunch }: Props) => {
   const DELAY = 1000;
   const isDarkMode = useMemo(() => mode === "dark", [mode]);
   const [diffSeconds, setDiffSeconds] = useState(0);
+  const [disabled, setDisabled] = useState(false);
 
   const diffSecondsDefault = useMemo(
     () => (lastDate ? moment().diff(moment(lastDate), "seconds") : 0),
@@ -103,20 +104,23 @@ export const TimeLeftBlock = ({ intervalHours, lastDate, onLaunch }: Props) => {
           />
         </>
       ) : (
-        <Button
-          variant="outlined"
+        <ButtonColor
+          value={Colors.red3}
+          label={t("commun.launch")}
+          variant="contained"
+          onClick={() => {
+            if (!disabled) {
+              setDisabled(true);
+              onLaunch();
+            }
+          }}
           sx={{
             borderRadius: percent(50),
             width: px(100),
             height: px(100),
             background: Colors.red3,
           }}
-          onClick={onLaunch}
-        >
-          <Typography variant="h4" noWrap>
-            {t("commun.launch")}
-          </Typography>
-        </Button>
+        />
       )}
     </>
   );

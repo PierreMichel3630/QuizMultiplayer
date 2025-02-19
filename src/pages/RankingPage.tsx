@@ -22,6 +22,7 @@ import {
   ClassementTimeEnum,
 } from "src/models/enum/ClassementEnum";
 import { getLevel } from "src/utils/calcul";
+import { sortByRankAsc } from "src/utils/sort";
 
 export default function RankingPage() {
   const { t } = useTranslation();
@@ -55,8 +56,9 @@ export default function RankingPage() {
             theme: el.theme,
             rank: page * ITEMPERPAGE + index + 1,
           }));
+          console.log(newdata);
           setIsEnd(newdata.length < ITEMPERPAGE);
-          setData((prev) => [...prev, ...newdata]);
+          setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
           setIsLoading(false);
         });
       } else if (
@@ -75,8 +77,9 @@ export default function RankingPage() {
               rank: page * ITEMPERPAGE + index + 1,
             };
           });
+          console.log(newdata);
           setIsEnd(newdata.length < ITEMPERPAGE);
-          setData((prev) => [...prev, ...newdata]);
+          setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
           setIsLoading(false);
         });
       } else if (
@@ -91,7 +94,7 @@ export default function RankingPage() {
             rank: page * ITEMPERPAGE + index + 1,
           }));
           setIsEnd(newdata.length < ITEMPERPAGE);
-          setData((prev) => [...prev, ...newdata]);
+          setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
           setIsLoading(false);
         });
       } else if (type === ClassementEnum.xp) {
@@ -108,7 +111,7 @@ export default function RankingPage() {
             };
           });
           setIsEnd(newdata.length < ITEMPERPAGE);
-          setData((prev) => [...prev, ...newdata]);
+          setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
           setIsLoading(false);
         });
       } else if (

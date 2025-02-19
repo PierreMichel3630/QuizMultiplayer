@@ -35,6 +35,35 @@ interface PropsAddXpImageBlock {
   fontSize?: number;
 }
 
+export const XpImageBlock = ({
+  xp,
+  variant = "h2",
+  color = "text.primary",
+  width = 25,
+  fontSize,
+}: PropsAddXpImageBlock) => {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        gap: 1,
+        alignContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Typography
+        variant={variant}
+        color={color}
+        sx={{ fontSize: fontSize ? important(px(fontSize)) : "auto" }}
+        noWrap
+      >
+        {xp}
+      </Typography>
+      <img alt="xp logo" src={xpIcon} width={width} loading="lazy" />
+    </Box>
+  );
+};
+
 export const AddXpImageBlock = ({
   xp,
   variant = "h2",

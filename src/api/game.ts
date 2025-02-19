@@ -263,8 +263,8 @@ export const selectGamesByTime = (
   return supabase
     .from(SUPABASE_HISTORYSOLOGAMES_TABLE)
     .select("*, theme!sologame_themequestion_fkey(*)")
-    .lt("time", dateEnd.toISOString())
-    .gt("time", dateStart.toISOString())
+    .lt("created_at", dateEnd.toISOString())
+    .gt("created_at", dateStart.toISOString())
     .order("points", { ascending: false })
     .range(from, to);
 };
