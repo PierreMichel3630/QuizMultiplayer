@@ -30,6 +30,7 @@ export const ImageQuestionBlock = ({ src }: Props) => {
   return (
     <Box
       sx={{
+        width: percent(100),
         height: percent(100),
         display: "flex",
         alignItems: "center",
@@ -63,7 +64,6 @@ export const ImageQuestionBlock = ({ src }: Props) => {
     </Box>
   );
 };
-
 
 interface PropsImageQCMBlock {
   src: string;

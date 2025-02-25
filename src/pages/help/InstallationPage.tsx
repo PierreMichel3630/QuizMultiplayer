@@ -1,12 +1,16 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
-import { Trans, useTranslation } from "react-i18next";
-import { HeadTitle } from "src/component/HeadTitle";
 import { px } from "csx";
-import { StepBlock } from "src/component/StepBlock";
+import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { HeadTitle } from "src/component/HeadTitle";
+import { StepBlock } from "src/component/StepBlock";
 import { Colors } from "src/style/Colors";
 
 import googleplay from "src/assets/google-play.png";
+import apple1 from "src/assets/installation/apple1.png";
+import apple2 from "src/assets/installation/apple2.png";
+import apple3 from "src/assets/installation/apple3.png";
+import apple4 from "src/assets/installation/apple4.png";
 
 export const urlGooglePlay =
   "https://play.google.com/store/apps/details?id=app.web.quizup_v2.twa&hl=fr";
@@ -37,6 +41,9 @@ export default function InstallationPage() {
                 }
               />
             </Grid>
+            <Grid item>
+              <img src={apple3} style={{ maxWidth: px(300) }} />
+            </Grid>
             <Grid item xs={12}>
               <StepBlock
                 number={2}
@@ -47,6 +54,9 @@ export default function InstallationPage() {
                 }
               />
             </Grid>
+            <Grid item>
+              <img src={apple2} style={{ maxWidth: px(300) }} />
+            </Grid>
             <Grid item xs={12}>
               <StepBlock
                 number={3}
@@ -56,6 +66,12 @@ export default function InstallationPage() {
                   </Typography>
                 }
               />
+            </Grid>
+            <Grid item>
+              <img src={apple1} style={{ maxWidth: px(300) }} />
+            </Grid>
+            <Grid item>
+              <img src={apple4} style={{ maxWidth: px(300) }} />
             </Grid>
             <Grid item xs={12}>
               <Divider sx={{ borderBottomWidth: 5 }} />

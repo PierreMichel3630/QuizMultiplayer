@@ -4,10 +4,11 @@ import { Box, styled } from "@mui/material";
 import { percent, px, viewWidth } from "csx";
 import { TypeWheelEnum } from "src/models/enum/TypeWheelEnum";
 import { Colors } from "src/style/Colors";
-import Icon from "./roulette-pointer.png";
+import { WheelData } from "./types";
 import { getRotationDegrees } from "./utils";
 import { WheelCanvas } from "./WheelCanvas";
-import { WheelData } from "./types";
+
+import { Triangle } from "../svg/Triangle";
 
 interface Props {
   darkMode: boolean;
@@ -172,17 +173,22 @@ export const Wheel = ({
           textDistance={60}
         />
       </RotationContainer>
-      <img
-        style={{
+      <Box
+        sx={{
           position: "absolute",
           zIndex: 5,
-          width: percent(17),
-          right: px(6),
-          top: px(15),
+          left: percent(50),
+          top: px(-25),
+          transform: "translate(-50%, 0%)",
         }}
-        src={Icon}
-        alt="roulette-static"
-      />
+      >
+        <Triangle
+          w={50}
+          h={60}
+          color={darkMode ? Colors.white : Colors.black}
+          border={darkMode ? Colors.black : Colors.white}
+        />
+      </Box>
     </Box>
   );
 };

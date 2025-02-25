@@ -106,7 +106,10 @@ export const ResponsesQCMBlock = ({
           response && Number(response.response) === index;
         const isAnswerP1 = Number(responseplayer1) === index;
         const isAnswerP2 = Number(responseplayer2) === index;
-        let color: string = isDarkMode ? Colors.black2 : Colors.white;
+        const colorOrder = index === 0 ? Colors.blue4 : Colors.pink2;
+        const colorBase = isDarkMode ? Colors.black2 : Colors.white;
+
+        let color: string = isQuestionOrder ? colorOrder : colorBase;
         const arrowColor: string = isDarkMode ? Colors.white : Colors.black2;
         let borderColor: string = isDarkMode ? Colors.white : Colors.black2;
         if (isCorrectResponse) {
