@@ -1,6 +1,6 @@
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { Box, Typography } from "@mui/material";
-import { padding, percent, px } from "csx";
+import { important, padding, percent, px } from "csx";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -29,7 +29,7 @@ export const TimeLeftBlock = ({ intervalHours, lastDate, onLaunch }: Props) => {
 
   const diffSecondsDefault = useMemo(
     () => (lastDate ? moment().diff(moment(lastDate), "seconds") : 0),
-    [intervalHours, lastDate]
+    [lastDate]
   );
 
   const isDisplay = useMemo(
@@ -123,5 +123,94 @@ export const TimeLeftBlock = ({ intervalHours, lastDate, onLaunch }: Props) => {
         />
       )}
     </>
+  );
+};
+
+interface PropsTimeLeftLabel {
+  intervalHours: number;
+  lastDate?: Date;
+  size?: "large" | "medium" | "small";
+}
+
+export const TimeLeftLabel = ({
+  intervalHours,
+  lastDate,
+  size = "medium",
+}: PropsTimeLeftLabel) => {
+  const { mode } = useUser();
+  const DELAY = 1000;
+  const isDarkMode = useMemo(() => mode === "dark", [mode]);
+  const [diffSeconds, setDiffSeconds] = useState(0);
+
+  const diffSecondsDefault = useMemo(
+    () => (lastDate ? moment().diff(moment(lastDate), "seconds") : 0),
+    [lastDate]
+  );
+
+  const isDisplay = useMemo(
+    () => (lastDate ? diffSeconds > 0 : false),
+    [lastDate, diffSeconds]
+  );
+
+  const hours = useMemo(() => {
+    const result = Math.floor(diffSeconds / 3600);
+    return result < 10 ? `0${result}` : result;
+  }, [diffSeconds]);
+  const minutes = useMemo(() => {
+    const result = Math.floor((diffSeconds % 3600) / 60);
+    return result < 10 ? `0${result}` : result;
+  }, [diffSeconds]);
+  const seconds = useMemo(() => {
+    const result = diffSeconds % 60;
+    return result < 10 ? `0${result}` : result;
+  }, [diffSeconds]);
+
+  useEffect(() => {
+    const secondsIntervalHours = intervalHours * 3600;
+    setDiffSeconds(secondsIntervalHours - diffSecondsDefault);
+    const interval = setInterval(() => {
+      setDiffSeconds((prev) => prev - 1);
+    }, DELAY);
+    return () => clearInterval(interval);
+  }, [diffSecondsDefault, intervalHours]);
+
+  const fontSize = useMemo(() => {
+    let font = 15;
+    if (size === "small") {
+      font = 10;
+    } else if (size === "large") {
+      font = 20;
+    }
+    return font;
+  }, [size]);
+
+  return (
+    isDisplay && (
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          alignContent: "center",
+          justifyContent: "center",
+          gap: px(2),
+          borderRadius: px(50),
+          p: padding(2, 5),
+          border: `2px solid ${isDarkMode ? Colors.white : Colors.black}`,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          color: Colors.white,
+        }}
+      >
+        <AccessTimeIcon fontSize={size} />
+        <Typography
+          variant="body1"
+          sx={{
+            fontSize: important(px(fontSize)),
+            fontWeight: important(700),
+          }}
+        >
+          {hours}:{minutes}:{seconds}
+        </Typography>
+      </Box>
+    )
   );
 };

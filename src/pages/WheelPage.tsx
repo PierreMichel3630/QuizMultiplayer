@@ -4,20 +4,23 @@ import { useTranslation } from "react-i18next";
 import { TitleBlock } from "src/component/title/Title";
 
 import { viewHeight } from "csx";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { launchWheel } from "src/api/wheel";
 import { AddMoneyBlock, MoneyBlock } from "src/component/MoneyBlock";
 import { TimeLeftBlock } from "src/component/TimeLeftBlock";
 import { Wheel } from "src/component/wheel/Wheel";
-import { AddXpImageBlock, XpImageBlock } from "src/component/XpBlock";
+import { AddXpImageBlock } from "src/component/XpBlock";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { TypeWheelEnum } from "src/models/enum/TypeWheelEnum";
 import { WheelResult } from "src/models/Wheel";
 import { Colors } from "src/style/Colors";
 
-import ForwardIcon from "@mui/icons-material/Forward";
+import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
+import { ExperienceBlock } from "src/component/ExperienceBlock";
+import { StatAccomplishment } from "src/models/Accomplishment";
+import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 
 export default function WheelPage() {
   const navigate = useNavigate();
@@ -31,6 +34,9 @@ export default function WheelPage() {
   );
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
+  const [xp, setXp] = useState<number | undefined>(undefined);
+  const [gainxp, setGainxp] = useState(0);
+  const [money, setMoney] = useState(0);
 
   const options = [
     {
@@ -100,10 +106,29 @@ export default function WheelPage() {
     },
   ];
 
-  const onClose = () => {
+  useEffect(() => {
+    const getMyStat = () => {
+      if (profile) {
+        selectStatAccomplishmentByProfile(profile.id).then(({ data }) => {
+          const stat = data as StatAccomplishment;
+          setXp(stat.xp);
+        });
+        setMoney(profile.money);
+      }
+    };
+    getMyStat();
+  }, [profile]);
+
+  const onClose = useCallback(() => {
     refreshProfil();
     setOpen(false);
-  };
+    if (wheelResult) {
+      const gain = wheelResult.xp.actual - wheelResult.xp.previous;
+      setXp(wheelResult.xp.actual);
+      setGainxp(gain);
+      setMoney(wheelResult.money.actual);
+    }
+  }, [refreshProfil, wheelResult]);
 
   const onFinish = () => {
     setOpen(true);
@@ -137,6 +162,30 @@ export default function WheelPage() {
           }}
         >
           <TitleBlock title={t("commun.rewardwheel")} />
+          {profile && xp && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <AvatarAccountBadge
+                profile={profile}
+                size={80}
+                color={Colors.pink}
+              />
+              <ExperienceBlock xp={xp} xpgain={gainxp} />
+              <MoneyBlock
+                money={money}
+                variant="h2"
+                width={22}
+                color="text.primary"
+              />
+            </Box>
+          )}
           <Box
             sx={{
               p: 1,
@@ -220,26 +269,6 @@ export default function WheelPage() {
                   gap: 3,
                 }}
               >
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 1,
-                  }}
-                >
-                  <MoneyBlock
-                    money={wheelResult.money.previous}
-                    variant="h2"
-                    width={22}
-                  />
-                  <ForwardIcon fontSize="large" />
-                  <MoneyBlock
-                    money={wheelResult.money.actual}
-                    variant="h2"
-                    width={22}
-                  />
-                </Box>
                 <AddMoneyBlock
                   money={wheelResult.option.value}
                   variant="h2"
@@ -257,25 +286,6 @@ export default function WheelPage() {
                   gap: 3,
                 }}
               >
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <XpImageBlock
-                    xp={wheelResult.xp.previous}
-                    variant="h2"
-                    width={22}
-                  />
-                  <ForwardIcon fontSize="large" />
-                  <XpImageBlock
-                    xp={wheelResult.xp.actual}
-                    variant="h2"
-                    width={22}
-                  />
-                </Box>
                 <AddXpImageBlock
                   xp={wheelResult.option.value}
                   variant="h2"

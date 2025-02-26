@@ -3,23 +3,29 @@ import { percent, px } from "csx";
 import { MouseEvent } from "react";
 import { Link } from "react-router-dom";
 import { Colors } from "src/style/Colors";
+import { TimeLeftLabel } from "../TimeLeftBlock";
 
 interface PropsRoundLinkButton {
   title: string;
   icon: string;
   link: string;
+  time?: {
+    last: Date;
+    interval: number;
+  };
 }
 
 export const RoundLinkButton = ({
   title,
   icon,
   link,
+  time,
 }: PropsRoundLinkButton) => {
   return (
     <Link to={link} style={{ textDecoration: "none" }}>
       <Box
         sx={{
-          width: px(80),
+          width: px(90),
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -32,15 +38,31 @@ export const RoundLinkButton = ({
         <Box
           sx={{
             backgroundColor: Colors.blue3,
-            width: px(60),
-            height: px(60),
+            width: px(75),
+            height: px(75),
             borderRadius: percent(50),
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            position: "relative",
           }}
         >
-          <img alt={title} src={icon} width={40} />
+          {time && (
+            <Box
+              sx={{
+                position: "absolute",
+                top: percent(50),
+                transform: "translate(0%, -50%)",
+              }}
+            >
+              <TimeLeftLabel
+                intervalHours={time.interval}
+                lastDate={time.last}
+                size="small"
+              />
+            </Box>
+          )}
+          <img alt={title} src={icon} width={55} />
         </Box>
         <Typography variant="h6" sx={{ lineHeight: 1 }}>
           {title}

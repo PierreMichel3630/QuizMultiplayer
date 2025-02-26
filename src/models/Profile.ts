@@ -18,7 +18,8 @@ export interface Profile {
   last_seen_friend: Date;
   isadmin: boolean;
   isonline: boolean;
-  wheellaunch: Date
+  wheellaunch: Date;
+  datevote: Date;
 }
 
 export interface ProfileUpdate {

@@ -97,7 +97,10 @@ Deno.serve(async (req) => {
     const profile = resProfile.data;
     const stat = resStat.data;
 
-    const timeHours = moment().diff(moment(profile.wheellaunch), "hours");
+    const timeHours =
+      profile.wheellaunch !== null
+        ? moment().diff(moment(profile.wheellaunch), "hours")
+        : MINTIMEDIFF;
     const previousmoney = profile.money;
     let newmoney = profile.money;
 

@@ -45,6 +45,9 @@ import BannersPage from "src/pages/shop/BannersPage";
 import ShopPage from "src/pages/shop/ShopPage";
 import ShopThemePage from "src/pages/shop/ShopThemePage";
 import TitlesPage from "src/pages/shop/TitlesPage";
+import ParameterPage from "src/pages/ParameterPage";
+import SharePage from "src/pages/help/SharePage";
+import VoteThemePage from "src/pages/VoteThemePage";
 
 export const AppRoutes = [
   {
@@ -163,6 +166,18 @@ export const AppRoutes = [
       {
         path: "/improve",
         element: <ImprovePage />,
+      },
+      {
+        path: "/parameters",
+        element: <ParameterPage />,
+      },
+      {
+        path: "/share",
+        element: <SharePage />,
+      },
+      {
+        path: "/vote",
+        element: <VoteThemePage />,
       },
       {
         path: "/games",

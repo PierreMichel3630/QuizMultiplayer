@@ -56,7 +56,6 @@ export default function RankingPage() {
             theme: el.theme,
             rank: page * ITEMPERPAGE + index + 1,
           }));
-          console.log(newdata);
           setIsEnd(newdata.length < ITEMPERPAGE);
           setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
           setIsLoading(false);
@@ -77,7 +76,6 @@ export default function RankingPage() {
               rank: page * ITEMPERPAGE + index + 1,
             };
           });
-          console.log(newdata);
           setIsEnd(newdata.length < ITEMPERPAGE);
           setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
           setIsLoading(false);

@@ -4,7 +4,14 @@ import {
   User,
   UserResponse,
 } from "@supabase/supabase-js";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { getProfilById, updateProfil } from "src/api/profile";
 import {
   passwordReset,
@@ -76,13 +83,13 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     getProfilUser();
   }, [user]);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     if (user) {
       await updateProfil({ id: user.id, isonline: false });
     }
     clearLocalStorage();
     return signOut();
-  };
+  }, [user]);
 
   const clearLocalStorage = () => {
     localStorage.removeItem("user");
@@ -103,36 +110,35 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     };
   }, []);
 
-  const deleteAccount = async () => {
+  const deleteAccount = useCallback(async () => {
     await deleteAccountUser();
     clearLocalStorage();
     setUser(null);
     setProfile(null);
-  };
+  }, []);
 
-  const refreshProfil = () => {
+  const refreshProfil = useCallback(() => {
     if (profile) {
       getProfilById(profile.id).then(({ data }) => {
         setProfile(data as Profile);
       });
     }
-  };
+  }, [profile]);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        profile,
-        setProfile,
-        refreshProfil,
-        user,
-        login,
-        logout,
-        deleteAccount,
-        passwordReset,
-        updatePassword,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      profile,
+      setProfile,
+      refreshProfil,
+      user,
+      login,
+      logout,
+      deleteAccount,
+      passwordReset,
+      updatePassword,
+    }),
+    [deleteAccount, logout, profile, refreshProfil, user]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

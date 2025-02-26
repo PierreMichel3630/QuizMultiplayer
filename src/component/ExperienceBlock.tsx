@@ -13,10 +13,133 @@ import { AvatarAccountBadge } from "./avatar/AvatarAccount";
 import { useUser } from "src/context/UserProvider";
 
 interface Props {
+  xp: number;
+  xpgain?: number;
+}
+
+export const ExperienceBlock = ({ xp, xpgain }: Props) => {
+  const { t } = useTranslation();
+  const { mode } = useUser();
+  const isDarkMode = useMemo(() => mode === "dark", [mode]);
+
+  const xpTotal = useMemo(() => {
+    return xpgain ?? 0;
+  }, [xpgain]);
+
+  const myLevel = useMemo(() => {
+    return getLevel(xp);
+  }, [xp]);
+
+  const xpLevel = useMemo(() => {
+    const lvlCurrent =
+      myLevel !== undefined ? getExperienceByLevel(myLevel) : 0;
+    const lvlNext =
+      myLevel !== undefined ? getExperienceByLevel(myLevel + 1) : 0;
+    return myLevel !== undefined ? lvlNext - lvlCurrent : undefined;
+  }, [myLevel]);
+
+  const myXpLevel = useMemo(() => {
+    const lvlCurrent =
+      myLevel !== undefined ? getExperienceByLevel(myLevel) : 0;
+    return myLevel !== undefined ? xp - lvlCurrent : undefined;
+  }, [myLevel, xp]);
+
+  const pourcentage = useMemo(() => {
+    return xpLevel !== undefined && myXpLevel !== undefined
+      ? ((myXpLevel - xpTotal) / xpLevel) * 100
+      : 0;
+  }, [xpLevel, myXpLevel, xpTotal]);
+
+  const pourcentageGain = useMemo(() => {
+    return xpLevel !== undefined ? (xpTotal / xpLevel) * 100 : 0;
+  }, [xpLevel, xpTotal]);
+
+  return (
+    <Grid container spacing={1} justifyContent="center" alignItems="end">
+      <Grid item>
+        <Typography variant="h4">
+          {t("commun.level")} {myLevel}
+        </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            position: "relative",
+          }}
+        >
+          {xpLevel !== undefined && myXpLevel !== undefined && (
+            <Box
+              sx={{
+                position: "absolute",
+                right: 8,
+                zIndex: 1,
+                color: Colors.black,
+              }}
+            >
+              <Typography
+                variant="h6"
+                component="span"
+                color={isDarkMode ? Colors.black2 : Colors.white}
+              >
+                {xpLevel - myXpLevel}
+              </Typography>
+              <Typography
+                variant="caption"
+                component="span"
+                color={isDarkMode ? Colors.black2 : Colors.white}
+              >
+                {t("commun.xpnextlevel")}
+              </Typography>
+            </Box>
+          )}
+          <Box
+            sx={{
+              height: px(20),
+              width: percent(100),
+              backgroundColor: isDarkMode ? Colors.white : Colors.black2,
+              borderRadius: px(25),
+            }}
+          />
+          <Box
+            sx={{
+              position: "absolute",
+              left: 0,
+              width: percent(100),
+              display: "flex",
+            }}
+          >
+            <Box
+              sx={{
+                height: px(20),
+                width: percent(pourcentage > 0 ? pourcentage : 0),
+                backgroundColor: Colors.blue3,
+                borderTopLeftRadius: px(25),
+                borderBottomLeftRadius: px(25),
+              }}
+            />
+            <Box
+              sx={{
+                height: px(20),
+                width: percent(pourcentageGain),
+                backgroundColor: Colors.purple2,
+                borderTopLeftRadius: pourcentage > 0 ? "none" : px(25),
+                borderBottomLeftRadius: pourcentage > 0 ? "none" : px(25),
+              }}
+            />
+          </Box>
+        </Box>
+      </Grid>
+    </Grid>
+  );
+};
+
+interface PropsExperienceDuelBlock {
   xp?: ExtraDuelGameXP;
 }
 
-export const ExperienceBlock = ({ xp }: Props) => {
+export const ExperienceDuelBlock = ({ xp }: PropsExperienceDuelBlock) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const { mode } = useUser();

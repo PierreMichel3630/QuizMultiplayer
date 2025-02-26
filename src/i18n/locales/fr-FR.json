@@ -177,6 +177,7 @@
     "categories": "Catégories",
     "edit": "Modifier",
     "language": "Langue",
+    "languages": "Langues",
     "others": "Autres",
     "accomplishments": "Succès",
     "myaccomplishments": "Mes succès",
@@ -288,7 +289,14 @@
     "customizedprofile": "Customiser votre profil",
     "shop": "Boutique",
     "selectopponenttext": "Non obligatoire, sans choix vous jouerez contre un adversaire aléatoire.",
-    "nextlaunch": "Prochain lancer"
+    "nextlaunch": "Prochain lancer",
+    "displaymode": "Mode d'affichage",
+    "votetheme": "Proposer/Voter des thèmes",
+    "votethemetext": "Vous pouvez proposer des thèmes, ainsi que voter pour les thèmes proposés. Les thèmes avec le plus de votes seront pris en compte régulièrement. Pour voter/ proposer un thème, vous devez avoir un compte. Vous pouvez voter 1 fois toutes les 12 heures.",
+    "vote": "Voter",
+    "vote_one": "{{count}} vote",
+    "vote_other": "{{count}} votes",
+    "proposetheme": "Proposer un thème"
   },
   "offline": {
     "title": "Connectez-vous à Internet",
@@ -489,6 +497,12 @@
     },
     "wheel": {
       "title": "Roue de la chance"
+    },
+    "sharefriend": {
+      "title": "Partager à un ami"
+    },
+    "votetheme": {
+      "title": "Proposer/Voter des thèmes"
     }
   },
   "enum": {
@@ -577,6 +591,10 @@
       "requirednameen": "Veuillez saisir un nom de thème en anglais",
       "requirednamefr": "Veuillez saisir un nom de thème en français"
     },
+    "proposetheme": {
+      "name": "Nom du thème *",
+      "requiredname": "Veuillez saisir un nom de thème"
+    },
     "createquestion": {
       "isqcm": "QCM",
       "extra": "Extra",
@@ -649,7 +667,8 @@
     "buyitem": "Votre achat à été pris en compte.",
     "usernametooshort": "Votre nom d'utilisateur doit contenir au moins 4 caractères.",
     "notconnect": "Vous n'êtes pas connecté, vos scores ne seront pas sauvegardés. <br> <anchor1>{{link}}</anchor1> ou <anchor2>{{link2}}</anchor2>",
-    "duplicateusername": "Le pseudonyme est déjà utilisé."
+    "duplicateusername": "Le pseudonyme est déjà utilisé.",
+    "vote": "Votre vote a été pris en compte."
   },
   "confidentiality": {
     "title": "Politique de confidentialité",

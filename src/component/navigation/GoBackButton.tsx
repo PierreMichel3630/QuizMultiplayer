@@ -27,7 +27,10 @@ export const GoBackButtonIcon = () => {
   const navigate = useNavigate();
 
   return (
-    <Box onClick={() => navigate(-1)} sx={{ cursor: "pointer" }}>
+    <Box
+      onClick={() => navigate(-1)}
+      sx={{ cursor: "pointer", display: "flex" }}
+    >
       <KeyboardArrowLeftIcon fontSize="large" />
     </Box>
   );

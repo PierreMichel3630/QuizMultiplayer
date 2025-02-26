@@ -152,3 +152,6 @@ export const sortByUsername = (
   a: { username: string },
   b: { username: string }
 ) => a.username.localeCompare(b.username);
+
+export const sortByVoteDesc = (a: { vote: number }, b: { vote: number }) =>
+  b.vote - a.vote;

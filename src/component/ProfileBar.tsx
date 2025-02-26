@@ -14,9 +14,9 @@ import { MoneyBlock } from "./MoneyBlock";
 
 import PeopleIcon from "@mui/icons-material/People";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { Colors } from "src/style/Colors";
 import { AdminButton } from "./button/AdminButton";
-import { DarkModeButton } from "./button/DarkModeButton";
 import { SkeletonCircular } from "./skeleton/SkeletonCircular";
 
 export const ProfileBar = () => {
@@ -139,8 +139,20 @@ export const ProfileBar = () => {
             )}
           </Box>
           <Box sx={{ display: "flex", gap: 1 }}>
-            <DarkModeButton />
             <AdminButton />
+            <Link to={`/parameters`}>
+              <Box
+                sx={{
+                  p: padding(2, 8),
+                  border: "2px solid",
+                  borderColor: Colors.white,
+                  borderRadius: px(5),
+                  display: "flex",
+                }}
+              >
+                <SettingsIcon sx={{ color: Colors.white }} />
+              </Box>
+            </Link>
             <Link to={`/people`}>
               <Badge badgeContent={notificationsFriend} color="error">
                 <Box

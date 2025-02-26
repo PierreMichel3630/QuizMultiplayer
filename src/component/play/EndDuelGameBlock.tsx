@@ -22,7 +22,7 @@ import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { QuestionResult } from "src/models/Question";
 import { CardSignalQuestion } from "../card/CardQuestion";
-import { ExperienceBlock } from "../ExperienceBlock";
+import { ExperienceDuelBlock } from "../ExperienceBlock";
 import { ReportModal } from "../modal/ReportModal";
 import { AddMoneyBlock } from "../MoneyBlock";
 import { RankingTableSoloDuel } from "../table/RankingTable";
@@ -263,7 +263,7 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
         </Grid>
         {xp && (
           <Grid item xs={12}>
-            <ExperienceBlock xp={xp} />
+            <ExperienceDuelBlock xp={xp} />
           </Grid>
         )}
         {money && (

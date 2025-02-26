@@ -75,7 +75,7 @@ export const ShareModal = ({ open, close }: Props) => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <DialogContent sx={{ backgroundColor: Colors.black, p: 2, pt: 3 }}>
+      <DialogContent sx={{ p: 2, pt: 3 }}>
         <Grid container spacing={1} alignItems="center">
           <Grid item xs={12} sx={{ mb: 2 }}>
             <Typography variant="body1">{t("commun.sharetext")}</Typography>
