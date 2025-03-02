@@ -327,7 +327,7 @@ export default function ProfilPage() {
           p: 1,
           backgroundColor: Colors.blue3,
           backgroundImage: profileUser?.banner
-            ? `url("/banner/${profileUser.banner.icon}")`
+            ? `url("${profileUser.banner.src}")`
             : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
           backgroundSize: "cover",
           backgroundPosition: "center",

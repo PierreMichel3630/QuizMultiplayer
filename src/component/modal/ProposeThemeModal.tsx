@@ -6,8 +6,6 @@ import {
   IconButton,
   Toolbar,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
@@ -21,18 +19,9 @@ interface Props {
 
 export const ProposeThemeModal = ({ open, close }: Props) => {
   const { t } = useTranslation();
-  const themeMui = useTheme();
-  const fullScreen = useMediaQuery(themeMui.breakpoints.down("md"));
 
   return (
-    <Dialog
-      onClose={close}
-      open={open}
-      maxWidth="lg"
-      fullWidth
-      fullScreen={fullScreen}
-      sx={{ backgroundColor: "inherit" }}
-    >
+    <Dialog onClose={close} open={open} maxWidth="sm" fullWidth>
       <AppBar sx={{ position: "relative" }}>
         <Toolbar>
           <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>

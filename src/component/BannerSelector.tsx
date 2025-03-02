@@ -48,9 +48,7 @@ export const BannerSelector = ({ onSelect }: Props) => {
         </Box>
       </Grid>
       {mybanners.map((banner) => {
-        const isSelect =
-          profile && profile.banner && profile.banner.id === banner.id;
-        const image = `/banner/${banner.icon}`;
+        const isSelect = profile?.banner && profile.banner.id === banner.id;
 
         return (
           <Grid item xs={6} sm={4} md={3} key={banner.id}>
@@ -71,7 +69,8 @@ export const BannerSelector = ({ onSelect }: Props) => {
                 />
               )}
               <img
-                src={image}
+                alt="banner"
+                src={banner.src}
                 style={{
                   width: percent(100),
                   objectFit: "cover",

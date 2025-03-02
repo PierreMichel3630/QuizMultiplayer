@@ -291,7 +291,7 @@
     "selectopponenttext": "Non obligatoire, sans choix vous jouerez contre un adversaire aléatoire.",
     "nextlaunch": "Prochain lancer",
     "displaymode": "Mode d'affichage",
-    "votetheme": "Proposer/Voter des thèmes",
+    "votetheme": "Proposer / Voter des thèmes",
     "votethemetext": "Vous pouvez proposer des thèmes, ainsi que voter pour les thèmes proposés. Les thèmes avec le plus de votes seront pris en compte régulièrement. Pour voter/ proposer un thème, vous devez avoir un compte. Vous pouvez voter 1 fois toutes les 12 heures.",
     "vote": "Voter",
     "vote_one": "{{count}} vote",

@@ -6,6 +6,7 @@ export interface ShopItem {
   type: ShopType;
   name: JsonLanguage;
   icon: string;
+  src: string;
   price: number;
   isaccomplishment: boolean;
   theme: number;

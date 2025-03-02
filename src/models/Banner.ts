@@ -1,6 +1,6 @@
 export interface Banner {
   id: number;
-  icon: string;
+  src: string;
   price: number;
   isaccomplishment: boolean;
 }

@@ -42,9 +42,9 @@ export const ProfilHeader = ({
 
   const bannerImage = useMemo(() => {
     const urlprofile = profile?.banner
-      ? `url("/banner/${profile.banner.icon}")`
+      ? `url("${profile.banner.src}")`
       : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`;
-    return banner ? `url("/banner/${banner}")` : urlprofile;
+    return banner ? `url("${banner}")` : urlprofile;
   }, [banner, profile]);
 
   return (

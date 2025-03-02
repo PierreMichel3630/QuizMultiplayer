@@ -53,7 +53,7 @@ export const ImageQuestionBlock = ({ src }: Props) => {
             maxHeight: percent(100),
             maxWidth: percent(100),
             objectFit: "contain",
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.grey2,
             borderRadius: px(10),
             padding: px(5),
             outline: hasBorder ? "1px solid black" : "none",

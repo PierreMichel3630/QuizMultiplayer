@@ -134,7 +134,7 @@ export default function BannerPage() {
       <Grid item xs={12}>
         <Container maxWidth="md">
           {banner && profile && (
-            <ProfilHeader profile={profile} banner={banner.icon} />
+            <ProfilHeader profile={profile} banner={banner.src} />
           )}
         </Container>
       </Grid>
@@ -145,7 +145,7 @@ export default function BannerPage() {
               <Grid container spacing={2} justifyContent="center">
                 <Grid item xs={12}>
                   <img
-                    src={`/banner/${banner.icon}`}
+                    src={banner.src}
                     style={{
                       width: percent(100),
                     }}

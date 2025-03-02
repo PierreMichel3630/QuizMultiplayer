@@ -75,7 +75,15 @@ export const ShopItems = () => {
   );
 
   return (
-    <Box sx={{ display: "flex", gap: 1, pb: px(6), overflowX: "scroll" }}>
+    <Box
+      sx={{
+        display: "flex",
+        gap: 1,
+        pb: px(6),
+        overflowX: "scroll",
+        scrollbarWidth: "none",
+      }}
+    >
       {options.map((option, index) => (
         <RoundLinkButton
           key={index}

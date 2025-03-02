@@ -68,7 +68,7 @@ export default function VoteThemePage() {
         navigate(`/login`);
       }
     },
-    [user, setSeverity, setMessage, t, navigate]
+    [user, setSeverity, setMessage, t, refreshProfil, navigate]
   );
 
   const isVoteActivate = useMemo(() => {
@@ -79,7 +79,7 @@ export default function VoteThemePage() {
         return moment().diff(moment(profile.datevote), "hours") >= 12;
       }
     } else {
-      return false;
+      return true;
     }
   }, [profile]);
 

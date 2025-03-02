@@ -210,7 +210,7 @@ export default function MenuPage() {
             sx={{
               p: 1,
               backgroundImage: profile?.banner
-                ? `url("/banner/${profile.banner.icon}")`
+                ? `url("${profile.banner.src}")`
                 : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
               backgroundSize: "cover",
               backgroundPosition: "center",

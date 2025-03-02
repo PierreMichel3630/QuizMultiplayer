@@ -92,7 +92,8 @@ export const BannerShop = ({ banner, height = 80 }: Props) => {
     <Link to={`/banner/${banner.id}`} style={{ textDecoration: "none" }}>
       <Box sx={{ display: "flex", flexDirection: "column", gap: px(3) }}>
         <img
-          src={`/banner/${banner.icon}`}
+          alt="banner"
+          src={banner.src}
           style={{
             height: px(height),
           }}

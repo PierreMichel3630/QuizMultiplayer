@@ -172,7 +172,7 @@ export const CardSignalQuestion = ({
         )}
         {question.typequestion === "MAPPOSITION" && question.data !== null && (
           <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-            <MapPositionBlock data={question.data} width={400} height={300} />
+            <MapPositionBlock data={question.data} height={300} />
           </Grid>
         )}
         {question.image && (
