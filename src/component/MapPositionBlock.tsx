@@ -1,6 +1,6 @@
 import { Box, Divider } from "@mui/material";
 import { percent, px } from "csx";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ComposableMap,
   Geographies,
@@ -11,10 +11,9 @@ import {
 import mapWorld from "src/assets/map/countries-50m.json";
 import { Colors } from "src/style/Colors";
 
-import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
-import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
-import { ZoomOut } from "@mui/icons-material";
+import ZoomOutIcon from "@mui/icons-material/ZoomOut";
+import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
 
 interface Position {
   coordinates: Point;
@@ -28,12 +27,10 @@ interface Props {
     zoom: number;
     coordinates: Point;
   };
-  width?: number;
   height?: number;
 }
 
-export const MapPositionBlock = ({ data, width, height }: Props) => {
-  const SIZE_MAX = 884;
+export const MapPositionBlock = ({ data, height }: Props) => {
   const ZOOM_MAX = 400;
   const ZOOM_MIN = 1;
   const refMap = useRef<HTMLDivElement | null>(null);

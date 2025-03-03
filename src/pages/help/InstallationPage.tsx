@@ -15,7 +15,7 @@ import apple4 from "src/assets/installation/apple4.png";
 export const urlGooglePlay =
   "https://play.google.com/store/apps/details?id=app.web.quizup_v2.twa&hl=fr";
 export const urlPc = "https://quizbattle.fr";
-export const urlApple = "https://quizbattle.fr/installation";
+export const urlApple = "/installation";
 
 export default function InstallationPage() {
   const { t } = useTranslation();

@@ -113,11 +113,9 @@ export default function ThemesPage() {
           content="Testez vos connaissances. Jouez en Solo ou multijoueurs sur un quiz avec plus de 500 thèmes: Cinéma, Histoire, Géographie, Sports, ..."
         />
       </Helmet>
-      {user === null && (
-        <Grid item xs={12}>
-          <HeaderApp />
-        </Grid>
-      )}
+      <Grid item xs={12}>
+        <HeaderApp />
+      </Grid>
       <Grid item xs={12}>
         <Box
           sx={{

@@ -1,9 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import { px } from "csx";
 import { useTranslation } from "react-i18next";
-import { useNavigate, Link } from "react-router-dom";
-import { useApp } from "src/context/AppProvider";
-import { urlGooglePlay, urlApple } from "src/pages/help/InstallationPage";
+import { Link, useNavigate } from "react-router-dom";
+import { urlApple, urlGooglePlay } from "src/pages/help/InstallationPage";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
 import { HeadTitle } from "../HeadTitle";
@@ -14,8 +13,6 @@ import googleplay from "src/assets/google-play.png";
 export const HeaderApp = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
-  const { nbQuestions, nbThemes } = useApp();
 
   return (
     <HeadTitle
@@ -37,44 +34,6 @@ export const HeaderApp = () => {
             gap: px(5),
           }}
         >
-          <Box sx={{ display: "flex", gap: 1 }}>
-            {nbQuestions && (
-              <Box>
-                <Typography
-                  variant="h6"
-                  component="span"
-                  color="text.secondary"
-                >
-                  {`${nbQuestions}  `}
-                </Typography>
-                <Typography
-                  variant="body1"
-                  component="span"
-                  color="text.secondary"
-                >
-                  {t("commun.questions")}
-                </Typography>
-              </Box>
-            )}
-            {nbThemes && (
-              <Box>
-                <Typography
-                  variant="h6"
-                  component="span"
-                  color="text.secondary"
-                >
-                  {`${nbThemes}  `}
-                </Typography>
-                <Typography
-                  variant="body1"
-                  component="span"
-                  color="text.secondary"
-                >
-                  {t("commun.themes")}
-                </Typography>
-              </Box>
-            )}
-          </Box>
           <Box sx={{ display: "flex", gap: 1 }}>
             <ButtonColor
               value={Colors.white}
