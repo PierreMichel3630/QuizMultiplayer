@@ -193,6 +193,7 @@ const getNewQuestion = async (
               value: el.value,
               type: el.typedata,
               format: el.formatdata,
+              unit: el.unit,
             },
             id: el.id,
             type: el.type,

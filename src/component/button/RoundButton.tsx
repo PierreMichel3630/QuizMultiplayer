@@ -4,10 +4,12 @@ import { MouseEvent } from "react";
 import { Link } from "react-router-dom";
 import { Colors } from "src/style/Colors";
 import { TimeLeftLabel } from "../TimeLeftBlock";
+import { AnimationBlock } from "../animation/AnimationBlock";
 
 interface PropsRoundLinkButton {
   title: string;
-  icon: string;
+  icon?: string;
+  animation?: any;
   link: string;
   time?: {
     last: Date;
@@ -20,6 +22,7 @@ export const RoundLinkButton = ({
   icon,
   link,
   time,
+  animation,
 }: PropsRoundLinkButton) => {
   return (
     <Link to={link} style={{ textDecoration: "none" }}>
@@ -45,6 +48,7 @@ export const RoundLinkButton = ({
             justifyContent: "center",
             alignItems: "center",
             position: "relative",
+            border: `5px solid ${Colors.blue4}`,
           }}
         >
           {time && (
@@ -62,7 +66,10 @@ export const RoundLinkButton = ({
               />
             </Box>
           )}
-          <img alt={title} src={icon} width={55} />
+          {icon && <img alt={title} src={icon} width={55} />}
+          {animation && (
+            <AnimationBlock width={55} height={55} data={animation} />
+          )}
         </Box>
         <Typography variant="h6" sx={{ lineHeight: 1 }}>
           {title}

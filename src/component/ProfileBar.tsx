@@ -18,6 +18,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { Colors } from "src/style/Colors";
 import { AdminButton } from "./button/AdminButton";
 import { SkeletonCircular } from "./skeleton/SkeletonCircular";
+import { StreakBlock } from "./StreakBlock";
 
 export const ProfileBar = () => {
   const navigate = useNavigate();
@@ -86,35 +87,45 @@ export const ProfileBar = () => {
           width: percent(100),
         }}
       >
-        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-          {profile?.country && (
-            <Link to={`/personalized`} style={{ textDecoration: "none" }}>
-              <CountryImageBlock country={profile.country} size={30} />
-            </Link>
-          )}
-          <Link
-            to={`/myprofile`}
-            style={{ textDecoration: "none", maxWidth: "calc(100% -30px)" }}
-          >
-            {profile ? (
-              <Typography
-                variant="h2"
-                color="text.secondary"
-                sx={{
-                  overflow: "hidden",
-                  display: "block",
-                  lineClamp: 1,
-                  boxOrient: "vertical",
-                  textOverflow: "ellipsis",
-                  fontSize: important(px(20)),
-                }}
-              >
-                {profile.username}
-              </Typography>
-            ) : (
-              <Skeleton animation="wave" width={200} height={20} />
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+            {profile?.country && (
+              <Link to={`/personalized`} style={{ textDecoration: "none" }}>
+                <CountryImageBlock country={profile.country} size={30} />
+              </Link>
             )}
-          </Link>
+            <Link
+              to={`/myprofile`}
+              style={{ textDecoration: "none", maxWidth: "calc(100% -30px)" }}
+            >
+              {profile ? (
+                <Typography
+                  variant="h2"
+                  color="text.secondary"
+                  sx={{
+                    overflow: "hidden",
+                    display: "block",
+                    lineClamp: 1,
+                    boxOrient: "vertical",
+                    textOverflow: "ellipsis",
+                    fontSize: important(px(20)),
+                  }}
+                >
+                  {profile.username}
+                </Typography>
+              ) : (
+                <Skeleton animation="wave" width={200} height={20} />
+              )}
+            </Link>
+          </Box>
+          {profile && <StreakBlock value={profile.loginstreak} />}
         </Box>
         <Box
           sx={{

@@ -20,6 +20,8 @@ export interface Profile {
   isonline: boolean;
   wheellaunch: Date;
   datevote: Date;
+  lastconnection: Date;
+  loginstreak: number;
 }
 
 export interface ProfileUpdate {
@@ -29,4 +31,5 @@ export interface ProfileUpdate {
   avatar?: number | null;
   last_seen_friend?: Date;
   isonline?: boolean;
+  lastconnection?: Date;
 }

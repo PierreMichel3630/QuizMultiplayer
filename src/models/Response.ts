@@ -15,6 +15,7 @@ export interface ExtraResponse {
   value: string;
   type: TypeDataEnum;
   format: string;
+  unit?: ResponseLanguageString;
 }
 
 export interface ResponseSolo {

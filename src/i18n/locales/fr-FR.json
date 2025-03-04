@@ -81,6 +81,7 @@
     "noresultgame": "Aucune partie jouée.",
     "myrecord": "Best",
     "hi": "Bonjour, {{username}}",
+    "dayvalue": "Jour {{value}}",
     "deleteaccountmessage": "Attention vous êtes sur le point de supprimer votre compte, cette action est définitive et immédiate, tous vos informations personnelles, ainsi que vos classements, records, ... seront supprimé.",
     "mystatistics": "Mes Statistiques",
     "gamesplay": "Parties jouées",
@@ -296,7 +297,8 @@
     "vote": "Voter",
     "vote_one": "{{count}} vote",
     "vote_other": "{{count}} votes",
-    "proposetheme": "Proposer un thème"
+    "proposetheme": "Proposer un thème",
+    "loginstreakexplain": "Connectez vous tous les jours pour obtenir des récompenses incroyables"
   },
   "offline": {
     "title": "Connectez-vous à Internet",
@@ -503,6 +505,9 @@
     },
     "votetheme": {
       "title": "Proposer/Voter des thèmes"
+    },
+    "streak": {
+      "title": "Série de connection"
     }
   },
   "enum": {

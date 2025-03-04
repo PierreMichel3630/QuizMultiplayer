@@ -39,6 +39,7 @@ export const Colors = {
   red: red[400],
   red2: red[800],
   red3: "#ff1744",
+  red4: red["A400"],
   pink: pink[200],
   pink2: pink[300],
   purple: deepPurple[700],

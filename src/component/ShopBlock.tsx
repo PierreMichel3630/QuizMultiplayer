@@ -1,15 +1,15 @@
 import { Box, Divider, Grid } from "@mui/material";
+import { px } from "csx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { RoundLinkButton } from "./button/RoundButton";
 
-import personalizeIcon from "src/assets/personalize.png";
-import ShareIcon from "src/assets/share.png";
-import shopIcon from "src/assets/store.png";
-import VoteIcon from "src/assets/vote.png";
-import wheelIcon from "src/assets/wheel.png";
-import { px } from "csx";
+import addfriendsAnimate from "src/assets/animation/addfriends.json";
+import customizeprofileAnimate from "src/assets/animation/customizeprofile.json";
+import shopAnimate from "src/assets/animation/shop.json";
+import voteAnimate from "src/assets/animation/vote.json";
+import wheelAnimate from "src/assets/animation/wheelprize.json";
 
 export const ShopBlock = () => {
   return (
@@ -35,7 +35,7 @@ export const ShopItems = () => {
     () => [
       {
         title: t("commun.votetheme"),
-        icon: VoteIcon,
+        animation: voteAnimate,
         link: "/vote",
         time: voteDate
           ? {
@@ -46,7 +46,7 @@ export const ShopItems = () => {
       },
       {
         title: t("commun.rewardwheel"),
-        icon: wheelIcon,
+        animation: wheelAnimate,
         link: "/wheel",
         time: wheelDate
           ? {
@@ -57,17 +57,17 @@ export const ShopItems = () => {
       },
       {
         title: t("commun.customizedprofile"),
-        icon: personalizeIcon,
+        animation: customizeprofileAnimate,
         link: "/personalized",
       },
       {
         title: t("commun.seeshop"),
-        icon: shopIcon,
+        animation: shopAnimate,
         link: "/shop",
       },
       {
         title: t("commun.sharefriend"),
-        icon: ShareIcon,
+        animation: addfriendsAnimate,
         link: "/share",
       },
     ],
@@ -88,7 +88,7 @@ export const ShopItems = () => {
         <RoundLinkButton
           key={index}
           title={option.title}
-          icon={option.icon}
+          animation={option.animation}
           link={option.link}
           time={option.time}
         />

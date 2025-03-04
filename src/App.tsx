@@ -14,13 +14,21 @@ function App() {
   useEffect(() => {
     const handleUnload = async () => {
       if (user) {
-        await updateProfil({ id: user.id, isonline: false });
+        await updateProfil({
+          id: user.id,
+          isonline: false,
+          lastconnection: new Date(),
+        });
       }
     };
     const handleVisibility = async () => {
       if (document.hidden) {
         if (user) {
-          await updateProfil({ id: user.id, isonline: false });
+          await updateProfil({
+            id: user.id,
+            isonline: false,
+            lastconnection: new Date(),
+          });
         }
       }
     };

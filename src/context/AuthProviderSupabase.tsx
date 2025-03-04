@@ -72,7 +72,11 @@ export const AuthProviderSupabase = ({ children }: Props) => {
   useEffect(() => {
     const getProfilUser = async () => {
       if (user) {
-        await updateProfil({ id: user.id, isonline: true });
+        await updateProfil({
+          id: user.id,
+          isonline: true,
+          lastconnection: new Date(),
+        });
       }
       if (user !== null) {
         const { data } = await getProfilById(user.id);
@@ -85,7 +89,11 @@ export const AuthProviderSupabase = ({ children }: Props) => {
 
   const logout = useCallback(async () => {
     if (user) {
-      await updateProfil({ id: user.id, isonline: false });
+      await updateProfil({
+        id: user.id,
+        isonline: false,
+        lastconnection: new Date(),
+      });
     }
     clearLocalStorage();
     return signOut();
