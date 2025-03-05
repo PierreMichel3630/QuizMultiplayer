@@ -187,6 +187,18 @@ export default function GameOutlet() {
           getFriends();
         }
       )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "profiles",
+          filter: `id=eq.${uuid}`,
+        },
+        () => {
+          getFriends();
+        }
+      )
       .subscribe();
     return () => {
       channel.unsubscribe();

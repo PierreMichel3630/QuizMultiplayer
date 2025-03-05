@@ -3,25 +3,12 @@ import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { StreakBlock, StreakRecompense } from "src/component/StreakBlock";
+import { RECOMPENSES_LOGIN_STREAK } from "src/configuration/configuration";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { TypeRecompense } from "src/models/enum/TypeRecompense";
 
 export default function StreakPage() {
   const { t } = useTranslation();
   const { profile } = useAuth();
-
-  const recompenses = [
-    { day: 1, type: TypeRecompense.GOLD, value: 50 },
-    { day: 2, type: TypeRecompense.XP, value: 200 },
-    { day: 3, type: TypeRecompense.GOLD, value: 100 },
-    { day: 4, type: TypeRecompense.XP, value: 1000 },
-    { day: 5, type: TypeRecompense.GOLD, value: 500 },
-    { day: 6, type: TypeRecompense.XP, value: 2000 },
-    { day: 7, type: TypeRecompense.GOLD, value: 1000 },
-    { day: 8, type: TypeRecompense.XP, value: 5000 },
-    { day: 9, type: TypeRecompense.GOLD, value: 1500 },
-    { day: 10, type: TypeRecompense.GOLD, value: 5000 },
-  ];
 
   const streak = useMemo(() => (profile ? profile.loginstreak : 0), [profile]);
 
@@ -32,7 +19,7 @@ export default function StreakPage() {
       </Helmet>
       <Grid item xs={12}>
         <Box sx={{ p: 2 }}>
-          <Grid container spacing={2}>
+          <Grid container spacing={2} justifyContent="center">
             <Grid item xs={12}>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <StreakBlock value={streak} logoSize={50} textSize={45} />
@@ -43,15 +30,25 @@ export default function StreakPage() {
                 {t("commun.loginstreakexplain")}
               </Typography>
             </Grid>
-            {recompenses.map((recompense, index) => (
-              <Grid item xs={4} key={index}>
-                <StreakRecompense
-                  day={recompense.day}
-                  type={recompense.type}
-                  value={recompense.value}
-                />
-              </Grid>
-            ))}
+            {RECOMPENSES_LOGIN_STREAK.map((recompense, index, { length }) => {
+              const nbRecompenses = recompense.recompenses.length;
+              const isLast = index + 1 === length;
+              return (
+                <Grid
+                  item
+                  xs={4 * nbRecompenses}
+                  sm={3 * nbRecompenses}
+                  md={2 * nbRecompenses}
+                  key={index}
+                >
+                  <StreakRecompense
+                    recompense={recompense}
+                    streak={streak}
+                    isLast={isLast}
+                  />
+                </Grid>
+              );
+            })}
           </Grid>
         </Box>
       </Grid>

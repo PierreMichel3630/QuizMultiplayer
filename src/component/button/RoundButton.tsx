@@ -57,6 +57,7 @@ export const RoundLinkButton = ({
                 position: "absolute",
                 top: percent(50),
                 transform: "translate(0%, -50%)",
+                zIndex: 10,
               }}
             >
               <TimeLeftLabel

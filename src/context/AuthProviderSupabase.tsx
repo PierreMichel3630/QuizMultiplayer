@@ -12,7 +12,11 @@ import {
   useMemo,
   useState,
 } from "react";
-import { getProfilById, updateProfil } from "src/api/profile";
+import {
+  getProfilById,
+  updateProfil,
+  updateSelectProfil,
+} from "src/api/profile";
 import {
   passwordReset,
   signInWithEmail,
@@ -72,15 +76,18 @@ export const AuthProviderSupabase = ({ children }: Props) => {
   useEffect(() => {
     const getProfilUser = async () => {
       if (user) {
-        await updateProfil({
+        const { data } = await updateSelectProfil({
           id: user.id,
           isonline: true,
           lastconnection: new Date(),
         });
-      }
-      if (user !== null) {
-        const { data } = await getProfilById(user.id);
         setProfile(data as Profile);
+        setTimeout(() => {
+          getProfilById(user.id).then(({ data }) => {
+            const res = data as Profile;
+            setProfile(res);
+          });
+        }, 300);
       }
     };
     localStorage.setItem("user", JSON.stringify(user));
@@ -94,6 +101,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
         isonline: false,
         lastconnection: new Date(),
       });
+      setUser(null);
     }
     clearLocalStorage();
     return signOut();
