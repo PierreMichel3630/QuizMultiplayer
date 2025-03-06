@@ -49,6 +49,7 @@ import ParameterPage from "src/pages/ParameterPage";
 import SharePage from "src/pages/help/SharePage";
 import VoteThemePage from "src/pages/VoteThemePage";
 import StreakPage from "src/pages/StreakPage";
+import ChallengePage from "src/pages/challenge/ChallengePage";
 
 export const AppRoutes = [
   {
@@ -183,6 +184,10 @@ export const AppRoutes = [
       {
         path: "/streak",
         element: <StreakPage />,
+      },
+      {
+        path: "/challenge",
+        element: <ChallengePage />,
       },
       {
         path: "/games",

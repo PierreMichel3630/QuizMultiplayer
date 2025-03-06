@@ -1,5 +1,5 @@
 import { Box, Divider, Grid } from "@mui/material";
-import { px } from "csx";
+import { percent, px } from "csx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "src/context/AuthProviderSupabase";
@@ -10,6 +10,8 @@ import customizeprofileAnimate from "src/assets/animation/customizeprofile.json"
 import shopAnimate from "src/assets/animation/shop.json";
 import voteAnimate from "src/assets/animation/vote.json";
 import wheelAnimate from "src/assets/animation/wheelprize.json";
+import challengeIcon from "src/assets/challenge.png";
+import { TimeLeftLabel, TimeLeftToNextDayLabel } from "./TimeLeftBlock";
 
 export const ShopBlock = () => {
   return (
@@ -34,26 +36,75 @@ export const ShopItems = () => {
   const options = useMemo(
     () => [
       {
+        title: t("commun.daychallenge"),
+        icon: challengeIcon,
+        link: "/challenge",
+        extra: (
+          <>
+            {profile?.hasPlayChallenge && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: percent(50),
+                  transform: "translate(0%, -50%)",
+                  zIndex: 2,
+                }}
+              >
+                <TimeLeftToNextDayLabel size="small" />
+              </Box>
+            )}
+          </>
+        ),
+      },
+      {
         title: t("commun.votetheme"),
         animation: voteAnimate,
         link: "/vote",
-        time: voteDate
-          ? {
-              last: voteDate,
-              interval: 12,
-            }
-          : undefined,
+        extra: (
+          <>
+            {voteDate && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: percent(50),
+                  transform: "translate(0%, -50%)",
+                  zIndex: 2,
+                }}
+              >
+                <TimeLeftLabel
+                  intervalHours={12}
+                  lastDate={voteDate}
+                  size="small"
+                />
+              </Box>
+            )}
+          </>
+        ),
       },
       {
         title: t("commun.rewardwheel"),
         animation: wheelAnimate,
         link: "/wheel",
-        time: wheelDate
-          ? {
-              last: wheelDate,
-              interval: 12,
-            }
-          : undefined,
+        extra: (
+          <>
+            {wheelDate && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: percent(50),
+                  transform: "translate(0%, -50%)",
+                  zIndex: 2,
+                }}
+              >
+                <TimeLeftLabel
+                  intervalHours={12}
+                  lastDate={wheelDate}
+                  size="small"
+                />
+              </Box>
+            )}
+          </>
+        ),
       },
       {
         title: t("commun.customizedprofile"),
@@ -71,7 +122,7 @@ export const ShopItems = () => {
         link: "/share",
       },
     ],
-    [t, wheelDate, voteDate]
+    [t, profile, voteDate, wheelDate]
   );
 
   return (
@@ -88,9 +139,10 @@ export const ShopItems = () => {
         <RoundLinkButton
           key={index}
           title={option.title}
+          icon={option.icon}
           animation={option.animation}
           link={option.link}
-          time={option.time}
+          extra={option.extra}
         />
       ))}
     </Box>

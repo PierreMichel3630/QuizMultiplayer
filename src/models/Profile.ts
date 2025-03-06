@@ -22,6 +22,7 @@ export interface Profile {
   datevote: Date;
   lastconnection: Date;
   loginstreak: number;
+  hasPlayChallenge: boolean;
 }
 
 export interface ProfileUpdate {

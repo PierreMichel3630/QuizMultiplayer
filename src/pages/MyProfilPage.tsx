@@ -167,7 +167,7 @@ export default function MyProfilPage() {
   );
 
   const titleOrder = useMemo(
-    () => titles.sort((a, b) => sortByTitle(language, a, b)),
+    () => [...titles].sort((a, b) => sortByTitle(language, a, b)),
     [titles, language]
   );
 

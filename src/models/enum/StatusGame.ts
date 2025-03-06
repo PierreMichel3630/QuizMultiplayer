@@ -3,6 +3,11 @@ export enum StatusGameSolo {
   START = "START",
 }
 
+export enum StatusGameChallenge {
+  END = "END",
+  START = "START",
+}
+
 export enum StatusGameDuel {
   WAIT = "WAIT",
   END = "END",

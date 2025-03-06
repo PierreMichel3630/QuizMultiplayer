@@ -1,17 +1,10 @@
-import {
-  Alert,
-  Box,
-  Container,
-  Divider,
-  Grid,
-  Typography,
-} from "@mui/material";
-import { Trans, useTranslation } from "react-i18next";
+import { Alert, Box, Container, Divider, Grid } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import { px, viewHeight } from "csx";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ButtonColor } from "src/component/Button";
 import { CardSignalQuestion } from "src/component/card/CardQuestion";
 import { QuestionResult } from "src/models/Question";
@@ -25,6 +18,7 @@ import { BestScoreBlock } from "src/component/BestScoreBlock";
 import { MyExperienceSoloBlock } from "src/component/ExperienceBlock";
 import { AddMoneyBlock } from "src/component/MoneyBlock";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
+import { ConnectAlert } from "src/component/alert/ConnectAlert";
 import { ReportModal } from "src/component/modal/ReportModal";
 import { RankingTableSoloDuel } from "src/component/table/RankingTable";
 import { useApp } from "src/context/AppProvider";
@@ -153,22 +147,7 @@ export default function RecapSoloPage() {
                   </Grid>
                 ) : (
                   <Grid item xs={12}>
-                    <Alert severity="warning">
-                      <Typography variant="body1">
-                        <Trans
-                          i18nKey={t("alert.notconnect")}
-                          values={{
-                            link: "Créer un compte",
-                            link2: "Se connecter",
-                          }}
-                          components={{
-                            anchor1: <Link to="/login" />,
-                            anchor2: <Link to="/register" />,
-                          }}
-                          style={{ color: "white" }}
-                        />
-                      </Typography>
-                    </Alert>
+                    <ConnectAlert />
                   </Grid>
                 )}
                 <Grid item xs={12}>

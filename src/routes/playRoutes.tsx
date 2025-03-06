@@ -1,3 +1,4 @@
+import PlayChallengePage from "src/pages/challenge/PlayChallengePage";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 import GameDuelPage from "src/pages/GameDuelPage";
@@ -14,6 +15,14 @@ export const PlayRoutes = [
     element: (
       <ProtectedRoute>
         <DuelPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/challenge/:uuidGame",
+    element: (
+      <ProtectedRoute>
+        <PlayChallengePage />
       </ProtectedRoute>
     ),
   },

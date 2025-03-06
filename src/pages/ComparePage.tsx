@@ -90,7 +90,7 @@ export default function ComparePage() {
   const getScore = (uuid: string, set: (value: Array<Score>) => void) => {
     selectScoresByProfile(uuid).then(({ data }) => {
       const res = data as Array<Score>;
-      set(res.sort(sortByDuelGamesDesc));
+      set([...res].sort(sortByDuelGamesDesc));
     });
   };
 

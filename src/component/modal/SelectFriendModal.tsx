@@ -78,7 +78,7 @@ export const SelectFriendModal = ({
       <AppBar sx={{ position: "relative" }}>
         <Toolbar>
           <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {title ? title : t("commun.myfriends")}
+            {title ?? t("commun.myfriends")}
           </Typography>
           <IconButton color="inherit" onClick={close} aria-label="close">
             <CloseIcon />

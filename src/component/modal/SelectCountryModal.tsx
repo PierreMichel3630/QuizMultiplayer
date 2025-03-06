@@ -14,7 +14,7 @@ import {
   Toolbar,
   Typography,
   useMediaQuery,
-  useTheme
+  useTheme,
 } from "@mui/material";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -69,14 +69,14 @@ export const SelectCountryModal = ({
   useEffect(() => {
     const getResult = () => {
       if (value !== "") {
-        const countriesFilter = countries
+        const countriesFilter = [...countries]
           .sort((a, b) => sortByName(language, a, b))
           .filter((el) => searchString(value, el.name[language.iso]));
 
         setCountriesFilter(countriesFilter);
       } else {
         setCountriesFilter(
-          countries.sort((a, b) => sortByName(language, a, b))
+          [...countries].sort((a, b) => sortByName(language, a, b))
         );
       }
     };
