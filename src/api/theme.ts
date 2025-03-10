@@ -1,9 +1,9 @@
-import { ThemeInsert, ThemeUpdate } from "src/models/Theme";
+import { ThemeInsert, ThemeInsertAdmin, ThemeUpdate } from "src/models/Theme";
 import { supabase } from "./supabase";
 
 export const SUPABASE_THEME_TABLE = "theme";
 export const SUPABASE_THEMESHOP_TABLE = "themeshop";
-export const SUPABASE_VUETHEME_TABLE = "viewtheme";
+export const SUPABASE_VUETHEME_TABLE = "viewthemev2";
 
 export const selectThemes = () =>
   supabase.from(SUPABASE_VUETHEME_TABLE).select("*, category(*)");
@@ -25,8 +25,14 @@ export const updateTheme = (value: ThemeUpdate) =>
     .select()
     .single();
 
-export const insertTheme = (value: ThemeInsert) =>
+export const insertThemeAdmin = (value: ThemeInsertAdmin) =>
   supabase.from(SUPABASE_THEME_TABLE).insert(value).select().single();
 
 export const selectThemesShop = () =>
   supabase.from(SUPABASE_THEMESHOP_TABLE).select("*");
+
+export const insertTheme = (value: ThemeInsert) =>
+  supabase.from(SUPABASE_THEME_TABLE).insert(value).select().single();
+
+export const selectThemesPropose = () =>
+  supabase.from(SUPABASE_THEME_TABLE).select("*").eq("validate", false);

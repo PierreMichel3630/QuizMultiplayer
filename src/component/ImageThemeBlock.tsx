@@ -4,13 +4,19 @@ import { useMemo } from "react";
 import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";
 
+import NoPhotographyIcon from "@mui/icons-material/NoPhotography";
+
 interface Props {
-  theme: { image: string; color: string };
+  theme: { image?: string; color: string };
   size?: string | number;
   border?: boolean;
 }
 
-export const ImageThemeBlock = ({ theme, size = percent(100), border = true }: Props) => {
+export const ImageThemeBlock = ({
+  theme,
+  size = percent(100),
+  border = true,
+}: Props) => {
   const { mode } = useUser();
 
   const borderColor = useMemo(
@@ -31,16 +37,26 @@ export const ImageThemeBlock = ({ theme, size = percent(100), border = true }: P
         border: border ? `2px solid ${borderColor}` : "none",
       }}
     >
-      <img
-        alt="logo theme"
-        src={theme.image}
-        srcSet={theme.image}
-        loading="lazy"
-        style={{
-          maxWidth: percent(90),
-          maxHeight: Number.isFinite(size) ? Number(size) * 0.9 : size,
-        }}
-      />
+      {theme.image ? (
+        <img
+          alt="logo theme"
+          src={theme.image}
+          srcSet={theme.image}
+          loading="lazy"
+          style={{
+            maxWidth: percent(90),
+            maxHeight: Number.isFinite(size) ? Number(size) * 0.9 : size,
+          }}
+        />
+      ) : (
+        <NoPhotographyIcon
+          sx={{
+            width: 60,
+            height: 60,
+            color: "white",
+          }}
+        />
+      )}
     </Box>
   );
 };

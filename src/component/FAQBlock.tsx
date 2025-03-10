@@ -37,7 +37,7 @@ export const FAQBlock = () => {
     {
       title: t("faq.question5.title"),
       label: t("faq.question5.explain"),
-      link: "/vote",
+      link: "/proposetheme",
     },
     {
       title: t("faq.question6.title"),

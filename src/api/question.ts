@@ -63,12 +63,7 @@ export const insertQuestionTheme = (value: QuestionThemeInsert) =>
   supabase.from(SUPABASE_QUESTIONTHEME_TABLE).insert(value);
 
 export const updateQuestion = (value: QuestionUpdate) =>
-  supabase
-    .from(SUPABASE_QUESTION_TABLE)
-    .update(value)
-    .eq("id", value.id)
-    .select()
-    .single();
+  supabase.from(SUPABASE_QUESTION_TABLE).update(value).eq("id", value.id);
 
 export const deleteQuestionById = (id: number) =>
   supabase.from(SUPABASE_QUESTION_TABLE).delete().eq("id", id);

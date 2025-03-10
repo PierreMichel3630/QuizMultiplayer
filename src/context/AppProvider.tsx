@@ -168,7 +168,7 @@ export const AppProvider = ({ children }: Props) => {
         const resultats = [...value].sort((a, b) => sortByName(language, a, b));
         const filterResultats = profile?.isadmin
           ? [...resultats]
-          : [...resultats].filter((el) => el.enabled);
+          : [...resultats].filter((el) => el.enabled && el.validate);
         const uniqTheme = uniqBy(filterResultats, (el) => el.id);
         const count = uniqTheme.length;
         const questions = uniqTheme
@@ -186,7 +186,7 @@ export const AppProvider = ({ children }: Props) => {
   useEffect(() => {
     if (themes.length > 0) {
       const categories = uniqBy(
-        themes.map((el) => el.category),
+        themes.filter((el) => el.category !== null).map((el) => el.category),
         (el) => el.id
       );
       const themesByCategorie = groupBy(themes, "category.id");

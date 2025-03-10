@@ -39,7 +39,7 @@ export default function GameDuelPage() {
   return (
     <Grid
       container
-      sx={{ backgroundColor: Colors.black, minHeight: viewHeight(100) }}
+      sx={{ minHeight: viewHeight(100) }}
       alignContent="flex-start"
     >
       <Helmet>
@@ -71,7 +71,6 @@ export default function GameDuelPage() {
                   </Box>
                   <JsonLanguageBlock
                     variant="h2"
-                    color="text.secondary"
                     sx={{ wordBreak: "break-all" }}
                     value={game.theme.name}
                   />
@@ -106,7 +105,6 @@ export default function GameDuelPage() {
                     {game.player1.title && (
                       <JsonLanguageBlock
                         variant="caption"
-                        color="text.secondary"
                         value={game.player1.title.name}
                       />
                     )}
@@ -153,7 +151,6 @@ export default function GameDuelPage() {
                     {game.player2.title && (
                       <JsonLanguageBlock
                         variant="caption"
-                        color="text.secondary"
                         value={game.player2.title.name}
                       />
                     )}
@@ -197,12 +194,7 @@ export default function GameDuelPage() {
           right: 0,
         }}
       >
-        <Container
-          maxWidth="md"
-          sx={{
-            backgroundColor: Colors.black,
-          }}
-        >
+        <Container maxWidth="md">
           <Box
             sx={{
               display: "flex",

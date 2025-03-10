@@ -15,7 +15,7 @@ import { useUser } from "src/context/UserProvider";
 export interface ICardImage {
   id: number;
   name: JsonLanguage;
-  image: string | JSX.Element;
+  image?: string | JSX.Element;
   color: string;
   link?: string;
   type?: TypeCardEnum;

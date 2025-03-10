@@ -1,8 +1,8 @@
 import { TypeRecompense } from "src/models/enum/TypeRecompense";
-import { LoginStreakDayRecompense } from "src/models/Recompense";
+import { StreakDayRecompense } from "src/models/Recompense";
 
 /* LOGIN STREAK */
-export const RECOMPENSES_LOGIN_STREAK: Array<LoginStreakDayRecompense> = [
+export const RECOMPENSES_STREAK: Array<StreakDayRecompense> = [
   { day: 1, recompenses: [{ type: TypeRecompense.GOLD, value: 50 }] },
   { day: 2, recompenses: [{ type: TypeRecompense.XP, value: 200 }] },
   { day: 3, recompenses: [{ type: TypeRecompense.GOLD, value: 100 }] },
@@ -21,7 +21,7 @@ export const RECOMPENSES_LOGIN_STREAK: Array<LoginStreakDayRecompense> = [
   },
 ];
 
-export const MAX_DAY_RECOMPENSES_LOGIN_STREAK = 10;
+export const MAX_DAY_RECOMPENSES_STREAK = 10;
 
 /* CHALLENGE */
 export const NUMBER_QUESTIONS_CHALLENGE = 10;

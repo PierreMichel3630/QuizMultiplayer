@@ -1,3 +1,4 @@
+import CheckIcon from "@mui/icons-material/Check";
 import {
   FormControl,
   FormHelperText,
@@ -7,12 +8,11 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
-import { insertVoteTheme } from "src/api/vote";
+import { insertTheme } from "src/api/theme";
 import { ButtonColor } from "src/component/Button";
 import { useMessage } from "src/context/MessageProvider";
 import { Colors } from "src/style/Colors";
 import * as Yup from "yup";
-import CheckIcon from "@mui/icons-material/Check";
 
 interface Props {
   validate: () => void;
@@ -24,12 +24,15 @@ export const ProposeThemeForm = ({ validate }: Props) => {
 
   const initialValue: {
     name: string;
+    color: string;
   } = {
     name: "",
+    color: Colors.blue2,
   };
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required(t("form.proposetheme.requiredname")),
+    color: Yup.string().required(t("form.proposetheme.requiredcolor")),
   });
 
   const formik = useFormik({
@@ -39,8 +42,9 @@ export const ProposeThemeForm = ({ validate }: Props) => {
       try {
         const newTheme = {
           name: { "fr-FR": values.name, "en-US": values.name },
+          color: values.color,
         };
-        const { error } = await insertVoteTheme(newTheme);
+        const { error } = await insertTheme(newTheme);
         if (error) {
           setSeverity("error");
           setMessage(t("commun.error"));

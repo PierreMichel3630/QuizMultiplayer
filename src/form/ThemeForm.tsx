@@ -14,7 +14,7 @@ import moment from "moment";
 import { useTranslation } from "react-i18next";
 import { insertCategoryTheme } from "src/api/category";
 import { BUCKET_THEME, URL_STORAGE, storeFile } from "src/api/storage";
-import { insertTheme, updateTheme } from "src/api/theme";
+import { insertThemeAdmin, updateTheme } from "src/api/theme";
 import { ButtonColor } from "src/component/Button";
 import { SelectCategory } from "src/component/Select";
 import { FileUploadInput } from "src/component/input/FileUploadInput";
@@ -37,7 +37,7 @@ export const ThemeForm = ({ validate, theme }: Props) => {
     namefr: string;
     nameen: string;
     color: string;
-    image: null | File | string;
+    image: null | File | string | undefined;
     background: null | File | string;
     category: null | Category;
   } = {
@@ -116,7 +116,7 @@ export const ThemeForm = ({ validate, theme }: Props) => {
         };
         const { error, data } = theme
           ? await updateTheme({ id: theme.id, ...newTheme })
-          : await insertTheme(newTheme);
+          : await insertThemeAdmin(newTheme);
         if (error) {
           setSeverity("error");
           setMessage(t("commun.error"));

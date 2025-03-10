@@ -3,14 +3,14 @@ import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { StreakBlock, StreakRecompense } from "src/component/StreakBlock";
-import { RECOMPENSES_LOGIN_STREAK } from "src/configuration/configuration";
+import { RECOMPENSES_STREAK } from "src/configuration/configuration";
 import { useAuth } from "src/context/AuthProviderSupabase";
 
 export default function StreakPage() {
   const { t } = useTranslation();
   const { profile } = useAuth();
 
-  const streak = useMemo(() => (profile ? profile.loginstreak : 0), [profile]);
+  const streak = useMemo(() => (profile ? profile.streak : 0), [profile]);
 
   return (
     <Grid container>
@@ -26,11 +26,9 @@ export default function StreakPage() {
               </Box>
             </Grid>
             <Grid item xs={12} sx={{ textAlign: "center" }}>
-              <Typography variant="h6">
-                {t("commun.loginstreakexplain")}
-              </Typography>
+              <Typography variant="h6">{t("commun.streakexplain")}</Typography>
             </Grid>
-            {RECOMPENSES_LOGIN_STREAK.map((recompense, index, { length }) => {
+            {RECOMPENSES_STREAK.map((recompense, index, { length }) => {
               const nbRecompenses = recompense.recompenses.length;
               const isLast = index + 1 === length;
               return (

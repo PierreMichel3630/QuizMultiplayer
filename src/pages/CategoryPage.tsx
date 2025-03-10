@@ -34,7 +34,7 @@ export default function CategoryPage() {
     () =>
       category
         ? themes
-            .filter((el) => el.category.id === category.id && !el.isfirst)
+            .filter((el) => el.category?.id === category.id && !el.isfirst)
             .sort((a, b) => sortByName(language, a, b))
         : [],
     [category, themes, language]
@@ -43,7 +43,7 @@ export default function CategoryPage() {
   const FirstThemesCategory = useMemo(
     () =>
       category
-        ? themes.filter((el) => el.category.id === category.id && el.isfirst)
+        ? themes.filter((el) => el.category?.id === category.id && el.isfirst)
         : [],
     [category, themes]
   );

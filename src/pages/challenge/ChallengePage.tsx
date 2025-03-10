@@ -6,9 +6,13 @@ import { TitleBlock } from "src/component/title/Title";
 import { useAuth } from "src/context/AuthProviderSupabase";
 
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
-import { useCallback } from "react";
+import moment from "moment";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { launchChallenge } from "src/api/challenge";
+import {
+  countChallengeGameByDateAndProfileId,
+  launchChallenge,
+} from "src/api/challenge";
 import { ButtonColor } from "src/component/Button";
 import { RankingChallenge } from "src/component/RankingChallenge";
 import { TimeLeftToNextDayLabel } from "src/component/TimeLeftBlock";
@@ -16,8 +20,9 @@ import { Colors } from "src/style/Colors";
 
 export default function ChallengePage() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { profile } = useAuth();
+  const navigate = useNavigate();
+  const [hasPlayChallenge, setHasPlayChallenge] = useState(false);
 
   const launch = useCallback(() => {
     if (profile) {
@@ -28,6 +33,20 @@ export default function ChallengePage() {
       navigate("/login");
     }
   }, [navigate, profile]);
+
+  useEffect(() => {
+    const isChallengeAvailable = () => {
+      if (profile) {
+        const date = moment();
+        countChallengeGameByDateAndProfileId(date, profile.id).then(
+          ({ count }) => {
+            setHasPlayChallenge(count !== null && count > 0);
+          }
+        );
+      }
+    };
+    isChallengeAvailable();
+  }, [profile]);
 
   return (
     <Grid container>
@@ -52,7 +71,7 @@ export default function ChallengePage() {
               </Grid>
             )}
             <Grid item xs={12}>
-              {profile?.hasPlayChallenge ? (
+              {hasPlayChallenge ? (
                 <TimeLeftToNextDayLabel label={t("commun.nextdaychallenge")} />
               ) : (
                 <ButtonColor
@@ -71,7 +90,7 @@ export default function ChallengePage() {
               <Divider />
             </Grid>
             <Grid item xs={12}>
-              <RankingChallenge />
+              <RankingChallenge hasPlayChallenge={hasPlayChallenge}/>
             </Grid>
           </Grid>
         </Box>

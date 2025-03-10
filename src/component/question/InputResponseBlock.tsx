@@ -115,7 +115,6 @@ export const InputResponseBlock = ({ onSubmit, typeResponse }: Props) => {
                       fontFamily: ["Montserrat", "sans-serif"].join(","),
                       fontSize: 20,
                       fontWeight: 700,
-                      color: Colors.white,
                     },
                   }}
                   sx={{
@@ -124,7 +123,6 @@ export const InputResponseBlock = ({ onSubmit, typeResponse }: Props) => {
                     height: px(50),
                     borderRadius: px(15),
                     textAlign: "center",
-                    color: Colors.white,
                   }}
                 />
               </FormControl>

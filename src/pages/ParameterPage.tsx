@@ -22,7 +22,7 @@ export default function ParameterPage() {
   };
 
   return (
-    <Container maxWidth="xs">
+    <Container maxWidth="md">
       <Grid container>
         <Helmet>
           <title>{`${t("pages.parameters.title")} - ${t("appname")}`}</title>

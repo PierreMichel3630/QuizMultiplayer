@@ -1,17 +1,18 @@
 import { Box, Divider, Grid } from "@mui/material";
 import { percent, px } from "csx";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { RoundLinkButton } from "./button/RoundButton";
 
+import moment from "moment";
+import { countChallengeGameByDateAndProfileId } from "src/api/challenge";
 import addfriendsAnimate from "src/assets/animation/addfriends.json";
 import customizeprofileAnimate from "src/assets/animation/customizeprofile.json";
 import shopAnimate from "src/assets/animation/shop.json";
 import voteAnimate from "src/assets/animation/vote.json";
 import wheelAnimate from "src/assets/animation/wheelprize.json";
-import challengeIcon from "src/assets/challenge.png";
-import { TimeLeftLabel, TimeLeftToNextDayLabel } from "./TimeLeftBlock";
+import { TimeLeftLabel } from "./TimeLeftBlock";
 
 export const ShopBlock = () => {
   return (
@@ -30,18 +31,33 @@ export const ShopItems = () => {
   const { t } = useTranslation();
   const { profile } = useAuth();
 
+  const [hasPlayChallenge, setHasPlayChallenge] = useState(false);
+
   const wheelDate = useMemo(() => profile?.wheellaunch, [profile]);
-  const voteDate = useMemo(() => profile?.datevote, [profile]);
+
+  useEffect(() => {
+    const isChallengeAvailable = () => {
+      if (profile) {
+        const date = moment();
+        countChallengeGameByDateAndProfileId(date, profile.id).then(
+          ({ count }) => {
+            setHasPlayChallenge(count !== null && count > 0);
+          }
+        );
+      }
+    };
+    isChallengeAvailable();
+  }, [profile]);
 
   const options = useMemo(
     () => [
-      {
+      /*{
         title: t("commun.daychallenge"),
         icon: challengeIcon,
         link: "/challenge",
         extra: (
           <>
-            {profile?.hasPlayChallenge && (
+            {hasPlayChallenge && (
               <Box
                 sx={{
                   position: "absolute",
@@ -55,31 +71,11 @@ export const ShopItems = () => {
             )}
           </>
         ),
-      },
+      },*/
       {
-        title: t("commun.votetheme"),
+        title: t("commun.proposetheme"),
         animation: voteAnimate,
-        link: "/vote",
-        extra: (
-          <>
-            {voteDate && (
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: percent(50),
-                  transform: "translate(0%, -50%)",
-                  zIndex: 2,
-                }}
-              >
-                <TimeLeftLabel
-                  intervalHours={12}
-                  lastDate={voteDate}
-                  size="small"
-                />
-              </Box>
-            )}
-          </>
-        ),
+        link: "/proposetheme",
       },
       {
         title: t("commun.rewardwheel"),
@@ -122,7 +118,7 @@ export const ShopItems = () => {
         link: "/share",
       },
     ],
-    [t, profile, voteDate, wheelDate]
+    [t, wheelDate, hasPlayChallenge]
   );
 
   return (
@@ -139,7 +135,6 @@ export const ShopItems = () => {
         <RoundLinkButton
           key={index}
           title={option.title}
-          icon={option.icon}
           animation={option.animation}
           link={option.link}
           extra={option.extra}

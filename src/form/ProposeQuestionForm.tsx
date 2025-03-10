@@ -1,15 +1,12 @@
 import DoneIcon from "@mui/icons-material/Done";
 import {
-  Chip,
+  FilledInput,
   FormControl,
   FormHelperText,
   Grid,
   InputLabel,
-  OutlinedInput,
-  TextField,
 } from "@mui/material";
 import { useFormik } from "formik";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { insertQuestion, insertQuestionTheme } from "src/api/question";
 import { ButtonColor } from "src/component/Button";
@@ -29,18 +26,21 @@ interface Props {
 export const ProposeQuestionForm = ({ validate, theme }: Props) => {
   const { t } = useTranslation();
   const { setMessage, setSeverity } = useMessage();
-  const [wrongresponse, setWrongresponse] = useState("");
 
   const initialValue: {
     difficulty: string;
     question: string;
     theme: Theme;
     response: string;
-    wrongresponses: Array<string>;
+    wrongresponse1: string;
+    wrongresponse2: string;
+    wrongresponse3: string;
   } = {
     question: "",
     response: "",
-    wrongresponses: [],
+    wrongresponse1: "",
+    wrongresponse2: "",
+    wrongresponse3: "",
     difficulty: "FACILE",
     theme: theme,
   };
@@ -50,18 +50,15 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
     response: Yup.string().required(t("form.proposequestion.requiredresponse")),
     difficulty: Yup.string(),
     theme: Yup.mixed(),
-    wrongresponses: Yup.array()
-      .of(Yup.string())
-      .min(1, t("form.proposequestion.requiredminwrongresponses"))
-      .max(5, t("form.proposequestion.requiredmaxwrongresponses"))
-      .test(
-        "responsevalid",
-        t("form.proposequestion.formatwrongresponses"),
-        (value) =>
-          value
-            ? value.filter((el) => el === "" || el === undefined).length === 0
-            : false
-      ),
+    wrongresponse1: Yup.string().required(
+      t("form.proposequestion.requiredwrongresponses")
+    ),
+    wrongresponse2: Yup.string().required(
+      t("form.proposequestion.requiredwrongresponses")
+    ),
+    wrongresponse3: Yup.string().required(
+      t("form.proposequestion.requiredwrongresponses")
+    ),
   });
 
   const formik = useFormik({
@@ -76,9 +73,11 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
           isqcm: true,
           typequestion: "QCM",
           validate: false,
-          responses: values.wrongresponses.map((el) => ({
-            "fr-FR": el,
-          })),
+          responses: [
+            { "fr-FR": values.wrongresponse1 },
+            { "fr-FR": values.wrongresponse2 },
+            { "fr-FR": values.wrongresponse3 },
+          ],
           image: null,
           typeResponse: null,
           allresponse: false,
@@ -127,20 +126,20 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
           <FormControl
             fullWidth
             error={Boolean(formik.touched.question && formik.errors.question)}
+            variant="filled"
           >
-            <InputLabel htmlFor="input-question">
+            <InputLabel shrink htmlFor="input-question">
               {t("form.proposequestion.question")}
             </InputLabel>
-            <OutlinedInput
+            <FilledInput
               id="input-question"
               value={formik.values.question}
               name="question"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
-              label={t("form.proposequestion.question")}
               placeholder={t("form.proposequestion.placehoderquestion")}
               multiline
-              maxRows={4}
+              maxRows={3}
               inputProps={{}}
             />
             {formik.touched.question && formik.errors.question && (
@@ -154,17 +153,17 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
           <FormControl
             fullWidth
             error={Boolean(formik.touched.response && formik.errors.response)}
+            variant="filled"
           >
-            <InputLabel htmlFor="input-response">
+            <InputLabel shrink htmlFor="input-response">
               {t("form.proposequestion.response")}
             </InputLabel>
-            <OutlinedInput
+            <FilledInput
               id="input-response"
               value={formik.values.response}
               name="response"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
-              label={t("form.proposequestion.response")}
               placeholder={t("form.proposequestion.placehoderresponse")}
               inputProps={{}}
             />
@@ -175,50 +174,87 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={8}>
-          <TextField
-            value={wrongresponse}
-            onChange={(event) => setWrongresponse(event.target.value)}
-            label={t("form.proposequestion.wrongresponse")}
-            placeholder={t("form.proposequestion.placehoderwrongresponse")}
+        <Grid item xs={12}>
+          <FormControl
             fullWidth
-            size="small"
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <ButtonColor
-            value={Colors.green}
-            label={t("commun.add")}
-            variant="contained"
-            onClick={() => {
-              formik.setFieldValue("wrongresponses", [
-                ...formik.values.wrongresponses,
-                wrongresponse,
-              ]);
-              setWrongresponse("");
-            }}
-          />
-        </Grid>
-
-        {formik.values.wrongresponses.map((wrongresponse, i) => (
-          <Grid item key={i}>
-            <Chip
-              label={wrongresponse}
-              onDelete={() => {
-                const newResponses = [...formik.values.wrongresponses];
-                newResponses.splice(i, 1);
-                formik.setFieldValue(`wrongresponses`, newResponses);
-              }}
+            error={Boolean(
+              formik.touched.wrongresponse1 && formik.errors.wrongresponse1
+            )}
+            variant="filled"
+          >
+            <InputLabel shrink htmlFor="input-wrongresponse1">
+              {t("form.proposequestion.wrongresponse1")}
+            </InputLabel>
+            <FilledInput
+              id="input-wrongresponse1"
+              value={formik.values.wrongresponse1}
+              name="wrongresponse1"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              placeholder={t("form.proposequestion.placeholderwrongresponse1")}
+              inputProps={{}}
             />
-          </Grid>
-        ))}
-        {formik.errors.wrongresponses && formik.touched.wrongresponses && (
-          <Grid item xs={12}>
-            <FormHelperText error id={`error-wrongresponses`}>
-              {formik.errors.wrongresponses}
-            </FormHelperText>
-          </Grid>
-        )}
+            {formik.touched.wrongresponse1 && formik.errors.wrongresponse1 && (
+              <FormHelperText error id="error-wrongresponse1">
+                {formik.errors.wrongresponse1}
+              </FormHelperText>
+            )}
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl
+            fullWidth
+            error={Boolean(
+              formik.touched.wrongresponse2 && formik.errors.wrongresponse2
+            )}
+            variant="filled"
+          >
+            <InputLabel shrink htmlFor="input-wrongresponse2">
+              {t("form.proposequestion.wrongresponse2")}
+            </InputLabel>
+            <FilledInput
+              id="input-wrongresponse2"
+              value={formik.values.wrongresponse2}
+              name="wrongresponse2"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              placeholder={t("form.proposequestion.placeholderwrongresponse2")}
+              inputProps={{}}
+            />
+            {formik.touched.wrongresponse2 && formik.errors.wrongresponse2 && (
+              <FormHelperText error id="error-wrongresponse2">
+                {formik.errors.wrongresponse2}
+              </FormHelperText>
+            )}
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl
+            fullWidth
+            error={Boolean(
+              formik.touched.wrongresponse3 && formik.errors.wrongresponse3
+            )}
+            variant="filled"
+          >
+            <InputLabel shrink htmlFor="input-wrongresponse3">
+              {t("form.proposequestion.wrongresponse3")}
+            </InputLabel>
+            <FilledInput
+              id="input-wrongresponse3"
+              value={formik.values.wrongresponse3}
+              name="wrongresponse3"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              placeholder={t("form.proposequestion.placeholderwrongresponse3")}
+              inputProps={{}}
+            />
+            {formik.touched.wrongresponse3 && formik.errors.wrongresponse3 && (
+              <FormHelperText error id="error-wrongresponse3">
+                {formik.errors.wrongresponse3}
+              </FormHelperText>
+            )}
+          </FormControl>
+        </Grid>
         <Grid item xs={12}>
           <ButtonColor
             value={Colors.green}

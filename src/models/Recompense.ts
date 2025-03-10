@@ -1,11 +1,11 @@
 import { TypeRecompense } from "./enum/TypeRecompense";
 
-export interface LoginStreakDayRecompense {
+export interface StreakDayRecompense {
   day: number;
-  recompenses: Array<LoginStreakRecompense>;
+  recompenses: Array<StreakRecompense>;
 }
 
-export interface LoginStreakRecompense {
+export interface StreakRecompense {
   type: TypeRecompense;
   value: number;
 }

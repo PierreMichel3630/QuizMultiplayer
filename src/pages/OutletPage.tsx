@@ -14,7 +14,7 @@ export default function OutletPage() {
 
   const [open, setOpen] = useState(false);
   const [online, setOnline] = useState(navigator.onLine);
-  const [, setLoginStreak] = useState<number | null>(null);
+  const [, setStreak] = useState<number | null>(null);
 
   useEffect(() => {
     window.addEventListener("online", () => setOnline(true));
@@ -27,11 +27,11 @@ export default function OutletPage() {
 
   useEffect(() => {
     if (profile) {
-      setLoginStreak((prev) => {
-        if (prev && prev + 1 === profile.loginstreak) {
+      setStreak((prev) => {
+        if (prev && prev + 1 === profile.streak) {
           setOpen(true);
         }
-        return profile.loginstreak;
+        return profile.streak;
       });
     }
   }, [profile]);

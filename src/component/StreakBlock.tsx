@@ -9,7 +9,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { useMemo } from "react";
 import moneyIcon from "src/assets/money.svg";
 import xpIcon from "src/assets/xp.svg";
-import { LoginStreakDayRecompense } from "src/models/Recompense";
+import { StreakDayRecompense } from "src/models/Recompense";
 
 interface Props {
   value: number;
@@ -45,7 +45,7 @@ export const StreakBlock = ({ value, logoSize = 25, textSize = 18 }: Props) => {
 };
 
 interface PropsStreakRecompense {
-  recompense: LoginStreakDayRecompense;
+  recompense: StreakDayRecompense;
   streak?: number;
   isLast?: boolean;
 }

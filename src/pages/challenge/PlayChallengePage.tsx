@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { supabase } from "src/api/supabase";
 import { useUser } from "src/context/UserProvider";
 import { QuestionSolo } from "src/models/Question";
 import { ResponseSolo } from "src/models/Response";
@@ -14,12 +13,17 @@ import {
   getResponseQuestionChallenge,
   selectChallengeGameByUuid,
 } from "src/api/challenge";
+import { ImageCard } from "src/component/image/ImageCard";
 import { LoadingDot } from "src/component/Loading";
 import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
 import { Answer, Response } from "src/component/question/ResponseBlock";
 import { ChallengeGame } from "src/models/Challenge";
 import { StatusGameChallenge } from "src/models/enum/StatusGame";
+import { Colors } from "src/style/Colors";
 import { PreloadImages } from "src/utils/preload";
+
+import challengeIcon from "src/assets/challenge.png";
+import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 
 export default function PlayChallengePage() {
   const { t } = useTranslation();
@@ -31,7 +35,6 @@ export default function PlayChallengePage() {
 
   const [question, setQuestion] = useState<undefined | QuestionSolo>(undefined);
   const [response, setResponse] = useState<undefined | Response>(undefined);
-  const [score, setScore] = useState<number>(0);
   const [timer, setTimer] = useState<undefined | number>(undefined);
   const [audio, setAudio] = useState<undefined | HTMLAudioElement>(undefined);
   const [timeoutQuestion, setTimeoutQuestion] = useState<
@@ -41,6 +44,9 @@ export default function PlayChallengePage() {
   const [myresponse, setMyresponse] = useState<string | number | undefined>(
     undefined
   );
+
+  const [correctAnswer, setCorrectAnswer] = useState<number>(0);
+  const [wrongAnswer, setWrongAnswer] = useState<number>(0);
 
   useEffect(() => {
     const getGame = () => {
@@ -89,6 +95,22 @@ export default function PlayChallengePage() {
             setTimer(questionSolo.time - 1);
             setResponse(undefined);
             scrollTop();
+            const newtimeoutQuestion = setTimeout(async () => {
+              const response = await getResponseQuestionChallenge({
+                game: game.uuid,
+                response: undefined,
+              });
+              const res = response.data as ResponseSolo;
+              setTimer(undefined);
+              setResponse(res);
+              setWrongAnswer((prev) => prev + 1);
+              scrollTop();
+              generateQuestion(game, 500);
+              if (audio) {
+                audio.pause();
+              }
+            }, questionSolo.time * 1000);
+            setTimeoutQuestion(newtimeoutQuestion);
           }, delay);
         });
       }
@@ -112,15 +134,14 @@ export default function PlayChallengePage() {
         const res = data as ResponseSolo;
         setMyresponse(undefined);
         setTimer(undefined);
-        setResponse({
-          response: res.response,
-          result: res.result,
-          responseplayer1: res.answer,
-        });
-        setScore(res.points);
+        setResponse(res);
         scrollTop();
-        generateQuestion(game, 0);
-
+        generateQuestion(game, 500);
+        if (res.result) {
+          setCorrectAnswer((prev) => prev + 1);
+        } else {
+          setWrongAnswer((prev) => prev + 1);
+        }
         if (audio) {
           audio.pause();
         }
@@ -136,10 +157,10 @@ export default function PlayChallengePage() {
           if (data !== null) {
             const res = data as ChallengeGame;
             if (res.status === StatusGameChallenge.END) {
-              navigate(`/recapsolo/${res.uuid}`);
+              navigate(`/game/challenge/${res.uuid}`);
             } else {
               setGame(res);
-              generateQuestion(res, 1000);
+              generateQuestion(res, 500);
             }
           } else {
             navigate("/");
@@ -150,10 +171,33 @@ export default function PlayChallengePage() {
     getGame();
   }, [generateQuestion, navigate, uuidGame]);
 
+  useEffect(() => {
+    if (audio) {
+      audio.volume = sound / 100;
+      audio.play();
+    }
+    return () => {
+      if (audio) {
+        audio.pause();
+      }
+    };
+  }, [audio, sound]);
+
   const responseP1 = useMemo(
     () => myresponse ?? (response ? response.responseplayer1 : undefined),
     [myresponse, response]
   );
+
+  const numberQuestions = useMemo(
+    () => correctAnswer + wrongAnswer,
+    [correctAnswer, wrongAnswer]
+  );
+
+  useEffect(() => {
+    if (numberQuestions >= NUMBER_QUESTIONS_CHALLENGE) {
+      navigate(`/game/challenge/${uuidGame}`);
+    }
+  }, [numberQuestions, navigate, uuidGame]);
 
   return (
     <Box>
@@ -179,6 +223,33 @@ export default function PlayChallengePage() {
             gap: 1,
           }}
         >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <ImageCard
+              value={{
+                image: challengeIcon,
+                color: Colors.blue,
+              }}
+              size={80}
+            />
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 1,
+              }}
+            >
+              <Typography variant="h2">{t("commun.daychallenge")}</Typography>
+              <Typography variant="h2">
+                {correctAnswer} / {numberQuestions}
+              </Typography>
+            </Box>
+          </Box>
           <Box
             sx={{
               flexGrow: 1,

@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Avatar,
   Box,
+  Divider,
   FormControl,
   Grid,
   InputLabel,
@@ -30,6 +31,7 @@ import { AutocompleteInputTheme } from "./Autocomplete";
 import { ImageThemeBlock } from "./ImageThemeBlock";
 import { BasicSearchInput } from "./Input";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
+import { Colors } from "src/style/Colors";
 
 interface Props {
   value: Difficulty;
@@ -92,33 +94,39 @@ export const SelectDifficulty = ({ value, onSelect }: Props) => {
             mt: 1,
             overflow: "scroll",
             overflowY: "inherit",
+            gap: 1,
+            p: padding(5, 10),
           }}
         >
           {Object.keys(Difficulty).map((el) => (
-            <Grid
-              container
-              sx={{
-                cursor: "pointer",
-                color: colorDifficulty[el],
-                p: 1,
-                "&:hover": {
-                  color: "white",
-                  backgroundColor: colorDifficulty[el],
-                },
-              }}
-              alignItems="center"
-              onClick={() => {
-                onSelect(el as Difficulty);
-                unFocus();
-              }}
-              key={el}
-            >
-              <Grid item xs={12}>
+            <>
+              <Box
+                onClick={() => {
+                  onSelect(el as Difficulty);
+                  unFocus();
+                }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  width: percent(100),
+                }}
+              >
+                <Box
+                  sx={{
+                    width: px(30),
+                    height: px(30),
+                    backgroundColor: colorDifficulty[el],
+                    borderRadius: px(10),
+                    border: `2px solid ${Colors.white}`,
+                  }}
+                />
                 <Typography variant="h4">
                   {t(`enum.difficulty.${el}`)}
                 </Typography>
-              </Grid>
-            </Grid>
+              </Box>
+              <Divider sx={{ width: percent(100) }} />
+            </>
           ))}
         </Paper>
       )}

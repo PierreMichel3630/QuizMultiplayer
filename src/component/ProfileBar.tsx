@@ -18,7 +18,6 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { Colors } from "src/style/Colors";
 import { AdminButton } from "./button/AdminButton";
 import { SkeletonCircular } from "./skeleton/SkeletonCircular";
-import { StreakBlock } from "./StreakBlock";
 
 export const ProfileBar = () => {
   const navigate = useNavigate();
@@ -125,7 +124,7 @@ export const ProfileBar = () => {
               )}
             </Link>
           </Box>
-          {profile && <StreakBlock value={profile.loginstreak} />}
+          {/*profile && <StreakBlock value={profile.streak} />*/}
         </Box>
         <Box
           sx={{

@@ -105,7 +105,12 @@ export default function AdminQuestionsPage() {
 
   const modifyQuestion = (value: QuestionUpdate) => {
     updateQuestion(value).then(({ data }) => {
-      setQuestions((prev) => [...prev.filter((el) => el.id !== data.id), data]);
+      if (data !== null) {
+        setQuestions((prev) => {
+          const res = [...prev].filter((el) => el.id !== value.id);
+          return [...res, data];
+        });
+      }
     });
   };
 

@@ -74,7 +74,7 @@ export default function GameSoloPage() {
   return (
     <Grid
       container
-      sx={{ backgroundColor: Colors.black, minHeight: viewHeight(100) }}
+      sx={{ minHeight: viewHeight(100) }}
       alignContent="flex-start"
     >
       <Helmet>
@@ -143,12 +143,7 @@ export default function GameSoloPage() {
           right: 0,
         }}
       >
-        <Container
-          maxWidth="md"
-          sx={{
-            backgroundColor: Colors.black,
-          }}
-        >
+        <Container maxWidth="md">
           <Box
             sx={{
               display: "flex",

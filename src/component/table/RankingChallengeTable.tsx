@@ -28,12 +28,19 @@ import { FRIENDSTATUS } from "src/models/Friend";
 import { Colors } from "src/style/Colors";
 import { CountryImageBlock } from "../CountryBlock";
 
+import VisibilityIcon from "@mui/icons-material/Visibility";
+
 interface Props {
   data: Array<ChallengeRanking>;
   loading?: boolean;
+  hasPlayChallenge?: boolean;
 }
 
-export const RankingChallengeTable = ({ data, loading = false }: Props) => {
+export const RankingChallengeTable = ({
+  data,
+  loading = false,
+  hasPlayChallenge = false,
+}: Props) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const { friends } = useApp();
@@ -84,7 +91,7 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
   };
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center" }}>
+    <Box>
       {data.length === 0 && !loading ? (
         <Alert severity="warning" sx={{ width: percent(100) }}>
           {t("commun.noresultgame")}
@@ -191,6 +198,24 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                           {(el.time / 1000).toFixed(2)}s
                         </Typography>
                       </TableCell>
+                      {hasPlayChallenge && (
+                        <TableCell sx={{ p: px(4) }} width={50}>
+                          {el.uuid && (
+                            <Link
+                              to={`/game/challenge/${el.uuid}`}
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <VisibilityIcon
+                                fontSize="small"
+                                sx={{ color: colorText }}
+                              />
+                            </Link>
+                          )}
+                        </TableCell>
+                      )}
                     </TableRow>
                   </Fragment>
                 );

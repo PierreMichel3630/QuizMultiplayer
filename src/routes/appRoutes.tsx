@@ -35,21 +35,21 @@ import TitlePage from "src/pages/TitlePage";
 
 import MyProfilPage from "src/pages/MyProfilPage";
 import OutletPage from "src/pages/OutletPage";
+import ParameterPage from "src/pages/ParameterPage";
 import PlayPage from "src/pages/PlayPage";
 import PreviousThemePage from "src/pages/PreviousThemePage";
+import ProposeThemePage from "src/pages/ProposeThemePage";
+import StreakPage from "src/pages/StreakPage";
 import UpdatedThemePage from "src/pages/UpdatedThemePage";
 import WheelPage from "src/pages/WheelPage";
+import ChallengePage from "src/pages/challenge/ChallengePage";
+import SharePage from "src/pages/help/SharePage";
 import AvatarsPage from "src/pages/shop/AvatarsPage";
 import BadgesPage from "src/pages/shop/BadgesPages";
 import BannersPage from "src/pages/shop/BannersPage";
 import ShopPage from "src/pages/shop/ShopPage";
 import ShopThemePage from "src/pages/shop/ShopThemePage";
 import TitlesPage from "src/pages/shop/TitlesPage";
-import ParameterPage from "src/pages/ParameterPage";
-import SharePage from "src/pages/help/SharePage";
-import VoteThemePage from "src/pages/VoteThemePage";
-import StreakPage from "src/pages/StreakPage";
-import ChallengePage from "src/pages/challenge/ChallengePage";
 
 export const AppRoutes = [
   {
@@ -178,8 +178,8 @@ export const AppRoutes = [
         element: <SharePage />,
       },
       {
-        path: "/vote",
-        element: <VoteThemePage />,
+        path: "/proposetheme",
+        element: <ProposeThemePage />,
       },
       {
         path: "/streak",

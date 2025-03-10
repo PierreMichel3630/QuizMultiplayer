@@ -33,7 +33,6 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
       maxWidth="lg"
       fullWidth
       fullScreen={fullScreen}
-      sx={{ backgroundColor: "inherit" }}
     >
       <AppBar sx={{ position: "relative" }}>
         <Toolbar>

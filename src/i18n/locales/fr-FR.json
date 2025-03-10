@@ -7,6 +7,7 @@
     "typequestion": "Type de question",
     "difficulties": "Difficultés",
     "thememaintenance": "Actuellement en maintenance, le thème reviendra le plus rapidement possible.",
+    "themenotvalidate": "Thème en attente de validation par un administrateur.",
     "images": "Images",
     "validatequestion": "Question Validé",
     "deniedquestion": "Question Non Valide",
@@ -29,6 +30,8 @@
     "noplayer": "Aucun joueur",
     "player_one": "{{count}} joueur",
     "player_other": "{{count}} joueurs",
+    "position_one": "{{count}}<sup>er</sup>",
+    "position_other": "{{count}}<sup>ème</sup>",
     "questions": "questions",
     "wait": "En attente",
     "createprivategame": "Créer une partie privée",
@@ -136,7 +139,6 @@
     "first": "1er",
     "second": "2ème",
     "third": "3ème",
-    "position": "{{position}}ème",
     "changetheme": "Changer de thème",
     "revenge": "Revanche",
     "notrank": "Non Classé",
@@ -299,13 +301,17 @@
     "vote_one": "{{count}} vote",
     "vote_other": "{{count}} votes",
     "proposetheme": "Proposer un thème",
-    "loginstreakexplain": "Connectez vous tous les jours pour obtenir des récompenses incroyables",
+    "proposethemes": "Thèmes proposés",
+    "proposethemetext": "Vous pouvez proposer des thèmes, ils seront validés par un administrateur, attention à ne pas faire de duplication de thème.",
+    "streakexplain": "Jouer au mode 'Defis du jour' tous les jours pour obtenir des récompenses incroyables",
     "ok": "Ok",
     "daychallenge": "Défis du jour",
     "nextdaychallenge": "Prochain Défis du jour dans",
     "challengeexplain": "10 questions vont vous être posées, répondez à un maximum le plus rapidement possible.",
     "challengeexplain2": "Attention 1 tentative maximum par jour.",
-    "createaccount": "Créer un compte"
+    "createaccount": "Créer un compte",
+    "top": "top",
+    "to": "sur"
   },
   "offline": {
     "title": "Connectez-vous à Internet",
@@ -510,8 +516,8 @@
     "sharefriend": {
       "title": "Partager à un ami"
     },
-    "votetheme": {
-      "title": "Proposer/Voter des thèmes"
+    "proposetheme": {
+      "title": "Proposer un thème"
     },
     "streak": {
       "title": "Série de connection"
@@ -605,7 +611,9 @@
     },
     "proposetheme": {
       "name": "Nom du thème *",
-      "requiredname": "Veuillez saisir un nom de thème"
+      "requiredname": "Veuillez saisir un nom de thème",
+      "color": "Couleur du thème *",
+      "requiredcolor": "Veuillez sélectionner une couleur"
     },
     "createquestion": {
       "isqcm": "QCM",
@@ -628,14 +636,16 @@
       "question": "Question *",
       "placehoderquestion": "Exemple : De quelle couleur est le cheval blanc d'Henri IV ?",
       "response": "Réponse *",
-      "wrongresponse": "Mauvaise réponse",
       "placehoderresponse": "Exemple : Blanc",
-      "placehoderwrongresponse": "Exemple : Rouge",
+      "wrongresponse1": "Mauvaise réponse 1",
+      "placeholderwrongresponse1": "Exemple : Rouge",
+      "wrongresponse2": "Mauvaise réponse 2",
+      "placeholderwrongresponse2": "Exemple : Bleu",
+      "wrongresponse3": "Mauvaise réponse 3",
+      "placeholderwrongresponse3": "Exemple : Vert",
       "requiredquestion": "Veuillez saisir une question",
       "requiredresponse": "Veuillez saisir une réponse",
-      "formatwrongresponses": "Veuillez saisir de mauvaise réponse non vide",
-      "requiredminwrongresponses": "Veuillez ajouter au moins 1 mauvaise réponse",
-      "requiredmaxwrongresponses": "Veuillez ajouter maximum 5 mauvaise réponse"
+      "requiredwrongresponses": "Veuillez saisir une mauvaise réponse"
     }
   },
   "input": {

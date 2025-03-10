@@ -21,8 +21,7 @@ export interface Profile {
   wheellaunch: Date;
   datevote: Date;
   lastconnection: Date;
-  loginstreak: number;
-  hasPlayChallenge: boolean;
+  streak: number;
 }
 
 export interface ProfileUpdate {

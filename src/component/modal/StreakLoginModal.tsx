@@ -6,11 +6,11 @@ import { Fragment, useEffect, useState } from "react";
 import moneyIcon from "src/assets/money.svg";
 import xpIcon from "src/assets/xp.svg";
 import {
-  MAX_DAY_RECOMPENSES_LOGIN_STREAK,
-  RECOMPENSES_LOGIN_STREAK,
+  MAX_DAY_RECOMPENSES_STREAK,
+  RECOMPENSES_STREAK,
 } from "src/configuration/configuration";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { LoginStreakDayRecompense } from "src/models/Recompense";
+import { StreakDayRecompense } from "src/models/Recompense";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
 import { StreakBlock } from "../StreakBlock";
@@ -26,17 +26,17 @@ export const StreakLoginModal = ({ open, close }: Props) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
 
-  const [recompense, setRecompense] = useState<LoginStreakDayRecompense | null>(
+  const [recompense, setRecompense] = useState<StreakDayRecompense | null>(
     null
   );
 
   useEffect(() => {
     if (profile) {
       const streakValue =
-        profile.loginstreak > MAX_DAY_RECOMPENSES_LOGIN_STREAK
-          ? MAX_DAY_RECOMPENSES_LOGIN_STREAK
-          : profile.loginstreak;
-      const recompense = RECOMPENSES_LOGIN_STREAK.find(
+        profile.streak > MAX_DAY_RECOMPENSES_STREAK
+          ? MAX_DAY_RECOMPENSES_STREAK
+          : profile.streak;
+      const recompense = RECOMPENSES_STREAK.find(
         (el) => el.day === streakValue
       );
       if (recompense) {
@@ -51,16 +51,14 @@ export const StreakLoginModal = ({ open, close }: Props) => {
           <Grid item xs={12}>
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <StreakBlock
-                value={profile?.loginstreak ?? 0}
+                value={profile?.streak ?? 0}
                 logoSize={40}
                 textSize={35}
               />
             </Box>
           </Grid>
           <Grid item xs={12} sx={{ textAlign: "center" }}>
-            <Typography variant="h6">
-              {t("commun.loginstreakexplain")}
-            </Typography>
+            <Typography variant="h6">{t("commun.streakexplain")}</Typography>
           </Grid>
           <Grid item xs={12}>
             {recompense && (

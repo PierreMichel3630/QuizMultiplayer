@@ -5,7 +5,7 @@ import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";
 
 interface Props {
-  value: { image: string | JSX.Element; color: string };
+  value: { image?: string | JSX.Element; color: string };
   size?: string | number;
 }
 

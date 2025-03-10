@@ -43,6 +43,8 @@ import { Profile } from "src/models/Profile";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+
 export default function ThemePage() {
   const { t } = useTranslation();
   const { id } = useParams();
@@ -274,12 +276,20 @@ export default function ThemePage() {
                         </Alert>
                       </Grid>
                     )}
+                    {!theme.validate && (
+                      <Grid item xs={12}>
+                        <Alert severity="error">
+                          {t("commun.themenotvalidate")}
+                        </Alert>
+                      </Grid>
+                    )}
                     <Grid item xs={5} sm={3} md={3} lg={3}>
                       <ImageThemeBlock theme={theme} />
                     </Grid>
                     <Grid item xs={7} sm={6} md={6} lg={6}>
                       <Grid container spacing={1}>
-                        {theme.enabled || profile?.isadmin ? (
+                        {((theme.enabled && theme.validate) ||
+                          profile?.isadmin) && (
                           <>
                             <Grid item xs={12}>
                               <ButtonColor
@@ -327,41 +337,41 @@ export default function ThemePage() {
                                 variant="contained"
                               />
                             </Grid>
+                          </>
+                        )}
+                        <Grid item xs={12}>
+                          <ButtonColor
+                            size="small"
+                            value={Colors.pink}
+                            label={t("commun.proposequestion")}
+                            icon={QuestionMarkIcon}
+                            onClick={() => setOpenProposeQuestion(true)}
+                            variant="contained"
+                          />
+                        </Grid>
+                        {profile?.isadmin && (
+                          <Grid item xs={12}>
+                            <ButtonColor
+                              size="small"
+                              value={Colors.orange}
+                              label={t("commun.ytshort")}
+                              icon={YouTubeIcon}
+                              onClick={() => playYtShort()}
+                              variant="contained"
+                            />
+                          </Grid>
+                        )}
 
-                            {profile && profile.isadmin && (
-                              <Grid item xs={12}>
-                                <ButtonColor
-                                  size="small"
-                                  value={Colors.orange}
-                                  label={t("commun.ytshort")}
-                                  icon={YouTubeIcon}
-                                  onClick={() => playYtShort()}
-                                  variant="contained"
-                                />
-                              </Grid>
-                            )}
-                          </>
-                        ) : (
-                          <>
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                value={Colors.blue}
-                                label={t("commun.return")}
-                                icon={KeyboardReturnIcon}
-                                onClick={() => navigate(-1)}
-                                variant="contained"
-                              />
-                            </Grid>
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                value={Colors.green}
-                                label={t("commun.returnhome")}
-                                icon={HomeIcon}
-                                onClick={() => navigate("/")}
-                                variant="contained"
-                              />
-                            </Grid>
-                          </>
+                        {(!theme.enabled || !theme.validate) && (
+                          <Grid item xs={12}>
+                            <ButtonColor
+                              value={Colors.blue}
+                              label={t("commun.return")}
+                              icon={KeyboardReturnIcon}
+                              onClick={() => navigate(-1)}
+                              variant="contained"
+                            />
+                          </Grid>
                         )}
                       </Grid>
                     </Grid>

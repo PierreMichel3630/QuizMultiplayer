@@ -33,6 +33,7 @@ export const Colors = {
   blue4: blue[700],
   green: green[400],
   green2: green[800],
+  green3: green["A700"],
   teal: teal[300],
   lime: lime[400],
   brown: brown[400],
