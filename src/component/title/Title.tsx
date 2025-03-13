@@ -14,9 +14,15 @@ interface Props {
   title: JsonLanguage | string;
   favorite?: boolean;
   addFavorite?: () => void;
+  link?: string;
 }
 
-export const TitleBlock = ({ title, favorite = false, addFavorite }: Props) => {
+export const TitleBlock = ({
+  title,
+  favorite = false,
+  addFavorite,
+  link,
+}: Props) => {
   const { mode } = useUser();
 
   const isDarkMode = useMemo(() => mode === "dark", [mode]);
@@ -33,7 +39,7 @@ export const TitleBlock = ({ title, favorite = false, addFavorite }: Props) => {
       justifyContent="space-between"
     >
       <Grid item>
-        <GoBackButtonIcon />
+        <GoBackButtonIcon link={link} />
       </Grid>
       <Grid item xs sx={{ textAlign: "center" }}>
         {typeof title === "string" ? (

@@ -50,7 +50,7 @@ export default function ChallengeGamePage() {
       </Helmet>
       <BarNavigation
         title={t("commun.daychallenge")}
-        quit={() => navigate(-1)}
+        quit={() => navigate("/challenge")}
       />
       <Grid item xs={12}>
         <Container maxWidth="md">
@@ -162,7 +162,7 @@ export default function ChallengeGamePage() {
               value={Colors.blue}
               label={t("commun.return")}
               icon={KeyboardReturnIcon}
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/challenge")}
               variant="contained"
             />
           </Box>

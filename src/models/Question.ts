@@ -8,6 +8,14 @@ import { ResponseQCM } from "./Response";
 import { Theme } from "./Theme";
 import { TypeQuestionEnum } from "./enum/TypeQuestionEnum";
 
+export interface QuestionPropose {
+  id: number;
+  question: JsonLanguage;
+  response: JsonLanguage;
+  responses: Array<JsonLanguage>;
+  difficulty: string;
+}
+
 export interface QuestionEnd {
   image?: string;
   question: JsonLanguage;

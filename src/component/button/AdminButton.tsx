@@ -1,15 +1,17 @@
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import ImageIcon from "@mui/icons-material/Image";
-import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
-import ReportIcon from "@mui/icons-material/Report";
-import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import { Box, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import { padding, px } from "csx";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
+
+import ImageIcon from "@mui/icons-material/Image";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+import ReportIcon from "@mui/icons-material/Report";
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
 
 interface Setting {
   name: string;
@@ -25,36 +27,44 @@ export const AdminButton = () => {
 
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
-  const settingsAdmin: Array<Setting> =
-    profile && profile.isadmin
-      ? [
-          {
-            name: t("commun.report"),
-            icon: <ReportIcon />,
-            url: "/administration/report",
-          },
-          {
-            name: t("commun.adminquestions"),
-            icon: <QuestionMarkIcon />,
-            url: "/administration/question",
-          },
-          {
-            name: t("commun.themes"),
-            icon: <AdminPanelSettingsIcon />,
-            url: "/administration/themes",
-          },
-          {
-            name: t("commun.games"),
-            icon: <SportsEsportsIcon />,
-            url: "/administration/games",
-          },
-          {
-            name: t("commun.images"),
-            icon: <ImageIcon />,
-            url: "/administration/images",
-          },
-        ]
-      : [];
+  const settingsAdmin: Array<Setting> = useMemo(
+    () =>
+      profile?.isadmin
+        ? [
+            {
+              name: t("commun.propose"),
+              icon: <EmojiObjectsIcon />,
+              url: "/administration/propose",
+            },
+            {
+              name: t("commun.report"),
+              icon: <ReportIcon />,
+              url: "/administration/report",
+            },
+            {
+              name: t("commun.adminquestions"),
+              icon: <QuestionMarkIcon />,
+              url: "/administration/question",
+            },
+            {
+              name: t("commun.themes"),
+              icon: <AdminPanelSettingsIcon />,
+              url: "/administration/themes",
+            },
+            {
+              name: t("commun.games"),
+              icon: <SportsEsportsIcon />,
+              url: "/administration/games",
+            },
+            {
+              name: t("commun.images"),
+              icon: <ImageIcon />,
+              url: "/administration/images",
+            },
+          ]
+        : [],
+    [profile, t]
+  );
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);

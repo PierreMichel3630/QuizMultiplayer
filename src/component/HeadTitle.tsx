@@ -14,7 +14,7 @@ export const HeadTitle = ({ title, extra, sx }: Props) => {
     window.innerWidth > 900 ? 900 : window.innerWidth
   );
   const proportionImg = 0.472;
-  const HEIGHTMAX = 280;
+  const HEIGHTMAX = 180;
 
   useEffect(() => {
     const handleResize = () => {
@@ -53,7 +53,7 @@ export const HeadTitle = ({ title, extra, sx }: Props) => {
           style={{
             width: percent(100),
             maxHeight: HEIGHTMAX,
-            objectFit: "fill",
+            objectFit: "cover",
           }}
         />
       </Box>

@@ -12,7 +12,8 @@ import customizeprofileAnimate from "src/assets/animation/customizeprofile.json"
 import shopAnimate from "src/assets/animation/shop.json";
 import voteAnimate from "src/assets/animation/vote.json";
 import wheelAnimate from "src/assets/animation/wheelprize.json";
-import { TimeLeftLabel } from "./TimeLeftBlock";
+import { TimeLeftLabel, TimeLeftToNextDayLabel } from "./TimeLeftBlock";
+import challengeIcon from "src/assets/challenge.png";
 
 export const ShopBlock = () => {
   return (
@@ -51,7 +52,7 @@ export const ShopItems = () => {
 
   const options = useMemo(
     () => [
-      /*{
+      {
         title: t("commun.daychallenge"),
         icon: challengeIcon,
         link: "/challenge",
@@ -71,7 +72,7 @@ export const ShopItems = () => {
             )}
           </>
         ),
-      },*/
+      },
       {
         title: t("commun.proposetheme"),
         animation: voteAnimate,
@@ -135,6 +136,7 @@ export const ShopItems = () => {
         <RoundLinkButton
           key={index}
           title={option.title}
+          icon={option.icon}
           animation={option.animation}
           link={option.link}
           extra={option.extra}

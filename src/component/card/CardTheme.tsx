@@ -4,6 +4,8 @@ import {
   AvatarGroup,
   Badge,
   Box,
+  FormControlLabel,
+  FormGroup,
   Grid,
   IconButton,
   Paper,
@@ -11,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { percent, px } from "csx";
-import { ChangeEvent, useMemo } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "src/context/AppProvider";
 import { Theme, ThemeUpdate } from "src/models/Theme";
@@ -21,6 +23,10 @@ import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 import StarIcon from "@mui/icons-material/Star";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { CreateEditThemeDialog } from "../modal/CreateEditThemeDialog";
+import { useTranslation } from "react-i18next";
+import { useMessage } from "src/context/MessageProvider";
+import { updateTheme } from "src/api/theme";
 
 interface Props {
   theme: Theme;
@@ -193,24 +199,38 @@ export const CardSelectTheme = ({
 
 interface PropsCardAdminTheme {
   theme: Theme;
-  onChange: (theme: ThemeUpdate) => void;
-  edit: () => void;
+  onChange: () => void;
 }
 
-export const CardAdminTheme = ({
-  theme,
-  onChange,
-  edit,
-}: PropsCardAdminTheme) => {
+export const CardAdminTheme = ({ theme, onChange }: PropsCardAdminTheme) => {
+  const { t } = useTranslation();
+  const { setMessage, setSeverity } = useMessage();
+  const [openModal, setOpenModal] = useState(false);
+
   const changeEnabled = (event: ChangeEvent<HTMLInputElement>) => {
-    onChange({ id: theme.id, enabled: event.target.checked });
+    update({ id: theme.id, enabled: event.target.checked });
+  };
+
+  const changeValidate = (event: ChangeEvent<HTMLInputElement>) => {
+    update({ id: theme.id, validate: event.target.checked });
+  };
+
+  const update = (value: ThemeUpdate) => {
+    updateTheme(value).then((res) => {
+      if (res.error) {
+        setSeverity("error");
+        setMessage(t("commun.error"));
+      } else {
+        onChange();
+      }
+    });
   };
 
   return (
     <Paper sx={{ p: 1 }}>
       <Grid container spacing={1} alignItems="center">
         <Grid item>
-          <Box sx={{ width: px(50) }}>
+          <Box sx={{ width: px(90) }}>
             <ImageThemeBlock theme={theme} />
           </Box>
         </Grid>
@@ -228,18 +248,43 @@ export const CardAdminTheme = ({
           <JsonLanguageBlock variant="h4" component="span" value={theme.name} />
         </Grid>
         <Grid item>
-          <Switch
-            checked={theme.enabled}
-            onChange={changeEnabled}
-            inputProps={{ "aria-label": "controlled" }}
-          />
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={theme.enabled}
+                  onChange={changeEnabled}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              }
+              label={t("commun.enabled")}
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={theme.validate}
+                  onChange={changeValidate}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              }
+              label={t("commun.validation")}
+            />
+          </FormGroup>
         </Grid>
         <Grid item>
-          <IconButton aria-label="edit" onClick={edit}>
+          <IconButton aria-label="edit" onClick={() => setOpenModal(true)}>
             <EditIcon />
           </IconButton>
         </Grid>
       </Grid>
+      <CreateEditThemeDialog
+        theme={theme}
+        open={openModal}
+        close={() => {
+          setOpenModal(false);
+          onChange();
+        }}
+      />
     </Paper>
   );
 };

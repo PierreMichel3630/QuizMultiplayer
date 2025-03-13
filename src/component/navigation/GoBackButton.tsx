@@ -23,12 +23,15 @@ export const GoHomeButton = () => {
   );
 };
 
-export const GoBackButtonIcon = () => {
+interface PropsGoBackButtonIcon {
+  link?: string;
+}
+export const GoBackButtonIcon = ({ link }: PropsGoBackButtonIcon) => {
   const navigate = useNavigate();
 
   return (
     <Box
-      onClick={() => navigate(-1)}
+      onClick={() => (link ? navigate(link) : navigate(-1))}
       sx={{ cursor: "pointer", display: "flex" }}
     >
       <KeyboardArrowLeftIcon fontSize="large" />

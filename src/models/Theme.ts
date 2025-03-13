@@ -19,7 +19,6 @@ export interface Theme {
   questions: number;
   color: string;
   category: Category;
-  background: null | string;
   isfirst: boolean;
   enabled: boolean;
   validate: boolean;
@@ -31,7 +30,6 @@ export interface ThemeInsertAdmin {
   name: JsonLanguage;
   image: null | string;
   color: string;
-  background: null | string;
 }
 
 export interface ThemeInsert {
@@ -42,10 +40,10 @@ export interface ThemeInsert {
 export interface ThemeUpdate {
   id: number;
   enabled?: boolean;
+  validate?: boolean;
   name?: JsonLanguage;
   image?: null | string;
   color?: string;
-  background?: null | string;
 }
 
 export interface ThemeDifficulty {

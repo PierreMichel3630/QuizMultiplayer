@@ -35,4 +35,7 @@ export const insertTheme = (value: ThemeInsert) =>
   supabase.from(SUPABASE_THEME_TABLE).insert(value).select().single();
 
 export const selectThemesPropose = () =>
-  supabase.from(SUPABASE_THEME_TABLE).select("*").eq("validate", false);
+  supabase
+    .from(SUPABASE_VUETHEME_TABLE)
+    .select("*, category(*)")
+    .eq("validate", false);

@@ -57,7 +57,7 @@ export default function ChallengePage() {
         <Box sx={{ p: 2 }}>
           <Grid container spacing={2} justifyContent="center">
             <Grid item xs={12}>
-              <TitleBlock title={t("commun.daychallenge")} />
+              <TitleBlock title={t("commun.daychallenge")} link="/" />
             </Grid>
             <Grid item xs={12} sx={{ textAlign: "center" }}>
               <Typography>{t("commun.challengeexplain")}</Typography>
@@ -90,7 +90,7 @@ export default function ChallengePage() {
               <Divider />
             </Grid>
             <Grid item xs={12}>
-              <RankingChallenge hasPlayChallenge={hasPlayChallenge}/>
+              <RankingChallenge hasPlayChallenge={hasPlayChallenge} />
             </Grid>
           </Grid>
         </Box>

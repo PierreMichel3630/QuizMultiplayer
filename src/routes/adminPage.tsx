@@ -1,5 +1,6 @@
 import AdminGamesPage from "src/pages/admin/AdminGamesPage";
 import AdminImagesPage from "src/pages/admin/AdminImagesPage";
+import AdminProposePage from "src/pages/admin/AdminProposePage";
 import AdminQuestionPage from "src/pages/admin/AdminQuestionPage";
 import AdminQuestionsPage from "src/pages/admin/AdminQuestionsPage";
 import AdminReportPage from "src/pages/admin/AdminReportPage";
@@ -29,5 +30,9 @@ export const AdminRoutes = [
   {
     path: "images",
     element: <AdminImagesPage />,
+  },
+  {
+    path: "propose",
+    element: <AdminProposePage />,
   },
 ];

@@ -33,19 +33,19 @@ export const ThemeForm = ({ validate, theme }: Props) => {
   const { t } = useTranslation();
   const { setMessage, setSeverity } = useMessage();
 
+  console.log(theme);
+
   const initialValue: {
     namefr: string;
     nameen: string;
     color: string;
     image: null | File | string | undefined;
-    background: null | File | string;
     category: null | Category;
   } = {
     namefr: theme ? theme.name["fr-FR"] : "",
     nameen: theme ? theme.name["en-US"] : "",
     color: theme ? theme.color : "",
     image: theme ? theme.image : null,
-    background: theme ? theme.background : null,
     category: theme ? theme.category : null,
   };
 
@@ -54,8 +54,10 @@ export const ThemeForm = ({ validate, theme }: Props) => {
     nameen: Yup.string().required(t("form.createtheme.requirednameen")),
     color: Yup.string(),
     image: Yup.mixed().nullable(),
-    background: Yup.mixed().nullable(),
-    category: Yup.mixed().nullable(),
+    category: Yup.object()
+      .shape({ id: Yup.number().required() })
+      .default(null)
+      .required(t("form.createtheme.requiredcategory")),
   });
 
   const formik = useFormik({
@@ -64,7 +66,6 @@ export const ThemeForm = ({ validate, theme }: Props) => {
     onSubmit: async (values) => {
       try {
         let image: null | string = null;
-        let background: null | string = null;
         if (values.image !== null && typeof values.image !== "string") {
           const name =
             "logo" +
@@ -82,26 +83,6 @@ export const ThemeForm = ({ validate, theme }: Props) => {
         } else {
           image = values.image;
         }
-        if (
-          values.background !== null &&
-          typeof values.background !== "string"
-        ) {
-          const name =
-            "background" +
-            "-" +
-            deburr(values.namefr).replace(/\s/g, "") +
-            "-" +
-            moment().toISOString();
-
-          const { data } = await storeFile(
-            BUCKET_THEME,
-            name,
-            values.background as unknown as File
-          );
-          background = data !== null ? data.path : null;
-        } else {
-          background = values.background;
-        }
         const newTheme = {
           name: { "fr-FR": values.namefr, "en-US": values.nameen },
           image:
@@ -109,10 +90,6 @@ export const ThemeForm = ({ validate, theme }: Props) => {
               ? URL_STORAGE + BUCKET_THEME + "/" + image
               : image,
           color: values.color,
-          background:
-            background !== null && typeof values.background !== "string"
-              ? URL_STORAGE + BUCKET_THEME + "/" + background
-              : background,
         };
         const { error, data } = theme
           ? await updateTheme({ id: theme.id, ...newTheme })
@@ -121,10 +98,10 @@ export const ThemeForm = ({ validate, theme }: Props) => {
           setSeverity("error");
           setMessage(t("commun.error"));
         } else {
-          if (!theme) {
+          if (data && values.category) {
             const insertCategory = {
               theme: data.id,
-              category: values.category ? values.category.id : 1,
+              category: values.category.id,
             };
             await insertCategoryTheme(insertCategory);
           }
@@ -136,6 +113,9 @@ export const ThemeForm = ({ validate, theme }: Props) => {
       }
     },
   });
+
+  console.log(formik.errors);
+  console.log(formik.values);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -237,17 +217,6 @@ export const ThemeForm = ({ validate, theme }: Props) => {
         </Grid>
         <Grid item xs={12}>
           <FileUploadInput formik={formik} field="image" />
-        </Grid>
-        <Grid item xs={12}>
-          <Divider />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6">
-            {t("form.createtheme.background")}
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <FileUploadInput formik={formik} field="background" />
         </Grid>
         <Grid item xs={12}>
           <ButtonColor

@@ -86,11 +86,7 @@ export default function AdminQuestionPage() {
   }, [getThemes]);
 
   const getResponse = useCallback(() => {
-    if (
-      question &&
-      question.typeResponse &&
-      question.typequestion === "DEFAULT"
-    ) {
+    if (question?.typeResponse && question?.typequestion === "DEFAULT") {
       selectResponseByType(question.typeResponse).then(({ data }) => {
         setResponses((data as Array<ResponseUpdate>).sort(sortByUsValue));
       });
@@ -102,11 +98,7 @@ export default function AdminQuestionPage() {
   }, [getResponse]);
 
   const getResponseImage = useCallback(() => {
-    if (
-      question &&
-      question.typeResponse &&
-      question.typequestion === "IMAGE"
-    ) {
+    if (question?.typeResponse && question?.typequestion === "IMAGE") {
       selectResponseImageByType(question.typeResponse).then(({ data }) => {
         setResponsesImage(
           (data as Array<ResponseImageUpdate>).sort(sortByUsValue)
@@ -207,7 +199,7 @@ export default function AdminQuestionPage() {
           ))}
         </Grid>
       </Grid>
-      {question && question.typeResponse && (
+      {question?.typeResponse && (
         <>
           {question.typequestion === "IMAGE" ? (
             <>
@@ -328,7 +320,7 @@ export default function AdminQuestionPage() {
           onClick={() => setOpenConfirmModal(true)}
         />
       </Grid>
-      {question && question.typeResponse && (
+      {question?.typeResponse && (
         <CreateEditResponseDialog
           open={openModalResponse}
           close={() => {
@@ -339,7 +331,7 @@ export default function AdminQuestionPage() {
           type={question.typeResponse}
         />
       )}
-      {question && question.typeResponse && (
+      {question?.typeResponse && (
         <CreateEditResponseImageDialog
           open={openModalResponseImage}
           close={() => {

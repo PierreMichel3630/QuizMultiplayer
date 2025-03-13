@@ -120,3 +120,6 @@ export const countImageQuestion = () =>
     .from(SUPABASE_QUESTION_TABLE)
     .select("image", { count: "exact", head: true })
     .not("image", "is", null);
+
+export const selectQuestionsPropose = () =>
+  supabase.from(SUPABASE_QUESTION_TABLE).select("*").eq("validate", false);

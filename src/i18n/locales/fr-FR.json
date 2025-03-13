@@ -97,6 +97,8 @@
     "returnhome": "Retour à l'accueil",
     "createdthe": "inscrit depuis le {{value}}",
     "validate": "Valider",
+    "validation": "Validé",
+    "enabled": "Activé",
     "join": "Rejoindre",
     "refuse": "Refuser",
     "delete": "Supprimer",
@@ -311,7 +313,9 @@
     "challengeexplain2": "Attention 1 tentative maximum par jour.",
     "createaccount": "Créer un compte",
     "top": "top",
-    "to": "sur"
+    "to": "sur",
+    "propose": "Proposition",
+    "proposition": "Proposition {{count}}"
   },
   "offline": {
     "title": "Connectez-vous à Internet",
@@ -607,7 +611,8 @@
       "logo": "Logo",
       "background": "Image de fond",
       "requirednameen": "Veuillez saisir un nom de thème en anglais",
-      "requirednamefr": "Veuillez saisir un nom de thème en français"
+      "requirednamefr": "Veuillez saisir un nom de thème en français",
+      "requiredcategory": "Veuillez sélectionner une catégorie"
     },
     "proposetheme": {
       "name": "Nom du thème *",

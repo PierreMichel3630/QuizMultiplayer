@@ -267,7 +267,7 @@ export const SelectTheme = ({ onChange }: PropsSelectTheme) => {
 
 interface PropsSelectCategory {
   category: Category | null;
-  onChange: (value: Category) => void;
+  onChange: (value: Category | null) => void;
 }
 
 export const SelectCategory = ({ category, onChange }: PropsSelectCategory) => {
@@ -277,13 +277,12 @@ export const SelectCategory = ({ category, onChange }: PropsSelectCategory) => {
 
   return (
     <Autocomplete
-      disablePortal
       id="themeinput"
       value={category}
       onChange={(_event: SyntheticEvent, newValue: Category | null) => {
-        if (newValue) onChange(newValue);
+        onChange(newValue);
       }}
-      options={categoriesAdmin.sort((a, b) => sortByName(language, a, b))}
+      options={[...categoriesAdmin].sort((a, b) => sortByName(language, a, b))}
       getOptionLabel={(option) => option.name[language.iso]}
       renderOption={(props, option) => (
         <Box component="li" {...props}>

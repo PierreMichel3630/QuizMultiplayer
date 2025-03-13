@@ -160,7 +160,10 @@ export const RankingChallengeTable = ({
                             }}
                           >
                             {el.profile.country && (
-                              <CountryImageBlock country={el.profile.country} />
+                              <CountryImageBlock
+                                country={el.profile.country}
+                                size={30}
+                              />
                             )}
                             <Typography
                               variant={"h6"}
@@ -175,28 +178,32 @@ export const RankingChallengeTable = ({
                         </Box>
                       </TableCell>
                       <TableCell align="right" sx={{ p: px(4), width: px(60) }}>
-                        <Typography
-                          variant="h6"
-                          component="span"
+                        <Box
                           sx={{
-                            color: colorText,
+                            display: "flex",
+                            flexDirection: "column",
+                            textAlign: "center",
                           }}
-                          noWrap
                         >
-                          {el.score} / {NUMBER_QUESTIONS_CHALLENGE}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="right" sx={{ p: px(4), width: px(60) }}>
-                        <Typography
-                          variant="h6"
-                          component="span"
-                          sx={{
-                            color: colorText,
-                          }}
-                          noWrap
-                        >
-                          {(el.time / 1000).toFixed(2)}s
-                        </Typography>
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              color: colorText,
+                            }}
+                            noWrap
+                          >
+                            {el.score} / {NUMBER_QUESTIONS_CHALLENGE}
+                          </Typography>
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              color: colorText,
+                            }}
+                            noWrap
+                          >
+                            {(el.time / 1000).toFixed(2)}s
+                          </Typography>
+                        </Box>
                       </TableCell>
                       {hasPlayChallenge && (
                         <TableCell sx={{ p: px(4) }} width={50}>
