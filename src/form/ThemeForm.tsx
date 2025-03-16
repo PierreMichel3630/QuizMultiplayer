@@ -33,8 +33,6 @@ export const ThemeForm = ({ validate, theme }: Props) => {
   const { t } = useTranslation();
   const { setMessage, setSeverity } = useMessage();
 
-  console.log(theme);
-
   const initialValue: {
     namefr: string;
     nameen: string;
@@ -113,9 +111,6 @@ export const ThemeForm = ({ validate, theme }: Props) => {
       }
     },
   });
-
-  console.log(formik.errors);
-  console.log(formik.values);
 
   return (
     <form onSubmit={formik.handleSubmit}>

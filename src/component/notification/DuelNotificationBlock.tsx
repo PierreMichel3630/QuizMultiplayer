@@ -60,7 +60,7 @@ export const DuelNotificationBlock = ({ game, refuse }: Props) => {
             color="text.secondary"
           >
             <Trans
-              i18nKey={t("commun.challenge")}
+              i18nKey={t("commun.challengeuser")}
               values={{
                 username: game.player1
                   ? game.player1.username

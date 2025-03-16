@@ -7,7 +7,7 @@ import { JsonLanguageBlock } from "./JsonLanguageBlock";
 import { CircularLoading } from "./Loading";
 import { MapPositionBlock } from "./MapPositionBlock";
 import { SoundBar } from "./SoundBar";
-import { Timer } from "./Timer";
+import { Timer } from "./time/Timer";
 
 interface PropsSolo {
   question?: QuestionSolo;

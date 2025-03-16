@@ -5,7 +5,7 @@ import {
   QuestionUpdate,
 } from "src/models/Question";
 import { supabase } from "./supabase";
-import { FilterQuestion } from "src/pages/admin/AdminQuestionsPage";
+import { FilterQuestion } from "src/pages/admin/Edit/AdminEditQuestionsPage";
 
 export const SUPABASE_QUESTION_TABLE = "question";
 export const SUPABASE_QUESTIONTHEME_TABLE = "questiontheme";

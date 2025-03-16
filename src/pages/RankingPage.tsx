@@ -3,6 +3,7 @@ import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { selectStatAccomplishment } from "src/api/accomplishment";
 import { selectGamesByTime } from "src/api/game";
 import { getRankingFinishTheme } from "src/api/ranking";
@@ -27,16 +28,23 @@ import { sortByRankAsc } from "src/utils/sort";
 export default function RankingPage() {
   const { t } = useTranslation();
   const { headerSize } = useApp();
+  const [searchParams] = useSearchParams();
 
   const ITEMPERPAGE = 25;
 
-  const [type, setType] = useState(ClassementEnum.points);
+  const [type, setType] = useState(
+    searchParams.has("sort")
+      ? (searchParams.get("sort") as ClassementEnum)
+      : ClassementEnum.points
+  );
   const [data, setData] = useState<Array<DataRanking>>([]);
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
   const [tabSoloMode, setTabSoloMode] = useState(
-    ClassementSoloModeEnum.alltime
+    searchParams.has("time")
+      ? (searchParams.get("time") as ClassementSoloModeEnum)
+      : ClassementSoloModeEnum.alltime
   );
 
   useEffect(() => {

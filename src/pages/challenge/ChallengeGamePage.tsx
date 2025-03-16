@@ -20,6 +20,7 @@ import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
 import { CountryImageBlock } from "src/component/CountryBlock";
 import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
+
 export default function ChallengeGamePage() {
   const { t } = useTranslation();
   const { uuid } = useParams();

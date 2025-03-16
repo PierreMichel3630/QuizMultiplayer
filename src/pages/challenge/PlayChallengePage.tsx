@@ -105,7 +105,7 @@ export default function PlayChallengePage() {
               setResponse(res);
               setWrongAnswer((prev) => prev + 1);
               scrollTop();
-              generateQuestion(game, 500);
+              generateQuestion(game, 1000);
               if (audio) {
                 audio.pause();
               }
@@ -134,9 +134,13 @@ export default function PlayChallengePage() {
         const res = data as ResponseSolo;
         setMyresponse(undefined);
         setTimer(undefined);
-        setResponse(res);
+        setResponse({
+          response: res.response,
+          result: res.result,
+          responseplayer1: res.answer,
+        });
         scrollTop();
-        generateQuestion(game, 500);
+        generateQuestion(game, 1000);
         if (res.result) {
           setCorrectAnswer((prev) => prev + 1);
         } else {
@@ -160,7 +164,7 @@ export default function PlayChallengePage() {
               navigate(`/game/challenge/${res.uuid}`);
             } else {
               setGame(res);
-              generateQuestion(res, 500);
+              generateQuestion(res, 1000);
             }
           } else {
             navigate("/");
@@ -195,7 +199,9 @@ export default function PlayChallengePage() {
 
   useEffect(() => {
     if (numberQuestions >= NUMBER_QUESTIONS_CHALLENGE) {
-      navigate(`/game/challenge/${uuidGame}`);
+      setTimeout(() => {
+        navigate(`/game/challenge/${uuidGame}`);
+      }, 1000);
     }
   }, [numberQuestions, navigate, uuidGame]);
 
@@ -227,28 +233,32 @@ export default function PlayChallengePage() {
             sx={{
               display: "flex",
               alignItems: "center",
+              justifyContent: "space-between",
               gap: 1,
             }}
           >
-            <ImageCard
-              value={{
-                image: challengeIcon,
-                color: Colors.blue,
-              }}
-              size={80}
-            />
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 1,
-              }}
-            >
-              <Typography variant="h2">{t("commun.daychallenge")}</Typography>
-              <Typography variant="h2">
-                {correctAnswer} / {numberQuestions}
-              </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <ImageCard
+                value={{
+                  image: challengeIcon,
+                  color: Colors.blue,
+                }}
+                size={80}
+              />
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1,
+                }}
+              >
+                <Typography variant="h2">{t("commun.daychallenge")}</Typography>
+                <Typography variant="h2">
+                  {correctAnswer} / {numberQuestions}
+                </Typography>
+              </Box>
             </Box>
+            <Box></Box>
           </Box>
           <Box
             sx={{

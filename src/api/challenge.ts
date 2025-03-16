@@ -85,13 +85,24 @@ export const selectRankingChallengeByChallengeIdPaginate = (
     .order("ranking", { ascending: true });
 };
 
+export const selectRankingChallengeByDate = (date: Moment) =>
+  supabase
+    .from(SUPABASE_RANKINGCHALLENGE_VIEW)
+    .select(
+      "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*)), challenge(*)"
+    )
+    .eq("challenge.date", date.toISOString())
+    .not("challenge", "is", null);
+
 export const selectRankingChallengeByDateAndProfileId = (
   date: Moment,
   profileId: string
 ) =>
   supabase
     .from(SUPABASE_RANKINGCHALLENGE_VIEW)
-    .select("*, profile(*), challenge(*)")
+    .select(
+      "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*)), challenge(*)"
+    )
     .eq("challenge.date", date.toISOString())
     .eq("profile.id", profileId)
     .not("profile", "is", null)

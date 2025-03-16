@@ -93,6 +93,8 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
               theme: values.theme.id,
             };
             await insertQuestionTheme(insertTheme);
+            setSeverity("success");
+            setMessage(t("alert.addquestionpropose"));
             validate();
           }
         });

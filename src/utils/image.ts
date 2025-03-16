@@ -1,5 +1,7 @@
-import { QuestionImage } from "src/pages/admin/AdminImagesPage";
-
+interface QuestionImage {
+  id: number;
+  image: string;
+}
 interface ResultImage {
   question: QuestionImage;
   result: boolean;

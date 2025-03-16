@@ -26,7 +26,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { CreateEditThemeDialog } from "../modal/CreateEditThemeDialog";
 import { useTranslation } from "react-i18next";
 import { useMessage } from "src/context/MessageProvider";
-import { updateTheme } from "src/api/theme";
+import { deleteThemeById, updateTheme } from "src/api/theme";
+import { ConfirmDialog } from "../modal/ConfirmModal";
 
 interface Props {
   theme: Theme;
@@ -206,6 +207,7 @@ export const CardAdminTheme = ({ theme, onChange }: PropsCardAdminTheme) => {
   const { t } = useTranslation();
   const { setMessage, setSeverity } = useMessage();
   const [openModal, setOpenModal] = useState(false);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
 
   const changeEnabled = (event: ChangeEvent<HTMLInputElement>) => {
     update({ id: theme.id, enabled: event.target.checked });
@@ -223,6 +225,18 @@ export const CardAdminTheme = ({ theme, onChange }: PropsCardAdminTheme) => {
       } else {
         onChange();
       }
+    });
+  };
+
+  const deleteQuestion = () => {
+    deleteThemeById(theme.id).then((res) => {
+      if (res.error) {
+        setSeverity("error");
+        setMessage(t("commun.error"));
+      } else {
+        onChange();
+      }
+      setOpenConfirmModal(false);
     });
   };
 
@@ -276,6 +290,14 @@ export const CardAdminTheme = ({ theme, onChange }: PropsCardAdminTheme) => {
             <EditIcon />
           </IconButton>
         </Grid>
+        <Grid item>
+          <IconButton
+            aria-label="edit"
+            onClick={() => setOpenConfirmModal(true)}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Grid>
       </Grid>
       <CreateEditThemeDialog
         theme={theme}
@@ -284,6 +306,12 @@ export const CardAdminTheme = ({ theme, onChange }: PropsCardAdminTheme) => {
           setOpenModal(false);
           onChange();
         }}
+      />
+      <ConfirmDialog
+        title={t("modal.delete")}
+        open={openConfirmModal}
+        onClose={() => setOpenConfirmModal(false)}
+        onConfirm={deleteQuestion}
       />
     </Paper>
   );

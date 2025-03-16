@@ -41,7 +41,7 @@ import { DefaultTabs } from "../Tabs";
 
 export interface DataRanking {
   profile: Profile;
-  value: number | JSX.Element;
+  value: number | string | JSX.Element;
   uuid?: string;
   extra?: string;
   date?: Date;
@@ -217,7 +217,11 @@ export const RankingTable = ({ data, navigation, loading = false }: Props) => {
                                   alignItems: "center",
                                 }}
                               >
-                                <ImageThemeBlock theme={el.theme} size={20} border={false} />
+                                <ImageThemeBlock
+                                  theme={el.theme}
+                                  size={20}
+                                  border={false}
+                                />
                                 <JsonLanguageBlock
                                   variant="body1"
                                   value={el.theme.name}

@@ -103,7 +103,7 @@
     "refuse": "Refuser",
     "delete": "Supprimer",
     "deleteaccount": "Supprimer mon compte",
-    "challenge": "<bold>{{username}}</bold> vous défie au thème : <bold>{{theme}}</bold>",
+    "challengeuser": "<bold>{{username}}</bold> vous défie au thème : <bold>{{theme}}</bold>",
     "unknown": "inconnu",
     "waitplayer": "En attente du deuxième joueur",
     "gamebegin": "La partie va commencer",
@@ -171,6 +171,7 @@
     "replay": "Rejouer",
     "edittheme": "Modifier un thème",
     "addtheme": "Ajouter un thème",
+    "addcategory": "Ajouter une catégorie",
     "addquestion": "Ajouter une question",
     "addlanguage": "Ajouter une langue",
     "removelanguage": "Supprimer la langue",
@@ -309,13 +310,15 @@
     "ok": "Ok",
     "daychallenge": "Défis du jour",
     "nextdaychallenge": "Prochain Défis du jour dans",
+    "challenge": "Défis",
     "challengeexplain": "10 questions vont vous être posées, répondez à un maximum le plus rapidement possible.",
     "challengeexplain2": "Attention 1 tentative maximum par jour.",
     "createaccount": "Créer un compte",
     "top": "top",
     "to": "sur",
     "propose": "Proposition",
-    "proposition": "Proposition {{count}}"
+    "proposition": "Proposition {{count}}",
+    "addmodifydelete": "Ajout / Modification / Suppression"
   },
   "offline": {
     "title": "Connectez-vous à Internet",
@@ -614,6 +617,25 @@
       "requirednamefr": "Veuillez saisir un nom de thème en français",
       "requiredcategory": "Veuillez sélectionner une catégorie"
     },
+    "createcategory": {
+      "namefr": "Nom en Français *",
+      "nameen": "Nom en Anglais *",
+      "requirednameen": "Veuillez saisir un nom de thème en anglais",
+      "requirednamefr": "Veuillez saisir un nom de thème en français"
+    },
+    "createthemeshop": {
+      "namefr": "Nom en Français *",
+      "nameen": "Nom en Anglais *",
+      "requirednameen": "Veuillez saisir un nom de thème en anglais",
+      "requirednamefr": "Veuillez saisir un nom de thème en français"
+    },
+    "createavatar": {
+      "price": "Prix *",
+      "isaccomplishment": "Est succès ?",
+      "requiredprice": "Veuillez saisir un prix",
+      "requiredcategory": "Veuillez sélectionner un thème",
+      "icon": "Icone"
+    },
     "proposetheme": {
       "name": "Nom du thème *",
       "requiredname": "Veuillez saisir un nom de thème",
@@ -696,7 +718,8 @@
     "notconnect": "Vous n'êtes pas connecté, vos scores ne seront pas sauvegardés. <br> <anchor1>{{link}}</anchor1> ou <anchor2>{{link2}}</anchor2>",
     "notconnect2": "Pour jouer à ce mode de jeu vous devez <anchor1>{{link}}</anchor1> ou <anchor2>{{link2}}</anchor2>",
     "duplicateusername": "Le pseudonyme est déjà utilisé.",
-    "vote": "Votre vote a été pris en compte."
+    "vote": "Votre vote a été pris en compte.",
+    "addquestionpropose": "Votre proposition de question a été prise en compte."
   },
   "confidentiality": {
     "title": "Politique de confidentialité",

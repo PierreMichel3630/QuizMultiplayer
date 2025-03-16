@@ -25,6 +25,9 @@ export const updateTheme = (value: ThemeUpdate) =>
     .select()
     .single();
 
+export const deleteThemeById = (id: number) =>
+  supabase.from(SUPABASE_THEME_TABLE).delete().eq("id", id);
+
 export const insertThemeAdmin = (value: ThemeInsertAdmin) =>
   supabase.from(SUPABASE_THEME_TABLE).insert(value).select().single();
 

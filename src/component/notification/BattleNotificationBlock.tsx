@@ -72,7 +72,7 @@ export const BattleNotificationBlock = ({ game, refuse }: Props) => {
             color="text.secondary"
           >
             <Trans
-              i18nKey={t("commun.challenge")}
+              i18nKey={t("commun.challengeuser")}
               values={{
                 username:
                   user && user.id === game.player1.id

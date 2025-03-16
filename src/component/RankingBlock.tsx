@@ -1,15 +1,24 @@
 import { Box, Container, Divider, Grid, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import moment from "moment";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { selectRankingChallengeByDate } from "src/api/challenge";
 import { selectGamesByTime } from "src/api/game";
 import { selectScore } from "src/api/score";
+import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
+import { ChallengeRanking } from "src/models/Challenge";
 import {
   ClassementScoreEnum,
   ClassementTimeEnum,
 } from "src/models/enum/ClassementEnum";
+import { AllGameModeEnum } from "src/models/enum/GameEnum";
 import { HistorySoloGame } from "src/models/Game";
 import { Score } from "src/models/Score";
-import { GroupButtonTime, GroupButtonTypeGame } from "./button/ButtonGroup";
+import {
+  GroupButtonAllGameMode,
+  GroupButtonTime,
+  GroupButtonTypeGame,
+} from "./button/ButtonGroup";
 import { DataRanking, RankingTable } from "./table/RankingTable";
 
 interface Props {
@@ -73,7 +82,7 @@ export const RankingBlock = ({ themes }: Props) => {
 export const RankingTop5Block = () => {
   const { t } = useTranslation();
 
-  const [tab, setTab] = useState(ClassementScoreEnum.points);
+  const [tab, setTab] = useState(AllGameModeEnum.CHALLENGE);
   const [tabTime, setTabTime] = useState(ClassementTimeEnum.week);
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<Array<DataRanking>>([]);
@@ -81,15 +90,43 @@ export const RankingTop5Block = () => {
   useEffect(() => {
     setIsLoading(true);
     setData([]);
-    if (
-      tab === ClassementScoreEnum.rank ||
-      (tab === ClassementScoreEnum.points &&
-        tabTime === ClassementTimeEnum.alltime)
+    if (tab === AllGameModeEnum.CHALLENGE) {
+      selectRankingChallengeByDate(moment()).then(({ data }) => {
+        const res = (data ?? []) as Array<ChallengeRanking>;
+        const newdata = res.map((el) => {
+          return {
+            profile: el.profile,
+            value: (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  textAlign: "center",
+                }}
+              >
+                <Typography variant="h6" noWrap>
+                  {el.score} / {NUMBER_QUESTIONS_CHALLENGE}
+                </Typography>
+                <Typography variant="h6" noWrap>
+                  {(el.time / 1000).toFixed(2)}s
+                </Typography>
+              </Box>
+            ),
+            rank: el.ranking,
+          };
+        });
+        setData(newdata);
+        setIsLoading(false);
+      });
+    } else if (
+      tab === AllGameModeEnum.DUEL ||
+      (tab === AllGameModeEnum.SOLO && tabTime === ClassementTimeEnum.alltime)
     ) {
-      selectScore(tab, 0, 5).then(({ data }) => {
+      const value = AllGameModeEnum.DUEL ? "rank" : "points";
+      selectScore(value, 0, 5).then(({ data }) => {
         const res = data as Array<Score>;
         const newdata = res.map((el, index) => {
-          const champ = el[tab];
+          const champ = el[value];
           return {
             profile: el.profile,
             value: Array.isArray(champ) ? champ.length : champ,
@@ -117,20 +154,29 @@ export const RankingTop5Block = () => {
     }
   }, [tab, tabTime]);
 
+  const link = useMemo(() => {
+    let res = "";
+    if (tab === AllGameModeEnum.SOLO) {
+      res = `/ranking?sort=points&time=${tabTime}`;
+    } else if (tab === AllGameModeEnum.DUEL) {
+      res = `/ranking?sort=rank`;
+    } else if (tab === AllGameModeEnum.CHALLENGE) {
+      res = `/challenge`;
+    }
+    return res;
+  }, [tab, tabTime]);
+
   return (
     <Grid container spacing={1} alignItems="center">
-      <Grid item xs={6}>
-        <Typography variant="h2">{t("commun.ranking")}</Typography>
-      </Grid>
-      <Grid item xs={6} sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <GroupButtonTypeGame
+      <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+        <GroupButtonAllGameMode
           selected={tab}
           onChange={(value) => {
             setTab(value);
           }}
         />
       </Grid>
-      {tab === ClassementScoreEnum.points && (
+      {tab === AllGameModeEnum.SOLO && (
         <Grid item xs={12}>
           <GroupButtonTime
             selected={tabTime}
@@ -147,7 +193,7 @@ export const RankingTop5Block = () => {
               data={data}
               loading={isLoading}
               navigation={{
-                link: `/ranking?sort=${tab}`,
+                link: link,
                 label: t("commun.seemore"),
               }}
             />
@@ -157,7 +203,3 @@ export const RankingTop5Block = () => {
     </Grid>
   );
 };
-
-
-
-

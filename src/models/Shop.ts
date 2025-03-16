@@ -11,3 +11,18 @@ export interface ShopItem {
   isaccomplishment: boolean;
   theme: number;
 }
+
+/* THEME */
+export interface ShopTheme {
+  id: number;
+  name: JsonLanguage;
+}
+
+export interface ShopThemeUpdate {
+  id: number;
+  name?: JsonLanguage;
+}
+
+export interface ShopThemeInsert {
+  name: JsonLanguage;
+}

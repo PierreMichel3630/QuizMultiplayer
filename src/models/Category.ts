@@ -6,6 +6,15 @@ export interface Category {
   name: JsonLanguage;
 }
 
+export interface CategoryUpdate {
+  id: number;
+  name?: JsonLanguage;
+}
+
+export interface CategoryInsert {
+  name: JsonLanguage;
+}
+
 export interface CategoryThemeInsert {
   category: number;
   theme: number;

@@ -25,13 +25,14 @@ import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
 import { colorDifficulty, Difficulty } from "src/models/enum/DifficultyEnum";
 import { Language, LANGUAGESQUESTION } from "src/models/Language";
-import { Theme } from "src/models/Theme";
+import { Theme, ThemeShop } from "src/models/Theme";
 import { sortByName } from "src/utils/sort";
 import { AutocompleteInputTheme } from "./Autocomplete";
 import { ImageThemeBlock } from "./ImageThemeBlock";
 import { BasicSearchInput } from "./Input";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 import { Colors } from "src/style/Colors";
+import { selectThemesShop } from "src/api/theme";
 
 interface Props {
   value: Difficulty;
@@ -295,6 +296,49 @@ export const SelectCategory = ({ category, onChange }: PropsSelectCategory) => {
           {...params}
           label={t("commun.category")}
           placeholder={t("commun.selectcategory")}
+        />
+      )}
+    />
+  );
+};
+
+interface PropsSelectThemeShop {
+  theme: ThemeShop | null;
+  onChange: (value: Category | null) => void;
+}
+
+export const SelectThemeShop = ({ theme, onChange }: PropsSelectThemeShop) => {
+  const { t } = useTranslation();
+  const { language } = useUser();
+
+  const [themes, setThemes] = useState<Array<ThemeShop>>([]);
+
+  useEffect(() => {
+    selectThemesShop().then(({ data }) => {
+      setThemes(data ?? []);
+    });
+  });
+
+  return (
+    <Autocomplete
+      id="themeinput"
+      value={theme}
+      onChange={(_event: SyntheticEvent, newValue: ThemeShop | null) => {
+        onChange(newValue);
+      }}
+      options={[...themes].sort((a, b) => sortByName(language, a, b))}
+      getOptionLabel={(option) => option.name[language.iso]}
+      renderOption={(props, option) => (
+        <Box component="li" {...props}>
+          <JsonLanguageBlock value={option.name} />
+        </Box>
+      )}
+      fullWidth
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={t("commun.theme")}
+          placeholder={t("commun.selecttheme")}
         />
       )}
     />

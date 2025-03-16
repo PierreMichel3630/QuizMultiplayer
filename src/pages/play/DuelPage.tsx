@@ -8,7 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { selectDuelGameById } from "src/api/game";
 import { supabase } from "src/api/supabase";
 import { CircularLoading } from "src/component/Loading";
-import { RoundTimer, VerticalTimer } from "src/component/Timer";
+import { RoundTimer, VerticalTimer } from "src/component/time/Timer";
 import { AvatarAccount } from "src/component/avatar/AvatarAccount";
 import { WaitPlayerDuelGameBlock } from "src/component/play/WaitPlayerDuelGameBlock";
 import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";

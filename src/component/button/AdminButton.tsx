@@ -7,11 +7,10 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
 
-import ImageIcon from "@mui/icons-material/Image";
-import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+import EditIcon from "@mui/icons-material/Edit";
+import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
 import ReportIcon from "@mui/icons-material/Report";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
-import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
 
 interface Setting {
   name: string;
@@ -42,24 +41,14 @@ export const AdminButton = () => {
               url: "/administration/report",
             },
             {
-              name: t("commun.adminquestions"),
-              icon: <QuestionMarkIcon />,
-              url: "/administration/question",
-            },
-            {
-              name: t("commun.themes"),
-              icon: <AdminPanelSettingsIcon />,
-              url: "/administration/themes",
+              name: t("commun.addmodifydelete"),
+              icon: <EditIcon />,
+              url: "/administration/edit/categories",
             },
             {
               name: t("commun.games"),
               icon: <SportsEsportsIcon />,
               url: "/administration/games",
-            },
-            {
-              name: t("commun.images"),
-              icon: <ImageIcon />,
-              url: "/administration/images",
             },
           ]
         : [],

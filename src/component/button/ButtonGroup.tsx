@@ -9,10 +9,11 @@ import {
   ClassementEnum,
   ClassementScoreEnum,
   ClassementSoloModeEnum,
-  ClassementTimeEnum
+  ClassementTimeEnum,
 } from "src/models/enum/ClassementEnum";
-import { GameModeEnum } from "src/models/enum/GameEnum";
+import { AllGameModeEnum, GameModeEnum } from "src/models/enum/GameEnum";
 import { Colors } from "src/style/Colors";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 
 interface Props {
   selected: string;
@@ -31,7 +32,7 @@ export const GroupButton = ({ options, selected, onChange }: Props) => {
       sx={{
         display: "flex",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
       }}
     >
       <Box
@@ -103,6 +104,49 @@ export const GroupButtonTypeGame = ({
       options={options}
       selected={selected}
       onChange={(value) => onChange(value as ClassementScoreEnum)}
+    />
+  );
+};
+
+interface PropsGroupButtonAllGameMode {
+  selected: AllGameModeEnum;
+  onChange: (value: AllGameModeEnum) => void;
+}
+export const GroupButtonAllGameMode = ({
+  selected,
+  onChange,
+}: PropsGroupButtonAllGameMode) => {
+  const { t } = useTranslation();
+
+  const options = useMemo(
+    () => [
+      {
+        icon: <EmojiEventsIcon />,
+        label: t("commun.challenge"),
+        value: AllGameModeEnum.CHALLENGE,
+        color: Colors.green,
+      },
+      {
+        icon: <PlayCircleIcon />,
+        label: t("commun.solo"),
+        value: AllGameModeEnum.SOLO,
+        color: Colors.blue2,
+      },
+      {
+        icon: <OfflineBoltIcon />,
+        label: t("commun.duel"),
+        value: AllGameModeEnum.DUEL,
+        color: Colors.red,
+      },
+    ],
+    [t]
+  );
+
+  return (
+    <GroupButton
+      options={options}
+      selected={selected}
+      onChange={(value) => onChange(value as AllGameModeEnum)}
     />
   );
 };

@@ -1,6 +1,7 @@
 import { supabase } from "./supabase";
 
 export const BUCKET_THEME = "theme";
+export const BUCKET_AVATAR = "theme";
 
 export const URL_STORAGE =
   "https://cperjgnbmoqyyqgkyqws.supabase.co/storage/v1/object/public/";

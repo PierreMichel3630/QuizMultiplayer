@@ -17,6 +17,7 @@ import { ButtonColor } from "src/component/Button";
 import { RankingChallenge } from "src/component/RankingChallenge";
 import { TimeLeftToNextDayLabel } from "src/component/TimeLeftBlock";
 import { Colors } from "src/style/Colors";
+import { updateProfil } from "src/api/profile";
 
 export default function ChallengePage() {
   const { t } = useTranslation();
@@ -26,7 +27,12 @@ export default function ChallengePage() {
 
   const launch = useCallback(() => {
     if (profile) {
-      launchChallenge().then(({ data }) => {
+      launchChallenge().then(async ({ data }) => {
+        const newProfile = {
+          id: profile.id,
+          lastplaydate: moment().toDate(),
+        };
+        await updateProfil(newProfile);
         navigate(`/challenge/${data.uuid}`);
       });
     } else {

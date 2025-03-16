@@ -47,7 +47,7 @@ const AppContext = createContext<{
   categories: Array<CategoryWithThemes>;
   isLoadingCategories: boolean;
   categoriesAdmin: Array<Category>;
-  refreshCategories: () => void;
+  getCategories: () => void;
   reportmessages: Array<ReportMessage>;
   myaccomplishments: Array<ProfileAccomplishment>;
   getMyAccomplishments: () => void;
@@ -75,7 +75,7 @@ const AppContext = createContext<{
   categories: [],
   isLoadingCategories: true,
   categoriesAdmin: [],
-  refreshCategories: () => {},
+  getCategories: () => {},
   reportmessages: [],
   myaccomplishments: [],
   getMyAccomplishments: () => {},
@@ -201,11 +201,7 @@ export const AppProvider = ({ children }: Props) => {
     }
   }, [themes, language]);
 
-  const refreshCategories = () => {
-    getCategoriesAdmin();
-  };
-
-  const getCategoriesAdmin = () => {
+  const getCategories = () => {
     selectCategories().then(({ data }) => {
       const value = data !== null ? (data as Array<Category>) : [];
       setCategoriesAdmin(value);
@@ -285,7 +281,7 @@ export const AppProvider = ({ children }: Props) => {
   }, [getMyAccomplishments, user]);
 
   useEffect(() => {
-    getCategoriesAdmin();
+    getCategories();
     getThemes();
     getMessage();
     getFriends();
@@ -305,7 +301,7 @@ export const AppProvider = ({ children }: Props) => {
         refreshFavorites,
         categories,
         categoriesAdmin,
-        refreshCategories,
+        getCategories,
         reportmessages,
         myaccomplishments,
         getMyAccomplishments,

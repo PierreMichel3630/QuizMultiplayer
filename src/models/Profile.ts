@@ -32,4 +32,5 @@ export interface ProfileUpdate {
   last_seen_friend?: Date;
   isonline?: boolean;
   lastconnection?: Date;
+  lastplaydate?: Date;
 }

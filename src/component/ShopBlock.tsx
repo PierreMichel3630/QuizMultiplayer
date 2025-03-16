@@ -9,11 +9,11 @@ import moment from "moment";
 import { countChallengeGameByDateAndProfileId } from "src/api/challenge";
 import addfriendsAnimate from "src/assets/animation/addfriends.json";
 import customizeprofileAnimate from "src/assets/animation/customizeprofile.json";
+import duelAnimate from "src/assets/animation/duel.json";
 import shopAnimate from "src/assets/animation/shop.json";
 import voteAnimate from "src/assets/animation/vote.json";
 import wheelAnimate from "src/assets/animation/wheelprize.json";
 import { TimeLeftLabel, TimeLeftToNextDayLabel } from "./TimeLeftBlock";
-import challengeIcon from "src/assets/challenge.png";
 
 export const ShopBlock = () => {
   return (
@@ -54,7 +54,7 @@ export const ShopItems = () => {
     () => [
       {
         title: t("commun.daychallenge"),
-        icon: challengeIcon,
+        animation: duelAnimate,
         link: "/challenge",
         extra: (
           <>
@@ -136,7 +136,6 @@ export const ShopItems = () => {
         <RoundLinkButton
           key={index}
           title={option.title}
-          icon={option.icon}
           animation={option.animation}
           link={option.link}
           extra={option.extra}
