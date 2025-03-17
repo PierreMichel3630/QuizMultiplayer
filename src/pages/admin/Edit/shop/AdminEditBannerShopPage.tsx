@@ -4,15 +4,12 @@ import { ButtonColor } from "src/component/Button";
 
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState } from "react";
-import { selectAvatar } from "src/api/avatar";
-import { CardAdminAvatar, CardAdminBanner } from "src/component/card/CardAdmin";
-import { CreateEditAvatarDialog } from "src/component/modal/CreateEditAvatarDialog";
-import { SkeletonCardTheme } from "src/component/skeleton/SkeletonTheme";
-import { Avatar } from "src/models/Avatar";
-import { Colors } from "src/style/Colors";
 import { selectBanners } from "src/api/banner";
-import { Banner } from "src/models/Banner";
+import { CardAdminBanner } from "src/component/card/CardAdmin";
 import { CreateEditBannerDialog } from "src/component/modal/CreateEditBannerDialog";
+import { SkeletonCardTheme } from "src/component/skeleton/SkeletonTheme";
+import { Banner } from "src/models/Banner";
+import { Colors } from "src/style/Colors";
 
 export default function AdminEditBannerShopPage() {
   const { t } = useTranslation();

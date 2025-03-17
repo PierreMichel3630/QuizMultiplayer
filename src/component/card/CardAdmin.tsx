@@ -12,14 +12,11 @@ import { useMessage } from "src/context/MessageProvider";
 import { ThemeShop } from "src/models/Theme";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { ConfirmDialog } from "../modal/ConfirmModal";
-import { CreateEditThemeShopDialog } from "../modal/CreateEditThemeShopDialog";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Avatar } from "src/models/Avatar";
-import { CreateEditAvatarDialog } from "../modal/CreateEditAvatarDialog";
 import { Banner } from "src/models/Banner";
-import { CreateEditBannerDialog } from "../modal/CreateEditBannerDialog";
 
 interface PropsCardAdminThemeShop {
   theme: ThemeShop;

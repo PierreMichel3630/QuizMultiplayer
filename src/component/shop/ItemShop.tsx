@@ -92,7 +92,7 @@ export const ItemShop = ({ item }: Props) => {
         {
           AVATAR: <AvatarShop avatar={item as unknown as Avatar} />,
           BADGE: <BadgeShop badge={item as Badge} />,
-          BANNER: <BannerShop banner={item as Banner} />,
+          BANNER: <BannerShop banner={item as unknown as Banner} />,
           TITLE: <TitleShop title={item as Title} />,
         }[item.type]
       }
