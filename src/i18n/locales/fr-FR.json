@@ -174,8 +174,13 @@
     "addcategory": "Ajouter une catégorie",
     "addquestion": "Ajouter une question",
     "addlanguage": "Ajouter une langue",
+    "addavatar": "Ajouter un avatar",
+    "addbanner": "Ajouter une photo de couverture",
     "removelanguage": "Supprimer la langue",
     "editquestion": "Modifier une question",
+    "editcategory": "Modifier une catégorie",
+    "editavatar": "Modifier un avatar",
+    "editbanner": "Modifier une photo de couverture",
     "selecttheme": "Sélectionner un thème",
     "selectlanguage": "Sélectionner une langue",
     "selectcategory": "Sélectionner une catégorie",
@@ -633,7 +638,21 @@
       "price": "Prix *",
       "isaccomplishment": "Est succès ?",
       "requiredprice": "Veuillez saisir un prix",
-      "requiredcategory": "Veuillez sélectionner un thème",
+      "requiredtheme": "Veuillez sélectionner un thème",
+      "icon": "Icone"
+    },
+    "createbanner": {
+      "price": "Prix *",
+      "isaccomplishment": "Est succès ?",
+      "requiredprice": "Veuillez saisir un prix",
+      "requiredtheme": "Veuillez sélectionner un thème",
+      "icon": "Icone"
+    },
+    "createtitle": {
+      "price": "Prix *",
+      "isaccomplishment": "Est succès ?",
+      "requiredprice": "Veuillez saisir un prix",
+      "requiredtheme": "Veuillez sélectionner un thème",
       "icon": "Icone"
     },
     "proposetheme": {

@@ -72,6 +72,10 @@ export default function AdminEditThemeShopPage() {
             onChange={() => {
               getThemes();
             }}
+            onEdit={() => {
+              setTheme(theme);
+              setOpenModal(true);
+            }}
           />
         </Grid>
       ))}

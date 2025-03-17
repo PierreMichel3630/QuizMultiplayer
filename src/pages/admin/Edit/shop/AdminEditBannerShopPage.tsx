@@ -5,27 +5,30 @@ import { ButtonColor } from "src/component/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState } from "react";
 import { selectAvatar } from "src/api/avatar";
-import { CardAdminAvatar } from "src/component/card/CardAdmin";
+import { CardAdminAvatar, CardAdminBanner } from "src/component/card/CardAdmin";
 import { CreateEditAvatarDialog } from "src/component/modal/CreateEditAvatarDialog";
 import { SkeletonCardTheme } from "src/component/skeleton/SkeletonTheme";
 import { Avatar } from "src/models/Avatar";
 import { Colors } from "src/style/Colors";
+import { selectBanners } from "src/api/banner";
+import { Banner } from "src/models/Banner";
+import { CreateEditBannerDialog } from "src/component/modal/CreateEditBannerDialog";
 
-export default function AdminEditAvatarShopPage() {
+export default function AdminEditBannerShopPage() {
   const { t } = useTranslation();
 
-  const [avatars, setAvatars] = useState<Array<Avatar>>([]);
-  const [avatar, setAvatar] = useState<Avatar | undefined>(undefined);
+  const [banners, setBanners] = useState<Array<Banner>>([]);
+  const [banner, setBanner] = useState<Banner | undefined>(undefined);
   const [openModal, setOpenModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getAvatars();
+    getBanners();
   }, []);
 
-  const getAvatars = () => {
-    selectAvatar().then(({ data }) => {
-      setAvatars(data ?? []);
+  const getBanners = () => {
+    selectBanners().then(({ data }) => {
+      setBanners(data ?? []);
       setIsLoading(false);
     });
   };
@@ -35,18 +38,18 @@ export default function AdminEditAvatarShopPage() {
       <Grid item xs={12}>
         <ButtonColor
           icon={AddIcon}
-          label={t("commun.addavatar")}
+          label={t("commun.addbanner")}
           value={Colors.green}
           onClick={() => setOpenModal(true)}
           variant="contained"
         />
       </Grid>
-      {avatars.map((avatar) => (
-        <Grid item xs={12} key={avatar.id}>
-          <CardAdminAvatar
-            avatar={avatar}
+      {banners.map((banner) => (
+        <Grid item xs={12} key={banner.id}>
+          <CardAdminBanner
+            banner={banner}
             onEdit={() => {
-              setAvatar(avatar);
+              setBanner(banner);
               setOpenModal(true);
             }}
           />
@@ -61,13 +64,13 @@ export default function AdminEditAvatarShopPage() {
           ))}
         </>
       )}
-      <CreateEditAvatarDialog
-        avatar={avatar}
+      <CreateEditBannerDialog
+        banner={banner}
         open={openModal}
         close={() => {
+          setBanner(undefined);
+          getBanners();
           setOpenModal(false);
-          setAvatar(undefined);
-          getAvatars();
         }}
       />
     </Grid>

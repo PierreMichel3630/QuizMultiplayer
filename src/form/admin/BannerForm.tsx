@@ -11,46 +11,46 @@ import {
 import { useFormik } from "formik";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
-import { insertAvatar, updateAvatar } from "src/api/avatar";
+import { insertBanner, updateBanner } from "src/api/banner";
 import { BUCKET_AVATAR, URL_STORAGE, storeFile } from "src/api/storage";
 import { ButtonColor } from "src/component/Button";
 import { SelectThemeShop } from "src/component/Select";
 import { FileUploadInput } from "src/component/input/FileUploadInput";
 import { useMessage } from "src/context/MessageProvider";
-import { Avatar } from "src/models/Avatar";
+import { Banner } from "src/models/Banner";
 import { ThemeShop } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import * as Yup from "yup";
 
 interface Props {
-  avatar?: Avatar;
+  banner?: Banner;
   validate: () => void;
 }
 
-export const AvatarForm = ({ validate, avatar }: Props) => {
+export const BannerForm = ({ validate, banner }: Props) => {
   const { t } = useTranslation();
   const { setMessage, setSeverity } = useMessage();
 
   const initialValue: {
-    icon: null | File | string | undefined;
+    src: null | File | string | undefined;
     price: number;
     isaccomplishment: boolean;
     theme: null | ThemeShop;
   } = {
-    isaccomplishment: avatar ? avatar.isaccomplishment : false,
-    price: avatar ? avatar.price : 0,
-    icon: avatar ? avatar.icon : null,
-    theme: avatar ? avatar.theme : null,
+    isaccomplishment: banner ? banner.isaccomplishment : false,
+    price: banner ? banner.price : 0,
+    src: banner ? banner.src : null,
+    theme: banner ? banner.theme : null,
   };
 
   const validationSchema = Yup.object().shape({
-    price: Yup.string().required(t("form.createavatar.requiredprice")),
+    price: Yup.string().required(t("form.createbanner.requiredprice")),
     isaccomplishment: Yup.boolean(),
-    icon: Yup.mixed().nullable(),
+    src: Yup.mixed().nullable(),
     theme: Yup.object()
       .shape({ id: Yup.number().required() })
       .default(null)
-      .required(t("form.createavatar.requiredtheme")),
+      .required(t("form.createbanner.requiredtheme")),
   });
 
   const formik = useFormik({
@@ -59,30 +59,30 @@ export const AvatarForm = ({ validate, avatar }: Props) => {
     onSubmit: async (values) => {
       try {
         let icon: null | string = null;
-        if (values.icon !== null && typeof values.icon !== "string") {
-          const name = "avatar" + "-" + moment().toISOString();
+        if (values.src !== null && typeof values.src !== "string") {
+          const name = "banner" + "-" + moment().toISOString();
 
           const { data } = await storeFile(
             BUCKET_AVATAR,
             name,
-            values.icon as unknown as File
+            values.src as unknown as File
           );
           icon = data !== null ? data.path : null;
         } else {
-          icon = values.icon;
+          icon = values.src;
         }
-        const newAvatar = {
+        const newValue = {
           price: values.price,
-          icon:
-            icon !== null && typeof values.icon !== "string"
+          src:
+            icon !== null && typeof values.src !== "string"
               ? URL_STORAGE + BUCKET_AVATAR + "/" + icon
               : icon,
           isaccomplishment: values.isaccomplishment,
           theme: values.theme ? values.theme.id : null,
         };
-        const { error } = avatar
-          ? await updateAvatar({ id: avatar.id, ...newAvatar })
-          : await insertAvatar(newAvatar);
+        const { error } = banner
+          ? await updateBanner({ id: banner.id, ...newValue })
+          : await insertBanner(newValue);
         if (error) {
           setSeverity("error");
           setMessage(t("commun.error"));
@@ -119,7 +119,7 @@ export const AvatarForm = ({ validate, avatar }: Props) => {
             error={Boolean(formik.touched.price && formik.errors.price)}
           >
             <InputLabel htmlFor="namefr-input">
-              {t("form.createavatar.price")}
+              {t("form.createbanner.price")}
             </InputLabel>
             <OutlinedInput
               id="namefr-input"
@@ -128,7 +128,7 @@ export const AvatarForm = ({ validate, avatar }: Props) => {
               name="price"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
-              label={t("form.createavatar.price")}
+              label={t("form.createbanner.price")}
               inputProps={{}}
             />
             {formik.touched.price && formik.errors.price && (
@@ -142,10 +142,10 @@ export const AvatarForm = ({ validate, avatar }: Props) => {
           <Divider />
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h6">{t("form.createavatar.icon")}</Typography>
+          <Typography variant="h6">{t("form.createbanner.icon")}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <FileUploadInput formik={formik} field="icon" />
+          <FileUploadInput formik={formik} field="src" />
         </Grid>
         <Grid item xs={12}>
           <ButtonColor

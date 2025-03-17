@@ -18,19 +18,22 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Avatar } from "src/models/Avatar";
 import { CreateEditAvatarDialog } from "../modal/CreateEditAvatarDialog";
+import { Banner } from "src/models/Banner";
+import { CreateEditBannerDialog } from "../modal/CreateEditBannerDialog";
 
 interface PropsCardAdminThemeShop {
   theme: ThemeShop;
   onChange: () => void;
+  onEdit: () => void;
 }
 
 export const CardAdminThemeShop = ({
   theme,
   onChange,
+  onEdit,
 }: PropsCardAdminThemeShop) => {
   const { t } = useTranslation();
   const { setMessage, setSeverity } = useMessage();
-  const [openModal, setOpenModal] = useState(false);
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
 
   const deleteShopTheme = () => {
@@ -62,7 +65,7 @@ export const CardAdminThemeShop = ({
           <JsonLanguageBlock variant="h4" component="span" value={theme.name} />
         </Grid>
         <Grid item>
-          <IconButton aria-label="edit" onClick={() => setOpenModal(true)}>
+          <IconButton aria-label="edit" onClick={onEdit}>
             <EditIcon />
           </IconButton>
         </Grid>
@@ -75,14 +78,6 @@ export const CardAdminThemeShop = ({
           </IconButton>
         </Grid>
       </Grid>
-      <CreateEditThemeShopDialog
-        theme={theme}
-        open={openModal}
-        close={() => {
-          setOpenModal(false);
-          onChange();
-        }}
-      />
       <ConfirmDialog
         title={t("modal.delete")}
         open={openConfirmModal}
@@ -95,12 +90,10 @@ export const CardAdminThemeShop = ({
 
 interface PropsCardAdminAvatar {
   avatar: Avatar;
-  onChange: () => void;
+  onEdit: () => void;
 }
 
-export const CardAdminAvatar = ({ avatar, onChange }: PropsCardAdminAvatar) => {
-  const [openModal, setOpenModal] = useState(false);
-
+export const CardAdminAvatar = ({ avatar, onEdit }: PropsCardAdminAvatar) => {
   return (
     <Paper sx={{ p: 1 }}>
       <Grid container spacing={1} alignItems="center">
@@ -125,18 +118,44 @@ export const CardAdminAvatar = ({ avatar, onChange }: PropsCardAdminAvatar) => {
           </Typography>
         </Grid>
         <Grid item>
-          <IconButton aria-label="edit" onClick={() => setOpenModal(true)}>
+          <IconButton aria-label="edit" onClick={onEdit}>
             <EditIcon />
           </IconButton>
         </Grid>
       </Grid>
-      <CreateEditAvatarDialog
-        avatar={avatar}
-        open={openModal}
-        close={() => {
-          onChange();
-        }}
-      />
+    </Paper>
+  );
+};
+
+interface PropsCardAdminBanner {
+  banner: Banner;
+  onEdit: () => void;
+}
+
+export const CardAdminBanner = ({ banner, onEdit }: PropsCardAdminBanner) => {
+  return (
+    <Paper sx={{ p: 1 }}>
+      <Grid container spacing={1} alignItems="center">
+        <Grid item xs>
+          <Typography variant="h2">{banner.id}</Typography>
+        </Grid>
+        <Grid item xs>
+          <img width={200} src={banner.src} />
+        </Grid>
+        <Grid item xs>
+          <Typography variant="h4">{banner.price}</Typography>
+        </Grid>
+        <Grid item xs>
+          <Typography variant="h4">
+            {banner.isaccomplishment.toString()}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <IconButton aria-label="edit" onClick={onEdit}>
+            <EditIcon />
+          </IconButton>
+        </Grid>
+      </Grid>
     </Paper>
   );
 };

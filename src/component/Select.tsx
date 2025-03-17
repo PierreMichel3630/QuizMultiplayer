@@ -317,7 +317,7 @@ export const SelectThemeShop = ({ theme, onChange }: PropsSelectThemeShop) => {
     selectThemesShop().then(({ data }) => {
       setThemes(data ?? []);
     });
-  });
+  }, []);
 
   return (
     <Autocomplete
@@ -341,6 +341,7 @@ export const SelectThemeShop = ({ theme, onChange }: PropsSelectThemeShop) => {
           placeholder={t("commun.selecttheme")}
         />
       )}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
     />
   );
 };
