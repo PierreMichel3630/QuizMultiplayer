@@ -91,7 +91,7 @@ export const RankingTop5Block = () => {
     setIsLoading(true);
     setData([]);
     if (tab === AllGameModeEnum.CHALLENGE) {
-      selectRankingChallengeByDate(moment()).then(({ data }) => {
+      selectRankingChallengeByDate(moment(), 0, 5).then(({ data }) => {
         const res = (data ?? []) as Array<ChallengeRanking>;
         const newdata = res.map((el) => {
           return {

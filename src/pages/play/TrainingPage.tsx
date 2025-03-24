@@ -10,7 +10,6 @@ import {
 } from "src/api/game";
 import { useUser } from "src/context/UserProvider";
 import { QuestionResult, QuestionTraining } from "src/models/Question";
-import { ResponseLanguage } from "src/models/Response";
 
 import { percent, viewHeight } from "csx";
 import { ButtonColor } from "src/component/Button";
@@ -24,8 +23,9 @@ import { Colors } from "src/style/Colors";
 import { PreloadImages } from "src/utils/preload";
 import { verifyResponse } from "src/utils/response";
 
-import LastPageIcon from "@mui/icons-material/LastPage";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import LastPageIcon from "@mui/icons-material/LastPage";
+import { decryptToJsonLanguage } from "src/utils/crypt";
 
 export default function TrainingPage() {
   const { t } = useTranslation();
@@ -108,20 +108,12 @@ export default function TrainingPage() {
     setNextQuestion(undefined);
     setMyresponse(myResponseValue);
     if (question) {
-      let result = false;
-      if (question.isqcm) {
-        result = Number(question.response) === Number(myResponseValue);
-      } else {
-        const response = question.response as ResponseLanguage;
-        result = verifyResponse(
-          response[language.iso],
-          myResponseValue,
-          question.exact ? question.exact : value.exact
-        );
-      }
+      const result = verifyResponse(language, question, value);
+      const response = decryptToJsonLanguage(question.response);
       setQuestions((prev) => [
         {
           ...question,
+          response: response,
           resultPlayer1: result,
           responsePlayer1: myResponseValue,
         },
@@ -130,7 +122,7 @@ export default function TrainingPage() {
       setGoodAnswer((prev) => (result ? prev + 1 : prev));
       setBadAnswer((prev) => (result ? prev : prev + 1));
       setResponse({
-        response: question.response,
+        response: response,
         result: result,
         responseplayer1: myResponseValue,
       });

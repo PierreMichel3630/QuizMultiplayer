@@ -1,6 +1,7 @@
 {
   "imports": {
     "moment": "https://esm.sh/moment",
-    "supabase": "https://esm.sh/@supabase/supabase-js"
+    "supabase": "https://esm.sh/@supabase/supabase-js",
+    "crypto-js": "https://esm.sh/crypto-js"
   }
 }

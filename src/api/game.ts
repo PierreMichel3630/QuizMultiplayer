@@ -15,7 +15,8 @@ export const SUPABASE_LAUNCHSOLOGAME_FUNCTION = "launch-solo-gameV2";
 export const SUPABASE_SOLOGAME_TABLE = "sologame";
 
 export const SUPABASE_LAUNCHTRAININGGAME_FUNCTION = "launch-training-game";
-export const SUPABASE_QUESTIONTRAININGGAME_FUNCTION = "question-training-game";
+export const SUPABASE_QUESTIONTRAININGGAME_FUNCTION =
+  "question-training-gameV2";
 export const SUPABASE_TRAININGGAME_TABLE = "traininggame";
 
 export const SUPABASE_DUELGAME_TABLE = "duelgame";

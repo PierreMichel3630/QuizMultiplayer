@@ -85,14 +85,23 @@ export const selectRankingChallengeByChallengeIdPaginate = (
     .order("ranking", { ascending: true });
 };
 
-export const selectRankingChallengeByDate = (date: Moment) =>
-  supabase
+export const selectRankingChallengeByDate = (
+  date: Moment,
+  page: number,
+  itemperpage = 25
+) => {
+  const from = page * itemperpage;
+  const to = from + itemperpage - 1;
+
+  return supabase
     .from(SUPABASE_RANKINGCHALLENGE_VIEW)
     .select(
       "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*)), challenge(*)"
     )
     .eq("challenge.date", date.toISOString())
-    .not("challenge", "is", null);
+    .not("challenge", "is", null)
+    .range(from, to);
+};
 
 export const selectRankingChallengeByDateAndProfileId = (
   date: Moment,

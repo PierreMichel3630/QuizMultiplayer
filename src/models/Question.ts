@@ -117,7 +117,7 @@ export interface Question {
 }
 
 export interface QuestionResult extends Question {
-  response: JsonLanguage;
+  response: JsonLanguage | number;
   resultPlayer1?: boolean;
   responsePlayer1?: string | number;
   responsePlayer2?: string | number;
@@ -125,7 +125,7 @@ export interface QuestionResult extends Question {
 }
 
 export interface QuestionTraining extends Question {
-  response: JsonLanguage;
+  response: string;
 }
 
 export interface QuestionDuel extends Question {
@@ -135,4 +135,6 @@ export interface QuestionDuel extends Question {
   resultPlayer2?: boolean;
 }
 
-export interface QuestionSolo extends Question {}
+export interface QuestionSolo extends Question {
+  response: string;
+}
