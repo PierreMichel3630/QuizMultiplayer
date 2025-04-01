@@ -286,8 +286,9 @@
     "sharetext": "Si vous trouvez l'application intéressante, n'hésitez pas à la partager à votre entourage, afin d'agrandir la communauté. Merci de votre aide.",
     "day": "Jour",
     "week": "Semaine",
-    "alltime": "All Time",
     "month": "Mois",
+    "year": "Année",
+    "alltime": "All Time",
     "darkmode": "Mode sombre",
     "lightmode": "Mode clair",
     "updated": "Mis à jour",
@@ -533,6 +534,9 @@
     },
     "streak": {
       "title": "Série de connection"
+    },
+    "challenge": {
+      "title": "Défis du jour"
     }
   },
   "enum": {

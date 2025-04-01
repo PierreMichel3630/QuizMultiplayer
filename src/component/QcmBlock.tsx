@@ -22,7 +22,7 @@ import {
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { useUser } from "src/context/UserProvider";
-import { ExtraResponseBlock } from "./response/ExtraResponseBlock";
+import { ExtraResponseResultBlock } from "./response/ExtraResponseBlock";
 
 interface Props {
   question: QuestionSolo;
@@ -552,11 +552,11 @@ export const QcmBlockDuelResultBlock = ({
         let borderColor: string = isDarkMode ? Colors.white : Colors.black2;
 
         if (isCorrectResponse) {
-          color = Colors.green;
-          borderColor = Colors.white;
+          color = Colors.correctanswer;
+          borderColor = Colors.correctanswerborder;
         } else if (isArrowRight || isArrowLeft) {
-          color = Colors.red;
-          borderColor = Colors.white;
+          color = Colors.wronganswer;
+          borderColor = Colors.wronganswerborder;
         }
 
         return (
@@ -592,14 +592,12 @@ export const QcmBlockDuelResultBlock = ({
                 }}
               />
             )}
-            <Box>
+            <Box sx={{ width: percent(100) }}>
               {res.image && <ImageQCMBlock src={res.image} />}
               {res.label && (
                 <JsonLanguageBlock variant="h3" value={res.label} />
               )}
-              {res.extra && (
-                <ExtraResponseBlock extra={res.extra} shadow={false} />
-              )}
+              {res.extra && <ExtraResponseResultBlock extra={res.extra} />}
             </Box>
             {isArrowLeft && (
               <ArrowLeftIcon

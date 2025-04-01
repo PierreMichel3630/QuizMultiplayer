@@ -288,7 +288,7 @@ Deno.serve(async (req) => {
 
     const body = await req.json();
     const uuid = body.game;
-    const previousquestion = body.previousquestion;
+    const previousquestion = body.previousQuestion;
 
     const sologame = await supabase
       .from("sologame")
@@ -299,16 +299,43 @@ Deno.serve(async (req) => {
     const game = sologame.data;
     console.log(uuid);
 
-    if (previousquestion) {
-      console.log(previousquestion);
+    if (previousquestion !== undefined) {
+      const result = previousquestion.resultPlayer1 === true;
+      const points = result ? game.points + 1 : game.points;
       const { error } = await supabase
         .from("sologame")
         .update({
-          points: game.points + 1,
+          points,
           questions: [...game.questions, previousquestion],
+          status: result ? game.status : "END",
         })
         .eq("uuid", uuid);
       if (error) throw error;
+
+      if (!result) {
+        await supabase.rpc("updatescore", {
+          player: game.player,
+          themeid: game.theme.id,
+          newpoints: points,
+          game: uuid,
+          xpprop: 50 + points * 10,
+        });
+        return new Response(
+          JSON.stringify({
+            allquestion: false,
+            extra: {
+              xpplayer1: {
+                match: 50,
+                matchscore: points * 10,
+              },
+            },
+          }),
+          {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            status: 200,
+          }
+        );
+      }
     }
 
     const value = await getQuestion(supabase, game);

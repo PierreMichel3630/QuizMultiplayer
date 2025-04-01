@@ -124,7 +124,7 @@ export default function TrainingPage() {
       setResponse({
         response: response,
         result: result,
-        responseplayer1: myResponseValue,
+        responsePlayer1: myResponseValue,
       });
       setMyresponse(undefined);
       if (game) getQuestion(game.uuid);
@@ -188,7 +188,7 @@ export default function TrainingPage() {
   }, [uuidGame]);
 
   const responseP1 = useMemo(
-    () => myresponse ?? (response ? response.responseplayer1 : undefined),
+    () => myresponse ?? (response ? response.responsePlayer1 : undefined),
     [myresponse, response]
   );
 

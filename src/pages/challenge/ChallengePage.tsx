@@ -25,12 +25,12 @@ export default function ChallengePage() {
   const navigate = useNavigate();
   const [hasPlayChallenge, setHasPlayChallenge] = useState(false);
 
-  const launch = useCallback(() => {
+  const launch = useCallback(async () => {
     if (profile) {
-      launchChallenge().then(async ({ data }) => {
+      launchChallenge(moment().format("YYYY-MM-DD")).then(async ({ data }) => {
         const newProfile = {
           id: profile.id,
-          lastplaydate: moment().toDate(),
+          lastchallengeplay: moment().format("YYYY-MM-DD"),
         };
         await updateProfil(newProfile);
         navigate(`/challenge/${data.uuid}`);
@@ -57,7 +57,7 @@ export default function ChallengePage() {
   return (
     <Grid container>
       <Helmet>
-        <title>{`${t("pages.streak.title")} - ${t("appname")}`}</title>
+        <title>{`${t("pages.challenge.title")} - ${t("appname")}`}</title>
       </Helmet>
       <Grid item xs={12}>
         <Box sx={{ p: 2 }}>

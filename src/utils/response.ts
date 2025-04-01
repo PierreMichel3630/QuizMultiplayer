@@ -56,7 +56,7 @@ export const verifyResponse = (
   const decryptResponse = decrypt(question.response);
   if (decryptResponse !== undefined) {
     if (question.isqcm) {
-      result = Number(question.response) === Number(decryptResponse);
+      result = Number(myResponseValue) === Number(decryptResponse);
     } else {
       const response = JSON.parse(
         decryptResponse.toString()

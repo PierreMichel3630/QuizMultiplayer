@@ -28,3 +28,26 @@ export interface ChallengeRanking {
   score: number;
   time: number;
 }
+
+export interface ChallengeRankingDate {
+  profile: Profile;
+  score: number;
+  scoreavg: number;
+  time: number;
+  games: number;
+  ranking: number;
+}
+
+export interface ChallengeRankingAllTime extends ChallengeRankingDate {}
+
+export interface ChallengeRankingMonth extends ChallengeRankingDate {
+  month: string;
+}
+
+export interface ChallengeRankingYear extends ChallengeRankingDate {
+  year: string;
+}
+
+export interface ChallengeRankingWeek extends ChallengeRankingDate {
+  week: string;
+}

@@ -20,7 +20,7 @@ import { Score } from "src/models/Score";
 import {
   ClassementEnum,
   ClassementSoloModeEnum,
-  ClassementTimeEnum,
+  ClassementSoloTimeEnum,
 } from "src/models/enum/ClassementEnum";
 import { getLevel } from "src/utils/calcul";
 import { sortByRankAsc } from "src/utils/sort";
@@ -55,7 +55,7 @@ export default function RankingPage() {
           tabSoloMode === ClassementSoloModeEnum.week ||
           tabSoloMode === ClassementSoloModeEnum.month)
       ) {
-        const time = tabSoloMode as unknown as ClassementTimeEnum;
+        const time = tabSoloMode as unknown as ClassementSoloTimeEnum;
         selectGamesByTime(time, page, ITEMPERPAGE).then(({ data }) => {
           const res = data as Array<HistorySoloGame>;
           const newdata = res.map((el, index) => ({

@@ -17,8 +17,6 @@ import { Answer, Response } from "src/component/question/ResponseBlock";
 import { SoloGame } from "src/models/Game";
 import { StatusGameSolo } from "src/models/enum/StatusGame";
 import { PreloadImages } from "src/utils/preload";
-import { verifyResponse } from "src/utils/response";
-import { decryptToJsonLanguage } from "src/utils/crypt";
 
 export default function SoloPage() {
   const { t } = useTranslation();
@@ -45,7 +43,7 @@ export default function SoloPage() {
     (game: undefined | SoloGame, delay: number) => {
       if (game) {
         supabase.functions
-          .invoke("question-solo-gameV3", {
+          .invoke("question-solo-gameV2", {
             body: {
               game: game.uuid,
             },
@@ -120,24 +118,50 @@ export default function SoloPage() {
     [navigate]
   );
 
-  const validateResponse = async (value: Answer) => {
-    const myResponseValue = value.value;
-    setMyresponse(myResponseValue);
-    if (question) {
-      const result = verifyResponse(language, question, value);
-      const response = decryptToJsonLanguage(question.response);
-      setResponse({
-        response: response,
-        result: result,
-        responseplayer1: myResponseValue,
-      });
-      setMyresponse(undefined);
-      if (game) generateQuestion(game, 2000);
-    }
-    if (audio) {
-      audio.pause();
-    }
-  };
+  const validateResponse = useCallback(
+    async (value: Answer) => {
+      const myResponseValue = value ? value.value : undefined;
+      setMyresponse(myResponseValue);
+      setTimer(undefined);
+      clearTimeout(timeoutQuestion);
+      if (game && language) {
+        const { data } = await supabase.functions.invoke("response-solo-game", {
+          body: {
+            game: game.uuid,
+            response: myResponseValue,
+            language: language.iso,
+            exact: value ? value.exact : undefined,
+          },
+        });
+        const res = data as ResponseSolo;
+        setMyresponse(undefined);
+        setTimer(undefined);
+        setResponse({
+          response: res.response,
+          result: res.result,
+          responsePlayer1: res.answer,
+        });
+        setScore(res.points);
+        scrollTop();
+        if (res.result) {
+          generateQuestion(game, 1500);
+        } else {
+          setTimeout(async () => {
+            navigate(`/recapsolo/${game.uuid}`, {
+              state: {
+                allquestion: false,
+                extra: res.extra,
+              },
+            });
+          }, 1500);
+        }
+        if (audio) {
+          audio.pause();
+        }
+      }
+    },
+    [audio, game, generateQuestion, language, navigate, timeoutQuestion]
+  );
 
   useEffect(() => {
     const getGame = () => {
@@ -177,7 +201,7 @@ export default function SoloPage() {
   };
 
   const responseP1 = useMemo(
-    () => myresponse ?? (response ? response.responseplayer1 : undefined),
+    () => myresponse ?? (response ? response.responsePlayer1 : undefined),
     [myresponse, response]
   );
 

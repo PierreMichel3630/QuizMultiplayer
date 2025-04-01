@@ -49,7 +49,8 @@ interface PropsBasicSearchInput {
   label?: string;
   value: string;
   onChange: (value: string) => void;
-  clear: () => void;
+  clear?: () => void;
+  onFocus?: () => void;
 }
 
 export const BasicSearchInput = ({
@@ -57,6 +58,7 @@ export const BasicSearchInput = ({
   value,
   clear,
   onChange,
+  onFocus,
 }: PropsBasicSearchInput) => (
   <Paper
     variant="outlined"
@@ -73,9 +75,10 @@ export const BasicSearchInput = ({
       inputProps={{ "aria-label": label ?? "" }}
       value={value}
       onChange={(event) => onChange(event.target.value)}
+      onFocus={onFocus}
     />
     <SearchIcon fontSize="large" sx={{ color: Colors.grey4 }} />
-    {value !== "" && (
+    {value !== "" && clear && (
       <>
         <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
         <IconButton

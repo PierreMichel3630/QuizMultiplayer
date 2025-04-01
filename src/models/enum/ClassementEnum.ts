@@ -25,6 +25,21 @@ export enum ClassementTimeEnum {
   day = "day",
   week = "week",
   month = "month",
+  year = "year",
+}
+
+export enum ClassementSoloTimeEnum {
+  alltime = "alltime",
+  day = "day",
+  week = "week",
+  month = "month",
+}
+
+export enum ClassementChallengeTimeEnum {
+  alltime = "alltime",
+  day = "day",
+  month = "month",
+  week = "week",
 }
 
 export enum ClassementSoloModeEnum {

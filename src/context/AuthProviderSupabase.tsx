@@ -4,6 +4,7 @@ import {
   User,
   UserResponse,
 } from "@supabase/supabase-js";
+import moment from "moment";
 import {
   createContext,
   useCallback,
@@ -12,11 +13,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import {
-  getProfilById,
-  updateProfil,
-  updateSelectProfil,
-} from "src/api/profile";
+import { getProfilById, updateProfil } from "src/api/profile";
 import {
   passwordReset,
   signInWithEmail,
@@ -76,18 +73,10 @@ export const AuthProviderSupabase = ({ children }: Props) => {
   useEffect(() => {
     const getProfilUser = async () => {
       if (user) {
-        const { data } = await updateSelectProfil({
-          id: user.id,
-          isonline: true,
-          lastconnection: new Date(),
+        getProfilById(user.id).then(({ data }) => {
+          const res = data as Profile;
+          setProfile(res);
         });
-        setProfile(data as Profile);
-        setTimeout(() => {
-          getProfilById(user.id).then(({ data }) => {
-            const res = data as Profile;
-            setProfile(res);
-          });
-        }, 300);
       }
     };
     localStorage.setItem("user", JSON.stringify(user));
@@ -99,10 +88,10 @@ export const AuthProviderSupabase = ({ children }: Props) => {
       await updateProfil({
         id: user.id,
         isonline: false,
-        lastconnection: new Date(),
+        lastconnection: moment(),
       });
-      setUser(null);
     }
+    setUser(null);
     clearLocalStorage();
     return signOut();
   }, [user]);
@@ -115,10 +104,21 @@ export const AuthProviderSupabase = ({ children }: Props) => {
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN") {
-        setUser(session !== null ? session.user : null);
+        if (session !== null) {
+          updateProfil({
+            id: session.user.id,
+            isonline: true,
+            lastconnection: moment(),
+          }).then(() => {
+            setUser(session.user);
+          });
+        } else {
+          setUser(null);
+        }
       } else if (event === "SIGNED_OUT") {
         setUser(null);
         setProfile(null);
+        console.log("SIGNED_OUT");
       }
     });
     return () => {

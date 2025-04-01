@@ -6,10 +6,11 @@ import { padding, px } from "csx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  ClassementChallengeTimeEnum,
   ClassementEnum,
   ClassementScoreEnum,
   ClassementSoloModeEnum,
-  ClassementTimeEnum,
+  ClassementSoloTimeEnum,
 } from "src/models/enum/ClassementEnum";
 import { AllGameModeEnum, GameModeEnum } from "src/models/enum/GameEnum";
 import { Colors } from "src/style/Colors";
@@ -194,8 +195,8 @@ export const GroupButtonAllTypeGame = ({
 };
 
 interface PropsGroupButtonTime {
-  selected: ClassementTimeEnum;
-  onChange: (value: ClassementTimeEnum) => void;
+  selected: ClassementSoloTimeEnum;
+  onChange: (value: ClassementSoloTimeEnum) => void;
 }
 export const GroupButtonTime = ({
   selected,
@@ -207,15 +208,15 @@ export const GroupButtonTime = ({
     () => [
       {
         label: t("commun.week"),
-        value: ClassementTimeEnum.week,
+        value: ClassementSoloTimeEnum.week,
       },
       {
         label: t("commun.month"),
-        value: ClassementTimeEnum.month,
+        value: ClassementSoloTimeEnum.month,
       },
       {
         label: t("commun.alltime"),
-        value: ClassementTimeEnum.alltime,
+        value: ClassementSoloTimeEnum.alltime,
       },
     ],
     [t]
@@ -225,7 +226,48 @@ export const GroupButtonTime = ({
     <GroupButton
       options={options}
       selected={selected}
-      onChange={(value) => onChange(value as ClassementTimeEnum)}
+      onChange={(value) => onChange(value as ClassementSoloTimeEnum)}
+    />
+  );
+};
+
+interface PropsGroupButtonChallengeTime {
+  selected: ClassementChallengeTimeEnum;
+  onChange: (value: ClassementChallengeTimeEnum) => void;
+}
+export const GroupButtonChallengeTime = ({
+  selected,
+  onChange,
+}: PropsGroupButtonChallengeTime) => {
+  const { t } = useTranslation();
+
+  const options = useMemo(
+    () => [
+      {
+        label: t("commun.day"),
+        value: ClassementChallengeTimeEnum.day,
+      },
+      {
+        label: t("commun.week"),
+        value: ClassementChallengeTimeEnum.week,
+      },
+      {
+        label: t("commun.month"),
+        value: ClassementChallengeTimeEnum.month,
+      },
+      {
+        label: t("commun.alltime"),
+        value: ClassementChallengeTimeEnum.alltime,
+      },
+    ],
+    [t]
+  );
+
+  return (
+    <GroupButton
+      options={options}
+      selected={selected}
+      onChange={(value) => onChange(value as ClassementChallengeTimeEnum)}
     />
   );
 };
@@ -287,15 +329,15 @@ export const GroupButtonSoloRanking = ({
     () => [
       {
         label: t("commun.week"),
-        value: ClassementTimeEnum.week,
+        value: ClassementSoloTimeEnum.week,
       },
       {
         label: t("commun.month"),
-        value: ClassementTimeEnum.month,
+        value: ClassementSoloTimeEnum.month,
       },
       {
         label: t("commun.alltime"),
-        value: ClassementTimeEnum.alltime,
+        value: ClassementSoloTimeEnum.alltime,
       },
       {
         label: t("commun.finishtheme"),

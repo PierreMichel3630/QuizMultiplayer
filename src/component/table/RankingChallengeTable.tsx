@@ -20,27 +20,28 @@ import { Link } from "react-router-dom";
 import rank1 from "src/assets/rank/rank1.png";
 import rank2 from "src/assets/rank/rank2.png";
 import rank3 from "src/assets/rank/rank3.png";
-import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { ChallengeRanking } from "src/models/Challenge";
 import { FRIENDSTATUS } from "src/models/Friend";
 import { Colors } from "src/style/Colors";
 import { CountryImageBlock } from "../CountryBlock";
 
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import { Profile } from "src/models/Profile";
 
-interface Props {
-  data: Array<ChallengeRanking>;
-  loading?: boolean;
-  hasPlayChallenge?: boolean;
+export interface DataRankingChallenge {
+  profile: Profile;
+  value: JSX.Element;
+  extra?: JSX.Element;
+  rank: number;
+  uuid?: string;
 }
 
-export const RankingChallengeTable = ({
-  data,
-  loading = false,
-  hasPlayChallenge = false,
-}: Props) => {
+interface Props {
+  data: Array<DataRankingChallenge>;
+  loading?: boolean;
+}
+
+export const RankingChallengeTable = ({ data, loading = false }: Props) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const { friends } = useApp();
@@ -91,7 +92,7 @@ export const RankingChallengeTable = ({
   };
 
   return (
-    <Box>
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
       {data.length === 0 && !loading ? (
         <Alert severity="warning" sx={{ width: percent(100) }}>
           {t("commun.noresultgame")}
@@ -124,7 +125,7 @@ export const RankingChallengeTable = ({
                       }}
                     >
                       <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
-                        {getIcon(el.ranking, colorText)}
+                        {getIcon(el.rank, colorText)}
                       </TableCell>
                       <TableCell sx={{ p: px(4), width: px(50) }}>
                         <Link
@@ -160,10 +161,7 @@ export const RankingChallengeTable = ({
                             }}
                           >
                             {el.profile.country && (
-                              <CountryImageBlock
-                                country={el.profile.country}
-                                size={30}
-                              />
+                              <CountryImageBlock country={el.profile.country} />
                             )}
                             <Typography
                               variant={"h6"}
@@ -177,52 +175,8 @@ export const RankingChallengeTable = ({
                           </Link>
                         </Box>
                       </TableCell>
-                      <TableCell align="right" sx={{ p: px(4), width: px(60) }}>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            textAlign: "center",
-                          }}
-                        >
-                          <Typography
-                            variant="h6"
-                            sx={{
-                              color: colorText,
-                            }}
-                            noWrap
-                          >
-                            {el.score} / {NUMBER_QUESTIONS_CHALLENGE}
-                          </Typography>
-                          <Typography
-                            variant="h6"
-                            sx={{
-                              color: colorText,
-                            }}
-                            noWrap
-                          >
-                            {(el.time / 1000).toFixed(2)}s
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                      {hasPlayChallenge && (
-                        <TableCell sx={{ p: px(4) }} width={50}>
-                          {el.uuid && (
-                            <Link
-                              to={`/game/challenge/${el.uuid}`}
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                              }}
-                            >
-                              <VisibilityIcon
-                                fontSize="small"
-                                sx={{ color: colorText }}
-                              />
-                            </Link>
-                          )}
-                        </TableCell>
-                      )}
+                      {el.value}
+                      {el.extra}
                     </TableRow>
                   </Fragment>
                 );

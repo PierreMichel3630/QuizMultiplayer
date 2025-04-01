@@ -31,8 +31,8 @@ export interface Answer {
 export interface Response {
   response: number | ResponseLanguage;
   result: boolean;
-  responseplayer1?: string | number;
-  responseplayer2?: string | number;
+  responsePlayer1?: string | number;
+  responsePlayer2?: string | number;
 }
 
 interface ResponsesQCMBlockProps {
@@ -242,6 +242,7 @@ export const ResponseQCMBlock = ({
             component="p"
             value={label}
             sx={{
+              color: isOrder ? Colors.white : "auto",
               wordBreak: "break-word",
               textShadow: textShadow,
               fontSize: isOrder ? important(px(40)) : "initial",
@@ -291,11 +292,18 @@ export const ResponseInputBlock = ({
     <Paper
       sx={{
         p: 1,
-        backgroundColor: response.result ? Colors.green : Colors.red,
+        backgroundColor: response.result
+          ? Colors.correctanswer
+          : Colors.wronganswer,
         borderRadius: px(5),
         textAlign: "center",
         width: percent(100),
         userSelect: "none",
+        borderWidth: 1,
+        borderStyle: "solid",
+        borderColor: response.result
+          ? Colors.correctanswerborder
+          : Colors.wronganswerborder,
       }}
     >
       {responseplayer1 && (

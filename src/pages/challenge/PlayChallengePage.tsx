@@ -137,7 +137,7 @@ export default function PlayChallengePage() {
         setResponse({
           response: res.response,
           result: res.result,
-          responseplayer1: res.answer,
+          responsePlayer1: res.answer,
         });
         scrollTop();
         generateQuestion(game, 1000);
@@ -188,7 +188,7 @@ export default function PlayChallengePage() {
   }, [audio, sound]);
 
   const responseP1 = useMemo(
-    () => myresponse ?? (response ? response.responseplayer1 : undefined),
+    () => myresponse ?? (response ? response.responsePlayer1 : undefined),
     [myresponse, response]
   );
 

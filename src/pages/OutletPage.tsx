@@ -6,15 +6,9 @@ import { useEffect, useState } from "react";
 
 import { BottomNavigationBlock } from "src/component/BottomNavigation";
 import { OfflineBlock } from "src/component/OfflineBlock";
-import { StreakLoginModal } from "src/component/modal/StreakLoginModal";
-import { useAuth } from "src/context/AuthProviderSupabase";
 
 export default function OutletPage() {
-  const { profile } = useAuth();
-
-  const [open, setOpen] = useState(false);
   const [online, setOnline] = useState(navigator.onLine);
-  const [, setStreak] = useState<number | null>(null);
 
   useEffect(() => {
     window.addEventListener("online", () => setOnline(true));
@@ -24,17 +18,6 @@ export default function OutletPage() {
       window.removeEventListener("offline", () => setOnline(false));
     };
   }, []);
-
-  useEffect(() => {
-    if (profile) {
-      setStreak((prev) => {
-        if (prev && prev + 1 === profile.streak) {
-          setOpen(true);
-        }
-        return profile.streak;
-      });
-    }
-  }, [profile]);
 
   return (
     <>
@@ -58,7 +41,6 @@ export default function OutletPage() {
         </Grid>
       </Grid>
       <BottomNavigationBlock />
-      <StreakLoginModal open={open} close={() => setOpen(false)} />
     </>
   );
 }

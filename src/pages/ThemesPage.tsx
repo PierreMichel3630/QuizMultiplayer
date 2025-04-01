@@ -1,5 +1,5 @@
 import { Alert, Box, Grid } from "@mui/material";
-import { percent } from "csx";
+import { percent, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -27,6 +27,7 @@ import { HeaderApp } from "src/component/header/HeaderApp";
 import { ShopBlock } from "src/component/ShopBlock";
 import { UpdatedThemeBlock } from "src/component/theme/UpdatedThemeBlock";
 import { Colors } from "src/style/Colors";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function ThemesPage() {
   const { t } = useTranslation();
@@ -36,43 +37,42 @@ export default function ThemesPage() {
   const { categories, themes, isLoadingTheme, headerSize } = useApp();
 
   const [search, setSearch] = useState("");
+  const [displaySearch, setDisplaySearch] = useState(false);
   const [maxIndex, setMaxIndex] = useState(5);
 
   const itemsSearch = useMemo(() => {
     let res: Array<ICardImage> = [];
-    if (search !== "") {
-      const categoriesSearch = [...categories]
-        .filter((el) => searchString(search, el.name[language.iso]))
-        .map((el) => ({
-          id: el.id,
-          name: el.name,
-          image: (
-            <BoltIcon
-              sx={{
-                width: 80,
-                height: 80,
-                color: "white",
-              }}
-            />
-          ),
-          color: Colors.blue3,
-          link: `/category/${el.id}`,
-        }));
-
-      const themesSearch = uniqBy(
-        [...themes].filter((el) => searchString(search, el.name[language.iso])),
-        (el) => el.id
-      ).map((el) => ({
+    const categoriesSearch = [...categories]
+      .filter((el) => searchString(search, el.name[language.iso]))
+      .map((el) => ({
         id: el.id,
         name: el.name,
-        image: el.image,
-        color: el.color,
-        link: `/theme/${el.id}`,
+        image: (
+          <BoltIcon
+            sx={{
+              width: 80,
+              height: 80,
+              color: "white",
+            }}
+          />
+        ),
+        color: Colors.blue3,
+        link: `/category/${el.id}`,
       }));
-      res = [...themesSearch, ...categoriesSearch].sort((a, b) =>
-        sortByName(language, a, b)
-      );
-    }
+
+    const themesSearch = uniqBy(
+      [...themes].filter((el) => searchString(search, el.name[language.iso])),
+      (el) => el.id
+    ).map((el) => ({
+      id: el.id,
+      name: el.name,
+      image: el.image,
+      color: el.color,
+      link: `/theme/${el.id}`,
+    }));
+    res = [...themesSearch, ...categoriesSearch].sort((a, b) =>
+      sortByName(language, a, b)
+    );
 
     return res;
   }, [themes, categories, search, language]);
@@ -134,16 +134,36 @@ export default function ThemesPage() {
                 zIndex: 3,
                 pb: 1,
                 bgcolor: "background.paper",
+                display: "flex",
+                gap: 1,
               }}
             >
               <BasicSearchInput
                 label={t("commun.search")}
                 onChange={(value) => setSearch(value)}
+                onFocus={() => setDisplaySearch(true)}
                 value={search}
-                clear={() => setSearch("")}
               />
+              {displaySearch && (
+                <Box
+                  sx={{
+                    backgroundColor: Colors.red,
+                    borderRadius: px(5),
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    setSearch("");
+                    setDisplaySearch(false);
+                  }}
+                >
+                  <CloseIcon fontSize="large" sx={{ color: Colors.white }} />
+                </Box>
+              )}
             </Grid>
-            {search !== "" ? (
+            {displaySearch ? (
               <>
                 {itemsSearch.length === 0 ? (
                   <Grid item xs={12}>

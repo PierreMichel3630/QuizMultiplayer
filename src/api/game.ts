@@ -2,7 +2,7 @@ import { BattleGameInsert, BattleGameUpdate } from "src/models/BattleGame";
 import { FilterGame } from "src/pages/HistoryGamePage";
 import { supabase } from "./supabase";
 import { ConfigTraining } from "src/pages/play/ConfigTrainingPage";
-import { ClassementTimeEnum } from "src/models/enum/ClassementEnum";
+import { ClassementSoloTimeEnum } from "src/models/enum/ClassementEnum";
 import moment from "moment";
 import { GameModeEnum } from "src/models/enum/GameEnum";
 
@@ -245,7 +245,7 @@ export const selectGames = (
 };
 
 export const selectGamesByTime = (
-  time: ClassementTimeEnum,
+  time: ClassementSoloTimeEnum,
   page: number,
   itemperpage = 25
 ) => {
@@ -253,11 +253,11 @@ export const selectGamesByTime = (
   const to = from + itemperpage - 1;
   const dateEnd = moment();
   let dateStart = moment().subtract(7, "days");
-  if (time === ClassementTimeEnum.day) {
+  if (time === ClassementSoloTimeEnum.day) {
     dateStart = moment().subtract(1, "days");
-  } else if (time === ClassementTimeEnum.week) {
+  } else if (time === ClassementSoloTimeEnum.week) {
     dateStart = moment().subtract(7, "days");
-  } else if (time === ClassementTimeEnum.month) {
+  } else if (time === ClassementSoloTimeEnum.month) {
     dateStart = moment().subtract(1, "months");
   }
 

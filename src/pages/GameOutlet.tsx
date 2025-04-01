@@ -19,6 +19,8 @@ import { useApp } from "src/context/AppProvider";
 import { BattleGame, BattleGameChange } from "src/models/BattleGame";
 import { StatusGameDuel } from "src/models/enum/StatusGame";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import moment from "moment";
+import { updateProfil } from "src/api/profile";
 
 export default function GameOutlet() {
   const { uuid } = useUser();
@@ -204,6 +206,31 @@ export default function GameOutlet() {
       channel.unsubscribe();
     };
   }, [uuid]);
+
+  const { profile } = useAuth();
+
+  const handleVisibility = useCallback(async () => {
+    console.log("handleVisibility");
+    console.log(document.hidden);
+    console.log(profile);
+    if (profile) {
+      console.log(profile.lastconnection);
+      console.log(profile.lastplay);
+      const isonline = !document.hidden;
+      await updateProfil({
+        id: profile.id,
+        isonline,
+        lastconnection: moment(),
+      });
+    }
+  }, [profile]);
+
+  useEffect(() => {
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, [handleVisibility]);
 
   return (
     <>

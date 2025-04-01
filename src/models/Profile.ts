@@ -1,3 +1,4 @@
+import { Moment } from "moment";
 import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
 import { Banner } from "./Banner";
@@ -22,6 +23,8 @@ export interface Profile {
   datevote: Date;
   lastconnection: Date;
   streak: number;
+  lastchallengeplay: Date;
+  lastplay: Date;
 }
 
 export interface ProfileUpdate {
@@ -31,6 +34,6 @@ export interface ProfileUpdate {
   avatar?: number | null;
   last_seen_friend?: Date;
   isonline?: boolean;
-  lastconnection?: Date;
-  lastplaydate?: Date;
+  lastconnection?: Moment;
+  lastchallengeplay?: string;
 }

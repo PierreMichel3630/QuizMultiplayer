@@ -78,7 +78,7 @@ export default function DuelPage() {
         setResponsePlayer1(res);
         if (isPlayer1) {
           setResponse({
-            responseplayer1: res.answer,
+            responsePlayer1: res.answer,
             response: res.correctanswer,
             result: res.result,
           });
@@ -87,7 +87,7 @@ export default function DuelPage() {
         setResponsePlayer2(res);
         if (!isPlayer1) {
           setResponse({
-            responseplayer2: res.answer,
+            responsePlayer2: res.answer,
             response: res.correctanswer,
             result: res.result,
           });

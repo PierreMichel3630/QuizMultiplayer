@@ -24,6 +24,7 @@ import { ImageThemeBlock } from "../ImageThemeBlock";
 import { MapPositionBlock } from "../MapPositionBlock";
 import { QcmBlockDuelResultBlock } from "../QcmBlock";
 import { ValidateButton } from "../button/ValidateButton";
+import { JsonLanguage } from "src/models/Language";
 
 interface Props {
   question: QuestionAdmin;
@@ -199,8 +200,8 @@ export const CardSignalQuestion = ({
                     borderStyle: "solid",
                     borderWidth: 1,
                     backgroundColor: question.resultPlayer1
-                      ? Colors.green
-                      : Colors.red,
+                      ? Colors.correctanswer
+                      : Colors.wronganswer,
                     userSelect: "none",
                   }}
                 >
@@ -212,7 +213,7 @@ export const CardSignalQuestion = ({
                       color={color}
                       variant="h2"
                       all={question.allresponse}
-                      value={question.response}
+                      value={question.response as JsonLanguage}
                     />
                   </Box>
                 </Paper>
@@ -231,8 +232,8 @@ export const CardSignalQuestion = ({
                     borderStyle: "solid",
                     borderWidth: 1,
                     backgroundColor: question.resultPlayer1
-                      ? Colors.green
-                      : Colors.red,
+                      ? Colors.correctanswer
+                      : Colors.wronganswer,
                     userSelect: "none",
                   }}
                 >
@@ -247,7 +248,7 @@ export const CardSignalQuestion = ({
                       color={color}
                       variant="h2"
                       all={question.allresponse}
-                      value={question.response}
+                      value={question.response as JsonLanguage}
                     />
                   </Box>
                 </Paper>
@@ -266,8 +267,8 @@ export const CardSignalQuestion = ({
                     borderStyle: "solid",
                     borderWidth: 1,
                     backgroundColor: question.resultPlayer1
-                      ? Colors.green
-                      : Colors.red,
+                      ? Colors.correctanswer
+                      : Colors.wronganswer,
                     userSelect: "none",
                   }}
                 >
@@ -282,7 +283,7 @@ export const CardSignalQuestion = ({
                       color={color}
                       variant="h2"
                       all={question.allresponse}
-                      value={question.response}
+                      value={question.response as JsonLanguage}
                     />
                   </Box>
                 </Paper>

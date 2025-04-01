@@ -38,6 +38,7 @@ import { CountryImageBlock } from "../CountryBlock";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { DefaultTabs } from "../Tabs";
+import { isStringOrNumber } from "src/utils/type";
 
 export interface DataRanking {
   profile: Profile;
@@ -240,18 +241,29 @@ export const RankingTable = ({ data, navigation, loading = false }: Props) => {
                           )}
                         </Box>
                       </TableCell>
-                      <TableCell align="right" sx={{ p: px(4), width: px(60) }}>
+                      <TableCell
+                        align="right"
+                        sx={{
+                          p: px(4),
+                        }}
+                        width={90}
+                      >
                         <Box>
-                          <Typography
-                            variant="h2"
-                            component="span"
-                            sx={{
-                              color: colorText,
-                            }}
-                            noWrap
-                          >
-                            {el.value}
-                          </Typography>
+                          {isStringOrNumber(el.value) ? (
+                            <Typography
+                              variant="h2"
+                              component="span"
+                              sx={{
+                                color: colorText,
+                              }}
+                              noWrap
+                            >
+                              {el.value}
+                            </Typography>
+                          ) : (
+                            el.value
+                          )}
+
                           {el.extra && (
                             <Typography
                               variant="body1"

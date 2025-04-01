@@ -137,4 +137,6 @@ export interface QuestionDuel extends Question {
 
 export interface QuestionSolo extends Question {
   response: string;
+  responsePlayer1?: string | number;
+  resultPlayer1?: boolean;
 }
