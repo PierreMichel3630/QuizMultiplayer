@@ -161,7 +161,11 @@ export default function PlayChallengePage() {
           if (data !== null) {
             const res = data as ChallengeGame;
             if (res.status === StatusGameChallenge.END) {
-              navigate(`/game/challenge/${res.uuid}`);
+              navigate(`/challenge/game/${res.uuid}`, {
+                state: {
+                  previousPath: "/challenge",
+                },
+              });
             } else {
               setGame(res);
               generateQuestion(res, 1000);
@@ -200,7 +204,12 @@ export default function PlayChallengePage() {
   useEffect(() => {
     if (numberQuestions >= NUMBER_QUESTIONS_CHALLENGE) {
       setTimeout(() => {
-        navigate(`/game/challenge/${uuidGame}`);
+        navigate(`/challenge/game/${uuidGame}`, {
+          state: {
+            previousPath: "/challenge",
+            isEnd: true,
+          },
+        });
       }, 1000);
     }
   }, [numberQuestions, navigate, uuidGame]);

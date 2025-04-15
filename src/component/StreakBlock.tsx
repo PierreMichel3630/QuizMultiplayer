@@ -1,6 +1,6 @@
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import { Box, Typography } from "@mui/material";
-import { percent, px } from "csx";
+import { padding, percent, px } from "csx";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Colors } from "src/style/Colors";
@@ -28,6 +28,7 @@ export const StreakBlock = ({ value, logoSize = 25, textSize = 18 }: Props) => {
           borderRadius: px(50),
           backgroundColor: Colors.yellow4,
           border: `3px solid ${Colors.red4}`,
+          padding: padding(0, 3),
         }}
       >
         <LocalFireDepartmentIcon
@@ -77,6 +78,9 @@ export const StreakRecompense = ({
         sx={{
           backgroundColor: Colors.grey,
           borderBottom: `1px solid ${Colors.grey2}`,
+          display: "flex",
+          gap: 1,
+          justifyContent: "center",
         }}
       >
         <Typography variant="h6" component="p">
@@ -84,6 +88,7 @@ export const StreakRecompense = ({
             value: recompense.day,
           })}
         </Typography>
+        {isValid && <CheckIcon sx={{ fontSize: px(20) }} />}
       </Box>
       <Box
         sx={{
@@ -105,21 +110,15 @@ export const StreakRecompense = ({
               flexGrow: 1,
             }}
           >
-            {isValid ? (
-              <CheckIcon sx={{ fontSize: px(60) }} />
-            ) : (
-              <>
-                {
-                  {
-                    GOLD: <img alt="money" src={moneyIcon} width={px(50)} />,
-                    XP: <img alt="xp" src={xpIcon} width={px(50)} />,
-                  }[el.type]
-                }
-                <Typography variant="h2" component="p">
-                  x{el.value}
-                </Typography>
-              </>
-            )}
+            {
+              {
+                GOLD: <img alt="money" src={moneyIcon} width={px(50)} />,
+                XP: <img alt="xp" src={xpIcon} width={px(50)} />,
+              }[el.type]
+            }
+            <Typography variant="h2" component="p">
+              x{el.value}
+            </Typography>
           </Box>
         ))}
       </Box>

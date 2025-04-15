@@ -28,12 +28,14 @@ import { ShopBlock } from "src/component/ShopBlock";
 import { UpdatedThemeBlock } from "src/component/theme/UpdatedThemeBlock";
 import { Colors } from "src/style/Colors";
 import CloseIcon from "@mui/icons-material/Close";
+import { ChallengeButton } from "src/component/button/ChallengeButton";
+import moment from "moment";
 
 export default function ThemesPage() {
   const { t } = useTranslation();
 
   const { language } = useUser();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { categories, themes, isLoadingTheme, headerSize } = useApp();
 
   const [search, setSearch] = useState("");
@@ -104,6 +106,14 @@ export default function ThemesPage() {
     };
   }, [maxIndex, categories]);
 
+  const hasPlayChallenge = useMemo(() => {
+    const today = moment();
+    const lastPlay = profile?.lastchallengeplay
+      ? moment(profile?.lastchallengeplay)
+      : null;
+    return lastPlay !== null ? today.isSame(lastPlay, "day") : false;
+  }, [profile]);
+
   return (
     <Grid container>
       <Helmet>
@@ -125,6 +135,11 @@ export default function ThemesPage() {
           }}
         >
           <Grid container spacing={1}>
+            {!hasPlayChallenge && (
+              <Grid item xs={12}>
+                <ChallengeButton />
+              </Grid>
+            )}
             <Grid
               item
               xs={12}

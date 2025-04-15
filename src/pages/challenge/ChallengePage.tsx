@@ -13,17 +13,20 @@ import {
   countChallengeGameByDateAndProfileId,
   launchChallenge,
 } from "src/api/challenge";
+import { updateProfil } from "src/api/profile";
 import { ButtonColor } from "src/component/Button";
 import { RankingChallenge } from "src/component/RankingChallenge";
 import { TimeLeftToNextDayLabel } from "src/component/TimeLeftBlock";
 import { Colors } from "src/style/Colors";
-import { updateProfil } from "src/api/profile";
 
 export default function ChallengePage() {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const navigate = useNavigate();
-  const [hasPlayChallenge, setHasPlayChallenge] = useState(false);
+
+  const [hasPlayChallenge, setHasPlayChallenge] = useState<undefined | boolean>(
+    undefined
+  );
 
   const launch = useCallback(async () => {
     if (profile) {
@@ -76,22 +79,26 @@ export default function ChallengePage() {
                 <NeedConnectAlert />
               </Grid>
             )}
-            <Grid item xs={12}>
-              {hasPlayChallenge ? (
-                <TimeLeftToNextDayLabel label={t("commun.nextdaychallenge")} />
-              ) : (
-                <ButtonColor
-                  fullWidth
-                  value={Colors.blue}
-                  label={t("commun.launch")}
-                  icon={RocketLaunchIcon}
-                  variant="contained"
-                  onClick={() => {
-                    launch();
-                  }}
-                />
-              )}
-            </Grid>
+            {hasPlayChallenge !== undefined && (
+              <Grid item xs={12}>
+                {hasPlayChallenge ? (
+                  <TimeLeftToNextDayLabel
+                    label={t("commun.nextdaychallenge")}
+                  />
+                ) : (
+                  <ButtonColor
+                    fullWidth
+                    value={Colors.blue}
+                    label={t("commun.launch")}
+                    icon={RocketLaunchIcon}
+                    variant="contained"
+                    onClick={() => {
+                      launch();
+                    }}
+                  />
+                )}
+              </Grid>
+            )}
             <Grid item xs={12}>
               <Divider />
             </Grid>

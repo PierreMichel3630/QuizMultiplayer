@@ -13,7 +13,11 @@ import {
   useMemo,
   useState,
 } from "react";
-import { getProfilById, updateProfil } from "src/api/profile";
+import {
+  getProfilById,
+  updateProfil,
+  updateProfilByFunction,
+} from "src/api/profile";
 import {
   passwordReset,
   signInWithEmail,
@@ -31,6 +35,8 @@ type Props = {
 const AuthContext = createContext<{
   user: User | null;
   profile: Profile | null;
+  streak: undefined | number;
+  setStreak: (value: undefined | number) => void;
   setProfile: (value: Profile) => void;
   refreshProfil: () => void;
   login: (email: string, password: string) => Promise<AuthTokenResponse>;
@@ -47,6 +53,8 @@ const AuthContext = createContext<{
     localStorage.getItem("user") !== null
       ? (JSON.parse(localStorage.getItem("user")!) as User)
       : null,
+  streak: undefined,
+  setStreak: () => {},
   deleteAccount: () => {},
   profile: null,
   setProfile: () => {},
@@ -61,6 +69,8 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProviderSupabase = ({ children }: Props) => {
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [streak, setStreak] = useState<undefined | number>(undefined);
+
   const [user, setUser] = useState<User | null>(
     localStorage.getItem("user") !== null
       ? (JSON.parse(localStorage.getItem("user")!) as User)
@@ -76,6 +86,11 @@ export const AuthProviderSupabase = ({ children }: Props) => {
         getProfilById(user.id).then(({ data }) => {
           const res = data as Profile;
           setProfile(res);
+          updateProfilByFunction().then(({ data }) => {
+            if (data !== null) {
+              setStreak(data.streak);
+            }
+          });
         });
       }
     };
@@ -92,6 +107,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
       });
     }
     setUser(null);
+    setProfile(null);
     clearLocalStorage();
     return signOut();
   }, [user]);
@@ -113,12 +129,14 @@ export const AuthProviderSupabase = ({ children }: Props) => {
             setUser(session.user);
           });
         } else {
+          setProfile(null);
           setUser(null);
+          setStreak(undefined);
         }
       } else if (event === "SIGNED_OUT") {
         setUser(null);
         setProfile(null);
-        console.log("SIGNED_OUT");
+        setStreak(undefined);
       }
     });
     return () => {
@@ -143,6 +161,8 @@ export const AuthProviderSupabase = ({ children }: Props) => {
 
   const value = useMemo(
     () => ({
+      streak,
+      setStreak,
       profile,
       setProfile,
       refreshProfil,
@@ -153,7 +173,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
       passwordReset,
       updatePassword,
     }),
-    [deleteAccount, logout, profile, refreshProfil, user]
+    [deleteAccount, logout, profile, refreshProfil, streak, user]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

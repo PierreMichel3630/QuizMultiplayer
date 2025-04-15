@@ -91,7 +91,7 @@ const AppContext = createContext<{
   nbThemes: undefined,
   nbPlayers: undefined,
   isLoadingTheme: true,
-  headerSize: 77,
+  headerSize: 70,
 });
 
 export const useApp = () => useContext(AppContext);
@@ -122,7 +122,7 @@ export const AppProvider = ({ children }: Props) => {
   const [isLoadingTheme, setIsLoadingTheme] = useState(true);
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
-  const headerSize = useMemo(() => (user ? 72 : 50), [user]);
+  const headerSize = useMemo(() => (user ? 70 : 50), [user]);
 
   useEffect(() => {
     const getCountPlayer = () => {

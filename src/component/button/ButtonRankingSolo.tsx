@@ -43,6 +43,10 @@ export const ButtonRankingSolo = ({ value, onChange }: Props) => {
         value: ClassementSoloModeEnum.finishtheme,
       },
       {
+        label: t("ranking.games"),
+        value: ClassementSoloModeEnum.games,
+      },
+      {
         label: t("ranking.gameshundredpts"),
         value: ClassementSoloModeEnum.gameshundredpts,
       },
@@ -57,6 +61,18 @@ export const ButtonRankingSolo = ({ value, onChange }: Props) => {
       {
         label: t("ranking.gamestenpts"),
         value: ClassementSoloModeEnum.gamestenpts,
+      },
+      {
+        label: t("ranking.pointssolo"),
+        value: ClassementSoloModeEnum.pointssolo,
+      },
+      {
+        label: t("ranking.themetenpts"),
+        value: ClassementSoloModeEnum.nbthemetenpts,
+      },
+      {
+        label: t("ranking.themetwentypts"),
+        value: ClassementSoloModeEnum.nbthemetwentypts,
       },
     ],
     [t]

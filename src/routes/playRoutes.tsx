@@ -9,6 +9,7 @@ import SoloPage from "src/pages/play/SoloPage";
 import TrainingPage from "src/pages/play/TrainingPage";
 import YtShortPage from "src/pages/play/YtShortPage";
 import ChallengeGamePage from "src/pages/challenge/ChallengeGamePage";
+import ChallengeProfilPage from "src/pages/challenge/ChallengeProfilPage";
 
 export const PlayRoutes = [
   {
@@ -48,8 +49,12 @@ export const PlayRoutes = [
     element: <GameSoloPage />,
   },
   {
-    path: "/game/challenge/:uuid",
+    path: "/challenge/game/:uuid",
     element: <ChallengeGamePage />,
+  },
+  {
+    path: "/challenge/profil/:uuid",
+    element: <ChallengeProfilPage />,
   },
   {
     path: "/game/duel/:uuid",

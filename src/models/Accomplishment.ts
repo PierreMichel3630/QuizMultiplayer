@@ -28,7 +28,9 @@ export interface StatAccomplishment {
   gamesfiftypts: number;
   gameshundredpts: number;
   themetenpts: number;
+  nbthemetenpts: number;
   themetwentypts: number;
+  nbthemetwentypts: number;
   duelgames: number;
   victoryduel: number;
   drawduel: number;

@@ -9,15 +9,20 @@ import { selectGamesByTime } from "src/api/game";
 import { getRankingFinishTheme } from "src/api/ranking";
 import { selectScore } from "src/api/score";
 import { GroupButtonClassement } from "src/component/button/ButtonGroup";
+import { ButtonRankingDuel } from "src/component/button/ButtonRankingDuel";
 import { ButtonRankingSolo } from "src/component/button/ButtonRankingSolo";
 import { DataRanking, RankingTable } from "src/component/table/RankingTable";
 import { useApp } from "src/context/AppProvider";
 import { BadgeLevel } from "src/icons/BadgeLevel";
-import { StatAccomplishment } from "src/models/Accomplishment";
+import {
+  StatAccomplishment,
+  StatAccomplishmentEnum,
+} from "src/models/Accomplishment";
 import { FinishTheme } from "src/models/FinishTheme";
 import { HistorySoloGame } from "src/models/Game";
 import { Score } from "src/models/Score";
 import {
+  ClassementDuelModeEnum,
   ClassementEnum,
   ClassementSoloModeEnum,
   ClassementSoloTimeEnum,
@@ -46,6 +51,9 @@ export default function RankingPage() {
       ? (searchParams.get("time") as ClassementSoloModeEnum)
       : ClassementSoloModeEnum.alltime
   );
+  const [tabDuelMode, setTabDuelMode] = useState(
+    ClassementDuelModeEnum.bestrank
+  );
 
   useEffect(() => {
     if (!isEnd) {
@@ -71,7 +79,8 @@ export default function RankingPage() {
       } else if (
         (type === ClassementEnum.points &&
           tabSoloMode === ClassementSoloModeEnum.alltime) ||
-        type === ClassementEnum.rank
+        (type === ClassementEnum.rank &&
+          tabDuelMode === ClassementDuelModeEnum.bestrank)
       ) {
         selectScore(type, page, ITEMPERPAGE).then(({ data }) => {
           const res = data as Array<Score>;
@@ -114,38 +123,34 @@ export default function RankingPage() {
                 <BadgeLevel level={getLevel(value)} size={35} fontSize={15} />
               ),
               rank: page * ITEMPERPAGE + index + 1,
+              size: 50,
             };
           });
           setIsEnd(newdata.length < ITEMPERPAGE);
           setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
           setIsLoading(false);
         });
-      } else if (
-        tabSoloMode !== ClassementSoloModeEnum.alltime &&
-        tabSoloMode !== ClassementSoloModeEnum.day &&
-        tabSoloMode !== ClassementSoloModeEnum.month &&
-        tabSoloMode !== ClassementSoloModeEnum.week &&
-        tabSoloMode !== ClassementSoloModeEnum.finishtheme
-      ) {
-        selectStatAccomplishment(tabSoloMode, page, ITEMPERPAGE).then(
-          ({ data }) => {
-            const res = data as Array<StatAccomplishment>;
-            const newdata = res.map((el, index) => {
-              const champ: any = el[tabSoloMode];
-              return {
-                profile: el.profile,
-                value: Array.isArray(champ) ? champ.length : champ,
-                rank: page * ITEMPERPAGE + index + 1,
-              };
-            });
-            setIsEnd(newdata.length < ITEMPERPAGE);
-            setData((prev) => [...prev, ...newdata]);
-            setIsLoading(false);
-          }
-        );
+      } else {
+        const order = (type === ClassementEnum.points
+          ? tabSoloMode
+          : tabDuelMode) as unknown as StatAccomplishmentEnum;
+        selectStatAccomplishment(order, page, ITEMPERPAGE).then(({ data }) => {
+          const res = data as Array<StatAccomplishment>;
+          const newdata = res.map((el, index) => {
+            const champ = el[order];
+            return {
+              profile: el.profile,
+              value: Array.isArray(champ) ? champ.length : champ,
+              rank: page * ITEMPERPAGE + index + 1,
+            };
+          });
+          setIsEnd(newdata.length < ITEMPERPAGE);
+          setData((prev) => [...prev, ...newdata]);
+          setIsLoading(false);
+        });
       }
     }
-  }, [page, type, tabSoloMode, isEnd]);
+  }, [page, type, tabSoloMode, tabDuelMode, isEnd]);
 
   useEffect(() => {
     if (isLoading) {
@@ -208,6 +213,17 @@ export default function RankingPage() {
               setPage(0);
               setData([]);
               setTabSoloMode(value);
+            }}
+          />
+        )}
+        {type === ClassementEnum.rank && (
+          <ButtonRankingDuel
+            value={tabDuelMode}
+            onChange={(value) => {
+              setIsEnd(false);
+              setPage(0);
+              setData([]);
+              setTabDuelMode(value);
             }}
           />
         )}

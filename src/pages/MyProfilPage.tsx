@@ -96,7 +96,7 @@ export default function MyProfilPage() {
       if (user) {
         selectScoresByProfile(user.id).then(({ data }) => {
           const res = data as Array<Score>;
-          setScores(res.sort(sortByDuelGamesDesc));
+          setScores([...res].sort(sortByDuelGamesDesc));
           setIsLoadingScore(false);
         });
       }
@@ -110,7 +110,7 @@ export default function MyProfilPage() {
       if (user) {
         selectTitleByProfile(user.id).then(({ data }) => {
           const res = data as Array<TitleProfile>;
-          setTitles(res.map((el) => el.title));
+          setTitles([...res].map((el) => el.title));
           setIsLoadingTitle(false);
         });
       }
@@ -124,7 +124,7 @@ export default function MyProfilPage() {
       if (user) {
         selectBadgeByProfile(user.id).then(({ data }) => {
           const res = data as Array<BadgeProfile>;
-          setBadges(res.map((el) => el.badge));
+          setBadges([...res].map((el) => el.badge));
           setIsLoadingBadge(false);
         });
       }
@@ -139,7 +139,7 @@ export default function MyProfilPage() {
         selectFriendByProfileId(user.id).then(({ data }) => {
           const friends = data as Array<Friend>;
           setProfileFriends(
-            friends.filter((el) => el.status !== FRIENDSTATUS.REFUSE)
+            [...friends].filter((el) => el.status !== FRIENDSTATUS.REFUSE)
           );
           setIsLoadingFriends(false);
         });
@@ -149,7 +149,7 @@ export default function MyProfilPage() {
   }, [user]);
 
   const totalSolo = useMemo(
-    () => scores.reduce((acc, value) => acc + value.games, 0),
+    () => [...scores].reduce((acc, value) => acc + value.games, 0),
     [scores]
   );
 

@@ -22,7 +22,7 @@ import { sortByUsername } from "src/utils/sort";
 
 export default function PeoplePage() {
   const { t } = useTranslation();
-  const { friends, headerSize } = useApp();
+  const { friends, getFriends, headerSize } = useApp();
   const { profile } = useAuth();
 
   const ITEMPERPAGE = 25;
@@ -73,6 +73,10 @@ export default function PeoplePage() {
     setIsLoading(true);
     setIsEnd(false);
   }, [search]);
+
+  useEffect(() => {
+    getFriends();
+  }, [getFriends]);
 
   const friendsProfile = useMemo(
     () =>

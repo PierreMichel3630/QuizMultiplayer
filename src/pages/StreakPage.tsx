@@ -1,16 +1,14 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
+import { ChallengeButton } from "src/component/button/ChallengeButton";
 import { StreakBlock, StreakRecompense } from "src/component/StreakBlock";
 import { RECOMPENSES_STREAK } from "src/configuration/configuration";
 import { useAuth } from "src/context/AuthProviderSupabase";
 
 export default function StreakPage() {
   const { t } = useTranslation();
-  const { profile } = useAuth();
-
-  const streak = useMemo(() => (profile ? profile.streak : 0), [profile]);
+  const { streak } = useAuth();
 
   return (
     <Grid container>
@@ -22,11 +20,14 @@ export default function StreakPage() {
           <Grid container spacing={2} justifyContent="center">
             <Grid item xs={12}>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <StreakBlock value={streak} logoSize={50} textSize={45} />
+                <StreakBlock value={streak ?? 0} logoSize={50} textSize={45} />
               </Box>
             </Grid>
             <Grid item xs={12} sx={{ textAlign: "center" }}>
               <Typography variant="h6">{t("commun.streakexplain")}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <ChallengeButton />
             </Grid>
             {RECOMPENSES_STREAK.map((recompense, index, { length }) => {
               const nbRecompenses = recompense.recompenses.length;

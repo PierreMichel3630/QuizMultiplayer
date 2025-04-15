@@ -1,4 +1,7 @@
 {
+  "types": [
+  "vite-plugin-pwa/client"
+  ],
   "compilerOptions": {
     "composite": true,
     "skipLibCheck": true,

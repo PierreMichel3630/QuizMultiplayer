@@ -1,18 +1,19 @@
 import { Box } from "@mui/material";
 import { Country } from "src/models/Country";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
-import { percent } from "csx";
 
 interface Props {
   country: Country;
   size?: number;
   color?: string;
+  isShaddow?: boolean;
 }
 
 export const CountryBlock = ({
   country,
   color = "text.primary",
   size = 25,
+  isShaddow = true,
 }: Props) =>
   country && (
     <Box
@@ -32,7 +33,7 @@ export const CountryBlock = ({
           lineClamp: 1,
           boxOrient: "vertical",
           textOverflow: "ellipsis",
-          textShadow: "1px 1px 2px black",
+          textShadow: isShaddow ? "1px 1px 2px black" : "none",
         }}
         noWrap
         value={country.name}
@@ -49,15 +50,13 @@ export const CountryImageBlock = ({
   size = 25,
 }: CountryImageBlockProps) =>
   country && (
-    <Box
-      sx={{ display: "flex", alignItems: "center", width: size, height: size }}
-    >
+    <Box sx={{ display: "flex", alignItems: "center" }}>
       <img
         alt="flag"
         src={country.flag}
         style={{
-          maxWidth: percent(100),
-          maxHeight: percent(100),
+          maxWidth: size,
+          maxHeight: size,
           border: "1px solid white",
         }}
       />

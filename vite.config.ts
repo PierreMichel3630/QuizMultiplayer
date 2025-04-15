@@ -4,6 +4,7 @@ import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
 
 const manifestForPlugIn: Partial<VitePWAOptions> = {
   registerType: "autoUpdate",
+  injectRegister: "auto",
   includeAssets: ["**/*"],
   injectManifest: {
     globPatterns: ["**/*"],

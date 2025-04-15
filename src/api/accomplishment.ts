@@ -4,6 +4,7 @@ import { supabase } from "./supabase";
 export const SUPABASE_VIEWACCOMPLISHMENT_TABLE = "viewaccomplishment";
 export const SUPABASE_ACCOMPLISHMENT_TABLE = "accomplishment";
 export const SUPABASE_STATACCOMPLISHMENT_TABLE = "stataccomplishment";
+export const SUPABASE_VIEWSTATACCOMPLISHMENT_TABLE = "viewstataccomplishment";
 export const SUPABASE_PROFILEACCOMPLISHMENT_TABLE = "profileaccomplishment";
 
 export const selectAccomplishmentByProfile = (profile: string) =>
@@ -65,7 +66,7 @@ export const selectStatAccomplishment = (
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
   return supabase
-    .from(SUPABASE_STATACCOMPLISHMENT_TABLE)
+    .from(SUPABASE_VIEWSTATACCOMPLISHMENT_TABLE)
     .select("*, profile(*, avatar(*), country(*))")
     .gt(order, 0)
     .not("profile", "in", `(${bots.join(",")})`)

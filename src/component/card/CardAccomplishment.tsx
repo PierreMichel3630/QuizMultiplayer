@@ -92,13 +92,18 @@ export const CardAccomplishment = ({
       elevation={12}
       sx={{
         p: 1,
-        backgroundColor: isFinish ? Colors.green : "initial",
+        backgroundColor: isFinish ? Colors.correctanswer : "initial",
         color: isFinish ? Colors.white : "text.primary",
         border: isUnlock ? `3px solid ${Colors.purple}` : "2px solid white",
         height: percent(100),
       }}
     >
-      <Grid container spacing={1} alignItems="center" sx={{height: percent(100)}}>
+      <Grid
+        container
+        spacing={1}
+        alignItems="center"
+        sx={{ height: percent(100) }}
+      >
         <Grid item xs={12}>
           <JsonLanguageBlock variant="h4" value={accomplishment.label} />
         </Grid>

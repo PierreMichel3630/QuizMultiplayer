@@ -335,10 +335,10 @@ export const RankingTop5Block = () => {
     } else if (tab === AllGameModeEnum.DUEL) {
       res = `/ranking?sort=rank`;
     } else if (tab === AllGameModeEnum.CHALLENGE) {
-      res = `/challenge`;
+      res = `/challenge?time=${tabTimeChallenge}`;
     }
     return res;
-  }, [tab, tabTimeSolo]);
+  }, [tab, tabTimeSolo, tabTimeChallenge]);
 
   return (
     <Grid container spacing={1} alignItems="center">

@@ -65,9 +65,9 @@ export default function AdminQuestionsPage() {
   );
 
   useEffect(() => {
-    const question = searchParams.get("question") as string | null;
-    const newPage = searchParams.get("page") as string | null;
-    const idthemes = searchParams.get("themes") as string | null;
+    const question = searchParams.get("question");
+    const newPage = searchParams.get("page");
+    const idthemes = searchParams.get("themes");
     setPage(newPage ? Number(newPage) : 1);
     setFilter((prev) => ({
       ...prev,
@@ -177,7 +177,7 @@ export default function AdminQuestionsPage() {
             value={themes}
             onChange={(value: Array<Theme>) => {
               const ids = value.map((el) => el.id);
-              navigate(`/administration/question?page=1&themes=${ids}`);
+              navigate(`/administration/edit/questions?page=1&themes=${ids}`);
             }}
             isAdmin
           />
@@ -227,7 +227,7 @@ export default function AdminQuestionsPage() {
               page={page}
               onChange={(_event: React.ChangeEvent<unknown>, value: number) =>
                 navigate(
-                  `/administration/question?page=${value}&themes=${filter.themes}`
+                  `/administration/edit/questions?page=${value}&themes=${filter.themes}`
                 )
               }
               variant="outlined"

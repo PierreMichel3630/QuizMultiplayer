@@ -220,7 +220,7 @@ interface PropsTimeLeftToNextDayLabel {
   size?: "large" | "medium" | "small";
 }
 
-export const TimeLeftToNextDayLabel = ({
+export const TimeLeftToNextDayHoverLabel = ({
   size = "medium",
   label,
 }: PropsTimeLeftToNextDayLabel) => {
@@ -280,6 +280,91 @@ export const TimeLeftToNextDayLabel = ({
         border: `2px solid ${isDarkMode ? Colors.white : Colors.black}`,
         backgroundColor: "rgba(0, 0, 0, 0.5)",
         color: Colors.white,
+      }}
+    >
+      {label && <Typography variant="h6">{label}</Typography>}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          alignContent: "center",
+          justifyContent: "center",
+          gap: px(2),
+        }}
+      >
+        <AccessTimeIcon fontSize={size} />
+        <Typography
+          variant="body1"
+          sx={{
+            fontSize: important(px(fontSize)),
+            fontWeight: important(700),
+          }}
+        >
+          {hours}:{minutes}:{seconds}
+        </Typography>
+      </Box>
+    </Box>
+  );
+};
+
+export const TimeLeftToNextDayLabel = ({
+  size = "medium",
+  label,
+}: PropsTimeLeftToNextDayLabel) => {
+  const { mode } = useUser();
+  const DELAY = 1000;
+  const isDarkMode = useMemo(() => mode === "dark", [mode]);
+  const [diffSeconds, setDiffSeconds] = useState(0);
+
+  const diffSecondsDefault = useMemo(() => {
+    const date = moment();
+    const dateMidnight = date.clone().add(1, "day").startOf("day");
+    return dateMidnight.diff(date, "seconds");
+  }, []);
+
+  const hours = useMemo(() => {
+    const result = Math.floor(diffSeconds / 3600);
+    return result < 10 ? `0${result}` : result;
+  }, [diffSeconds]);
+  const minutes = useMemo(() => {
+    const result = Math.floor((diffSeconds % 3600) / 60);
+    return result < 10 ? `0${result}` : result;
+  }, [diffSeconds]);
+  const seconds = useMemo(() => {
+    const result = diffSeconds % 60;
+    return result < 10 ? `0${result}` : result;
+  }, [diffSeconds]);
+
+  useEffect(() => {
+    setDiffSeconds(diffSecondsDefault);
+    const interval = setInterval(() => {
+      setDiffSeconds((prev) => prev - 1);
+    }, DELAY);
+    return () => clearInterval(interval);
+  }, [diffSecondsDefault]);
+
+  const fontSize = useMemo(() => {
+    let font = 15;
+    if (size === "small") {
+      font = 10;
+    } else if (size === "large") {
+      font = 20;
+    }
+    return font;
+  }, [size]);
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        alignContent: "center",
+        justifyContent: "center",
+        gap: px(2),
+        borderRadius: px(50),
+        p: padding(2, 5),
+        border: `2px solid ${isDarkMode ? Colors.white : Colors.black}`,
       }}
     >
       {label && <Typography variant="h6">{label}</Typography>}

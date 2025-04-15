@@ -20,6 +20,11 @@
     "chooseusername": "Choisissez votre pseudo",
     "play": "Jouer",
     "ranking": "Classement",
+    "rankingday": "Classement Jour",
+    "rankingweek": "Classement Semaine",
+    "rankingmonth": "Classement Mois",
+    "rankingyear": "Classement Année",
+    "rankingalltime": "Classement All Time",
     "game": "Partie",
     "games": "Parties",
     "devine": "Devine la réponse !",
@@ -120,6 +125,7 @@
     "selectcountry": "Sélectionner un pays",
     "myprofile": "Mon profil",
     "profile": "Profil",
+    "seemyprofile": "Voir mon Profil",
     "bestscore": "Meilleur score",
     "themes": "Thèmes",
     "people": "Joueurs",
@@ -314,8 +320,10 @@
     "proposethemetext": "Vous pouvez proposer des thèmes, ils seront validés par un administrateur, attention à ne pas faire de duplication de thème.",
     "streakexplain": "Jouer au mode 'Defis du jour' tous les jours pour obtenir des récompenses incroyables",
     "ok": "Ok",
-    "daychallenge": "Défis du jour",
-    "nextdaychallenge": "Prochain Défis du jour dans",
+    "daychallenge": "Défi du jour",
+    "gotochallenge": "Jouer au Défi du jour",
+    "profilechallenge": "Profil Défi du jour",
+    "nextdaychallenge": "Prochain Défi du jour dans",
     "challenge": "Défis",
     "challengeexplain": "10 questions vont vous être posées, répondez à un maximum le plus rapidement possible.",
     "challengeexplain2": "Attention 1 tentative maximum par jour.",
@@ -324,7 +332,9 @@
     "to": "sur",
     "propose": "Proposition",
     "proposition": "Proposition {{count}}",
-    "addmodifydelete": "Ajout / Modification / Suppression"
+    "addmodifydelete": "Ajout / Modification / Suppression",
+    "summaryabreviation": "Récap.",
+    "onlyfriend" : "Afficher uniquement mes amis"
   },
   "offline": {
     "title": "Connectez-vous à Internet",
@@ -341,8 +351,8 @@
     "gamestwentypts": "Nombre de parties Solo + 20 points",
     "gamesfiftypts": "Nombre de parties Solo + 50 points",
     "gameshundredpts": "Nombre de parties Solo + 100 points",
-    "themetenpts": "Thèmes +10 points",
-    "themetwentypts": "Thèmes +20 points",
+    "themetenpts": "Nombre de thème à plus de 10 points",
+    "themetwentypts": "Nombre de thème à plus de 20 points",
     "duelgames": "Nombre de parties Duel",
     "victoryduel": "Nombre de victoires en Duel",
     "drawduel": "Nombre de matchs nuls en Duel",
@@ -350,7 +360,8 @@
     "xp": "XP Total",
     "bestgame": "Meilleur partie solo",
     "bestrank": "Meilleur ranking duel",
-    "finishtheme": "Thèmes terminés"
+    "finishtheme": "Thèmes terminés",
+    "pointssolo": "Nombre de point total"
   },
   "rules": {
     "step1": "Choisissez un thème",
@@ -800,7 +811,12 @@
     "gamesduel": "Trier par nombre de parties Duel",
     "scoresolo": "Trier par meilleur score en partie Solo",
     "scoreduel": "Trier par meilleur classement en partie Duel",
-    "level": "Trier par niveau"
+    "level": "Trier par niveau",
+    "ranking": "Trier par classement",
+    "time": "Trier par temps de réponse",
+    "points": "Trier par score",
+    "pointsavg": "Trier par score moy.",
+    "games": "Trier par nombre de partie"
   },
   "tutorial": {
     "title": "Bienvenue sur QuizBattle",

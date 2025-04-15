@@ -30,41 +30,22 @@ Deno.serve(async (req) => {
       .maybeSingle();
     const profile = resProfile.data;
     const body = await req.json();
-    const date = body.date;
-
-    const dateDay = moment(date);
+    const dateDay = moment(body.date);
     const dateLastPlayChallenge = moment(profile.lastchallengeplay);
+
     const diffDays = dateDay.diff(dateLastPlayChallenge, "days");
 
-    await supabase
+    const resNewProfile = await supabase
       .from("profiles")
       .update({
-        streak: diffDays === 1 ? profile.streak + 1 : profile.streak,
+        streak: diffDays >= 2 ? 0 : profile.streak,
         isonline: true,
         lastconnection: dateDay,
       })
-      .eq("id", user.id);
-
-    const resChallenge = await supabase
-      .from("challenge")
+      .eq("id", user.id)
       .select()
-      .eq("date", date)
-      .maybeSingle();
-    const challenge = resChallenge.data;
-
-    const game = {
-      profile: profile.id,
-      challenge: challenge.id,
-    };
-
-    const { error, data } = await supabase
-      .from("challengegame")
-      .insert(game)
-      .select()
-      .maybeSingle();
-    if (error) throw error;
-
-    return new Response(JSON.stringify(data), {
+      .single();
+    return new Response(JSON.stringify(resNewProfile), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });

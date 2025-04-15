@@ -14,6 +14,8 @@ import { ArrowLeft, ArrowRight } from "../icon/Arrow";
 import { ImageQCMBlock } from "../ImageBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { ExtraResponseBlock } from "../response/ExtraResponseBlock";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 
 export interface ResponseLanguage {
   [iso: string]: Array<string> | string;
@@ -280,13 +282,19 @@ export const ResponseInputBlock = ({
   responseplayer2,
 }: ResponseInputBlockProps) => {
   const { t } = useTranslation();
-  const { language } = useUser();
+  const { mode, language } = useUser();
   const value =
     typeof response.response === "number"
       ? response.response
       : response.response[language.iso] ?? response.response["fr-FR"];
 
   const label = Array.isArray(value) ? value[0] ?? "" : value;
+
+  const isDarkMode = useMemo(() => mode === "dark", [mode]);
+  const arrowColor: string = useMemo(
+    () => (isDarkMode ? Colors.white : Colors.black2),
+    [isDarkMode]
+  );
 
   return (
     <Paper
@@ -308,17 +316,17 @@ export const ResponseInputBlock = ({
     >
       {responseplayer1 && (
         <Box sx={{ position: "relative" }}>
-          <Box
+          <ArrowRightIcon
+            viewBox="10 7 5 10"
             sx={{
+              fontSize: 15,
               position: "absolute",
               top: percent(50),
               translate: "0 -50%",
               left: 0,
-              display: "flex",
+              color: arrowColor,
             }}
-          >
-            <ArrowRight size={18} />
-          </Box>
+          />
           <Typography variant="h2" color="text.secondary">
             {responseplayer1}
           </Typography>
@@ -326,17 +334,17 @@ export const ResponseInputBlock = ({
       )}
       {responseplayer2 && (
         <Box sx={{ position: "relative" }}>
-          <Box
+          <ArrowLeftIcon
+            viewBox="10 7 5 10"
             sx={{
+              fontSize: 15,
               position: "absolute",
               top: percent(50),
               translate: "0 -50%",
               right: 0,
-              display: "flex",
+              color: arrowColor,
             }}
-          >
-            <ArrowLeft size={18} />
-          </Box>
+          />
           <Typography variant="h2" color="text.secondary">
             {responseplayer2}
           </Typography>

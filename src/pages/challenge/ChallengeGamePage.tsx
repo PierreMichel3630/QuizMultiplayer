@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { px, viewHeight } from "csx";
 import { Fragment, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { CardSignalQuestion } from "src/component/card/CardQuestion";
 import { Colors } from "src/style/Colors";
 
@@ -17,16 +17,21 @@ import { ChallengeGame } from "src/models/Challenge";
 
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
-import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
-import { CountryImageBlock } from "src/component/CountryBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
+import { StreakChallengeModal } from "src/component/modal/StreakChallengeModal";
+import { HeaderProfile } from "src/component/profile/HeaderProfile";
+import { useAuth } from "src/context/AuthProviderSupabase";
 
 export default function ChallengeGamePage() {
   const { t } = useTranslation();
   const { uuid } = useParams();
+  const { setStreak } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [game, setGame] = useState<undefined | ChallengeGame>(undefined);
+  const [streakChallenge, setStreakChallenge] = useState<undefined | number>(
+    undefined
+  );
 
   useEffect(() => {
     const getGame = () => {
@@ -40,6 +45,14 @@ export default function ChallengeGamePage() {
     getGame();
   }, [uuid]);
 
+  useEffect(() => {
+    if (game && location.state !== null && location.state.isEnd === true) {
+      const streak = game.profile.streak;
+      setStreak(streak);
+      setStreakChallenge(streak);
+    }
+  }, [location, game, setStreak]);
+
   return (
     <Grid
       container
@@ -49,10 +62,7 @@ export default function ChallengeGamePage() {
       <Helmet>
         <title>{`${t("commun.daychallenge")} - ${t("appname")}`}</title>
       </Helmet>
-      <BarNavigation
-        title={t("commun.daychallenge")}
-        quit={() => navigate("/challenge")}
-      />
+      <BarNavigation title={t("commun.daychallenge")} />
       <Grid item xs={12}>
         <Container maxWidth="md">
           <Box
@@ -73,23 +83,7 @@ export default function ChallengeGamePage() {
                     gap: 1,
                   }}
                 >
-                  <AvatarAccountBadge profile={game.profile} size={60} />
-                  <Box>
-                    <Box sx={{ display: "flex", gap: px(3) }}>
-                      {game.profile.country && (
-                        <CountryImageBlock country={game.profile.country} />
-                      )}
-                      <Typography variant="h2">
-                        {game.profile.username}
-                      </Typography>
-                    </Box>
-                    {game.profile.title && (
-                      <JsonLanguageBlock
-                        variant="caption"
-                        value={game.profile.title.name}
-                      />
-                    )}
-                  </Box>
+                  <HeaderProfile profile={game.profile} />
                 </Grid>
                 <Grid
                   item
@@ -163,12 +157,22 @@ export default function ChallengeGamePage() {
               value={Colors.blue}
               label={t("commun.return")}
               icon={KeyboardReturnIcon}
-              onClick={() => navigate("/challenge")}
+              onClick={() => {
+                const path =
+                  location.state !== null && location.state.previousPath;
+                navigate(path ? location.state.previousPath : "/challenge");
+              }}
               variant="contained"
             />
           </Box>
         </Container>
       </Box>
+      {streakChallenge !== undefined && (
+        <StreakChallengeModal
+          close={() => setStreakChallenge(undefined)}
+          streak={streakChallenge}
+        />
+      )}
     </Grid>
   );
 }

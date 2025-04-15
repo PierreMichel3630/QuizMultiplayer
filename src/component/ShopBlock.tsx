@@ -13,7 +13,7 @@ import duelAnimate from "src/assets/animation/duel.json";
 import shopAnimate from "src/assets/animation/shop.json";
 import voteAnimate from "src/assets/animation/vote.json";
 import wheelAnimate from "src/assets/animation/wheelprize.json";
-import { TimeLeftLabel, TimeLeftToNextDayLabel } from "./TimeLeftBlock";
+import { TimeLeftLabel, TimeLeftToNextDayHoverLabel } from "./TimeLeftBlock";
 
 export const ShopBlock = () => {
   return (
@@ -67,7 +67,7 @@ export const ShopItems = () => {
                   zIndex: 2,
                 }}
               >
-                <TimeLeftToNextDayLabel size="small" />
+                <TimeLeftToNextDayHoverLabel size="small" />
               </Box>
             )}
           </>

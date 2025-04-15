@@ -205,11 +205,12 @@ export const CardSignalQuestion = ({
                     userSelect: "none",
                   }}
                 >
-                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                    <Typography variant="h6" color={color}>
-                      {t("commun.goodresponse")} :
+                  <Box>
+                    <Typography variant="h6" color={color} component="span">
+                      {`${t("commun.goodresponse")} :   `}
                     </Typography>
                     <JsonLanguageArrayOrStringBlock
+                      component="span"
                       color={color}
                       variant="h2"
                       all={question.allresponse}
@@ -237,14 +238,19 @@ export const CardSignalQuestion = ({
                     userSelect: "none",
                   }}
                 >
-                  <Typography variant="h2" color={color}>
+                  <Typography
+                    variant="h2"
+                    color={color}
+                    sx={{ wordWrap: "break-word" }}
+                  >
                     {question.responsePlayer1}
                   </Typography>
-                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                    <Typography variant="h6" color={color}>
-                      {t("commun.goodresponse")} :
+                  <Box>
+                    <Typography variant="h6" color={color} component="span">
+                      {`${t("commun.goodresponse")} :   `}
                     </Typography>
                     <JsonLanguageArrayOrStringBlock
+                      component="span"
                       color={color}
                       variant="h2"
                       all={question.allresponse}
@@ -272,14 +278,19 @@ export const CardSignalQuestion = ({
                     userSelect: "none",
                   }}
                 >
-                  <Typography variant="h2" color={color}>
+                  <Typography
+                    variant="h2"
+                    color={color}
+                    sx={{ wordWrap: "break-word" }}
+                  >
                     {question.responsePlayer2}
                   </Typography>
-                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                    <Typography variant="h6" color={color}>
-                      {t("commun.goodresponse")} :
+                  <Box>
+                    <Typography variant="h6" color={color} component="span">
+                      {`${t("commun.goodresponse")} :   `}
                     </Typography>
                     <JsonLanguageArrayOrStringBlock
+                      component="span"
                       color={color}
                       variant="h2"
                       all={question.allresponse}

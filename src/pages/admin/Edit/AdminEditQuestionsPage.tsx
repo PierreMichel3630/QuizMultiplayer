@@ -177,7 +177,7 @@ export default function AdminEditQuestionsPage() {
             value={themes}
             onChange={(value: Array<Theme>) => {
               const ids = value.map((el) => el.id);
-              navigate(`/administration/question?page=1&themes=${ids}`);
+              navigate(`/administration/edit/questions?page=1&themes=${ids}`);
             }}
             isAdmin
           />
@@ -227,7 +227,7 @@ export default function AdminEditQuestionsPage() {
               page={page}
               onChange={(_event: React.ChangeEvent<unknown>, value: number) =>
                 navigate(
-                  `/administration/question?page=${value}&themes=${filter.themes}`
+                  `/administration/edit/questions?page=${value}&themes=${filter.themes}`
                 )
               }
               variant="outlined"

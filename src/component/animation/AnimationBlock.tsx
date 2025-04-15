@@ -31,6 +31,7 @@ export const AnimationBlock = ({
       width={height}
       isStopped={isStopped}
       isPaused={isPaused}
+      style={{ margin: 0 }}
     />
   );
 };

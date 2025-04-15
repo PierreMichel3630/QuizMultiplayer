@@ -24,7 +24,7 @@ import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { FRIENDSTATUS } from "src/models/Friend";
 import { Colors } from "src/style/Colors";
-import { CountryImageBlock } from "../CountryBlock";
+import { CountryBlock } from "../CountryBlock";
 
 import { Profile } from "src/models/Profile";
 
@@ -122,6 +122,7 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                     <TableRow
                       sx={{
                         backgroundColor: color,
+                        color: `${colorText} !important`,
                       }}
                     >
                       <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
@@ -152,17 +153,14 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                           }}
                         >
                           <Link
-                            to={`/profil/${el.profile.id}`}
+                            to={`/challenge/profil/${el.profile.id}`}
                             style={{
                               textDecoration: "inherit",
                               display: "flex",
-                              gap: px(8),
-                              alignItems: "center",
+                              gap: px(2),
+                              flexDirection: "column",
                             }}
                           >
-                            {el.profile.country && (
-                              <CountryImageBlock country={el.profile.country} />
-                            )}
                             <Typography
                               variant={"h6"}
                               sx={{
@@ -172,6 +170,13 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                             >
                               {el.profile.username}
                             </Typography>
+                            {el.profile.country && (
+                              <CountryBlock
+                                country={el.profile.country}
+                                isShaddow={false}
+                                color={colorText}
+                              />
+                            )}
                           </Link>
                         </Box>
                       </TableCell>

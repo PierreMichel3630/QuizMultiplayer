@@ -20,12 +20,21 @@ export const selectChallengeByDate = (date: Moment) =>
     .eq("date", date.format("YYYY-MM-DD"))
     .maybeSingle();
 
-export const countChallengeGameByDate = (date: Moment) =>
-  supabase
+export const countChallengeGameByDate = (
+  date: Moment,
+  idsProfile: undefined | Array<string> = undefined
+) => {
+  let query = supabase
     .from(SUPABASE_CHALLENGEGAME_TABLE)
     .select("* , challenge(*)", { count: "exact", head: true })
     .not("challenge", "is", null)
     .eq("challenge.date", date.format("YYYY-MM-DD"));
+
+  if (idsProfile) {
+    query = query.in("profile.id", idsProfile);
+  }
+  return query;
+};
 
 export const countChallengeGameByDateAndProfileId = (
   date: Moment,
@@ -46,6 +55,7 @@ export const selectChallengeGameByDateAndProfileId = (
     .from(SUPABASE_CHALLENGEGAME_TABLE)
     .select("* , challenge(*)")
     .eq("profile", id)
+    .not("profile", "is", null)
     .not("challenge", "is", null)
     .eq("challenge.date", date.format("YYYY-MM-DD"))
     .maybeSingle();
@@ -59,15 +69,28 @@ export const selectChallengeGameByUuid = (uuid: string) =>
     .eq("uuid", uuid)
     .maybeSingle();
 
+export const selectChallengeGameByProfileId = (id: string) =>
+  supabase
+    .from(SUPABASE_RANKINGCHALLENGE_VIEW)
+    .select(
+      "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*)), challenge(*)"
+    )
+    .eq("profile.id", id)
+    .not("profile", "is", null)
+    .order("id", { ascending: false });
+
 export const selectRankingChallengeByDatePaginate = (
   date: Moment,
   search = "",
   page = 0,
-  itemperpage = 5
+  itemperpage = 5,
+  sort = "ranking",
+  ascending = true,
+  idsProfile: undefined | Array<string> = undefined
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
-  return supabase
+  let query = supabase
     .from(SUPABASE_RANKINGCHALLENGE_VIEW)
     .select(
       "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*)), challenge(*)"
@@ -75,37 +98,53 @@ export const selectRankingChallengeByDatePaginate = (
     .eq("challenge.date", date.format("YYYY-MM-DD"))
     .not("challenge", "is", null)
     .ilike("profile.username", `%${search}%`)
-    .not("profile", "is", null)
-    .range(from, to)
-    .order("ranking", { ascending: true });
+    .not("profile", "is", null);
+  if (idsProfile) {
+    query = query.in("profile.id", idsProfile);
+  }
+  return query.range(from, to).order(sort, { ascending: ascending });
 };
 
 //ALLTIME
 export const selectRankingChallengeAllTimePaginate = (
   search = "",
   page = 0,
-  itemperpage = 5
+  itemperpage = 5,
+  sort = "ranking",
+  ascending = true,
+  idsProfile: undefined | Array<string> = undefined
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
-
-  return supabase
+  let query = supabase
     .from(SUPABASE_CHALLENGEGAMEALLTIME_VIEW)
     .select(
       "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*))"
     )
     .ilike("profile.username", `%${search}%`)
-    .not("profile", "is", null)
-    .range(from, to)
-    .order("ranking", { ascending: true });
+    .not("profile", "is", null);
+
+  if (idsProfile) {
+    query = query.in("profile.id", idsProfile);
+  }
+
+  return query.range(from, to).order(sort, { ascending: ascending });
 };
 
-export const countRankingChallengeAllTime = (search = "") =>
-  supabase
+export const countRankingChallengeAllTime = (
+  search = "",
+  idsProfile: undefined | Array<string> = undefined
+) => {
+  let query = supabase
     .from(SUPABASE_CHALLENGEGAMEALLTIME_VIEW)
     .select("*, profile(*)", { count: "exact", head: true })
     .ilike("profile.username", `%${search}%`)
     .not("profile", "is", null);
+  if (idsProfile) {
+    query = query.in("profile.id", idsProfile);
+  }
+  return query;
+};
 
 export const selectRankingChallengeAllTimeByProfileId = (id: string) =>
   supabase
@@ -119,30 +158,45 @@ export const selectRankingChallengeByMonthPaginate = (
   date: string, // Format MM/YYYY
   search = "",
   page = 0,
-  itemperpage = 5
+  itemperpage = 5,
+  sort = "ranking",
+  ascending = true,
+  idsProfile: undefined | Array<string> = undefined
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
-
-  return supabase
+  let query = supabase
     .from(SUPABASE_CHALLENGEGAMEMONTH_VIEW)
     .select(
       "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*))"
     )
     .eq("month", date)
     .ilike("profile.username", `%${search}%`)
-    .not("profile", "is", null)
-    .range(from, to)
-    .order("ranking", { ascending: true });
+    .not("profile", "is", null);
+
+  if (idsProfile) {
+    query = query.in("profile.id", idsProfile);
+  }
+  return query.range(from, to).order(sort, { ascending: ascending });
 };
 
-export const countRankingChallengeByMonth = (date: string, search = "") =>
-  supabase
+export const countRankingChallengeByMonth = (
+  date: string,
+  search = "",
+  idsProfile: undefined | Array<string> = undefined
+) => {
+  let query = supabase
     .from(SUPABASE_CHALLENGEGAMEMONTH_VIEW)
     .select("*, profile(*)", { count: "exact", head: true })
     .eq("month", date)
     .ilike("profile.username", `%${search}%`)
     .not("profile", "is", null);
+
+  if (idsProfile) {
+    query = query.in("profile.id", idsProfile);
+  }
+  return query;
+};
 
 export const selectRankingChallengeByMonthAndProfileId = (
   date: string, // Format MM/YYYY
@@ -160,7 +214,9 @@ export const selectRankingChallengeByYearPaginate = (
   date: string, // Format YYYY
   search = "",
   page = 0,
-  itemperpage = 5
+  itemperpage = 5,
+  sort = "ranking",
+  ascending = true
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
@@ -174,7 +230,7 @@ export const selectRankingChallengeByYearPaginate = (
     .ilike("profile.username", `%${search}%`)
     .not("profile", "is", null)
     .range(from, to)
-    .order("ranking", { ascending: true });
+    .order(sort, { ascending: ascending });
 };
 export const countRankingChallengeByYear = (date: string, search = "") =>
   supabase
@@ -200,29 +256,45 @@ export const selectRankingChallengeByWeekPaginate = (
   date: string, // Format YYYY
   search = "",
   page = 0,
-  itemperpage = 5
+  itemperpage = 5,
+  sort = "ranking",
+  ascending = true,
+  idsProfile: undefined | Array<string> = undefined
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
 
-  return supabase
+  let query = supabase
     .from(SUPABASE_CHALLENGEGAMEWEEK_VIEW)
     .select(
       "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*))"
     )
     .eq("week", date)
     .ilike("profile.username", `%${search}%`)
-    .not("profile", "is", null)
-    .range(from, to)
-    .order("ranking", { ascending: true });
+    .not("profile", "is", null);
+
+  if (idsProfile) {
+    query = query.in("profile.id", idsProfile);
+  }
+  return query.range(from, to).order(sort, { ascending: ascending });
 };
-export const countRankingChallengeByWeek = (date: string, search = "") =>
-  supabase
+export const countRankingChallengeByWeek = (
+  date: string,
+  search = "",
+  idsProfile: undefined | Array<string> = undefined
+) => {
+  let query = supabase
     .from(SUPABASE_CHALLENGEGAMEWEEK_VIEW)
     .select("*, profile(*)", { count: "exact", head: true })
     .eq("week", date)
     .ilike("profile.username", `%${search}%`)
     .not("profile", "is", null);
+
+  if (idsProfile) {
+    query = query.in("profile.id", idsProfile);
+  }
+  return query;
+};
 
 export const selectRankingChallengeByWeekAndProfileId = (
   date: string, // Format MM/YYYY

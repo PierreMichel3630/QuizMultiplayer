@@ -5,15 +5,16 @@ import {
   Box,
   Grid,
   IconButton,
+  Switch,
   TableCell,
   TablePagination,
   Typography,
 } from "@mui/material";
-import { px } from "csx";
+import { percent, px } from "csx";
 import moment, { Moment } from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   countChallengeGameByDate,
   countRankingChallengeAllTime,
@@ -25,6 +26,7 @@ import {
   selectRankingChallengeByWeekPaginate,
 } from "src/api/challenge";
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
+import { useAuth } from "src/context/AuthProviderSupabase";
 import {
   ChallengeRanking,
   ChallengeRankingAllTime,
@@ -45,6 +47,9 @@ import {
   DataRankingChallenge,
   RankingChallengeTable,
 } from "./table/RankingChallengeTable";
+import { SortButton } from "./SortBlock";
+import { useApp } from "src/context/AppProvider";
+import { FRIENDSTATUS } from "src/models/Friend";
 
 interface Props {
   hasPlayChallenge?: boolean;
@@ -52,17 +57,85 @@ interface Props {
 
 export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
   const { t } = useTranslation();
+  const { profile } = useAuth();
+  const { friends } = useApp();
+  const [searchParams] = useSearchParams();
 
   const [search, setSearch] = useState("");
   const [total, setTotal] = useState<null | number>(null);
   const [date, setDate] = useState<Moment>(moment());
   const [data, setData] = useState<Array<DataRankingChallenge>>([]);
   const [loading, setLoading] = useState(true);
+  const [sort, setSort] = useState({ value: "ranking", ascending: true });
+  const [isOnlyFriend, setIsOnlyFriend] = useState(false);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const [tabTime, setTabTime] = useState(ClassementChallengeTimeEnum.day);
+  const [tabTime, setTabTime] = useState(
+    searchParams.has("time")
+      ? (searchParams.get("time") as ClassementChallengeTimeEnum)
+      : ClassementChallengeTimeEnum.day
+  );
+
+  const idFriends = useMemo(
+    () =>
+      profile && isOnlyFriend
+        ? [
+            profile.id,
+            ...friends
+              .filter((el) => el.status === FRIENDSTATUS.VALID)
+              .reduce(
+                (acc, value) =>
+                  value.user2.id === profile.id
+                    ? [...acc, value.user1.id]
+                    : [...acc, value.user2.id],
+                [] as Array<string>
+              ),
+          ]
+        : undefined,
+    [friends, profile, isOnlyFriend]
+  );
+
+  const sorts = useMemo(
+    () =>
+      tabTime === ClassementChallengeTimeEnum.day
+        ? [
+            {
+              value: "ranking",
+              label: t("sort.ranking"),
+              sort: () => setSort({ value: "ranking", ascending: true }),
+            },
+            {
+              value: "time",
+              label: t("sort.time"),
+              sort: () => setSort({ value: "time", ascending: true }),
+            },
+          ]
+        : [
+            {
+              value: "ranking",
+              label: t("sort.ranking"),
+              sort: () => setSort({ value: "ranking", ascending: true }),
+            },
+            {
+              value: "time",
+              label: t("sort.time"),
+              sort: () => setSort({ value: "time", ascending: true }),
+            },
+            {
+              value: "pointsavg",
+              label: t("sort.pointsavg"),
+              sort: () => setSort({ value: "scoreavg", ascending: false }),
+            },
+            {
+              value: "games",
+              label: t("sort.games"),
+              sort: () => setSort({ value: "games", ascending: false }),
+            },
+          ],
+    [t, tabTime]
+  );
 
   const handleChangePage = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
@@ -81,29 +154,33 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
   useEffect(() => {
     const getTotal = () => {
       if (tabTime === ClassementChallengeTimeEnum.day) {
-        countChallengeGameByDate(date).then(({ count }) => {
+        countChallengeGameByDate(date, idFriends).then(({ count }) => {
           setTotal(count);
         });
       } else if (tabTime === ClassementChallengeTimeEnum.month) {
-        countRankingChallengeByMonth(date.format("MM/YYYY"), search).then(
-          ({ count }) => {
-            setTotal(count);
-          }
-        );
+        countRankingChallengeByMonth(
+          date.format("MM/YYYY"),
+          search,
+          idFriends
+        ).then(({ count }) => {
+          setTotal(count);
+        });
       } else if (tabTime === ClassementChallengeTimeEnum.week) {
-        countRankingChallengeByWeek(date.format("WW/YYYY"), search).then(
-          ({ count }) => {
-            setTotal(count);
-          }
-        );
+        countRankingChallengeByWeek(
+          date.format("WW/YYYY"),
+          search,
+          idFriends
+        ).then(({ count }) => {
+          setTotal(count);
+        });
       } else if (tabTime === ClassementChallengeTimeEnum.alltime) {
-        countRankingChallengeAllTime(search).then(({ count }) => {
+        countRankingChallengeAllTime(search, idFriends).then(({ count }) => {
           setTotal(count);
         });
       }
     };
     getTotal();
-  }, [date, tabTime, search]);
+  }, [date, tabTime, search, idFriends]);
 
   const isDisabledNextDay = useMemo(() => {
     const today = moment().startOf("day");
@@ -125,7 +202,10 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
           date,
           search,
           page,
-          rowsPerPage
+          rowsPerPage,
+          sort.value,
+          sort.ascending,
+          idFriends
         ).then(({ data }) => {
           const res = (data ?? []) as Array<ChallengeRanking>;
           const newdata = res.map((el) => {
@@ -135,6 +215,7 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
                 <TableCell
                   sx={{
                     p: px(4),
+                    color: "inherit",
                   }}
                   width={70}
                 >
@@ -167,7 +248,10 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
           date.format("MM/YYYY"),
           search,
           page,
-          rowsPerPage
+          rowsPerPage,
+          sort.value,
+          sort.ascending,
+          idFriends
         ).then(({ data }) => {
           const res = (data ?? []) as Array<ChallengeRankingMonth>;
           const newdata = res.map((el) => {
@@ -177,6 +261,7 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
                 <TableCell
                   sx={{
                     p: px(4),
+                    color: "inherit",
                   }}
                   width={100}
                 >
@@ -228,7 +313,10 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
           date.format("WW/YYYY"),
           search,
           page,
-          rowsPerPage
+          rowsPerPage,
+          sort.value,
+          sort.ascending,
+          idFriends
         ).then(({ data }) => {
           const res = (data ?? []) as Array<ChallengeRankingWeek>;
           const newdata = res.map((el) => {
@@ -238,6 +326,7 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
                 <TableCell
                   sx={{
                     p: px(4),
+                    color: "inherit",
                   }}
                   width={100}
                 >
@@ -285,68 +374,74 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
           setLoading(false);
         });
       } else if (tabTime === ClassementChallengeTimeEnum.alltime) {
-        selectRankingChallengeAllTimePaginate(search, page, rowsPerPage).then(
-          ({ data }) => {
-            const res = (data ?? []) as Array<ChallengeRankingAllTime>;
-            const newdata = res.map((el) => {
-              return {
-                profile: el.profile,
-                value: (
-                  <TableCell
+        selectRankingChallengeAllTimePaginate(
+          search,
+          page,
+          rowsPerPage,
+          sort.value,
+          sort.ascending,
+          idFriends
+        ).then(({ data }) => {
+          const res = (data ?? []) as Array<ChallengeRankingAllTime>;
+          const newdata = res.map((el) => {
+            return {
+              profile: el.profile,
+              value: (
+                <TableCell
+                  sx={{
+                    p: px(4),
+                    color: "inherit",
+                  }}
+                  width={100}
+                >
+                  <Box
                     sx={{
-                      p: px(4),
+                      display: "flex",
+                      flexDirection: "column",
+                      textAlign: "center",
+                      justifyContent: "center",
                     }}
-                    width={100}
                   >
+                    <Box sx={{ width: px(80) }}>
+                      <Typography variant="h6" noWrap>
+                        {el.score} {t("commun.pointsabbreviation")} (
+                        {el.scoreavg.toFixed(1)})
+                      </Typography>
+                    </Box>
+                    <Box sx={{ width: px(80) }}>
+                      <Typography variant="h6" noWrap>
+                        {(el.time / 1000).toFixed(2)}s
+                      </Typography>
+                    </Box>
                     <Box
                       sx={{
                         display: "flex",
-                        flexDirection: "column",
-                        textAlign: "center",
+                        gap: px(4),
+                        alignItems: "center",
                         justifyContent: "center",
                       }}
                     >
-                      <Box sx={{ width: px(80) }}>
-                        <Typography variant="h6" noWrap>
-                          {el.score} {t("commun.pointsabbreviation")} (
-                          {el.scoreavg.toFixed(1)})
-                        </Typography>
-                      </Box>
-                      <Box sx={{ width: px(80) }}>
-                        <Typography variant="h6" noWrap>
-                          {(el.time / 1000).toFixed(2)}s
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          gap: px(4),
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Typography variant="h6" noWrap>
-                          {el.games}
-                        </Typography>
-                        <Typography variant="body1" noWrap>
-                          {t("commun.games")}
-                        </Typography>
-                      </Box>
+                      <Typography variant="h6" noWrap>
+                        {el.games}
+                      </Typography>
+                      <Typography variant="body1" noWrap>
+                        {t("commun.games")}
+                      </Typography>
                     </Box>
-                  </TableCell>
-                ),
-                rank: el.ranking,
-              };
-            });
-            setData(newdata);
-            setLoading(false);
-          }
-        );
+                  </Box>
+                </TableCell>
+              ),
+              rank: el.ranking,
+            };
+          });
+          setData(newdata);
+          setLoading(false);
+        });
       }
     };
     const timeout = setTimeout(getRanking, 200);
     return () => clearTimeout(timeout);
-  }, [search, page, rowsPerPage, date, tabTime, t]);
+  }, [search, page, rowsPerPage, date, tabTime, t, sort, idFriends]);
 
   const diffValue = useMemo(() => {
     let result: "day" | "month" | "week" = "day";
@@ -382,21 +477,37 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
     return [...data].map((el) => ({
       ...el,
       extra:
-        hasPlayChallenge && tabTime === ClassementChallengeTimeEnum.day ? (
-          <TableCell sx={{ p: px(4) }} width={40}>
+        tabTime === ClassementChallengeTimeEnum.day ? (
+          <>
+            {(hasPlayChallenge || date.diff(moment(), "day") < 0) && (
+              <TableCell sx={{ p: px(4), color: "inherit" }} width={40}>
+                <Link
+                  to={`/challenge/game/${el.uuid}`}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <VisibilityIcon fontSize="small" />
+                </Link>
+              </TableCell>
+            )}
+          </>
+        ) : (
+          <TableCell sx={{ p: px(4), color: "inherit" }} width={40}>
             <Link
-              to={`/game/challenge/${el.uuid}`}
+              to={`/challenge/profil/${el.profile.id}`}
               style={{
                 display: "flex",
                 justifyContent: "center",
               }}
             >
-              <VisibilityIcon fontSize="small" sx={{ color: "text.primary" }} />
+              <VisibilityIcon fontSize="small" />
             </Link>
           </TableCell>
-        ) : undefined,
+        ),
     }));
-  }, [data, hasPlayChallenge, tabTime]);
+  }, [data, hasPlayChallenge, tabTime, date]);
 
   return (
     <Grid container spacing={1} justifyContent="center">
@@ -404,7 +515,12 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
         <GroupButtonChallengeTime
           selected={tabTime}
           onChange={(value) => {
+            if (value === ClassementChallengeTimeEnum.day) {
+              setSort({ value: "ranking", ascending: true });
+            }
+            setDate(moment());
             setTabTime(value);
+            setPage(0);
           }}
         />
       </Grid>
@@ -431,21 +547,61 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
       <Grid item>
         {
           {
-            day: <ResultDayChallengeBlock date={date} />,
-            week: <ResultWeekChallengeBlock date={date} />,
-            month: <ResultMonthChallengeBlock date={date} />,
-            year: <ResultYearChallengeBlock date={date} />,
-            alltime: <ResultAllTimeChallengeBlock />,
+            day: <ResultDayChallengeBlock date={date} profile={profile} />,
+            week: <ResultWeekChallengeBlock date={date} profile={profile} />,
+            month: <ResultMonthChallengeBlock date={date} profile={profile} />,
+            year: <ResultYearChallengeBlock date={date} profile={profile} />,
+            alltime: <ResultAllTimeChallengeBlock profile={profile} />,
           }[tabTime]
         }
       </Grid>
-      <Grid item xs={12} sx={{ textAlign: "center" }}>
-        <BasicSearchInput
-          label={t("commun.searchplayer")}
-          onChange={(value) => setSearch(value)}
-          value={search}
-          clear={() => setSearch("")}
-        />
+      <Grid
+        item
+        xs={12}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            flex: 1,
+            width: percent(100),
+          }}
+        >
+          <BasicSearchInput
+            label={t("commun.searchplayer")}
+            onChange={(value) => setSearch(value)}
+            value={search}
+            clear={() => setSearch("")}
+          />
+          <SortButton menus={sorts} />
+        </Box>
+        {profile && (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              gap: 1,
+              width: percent(100),
+            }}
+          >
+            <Switch
+              color="secondary"
+              checked={isOnlyFriend}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setPage(0);
+                setIsOnlyFriend(event.target.checked);
+              }}
+            />
+            <Typography variant="body1">{t("commun.onlyfriend")}</Typography>
+          </Box>
+        )}
       </Grid>
       <Grid item xs={12}>
         <RankingChallengeTable data={dataDisplay} loading={loading} />

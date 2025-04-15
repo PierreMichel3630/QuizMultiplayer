@@ -1,7 +1,9 @@
 import { ProfileUpdate } from "src/models/Profile";
 import { supabase } from "./supabase";
+import moment from "moment";
 
 export const SUPABASE_PROFILE_TABLE = "profiles";
+export const SUPABASE_UPDATEPROFIL_FUNCTION = "update-profil";
 
 export const getProfilById = (uuid: string) =>
   supabase
@@ -61,3 +63,10 @@ export const countPlayersSameUsername = (username: string) =>
     .from(SUPABASE_PROFILE_TABLE)
     .select("*", { count: "exact", head: true })
     .eq("username", username);
+
+export const updateProfilByFunction = () =>
+  supabase.functions.invoke(SUPABASE_UPDATEPROFIL_FUNCTION, {
+    body: {
+      date: moment(),
+    },
+  });

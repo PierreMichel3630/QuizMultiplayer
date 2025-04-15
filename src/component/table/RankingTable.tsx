@@ -47,6 +47,7 @@ export interface DataRanking {
   extra?: string;
   date?: Date;
   theme?: Theme;
+  size?: number;
   rank: number;
 }
 interface Props {
@@ -246,18 +247,15 @@ export const RankingTable = ({ data, navigation, loading = false }: Props) => {
                         sx={{
                           p: px(4),
                         }}
-                        width={90}
+                        width={el.size ?? 90}
                       >
-                        <Box>
+                        <Box
+                          sx={{
+                            color: colorText,
+                          }}
+                        >
                           {isStringOrNumber(el.value) ? (
-                            <Typography
-                              variant="h2"
-                              component="span"
-                              sx={{
-                                color: colorText,
-                              }}
-                              noWrap
-                            >
+                            <Typography variant="h2" component="span" noWrap>
                               {el.value}
                             </Typography>
                           ) : (

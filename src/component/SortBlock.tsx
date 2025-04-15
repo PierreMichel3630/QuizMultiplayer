@@ -31,7 +31,7 @@ export const SortButton = ({ menus }: Props) => {
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
         >
-          <SortIcon />
+          <SortIcon fontSize="large" />
         </IconButton>
       </Tooltip>
       <Menu
