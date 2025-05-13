@@ -18,7 +18,7 @@ export const StepBlock = ({ number, label }: Props) => {
         width: percent(100),
         borderRadius: 2,
         height: percent(100),
-        backgroundColor: Colors.blue3,
+        backgroundColor: Colors.colorApp,
       }}
     >
       {number && (

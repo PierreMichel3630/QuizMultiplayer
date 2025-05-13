@@ -104,7 +104,7 @@ interface PropsBadgeTitle {
 export const BadgeTitle = ({
   label,
   onClick,
-  color = Colors.blue3,
+  color = Colors.colorApp,
 }: PropsBadgeTitle) => {
   return (
     <Box

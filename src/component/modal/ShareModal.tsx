@@ -85,7 +85,7 @@ export const ShareModal = ({ open, close }: Props) => {
               <ButtonColor
                 typography="h6"
                 iconSize={20}
-                value={Colors.blue3}
+                value={Colors.colorApp}
                 label={t("commun.shareapplication")}
                 icon={ShareIcon}
                 variant="contained"
@@ -102,7 +102,12 @@ export const ShareModal = ({ open, close }: Props) => {
               justifyContent: "center",
             }}
           >
-            <img src={googleplay} width="75%" style={{ maxWidth: px(50) }} />
+            <img
+              alt="google play icon"
+              src={googleplay}
+              width="75%"
+              style={{ maxWidth: px(50) }}
+            />
           </Grid>
           <Grid item xs={10}>
             <Typography variant="h4">{t("commun.googleplay")}</Typography>
@@ -117,7 +122,12 @@ export const ShareModal = ({ open, close }: Props) => {
               justifyContent: "center",
             }}
           >
-            <img src={logo} width="75%" style={{ maxWidth: px(50) }} />
+            <img
+              alt="share icon"
+              src={logo}
+              width="75%"
+              style={{ maxWidth: px(50) }}
+            />
           </Grid>
           <Grid item xs={10}>
             <Typography variant="h4">{t("commun.computer")}</Typography>

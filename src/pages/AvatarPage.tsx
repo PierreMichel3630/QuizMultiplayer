@@ -214,7 +214,7 @@ export default function AvatarPage() {
                   <Typography variant="h2" color="text.secondary">
                     {avatar.price}
                   </Typography>
-                  <img src={moneyIcon} width={25} />
+                  <img alt="money icon" src={moneyIcon} width={25} />
                 </Box>
               </Box>
             )}
@@ -230,7 +230,7 @@ export default function AvatarPage() {
               />
             )}
             <ButtonColor
-              value={Colors.blue3}
+              value={Colors.colorApp}
               label={t("commun.return")}
               icon={KeyboardReturnIcon}
               variant="contained"

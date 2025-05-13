@@ -18,7 +18,7 @@ export const BarNavigation = ({ title, quit }: Props) => {
         position: "sticky",
         top: 0,
         width: percent(100),
-        backgroundColor: Colors.blue3,
+        backgroundColor: Colors.colorApp,
         zIndex: 100,
         height: 62,
         display: "flex",

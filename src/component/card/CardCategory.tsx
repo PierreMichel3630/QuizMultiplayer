@@ -43,7 +43,7 @@ export const CardCategory = ({ category, link, width = 90 }: Props) => {
     >
       <Box
         sx={{
-          backgroundColor: Colors.blue3,
+          backgroundColor: Colors.colorApp,
           width: width,
           aspectRatio: "1/1",
           borderRadius: px(5),

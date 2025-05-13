@@ -36,7 +36,7 @@ export const HeadTitle = ({ title, extra, sx }: Props) => {
         sx={{
           width: px(width),
           height: height > HEIGHTMAX ? HEIGHTMAX : px(height),
-          backgroundColor: Colors.blue3,
+          backgroundColor: Colors.colorApp,
         }}
       />
       <Box
@@ -49,6 +49,7 @@ export const HeadTitle = ({ title, extra, sx }: Props) => {
         }}
       >
         <img
+          alt="cover"
           src={head}
           style={{
             width: percent(100),

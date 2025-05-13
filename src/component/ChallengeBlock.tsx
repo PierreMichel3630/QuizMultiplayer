@@ -11,8 +11,8 @@ import {
   selectChallengeGameByDateAndProfileId,
   selectRankingChallengeAllTimeByProfileId,
   selectRankingChallengeByDateAndProfileId,
-  selectRankingChallengeByMonthAndProfileId,
-  selectRankingChallengeByWeekAndProfileId,
+  selectRankingChallengeMonthByMonthAndProfileId,
+  selectRankingChallengeWeekByWeekAndProfileId,
   selectRankingChallengeByYearAndProfileId,
 } from "src/api/challenge";
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
@@ -185,7 +185,7 @@ export const ResultWeekChallengeBlock = ({
     const getStat = () => {
       if (profile) {
         const valueDate = date ?? moment();
-        selectRankingChallengeByWeekAndProfileId(
+        selectRankingChallengeWeekByWeekAndProfileId(
           valueDate.format("WW/YYYY"),
           profile.id
         ).then(({ data }) => {
@@ -301,7 +301,7 @@ export const ResultMonthChallengeBlock = ({
     const getStat = () => {
       if (profile) {
         const valueDate = date ?? moment();
-        selectRankingChallengeByMonthAndProfileId(
+        selectRankingChallengeMonthByMonthAndProfileId(
           valueDate.format("MM/YYYY"),
           profile.id
         ).then(({ data }) => {

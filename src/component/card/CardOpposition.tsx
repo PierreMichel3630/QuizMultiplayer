@@ -32,7 +32,7 @@ export const CardOpposition = ({ opposition, opponent }: Props) => {
           item
           xs={12}
           sx={{
-            backgroundColor: Colors.blue3,
+            backgroundColor: Colors.colorApp,
             p: px(5),
             display: "flex",
             gap: 1,

@@ -20,6 +20,7 @@ import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { BattleGame, BattleGameChange } from "src/models/BattleGame";
 import { StatusGameDuel } from "src/models/enum/StatusGame";
+import { UpdateNotificationBlock } from "src/component/notification/UpdateNotificationBlock";
 
 export default function GameOutlet() {
   const { user, profile, setStreak } = useAuth();
@@ -239,7 +240,7 @@ export default function GameOutlet() {
       <Box
         sx={{
           position: "fixed",
-          bottom: 5,
+          bottom: 75,
           right: 0,
           left: percent(1),
           display: "flex",
@@ -260,6 +261,7 @@ export default function GameOutlet() {
             refuse={getBattles}
           />
         ))}
+        <UpdateNotificationBlock />
       </Box>
     </>
   );

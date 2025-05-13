@@ -211,7 +211,7 @@ export default function MenuPage() {
               p: 1,
               backgroundImage: profile?.banner
                 ? `url("${profile.banner.src}")`
-                : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
+                : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.colorApp} 46%, ${Colors.blue} 100%)`,
               backgroundSize: "cover",
               backgroundPosition: "center",
               position: "relative",

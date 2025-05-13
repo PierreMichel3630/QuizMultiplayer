@@ -103,13 +103,13 @@ export const RankingTable = ({ data, navigation, loading = false }: Props) => {
     );
     switch (rank) {
       case 1:
-        icon = <img src={rank1} width={30} loading="lazy" />;
+        icon = <img alt="rank icon" src={rank1} width={30} loading="lazy" />;
         break;
       case 2:
-        icon = <img src={rank2} width={30} loading="lazy" />;
+        icon = <img alt="rank icon" src={rank2} width={30} loading="lazy" />;
         break;
       case 3:
-        icon = <img src={rank3} width={30} loading="lazy" />;
+        icon = <img alt="rank icon" src={rank3} width={30} loading="lazy" />;
         break;
     }
     return icon;
@@ -137,7 +137,7 @@ export const RankingTable = ({ data, navigation, loading = false }: Props) => {
                 const isMe = profile && el.profile.id === profile.id;
                 const isFriend = idFriend.includes(el.profile.id);
                 const colorFriend = isFriend ? Colors.purple : "initial";
-                const color = isMe ? Colors.blue3 : colorFriend;
+                const color = isMe ? Colors.colorApp : colorFriend;
                 const colorText =
                   isMe || isFriend ? Colors.white : "text.primary";
 

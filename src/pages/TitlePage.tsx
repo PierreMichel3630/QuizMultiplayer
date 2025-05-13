@@ -199,7 +199,7 @@ export default function TitlePage() {
                   <Typography variant="h2" color="text.secondary">
                     {title.price}
                   </Typography>
-                  <img src={moneyIcon} width={25} />
+                  <img alt="money icon" src={moneyIcon} width={25} />
                 </Box>
               </Box>
             )}
@@ -215,7 +215,7 @@ export default function TitlePage() {
               />
             )}
             <ButtonColor
-              value={Colors.blue3}
+              value={Colors.colorApp}
               label={t("commun.return")}
               icon={KeyboardReturnIcon}
               variant="contained"

@@ -46,6 +46,7 @@ export const ImageQuestionBlock = ({ src }: Props) => {
         />
       ) : (
         <img
+          alt="question visual"
           src={src}
           data-src={src}
           loading="lazy"
@@ -85,6 +86,7 @@ export const ImageQCMBlock = ({ src, width = 200 }: PropsImageQCMBlock) => {
       }}
     >
       <img
+        alt="response visual"
         src={src}
         style={{
           height: percent(95),

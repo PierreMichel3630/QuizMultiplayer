@@ -56,7 +56,7 @@ export default function LoginPage() {
               gap: 1,
             }}
           >
-            <img src={logo} width={45} height={45} loading="lazy" />
+            <img alt="logo" src={logo} width={45} height={45} loading="lazy" />
             <Typography variant="h2">{t("appname")}</Typography>
           </Box>
           <Box>

@@ -24,7 +24,7 @@ export const BannerSelector = ({ onSelect }: Props) => {
           sx={{
             width: percent(100),
             height: px(MAXHEIGHT + 30),
-            backgroundColor: Colors.blue3,
+            backgroundColor: Colors.colorApp,
             cursor: "pointer",
             position: "relative",
           }}
@@ -52,7 +52,7 @@ export const BannerSelector = ({ onSelect }: Props) => {
 
         return (
           <Grid item xs={6} sm={4} md={3} key={banner.id}>
-            <Box sx={{ position: "relative" }}>
+            <Box sx={{ position: "relative" }} onClick={() => onSelect(banner)}>
               {isSelect && (
                 <CheckCircleTwoToneIcon
                   sx={{
@@ -76,7 +76,6 @@ export const BannerSelector = ({ onSelect }: Props) => {
                   objectFit: "cover",
                   height: px(MAXHEIGHT + 30),
                 }}
-                onClick={() => onSelect(banner)}
               />
             </Box>
           </Grid>

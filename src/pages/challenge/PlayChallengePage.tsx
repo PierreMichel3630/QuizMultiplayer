@@ -1,46 +1,40 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUser } from "src/context/UserProvider";
 import { QuestionSolo } from "src/models/Question";
-import { ResponseSolo } from "src/models/Response";
 
 import { Box, Container, Typography } from "@mui/material";
 import { percent, viewHeight } from "csx";
-import {
-  getQuestionChallenge,
-  getResponseQuestionChallenge,
-  selectChallengeGameByUuid,
-} from "src/api/challenge";
+import { endChallenge, selectChallengeGameByUuid } from "src/api/challenge";
 import { ImageCard } from "src/component/image/ImageCard";
 import { LoadingDot } from "src/component/Loading";
 import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
 import { Answer, Response } from "src/component/question/ResponseBlock";
 import { ChallengeGame } from "src/models/Challenge";
-import { StatusGameChallenge } from "src/models/enum/StatusGame";
 import { Colors } from "src/style/Colors";
-import { PreloadImages } from "src/utils/preload";
 
 import challengeIcon from "src/assets/challenge.png";
-import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
+import { decryptToJsonLanguage } from "src/utils/crypt";
+import { verifyResponse } from "src/utils/response";
 
 export default function PlayChallengePage() {
   const { t } = useTranslation();
-  const { language, sound } = useUser();
+  const { language } = useUser();
   const { uuidGame } = useParams();
   const navigate = useNavigate();
 
-  const [game, setGame] = useState<undefined | ChallengeGame>(undefined);
+  const DELAY_BETWEEN_QUESTION = 500;
+
+  const [questions, setQuestions] = useState<Array<QuestionSolo>>([]);
 
   const [question, setQuestion] = useState<undefined | QuestionSolo>(undefined);
   const [response, setResponse] = useState<undefined | Response>(undefined);
   const [timer, setTimer] = useState<undefined | number>(undefined);
-  const [audio, setAudio] = useState<undefined | HTMLAudioElement>(undefined);
   const [timeoutQuestion, setTimeoutQuestion] = useState<
     string | number | NodeJS.Timeout | undefined
   >(undefined);
-  const [images, setImages] = useState<Array<string>>([]);
   const [myresponse, setMyresponse] = useState<string | number | undefined>(
     undefined
   );
@@ -52,7 +46,12 @@ export default function PlayChallengePage() {
     const getGame = () => {
       if (uuidGame) {
         selectChallengeGameByUuid(uuidGame).then(({ data }) => {
-          setGame(data);
+          const challengeGame = data as ChallengeGame;
+          const questions = challengeGame.challenge.questions;
+          setQuestions(questions);
+          setTimeout(() => {
+            setQuestion(questions[0]);
+          }, DELAY_BETWEEN_QUESTION);
         });
       }
     };
@@ -63,156 +62,86 @@ export default function PlayChallengePage() {
     window.scrollTo(0, 0);
   };
 
-  const generateQuestion = useCallback(
-    (game: undefined | ChallengeGame, delay: number) => {
-      if (game) {
-        getQuestionChallenge(game.uuid).then(({ data }) => {
-          const questionSolo = data as QuestionSolo;
-          let urls: Array<string> = [];
-          if (questionSolo.image) {
-            urls = [...urls, questionSolo.image];
-          }
-          if (questionSolo.typequestion === "IMAGE") {
-            const images = questionSolo.responses.reduce(
-              (acc, v) => (v.image ? [...acc, v.image] : acc),
-              [] as Array<string>
-            );
-            urls = [...urls, ...images];
-          }
-          setImages(urls);
-
-          let audio: HTMLAudioElement | undefined = undefined;
-          if (questionSolo.audio) {
-            audio = new Audio(questionSolo.audio);
-            audio.load();
-          }
-
-          setTimeout(async () => {
-            if (audio) {
-              setAudio(audio);
-            }
-            setQuestion(questionSolo);
-            setTimer(questionSolo.time - 1);
-            setResponse(undefined);
-            scrollTop();
-            const newtimeoutQuestion = setTimeout(async () => {
-              const response = await getResponseQuestionChallenge({
-                game: game.uuid,
-                response: undefined,
-              });
-              const res = response.data as ResponseSolo;
-              setTimer(undefined);
-              setResponse(res);
-              setWrongAnswer((prev) => prev + 1);
-              scrollTop();
-              generateQuestion(game, 1000);
-              if (audio) {
-                audio.pause();
-              }
-            }, questionSolo.time * 1000);
-            setTimeoutQuestion(newtimeoutQuestion);
-          }, delay);
-        });
-      }
-    },
-    []
+  const numberQuestions = useMemo(
+    () => correctAnswer + wrongAnswer,
+    [correctAnswer, wrongAnswer]
   );
 
-  const validateResponse = useCallback(
-    async (value: Answer) => {
-      const myResponseValue = value ? value.value : undefined;
-      setMyresponse(myResponseValue);
-      setTimer(undefined);
-      clearTimeout(timeoutQuestion);
-      if (game && language) {
-        const { data } = await getResponseQuestionChallenge({
-          game: game.uuid,
-          response: myResponseValue,
-          language: language.iso,
-          exact: value ? value.exact : undefined,
-        });
-        const res = data as ResponseSolo;
-        setMyresponse(undefined);
-        setTimer(undefined);
-        setResponse({
-          response: res.response,
-          result: res.result,
-          responsePlayer1: res.answer,
-        });
+  const localStorageId = useMemo(() => `challenge-${uuidGame}`, [uuidGame]);
+
+  const validateResponse = (value?: Answer) => {
+    clearTimeout(timeoutQuestion);
+    setTimer(undefined);
+    const myResponseValue = value?.value ?? undefined;
+    setMyresponse(myResponseValue);
+    if (question) {
+      const result = value ? verifyResponse(language, question, value) : false;
+      const response = decryptToJsonLanguage(question.response);
+      const questionsgame: Array<unknown> = JSON.parse(
+        localStorage.getItem(localStorageId) ?? "[]"
+      );
+      questionsgame.push({
+        ...question,
+        response: response,
+        resultPlayer1: result,
+        responsePlayer1: myResponseValue,
+      });
+      localStorage.setItem(localStorageId, JSON.stringify(questionsgame));
+      setCorrectAnswer((prev) => (result ? prev + 1 : prev));
+      setWrongAnswer((prev) => (result ? prev : prev + 1));
+      setResponse({
+        response: response,
+        result: result,
+        responsePlayer1: myResponseValue,
+      });
+      setMyresponse(undefined);
+      setTimeout(() => {
         scrollTop();
-        generateQuestion(game, 1000);
-        if (res.result) {
-          setCorrectAnswer((prev) => prev + 1);
+        const indexNextQuestion = questionsgame.length;
+        if (indexNextQuestion < questions.length) {
+          setResponse(undefined);
+          setQuestion(questions[indexNextQuestion]);
         } else {
-          setWrongAnswer((prev) => prev + 1);
+          end();
         }
-        if (audio) {
-          audio.pause();
-        }
-      }
-    },
-    [audio, game, generateQuestion, language, timeoutQuestion]
-  );
-
-  useEffect(() => {
-    const getGame = () => {
-      if (uuidGame) {
-        selectChallengeGameByUuid(uuidGame).then(({ data }) => {
-          if (data !== null) {
-            const res = data as ChallengeGame;
-            if (res.status === StatusGameChallenge.END) {
-              navigate(`/challenge/game/${res.uuid}`, {
-                state: {
-                  previousPath: "/challenge",
-                },
-              });
-            } else {
-              setGame(res);
-              generateQuestion(res, 1000);
-            }
-          } else {
-            navigate("/");
-          }
-        });
-      }
-    };
-    getGame();
-  }, [generateQuestion, navigate, uuidGame]);
-
-  useEffect(() => {
-    if (audio) {
-      audio.volume = sound / 100;
-      audio.play();
+      }, DELAY_BETWEEN_QUESTION);
     }
-    return () => {
-      if (audio) {
-        audio.pause();
-      }
-    };
-  }, [audio, sound]);
+  };
+
+  const end = () => {
+    if (uuidGame) {
+      const questionsgame: Array<unknown> = JSON.parse(
+        localStorage.getItem(localStorageId) ?? "[]"
+      );
+      endChallenge(questionsgame, uuidGame).then(({ data }) => {
+        navigate(`/challenge/game/${uuidGame}`, {
+          state: {
+            previousPath: "/challenge",
+            isEnd: true,
+            extra: data,
+          },
+        });
+      });
+      localStorage.removeItem(localStorageId);
+    }
+  };
 
   const responseP1 = useMemo(
     () => myresponse ?? (response ? response.responsePlayer1 : undefined),
     [myresponse, response]
   );
 
-  const numberQuestions = useMemo(
-    () => correctAnswer + wrongAnswer,
-    [correctAnswer, wrongAnswer]
-  );
-
   useEffect(() => {
-    if (numberQuestions >= NUMBER_QUESTIONS_CHALLENGE) {
-      setTimeout(() => {
-        navigate(`/challenge/game/${uuidGame}`, {
-          state: {
-            previousPath: "/challenge",
-            isEnd: true,
-          },
-        });
-      }, 1000);
+    if (question) {
+      setTimer(question.time);
+      const newtimeoutQuestion = setTimeout(async () => {
+        validateResponse();
+      }, question.time * 1000);
+      setTimeoutQuestion(newtimeoutQuestion);
+    } else {
+      setTimer(undefined);
     }
-  }, [numberQuestions, navigate, uuidGame]);
+  }, [question]);
 
   return (
     <Box>
@@ -228,7 +157,6 @@ export default function PlayChallengePage() {
         <Helmet>
           <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
         </Helmet>
-        <PreloadImages urls={images} />
         <Box
           sx={{
             display: "flex",

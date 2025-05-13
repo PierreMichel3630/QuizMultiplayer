@@ -70,7 +70,11 @@ export const HeaderApp = () => {
                   cursor: "pointer",
                 }}
               >
-                <img src={googleplay} style={{ width: px(20) }} />
+                <img
+                  alt="logo google play"
+                  src={googleplay}
+                  style={{ width: px(20) }}
+                />
                 <Typography variant="h6" color="text.secondary" noWrap>
                   {t("commun.googleplay")}
                 </Typography>

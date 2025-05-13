@@ -60,7 +60,7 @@ export const DropDragFile = ({ file, onDrop }: Props) => {
       {urlFile !== null && (
         <Grid item xs={12}>
           <ImageListItem>
-            <img className={imageCss} alt="preview image" src={urlFile} />
+            <img className={imageCss} alt="preview" src={urlFile} />
             <ImageListItemBar
               title={nameFile}
               actionIcon={

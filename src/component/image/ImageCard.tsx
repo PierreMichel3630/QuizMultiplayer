@@ -33,6 +33,7 @@ export const ImageCard = ({ value, size = percent(100) }: Props) => {
     >
       {typeof value.image === "string" ? (
         <img
+          alt="unknow"
           src={value.image}
           srcSet={value.image}
           loading="lazy"

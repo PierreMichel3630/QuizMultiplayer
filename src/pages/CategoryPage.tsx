@@ -21,7 +21,7 @@ export default function CategoryPage() {
 
   const { user } = useAuth();
   const { language } = useUser();
-  const { categories, themes, favorites, refreshFavorites } = useApp();
+  const { categories, themes, favorites, getFavorite } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
   const [category, setCategory] = useState<Category | undefined>(undefined);
@@ -77,7 +77,7 @@ export default function CategoryPage() {
             } else {
               setSeverity("success");
               setMessage(t("alert.deletefavorite"));
-              refreshFavorites();
+              getFavorite();
             }
           });
         } else {
@@ -91,7 +91,7 @@ export default function CategoryPage() {
             } else {
               setSeverity("success");
               setMessage(t("alert.addfavorite"));
-              refreshFavorites();
+              getFavorite();
             }
           });
         }

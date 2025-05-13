@@ -236,7 +236,7 @@ export default function PlayPage() {
                   <Container maxWidth="md">
                     <Box sx={{ p: 1 }}>
                       <ButtonColor
-                        value={Colors.blue3}
+                        value={Colors.colorApp}
                         label={t("commun.launchgame")}
                         icon={LogoIcon}
                         variant="contained"

@@ -40,6 +40,7 @@ export const RegisterCountryBlock = ({
           onClick={() => setOpen(true)}
         >
           <img
+            alt="flag"
             src={country.flag}
             style={{
               maxHeight: 30,
@@ -107,6 +108,7 @@ export const MyCountryBlock = ({ country, onChange, onDelete }: Props) => {
           onClick={() => setOpen(true)}
         >
           <img
+            alt="flag"
             src={country.flag}
             style={{
               maxHeight: 30,

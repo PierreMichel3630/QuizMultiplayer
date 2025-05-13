@@ -12,6 +12,8 @@ export const SUPABASE_HISTORYSOLOGAMES_TABLE = "historysologames";
 
 export const SUPABASE_RESPONSESOLOGAME_FUNCTION = "response-solo-game";
 export const SUPABASE_LAUNCHSOLOGAME_FUNCTION = "launch-solo-gameV2";
+export const SUPABASE_ENDSOLOGAME_FUNCTION = "end-solo-game";
+
 export const SUPABASE_SOLOGAME_TABLE = "sologame";
 
 export const SUPABASE_LAUNCHTRAININGGAME_FUNCTION = "launch-training-game";
@@ -92,6 +94,14 @@ export const selectTrainingGameById = (uuid: string) =>
 export const launchSoloGame = (player: string, theme: number) =>
   supabase.functions.invoke(SUPABASE_LAUNCHSOLOGAME_FUNCTION, {
     body: { player: player, theme: theme },
+  });
+
+export const endSoloGame = (questions: Array<unknown>, gameUuid: string) =>
+  supabase.functions.invoke(SUPABASE_ENDSOLOGAME_FUNCTION, {
+    body: {
+      questions,
+      gameUuid,
+    },
   });
 
 export const selectSoloGameById = (uuid: string) =>

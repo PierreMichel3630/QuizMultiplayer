@@ -25,8 +25,9 @@
     "rankingmonth": "Classement Mois",
     "rankingyear": "Classement Année",
     "rankingalltime": "Classement All Time",
-    "game": "Partie",
     "games": "Parties",
+    "game_one": "{{count}} Partie",
+    "game_other": "{{count}} Parties",
     "devine": "Devine la réponse !",
     "question": "Question",
     "startgame": "La partie va bientôt commencer",
@@ -323,6 +324,7 @@
     "daychallenge": "Défi du jour",
     "gotochallenge": "Jouer au Défi du jour",
     "profilechallenge": "Profil Défi du jour",
+    "seestatchallenge": "Voir les statistiques",
     "nextdaychallenge": "Prochain Défi du jour dans",
     "challenge": "Défis",
     "challengeexplain": "10 questions vont vous être posées, répondez à un maximum le plus rapidement possible.",
@@ -334,7 +336,16 @@
     "proposition": "Proposition {{count}}",
     "addmodifydelete": "Ajout / Modification / Suppression",
     "summaryabreviation": "Récap.",
-    "onlyfriend" : "Afficher uniquement mes amis"
+    "onlyfriend" : "Afficher uniquement mes amis",
+    "titleholder": "Tenant du titre",
+    "newversionavailable": "Une nouvelle version de l'application est disponible !",
+    "install": "Installer",
+    "version": "Version",
+    "grades": "Notes",
+    "result" : "Résultat"
+  },
+  "abrevation": {
+    "average": "Moy."
   },
   "offline": {
     "title": "Connectez-vous à Internet",
@@ -548,6 +559,9 @@
     },
     "challenge": {
       "title": "Défis du jour"
+    },
+    "notification": {
+      "title": "Notification"
     }
   },
   "enum": {
@@ -840,5 +854,35 @@
     "gain100gold": "Gagner 100 Quizcoin",
     "gain250gold": "Gagner 250 Quizcoin",
     "gain500gold": "Gagner 500 Quizcoin"
+  },
+  "challenge": {
+    "winner" :{
+      "day": "Champion du {{value}}",
+      "week": "Champion semaine {{value}}",
+      "month": "Champion mois {{value}}",
+      "alltime": "Champion All Time"
+    },
+    "loser" :{
+      "day": "Perdant jour {{value}}",
+      "week": "Perdant semaine {{value}}",
+      "month": "Perdant mois {{value}}",
+      "alltime": "Perdant All Time"
+    },
+    "result": {
+      "winner": "Gagnant",
+      "loser": "Perdant"
+    }
+  },
+  "chart": {
+    "distribution": "Répartition",
+    "grade": "Note",
+    "position": "Position",
+    "top1": "Top 1",
+    "top3": "Top 3",
+    "top5": "Top 5",
+    "top10": "Top 10",
+    "top100": "Top 100",
+    "other": "Autre"
+
   }
 }

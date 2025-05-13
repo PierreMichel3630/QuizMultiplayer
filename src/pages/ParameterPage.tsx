@@ -112,6 +112,11 @@ export default function ParameterPage() {
               <Grid item xs={12}>
                 <LanguageSelect />
               </Grid>
+              <Grid item xs={12} sx={{ textAlign: "center" }}>
+                <Typography variant="caption">
+                  {t("commun.version")} : 1.6.0
+                </Typography>
+              </Grid>
             </Grid>
           </Box>
         </Grid>

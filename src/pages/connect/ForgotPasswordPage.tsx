@@ -63,7 +63,7 @@ export default function ForgotPasswordPage() {
               gap: 1,
             }}
           >
-            <img src={logo} width={45} height={45} loading="lazy" />
+            <img alt="logo" src={logo} width={45} height={45} loading="lazy" />
             <Typography variant="h2">{t("appname")}</Typography>
           </Box>
           <Box>
@@ -77,7 +77,7 @@ export default function ForgotPasswordPage() {
                 <>
                   <Grid item>
                     <MarkEmailReadIcon
-                      sx={{ fontSize: 100, color: Colors.blue3 }}
+                      sx={{ fontSize: 100, color: Colors.colorApp }}
                     />
                   </Grid>
                   <Grid item xs={12}>

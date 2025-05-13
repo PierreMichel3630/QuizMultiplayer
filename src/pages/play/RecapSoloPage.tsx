@@ -42,7 +42,6 @@ export default function RecapSoloPage() {
   const [maxIndex, setMaxIndex] = useState(5);
 
   const allquestion = location.state ? location.state.allquestion : false;
-  const extra = location.state ? location.state.extra : undefined;
 
   useEffect(() => {
     refreshProfil();
@@ -130,7 +129,10 @@ export default function RecapSoloPage() {
                 )}
                 <Grid item xs={12}>
                   <MyExperienceSoloBlock
-                    xp={extra ? extra.xpplayer1 : undefined}
+                    xp={{
+                      match: 50,
+                      matchscore: 10 * game.points,
+                    }}
                   />
                 </Grid>
                 {profile !== null ? (

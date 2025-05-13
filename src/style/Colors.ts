@@ -29,7 +29,6 @@ export const Colors = {
   lightBlue: lightBlue[100],
   blue: lightBlue[200],
   blue2: blue[400],
-  blue3: "#01b5da",
   blue4: blue[700],
   green: green[400],
   green2: green[800],
@@ -66,4 +65,5 @@ export const Colors = {
   waitanswerborder: grey[200],
   colorDuel1: pink[300],
   colorDuel2: lightBlue[200],
+  colorApp: "#01b5da",
 };

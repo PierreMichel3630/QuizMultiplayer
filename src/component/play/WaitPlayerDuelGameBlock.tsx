@@ -97,7 +97,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           backgroundColor: Colors.colorDuel1,
           backgroundImage: game.player1?.banner
             ? `url("${game.player1.banner.src}")`
-            : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
+            : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.colorApp} 46%, ${Colors.blue} 100%)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           height: percent(50),
@@ -188,7 +188,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           backgroundColor: Colors.colorDuel2,
           backgroundImage: game.player2?.banner
             ? `url("${game.player2.banner.src}")`
-            : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
+            : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.colorApp} 46%, ${Colors.blue} 100%)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           height: percent(50),

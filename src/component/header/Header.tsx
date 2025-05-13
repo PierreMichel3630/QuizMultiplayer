@@ -20,7 +20,7 @@ export const Header = () => {
   return (
     <Box
       sx={{
-        backgroundColor: Colors.blue3,
+        backgroundColor: Colors.colorApp,
       }}
     >
       <Container maxWidth="md">

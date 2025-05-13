@@ -54,6 +54,7 @@ import { StatAccomplishment } from "src/models/Accomplishment";
 import { Friend, FRIENDSTATUS } from "src/models/Friend";
 import { getLevel } from "src/utils/calcul";
 import { searchString } from "src/utils/string";
+import { CardChallenge } from "src/component/card/CardChallenge";
 
 export default function ProfilPage() {
   const { t } = useTranslation();
@@ -325,10 +326,10 @@ export default function ProfilPage() {
       <Box
         sx={{
           p: 1,
-          backgroundColor: Colors.blue3,
+          backgroundColor: Colors.colorApp,
           backgroundImage: profileUser?.banner
             ? `url("${profileUser.banner.src}")`
-            : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
+            : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.colorApp} 46%, ${Colors.blue} 100%)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           position: "relative",
@@ -412,6 +413,9 @@ export default function ProfilPage() {
             </Grid>
           )}
           <Grid item xs={12}>
+            <CardChallenge profileId={id}/>
+          </Grid>
+          <Grid item xs={12}>
             <CardBadge badges={badges} loading={isLoadingBadge} />
           </Grid>
           <Grid item xs={12}>
@@ -485,7 +489,7 @@ export default function ProfilPage() {
                           display: "flex",
                           alignItems: "center",
                           gap: 1,
-                          backgroundColor: Colors.blue3,
+                          backgroundColor: Colors.colorApp,
                           p: px(5),
                           justifyContent: "space-between",
                         }}

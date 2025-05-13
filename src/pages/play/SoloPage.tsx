@@ -3,11 +3,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectSoloGameById } from "src/api/game";
+import { endSoloGame, selectSoloGameById } from "src/api/game";
 import { supabase } from "src/api/supabase";
 import { useUser } from "src/context/UserProvider";
 import { QuestionSolo } from "src/models/Question";
-import { ResponseSolo } from "src/models/Response";
 
 import { percent, viewHeight } from "csx";
 import { LoadingDot } from "src/component/Loading";
@@ -16,7 +15,9 @@ import { QuestionResponseBlock } from "src/component/question/QuestionResponseBl
 import { Answer, Response } from "src/component/question/ResponseBlock";
 import { SoloGame } from "src/models/Game";
 import { StatusGameSolo } from "src/models/enum/StatusGame";
+import { decryptToJsonLanguage } from "src/utils/crypt";
 import { PreloadImages } from "src/utils/preload";
+import { verifyResponse } from "src/utils/response";
 
 export default function SoloPage() {
   const { t } = useTranslation();
@@ -39,13 +40,19 @@ export default function SoloPage() {
     undefined
   );
 
+  const localStorageId = useMemo(() => `game-solo-${uuidGame}`, [uuidGame]);
+
   const generateQuestion = useCallback(
     (game: undefined | SoloGame, delay: number) => {
       if (game) {
+        const questionsgame: Array<unknown> = JSON.parse(
+          localStorage.getItem(localStorageId) ?? "[]"
+        );
         supabase.functions
-          .invoke("question-solo-gameV2", {
+          .invoke("question-solo-gameV3", {
             body: {
               game: game.uuid,
+              questions: questionsgame,
             },
           })
           .then(({ data }) => {
@@ -71,12 +78,17 @@ export default function SoloPage() {
 
             setTimeout(async () => {
               if (questionSolo.allresponse === true) {
-                navigate(`/recapsolo/${game.uuid}`, {
-                  state: {
-                    allquestion: true,
-                    extra: questionSolo.extra,
-                  },
+                const questionsgame: Array<unknown> = JSON.parse(
+                  localStorage.getItem(localStorageId) ?? "[]"
+                );
+                endSoloGame(questionsgame, game.uuid).then(() => {
+                  navigate(`/recapsolo/${game.uuid}`, {
+                    state: {
+                      allquestion: true,
+                    },
+                  });
                 });
+                localStorage.removeItem(localStorageId);
               } else {
                 if (audio) {
                   setAudio(audio);
@@ -86,27 +98,39 @@ export default function SoloPage() {
                 setResponse(undefined);
                 scrollTop();
                 const newtimeoutQuestion = setTimeout(async () => {
-                  const response = await supabase.functions.invoke(
-                    "response-solo-game",
-                    {
-                      body: {
-                        game: game.uuid,
-                        response: undefined,
-                      },
-                    }
+                  const response = decryptToJsonLanguage(questionSolo.response);
+                  const questionsgame: Array<unknown> = JSON.parse(
+                    localStorage.getItem(localStorageId) ?? "[]"
                   );
-                  const res = response.data as ResponseSolo;
+                  questionsgame.push({
+                    ...questionSolo,
+                    response: response,
+                    resultPlayer1: false,
+                    responsePlayer1: undefined,
+                  });
+                  localStorage.setItem(
+                    localStorageId,
+                    JSON.stringify(questionsgame)
+                  );
+                  setResponse({
+                    response: response,
+                    result: false,
+                    responsePlayer1: undefined,
+                  });
                   setTimer(undefined);
-                  setResponse(res);
-                  setScore(res.points);
                   scrollTop();
                   setTimeout(async () => {
-                    navigate(`/recapsolo/${game.uuid}`, {
-                      state: {
-                        allquestion: false,
-                        extra: res.extra,
-                      },
+                    const questionsgame: Array<unknown> = JSON.parse(
+                      localStorage.getItem(localStorageId) ?? "[]"
+                    );
+                    endSoloGame(questionsgame, game.uuid).then(() => {
+                      navigate(`/recapsolo/${game.uuid}`, {
+                        state: {
+                          allquestion: false,
+                        },
+                      });
                     });
+                    localStorage.removeItem(localStorageId);
                   }, 1500);
                 }, questionSolo.time * 1000);
                 setTimeoutQuestion(newtimeoutQuestion);
@@ -115,52 +139,64 @@ export default function SoloPage() {
           });
       }
     },
-    [navigate]
+    [localStorageId, navigate]
   );
 
   const validateResponse = useCallback(
     async (value: Answer) => {
-      const myResponseValue = value ? value.value : undefined;
-      setMyresponse(myResponseValue);
-      setTimer(undefined);
       clearTimeout(timeoutQuestion);
-      if (game && language) {
-        const { data } = await supabase.functions.invoke("response-solo-game", {
-          body: {
-            game: game.uuid,
-            response: myResponseValue,
-            language: language.iso,
-            exact: value ? value.exact : undefined,
-          },
+      setTimer(undefined);
+      const myResponseValue = value?.value ?? undefined;
+      setMyresponse(myResponseValue);
+      if (question && game && language) {
+        const result = verifyResponse(language, question, value);
+        const response = decryptToJsonLanguage(question.response);
+        const questionsgame: Array<unknown> = JSON.parse(
+          localStorage.getItem(localStorageId) ?? "[]"
+        );
+        questionsgame.push({
+          ...question,
+          response: response,
+          resultPlayer1: result,
+          responsePlayer1: myResponseValue,
         });
-        const res = data as ResponseSolo;
-        setMyresponse(undefined);
-        setTimer(undefined);
+        localStorage.setItem(localStorageId, JSON.stringify(questionsgame));
         setResponse({
-          response: res.response,
-          result: res.result,
-          responsePlayer1: res.answer,
+          response: response,
+          result: result,
+          responsePlayer1: myResponseValue,
         });
-        setScore(res.points);
-        scrollTop();
-        if (res.result) {
+        setMyresponse(undefined);
+        if (result) {
+          setScore((prev) => prev + 1);
           generateQuestion(game, 1500);
         } else {
           setTimeout(async () => {
-            navigate(`/recapsolo/${game.uuid}`, {
-              state: {
-                allquestion: false,
-                extra: res.extra,
-              },
+            endSoloGame(questionsgame, game.uuid).then(() => {
+              navigate(`/recapsolo/${game.uuid}`, {
+                state: {
+                  allquestion: false,
+                },
+              });
             });
+            localStorage.removeItem(localStorageId);
           }, 1500);
         }
-        if (audio) {
-          audio.pause();
-        }
+      }
+      if (audio) {
+        audio.pause();
       }
     },
-    [audio, game, generateQuestion, language, navigate, timeoutQuestion]
+    [
+      audio,
+      game,
+      generateQuestion,
+      language,
+      localStorageId,
+      navigate,
+      question,
+      timeoutQuestion,
+    ]
   );
 
   useEffect(() => {

@@ -35,7 +35,7 @@ export const DefaultTabs = ({ tab, onChange, values }: Props) => {
               minHeight: "auto",
               color: "text.primary",
               "&.Mui-selected": {
-                color: Colors.blue3,
+                color: Colors.colorApp,
               },
             }}
             icon={value.icon}

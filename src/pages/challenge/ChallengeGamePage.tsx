@@ -13,11 +13,12 @@ import { selectChallengeGameByUuid } from "src/api/challenge";
 import { ButtonColor } from "src/component/Button";
 import { BarNavigation } from "src/component/navigation/BarNavigation";
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
-import { ChallengeGame } from "src/models/Challenge";
+import { ChallengeGame, ExtraChallenge } from "src/models/Challenge";
 
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
-import { StreakChallengeModal } from "src/component/modal/StreakChallengeModal";
+import { StreakBlock } from "src/component/StreakBlock";
+import { ExtraBlock } from "src/component/extra/ExtraBlock";
 import { HeaderProfile } from "src/component/profile/HeaderProfile";
 import { useAuth } from "src/context/AuthProviderSupabase";
 
@@ -29,6 +30,7 @@ export default function ChallengeGamePage() {
   const location = useLocation();
 
   const [game, setGame] = useState<undefined | ChallengeGame>(undefined);
+  const [extra, setExtra] = useState<undefined | ExtraChallenge>(undefined);
   const [streakChallenge, setStreakChallenge] = useState<undefined | number>(
     undefined
   );
@@ -52,6 +54,12 @@ export default function ChallengeGamePage() {
       setStreakChallenge(streak);
     }
   }, [location, game, setStreak]);
+
+  useEffect(() => {
+    if (location.state?.extra) {
+      setExtra(location.state.extra as ExtraChallenge);
+    }
+  }, [location]);
 
   return (
     <Grid
@@ -78,13 +86,32 @@ export default function ChallengeGamePage() {
                   xs={12}
                   sx={{
                     display: "flex",
-                    justifyContent: "center",
+                    justifyContent: streakChallenge
+                      ? "space-between"
+                      : "center",
                     alignItems: "center",
                     gap: 1,
                   }}
                 >
                   <HeaderProfile profile={game.profile} />
+                  {streakChallenge && (
+                    <StreakBlock
+                      value={streakChallenge}
+                      logoSize={30}
+                      textSize={20}
+                    />
+                  )}
                 </Grid>
+                {extra && (
+                  <>
+                    <Grid item xs={12}>
+                      <ExtraBlock value={extra} />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Divider sx={{ borderBottomWidth: 5 }} />
+                    </Grid>
+                  </>
+                )}
                 <Grid
                   item
                   xs={6}
@@ -167,12 +194,6 @@ export default function ChallengeGamePage() {
           </Box>
         </Container>
       </Box>
-      {streakChallenge !== undefined && (
-        <StreakChallengeModal
-          close={() => setStreakChallenge(undefined)}
-          streak={streakChallenge}
-        />
-      )}
     </Grid>
   );
 }

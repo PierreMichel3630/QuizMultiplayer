@@ -26,6 +26,7 @@ import {
   selectRankingChallengeByWeekPaginate,
 } from "src/api/challenge";
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
+import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import {
   ChallengeRanking,
@@ -34,7 +35,9 @@ import {
   ChallengeRankingWeek,
 } from "src/models/Challenge";
 import { ClassementChallengeTimeEnum } from "src/models/enum/ClassementEnum";
+import { FRIENDSTATUS } from "src/models/Friend";
 import { GroupButtonChallengeTime } from "./button/ButtonGroup";
+import { WinnerTextRankingBlock } from "./challenge/WinnerChallengeBlock";
 import {
   ResultAllTimeChallengeBlock,
   ResultDayChallengeBlock,
@@ -43,13 +46,11 @@ import {
   ResultYearChallengeBlock,
 } from "./ChallengeBlock";
 import { BasicSearchInput } from "./Input";
+import { SortButton } from "./SortBlock";
 import {
   DataRankingChallenge,
   RankingChallengeTable,
 } from "./table/RankingChallengeTable";
-import { SortButton } from "./SortBlock";
-import { useApp } from "src/context/AppProvider";
-import { FRIENDSTATUS } from "src/models/Friend";
 
 interface Props {
   hasPlayChallenge?: boolean;
@@ -211,6 +212,7 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
           const newdata = res.map((el) => {
             return {
               profile: el.profile,
+              profileExtra: <WinnerTextRankingBlock profile={el.profile} />,
               value: (
                 <TableCell
                   sx={{
@@ -257,13 +259,14 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
           const newdata = res.map((el) => {
             return {
               profile: el.profile,
+              profileExtra: <WinnerTextRankingBlock profile={el.profile} />,
               value: (
                 <TableCell
                   sx={{
                     p: px(4),
                     color: "inherit",
                   }}
-                  width={100}
+                  width={92}
                 >
                   <Box
                     sx={{
@@ -273,13 +276,13 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
                       justifyContent: "center",
                     }}
                   >
-                    <Box sx={{ width: px(80) }}>
+                    <Box>
                       <Typography variant="h6" noWrap>
                         {el.score} {t("commun.pointsabbreviation")} (
                         {el.scoreavg.toFixed(1)})
                       </Typography>
                     </Box>
-                    <Box sx={{ width: px(80) }}>
+                    <Box>
                       <Typography variant="h6" noWrap>
                         {(el.time / 1000).toFixed(2)}s
                       </Typography>
@@ -322,13 +325,14 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
           const newdata = res.map((el) => {
             return {
               profile: el.profile,
+              profileExtra: <WinnerTextRankingBlock profile={el.profile} />,
               value: (
                 <TableCell
                   sx={{
                     p: px(4),
                     color: "inherit",
                   }}
-                  width={100}
+                  width={92}
                 >
                   <Box
                     sx={{
@@ -338,13 +342,13 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
                       justifyContent: "center",
                     }}
                   >
-                    <Box sx={{ width: px(80) }}>
+                    <Box>
                       <Typography variant="h6" noWrap>
                         {el.score} {t("commun.pointsabbreviation")} (
                         {el.scoreavg.toFixed(1)})
                       </Typography>
                     </Box>
-                    <Box sx={{ width: px(80) }}>
+                    <Box>
                       <Typography variant="h6" noWrap>
                         {(el.time / 1000).toFixed(2)}s
                       </Typography>
@@ -386,13 +390,14 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
           const newdata = res.map((el) => {
             return {
               profile: el.profile,
+              profileExtra: <WinnerTextRankingBlock profile={el.profile} />,
               value: (
                 <TableCell
                   sx={{
                     p: px(4),
                     color: "inherit",
                   }}
-                  width={100}
+                  width={92}
                 >
                   <Box
                     sx={{
@@ -402,13 +407,13 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
                       justifyContent: "center",
                     }}
                   >
-                    <Box sx={{ width: px(80) }}>
+                    <Box>
                       <Typography variant="h6" noWrap>
                         {el.score} {t("commun.pointsabbreviation")} (
                         {el.scoreavg.toFixed(1)})
                       </Typography>
                     </Box>
-                    <Box sx={{ width: px(80) }}>
+                    <Box>
                       <Typography variant="h6" noWrap>
                         {(el.time / 1000).toFixed(2)}s
                       </Typography>
@@ -534,27 +539,35 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
               justifyContent: "center",
             }}
           >
-            <IconButton onClick={substractDate}>
+            <IconButton onClick={substractDate} size="small">
               <KeyboardArrowLeftIcon fontSize="large" />
             </IconButton>
             <Typography variant="h4">{dateDisplay}</Typography>
-            <IconButton onClick={addDate} disabled={isDisabledNextDay}>
+            <IconButton
+              onClick={addDate}
+              disabled={isDisabledNextDay}
+              size="small"
+            >
               <KeyboardArrowRightIcon fontSize="large" />
             </IconButton>
           </Box>
         </Grid>
       )}
-      <Grid item>
-        {
+      {hasPlayChallenge && (
+        <Grid item>
           {
-            day: <ResultDayChallengeBlock date={date} profile={profile} />,
-            week: <ResultWeekChallengeBlock date={date} profile={profile} />,
-            month: <ResultMonthChallengeBlock date={date} profile={profile} />,
-            year: <ResultYearChallengeBlock date={date} profile={profile} />,
-            alltime: <ResultAllTimeChallengeBlock profile={profile} />,
-          }[tabTime]
-        }
-      </Grid>
+            {
+              day: <ResultDayChallengeBlock date={date} profile={profile} />,
+              week: <ResultWeekChallengeBlock date={date} profile={profile} />,
+              month: (
+                <ResultMonthChallengeBlock date={date} profile={profile} />
+              ),
+              year: <ResultYearChallengeBlock date={date} profile={profile} />,
+              alltime: <ResultAllTimeChallengeBlock profile={profile} />,
+            }[tabTime]
+          }
+        </Grid>
+      )}
       <Grid
         item
         xs={12}

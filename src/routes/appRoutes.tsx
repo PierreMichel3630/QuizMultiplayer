@@ -50,6 +50,7 @@ import BannersPage from "src/pages/shop/BannersPage";
 import ShopPage from "src/pages/shop/ShopPage";
 import ShopThemePage from "src/pages/shop/ShopThemePage";
 import TitlesPage from "src/pages/shop/TitlesPage";
+import ChallengeOutletPage from "src/pages/challenge/ChallengeOutletPage";
 
 export const AppRoutes = [
   {
@@ -186,10 +187,6 @@ export const AppRoutes = [
         element: <StreakPage />,
       },
       {
-        path: "/challenge",
-        element: <ChallengePage />,
-      },
-      {
         path: "/games",
         element: <HistoryGamePage />,
       },
@@ -221,6 +218,16 @@ export const AppRoutes = [
       {
         path: "/theme/:id/shop",
         element: <ShopThemePage />,
+      },
+      {
+        path: "/challenge",
+        element: <ChallengeOutletPage />,
+        children: [
+          {
+            path: "/challenge",
+            element: <ChallengePage />,
+          },
+        ],
       },
     ],
   },

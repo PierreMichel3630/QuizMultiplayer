@@ -24,7 +24,7 @@ export const ThemeBlock = () => {
                   contrastText: Colors.white,
                 },
                 secondary: {
-                  main: Colors.blue3,
+                  main: Colors.colorApp,
                   contrastText: Colors.white,
                 },
                 text: {
@@ -42,7 +42,7 @@ export const ThemeBlock = () => {
                   contrastText: Colors.white,
                 },
                 secondary: {
-                  main: Colors.blue3,
+                  main: Colors.colorApp,
                   contrastText: Colors.white,
                 },
                 text: {
@@ -68,7 +68,7 @@ export const ThemeBlock = () => {
               root: {
                 color: mode === "light" ? Colors.greyLightMode : Colors.white,
                 "&.Mui-selected": {
-                  color: Colors.blue3,
+                  color: Colors.colorApp,
                 },
               },
               label: {

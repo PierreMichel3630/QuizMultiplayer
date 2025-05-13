@@ -37,7 +37,7 @@ export const CopyTextBlock = ({ text }: Props) => {
         <Grid item xs={3}>
           <Button
             sx={{
-              backgroundColor: Colors.blue3,
+              backgroundColor: Colors.colorApp,
               p: "2px 10px",
               borderRadius: px(50),
             }}

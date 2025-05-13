@@ -138,7 +138,7 @@ export const DonutGames = ({
             item
             xs={12}
             sx={{
-              backgroundColor: Colors.blue3,
+              backgroundColor: Colors.colorApp,
               p: px(5),
             }}
           >

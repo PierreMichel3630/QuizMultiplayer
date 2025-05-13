@@ -137,7 +137,7 @@ export const CardAdminBanner = ({ banner, onEdit }: PropsCardAdminBanner) => {
           <Typography variant="h2">{banner.id}</Typography>
         </Grid>
         <Grid item xs>
-          <img width={200} src={banner.src} />
+          <img alt="banner" width={200} src={banner.src} />
         </Grid>
         <Grid item xs>
           <Typography variant="h4">{banner.price}</Typography>

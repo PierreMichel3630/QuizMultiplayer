@@ -114,7 +114,7 @@ export const ExperienceBlock = ({ xp, xpgain }: Props) => {
               sx={{
                 height: px(20),
                 width: percent(pourcentage > 0 ? pourcentage : 0),
-                backgroundColor: Colors.blue3,
+                backgroundColor: Colors.colorApp,
                 borderTopLeftRadius: px(25),
                 borderBottomLeftRadius: px(25),
               }}
@@ -282,7 +282,7 @@ export const ExperienceDuelBlock = ({ xp }: PropsExperienceDuelBlock) => {
                 sx={{
                   height: px(20),
                   width: percent(pourcentage > 0 ? pourcentage : 0),
-                  backgroundColor: Colors.blue3,
+                  backgroundColor: Colors.colorApp,
                   borderTopLeftRadius: px(25),
                   borderBottomLeftRadius: px(25),
                 }}
@@ -464,7 +464,7 @@ export const MyExperienceSoloBlock = ({ xp }: PropsSolo) => {
                 sx={{
                   height: px(20),
                   width: percent(pourcentage > 0 ? pourcentage : 0),
-                  backgroundColor: Colors.blue3,
+                  backgroundColor: Colors.colorApp,
                   borderTopLeftRadius: px(25),
                   borderBottomLeftRadius: px(25),
                 }}
@@ -531,6 +531,135 @@ const ExperienceGainBlock = ({
         <Typography variant="caption" sx={{ color: color }} component="span">
           {t("commun.xpabbreviation")}
         </Typography>
+      </Box>
+    </Box>
+  );
+};
+
+interface PropsXpBar {
+  previousxp: number;
+  value: number;
+}
+
+export const XpBar = ({ previousxp, value }: PropsXpBar) => {
+  const { t } = useTranslation();
+  const { mode } = useUser();
+  const isDarkMode = useMemo(() => mode === "dark", [mode]);
+
+  const newXp = useMemo(() => value + previousxp, [previousxp, value]);
+
+  const myLevel = useMemo(() => getLevel(newXp), [newXp]);
+
+  const experienceLevel = useMemo(
+    () => getExperienceByLevel(myLevel),
+    [myLevel]
+  );
+  const experienceNextLevel = useMemo(
+    () => getExperienceByLevel(myLevel + 1),
+    [myLevel]
+  );
+
+  const xpLevel = useMemo(() => {
+    return experienceNextLevel - experienceLevel;
+  }, [experienceNextLevel, experienceLevel]);
+
+  const myXpLevel = useMemo(() => {
+    return previousxp - experienceLevel;
+  }, [previousxp, experienceLevel]);
+
+  const gainXpLevel = useMemo(() => {
+    return previousxp < experienceLevel
+      ? value - (experienceLevel - previousxp)
+      : value;
+  }, [value, experienceLevel, previousxp]);
+
+  const pourcentage = useMemo(() => {
+    return (myXpLevel / xpLevel) * 100;
+  }, [xpLevel, myXpLevel]);
+
+  const pourcentageGain = useMemo(() => {
+    return (gainXpLevel / xpLevel) * 100;
+  }, [gainXpLevel, xpLevel]);
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: px(5),
+        alignItems: "center",
+      }}
+    >
+      <Typography variant="h4">
+        {t("commun.level")} {myLevel}
+      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          position: "relative",
+          width: percent(100),
+        }}
+      >
+        {xpLevel !== undefined && myXpLevel !== undefined && (
+          <Box
+            sx={{
+              position: "absolute",
+              right: 8,
+              zIndex: 1,
+            }}
+          >
+            <Typography
+              variant="h6"
+              component="span"
+              color={isDarkMode ? Colors.black2 : Colors.white}
+            >
+              {experienceNextLevel - newXp}
+            </Typography>
+            <Typography
+              variant="caption"
+              component="span"
+              color={isDarkMode ? Colors.black2 : Colors.white}
+            >
+              {t("commun.xpnextlevel")}
+            </Typography>
+          </Box>
+        )}
+        <Box
+          sx={{
+            height: px(20),
+            width: percent(100),
+            backgroundColor: isDarkMode ? Colors.white : Colors.black2,
+            borderRadius: px(25),
+          }}
+        />
+        <Box
+          sx={{
+            position: "absolute",
+            left: 0,
+            width: percent(100),
+            display: "flex",
+          }}
+        >
+          <Box
+            sx={{
+              height: px(20),
+              width: percent(pourcentage > 0 ? pourcentage : 0),
+              backgroundColor: Colors.colorApp,
+              borderTopLeftRadius: px(25),
+              borderBottomLeftRadius: px(25),
+            }}
+          />
+          <Box
+            sx={{
+              height: px(20),
+              width: percent(pourcentageGain),
+              backgroundColor: Colors.purple2,
+              borderTopLeftRadius: pourcentage > 0 ? "none" : px(25),
+              borderBottomLeftRadius: pourcentage > 0 ? "none" : px(25),
+            }}
+          />
+        </Box>
       </Box>
     </Box>
   );

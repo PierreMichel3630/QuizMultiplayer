@@ -34,7 +34,7 @@ export const TitleSelector = ({ onSelect }: Props) => {
                       justifyContent: "center",
                       gap: 2,
                       p: px(3),
-                      backgroundColor: Colors.blue3,
+                      backgroundColor: Colors.colorApp,
                       borderRadius: px(5),
                     }}
                     onClick={() => onSelect(title)}

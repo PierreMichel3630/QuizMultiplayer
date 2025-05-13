@@ -15,6 +15,7 @@ import {
 import { AllGameModeEnum, GameModeEnum } from "src/models/enum/GameEnum";
 import { Colors } from "src/style/Colors";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import { ChallengeTypeResultEnum } from "src/models/enum/ChallengeEnum";
 
 interface Props {
   selected: string;
@@ -46,7 +47,7 @@ export const GroupButton = ({ options, selected, onChange }: Props) => {
       >
         {options.map((option, index) => {
           const isSelect = option.value === selected;
-          const color = option.color ? option.color : Colors.blue3;
+          const color = option.color ? option.color : Colors.colorApp;
           return (
             <Box
               key={index}
@@ -352,6 +353,41 @@ export const GroupButtonSoloRanking = ({
       options={options}
       selected={selected}
       onChange={(value) => onChange(value as ClassementSoloModeEnum)}
+    />
+  );
+};
+
+interface PropsGroupButtonResultChallenge {
+  selected: ChallengeTypeResultEnum;
+  onChange: (value: ChallengeTypeResultEnum) => void;
+}
+export const GroupButtonResultChallenge = ({
+  selected,
+  onChange,
+}: PropsGroupButtonResultChallenge) => {
+  const { t } = useTranslation();
+
+  const options = useMemo(
+    () => [
+      {
+        label: t("challenge.result.winner"),
+        value: ChallengeTypeResultEnum.winner,
+        color: Colors.green,
+      },
+      {
+        label: t("challenge.result.loser"),
+        value: ChallengeTypeResultEnum.loser,
+        color: Colors.red,
+      },
+    ],
+    [t]
+  );
+
+  return (
+    <GroupButton
+      options={options}
+      selected={selected}
+      onChange={(value) => onChange(value as ChallengeTypeResultEnum)}
     />
   );
 };

@@ -43,7 +43,7 @@ export const ProfilHeader = ({
   const bannerImage = useMemo(() => {
     const urlprofile = profile?.banner
       ? `url("${profile.banner.src}")`
-      : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`;
+      : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.colorApp} 46%, ${Colors.blue} 100%)`;
     return banner ? `url("${banner}")` : urlprofile;
   }, [banner, profile]);
 
@@ -51,7 +51,7 @@ export const ProfilHeader = ({
     <Box
       sx={{
         p: 1,
-        backgroundColor: Colors.blue3,
+        backgroundColor: Colors.colorApp,
         backgroundImage: bannerImage,
         backgroundSize: "cover",
         backgroundPosition: "center",

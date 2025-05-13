@@ -145,6 +145,7 @@ export default function BannerPage() {
               <Grid container spacing={2} justifyContent="center">
                 <Grid item xs={12}>
                   <img
+                    alt="banner"
                     src={banner.src}
                     style={{
                       width: percent(100),
@@ -205,7 +206,7 @@ export default function BannerPage() {
                   <Typography variant="h2" color="text.secondary">
                     {banner.price}
                   </Typography>
-                  <img src={moneyIcon} width={25} />
+                  <img alt="money icon" src={moneyIcon} width={25} />
                 </Box>
               </Box>
             )}
@@ -221,7 +222,7 @@ export default function BannerPage() {
               />
             )}
             <ButtonColor
-              value={Colors.blue3}
+              value={Colors.colorApp}
               label={t("commun.return")}
               icon={KeyboardReturnIcon}
               variant="contained"

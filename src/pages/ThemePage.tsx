@@ -52,7 +52,7 @@ export default function ThemePage() {
 
   const { uuid, language } = useUser();
   const { user, profile } = useAuth();
-  const { favorites, refreshFavorites } = useApp();
+  const { favorites, getFavorite } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
   const [openModalFriend, setOpenModalFriend] = useState(false);
@@ -136,7 +136,7 @@ export default function ThemePage() {
             } else {
               setSeverity("success");
               setMessage(t("alert.deletefavorite"));
-              refreshFavorites();
+              getFavorite();
             }
           });
         } else {
@@ -150,7 +150,7 @@ export default function ThemePage() {
             } else {
               setSeverity("success");
               setMessage(t("alert.addfavorite"));
-              refreshFavorites();
+              getFavorite();
             }
           });
         }

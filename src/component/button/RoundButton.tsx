@@ -36,7 +36,7 @@ export const RoundLinkButton = ({
       >
         <Box
           sx={{
-            backgroundColor: Colors.blue3,
+            backgroundColor: Colors.colorApp,
             width: px(75),
             height: px(75),
             borderRadius: percent(50),
@@ -72,7 +72,7 @@ export const RoundButton = ({
   title,
   icon,
   onClick,
-  color = Colors.blue3,
+  color = Colors.colorApp,
 }: Props) => {
   return (
     <Box

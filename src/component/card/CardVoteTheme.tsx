@@ -22,7 +22,7 @@ export const CardVoteTheme = ({ theme, onClick, disabled }: Props) => {
         justifyContent: "space-between",
         alignItems: "center",
         borderRadius: px(15),
-        border: `3px solid ${Colors.blue3}`,
+        border: `3px solid ${Colors.colorApp}`,
         p: padding(5, 10),
       }}
     >

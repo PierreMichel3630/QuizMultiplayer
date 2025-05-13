@@ -24,12 +24,13 @@ import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { FRIENDSTATUS } from "src/models/Friend";
 import { Colors } from "src/style/Colors";
-import { CountryBlock } from "../CountryBlock";
+import { CountryImageBlock } from "../CountryBlock";
 
 import { Profile } from "src/models/Profile";
 
 export interface DataRankingChallenge {
   profile: Profile;
+  profileExtra?: JSX.Element;
   value: JSX.Element;
   extra?: JSX.Element;
   rank: number;
@@ -79,13 +80,13 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
     );
     switch (rank) {
       case 1:
-        icon = <img src={rank1} width={30} loading="lazy" />;
+        icon = <img alt="rank icon" src={rank1} width={30} loading="lazy" />;
         break;
       case 2:
-        icon = <img src={rank2} width={30} loading="lazy" />;
+        icon = <img alt="rank icon" src={rank2} width={30} loading="lazy" />;
         break;
       case 3:
-        icon = <img src={rank3} width={30} loading="lazy" />;
+        icon = <img alt="rank icon" src={rank3} width={30} loading="lazy" />;
         break;
     }
     return icon;
@@ -113,7 +114,7 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                 const isMe = profile && el.profile.id === profile.id;
                 const isFriend = idFriend.includes(el.profile.id);
                 const colorFriend = isFriend ? Colors.purple : "initial";
-                const color = isMe ? Colors.blue3 : colorFriend;
+                const color = isMe ? Colors.colorApp : colorFriend;
                 const colorText =
                   isMe || isFriend ? Colors.white : "text.primary";
 
@@ -128,14 +129,14 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                       <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
                         {getIcon(el.rank, colorText)}
                       </TableCell>
-                      <TableCell sx={{ p: px(4), width: px(50) }}>
+                      <TableCell sx={{ p: px(4), width: px(45) }}>
                         <Link
-                          to={`/profil/${el.profile.id}`}
+                          to={`/challenge/profil/${el.profile.id}`}
                           style={{ textDecoration: "inherit" }}
                         >
                           <AvatarAccount
                             avatar={el.profile.avatar.icon}
-                            size={40}
+                            size={38}
                           />
                         </Link>
                       </TableCell>
@@ -157,10 +158,16 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                             style={{
                               textDecoration: "inherit",
                               display: "flex",
-                              gap: px(2),
-                              flexDirection: "column",
+                              gap: px(4),
+                              alignItems: "center",
                             }}
                           >
+                            {el.profile.country && (
+                              <CountryImageBlock
+                                country={el.profile.country}
+                                size={20}
+                              />
+                            )}
                             <Typography
                               variant={"h6"}
                               sx={{
@@ -170,14 +177,8 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                             >
                               {el.profile.username}
                             </Typography>
-                            {el.profile.country && (
-                              <CountryBlock
-                                country={el.profile.country}
-                                isShaddow={false}
-                                color={colorText}
-                              />
-                            )}
                           </Link>
+                          {el.profileExtra}
                         </Box>
                       </TableCell>
                       {el.value}

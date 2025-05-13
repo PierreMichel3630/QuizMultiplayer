@@ -5,7 +5,7 @@ import { QuestionResult } from "./Question";
 export interface Challenge {
   id: number;
   date: Date;
-  questions: Array<number>;
+  questions: Array<any>;
 }
 
 export interface ChallengeGame {
@@ -50,4 +50,15 @@ export interface ChallengeRankingYear extends ChallengeRankingDate {
 
 export interface ChallengeRankingWeek extends ChallengeRankingDate {
   week: string;
+}
+
+export interface ExtraChallenge {
+  gold?: ValueExtraChallenge;
+  xp?: ValueExtraChallenge;
+}
+
+export interface ValueExtraChallenge {
+  value: number;
+  previousValue: number;
+  newValue: number;
 }

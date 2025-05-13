@@ -11,6 +11,10 @@ import "@fontsource/bowlby-one-sc/400.css";
 import "@fontsource/kalam";
 
 import { HelmetProvider } from "react-helmet-async";
+import moment from "moment";
+import "moment/dist/locale/fr";
+
+moment.locale("fr");
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <HelmetProvider>

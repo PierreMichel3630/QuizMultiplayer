@@ -128,7 +128,12 @@ export default function AccomplishmentPage() {
                     >
                       <Grid container spacing={1} alignItems="center">
                         <Grid item>
-                          <img src={award} width={40} loading="lazy" />
+                          <img
+                            alt="award icon"
+                            src={award}
+                            width={40}
+                            loading="lazy"
+                          />
                         </Grid>
                         <Grid item xs>
                           <Typography variant="h2" color="text.secondary">

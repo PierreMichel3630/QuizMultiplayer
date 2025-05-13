@@ -111,7 +111,7 @@ export const BottomNavigationBlock = () => {
       >
         <Box
           sx={{
-            backgroundColor: Colors.blue3,
+            backgroundColor: Colors.colorApp,
             width: px(60),
             height: px(60),
             borderRadius: "50%",

@@ -33,7 +33,7 @@ export const ButtonColor = ({
           borderColor: value,
           borderWidth: 2,
           padding: "3px 5px",
-          backgroundColor: Colors.blue3,
+          backgroundColor: Colors.colorApp,
           "&:hover": {
             opacity: 0.85,
           },

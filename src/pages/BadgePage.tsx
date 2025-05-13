@@ -205,7 +205,7 @@ export default function BannerPage() {
                   <Typography variant="h2" color="text.secondary">
                     {badge.price}
                   </Typography>
-                  <img src={moneyIcon} width={25} />
+                  <img alt="money icon" src={moneyIcon} width={25} />
                 </Box>
               </Box>
             )}
@@ -222,7 +222,7 @@ export default function BannerPage() {
               />
             )}
             <ButtonColor
-              value={Colors.blue3}
+              value={Colors.colorApp}
               label={t("commun.return")}
               icon={KeyboardReturnIcon}
               variant="contained"

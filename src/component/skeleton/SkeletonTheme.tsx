@@ -82,7 +82,7 @@ export const SkeletonProfilTheme = () => {
           sx={{
             display: "flex",
             gap: 1,
-            backgroundColor: Colors.blue3,
+            backgroundColor: Colors.colorApp,
             p: px(5),
           }}
         >

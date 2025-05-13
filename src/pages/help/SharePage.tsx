@@ -63,7 +63,7 @@ export default function SharePage() {
                   <ButtonColor
                     typography="h6"
                     iconSize={20}
-                    value={Colors.blue3}
+                    value={Colors.colorApp}
                     label={t("commun.shareapplication")}
                     icon={ShareIcon}
                     variant="contained"

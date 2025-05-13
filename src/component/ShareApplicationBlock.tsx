@@ -20,7 +20,7 @@ export const ShareApplicationBlock = ({ title }: Props) => {
       <ButtonColor
         typography="h6"
         iconSize={20}
-        value={Colors.blue3}
+        value={Colors.colorApp}
         label={title}
         icon={ShareIcon}
         variant="contained"

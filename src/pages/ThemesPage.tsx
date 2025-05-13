@@ -58,7 +58,7 @@ export default function ThemesPage() {
             }}
           />
         ),
-        color: Colors.blue3,
+        color: Colors.colorApp,
         link: `/category/${el.id}`,
       }));
 

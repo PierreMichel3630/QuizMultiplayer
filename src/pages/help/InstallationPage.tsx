@@ -42,7 +42,11 @@ export default function InstallationPage() {
               />
             </Grid>
             <Grid item>
-              <img src={apple3} style={{ maxWidth: px(300) }} />
+              <img
+                alt="explain installation"
+                src={apple3}
+                style={{ maxWidth: px(300) }}
+              />
             </Grid>
             <Grid item xs={12}>
               <StepBlock
@@ -55,7 +59,11 @@ export default function InstallationPage() {
               />
             </Grid>
             <Grid item>
-              <img src={apple2} style={{ maxWidth: px(300) }} />
+              <img
+                alt="explain installation"
+                src={apple2}
+                style={{ maxWidth: px(300) }}
+              />
             </Grid>
             <Grid item xs={12}>
               <StepBlock
@@ -68,10 +76,18 @@ export default function InstallationPage() {
               />
             </Grid>
             <Grid item>
-              <img src={apple1} style={{ maxWidth: px(300) }} />
+              <img
+                alt="explain installation"
+                src={apple1}
+                style={{ maxWidth: px(300) }}
+              />
             </Grid>
             <Grid item>
-              <img src={apple4} style={{ maxWidth: px(300) }} />
+              <img
+                alt="explain installation"
+                src={apple4}
+                style={{ maxWidth: px(300) }}
+              />
             </Grid>
             <Grid item xs={12}>
               <Divider sx={{ borderBottomWidth: 5 }} />
@@ -110,7 +126,11 @@ export default function InstallationPage() {
                     border: "1px solid white",
                   }}
                 >
-                  <img src={googleplay} style={{ width: px(25) }} />
+                  <img
+                    alt="explain installation"
+                    src={googleplay}
+                    style={{ width: px(25) }}
+                  />
                   <Typography variant="h6" color="text.secondary">
                     {t("installation.android1")}
                   </Typography>

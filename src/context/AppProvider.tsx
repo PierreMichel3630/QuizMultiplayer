@@ -43,7 +43,7 @@ const AppContext = createContext<{
   themesAdmin: Array<Theme>;
   getThemes: () => void;
   favorites: Array<Favorite>;
-  refreshFavorites: () => void;
+  getFavorite: () => void;
   categories: Array<CategoryWithThemes>;
   isLoadingCategories: boolean;
   categoriesAdmin: Array<Category>;
@@ -68,7 +68,7 @@ const AppContext = createContext<{
   friends: [],
   getFriends: () => {},
   favorites: [],
-  refreshFavorites: () => {},
+  getFavorite: () => {},
   themes: [],
   themesAdmin: [],
   getThemes: () => {},
@@ -141,10 +141,6 @@ export const AppProvider = ({ children }: Props) => {
       });
     }
   }, [user]);
-
-  const refreshFavorites = () => {
-    getFavorite();
-  };
 
   useEffect(() => {
     getFavorite();
@@ -287,39 +283,65 @@ export const AppProvider = ({ children }: Props) => {
     getFriends();
   }, [getFriends, getThemes]);
 
-  return (
-    <AppContext.Provider
-      value={{
-        nbQuestions,
-        nbThemes,
-        friends,
-        getFriends,
-        themes,
-        themesAdmin,
-        getThemes,
-        favorites,
-        refreshFavorites,
-        categories,
-        categoriesAdmin,
-        getCategories,
-        reportmessages,
-        myaccomplishments,
-        getMyAccomplishments,
-        myAvatars,
-        getMyAvatars,
-        myBadges,
-        getMyBadges,
-        mybanners,
-        getMyBanners,
-        myTitles,
-        getMyTitles,
-        isLoadingTheme,
-        isLoadingCategories,
-        headerSize,
-        nbPlayers,
-      }}
-    >
-      {children}
-    </AppContext.Provider>
+  const value = useMemo(
+    () => ({
+      nbQuestions,
+      nbThemes,
+      friends,
+      getFriends,
+      themes,
+      themesAdmin,
+      getThemes,
+      favorites,
+      getFavorite,
+      categories,
+      categoriesAdmin,
+      getCategories,
+      reportmessages,
+      myaccomplishments,
+      getMyAccomplishments,
+      myAvatars,
+      getMyAvatars,
+      myBadges,
+      getMyBadges,
+      mybanners,
+      getMyBanners,
+      myTitles,
+      getMyTitles,
+      isLoadingTheme,
+      isLoadingCategories,
+      headerSize,
+      nbPlayers,
+    }),
+    [
+      categories,
+      categoriesAdmin,
+      favorites,
+      friends,
+      getFriends,
+      getMyAccomplishments,
+      getMyAvatars,
+      getMyBadges,
+      getMyBanners,
+      getMyTitles,
+      getThemes,
+      headerSize,
+      isLoadingCategories,
+      isLoadingTheme,
+      myAvatars,
+      myBadges,
+      myTitles,
+      myaccomplishments,
+      mybanners,
+      nbPlayers,
+      nbQuestions,
+      nbThemes,
+      getFavorite,
+      reportmessages,
+      themes,
+      themesAdmin,
+    ]
   );
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

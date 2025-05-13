@@ -15,6 +15,7 @@ import {
 } from "src/api/challenge";
 import { updateProfil } from "src/api/profile";
 import { ButtonColor } from "src/component/Button";
+import { WinnerChallengeBlock } from "src/component/challenge/WinnerChallengeBlock";
 import { RankingChallenge } from "src/component/RankingChallenge";
 import { TimeLeftToNextDayLabel } from "src/component/TimeLeftBlock";
 import { Colors } from "src/style/Colors";
@@ -30,10 +31,11 @@ export default function ChallengePage() {
 
   const launch = useCallback(async () => {
     if (profile) {
-      launchChallenge(moment().format("YYYY-MM-DD")).then(async ({ data }) => {
+      const date = moment().format("YYYY-MM-DD");
+      launchChallenge(date).then(async ({ data }) => {
         const newProfile = {
           id: profile.id,
-          lastchallengeplay: moment().format("YYYY-MM-DD"),
+          lastchallengeplay: date,
         };
         await updateProfil(newProfile);
         navigate(`/challenge/${data.uuid}`);
@@ -100,7 +102,13 @@ export default function ChallengePage() {
               </Grid>
             )}
             <Grid item xs={12}>
-              <Divider />
+              <Divider sx={{ borderBottomWidth: 5 }} />
+            </Grid>
+            <Grid item xs={12}>
+              <WinnerChallengeBlock />
+            </Grid>
+            <Grid item xs={12}>
+              <Divider sx={{ borderBottomWidth: 5 }} />
             </Grid>
             <Grid item xs={12}>
               <RankingChallenge hasPlayChallenge={hasPlayChallenge} />

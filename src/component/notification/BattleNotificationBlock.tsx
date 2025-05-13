@@ -50,6 +50,8 @@ export const BattleNotificationBlock = ({ game, refuse }: Props) => {
         p: px(5),
         width: percent(100),
         backgroundColor: Colors.black,
+        border: "2px solid white",
+        borderRadius: px(5),
       }}
     >
       <Box

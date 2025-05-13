@@ -310,7 +310,7 @@ export default function ComparePage() {
                                 alignItems: "center",
                                 justifyContent: "center",
                                 gap: 1,
-                                backgroundColor: Colors.blue3,
+                                backgroundColor: Colors.colorApp,
                                 p: px(5),
                               }}
                             >

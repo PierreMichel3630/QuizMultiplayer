@@ -29,7 +29,7 @@ export const CardFriends = ({ friends, loading }: Props) => {
             item
             xs={12}
             sx={{
-              backgroundColor: Colors.blue3,
+              backgroundColor: Colors.colorApp,
               p: px(10),
               display: "flex",
               gap: 1,

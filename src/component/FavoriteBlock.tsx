@@ -53,7 +53,7 @@ export const FavoriteBlock = () => {
           }}
         />
       ),
-      color: Colors.blue3,
+      color: Colors.colorApp,
       link: `/category/${el.id}`,
       type: TypeCardEnum.CATEGORY,
     }));
@@ -79,10 +79,7 @@ interface PropsSelect {
   select: (theme: Theme) => void;
   search?: string;
 }
-export const FavoriteSelectBlock = ({
-  select,
-  search,
-}: PropsSelect) => {
+export const FavoriteSelectBlock = ({ select, search }: PropsSelect) => {
   const { t } = useTranslation();
 
   const { language } = useUser();

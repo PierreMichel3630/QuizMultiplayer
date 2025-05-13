@@ -27,7 +27,7 @@ export const CategoriesBlock = () => {
             }}
           />
         ),
-        color: Colors.blue3,
+        color: Colors.colorApp,
         link: `/category/${el.id}`,
         type: TypeCardEnum.CATEGORY,
       })),
