@@ -1,4 +1,4 @@
-import { Alert, Box, Container, Divider, Grid } from "@mui/material";
+import { Alert, Box, Container, debounce, Divider, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { px, viewHeight } from "csx";
@@ -69,29 +69,30 @@ export default function RecapSoloPage() {
   useEffect(() => {
     const handleScroll = () => {
       if (
-        window.innerHeight + document.documentElement.scrollTop + 250 <=
-        document.documentElement.offsetHeight
+        window.innerHeight + document.documentElement.scrollTop <=
+        Math.floor(document.documentElement.offsetHeight * 0.75)
       ) {
         return;
       }
       setMaxIndex((prev) => prev + 2);
     };
     if (document) {
-      document.addEventListener("scroll", handleScroll);
+      document.addEventListener("scroll", debounce(handleScroll, 500));
     }
     return () => {
-      document.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("scroll", debounce(handleScroll, 500));
     };
   }, [maxIndex]);
 
-  const questionsDisplay = useMemo(() => {
-    let res: Array<QuestionResult> = [];
-    if (game) {
-      const start = game.questions.length - maxIndex;
-      res = [...game.questions].splice(start, game.questions.length);
-    }
-    return res;
-  }, [game, maxIndex]);
+  const questions = useMemo(
+    () => (game ? [...game.questions].reverse() : []),
+    [game]
+  );
+
+  const questionsDisplay = useMemo(
+    () => [...questions].splice(0, maxIndex),
+    [questions, maxIndex]
+  );
 
   return (
     <Box>
@@ -163,7 +164,7 @@ export default function RecapSoloPage() {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Grid container spacing={1} flexDirection="column-reverse">
+                  <Grid container spacing={1}>
                     {questionsDisplay.map((el, index) => (
                       <Fragment key={index}>
                         <Grid item xs={12}>

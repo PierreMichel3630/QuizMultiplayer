@@ -8,6 +8,38 @@ export const SUPABASE_VUETHEME_TABLE = "viewthemev2";
 export const selectThemes = () =>
   supabase.from(SUPABASE_VUETHEME_TABLE).select("*, category(*)");
 
+export const selectThemesById = (ids: Array<string | number>) =>
+  supabase.from(SUPABASE_THEME_TABLE).select().in("id", ids);
+
+export const selectThemesByCategory = (
+  id: number | string,
+  language = "fr-FR"
+) =>
+  supabase
+    .from(SUPABASE_VUETHEME_TABLE)
+    .select("*")
+    .eq("category", id)
+    .eq("validate", true)
+    .eq("enabled", true)
+    .order(`name->>${language}`, { ascending: true });
+
+export const searchThemes = (
+  search = "",
+  page = 0,
+  itemperpage = 20,
+  language = "fr-FR"
+) => {
+  const from = page * itemperpage;
+  const to = from + itemperpage - 1;
+
+  return supabase
+    .from(SUPABASE_THEME_TABLE)
+    .select("id, image, name, color")
+    .ilike(`name->>${language}`, `%${search}%`)
+    .range(from, to)
+    .order(`name->>${language}`, { ascending: true });
+};
+
 export const countThemes = () =>
   supabase
     .from(SUPABASE_VUETHEME_TABLE)

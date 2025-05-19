@@ -182,7 +182,7 @@ export const matchmakingDuelGame = (player: string, theme: number) =>
 export const selectLastXThemeByPlayer = (player: string, x: number) => {
   return supabase
     .from(SUPABASE_PREVIOUSTHEMES_TABLE)
-    .select("*")
+    .select("*, theme(*)")
     .eq("player", player)
     .limit(x);
 };
@@ -273,7 +273,7 @@ export const selectGamesByTime = (
 
   return supabase
     .from(SUPABASE_HISTORYSOLOGAMES_TABLE)
-    .select("*, theme!sologame_themequestion_fkey(*)")
+    .select("id, points, profile, theme!sologame_themequestion_fkey(*)")
     .lt("created_at", dateEnd.toISOString())
     .gt("created_at", dateStart.toISOString())
     .order("points", { ascending: false })

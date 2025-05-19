@@ -29,7 +29,6 @@ import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import {
-  ChallengeRanking,
   ChallengeRankingAllTime,
   ChallengeRankingMonth,
   ChallengeRankingWeek,
@@ -208,7 +207,7 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
           sort.ascending,
           idFriends
         ).then(({ data }) => {
-          const res = (data ?? []) as Array<ChallengeRanking>;
+          const res: Array<any> = data ?? [];
           const newdata = res.map((el) => {
             return {
               profile: el.profile,

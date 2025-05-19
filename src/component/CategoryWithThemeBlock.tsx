@@ -1,32 +1,38 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { selectThemesByCategory } from "src/api/theme";
 import { useUser } from "src/context/UserProvider";
-import { CategoryWithThemes } from "src/models/Category";
-import { sortByName } from "src/utils/sort";
-import { CategoryBlock } from "./category/CategoryBlock";
+import { Category } from "src/models/Category";
 import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { Theme } from "src/models/Theme";
+import { CategoryBlock } from "./category/CategoryBlock";
 
 interface Props {
-  category: CategoryWithThemes;
+  category: Category;
 }
 export const CategoryWithThemeBlock = ({ category }: Props) => {
   const { language } = useUser();
+  const [themes, setThemes] = useState<Array<Theme>>([]);
 
-  const themesCategory = useMemo(
-    () => [...category.themes].sort((a, b) => sortByName(language, a, b)),
-    [category, language]
-  );
+  useEffect(() => {
+    const getTheme = () => {
+      selectThemesByCategory(category.id, language.iso).then(({ data }) => {
+        setThemes(data ?? []);
+      });
+    };
+    getTheme();
+  }, [category, language]);
 
-  const themes = useMemo(
+  const themesOrder = useMemo(
     () => [
-      ...themesCategory.filter((el) => el.isfirst),
-      ...themesCategory.filter((el) => !el.isfirst),
+      ...themes.filter((el) => el.isfirst),
+      ...themes.filter((el) => !el.isfirst),
     ],
-    [themesCategory]
+    [themes]
   );
 
   const values = useMemo(
     () =>
-      themes.map((el) => ({
+      themesOrder.map((el) => ({
         id: el.id,
         name: el.name,
         image: el.image,
@@ -34,15 +40,17 @@ export const CategoryWithThemeBlock = ({ category }: Props) => {
         link: `/theme/${el.id}`,
         type: TypeCardEnum.THEME,
       })),
-    [themes]
+    [themesOrder]
   );
 
   return (
-    <CategoryBlock
-      title={category.name}
-      count={themes.length}
-      link={`/category/${category.id}`}
-      values={values}
-    />
+    themes.length > 0 && (
+      <CategoryBlock
+        title={category.name}
+        count={themes.length}
+        link={`/category/${category.id}`}
+        values={values}
+      />
+    )
   );
 };

@@ -29,7 +29,7 @@ export const TitleCount = ({ title, count }: Props) => {
           noWrap
         />
       )}
-      {count && <BadgeCount count={count} />}
+      {count !== undefined && <BadgeCount count={count} />}
     </Box>
   );
 };

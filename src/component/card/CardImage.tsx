@@ -16,8 +16,7 @@ export interface ICardImage {
   id: number;
   name: JsonLanguage;
   image?: string | JSX.Element;
-  color: string;
-  link?: string;
+  color?: string;
   type?: TypeCardEnum;
 }
 
@@ -47,7 +46,12 @@ export const CardImage = ({ value, width = 90 }: Props) => {
   );
 
   const goLink = () => {
-    if (value.link) navigate(value.link);
+    if (value.type)
+      navigate(
+        value.type === TypeCardEnum.THEME
+          ? `/theme/${value.id}`
+          : `/category/${value.id}`
+      );
   };
 
   return (

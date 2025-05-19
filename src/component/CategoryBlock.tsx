@@ -34,7 +34,7 @@ export const CategoryBlock = ({ category }: Props) => {
   }, [breakpoint]);
 
   const themesCategory = useMemo(
-    () => category.themes.sort((a, b) => sortByName(language, a, b)),
+    () => [...category.themes].sort((a, b) => sortByName(language, a, b)),
     [category, language]
   );
 
@@ -88,7 +88,7 @@ export const CategoryBlock = ({ category }: Props) => {
           gap: 1,
         }}
       >
-        <Box sx={{maxWidth: "calc(100% - 105px)"}}>
+        <Box sx={{ maxWidth: "calc(100% - 105px)" }}>
           <TitleCount title={category.name} count={themes.length} />
         </Box>
         <Button

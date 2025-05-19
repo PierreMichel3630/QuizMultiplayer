@@ -1,5 +1,4 @@
 import { Box, Container, Grid } from "@mui/material";
-import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -14,12 +13,12 @@ import { ButtonRankingSolo } from "src/component/button/ButtonRankingSolo";
 import { DataRanking, RankingTable } from "src/component/table/RankingTable";
 import { useApp } from "src/context/AppProvider";
 import { BadgeLevel } from "src/icons/BadgeLevel";
+import useScrollListener from "src/listener/useScrollListener";
 import {
   StatAccomplishment,
   StatAccomplishmentEnum,
 } from "src/models/Accomplishment";
 import { FinishTheme } from "src/models/FinishTheme";
-import { HistorySoloGame } from "src/models/Game";
 import { Score } from "src/models/Score";
 import {
   ClassementDuelModeEnum,
@@ -44,7 +43,6 @@ export default function RankingPage() {
   );
   const [data, setData] = useState<Array<DataRanking>>([]);
   const [page, setPage] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
   const [tabSoloMode, setTabSoloMode] = useState(
     searchParams.has("time")
@@ -65,8 +63,8 @@ export default function RankingPage() {
       ) {
         const time = tabSoloMode as unknown as ClassementSoloTimeEnum;
         selectGamesByTime(time, page, ITEMPERPAGE).then(({ data }) => {
-          const res = data as Array<HistorySoloGame>;
-          const newdata = res.map((el, index) => ({
+          const res: Array<any> = data ?? [];
+          const newdata = [...res].map((el, index) => ({
             profile: el.profile,
             value: el.points,
             theme: el.theme,
@@ -74,7 +72,6 @@ export default function RankingPage() {
           }));
           setIsEnd(newdata.length < ITEMPERPAGE);
           setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
-          setIsLoading(false);
         });
       } else if (
         (type === ClassementEnum.points &&
@@ -95,7 +92,6 @@ export default function RankingPage() {
           });
           setIsEnd(newdata.length < ITEMPERPAGE);
           setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
-          setIsLoading(false);
         });
       } else if (
         type === ClassementEnum.points &&
@@ -110,7 +106,6 @@ export default function RankingPage() {
           }));
           setIsEnd(newdata.length < ITEMPERPAGE);
           setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
-          setIsLoading(false);
         });
       } else if (type === ClassementEnum.xp) {
         selectStatAccomplishment(type, page, ITEMPERPAGE).then(({ data }) => {
@@ -128,7 +123,6 @@ export default function RankingPage() {
           });
           setIsEnd(newdata.length < ITEMPERPAGE);
           setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
-          setIsLoading(false);
         });
       } else {
         const order = (type === ClassementEnum.points
@@ -146,32 +140,16 @@ export default function RankingPage() {
           });
           setIsEnd(newdata.length < ITEMPERPAGE);
           setData((prev) => [...prev, ...newdata]);
-          setIsLoading(false);
         });
       }
     }
   }, [page, type, tabSoloMode, tabDuelMode, isEnd]);
 
-  useEffect(() => {
-    if (isLoading) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  }, [isLoading]);
+  const handleScroll = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop + 500 >=
-        document.documentElement.offsetHeight
-      ) {
-        setIsLoading(true);
-      }
-    };
-    window.addEventListener("scroll", debounce(handleScroll, 300));
-    return () => {
-      window.removeEventListener("scroll", debounce(handleScroll, 300));
-    };
-  }, []);
+  useScrollListener(handleScroll);
 
   return (
     <Grid container>

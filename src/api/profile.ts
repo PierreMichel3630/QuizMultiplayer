@@ -48,10 +48,11 @@ export const searchProfilePagination = (
     .range(from, to);
 };
 
-export const countProfile = () =>
+export const countProfile = (search = "") =>
   supabase
     .from(SUPABASE_PROFILE_TABLE)
-    .select("*", { count: "exact", head: true });
+    .select("*", { count: "exact", head: true })
+    .ilike("username", `%${search}%`);
 
 export const countPlayers = () =>
   supabase

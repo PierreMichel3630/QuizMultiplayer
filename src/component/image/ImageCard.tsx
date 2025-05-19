@@ -3,9 +3,10 @@ import { percent, px } from "csx";
 import { useMemo } from "react";
 import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";
+import BoltIcon from "@mui/icons-material/Bolt";
 
 interface Props {
-  value: { image?: string | JSX.Element; color: string };
+  value: { image?: string | JSX.Element; color?: string };
   size?: string | number;
 }
 
@@ -20,7 +21,7 @@ export const ImageCard = ({ value, size = percent(100) }: Props) => {
   return (
     <Box
       sx={{
-        backgroundColor: value.color,
+        backgroundColor: value.color ?? Colors.colorApp,
         width: size,
         aspectRatio: "1/1",
         borderRadius: px(10),
@@ -43,7 +44,15 @@ export const ImageCard = ({ value, size = percent(100) }: Props) => {
           }}
         />
       ) : (
-        value.image
+        value.image ?? (
+          <BoltIcon
+            sx={{
+              width: 80,
+              height: 80,
+              color: "white",
+            }}
+          />
+        )
       )}
     </Box>
   );

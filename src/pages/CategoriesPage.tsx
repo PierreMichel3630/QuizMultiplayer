@@ -1,12 +1,31 @@
 import { Box, Grid } from "@mui/material";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { CardCategory } from "src/component/card/CardCategory";
-import { useApp } from "src/context/AppProvider";
+import { selectCategories } from "src/api/category";
+import { CardImage, ICardImage } from "src/component/card/CardImage";
+import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
 
 export default function CategoriesPage() {
   const { t } = useTranslation();
-  const { categories } = useApp();
+
+  const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
+
+  useEffect(() => {
+    const getCategories = () => {
+      selectCategories().then(({ data }) => {
+        const res = data ?? [];
+        setItemsSearch(
+          res.map((el) => ({
+            id: el.id,
+            name: el.name,
+            type: TypeCardEnum.CATEGORY,
+          }))
+        );
+      });
+    };
+    getCategories();
+  }, []);
 
   return (
     <Grid container>
@@ -16,9 +35,9 @@ export default function CategoriesPage() {
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1} justifyContent="center">
-            {categories.map((category) => (
-              <Grid item key={category.id}>
-                <CardCategory category={category} />
+            {itemsSearch.map((value, index) => (
+              <Grid item key={index}>
+                <CardImage key={index} value={value} />
               </Grid>
             ))}
           </Grid>

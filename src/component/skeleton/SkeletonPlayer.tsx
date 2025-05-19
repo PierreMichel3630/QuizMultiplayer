@@ -5,11 +5,15 @@ interface Props {
   number: number;
 }
 export const SkeletonPlayers = ({ number }: Props) => {
-  return Array.from(new Array(number)).map((_, index) => (
-    <Grid item key={index} xs={12}>
-      <SkeletonPlayer key={index} />
+  return (
+    <Grid container spacing={1}>
+      {Array.from(new Array(number)).map((_, index) => (
+        <Grid item key={index} xs={12}>
+          <SkeletonPlayer key={index} />
+        </Grid>
+      ))}
     </Grid>
-  ));
+  );
 };
 
 export const SkeletonPlayer = () => (

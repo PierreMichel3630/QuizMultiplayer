@@ -119,8 +119,6 @@ export default function ChallengeProfilPage() {
     isChallengeAvailable();
   }, [profile]);
 
-  console.log(statWeek);
-
   return (
     <Grid
       container

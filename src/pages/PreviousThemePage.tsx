@@ -1,4 +1,5 @@
 import { Grid } from "@mui/material";
+import { uniqBy } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -21,13 +22,12 @@ export default function PreviousThemePage() {
     if (user) {
       selectLastXThemeByPlayer(user.id, 10).then(({ data }) => {
         const res = data as Array<PreviousGame>;
-        const previousTheme = res.map((el) => el.theme);
-        const result = previousTheme.reduce((acc, id) => {
-          const theme = themes.find((el) => el.id === id);
-          return theme ? [...acc, theme] : acc;
-        }, [] as Array<Theme>);
+        const previousTheme = uniqBy(
+          res.map((el) => el.theme),
+          (el) => el.id
+        );
 
-        setThemesPrevious(result);
+        setThemesPrevious(previousTheme);
       });
     }
   }, [themes, user]);

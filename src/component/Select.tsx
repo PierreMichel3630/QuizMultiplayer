@@ -14,7 +14,14 @@ import {
   Typography,
 } from "@mui/material";
 import { padding, percent, px } from "csx";
-import { SyntheticEvent, useEffect, useMemo, useRef, useState } from "react";
+import {
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -33,6 +40,7 @@ import { BasicSearchInput } from "./Input";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 import { Colors } from "src/style/Colors";
 import { selectThemesShop } from "src/api/theme";
+import { selectCategories } from "src/api/category";
 
 interface Props {
   value: Difficulty;
@@ -273,8 +281,18 @@ interface PropsSelectCategory {
 
 export const SelectCategory = ({ category, onChange }: PropsSelectCategory) => {
   const { t } = useTranslation();
-  const { categoriesAdmin } = useApp();
   const { language } = useUser();
+  const [categories, setCategories] = useState<Array<Category>>([]);
+
+  const getCategories = useCallback(() => {
+    selectCategories().then(({ data }) => {
+      const value = data ?? [];
+      setCategories(value);
+    });
+  }, []);
+  useEffect(() => {
+    getCategories();
+  }, [getCategories]);
 
   return (
     <Autocomplete
@@ -283,7 +301,7 @@ export const SelectCategory = ({ category, onChange }: PropsSelectCategory) => {
       onChange={(_event: SyntheticEvent, newValue: Category | null) => {
         onChange(newValue);
       }}
-      options={[...categoriesAdmin].sort((a, b) => sortByName(language, a, b))}
+      options={[...categories].sort((a, b) => sortByName(language, a, b))}
       getOptionLabel={(option) => option.name[language.iso]}
       renderOption={(props, option) => (
         <Box component="li" {...props}>

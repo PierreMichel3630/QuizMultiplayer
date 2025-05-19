@@ -1,74 +1,45 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
 import { px } from "csx";
 import { uniqBy } from "lodash";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
 import { Theme } from "src/models/Theme";
-import { Colors } from "src/style/Colors";
 import { sortByName } from "src/utils/sort";
 import { searchString } from "src/utils/string";
 import { CardSelectAvatarTheme, CardSelectTheme } from "./card/CardTheme";
 import { CategoryBlock } from "./category/CategoryBlock";
 
-import BoltIcon from "@mui/icons-material/Bolt";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { getThemesAndCategoriesById } from "src/api/search";
+import { ICardImage } from "./card/CardImage";
 
 export const FavoriteBlock = () => {
   const { t } = useTranslation();
-  const { language } = useUser();
-  const { categories, themes, favorites } = useApp();
+  const { favorites } = useApp();
+  const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
 
-  const favoriteItems = useMemo(() => {
-    const idFavoriteTheme = favorites
-      .filter((el) => el.theme !== null)
-      .map((el) => el.theme);
-    const idFavoriteCategory = favorites
-      .filter((el) => el.category !== null)
-      .map((el) => el.category);
-    const themesFilter = uniqBy(
-      themes.filter((el) => idFavoriteTheme.includes(el.id)),
-      (el) => el.id
-    ).map((el) => ({
-      id: el.id,
-      name: el.name,
-      image: el.image,
-      color: el.color,
-      link: `/theme/${el.id}`,
-      type: TypeCardEnum.THEME,
-    }));
-    const categoriesFilter = uniqBy(
-      categories.filter((el) => idFavoriteCategory.includes(el.id)),
-      (el) => el.id
-    ).map((el) => ({
-      id: el.id,
-      name: el.name,
-      image: (
-        <BoltIcon
-          sx={{
-            width: 80,
-            height: 80,
-            color: "white",
-          }}
-        />
-      ),
-      color: Colors.colorApp,
-      link: `/category/${el.id}`,
-      type: TypeCardEnum.CATEGORY,
-    }));
-    return [...themesFilter, ...categoriesFilter].sort((a, b) =>
-      sortByName(language, a, b)
-    );
-  }, [favorites, themes, categories, language]);
+  useEffect(() => {
+    if (favorites.length > 0) {
+      const idCategories = [...favorites]
+        .filter((el) => el.category)
+        .map((el) => Number(el.category));
+      const idThemes = [...favorites]
+        .filter((el) => el.theme)
+        .map((el) => Number(el.theme));
+      getThemesAndCategoriesById(idCategories, idThemes).then(({ data }) => {
+        setItemsSearch(data ?? []);
+      });
+    }
+  }, [favorites]);
 
   return (
-    favoriteItems.length > 0 && (
+    itemsSearch.length > 0 && (
       <CategoryBlock
         title={t("commun.favorite")}
-        count={favoriteItems.length}
+        count={itemsSearch.length}
         link={`/favorite`}
-        values={favoriteItems}
+        values={itemsSearch}
       />
     )
   );

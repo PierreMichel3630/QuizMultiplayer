@@ -1,13 +1,13 @@
 import { Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ButtonColor } from "src/component/Button";
-import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
 import { sortByName } from "src/utils/sort";
 
 import AddIcon from "@mui/icons-material/Add";
 import { uniqBy } from "lodash";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { selectCategories } from "src/api/category";
 import { CardAdminCategory } from "src/component/card/CardCategory";
 import { BasicSearchInput } from "src/component/Input";
 import { CreateEditCategoryDialog } from "src/component/modal/CreateEditCategoryDialog";
@@ -18,24 +18,35 @@ import { searchString } from "src/utils/string";
 
 export default function AdminEditCategoryPage() {
   const { t } = useTranslation();
-  const { categoriesAdmin, getCategories } = useApp();
   const { language } = useUser();
 
+  const [categories, setCategories] = useState<Array<Category>>([]);
   const [category, setCategory] = useState<Category | undefined>(undefined);
   const [openModal, setOpenModal] = useState(false);
   const [maxIndex, setMaxIndex] = useState(20);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
 
+  const getCategories = useCallback(() => {
+    selectCategories().then(({ data }) => {
+      const value = data ?? [];
+      setCategories(value);
+    });
+  }, []);
+
+  useEffect(() => {
+    getCategories();
+  }, [getCategories]);
+
   const categoriesDisplay = useMemo(() => {
     setIsLoading(false);
     return uniqBy(
-      [...categoriesAdmin]
+      [...categories]
         .filter((el) => searchString(search, el.name[language.iso]))
         .sort((a, b) => sortByName(language, a, b)),
       (el) => el.id
     ).splice(0, maxIndex);
-  }, [categoriesAdmin, language, maxIndex, search]);
+  }, [categories, language, maxIndex, search]);
 
   useEffect(() => {
     const handleScroll = () => {

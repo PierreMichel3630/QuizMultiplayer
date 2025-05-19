@@ -1,4 +1,4 @@
-import { groupBy, uniqBy } from "lodash";
+import { uniqBy } from "lodash";
 import {
   createContext,
   useCallback,
@@ -11,7 +11,6 @@ import { selectAccomplishmentByProfile } from "src/api/accomplishment";
 import { selectAvatarByProfile } from "src/api/avatar";
 import { selectBadgeByProfile } from "src/api/badge";
 import { selectBannerByProfile } from "src/api/banner";
-import { selectCategories } from "src/api/category";
 import { selectMyFavorite } from "src/api/favorite";
 import { selectFriendByProfileId } from "src/api/friend";
 import { countPlayers } from "src/api/profile";
@@ -22,7 +21,6 @@ import { ProfileAccomplishment } from "src/models/Accomplishment";
 import { Avatar, AvatarProfile } from "src/models/Avatar";
 import { Badge, BadgeProfile } from "src/models/Badge";
 import { Banner, BannerProfile } from "src/models/Banner";
-import { Category, CategoryWithThemes } from "src/models/Category";
 import { Favorite } from "src/models/Favorite";
 import { FRIENDSTATUS, Friend } from "src/models/Friend";
 import { ReportMessage } from "src/models/Report";
@@ -44,10 +42,6 @@ const AppContext = createContext<{
   getThemes: () => void;
   favorites: Array<Favorite>;
   getFavorite: () => void;
-  categories: Array<CategoryWithThemes>;
-  isLoadingCategories: boolean;
-  categoriesAdmin: Array<Category>;
-  getCategories: () => void;
   reportmessages: Array<ReportMessage>;
   myaccomplishments: Array<ProfileAccomplishment>;
   getMyAccomplishments: () => void;
@@ -72,10 +66,6 @@ const AppContext = createContext<{
   themes: [],
   themesAdmin: [],
   getThemes: () => {},
-  categories: [],
-  isLoadingCategories: true,
-  categoriesAdmin: [],
-  getCategories: () => {},
   reportmessages: [],
   myaccomplishments: [],
   getMyAccomplishments: () => {},
@@ -110,8 +100,6 @@ export const AppProvider = ({ children }: Props) => {
   const [friends, setFriends] = useState<Array<Friend>>([]);
   const [themes, setThemes] = useState<Array<Theme>>([]);
   const [themesAdmin, setThemesAdmin] = useState<Array<Theme>>([]);
-  const [categoriesAdmin, setCategoriesAdmin] = useState<Array<Category>>([]);
-  const [categories, setCategories] = useState<Array<CategoryWithThemes>>([]);
   const [favorites, setFavorites] = useState<Array<Favorite>>([]);
   const [reportmessages, setReportmessages] = useState<Array<ReportMessage>>(
     []
@@ -178,31 +166,6 @@ export const AppProvider = ({ children }: Props) => {
       }
     });
   }, [language, profile]);
-
-  useEffect(() => {
-    if (themes.length > 0) {
-      const categories = uniqBy(
-        themes.filter((el) => el.category !== null).map((el) => el.category),
-        (el) => el.id
-      );
-      const themesByCategorie = groupBy(themes, "category.id");
-      const result = [...categories]
-        .sort((a, b) => sortByName(language, a, b))
-        .map((el) => {
-          const themes = themesByCategorie[el.id];
-          return { ...el, themes };
-        });
-      setCategories(result);
-      setIsLoadingCategories(false);
-    }
-  }, [themes, language]);
-
-  const getCategories = () => {
-    selectCategories().then(({ data }) => {
-      const value = data !== null ? (data as Array<Category>) : [];
-      setCategoriesAdmin(value);
-    });
-  };
 
   const getMessage = () => {
     selectReportMessage().then(({ data }) => {
@@ -277,7 +240,6 @@ export const AppProvider = ({ children }: Props) => {
   }, [getMyAccomplishments, user]);
 
   useEffect(() => {
-    getCategories();
     getThemes();
     getMessage();
     getFriends();
@@ -294,9 +256,6 @@ export const AppProvider = ({ children }: Props) => {
       getThemes,
       favorites,
       getFavorite,
-      categories,
-      categoriesAdmin,
-      getCategories,
       reportmessages,
       myaccomplishments,
       getMyAccomplishments,
@@ -314,8 +273,6 @@ export const AppProvider = ({ children }: Props) => {
       nbPlayers,
     }),
     [
-      categories,
-      categoriesAdmin,
       favorites,
       friends,
       getFriends,

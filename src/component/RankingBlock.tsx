@@ -13,7 +13,6 @@ import { selectGamesByTime } from "src/api/game";
 import { selectScore } from "src/api/score";
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import {
-  ChallengeRanking,
   ChallengeRankingAllTime,
   ChallengeRankingMonth,
   ChallengeRankingWeek,
@@ -24,7 +23,6 @@ import {
   ClassementSoloTimeEnum,
 } from "src/models/enum/ClassementEnum";
 import { AllGameModeEnum } from "src/models/enum/GameEnum";
-import { HistorySoloGame } from "src/models/Game";
 import { Score } from "src/models/Score";
 import {
   GroupButtonAllGameMode,
@@ -109,7 +107,7 @@ export const RankingTop5Block = () => {
     if (tab === AllGameModeEnum.CHALLENGE) {
       if (tabTimeChallenge === ClassementChallengeTimeEnum.day) {
         selectRankingChallengeByDatePaginate(moment()).then(({ data }) => {
-          const res = (data ?? []) as Array<ChallengeRanking>;
+          const res: Array<any> = data ?? [];
           const newdata = res.map((el) => {
             return {
               profile: el.profile,
@@ -312,7 +310,7 @@ export const RankingTop5Block = () => {
         });
       } else {
         selectGamesByTime(tabTimeSolo, 0, 5).then(({ data }) => {
-          const res = data as Array<HistorySoloGame>;
+          const res: Array<any> = data ?? [];
           const newdata = res.map((el, index) => {
             return {
               profile: el.profile,

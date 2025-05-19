@@ -3,7 +3,9 @@ import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
+import { selectCategoryById } from "src/api/category";
 import { deleteFavoriteById, insertFavorite } from "src/api/favorite";
+import { selectThemesByCategory } from "src/api/theme";
 import { PageCategoryBlock } from "src/component/page/PageCategoryBlock";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
@@ -21,14 +23,21 @@ export default function CategoryPage() {
 
   const { user } = useAuth();
   const { language } = useUser();
-  const { categories, themes, favorites, getFavorite } = useApp();
+  const { themes, favorites, getFavorite } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
-  const [category, setCategory] = useState<Category | undefined>(undefined);
+  const [category, setCategory] = useState<Category | null>(null);
 
   useEffect(() => {
-    setCategory(categories.find((el) => el.id === Number(id)));
-  }, [categories, id]);
+    if (id) {
+      selectCategoryById(id).then(({ data }) => {
+        setCategory(data);
+      });
+      selectThemesByCategory(id).then(({ data }) => {
+        console.log(data);
+      });
+    }
+  }, [id]);
 
   const themesCategory = useMemo(
     () =>
