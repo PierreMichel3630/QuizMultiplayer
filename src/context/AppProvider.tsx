@@ -1,4 +1,3 @@
-import { uniqBy } from "lodash";
 import {
   createContext,
   useCallback,
@@ -15,7 +14,7 @@ import { selectMyFavorite } from "src/api/favorite";
 import { selectFriendByProfileId } from "src/api/friend";
 import { countPlayers } from "src/api/profile";
 import { selectReportMessage } from "src/api/report";
-import { selectThemes } from "src/api/theme";
+import { countThemes } from "src/api/theme";
 import { selectTitleByProfile } from "src/api/title";
 import { ProfileAccomplishment } from "src/models/Accomplishment";
 import { Avatar, AvatarProfile } from "src/models/Avatar";
@@ -24,11 +23,8 @@ import { Banner, BannerProfile } from "src/models/Banner";
 import { Favorite } from "src/models/Favorite";
 import { FRIENDSTATUS, Friend } from "src/models/Friend";
 import { ReportMessage } from "src/models/Report";
-import { Theme } from "src/models/Theme";
 import { Title, TitleProfile } from "src/models/Title";
-import { sortByName } from "src/utils/sort";
 import { useAuth } from "./AuthProviderSupabase";
-import { useUser } from "./UserProvider";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[];
@@ -37,9 +33,6 @@ type Props = {
 const AppContext = createContext<{
   friends: Array<Friend>;
   getFriends: () => void;
-  themes: Array<Theme>;
-  themesAdmin: Array<Theme>;
-  getThemes: () => void;
   favorites: Array<Favorite>;
   getFavorite: () => void;
   reportmessages: Array<ReportMessage>;
@@ -56,16 +49,12 @@ const AppContext = createContext<{
   nbQuestions?: number;
   nbThemes?: number;
   nbPlayers?: number;
-  isLoadingTheme: boolean;
   headerSize: number;
 }>({
   friends: [],
   getFriends: () => {},
   favorites: [],
   getFavorite: () => {},
-  themes: [],
-  themesAdmin: [],
-  getThemes: () => {},
   reportmessages: [],
   myaccomplishments: [],
   getMyAccomplishments: () => {},
@@ -77,20 +66,16 @@ const AppContext = createContext<{
   getMyBanners: () => {},
   myTitles: [],
   getMyTitles: () => {},
-  nbQuestions: undefined,
   nbThemes: undefined,
   nbPlayers: undefined,
-  isLoadingTheme: true,
   headerSize: 70,
 });
 
 export const useApp = () => useContext(AppContext);
 
 export const AppProvider = ({ children }: Props) => {
-  const { user, profile } = useAuth();
-  const { language } = useUser();
+  const { user } = useAuth();
 
-  const [nbQuestions, setNbQuestions] = useState<undefined | number>(undefined);
   const [nbThemes, setNbThemes] = useState<undefined | number>(undefined);
   const [nbPlayers, setNbPlayers] = useState<undefined | number>(undefined);
   const [myAvatars, setMyAvatars] = useState<Array<Avatar>>([]);
@@ -98,8 +83,6 @@ export const AppProvider = ({ children }: Props) => {
   const [mybanners, setMybanners] = useState<Array<Banner>>([]);
   const [myTitles, setMyTitles] = useState<Array<Title>>([]);
   const [friends, setFriends] = useState<Array<Friend>>([]);
-  const [themes, setThemes] = useState<Array<Theme>>([]);
-  const [themesAdmin, setThemesAdmin] = useState<Array<Theme>>([]);
   const [favorites, setFavorites] = useState<Array<Favorite>>([]);
   const [reportmessages, setReportmessages] = useState<Array<ReportMessage>>(
     []
@@ -107,8 +90,6 @@ export const AppProvider = ({ children }: Props) => {
   const [myaccomplishments, setMyaccomplishments] = useState<
     Array<ProfileAccomplishment>
   >([]);
-  const [isLoadingTheme, setIsLoadingTheme] = useState(true);
-  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
   const headerSize = useMemo(() => (user ? 70 : 50), [user]);
 
@@ -143,29 +124,11 @@ export const AppProvider = ({ children }: Props) => {
     }
   }, [user]);
 
-  const getThemes = useCallback(() => {
-    setIsLoadingTheme(true);
-    setIsLoadingCategories(true);
-    selectThemes().then(({ data }) => {
-      if (data) {
-        const value = data !== null ? (data as Array<Theme>) : [];
-        const resultats = [...value].sort((a, b) => sortByName(language, a, b));
-        const filterResultats = profile?.isadmin
-          ? [...resultats]
-          : [...resultats].filter((el) => el.enabled && el.validate);
-        const uniqTheme = uniqBy(filterResultats, (el) => el.id);
-        const count = uniqTheme.length;
-        const questions = uniqTheme
-          .filter((el) => !el.isfirst)
-          .reduce((acc, v) => acc + v.questions, 0);
-        setNbThemes(count);
-        setNbQuestions(questions);
-        setThemesAdmin(resultats);
-        setThemes(filterResultats);
-        setIsLoadingTheme(false);
-      }
+  useEffect(() => {
+    countThemes().then(({ count }) => {
+      setNbThemes(count ?? 0);
     });
-  }, [language, profile]);
+  }, []);
 
   const getMessage = () => {
     selectReportMessage().then(({ data }) => {
@@ -240,20 +203,15 @@ export const AppProvider = ({ children }: Props) => {
   }, [getMyAccomplishments, user]);
 
   useEffect(() => {
-    getThemes();
     getMessage();
     getFriends();
-  }, [getFriends, getThemes]);
+  }, [getFriends]);
 
   const value = useMemo(
     () => ({
-      nbQuestions,
       nbThemes,
       friends,
       getFriends,
-      themes,
-      themesAdmin,
-      getThemes,
       favorites,
       getFavorite,
       reportmessages,
@@ -267,8 +225,6 @@ export const AppProvider = ({ children }: Props) => {
       getMyBanners,
       myTitles,
       getMyTitles,
-      isLoadingTheme,
-      isLoadingCategories,
       headerSize,
       nbPlayers,
     }),
@@ -281,22 +237,16 @@ export const AppProvider = ({ children }: Props) => {
       getMyBadges,
       getMyBanners,
       getMyTitles,
-      getThemes,
       headerSize,
-      isLoadingCategories,
-      isLoadingTheme,
       myAvatars,
       myBadges,
       myTitles,
       myaccomplishments,
       mybanners,
       nbPlayers,
-      nbQuestions,
       nbThemes,
       getFavorite,
       reportmessages,
-      themes,
-      themesAdmin,
     ]
   );
 

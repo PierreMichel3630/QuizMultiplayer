@@ -103,7 +103,7 @@ export const selectRankingChallengeByDatePaginate = (
   let query = supabase
     .from(SUPABASE_RANKINGCHALLENGE_VIEW)
     .select(
-      "ranking, id, time,score, profile(*, title(*), avatar(*), badge(*), banner(*), country(*)), challenge(date)"
+      "uuid, ranking, id, time,score, profile(*, title(*), avatar(*), badge(*), banner(*), country(*)), challenge(date)"
     )
     .eq("challenge.date", date.format("YYYY-MM-DD"))
     .not("challenge", "is", null)

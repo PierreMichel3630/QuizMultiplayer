@@ -1,14 +1,14 @@
 import { Box, Divider, Grid } from "@mui/material";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { insertBattleGame } from "src/api/game";
-import { useApp } from "src/context/AppProvider";
+import { selectThemesById } from "src/api/theme";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { JsonLanguage } from "src/models/Language";
-import { CardImage } from "./card/CardImage";
-import { TitleCount } from "./title/TitleCount";
 import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { JsonLanguage } from "src/models/Language";
+import { CardImage, ICardImage } from "./card/CardImage";
+import { TitleCount } from "./title/TitleCount";
 
 interface Mode {
   id: number;
@@ -20,9 +20,10 @@ interface Mode {
 
 export const GameModeBlock = () => {
   const { t } = useTranslation();
-  const { themes } = useApp();
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  const [themes, setThemes] = useState<Array<ICardImage>>([]);
 
   const launchBattleGame = useCallback(async () => {
     if (user) {
@@ -53,25 +54,24 @@ export const GameModeBlock = () => {
     [launchBattleGame]
   );
 
-  const themesDisplay = useMemo(() => {
+  useEffect(() => {
     const idThemes = [271, 272];
+    selectThemesById(idThemes).then(({ data }) => {
+      const res = data ?? [];
+      setThemes(
+        [...res].map((el) => ({
+          id: el.id,
+          name: el.name,
+          image: el.image,
+          color: el.color,
+          link: `/theme/${el.id}`,
+          type: TypeCardEnum.THEME,
+        }))
+      );
+    });
+  }, []);
 
-    return themes
-      .filter((el) => idThemes.includes(el.id))
-      .map((el) => ({
-        id: el.id,
-        name: el.name,
-        image: el.image,
-        color: el.color,
-        link: `/theme/${el.id}`,
-        type: TypeCardEnum.THEME,
-      }));
-  }, [themes]);
-
-  const count = useMemo(
-    () => themesDisplay.length + modes.length,
-    [themesDisplay, modes]
-  );
+  const count = useMemo(() => themes.length + modes.length, [themes, modes]);
 
   return (
     <Grid container spacing={1}>
@@ -99,7 +99,7 @@ export const GameModeBlock = () => {
               <CardImage value={mode} />
             </Box>
           ))}
-          {themesDisplay.map((theme) => (
+          {themes.map((theme) => (
             <CardImage key={theme.id} value={theme} />
           ))}
         </Box>

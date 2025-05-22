@@ -212,7 +212,12 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
           <Grid
             item
             xs={12}
-            sx={{ backgroundColor: "white", pb: 2, position: "sticky", top: 0 }}
+            sx={{
+              backgroundColor: "background.paper",
+              pb: 2,
+              position: "sticky",
+              top: 0,
+            }}
           >
             <Grid
               container
@@ -302,7 +307,7 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
           <Container
             maxWidth="md"
             sx={{
-              backgroundColor: Colors.white,
+              backgroundColor: "background.paper",
             }}
           >
             <Box

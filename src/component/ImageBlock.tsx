@@ -86,7 +86,6 @@ export const ImageQCMBlock = ({ src, width = 200 }: PropsImageQCMBlock) => {
       }}
     >
       <img
-        alt="response visual"
         src={src}
         style={{
           height: percent(95),

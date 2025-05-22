@@ -7,7 +7,7 @@ import { Colors } from "src/style/Colors";
 import NoPhotographyIcon from "@mui/icons-material/NoPhotography";
 
 interface Props {
-  theme: { image?: string; color: string };
+  theme: { image?: string | JSX.Element; color?: string };
   size?: string | number;
   border?: boolean;
 }
@@ -24,6 +24,17 @@ export const ImageThemeBlock = ({
     [mode]
   );
 
+  const image = useMemo(
+    () =>
+      theme.image && typeof theme.image == "string" ? theme.image : undefined,
+    [theme.image]
+  );
+
+  const height = useMemo(
+    () => (Number.isFinite(size) ? Number(size) * 0.9 : size),
+    [size]
+  );
+
   return (
     <Box
       sx={{
@@ -37,22 +48,22 @@ export const ImageThemeBlock = ({
         border: border ? `2px solid ${borderColor}` : "none",
       }}
     >
-      {theme.image ? (
+      {image ? (
         <img
           alt="logo theme"
-          src={theme.image}
-          srcSet={theme.image}
+          src={image}
+          srcSet={image}
           loading="lazy"
           style={{
             maxWidth: percent(90),
-            maxHeight: Number.isFinite(size) ? Number(size) * 0.9 : size,
+            maxHeight: height,
           }}
         />
       ) : (
         <NoPhotographyIcon
           sx={{
-            width: 60,
-            height: 60,
+            width: height,
+            height: height,
             color: "white",
           }}
         />

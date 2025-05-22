@@ -1,7 +1,8 @@
 import { Box, Container, Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useSearchParams } from "react-router-dom";
 import { selectStatAccomplishment } from "src/api/accomplishment";
 import { selectGamesByTime } from "src/api/game";
@@ -13,7 +14,6 @@ import { ButtonRankingSolo } from "src/component/button/ButtonRankingSolo";
 import { DataRanking, RankingTable } from "src/component/table/RankingTable";
 import { useApp } from "src/context/AppProvider";
 import { BadgeLevel } from "src/icons/BadgeLevel";
-import useScrollListener from "src/listener/useScrollListener";
 import {
   StatAccomplishment,
   StatAccomplishmentEnum,
@@ -42,7 +42,7 @@ export default function RankingPage() {
       : ClassementEnum.points
   );
   const [data, setData] = useState<Array<DataRanking>>([]);
-  const [page, setPage] = useState(0);
+  const [, setPage] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
   const [tabSoloMode, setTabSoloMode] = useState(
     searchParams.has("time")
@@ -53,103 +53,114 @@ export default function RankingPage() {
     ClassementDuelModeEnum.bestrank
   );
 
-  useEffect(() => {
-    if (!isEnd) {
-      if (
-        type === ClassementEnum.points &&
-        (tabSoloMode === ClassementSoloModeEnum.day ||
-          tabSoloMode === ClassementSoloModeEnum.week ||
-          tabSoloMode === ClassementSoloModeEnum.month)
-      ) {
-        const time = tabSoloMode as unknown as ClassementSoloTimeEnum;
-        selectGamesByTime(time, page, ITEMPERPAGE).then(({ data }) => {
-          const res: Array<any> = data ?? [];
-          const newdata = [...res].map((el, index) => ({
-            profile: el.profile,
-            value: el.points,
-            theme: el.theme,
-            rank: page * ITEMPERPAGE + index + 1,
-          }));
-          setIsEnd(newdata.length < ITEMPERPAGE);
-          setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
-        });
-      } else if (
-        (type === ClassementEnum.points &&
-          tabSoloMode === ClassementSoloModeEnum.alltime) ||
-        (type === ClassementEnum.rank &&
-          tabDuelMode === ClassementDuelModeEnum.bestrank)
-      ) {
-        selectScore(type, page, ITEMPERPAGE).then(({ data }) => {
-          const res = data as Array<Score>;
-          const newdata = res.map((el, index) => {
-            const champ = el[type];
-            return {
+  const getDataRanking = useCallback(
+    (page: number) => {
+      if (!isEnd) {
+        if (
+          type === ClassementEnum.points &&
+          (tabSoloMode === ClassementSoloModeEnum.day ||
+            tabSoloMode === ClassementSoloModeEnum.week ||
+            tabSoloMode === ClassementSoloModeEnum.month)
+        ) {
+          const time = tabSoloMode as unknown as ClassementSoloTimeEnum;
+          selectGamesByTime(time, page, ITEMPERPAGE).then(({ data }) => {
+            const res: Array<any> = data ?? [];
+            const newdata = [...res].map((el, index) => ({
               profile: el.profile,
-              value: Array.isArray(champ) ? champ.length : champ,
+              value: el.points,
               theme: el.theme,
               rank: page * ITEMPERPAGE + index + 1,
-            };
+            }));
+            setIsEnd(newdata.length < ITEMPERPAGE);
+            setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
           });
-          setIsEnd(newdata.length < ITEMPERPAGE);
-          setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
-        });
-      } else if (
-        type === ClassementEnum.points &&
-        tabSoloMode === ClassementSoloModeEnum.finishtheme
-      ) {
-        getRankingFinishTheme(page, ITEMPERPAGE).then(({ data }) => {
-          const res = data as Array<FinishTheme>;
-          const newdata = res.map((el, index) => ({
-            profile: el.profile,
-            value: el.nbtheme,
-            rank: page * ITEMPERPAGE + index + 1,
-          }));
-          setIsEnd(newdata.length < ITEMPERPAGE);
-          setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
-        });
-      } else if (type === ClassementEnum.xp) {
-        selectStatAccomplishment(type, page, ITEMPERPAGE).then(({ data }) => {
-          const res = data as Array<StatAccomplishment>;
-          const newdata = res.map((el, index) => {
-            const value: any = el[type];
-            return {
+        } else if (
+          (type === ClassementEnum.points &&
+            tabSoloMode === ClassementSoloModeEnum.alltime) ||
+          (type === ClassementEnum.rank &&
+            tabDuelMode === ClassementDuelModeEnum.bestrank)
+        ) {
+          selectScore(type, page, ITEMPERPAGE).then(({ data }) => {
+            const res = data as Array<Score>;
+            const newdata = res.map((el, index) => {
+              const champ = el[type];
+              return {
+                profile: el.profile,
+                value: Array.isArray(champ) ? champ.length : champ,
+                theme: el.theme,
+                rank: page * ITEMPERPAGE + index + 1,
+              };
+            });
+            setIsEnd(newdata.length < ITEMPERPAGE);
+            setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
+          });
+        } else if (
+          type === ClassementEnum.points &&
+          tabSoloMode === ClassementSoloModeEnum.finishtheme
+        ) {
+          getRankingFinishTheme(page, ITEMPERPAGE).then(({ data }) => {
+            const res = data as Array<FinishTheme>;
+            const newdata = res.map((el, index) => ({
               profile: el.profile,
-              value: (
-                <BadgeLevel level={getLevel(value)} size={35} fontSize={15} />
-              ),
+              value: el.nbtheme,
               rank: page * ITEMPERPAGE + index + 1,
-              size: 50,
-            };
+            }));
+            setIsEnd(newdata.length < ITEMPERPAGE);
+            setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
           });
-          setIsEnd(newdata.length < ITEMPERPAGE);
-          setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
-        });
-      } else {
-        const order = (type === ClassementEnum.points
-          ? tabSoloMode
-          : tabDuelMode) as unknown as StatAccomplishmentEnum;
-        selectStatAccomplishment(order, page, ITEMPERPAGE).then(({ data }) => {
-          const res = data as Array<StatAccomplishment>;
-          const newdata = res.map((el, index) => {
-            const champ = el[order];
-            return {
-              profile: el.profile,
-              value: Array.isArray(champ) ? champ.length : champ,
-              rank: page * ITEMPERPAGE + index + 1,
-            };
+        } else if (type === ClassementEnum.xp) {
+          selectStatAccomplishment(type, page, ITEMPERPAGE).then(({ data }) => {
+            const res = data as Array<StatAccomplishment>;
+            const newdata = res.map((el, index) => {
+              const value: any = el[type];
+              return {
+                profile: el.profile,
+                value: (
+                  <BadgeLevel level={getLevel(value)} size={35} fontSize={15} />
+                ),
+                rank: page * ITEMPERPAGE + index + 1,
+                size: 50,
+              };
+            });
+            setIsEnd(newdata.length < ITEMPERPAGE);
+            setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
           });
-          setIsEnd(newdata.length < ITEMPERPAGE);
-          setData((prev) => [...prev, ...newdata]);
-        });
+        } else {
+          const order = (type === ClassementEnum.points
+            ? tabSoloMode
+            : tabDuelMode) as unknown as StatAccomplishmentEnum;
+          selectStatAccomplishment(order, page, ITEMPERPAGE).then(
+            ({ data }) => {
+              const res = data as Array<StatAccomplishment>;
+              const newdata = res.map((el, index) => {
+                const champ = el[order];
+                return {
+                  profile: el.profile,
+                  value: Array.isArray(champ) ? champ.length : champ,
+                  rank: page * ITEMPERPAGE + index + 1,
+                };
+              });
+              setIsEnd(newdata.length < ITEMPERPAGE);
+              setData((prev) => [...prev, ...newdata]);
+            }
+          );
+        }
       }
-    }
-  }, [page, type, tabSoloMode, tabDuelMode, isEnd]);
+    },
+    [isEnd, tabDuelMode, tabSoloMode, type]
+  );
 
-  const handleScroll = () => {
-    setPage((prevPage) => prevPage + 1);
+  useEffect(() => {
+    getDataRanking(0);
+  }, [getDataRanking]);
+
+  const handleLoadMoreData = () => {
+    setPage((prevPage) => {
+      const nextPage = prevPage + 1;
+      getDataRanking(nextPage);
+      return nextPage;
+    });
   };
-
-  useScrollListener(handleScroll);
 
   return (
     <Grid container>
@@ -208,15 +219,22 @@ export default function RankingPage() {
       </Grid>
 
       <Grid item xs={12}>
-        <Container maxWidth="sm">
-          <Box sx={{ p: 1 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <RankingTable data={data} loading={!isEnd} />
+        <InfiniteScroll
+          dataLength={data.length}
+          next={handleLoadMoreData}
+          hasMore={!isEnd}
+          loader={undefined}
+        >
+          <Container maxWidth="sm">
+            <Box sx={{ p: 1 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <RankingTable data={data} loading={!isEnd} />
+                </Grid>
               </Grid>
-            </Grid>
-          </Box>
-        </Container>
+            </Box>
+          </Container>
+        </InfiniteScroll>
       </Grid>
     </Grid>
   );

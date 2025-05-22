@@ -1,5 +1,6 @@
 import { ThemeInsert, ThemeInsertAdmin, ThemeUpdate } from "src/models/Theme";
 import { supabase } from "./supabase";
+import { Moment } from "moment";
 
 export const SUPABASE_THEME_TABLE = "theme";
 export const SUPABASE_THEMESHOP_TABLE = "themeshop";
@@ -7,6 +8,24 @@ export const SUPABASE_VUETHEME_TABLE = "viewthemev2";
 
 export const selectThemes = () =>
   supabase.from(SUPABASE_VUETHEME_TABLE).select("*, category(*)");
+
+export const selectThemesByModifiedAt = (modify_at: Moment) =>
+  supabase
+    .from(SUPABASE_THEME_TABLE)
+    .select("*")
+    .eq("validate", true)
+    .eq("enabled", true)
+    .gte("modify_at", modify_at.toISOString())
+    .order("modify_at", { ascending: false });
+
+export const selectThemesByCreatedAt = (created_at: Moment) =>
+  supabase
+    .from(SUPABASE_THEME_TABLE)
+    .select("*")
+    .eq("validate", true)
+    .eq("enabled", true)
+    .gte("created_at", created_at.toISOString())
+    .order("created_at", { ascending: false });
 
 export const selectThemesById = (ids: Array<string | number>) =>
   supabase.from(SUPABASE_THEME_TABLE).select().in("id", ids);
@@ -21,6 +40,7 @@ export const selectThemesByCategory = (
     .eq("category", id)
     .eq("validate", true)
     .eq("enabled", true)
+    .order("isfirst", { ascending: false })
     .order(`name->>${language}`, { ascending: true });
 
 export const searchThemes = (
@@ -34,7 +54,7 @@ export const searchThemes = (
 
   return supabase
     .from(SUPABASE_THEME_TABLE)
-    .select("id, image, name, color")
+    .select()
     .ilike(`name->>${language}`, `%${search}%`)
     .range(from, to)
     .order(`name->>${language}`, { ascending: true });

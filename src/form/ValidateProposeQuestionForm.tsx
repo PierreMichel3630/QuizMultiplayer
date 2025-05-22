@@ -1,3 +1,4 @@
+import DeleteIcon from "@mui/icons-material/Delete";
 import DoneIcon from "@mui/icons-material/Done";
 import {
   Divider,
@@ -11,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   deleteQuestionById,
@@ -19,19 +21,17 @@ import {
   selectQuestionThemeByQuestion,
   updateQuestion,
 } from "src/api/question";
+import { AutocompleteInputTheme } from "src/component/Autocomplete";
 import { ButtonColor } from "src/component/Button";
+import { ImageThemeBlock } from "src/component/ImageThemeBlock";
+import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { SelectDifficulty } from "src/component/Select";
 import { useMessage } from "src/context/MessageProvider";
 import { Difficulty } from "src/models/enum/DifficultyEnum";
 import { QuestionPropose, QuestionUpdate } from "src/models/Question";
+import { QuestionTheme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import * as Yup from "yup";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { useState, useCallback, useEffect } from "react";
-import { AutocompleteInputTheme } from "src/component/Autocomplete";
-import { ImageThemeBlock } from "src/component/ImageThemeBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
-import { QuestionTheme, Theme } from "src/models/Theme";
 
 interface Props {
   question: QuestionPropose;
@@ -128,7 +128,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
     });
   };
 
-  const insertTheme = (theme: Theme) => {
+  const insertTheme = (theme: { id: number }) => {
     if (question) {
       const value = { theme: theme.id, question: question.id };
       insertQuestionTheme(value).then(() => {

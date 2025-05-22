@@ -1,42 +1,41 @@
 import { Grid, Paper, Skeleton, Typography } from "@mui/material";
 import { percent, px, viewHeight } from "csx";
-import { uniqBy } from "lodash";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { useApp } from "src/context/AppProvider";
-import { Score } from "src/models/Score";
+import { getFinishThemeByProfile } from "src/api/ranking";
+import { selectThemesById } from "src/api/theme";
+import { Profile } from "src/models/Profile";
+import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 
 interface Props {
-  scores: Array<Score>;
-  loading?: boolean;
+  profile: Profile;
 }
 
-export const CardFinishTheme = ({ scores, loading }: Props) => {
+export const CardFinishTheme = ({ profile }: Props) => {
   const { t } = useTranslation();
 
-  const { themes } = useApp();
+  const [loading, setLoading] = useState(true);
+  const [themes, setThemes] = useState<Array<Theme>>([]);
 
-  const themesFinish = useMemo(() => {
-    const result = scores
-      .filter((score) => {
-        const theme = themes.find((el) => el.id === score.theme.id);
-        return (
-          theme &&
-          theme.questions !== null &&
-          theme.questions > 0 &&
-          theme.questions <= score.points
-        );
-      })
-      .map((el) => el.theme);
-
-    return uniqBy(result, (el) => el.id);
-  }, [scores, themes]);
+  useEffect(() => {
+    setLoading(true);
+    getFinishThemeByProfile(profile.id).then(({ data }) => {
+      if (data !== null) {
+        const idThemes = data.themes;
+        selectThemesById(idThemes).then(({ data }) => {
+          const res = data ?? [];
+          setThemes(res);
+          setLoading(false);
+        });
+      }
+    });
+  }, [profile]);
 
   return (
-    themesFinish.length > 0 && (
+    themes.length > 0 && (
       <Paper
         sx={{
           overflow: "hidden",
@@ -61,7 +60,7 @@ export const CardFinishTheme = ({ scores, loading }: Props) => {
             </Typography>
             {!loading && (
               <Typography variant="h4" color="text.secondary">
-                ({themesFinish.length})
+                ({themes.length})
               </Typography>
             )}
           </Grid>
@@ -86,7 +85,7 @@ export const CardFinishTheme = ({ scores, loading }: Props) => {
                 </>
               ) : (
                 <>
-                  {themesFinish.map((theme) => (
+                  {themes.map((theme) => (
                     <Grid item key={theme.id}>
                       <Link to={`/theme/${theme.id}`}>
                         <ImageThemeBlock theme={theme} size={35} />

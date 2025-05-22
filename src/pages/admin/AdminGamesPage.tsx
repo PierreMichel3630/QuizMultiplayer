@@ -1,6 +1,5 @@
 import { Alert, Box, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { Theme } from "src/models/Theme";
 
 import { useCallback, useEffect, useState } from "react";
 import { selectGames } from "src/api/game";
@@ -125,7 +124,7 @@ export default function AdminGamesPage() {
           <Grid item xs={12}>
             <AutocompleteTheme
               value={filter.themes}
-              onChange={(value: Array<Theme>) => {
+              onChange={(value) => {
                 setFilter((prev) => ({ ...prev, themes: value }));
               }}
             />

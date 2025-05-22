@@ -12,11 +12,15 @@ export const SkeletonThemes = ({ number }: Props) => {
 };
 
 export const SkeletonThemesGrid = ({ number }: Props) => {
-  return Array.from(new Array(number)).map((_, index) => (
-    <Grid item key={index}>
-      <SkeletonTheme />
+  return (
+    <Grid container spacing={1} justifyContent="center">
+      {Array.from(new Array(number)).map((_, index) => (
+        <Grid item key={index}>
+          <SkeletonTheme />
+        </Grid>
+      ))}
     </Grid>
-  ));
+  );
 };
 
 export const SkeletonTheme = () => {

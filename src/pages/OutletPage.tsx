@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import { BottomNavigationBlock } from "src/component/BottomNavigation";
 import { OfflineBlock } from "src/component/OfflineBlock";
+import { Colors } from "src/style/Colors";
 
 export default function OutletPage() {
   const [online, setOnline] = useState(navigator.onLine);
@@ -29,6 +30,7 @@ export default function OutletPage() {
             backgroundColor: "background.paper",
             zIndex: 100,
             position: "sticky",
+            borderBottom: `2px solid ${Colors.lightgrey}`,
             top: 0,
           }}
         >

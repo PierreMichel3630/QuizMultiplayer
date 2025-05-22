@@ -14,7 +14,7 @@ import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
 import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
 import { FavoriteInsert } from "src/models/Favorite";
-import { sortByName } from "src/utils/sort";
+import { Theme } from "src/models/Theme";
 
 export default function CategoryPage() {
   const { t } = useTranslation();
@@ -23,10 +23,11 @@ export default function CategoryPage() {
 
   const { user } = useAuth();
   const { language } = useUser();
-  const { themes, favorites, getFavorite } = useApp();
+  const { favorites, getFavorite } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
   const [category, setCategory] = useState<Category | null>(null);
+  const [themes, setThemes] = useState<Array<Theme>>([]);
 
   useEffect(() => {
     if (id) {
@@ -34,32 +35,14 @@ export default function CategoryPage() {
         setCategory(data);
       });
       selectThemesByCategory(id).then(({ data }) => {
-        console.log(data);
+        setThemes(data ?? []);
       });
     }
   }, [id]);
 
-  const themesCategory = useMemo(
-    () =>
-      category
-        ? themes
-            .filter((el) => el.category?.id === category.id && !el.isfirst)
-            .sort((a, b) => sortByName(language, a, b))
-        : [],
-    [category, themes, language]
-  );
-
-  const FirstThemesCategory = useMemo(
-    () =>
-      category
-        ? themes.filter((el) => el.category?.id === category.id && el.isfirst)
-        : [],
-    [category, themes]
-  );
-
   const themesDisplay = useMemo(
     () =>
-      [...FirstThemesCategory, ...themesCategory].map((el) => ({
+      [...themes].map((el) => ({
         id: el.id,
         name: el.name,
         image: el.image,
@@ -67,7 +50,7 @@ export default function CategoryPage() {
         link: `/theme/${el.id}`,
         type: TypeCardEnum.THEME,
       })),
-    [FirstThemesCategory, themesCategory]
+    [themes]
   );
 
   const favorite = useMemo(

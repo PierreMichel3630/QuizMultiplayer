@@ -1,4 +1,8 @@
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import { Divider, Grid, IconButton, Paper, Typography } from "@mui/material";
+import { px } from "csx";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,25 +19,21 @@ import {
   selectResponseByType,
   selectResponseImageByType,
 } from "src/api/response";
-import { QuestionForm } from "src/form/QuestionForm";
-import { QuestionAdmin } from "src/models/Question";
-import { ResponseImageUpdate, ResponseUpdate } from "src/models/Response";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+import { AutocompleteInputTheme } from "src/component/Autocomplete";
 import { ButtonColor } from "src/component/Button";
-import AddIcon from "@mui/icons-material/Add";
-import { Colors } from "src/style/Colors";
+import { ImageQuestionBlock } from "src/component/ImageBlock";
+import { ImageThemeBlock } from "src/component/ImageThemeBlock";
+import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
+import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import {
   CreateEditResponseDialog,
   CreateEditResponseImageDialog,
 } from "src/component/modal/CreateEditResponseDialog";
-import { QuestionTheme, Theme } from "src/models/Theme";
-import { ImageThemeBlock } from "src/component/ImageThemeBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
-import { AutocompleteInputTheme } from "src/component/Autocomplete";
-import { ConfirmDialog } from "src/component/modal/ConfirmModal";
-import { ImageQuestionBlock } from "src/component/ImageBlock";
-import { px } from "csx";
+import { QuestionForm } from "src/form/QuestionForm";
+import { QuestionAdmin } from "src/models/Question";
+import { ResponseImageUpdate, ResponseUpdate } from "src/models/Response";
+import { QuestionTheme } from "src/models/Theme";
+import { Colors } from "src/style/Colors";
 import { sortByUsValue } from "src/utils/sort";
 
 export default function AdminQuestionPage() {
@@ -137,7 +137,7 @@ export default function AdminQuestionPage() {
     });
   };
 
-  const insertTheme = (theme: Theme) => {
+  const insertTheme = (theme: { id: number }) => {
     if (question) {
       const value = { theme: theme.id, question: question.id };
       insertQuestionTheme(value).then(() => {

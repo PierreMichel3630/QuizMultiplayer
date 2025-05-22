@@ -1,6 +1,6 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { uniqBy } from "lodash";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useApp } from "src/context/AppProvider";
@@ -22,6 +22,8 @@ import { unlockAccomplishment } from "src/api/accomplishment";
 import { BarAccomplishment } from "../bar/Bar";
 import { AddMoneyBlock } from "../MoneyBlock";
 import { AddXpBlock } from "../XpBlock";
+import { Theme } from "src/models/Theme";
+import { selectThemesById } from "src/api/theme";
 
 interface Props {
   accomplishment: Accomplishment;
@@ -40,10 +42,27 @@ export const CardAccomplishment = ({
 }: Props) => {
   const { t } = useTranslation();
   const { refreshProfil } = useAuth();
-  const { themes, myaccomplishments, getMyAccomplishments } = useApp();
+  const { myaccomplishments, getMyAccomplishments } = useApp();
 
-  const champ = stat ? stat[accomplishment.champ as StatAccomplishmentEnum] : 0;
-  const value = Array.isArray(champ) ? champ.length : champ;
+  const [themes, setThemes] = useState<Array<Theme>>([]);
+
+  const champ = useMemo(
+    () => (stat ? stat[accomplishment.champ as StatAccomplishmentEnum] : 0),
+    [accomplishment.champ, stat]
+  );
+
+  const value = useMemo(
+    () => (Array.isArray(champ) ? champ.length : champ),
+    [champ]
+  );
+
+  useEffect(() => {
+    if (Array.isArray(champ) && champ.length > 0) {
+      selectThemesById(champ).then(({ data }) => {
+        setThemes(data ?? []);
+      });
+    }
+  }, [champ]);
 
   const themesAccomplishment = useMemo(
     () =>

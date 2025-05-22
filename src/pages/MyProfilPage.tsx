@@ -343,9 +343,11 @@ export default function MyProfilPage() {
               loading={isLoadingScore}
             />
           </Grid>
-          <Grid item xs={12}>
-            <CardFinishTheme scores={scores} loading={isLoadingScore} />
-          </Grid>
+          {profile && (
+            <Grid item xs={12}>
+              <CardFinishTheme profile={profile} />
+            </Grid>
+          )}
         </Grid>
       </Box>
       <Box>

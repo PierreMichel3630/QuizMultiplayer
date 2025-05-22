@@ -28,6 +28,8 @@ import { useTranslation } from "react-i18next";
 import { useMessage } from "src/context/MessageProvider";
 import { deleteThemeById, updateTheme } from "src/api/theme";
 import { ConfirmDialog } from "../modal/ConfirmModal";
+import { JsonLanguage } from "src/models/Language";
+import { ICardImage } from "./CardImage";
 
 interface Props {
   theme: Theme;
@@ -94,7 +96,12 @@ export const CardTheme = ({ theme, link, width = 95 }: Props) => {
 };
 
 interface PropsCardSelectAvatarTheme {
-  theme: Theme;
+  theme: {
+    id: number;
+    name: JsonLanguage;
+    image?: string | JSX.Element;
+    color?: string;
+  };
   avatars: Array<{ id: number; avatars: Array<string> }>;
   onSelect: () => void;
   width?: number;
@@ -118,7 +125,6 @@ export const CardSelectAvatarTheme = ({
         cursor: "pointer",
         p: px(5),
         mt: px(9),
-        background: "rgba(255,255,255,.15)",
         borderRadius: px(5),
         gap: px(5),
         position: "relative",
@@ -136,7 +142,15 @@ export const CardSelectAvatarTheme = ({
               }}
             >
               {avatarsTheme.avatars.map((a, index) => (
-                <Avatar key={index} src={a} sx={{ width: 30, height: 30 }} />
+                <Avatar
+                  key={index}
+                  src={a}
+                  sx={{
+                    width: 30,
+                    height: 30,
+                    backgroundColor: "background.paper",
+                  }}
+                />
               ))}
             </AvatarGroup>
           )
@@ -154,7 +168,7 @@ export const CardSelectAvatarTheme = ({
 };
 
 interface PropsCardSelectTheme {
-  theme: Theme;
+  theme: { name: JsonLanguage; image?: string | JSX.Element; color?: string };
   onSelect: () => void;
   width?: number;
 }
@@ -318,7 +332,7 @@ export const CardAdminTheme = ({ theme, onChange }: PropsCardAdminTheme) => {
 };
 
 interface PropsCardThemeHorizontal {
-  theme: Theme;
+  theme: ICardImage;
   width?: number;
   onChange: () => void;
 }

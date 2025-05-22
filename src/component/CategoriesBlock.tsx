@@ -23,7 +23,7 @@ export const CategoriesBlock = () => {
       selectCategories().then(({ data }) => {
         const res = data ?? [];
         setItemsSearch(
-          res.map((el) => ({
+          [...res].map((el) => ({
             id: el.id,
             name: el.name,
             type: TypeCardEnum.CATEGORY,

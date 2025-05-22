@@ -16,36 +16,32 @@ import { ButtonColor } from "src/component/Button";
 import { FavoriteSelectAvatarBlock } from "src/component/FavoriteBlock";
 import { SelectedTheme } from "src/component/SelectedTheme";
 import { SelectorProfileBattleBlock } from "src/component/SelectorProfileBlock";
-import { CardSelectAvatarTheme } from "src/component/card/CardTheme";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { BarNavigation } from "src/component/navigation/BarNavigation";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { useUser } from "src/context/UserProvider";
 import {
   BattleGame,
   BattleGameChange,
   BattleGameUpdate,
 } from "src/models/BattleGame";
-import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
-import { sortByName } from "src/utils/sort";
 
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import HistoryIcon from "@mui/icons-material/History";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import { ICardImage } from "src/component/card/CardImage";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import { HistoryGameModal } from "src/component/modal/HistoryGameModal";
+import { SearchThemeSelectAvatarScrollBlock } from "src/component/scroll/SearchThemeScrollBlock";
 import { weightedRandom } from "src/utils/random";
-import { SkeletonTheme } from "src/component/skeleton/SkeletonTheme";
 
 export default function BattlePage() {
   const { t } = useTranslation();
   const { uuidGame } = useParams();
   const { user } = useAuth();
-  const { language } = useUser();
-  const { headerSize, themes } = useApp();
+  const { headerSize } = useApp();
   const navigate = useNavigate();
 
   const [game, setGame] = useState<BattleGame | null>(null);
@@ -53,8 +49,6 @@ export default function BattlePage() {
   const [isStart, setIsStart] = useState(false);
   const [isOpenHistory, setIsOpenHistory] = useState(false);
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
-  const [maxIndex, setMaxIndex] = useState(20);
-  const [isLoading, setIsLoading] = useState(true);
 
   const isPlayer1 = useMemo(
     () => (user && game ? user.id === game.player1.id : null),
@@ -154,7 +148,7 @@ export default function BattlePage() {
   };
 
   const selectTheme = useCallback(
-    async (theme: Theme) => {
+    async (theme: ICardImage) => {
       if (game && isPlayer1 !== null) {
         const myThemes = isPlayer1
           ? [...game.themesplayer1]
@@ -174,14 +168,6 @@ export default function BattlePage() {
     },
     [game, isPlayer1]
   );
-
-  const themesFilter = useMemo(() => {
-    setIsLoading(false);
-    return uniqBy(
-      [...themes].sort((a, b) => sortByName(language, a, b)),
-      (el) => el.id
-    ).splice(0, maxIndex);
-  }, [themes, language, maxIndex]);
 
   const ready = useCallback(() => {
     if (game) {
@@ -248,7 +234,7 @@ export default function BattlePage() {
   }, [game, isPlayer1, isStart]);
 
   useEffect(() => {
-    if (game && game.game) {
+    if (game?.game) {
       navigate(`/duel/${game.game}`);
     }
   }, [game, navigate]);
@@ -265,27 +251,11 @@ export default function BattlePage() {
     }
   }, [game]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsLoading(true);
-      if (
-        window.innerHeight + document.documentElement.scrollTop + 250 <=
-        document.documentElement.offsetHeight
-      ) {
-        return;
-      }
-      setMaxIndex((prev) => prev + 20);
-    };
-    if (document) {
-      document.addEventListener("scroll", handleScroll);
-    }
-    return () => {
-      document.removeEventListener("scroll", handleScroll);
-    };
-  }, [themes, maxIndex]);
-
   return (
     <Container maxWidth="md">
+      <Helmet>
+        <title>{`${t("pages.battle.title")} - ${t("appname")}`}</title>
+      </Helmet>
       <BarNavigation
         title="Jouer"
         quit={() => {
@@ -299,7 +269,7 @@ export default function BattlePage() {
             display: "flex",
             flexDirection: "column",
             gap: 1,
-            backgroundColor: "white",
+            backgroundColor: "background.paper",
             position: "sticky",
             top: headerSize,
             left: 0,
@@ -337,9 +307,6 @@ export default function BattlePage() {
         </Box>
       )}
       <Box sx={{ width: percent(100), p: 1, overflow: "hidden" }}>
-        <Helmet>
-          <title>{`${t("pages.battle.title")} - ${t("appname")}`}</title>
-        </Helmet>
         <Grid
           container
           spacing={1}
@@ -348,44 +315,29 @@ export default function BattlePage() {
           sx={{ marginBottom: px(125) }}
         >
           {game && (
-            <>
-              <Grid item xs={12}>
-                <Grid container spacing={1} justifyContent="center">
-                  <Grid item xs={12}>
-                    <SelectedTheme
-                      avatars={avatars}
-                      select={(t) => selectTheme(t)}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FavoriteSelectAvatarBlock
-                      select={(t) => selectTheme(t)}
-                      avatars={avatars}
-                    />
-                  </Grid>
-                  {themesFilter.map((t) => {
-                    return (
-                      <Grid item key={t.id}>
-                        <CardSelectAvatarTheme
-                          theme={t}
-                          avatars={avatars}
-                          onSelect={() => selectTheme(t)}
-                        />
-                      </Grid>
-                    );
-                  })}
-                  {isLoading && (
-                    <>
-                      {Array.from(new Array(20)).map((_, index) => (
-                        <Grid item key={index}>
-                          <SkeletonTheme />
-                        </Grid>
-                      ))}
-                    </>
-                  )}
+            <Grid item xs={12}>
+              <Grid container spacing={1} justifyContent="center">
+                <Grid item xs={12}>
+                  <SelectedTheme
+                    avatars={avatars}
+                    select={(t) => selectTheme(t)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FavoriteSelectAvatarBlock
+                    select={(t) => selectTheme(t)}
+                    avatars={avatars}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <SearchThemeSelectAvatarScrollBlock
+                    onSelect={(v) => selectTheme(v)}
+                    search={""}
+                    avatars={avatars}
+                  />
                 </Grid>
               </Grid>
-            </>
+            </Grid>
           )}
         </Grid>
         <Box
@@ -394,7 +346,7 @@ export default function BattlePage() {
             bottom: 0,
             left: 0,
             right: 0,
-            backgroundColor: "white",
+            backgroundColor: "background.paper",
             zIndex: 10,
           }}
         >
@@ -446,7 +398,7 @@ export default function BattlePage() {
             }
           }}
         />
-        {game && game.player2 && (
+        {game?.player2 && (
           <HistoryGameModal
             open={isOpenHistory}
             close={() => setIsOpenHistory(false)}

@@ -26,21 +26,20 @@ import { useTranslation } from "react-i18next";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ClearIcon from "@mui/icons-material/Clear";
-import { uniqBy } from "lodash";
-import { useApp } from "src/context/AppProvider";
+import { selectCategories } from "src/api/category";
+import { selectThemesShop } from "src/api/theme";
 import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
 import { colorDifficulty, Difficulty } from "src/models/enum/DifficultyEnum";
 import { Language, LANGUAGESQUESTION } from "src/models/Language";
-import { Theme, ThemeShop } from "src/models/Theme";
+import { ThemeShop } from "src/models/Theme";
+import { Colors } from "src/style/Colors";
 import { sortByName } from "src/utils/sort";
 import { AutocompleteInputTheme } from "./Autocomplete";
+import { ICardImage } from "./card/CardImage";
 import { ImageThemeBlock } from "./ImageThemeBlock";
 import { BasicSearchInput } from "./Input";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
-import { Colors } from "src/style/Colors";
-import { selectThemesShop } from "src/api/theme";
-import { selectCategories } from "src/api/category";
 
 interface Props {
   value: Difficulty;
@@ -143,79 +142,19 @@ export const SelectDifficulty = ({ value, onSelect }: Props) => {
   );
 };
 
-interface PropsAutocompleteThemeAdmin {
-  theme: Theme;
-  onChange: (value: Theme) => void;
-}
-
-export const AutocompleteThemeAdmin = ({
-  theme,
-  onChange,
-}: PropsAutocompleteThemeAdmin) => {
-  const { t } = useTranslation();
-  const { themesAdmin } = useApp();
-  const { language } = useUser();
-
-  const themesDisplay = useMemo(
-    () =>
-      uniqBy(themesAdmin, (el) => el.id).sort((a, b) =>
-        sortByName(language, a, b)
-      ),
-    [themesAdmin, language]
-  );
-
-  return (
-    <Autocomplete
-      disablePortal
-      id="themeinput"
-      value={theme}
-      onChange={(_event: SyntheticEvent, newValue: Theme | null) => {
-        if (newValue) onChange(newValue);
-      }}
-      options={themesDisplay}
-      getOptionLabel={(option) => option.name[language.iso]}
-      renderOption={(props, option) => (
-        <Box
-          component="li"
-          sx={{
-            "& > img": { mr: 2, flexShrink: 0 },
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          }}
-          {...props}
-        >
-          <ImageThemeBlock theme={option} size={50} />
-          <JsonLanguageBlock value={option.name} />
-        </Box>
-      )}
-      fullWidth
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label={t("commun.theme")}
-          placeholder={t("commun.selecttheme")}
-        />
-      )}
-    />
-  );
-};
-
 interface PropsAutocompleteTheme {
-  value: Array<Theme>;
-  onChange: (value: Array<Theme>) => void;
-  isAdmin?: boolean;
+  value: Array<ICardImage>;
+  onChange: (value: Array<ICardImage>) => void;
 }
 
 export const AutocompleteTheme = ({
   value,
   onChange,
-  isAdmin = false,
 }: PropsAutocompleteTheme) => {
   const { t } = useTranslation();
 
   const deleteTheme = (id: number) => {
-    let newValue: Array<Theme> = [...value];
+    let newValue: Array<ICardImage> = [...value];
     newValue = newValue.filter((el) => el.id !== id);
     onChange(newValue);
   };
@@ -226,7 +165,6 @@ export const AutocompleteTheme = ({
         <AutocompleteInputTheme
           placeholder={t("commun.selecttheme")}
           onSelect={(newvalue) => onChange([...value, newvalue])}
-          isAdmin={isAdmin}
         />
       </Grid>
 
@@ -251,25 +189,6 @@ export const AutocompleteTheme = ({
           </Paper>
         </Grid>
       ))}
-    </Grid>
-  );
-};
-
-interface PropsSelectTheme {
-  onChange: (value: Theme) => void;
-}
-
-export const SelectTheme = ({ onChange }: PropsSelectTheme) => {
-  const { t } = useTranslation();
-
-  return (
-    <Grid container spacing={1}>
-      <Grid item xs={12}>
-        <AutocompleteInputTheme
-          placeholder={t("commun.selecttheme")}
-          onSelect={(newvalue) => onChange(newvalue)}
-        />
-      </Grid>
     </Grid>
   );
 };
@@ -450,60 +369,6 @@ export const BasicSelect = ({
             {option.label}
           </MenuItem>
         ))}
-      </Select>
-    </FormControl>
-  );
-};
-
-interface PropsSelectIdTheme {
-  theme: string;
-  onChange: (value: string) => void;
-}
-
-export const SelectIdTheme = ({ theme, onChange }: PropsSelectIdTheme) => {
-  const { t } = useTranslation();
-  const { themes } = useApp();
-  const { language } = useUser();
-
-  const options = useMemo(() => {
-    return uniqBy(themes, (el) => el.id)
-      .sort((a, b) => sortByName(language, a, b))
-      .map((el) => ({ value: el.id.toString(), label: el.name, theme: el }));
-  }, [themes, language]);
-
-  return (
-    <FormControl fullWidth>
-      <InputLabel id="label-theme-select">{t("commun.selecttheme")}</InputLabel>
-      <Select
-        labelId="label-theme-select"
-        id="theme-select"
-        value={theme}
-        label={t("commun.selecttitle")}
-        onChange={(event: SelectChangeEvent) => onChange(event.target.value)}
-        renderValue={(option) => {
-          const theme = themes.find((el) => el.id === Number(option));
-          return (
-            theme && (
-              <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                <ImageThemeBlock theme={theme} size={50} />
-                <JsonLanguageBlock variant="h6" value={theme.name} />
-              </Box>
-            )
-          );
-        }}
-      >
-        {options.map((option) => {
-          return (
-            <MenuItem
-              value={option.value}
-              key={option.value}
-              sx={{ display: "flex", gap: 1 }}
-            >
-              <ImageThemeBlock theme={option.theme} size={50} />
-              <JsonLanguageBlock variant="h6" value={option.label} />
-            </MenuItem>
-          );
-        })}
       </Select>
     </FormControl>
   );

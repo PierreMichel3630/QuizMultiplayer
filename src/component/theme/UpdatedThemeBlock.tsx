@@ -1,35 +1,37 @@
-import { uniqBy } from "lodash";
 import moment from "moment";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useApp } from "src/context/AppProvider";
+import { selectThemesByModifiedAt } from "src/api/theme";
 import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
-import { MAX_DAY_UPDATED_THEME } from "src/utils/config";
-import { sortByModifyAt } from "src/utils/sort";
+import { Theme } from "src/models/Theme";
 import { CategoryBlock } from "../category/CategoryBlock";
 
 export const UpdatedThemeBlock = () => {
   const { t } = useTranslation();
-  const { themes } = useApp();
+  const [themes, setThemes] = useState<Array<Theme>>([]);
 
-  const themesNew = useMemo(() => {
-    return uniqBy(
-      themes
-        .filter(
-          (el) => moment().diff(el.modify_at, "days") < MAX_DAY_UPDATED_THEME
-        )
-        .sort(sortByModifyAt)
-        .map((el) => ({
-          id: el.id,
-          name: el.name,
-          image: el.image,
-          color: el.color,
-          link: `/theme/${el.id}`,
-          type: TypeCardEnum.THEME,
-        })),
-      (el) => el.id
-    );
-  }, [themes]);
+  useEffect(() => {
+    const getThemes = () => {
+      const date = moment().subtract(7, "days");
+      selectThemesByModifiedAt(date).then(({ data }) => {
+        setThemes(data ?? []);
+      });
+    };
+    getThemes();
+  }, []);
+
+  const themesNew = useMemo(
+    () =>
+      [...themes].map((el) => ({
+        id: el.id,
+        name: el.name,
+        image: el.image,
+        color: el.color,
+        link: `/theme/${el.id}`,
+        type: TypeCardEnum.THEME,
+      })),
+    [themes]
+  );
 
   return (
     themesNew.length > 0 && (

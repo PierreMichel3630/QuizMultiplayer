@@ -413,7 +413,7 @@ export default function ProfilPage() {
             </Grid>
           )}
           <Grid item xs={12}>
-            <CardChallenge profileId={id}/>
+            <CardChallenge profileId={id} />
           </Grid>
           <Grid item xs={12}>
             <CardBadge badges={badges} loading={isLoadingBadge} />
@@ -424,9 +424,11 @@ export default function ProfilPage() {
           <Grid item xs={12}>
             <CardFriends friends={friendsAvatar} loading={isLoadingFriends} />
           </Grid>
-          <Grid item xs={12}>
-            <CardFinishTheme scores={scores} loading={isLoadingScore} />
-          </Grid>
+          {profileUser && (
+            <Grid item xs={12}>
+              <CardFinishTheme profile={profileUser} />
+            </Grid>
+          )}
           {profileUser && totalOpposition.games > 0 && (
             <Grid item xs={12}>
               <CardOpposition

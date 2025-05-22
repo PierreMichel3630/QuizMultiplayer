@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 import { selectGamesByPlayer } from "src/api/game";
 import { GroupButtonAllTypeGame } from "src/component/button/ButtonGroup";
 import { CardHistoryGame } from "src/component/card/CardHistoryGame";
+import { ICardImage } from "src/component/card/CardImage";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { AutocompleteTheme } from "src/component/Select";
 import { SelectorProfileBlock } from "src/component/SelectorProfileBlock";
@@ -15,11 +16,10 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { GameModeEnum } from "src/models/enum/GameEnum";
 import { HistoryGame } from "src/models/Game";
 import { Profile } from "src/models/Profile";
-import { Theme } from "src/models/Theme";
 
 export interface FilterGame {
   type: GameModeEnum;
-  themes: Array<Theme>;
+  themes: Array<ICardImage>;
   player: Profile | null;
   opponent?: Profile;
 }
@@ -145,7 +145,7 @@ export default function HistoryGamePage() {
           <Grid item xs={12}>
             <AutocompleteTheme
               value={filter.themes}
-              onChange={(value: Array<Theme>) => {
+              onChange={(value) => {
                 setFilter((prev) => ({ ...prev, themes: value }));
               }}
             />

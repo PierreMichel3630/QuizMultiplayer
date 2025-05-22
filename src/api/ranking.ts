@@ -35,3 +35,11 @@ export const getRankingFinishTheme = (page: number, itemperpage = 25) => {
     .order("nbtheme", { ascending: false })
     .range(from, to);
 };
+
+export const getFinishThemeByProfile = (profile: string) => {
+  return supabase
+    .from(SUPABASE_FINISHTHEME_TABLE)
+    .select("*")
+    .eq("profile", profile)
+    .maybeSingle();
+};
