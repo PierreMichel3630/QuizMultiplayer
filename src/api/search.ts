@@ -1,6 +1,7 @@
 import moment from "moment";
 import { supabase } from "./supabase";
 import { MAX_DAY_NEW_THEME } from "src/utils/config";
+import { removeAccentsAndLowercase } from "src/utils/string";
 
 export const SUPABASE_VIEWSEARCH_TABLE = "viewsearch";
 
@@ -13,12 +14,15 @@ export const searchThemesAndCategoriesPaginate = (
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
 
+  const searchLower = removeAccentsAndLowercase(search);
+
   return supabase
     .from(SUPABASE_VIEWSEARCH_TABLE)
     .select("*")
-    .ilike(`name->>${language}`, `%${search}%`)
+    .ilike(`titlelower`, `%${searchLower}%`)
+    .eq("language", language)
     .range(from, to)
-    .order(`name->>${language}`, { ascending: true });
+    .order(`titlelower`, { ascending: true });
 };
 
 export const searchThemesPaginate = (
@@ -59,14 +63,13 @@ export const searchCategoriesPaginate = (
 
 export const getThemesAndCategoriesById = (
   idsCategory: Array<string | number>,
-  idsTheme: Array<string | number>,
-  language = "fr-FR"
+  idsTheme: Array<string | number>
 ) => {
   return supabase
     .from(SUPABASE_VIEWSEARCH_TABLE)
     .select("*")
     .or(`idcategory.in.(${idsCategory.join()}),idtheme.in.(${idsTheme.join()})`)
-    .order(`name->>${language}`, { ascending: true });
+    .order(`titlelower`, { ascending: true });
 };
 
 export const getThemesById = (

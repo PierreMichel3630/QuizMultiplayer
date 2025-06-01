@@ -80,7 +80,7 @@ export const CardAdminQuestion = ({
               <Typography variant="h4">{`${t("commun.question")} ${
                 question.id
               }`}</Typography>
-              <JsonLanguageBlock variant="h6" value={question.theme.name} />
+              <Typography variant="h6">{question.theme.title}</Typography>
             </Box>
           </Grid>
         )}

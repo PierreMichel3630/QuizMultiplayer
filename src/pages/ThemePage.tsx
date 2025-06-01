@@ -32,7 +32,7 @@ import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { InfoBlock } from "src/component/InfoBlock";
 import { ProposeQuestionModal } from "src/component/modal/ProposeQuestionModal";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
-import { RankingTableSoloDuel } from "src/component/table/RankingTable";
+import { RankingTableSoloDuelPaginate } from "src/component/table/RankingTable";
 import { TitleBlock } from "src/component/title/Title";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
@@ -43,14 +43,12 @@ import { Profile } from "src/models/Profile";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 
-import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
-
 export default function ThemePage() {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { uuid, language } = useUser();
+  const { uuid } = useUser();
   const { user, profile } = useAuth();
   const { favorites, getFavorite } = useApp();
   const { setMessage, setSeverity } = useMessage();
@@ -164,14 +162,12 @@ export default function ThemePage() {
     <Box sx={{ width: percent(100) }}>
       <Helmet>
         <title>
-          {theme
-            ? `${theme.name[language.iso]} - ${t("appname")}`
-            : t("appname")}
+          {theme ? `${theme.title} - ${t("appname")}` : t("appname")}
         </title>
         {theme && (
           <meta
             name="description"
-            content={`${t("appname")} Quiz ${theme.name[language.iso]}`}
+            content={`${t("appname")} Quiz ${theme.title}`}
           />
         )}
       </Helmet>
@@ -264,7 +260,7 @@ export default function ThemePage() {
                   >
                     <Grid item xs={12}>
                       <TitleBlock
-                        title={theme.name}
+                        title={theme.title}
                         addFavorite={addFavorite}
                         favorite={favorite !== undefined}
                       />
@@ -339,6 +335,7 @@ export default function ThemePage() {
                             </Grid>
                           </>
                         )}
+                        {/*
                         <Grid item xs={12}>
                           <ButtonColor
                             size="small"
@@ -348,7 +345,7 @@ export default function ThemePage() {
                             onClick={() => setOpenProposeQuestion(true)}
                             variant="contained"
                           />
-                        </Grid>
+                        </Grid>*/}
                         {profile?.isadmin && (
                           <Grid item xs={12}>
                             <ButtonColor
@@ -421,7 +418,7 @@ export default function ThemePage() {
               </Grid>
             </Grid>
             <Grid item xs={12}>
-              <RankingTableSoloDuel theme={theme} />
+              <RankingTableSoloDuelPaginate theme={theme} />
             </Grid>
           </>
         ) : (

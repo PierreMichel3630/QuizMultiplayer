@@ -9,7 +9,6 @@ import { ImageThemeBlock } from "../ImageThemeBlock";
 
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
-import { useUser } from "src/context/UserProvider";
 
 interface Props {
   game: DuelGame;
@@ -18,7 +17,6 @@ interface Props {
 
 export const DuelNotificationBlock = ({ game, refuse }: Props) => {
   const navigate = useNavigate();
-  const { language } = useUser();
   const { t } = useTranslation();
 
   const playDuel = (uuid: string) => {
@@ -65,9 +63,7 @@ export const DuelNotificationBlock = ({ game, refuse }: Props) => {
                 username: game.player1
                   ? game.player1.username
                   : t("commun.unknown"),
-                theme: game
-                  ? game.theme.name[language.iso]
-                  : t("commun.unknown"),
+                theme: game ? game.theme.title : t("commun.unknown"),
               }}
               components={{ bold: <strong /> }}
             />

@@ -1,8 +1,7 @@
-import { Grid, Box, Typography } from "@mui/material";
-import { ImageThemeBlock } from "./ImageThemeBlock";
-import { JsonLanguageBlock } from "./JsonLanguageBlock";
-import { Theme } from "src/models/Theme";
+import { Box, Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { Theme } from "src/models/Theme";
+import { ImageThemeBlock } from "./ImageThemeBlock";
 
 interface Props {
   theme: Theme;
@@ -25,7 +24,7 @@ export const ScoreThemeBlock = ({
         <ImageThemeBlock theme={theme} />
       </Grid>
       <Grid item xs={9} sm={9} md={10}>
-        <JsonLanguageBlock
+        <Typography
           variant="h1"
           color={color}
           sx={{
@@ -35,9 +34,10 @@ export const ScoreThemeBlock = ({
             lineClamp: 1,
             boxOrient: "vertical",
           }}
-          value={theme.name}
           noWrap
-        />
+        >
+          {theme.title}
+        </Typography>
         {score !== undefined && (
           <Box
             sx={{

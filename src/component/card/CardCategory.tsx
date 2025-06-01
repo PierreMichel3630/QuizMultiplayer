@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { useMessage } from "src/context/MessageProvider";
 import { Category } from "src/models/Category";
 import { Colors } from "src/style/Colors";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { ConfirmDialog } from "../modal/ConfirmModal";
 import { CreateEditCategoryDialog } from "../modal/CreateEditCategoryDialog";
 
@@ -56,11 +55,9 @@ export const CardCategory = ({ category, link, width = 90 }: Props) => {
           sx={{ width: px(width - 10), height: px(width - 10), color: "white" }}
         />
       </Box>
-      <JsonLanguageBlock
-        variant="h6"
-        sx={{ textAlign: "center" }}
-        value={category.name}
-      />
+      <Typography variant="h6" sx={{ textAlign: "center" }}>
+        {category.title}
+      </Typography>
     </Box>
   );
 };
@@ -105,11 +102,9 @@ export const CardAdminCategory = ({
           }}
         >
           <Typography variant="h2">{category.id}</Typography>
-          <JsonLanguageBlock
-            variant="h4"
-            component="span"
-            value={category.name}
-          />
+          <Typography variant="h4" component="span">
+            {category.title}
+          </Typography>
         </Grid>
         <Grid item>
           <IconButton aria-label="edit" onClick={() => setOpenModal(true)}>

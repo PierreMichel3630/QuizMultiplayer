@@ -12,7 +12,8 @@ export const selectCategories = (language = "fr-FR") =>
   supabase
     .from(SUPABASE_CATEGORY_TABLE)
     .select()
-    .order(`name->>${language}`, { ascending: true });
+    .eq("language", language)
+    .order(`titlelower`, { ascending: true });
 
 export const selectCategoriesById = (ids: Array<string | number>) =>
   supabase.from(SUPABASE_CATEGORY_TABLE).select().in("id", ids);
@@ -31,10 +32,11 @@ export const searchCategories = (
 
   return supabase
     .from(SUPABASE_CATEGORY_TABLE)
-    .select("id, name")
-    .ilike(`name->>${language}`, `%${search}%`)
+    .select("*")
+    .ilike(`titlelower`, `%${search}%`)
+    .eq("language", language)
     .range(from, to)
-    .order(`name->>${language}`, { ascending: true });
+    .order(`titlelower`, { ascending: true });
 };
 
 export const insertCategoryTheme = (value: CategoryThemeInsert) =>
@@ -54,7 +56,8 @@ export const insertCategory = (value: CategoryInsert) =>
 export const deleteCategoryById = (id: number) =>
   supabase.from(SUPABASE_CATEGORY_TABLE).delete().eq("id", id);
 
-export const countCategory = () =>
+export const countCategory = (language = "fr-FR") =>
   supabase
     .from(SUPABASE_CATEGORY_TABLE)
-    .select("id", { count: "exact", head: true });
+    .select("id", { count: "exact", head: true })
+    .eq("language", language);

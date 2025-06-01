@@ -32,16 +32,25 @@ export const selectThemesById = (ids: Array<string | number>) =>
 
 export const selectThemesByCategory = (
   id: number | string,
+  search = "",
+  page = 0,
+  itemperpage = 20,
   language = "fr-FR"
-) =>
-  supabase
+) => {
+  const from = page * itemperpage;
+  const to = from + itemperpage - 1;
+  return supabase
     .from(SUPABASE_VUETHEME_TABLE)
     .select("*")
     .eq("category", id)
     .eq("validate", true)
     .eq("enabled", true)
+    .ilike(`titlelower`, `%${search}%`)
+    .eq("language", language)
+    .range(from, to)
     .order("isfirst", { ascending: false })
-    .order(`name->>${language}`, { ascending: true });
+    .order(`titlelower`, { ascending: true });
+};
 
 export const searchThemes = (
   search = "",
@@ -64,6 +73,13 @@ export const countThemes = () =>
   supabase
     .from(SUPABASE_VUETHEME_TABLE)
     .select("*", { count: "exact", head: true })
+    .eq("enabled", true);
+
+export const countThemesByCategory = (id: number | string) =>
+  supabase
+    .from(SUPABASE_VUETHEME_TABLE)
+    .select("*", { count: "exact", head: true })
+    .eq("category", id)
     .eq("enabled", true);
 
 export const selectThemeById = (id: number) =>

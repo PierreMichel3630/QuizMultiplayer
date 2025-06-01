@@ -254,7 +254,7 @@ export default function ProfilPage() {
 
   const scoresDisplay = useMemo(() => {
     let res = [...scoresWithRankAndOpposition].filter((el) =>
-      searchString(search, el.theme.name[language.iso])
+      searchString(search, el.theme.title)
     );
     switch (sort) {
       case "alphabetical":
@@ -510,14 +510,15 @@ export default function ProfilPage() {
                             <ImageThemeBlock theme={score.theme} size={50} />
                           </Link>
                           <Box>
-                            <JsonLanguageBlock
+                            <Typography
                               variant="h2"
                               sx={{
                                 wordWrap: "anywhere",
                               }}
                               color="text.secondary"
-                              value={score.theme.name}
-                            />
+                            >
+                              {score.theme.title}
+                            </Typography>
                           </Box>
                         </Box>
                       </Grid>

@@ -175,12 +175,13 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           }}
         >
           <ImageThemeBlock theme={game.theme} size={90} />
-          <JsonLanguageBlock
+          <Typography
             variant="h4"
             sx={{ textAlign: "center" }}
-            value={game.theme.name}
             color="text.secondary"
-          />
+          >
+            {game.theme.title}
+          </Typography>
         </Box>
       </Box>
       <Box

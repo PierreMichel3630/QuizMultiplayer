@@ -1,9 +1,10 @@
-import { Box, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { selectCategories } from "src/api/category";
-import { CardImage, ICardImage } from "src/component/card/CardImage";
+import { ICardImage } from "src/component/card/CardImage";
+import { PageCategoryBlock } from "src/component/page/PageCategoryBlock";
 import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
 
 export default function CategoriesPage() {
@@ -18,7 +19,7 @@ export default function CategoriesPage() {
         setItemsSearch(
           res.map((el) => ({
             id: el.id,
-            name: el.name,
+            title: el.title,
             type: TypeCardEnum.CATEGORY,
           }))
         );
@@ -33,15 +34,10 @@ export default function CategoriesPage() {
         <title>{`${t("pages.categories.title")} - ${t("appname")}`}</title>
       </Helmet>
       <Grid item xs={12}>
-        <Box sx={{ p: 1 }}>
-          <Grid container spacing={1} justifyContent="center">
-            {itemsSearch.map((value, index) => (
-              <Grid item key={index}>
-                <CardImage key={index} value={value} />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
+        <PageCategoryBlock
+          title={t("pages.categories.title")}
+          values={itemsSearch}
+        />
       </Grid>
     </Grid>
   );

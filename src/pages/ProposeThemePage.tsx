@@ -58,7 +58,7 @@ export default function ProposeThemePage() {
         );
         return {
           id: index,
-          name: theme.name,
+          title: theme.title,
           color: theme.color,
           image,
           link: `/theme/${theme.id}`,

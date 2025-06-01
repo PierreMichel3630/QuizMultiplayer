@@ -4,7 +4,8 @@ import { JsonLanguage } from "./Language";
 
 export interface ProposeTheme {
   id: number;
-  name: JsonLanguage;
+  title: string;
+  language: string;
   image?: string;
   color: string;
   enabled: boolean;
@@ -14,7 +15,8 @@ export interface ProposeTheme {
 
 export interface Theme {
   id: number;
-  name: JsonLanguage;
+  title: string;
+  language: string;
   image?: string;
   questions: number;
   color: string;
@@ -27,13 +29,15 @@ export interface Theme {
 }
 
 export interface ThemeInsertAdmin {
-  name: JsonLanguage;
+  title: string;
+  language: string;
   image: null | string;
   color: string;
 }
 
 export interface ThemeInsert {
-  name: JsonLanguage;
+  title: string;
+  language: string;
   color: string;
 }
 
@@ -41,7 +45,8 @@ export interface ThemeUpdate {
   id: number;
   enabled?: boolean;
   validate?: boolean;
-  name?: JsonLanguage;
+  title?: string;
+  language?: string;
   image?: null | string;
   color?: string;
 }

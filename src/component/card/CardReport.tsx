@@ -81,15 +81,11 @@ export const CardReport = ({ report, onDelete }: Props) => {
                   }
                   size={60}
                 />
-                <JsonLanguageBlock
-                  value={
-                    report.duelgame
-                      ? report.duelgame.themequestion.name
-                      : report.sologame!.themequestion.name
-                  }
-                  color="text.secondary"
-                  variant="h4"
-                />
+                <Typography color="text.secondary" variant="h4">
+                  {report.duelgame
+                    ? report.duelgame.themequestion.title
+                    : report.sologame!.themequestion.title}
+                </Typography>
               </Box>
             </Box>
           )}

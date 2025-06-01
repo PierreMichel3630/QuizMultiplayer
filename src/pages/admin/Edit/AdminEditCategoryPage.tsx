@@ -42,7 +42,7 @@ export default function AdminEditCategoryPage() {
     setIsLoading(false);
     return uniqBy(
       [...categories]
-        .filter((el) => searchString(search, el.name[language.iso]))
+        .filter((el) => searchString(search, el.title))
         .sort((a, b) => sortByName(language, a, b)),
       (el) => el.id
     ).splice(0, maxIndex);

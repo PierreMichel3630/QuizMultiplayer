@@ -3,7 +3,6 @@ import { padding, px } from "csx";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { JsonLanguage } from "src/models/Language";
-import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 
@@ -39,28 +38,6 @@ export const BadgeDifficulty = ({ value }: Props) => {
       <Typography variant="h4" sx={{ color: "white" }}>
         {t(`enum.difficulty.${value}`)}
       </Typography>
-    </Box>
-  );
-};
-
-interface PropsTheme {
-  value: Theme;
-}
-export const BadgeTheme = ({ value }: PropsTheme) => {
-  return (
-    <Box
-      sx={{
-        p: padding(2, 8),
-        backgroundColor: Colors.purple,
-        borderRadius: px(10),
-        width: "fit-content",
-      }}
-    >
-      <JsonLanguageBlock
-        variant="h2"
-        sx={{ color: "white" }}
-        value={value.name}
-      />
     </Box>
   );
 };

@@ -1,56 +1,86 @@
 import { Grid } from "@mui/material";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { searchCategories } from "src/api/category";
+import { useUser } from "src/context/UserProvider";
+import { Category } from "src/models/Category";
 import { CategoryWithThemeBlock } from "../CategoryWithThemeBlock";
 import { SkeletonCategories } from "../skeleton/SkeletonCategory";
-import { useCallback, useEffect, useState } from "react";
-import { Category } from "src/models/Category";
-import { searchCategories } from "src/api/category";
 
 export const CategoriesScrollBlock = () => {
+  const { language } = useUser();
+
   const [, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [isEnd, setIsEnd] = useState(false);
   const [categories, setCategories] = useState<Array<Category>>([]);
 
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastItemRef = useRef<HTMLDivElement | null>(null);
+
   const getCategories = useCallback(
     (page: number) => {
+      if (loading) return;
+      setLoading(true);
       const itemperpage = 5;
       if (!isEnd) {
-        searchCategories("", page, itemperpage).then(({ data }) => {
-          const result = data ?? [];
-          setIsEnd(result.length < itemperpage);
-          setCategories((prev) => [...prev, ...result]);
-        });
+        searchCategories("", page, itemperpage, language.iso).then(
+          ({ data }) => {
+            const result: Array<Category> = data ?? [];
+            setIsEnd(result.length < itemperpage);
+            setCategories((prev) =>
+              page === 0 ? [...result] : [...prev, ...result]
+            );
+            setLoading(false);
+          }
+        );
       }
     },
-    [isEnd]
+    [isEnd, loading, language]
   );
 
-  const handleLoadMoreData = () => {
-    setPage((prevPage) => {
-      const nextPage = prevPage + 1;
-      getCategories(nextPage);
-      return nextPage;
-    });
-  };
+  useEffect(() => {
+    setPage(0);
+    setCategories([]);
+    setIsEnd(false);
+    getCategories(0);
+  }, []);
 
   useEffect(() => {
-    getCategories(0);
-  }, [getCategories]);
+    if (loading) return;
+
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !isEnd) {
+        setPage((prev) => {
+          getCategories(prev + 1);
+          return prev + 1;
+        });
+      }
+    });
+
+    if (lastItemRef.current) {
+      observer.current.observe(lastItemRef.current);
+    }
+
+    return () => observer.current?.disconnect();
+  }, [categories, loading, isEnd, getCategories]);
 
   return (
-    <InfiniteScroll
-      dataLength={categories.length}
-      next={handleLoadMoreData}
-      hasMore={!isEnd}
-      loader={<SkeletonCategories number={2} />}
-    >
+    <>
       <Grid container spacing={1} sx={{ mb: 1 }}>
-        {categories.map((category) => (
-          <Grid item xs={12} key={category.id}>
+        {categories.map((category, index) => (
+          <Grid
+            item
+            xs={12}
+            key={category.id}
+            ref={index === categories.length - 1 ? lastItemRef : null}
+          >
             <CategoryWithThemeBlock category={category} />
           </Grid>
         ))}
       </Grid>
-    </InfiniteScroll>
+      {!isEnd && <SkeletonCategories number={2} />}
+    </>
   );
 };

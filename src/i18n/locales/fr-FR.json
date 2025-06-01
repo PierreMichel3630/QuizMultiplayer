@@ -642,8 +642,7 @@
       "requiredvalue": "Veuillez saisir une réponse"
     },
     "createtheme": {
-      "namefr": "Nom en Français *",
-      "nameen": "Nom en Anglais *",
+      "title": "Nom *",
       "color": "Couleur",
       "logo": "Logo",
       "background": "Image de fond",
@@ -685,7 +684,7 @@
       "icon": "Icone"
     },
     "proposetheme": {
-      "name": "Nom du thème *",
+      "title": "Nom du thème *",
       "requiredname": "Veuillez saisir un nom de thème",
       "color": "Couleur du thème *",
       "requiredcolor": "Veuillez sélectionner une couleur"
@@ -883,6 +882,8 @@
     "top10": "Top 10",
     "top100": "Top 100",
     "other": "Autre"
-
+  },
+  "mode": {
+    "fightfriend":"Combat contre un ami"
   }
 }

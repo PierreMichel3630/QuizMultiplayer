@@ -89,7 +89,7 @@ export const CategoryBlock = ({ category }: Props) => {
         }}
       >
         <Box sx={{ maxWidth: "calc(100% - 105px)" }}>
-          <TitleCount title={category.name} count={themes.length} />
+          <TitleCount title={category.title} count={themes.length} />
         </Box>
         <Button
           variant="outlined"

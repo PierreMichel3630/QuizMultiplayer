@@ -2,7 +2,6 @@ import ShareIcon from "@mui/icons-material/Share";
 import { Box, IconButton } from "@mui/material";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useUser } from "src/context/UserProvider";
 import { Theme } from "src/models/Theme";
 import { urlPc } from "src/pages/help/InstallationPage";
 import { Colors } from "src/style/Colors";
@@ -38,13 +37,12 @@ interface PropsScore {
 
 export const ShareScoreIcon = ({ score, theme }: PropsScore) => {
   const { t } = useTranslation();
-  const { language } = useUser();
 
   const themeText = useMemo(() => {
-    const themeLanguage = theme.name[language.iso];
-    const themeFR = theme.name["fr-FR"];
+    const themeLanguage = theme.title;
+    const themeFR = theme.title;
     return themeLanguage ?? themeFR;
-  }, [language, theme]);
+  }, [theme]);
 
   const data = useMemo(
     () => ({

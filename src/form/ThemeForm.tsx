@@ -19,6 +19,7 @@ import { ButtonColor } from "src/component/Button";
 import { SelectCategory } from "src/component/Select";
 import { FileUploadInput } from "src/component/input/FileUploadInput";
 import { useMessage } from "src/context/MessageProvider";
+import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
@@ -31,25 +32,25 @@ interface Props {
 
 export const ThemeForm = ({ validate, theme }: Props) => {
   const { t } = useTranslation();
+  const { language } = useUser();
   const { setMessage, setSeverity } = useMessage();
 
   const initialValue: {
-    namefr: string;
-    nameen: string;
+    title: string;
     color: string;
     image: null | File | string | undefined;
     category: null | Category;
+    language: string;
   } = {
-    namefr: theme ? theme.name["fr-FR"] : "",
-    nameen: theme ? theme.name["en-US"] : "",
+    title: theme ? theme.title : "",
     color: theme ? theme.color : "",
     image: theme ? theme.image : null,
     category: theme ? theme.category : null,
+    language: language.iso,
   };
 
   const validationSchema = Yup.object().shape({
-    namefr: Yup.string().required(t("form.createtheme.requirednamefr")),
-    nameen: Yup.string().required(t("form.createtheme.requirednameen")),
+    title: Yup.string().required(t("form.createtheme.requirednamefr")),
     color: Yup.string(),
     image: Yup.mixed().nullable(),
     category: Yup.object()
@@ -68,7 +69,7 @@ export const ThemeForm = ({ validate, theme }: Props) => {
           const name =
             "logo" +
             "-" +
-            deburr(values.namefr).replace(/\s/g, "") +
+            deburr(values.title).replace(/\s/g, "") +
             "-" +
             moment().toISOString();
 
@@ -82,12 +83,13 @@ export const ThemeForm = ({ validate, theme }: Props) => {
           image = values.image;
         }
         const newTheme = {
-          name: { "fr-FR": values.namefr, "en-US": values.nameen },
+          language: values.language,
           image:
             image !== null && typeof values.image !== "string"
               ? URL_STORAGE + BUCKET_THEME + "/" + image
               : image,
           color: values.color,
+          title: values.title,
         };
         const { error, data } = theme
           ? await updateTheme({ id: theme.id, ...newTheme })
@@ -132,49 +134,24 @@ export const ThemeForm = ({ validate, theme }: Props) => {
         <Grid item xs={12}>
           <FormControl
             fullWidth
-            error={Boolean(formik.touched.namefr && formik.errors.namefr)}
+            error={Boolean(formik.touched.title && formik.errors.title)}
           >
-            <InputLabel htmlFor="namefr-input">
-              {t("form.createtheme.namefr")}
+            <InputLabel htmlFor="title-input">
+              {t("form.createtheme.title")}
             </InputLabel>
             <OutlinedInput
-              id="namefr-input"
+              id="title-input"
               type="text"
-              value={formik.values.namefr}
-              name="namefr"
+              value={formik.values.title}
+              name="title"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
-              label={t("form.createtheme.namefr")}
+              label={t("form.createtheme.title")}
               inputProps={{}}
             />
-            {formik.touched.namefr && formik.errors.namefr && (
-              <FormHelperText error id="error-namefr">
-                {formik.errors.namefr}
-              </FormHelperText>
-            )}
-          </FormControl>
-        </Grid>
-        <Grid item xs={12}>
-          <FormControl
-            fullWidth
-            error={Boolean(formik.touched.nameen && formik.errors.nameen)}
-          >
-            <InputLabel htmlFor="nameen-input">
-              {t("form.createtheme.nameen")}
-            </InputLabel>
-            <OutlinedInput
-              id="nameen-input"
-              type="text"
-              value={formik.values.nameen}
-              name="nameen"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              label={t("form.createtheme.nameen")}
-              inputProps={{}}
-            />
-            {formik.touched.nameen && formik.errors.nameen && (
-              <FormHelperText error id="error-nameen">
-                {formik.errors.nameen}
+            {formik.touched.title && formik.errors.title && (
+              <FormHelperText error id="error-title">
+                {formik.errors.title}
               </FormHelperText>
             )}
           </FormControl>

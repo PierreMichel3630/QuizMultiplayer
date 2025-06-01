@@ -19,16 +19,14 @@ import { useApp } from "src/context/AppProvider";
 import { Theme, ThemeUpdate } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
-import StarIcon from "@mui/icons-material/Star";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { CreateEditThemeDialog } from "../modal/CreateEditThemeDialog";
+import StarIcon from "@mui/icons-material/Star";
 import { useTranslation } from "react-i18next";
-import { useMessage } from "src/context/MessageProvider";
 import { deleteThemeById, updateTheme } from "src/api/theme";
+import { useMessage } from "src/context/MessageProvider";
 import { ConfirmDialog } from "../modal/ConfirmModal";
-import { JsonLanguage } from "src/models/Language";
+import { CreateEditThemeDialog } from "../modal/CreateEditThemeDialog";
 import { ICardImage } from "./CardImage";
 
 interface Props {
@@ -66,7 +64,7 @@ export const CardTheme = ({ theme, link, width = 95 }: Props) => {
       }}
     >
       <ImageThemeBlock theme={theme} size={width} />
-      <JsonLanguageBlock
+      <Typography
         variant="h6"
         sx={{
           width: percent(100),
@@ -76,8 +74,9 @@ export const CardTheme = ({ theme, link, width = 95 }: Props) => {
           WebkitBoxOrient: "vertical",
           textAlign: "center",
         }}
-        value={theme.name}
-      />
+      >
+        {theme.title}
+      </Typography>
       {isFavorite && (
         <StarIcon
           sx={{
@@ -98,7 +97,7 @@ export const CardTheme = ({ theme, link, width = 95 }: Props) => {
 interface PropsCardSelectAvatarTheme {
   theme: {
     id: number;
-    name: JsonLanguage;
+    title: string;
     image?: string | JSX.Element;
     color?: string;
   };
@@ -158,17 +157,15 @@ export const CardSelectAvatarTheme = ({
       >
         <ImageThemeBlock theme={theme} size={width} />
       </Badge>
-      <JsonLanguageBlock
-        variant="h6"
-        sx={{ textAlign: "center" }}
-        value={theme.name}
-      />
+      <Typography variant="h6" sx={{ textAlign: "center" }}>
+        {theme.title}
+      </Typography>
     </Box>
   );
 };
 
 interface PropsCardSelectTheme {
-  theme: { name: JsonLanguage; image?: string | JSX.Element; color?: string };
+  theme: { title: string; image?: string | JSX.Element; color?: string };
   onSelect: () => void;
   width?: number;
 }
@@ -196,7 +193,7 @@ export const CardSelectTheme = ({
       }}
     >
       <ImageThemeBlock theme={theme} size={width} />
-      <JsonLanguageBlock
+      <Typography
         variant="h6"
         sx={{
           width: percent(100),
@@ -206,8 +203,9 @@ export const CardSelectTheme = ({
           WebkitBoxOrient: "vertical",
           textAlign: "center",
         }}
-        value={theme.name}
-      />
+      >
+        {theme.title}
+      </Typography>
     </Box>
   );
 };
@@ -273,7 +271,9 @@ export const CardAdminTheme = ({ theme, onChange }: PropsCardAdminTheme) => {
           }}
         >
           <Typography variant="h2">{theme.id}</Typography>
-          <JsonLanguageBlock variant="h4" component="span" value={theme.name} />
+          <Typography variant="h4" component="span">
+            {theme.title}
+          </Typography>
         </Grid>
         <Grid item>
           <FormGroup>
@@ -357,7 +357,7 @@ export const CardThemeHorizontal = ({
       onClick={() => onChange()}
     >
       <ImageThemeBlock theme={theme} size={width} />
-      <JsonLanguageBlock variant="h2" value={theme.name} />
+      <Typography variant="h2">{theme.title}</Typography>
       <DeleteIcon
         sx={{ cursor: "pointer" }}
         fontSize="large"

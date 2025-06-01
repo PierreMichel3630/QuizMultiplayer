@@ -9,7 +9,6 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { HistoryGame, HistoryGameAdmin } from "src/models/Game";
 import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 interface Props {
   game: HistoryGame;
@@ -51,11 +50,9 @@ export const CardHistoryGame = ({ game }: Props) => {
                 to={`/theme/${game.theme.id}`}
                 style={{ textDecoration: "none" }}
               >
-                <JsonLanguageBlock
-                  variant="h2"
-                  value={game.theme.name}
-                  noWrap
-                />
+                <Typography variant="h2" noWrap>
+                  {game.theme.title}
+                </Typography>
               </Link>
               <Typography variant="caption">
                 {moment(game.created_at).format("DD/MM/YYYY HH:mm")}
@@ -96,11 +93,9 @@ export const CardHistoryGame = ({ game }: Props) => {
                 to={`/theme/${game.theme.id}`}
                 style={{ textDecoration: "none" }}
               >
-                <JsonLanguageBlock
-                  variant="h2"
-                  value={game.theme.name}
-                  noWrap
-                />
+                <Typography variant="h2" noWrap>
+                  {game.theme.title}
+                </Typography>
               </Link>
               <Typography variant="caption">
                 {moment(game.created_at).format("DD/MM/YYYY HH:mm")}
@@ -182,11 +177,9 @@ export const CardHistoryGameAdmin = ({ game }: PropsAdmin) => {
             {isSolo ? (
               <>
                 <Grid item xs={10}>
-                  <JsonLanguageBlock
-                    variant="h2"
-                    value={game.theme.name}
-                    noWrap
-                  />
+                  <Typography variant="h2" noWrap>
+                    {game.theme.title}
+                  </Typography>
                   <Typography variant="caption">
                     {moment(game.created_at).format("DD/MM/YYYY HH:mm")}
                   </Typography>
@@ -224,11 +217,9 @@ export const CardHistoryGameAdmin = ({ game }: PropsAdmin) => {
             ) : (
               <>
                 <Grid item xs={10}>
-                  <JsonLanguageBlock
-                    variant="h2"
-                    value={game.theme.name}
-                    noWrap
-                  />
+                  <Typography variant="h2" noWrap>
+                    {game.theme.title}
+                  </Typography>
                   <Typography variant="caption">
                     {moment(game.created_at).format("DD/MM/YYYY HH:mm")}
                   </Typography>

@@ -17,12 +17,22 @@ import { AvatarAccount } from "../avatar/AvatarAccount";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { percent, px } from "csx";
 import moment from "moment";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import {
+  Fragment,
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  selectRankingDuelByTheme,
-  selectRankingSoloByTheme,
+  selectRankingDuelByThemeAndProfile,
+  selectRankingDuelByThemePaginate,
+  selectRankingSoloByThemeAndProfile,
+  selectRankingSoloByThemePaginate,
 } from "src/api/ranking";
 import rank1 from "src/assets/rank/rank1.png";
 import rank2 from "src/assets/rank/rank2.png";
@@ -34,11 +44,10 @@ import { Profile } from "src/models/Profile";
 import { Ranking } from "src/models/Ranking";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
+import { isStringOrNumber } from "src/utils/type";
 import { CountryImageBlock } from "../CountryBlock";
 import { ImageThemeBlock } from "../ImageThemeBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { DefaultTabs } from "../Tabs";
-import { isStringOrNumber } from "src/utils/type";
 
 export interface DataRanking {
   profile: Profile;
@@ -57,9 +66,15 @@ interface Props {
     link: string;
     label: string;
   };
+  lastItemRef?: MutableRefObject<HTMLTableRowElement | null>;
 }
 
-export const RankingTable = ({ data, navigation, loading = false }: Props) => {
+export const RankingTable = ({
+  data,
+  navigation,
+  loading = false,
+  lastItemRef,
+}: Props) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const { friends } = useApp();
@@ -147,6 +162,7 @@ export const RankingTable = ({ data, navigation, loading = false }: Props) => {
                       sx={{
                         backgroundColor: color,
                       }}
+                      ref={index === data.length - 1 ? lastItemRef : null}
                     >
                       <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
                         {getIcon(el.rank, colorText)}
@@ -224,9 +240,8 @@ export const RankingTable = ({ data, navigation, loading = false }: Props) => {
                                   size={20}
                                   border={false}
                                 />
-                                <JsonLanguageBlock
+                                <Typography
                                   variant="body1"
-                                  value={el.theme.name}
                                   sx={{
                                     color: colorText,
                                     overflow: "hidden",
@@ -236,7 +251,9 @@ export const RankingTable = ({ data, navigation, loading = false }: Props) => {
                                     textOverflow: "ellipsis",
                                   }}
                                   noWrap
-                                />
+                                >
+                                  {el.theme.title}
+                                </Typography>
                               </Box>
                             </Link>
                           )}
@@ -399,30 +416,34 @@ export const RankingTableSoloDuel = ({
     setIsLoading(true);
     if (theme) {
       if (tab === 0) {
-        selectRankingSoloByTheme(theme.id, idProfile, max).then((res) => {
-          const ranking = res.data as Array<Ranking>;
-          const newData = ranking.map((el) => ({
-            profile: el.profile,
-            value: el.points,
-            uuid: el.uuidgame !== null ? el.uuidgame.uuid : undefined,
-            extra: t("commun.pointsabbreviation"),
-            rank: el.ranking,
-            date: el.dategame,
-          })) as Array<DataRanking>;
-          setData(newData);
-          setIsLoading(false);
-        });
+        selectRankingSoloByThemeAndProfile(theme.id, idProfile, max).then(
+          (res) => {
+            const ranking = res.data as Array<Ranking>;
+            const newData = ranking.map((el) => ({
+              profile: el.profile,
+              value: el.points,
+              uuid: el.uuidgame !== null ? el.uuidgame.uuid : undefined,
+              extra: t("commun.pointsabbreviation"),
+              rank: el.ranking,
+              date: el.dategame,
+            })) as Array<DataRanking>;
+            setData(newData);
+            setIsLoading(false);
+          }
+        );
       } else {
-        selectRankingDuelByTheme(theme.id, idProfile, max).then((res) => {
-          const ranking = res.data as Array<Ranking>;
-          const newData = ranking.map((el) => ({
-            profile: el.profile,
-            value: el.rank,
-            rank: el.ranking,
-          })) as Array<DataRanking>;
-          setData(newData);
-          setIsLoading(false);
-        });
+        selectRankingDuelByThemeAndProfile(theme.id, idProfile, max).then(
+          (res) => {
+            const ranking = res.data as Array<Ranking>;
+            const newData = ranking.map((el) => ({
+              profile: el.profile,
+              value: el.rank,
+              rank: el.ranking,
+            })) as Array<DataRanking>;
+            setData(newData);
+            setIsLoading(false);
+          }
+        );
       }
     }
   }, [theme, tab, t, idProfile, max]);
@@ -439,6 +460,149 @@ export const RankingTableSoloDuel = ({
         />
       )}
       <RankingTable data={data} loading={isLoading} />
+    </Box>
+  );
+};
+
+interface PropsSoloDuel {
+  theme?: Theme;
+  mode?: "ALL" | "DUEL" | "SOLO";
+}
+
+export const RankingTableSoloDuelPaginate = ({
+  theme,
+  mode = "ALL",
+}: PropsSoloDuel) => {
+  const { t } = useTranslation();
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastItemRef = useRef<HTMLTableRowElement | null>(null);
+
+  const [tab, setTab] = useState(mode === "DUEL" ? 1 : 0);
+  const tabs = useMemo(
+    () =>
+      mode === "ALL"
+        ? [{ label: t("commun.solo") }, { label: t("commun.duel") }]
+        : [],
+    [mode, t]
+  );
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [, setPage] = useState(0);
+  const [isEnd, setIsEnd] = useState(false);
+  const [data, setData] = useState<Array<DataRanking>>([]);
+
+  const getRankingDuel = useCallback(
+    (page: number) => {
+      if (isLoading) return;
+      const itemperpage = 30;
+      if (theme && (page === 0 || !isEnd)) {
+        setIsLoading(true);
+        selectRankingDuelByThemePaginate(theme.id, page, itemperpage).then(
+          ({ data }) => {
+            const result = data as Array<Ranking>;
+            const newData = result.map((el) => ({
+              profile: el.profile,
+              value: el.rank,
+              rank: el.ranking,
+            })) as Array<DataRanking>;
+            setIsEnd(result.length < itemperpage);
+            setData((prev) =>
+              page === 0 ? [...newData] : [...prev, ...newData]
+            );
+            setIsLoading(false);
+          }
+        );
+      }
+    },
+    [isEnd, theme, isLoading]
+  );
+
+  const getRankingSolo = useCallback(
+    (page: number) => {
+      if (isLoading) return;
+      const itemperpage = 30;
+      if (theme && (page === 0 || !isEnd)) {
+        setIsLoading(true);
+        selectRankingSoloByThemePaginate(theme.id, page, itemperpage).then(
+          ({ data }) => {
+            const result = data as Array<Ranking>;
+            const newData = result.map((el) => ({
+              profile: el.profile,
+              value: el.points,
+              uuid: el.uuidgame !== null ? el.uuidgame.uuid : undefined,
+              extra: t("commun.pointsabbreviation"),
+              rank: el.ranking,
+              date: el.dategame,
+            })) as Array<DataRanking>;
+            setIsEnd(result.length < itemperpage);
+            setData((prev) =>
+              page === 0 ? [...newData] : [...prev, ...newData]
+            );
+            setIsLoading(false);
+          }
+        );
+      }
+    },
+    [isLoading, theme, isEnd, t]
+  );
+
+  useEffect(() => {
+    setTab(mode === "DUEL" ? 1 : 0);
+  }, [mode]);
+
+  useEffect(() => {
+    setPage(0);
+    setData([]);
+    setIsEnd(false);
+    if (tab === 1) {
+      getRankingDuel(0);
+    } else {
+      getRankingSolo(0);
+    }
+  }, [tab, theme]);
+
+  useEffect(() => {
+    console.log(isEnd);
+  }, [isEnd]);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !isEnd) {
+        setPage((prev) => {
+          if (tab === 1) {
+            getRankingDuel(prev + 1);
+          } else {
+            getRankingSolo(prev + 1);
+          }
+          return prev + 1;
+        });
+      }
+    });
+
+    if (lastItemRef.current) {
+      observer.current.observe(lastItemRef.current);
+    }
+
+    return () => observer.current?.disconnect();
+  }, [data, isLoading, isEnd, getRankingDuel, getRankingSolo, tab]);
+
+  return (
+    <Box sx={{ p: 1 }}>
+      {tabs.length > 1 && (
+        <DefaultTabs
+          values={tabs}
+          tab={tab}
+          onChange={(value) => {
+            setTab(value);
+          }}
+        />
+      )}
+      <RankingTable data={data} loading={isLoading} lastItemRef={lastItemRef} />
     </Box>
   );
 };

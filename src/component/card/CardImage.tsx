@@ -1,20 +1,18 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { percent, px } from "csx";
 import { useNavigate } from "react-router-dom";
-import { JsonLanguage } from "src/models/Language";
 import { Colors } from "src/style/Colors";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 import StarIcon from "@mui/icons-material/Star";
-import { ImageCard } from "../image/ImageCard";
-import { useApp } from "src/context/AppProvider";
 import { useMemo } from "react";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
+import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { ImageCard } from "../image/ImageCard";
 
 export interface ICardImage {
   id: number;
-  name: JsonLanguage;
+  title: string;
   image?: string | JSX.Element;
   color?: string;
   type?: TypeCardEnum;
@@ -46,6 +44,7 @@ export const CardImage = ({ value, width = 90 }: Props) => {
   );
 
   const goLink = () => {
+    console.log(value);
     if (value.type)
       navigate(
         value.type === TypeCardEnum.THEME
@@ -70,7 +69,7 @@ export const CardImage = ({ value, width = 90 }: Props) => {
       }}
     >
       <ImageCard value={value} size={width} />
-      <JsonLanguageBlock
+      <Typography
         variant="h6"
         sx={{
           width: percent(100),
@@ -80,8 +79,9 @@ export const CardImage = ({ value, width = 90 }: Props) => {
           WebkitBoxOrient: "vertical",
           textAlign: "center",
         }}
-        value={value.name}
-      />
+      >
+        {value.title}
+      </Typography>
       {isFavorite && (
         <StarIcon
           sx={{

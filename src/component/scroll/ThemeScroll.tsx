@@ -1,14 +1,13 @@
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { searchThemesPaginate } from "src/api/search";
-import { useUser } from "src/context/UserProvider";
-import { ICardImage } from "../card/CardImage";
-import { ImageThemeBlock } from "../ImageThemeBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
-import { CardAdminTheme } from "../card/CardTheme";
 import { searchThemes } from "src/api/theme";
+import { useUser } from "src/context/UserProvider";
 import { Theme } from "src/models/Theme";
+import { ICardImage } from "../card/CardImage";
+import { CardAdminTheme } from "../card/CardTheme";
+import { ImageThemeBlock } from "../ImageThemeBlock";
 
 interface PropsThemeListScrollBlock {
   search: string;
@@ -68,7 +67,7 @@ export const ThemeListScrollBlock = ({
         {itemsSearch.map((item, index) => (
           <Grid item key={index} onClick={() => onSelect(item)}>
             <ImageThemeBlock theme={item} size={50} />
-            <JsonLanguageBlock value={item.name} />
+            <Typography>{item.title}</Typography>
           </Grid>
         ))}
       </Grid>

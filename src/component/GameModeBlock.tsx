@@ -6,7 +6,6 @@ import { insertBattleGame } from "src/api/game";
 import { selectThemesById } from "src/api/theme";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
-import { JsonLanguage } from "src/models/Language";
 import { CardImage, ICardImage } from "./card/CardImage";
 import { TitleCount } from "./title/TitleCount";
 
@@ -14,7 +13,7 @@ interface Mode {
   id: number;
   image: string;
   color: string;
-  name: JsonLanguage;
+  title: string;
   onClick: () => void;
 }
 
@@ -44,14 +43,11 @@ export const GameModeBlock = () => {
         image:
           "https://cperjgnbmoqyyqgkyqws.supabase.co/storage/v1/object/public/theme/mode/swords.png",
         color: "#a569bd",
-        name: {
-          "fr-FR": "Combat contre un ami",
-          "en-US": "Fight against a friend",
-        },
+        title: t("mode.fightfriend"),
         onClick: () => launchBattleGame(),
       },
     ],
-    [launchBattleGame]
+    [launchBattleGame, t]
   );
 
   useEffect(() => {
@@ -61,7 +57,7 @@ export const GameModeBlock = () => {
       setThemes(
         [...res].map((el) => ({
           id: el.id,
-          name: el.name,
+          title: el.title,
           image: el.image,
           color: el.color,
           link: `/theme/${el.id}`,

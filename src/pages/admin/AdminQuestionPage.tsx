@@ -23,7 +23,6 @@ import { AutocompleteInputTheme } from "src/component/Autocomplete";
 import { ButtonColor } from "src/component/Button";
 import { ImageQuestionBlock } from "src/component/ImageBlock";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import {
   CreateEditResponseDialog,
@@ -186,7 +185,7 @@ export default function AdminQuestionPage() {
                     <ImageThemeBlock theme={el.theme} size={50} />
                   </Grid>
                   <Grid item xs>
-                    <JsonLanguageBlock value={el.theme.name} />
+                    <Typography>{el.theme.title}</Typography>
                   </Grid>
                   <Grid item>
                     <IconButton onClick={() => deleteTheme(el.id)}>

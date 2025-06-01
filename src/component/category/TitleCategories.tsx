@@ -5,7 +5,7 @@ import { TitleCount } from "../title/TitleCount";
 
 interface Props {
   title: string | JsonLanguage;
-  count: number;
+  count?: number;
   link?: string;
 }
 

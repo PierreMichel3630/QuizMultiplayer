@@ -119,11 +119,9 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
           <Box sx={{ width: px(70) }}>
             <ImageThemeBlock theme={game.theme} />
           </Box>
-          <JsonLanguageBlock
-            variant="h2"
-            sx={{ wordBreak: "break-all" }}
-            value={game.theme.name}
-          />
+          <Typography variant="h2" sx={{ wordBreak: "break-all" }}>
+            {game.theme.title}
+          </Typography>
         </Grid>
         <Grid item xs={12} sx={{ textAlign: "center" }}>
           <Typography variant="h1">

@@ -32,6 +32,7 @@ type Props = {
 
 const AppContext = createContext<{
   friends: Array<Friend>;
+  idsFriend: Array<string>;
   getFriends: () => void;
   favorites: Array<Favorite>;
   getFavorite: () => void;
@@ -52,6 +53,7 @@ const AppContext = createContext<{
   headerSize: number;
 }>({
   friends: [],
+  idsFriend: [],
   getFriends: () => {},
   favorites: [],
   getFavorite: () => {},
@@ -92,6 +94,24 @@ export const AppProvider = ({ children }: Props) => {
   >([]);
 
   const headerSize = useMemo(() => (user ? 70 : 50), [user]);
+
+  const idsFriend = useMemo(
+    () =>
+      user
+        ? [
+            ...friends
+              .filter((el) => el.status === FRIENDSTATUS.VALID)
+              .reduce(
+                (acc, value) =>
+                  value.user2.id === user.id
+                    ? [...acc, value.user1.id]
+                    : [...acc, value.user2.id],
+                [] as Array<string>
+              ),
+          ]
+        : [],
+    [friends, user]
+  );
 
   useEffect(() => {
     const getCountPlayer = () => {
@@ -211,6 +231,7 @@ export const AppProvider = ({ children }: Props) => {
     () => ({
       nbThemes,
       friends,
+      idsFriend,
       getFriends,
       favorites,
       getFavorite,
@@ -231,6 +252,7 @@ export const AppProvider = ({ children }: Props) => {
     [
       favorites,
       friends,
+      idsFriend,
       getFriends,
       getMyAccomplishments,
       getMyAvatars,

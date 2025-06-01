@@ -95,7 +95,7 @@ export const SelectCountryModal = ({
       }
       setMaxIndex((prev) => prev + 25);
     };
-    if (ref && ref.current) {
+    if (ref?.current) {
       ref.current.addEventListener("scroll", handleScroll);
     }
     return () => {

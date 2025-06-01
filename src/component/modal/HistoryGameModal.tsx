@@ -1,3 +1,4 @@
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import {
   AppBar,
   Box,
@@ -13,17 +14,15 @@ import {
   useTheme,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 
 import CloseIcon from "@mui/icons-material/Close";
+import { px } from "csx";
 import { useMemo } from "react";
 import { BattleGame } from "src/models/BattleGame";
 import { Colors } from "src/style/Colors";
-import { ImageThemeBlock } from "../ImageThemeBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 import { ButtonColor } from "../Button";
-import { px } from "csx";
+import { ImageThemeBlock } from "../ImageThemeBlock";
 
 interface Props {
   game: BattleGame;
@@ -120,11 +119,9 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
                       }}
                     >
                       <ImageThemeBlock theme={el.theme} size={40} />
-                      <JsonLanguageBlock
-                        variant="h4"
-                        sx={{ textAlign: "center" }}
-                        value={el.theme.name}
-                      />
+                      <Typography variant="h4" sx={{ textAlign: "center" }}>
+                        {el.theme.title}
+                      </Typography>
                     </Grid>
                     <Grid
                       item

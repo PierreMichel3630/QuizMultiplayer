@@ -114,7 +114,7 @@ export default function ParameterPage() {
               </Grid>
               <Grid item xs={12} sx={{ textAlign: "center" }}>
                 <Typography variant="caption">
-                  {t("commun.version")} : 1.6.0
+                  {t("commun.version")} : 1.7.0
                 </Typography>
               </Grid>
             </Grid>

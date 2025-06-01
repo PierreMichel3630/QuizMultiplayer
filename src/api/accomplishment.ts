@@ -61,15 +61,21 @@ export const selectStatAccomplishmentByProfile = (profile: string) =>
 export const selectStatAccomplishment = (
   order: string,
   page: number,
-  itemperpage = 25
+  itemperpage = 25,
+  idsProfile = [] as Array<string>
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
-  return supabase
+
+  let query = supabase
     .from(SUPABASE_VIEWSTATACCOMPLISHMENT_TABLE)
     .select("*, profile(*, avatar(*), country(*))")
     .gt(order, 0)
-    .not("profile", "in", `(${bots.join(",")})`)
+    .not("profile", "in", `(${bots.join(",")})`);
+  if (idsProfile.length > 0) {
+    query = query.in("profile.id", idsProfile).not("profile", "is", null);
+  }
+  return query
     .order(order, { ascending: false })
     .order("created_at", { ascending: true })
     .range(from, to);

@@ -20,7 +20,7 @@ export const PreviousGameBlock = () => {
         const previousTheme = res.map((el) => el.theme);
         const result = previousTheme.map((el) => ({
           id: el.id,
-          name: el.name,
+          title: el.title,
           image: el.image,
           color: el.color,
           type: TypeCardEnum.THEME,
@@ -36,6 +36,7 @@ export const PreviousGameBlock = () => {
       <CategoryBlock
         title={t("commun.previousgame")}
         count={themesPrevious.length}
+        link={`/previousgame`}
         values={themesPrevious}
       />
     )

@@ -13,13 +13,11 @@ export const SkeletonThemes = ({ number }: Props) => {
 
 export const SkeletonThemesGrid = ({ number }: Props) => {
   return (
-    <Grid container spacing={1} justifyContent="center">
-      {Array.from(new Array(number)).map((_, index) => (
+      Array.from(new Array(number)).map((_, index) => (
         <Grid item key={index}>
           <SkeletonTheme />
         </Grid>
-      ))}
-    </Grid>
+      ))
   );
 };
 

@@ -13,7 +13,6 @@ import {
 import { selectTitleByProfile } from "src/api/title";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { BasicSearchInput } from "src/component/Input";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { LineCompareTable } from "src/component/LineCompareTable";
 import { SelectorProfileBlock } from "src/component/SelectorProfileBlock";
 import { SortButton } from "src/component/SortBlock";
@@ -140,7 +139,7 @@ export default function ComparePage() {
 
   const themesDisplay = useMemo(() => {
     let res = [...themesWithScoreAndRank].filter((el) =>
-      searchString(search, el.name[language.iso])
+      searchString(search, el.title)
     );
     switch (sort) {
       case "alphabetical":
@@ -315,15 +314,16 @@ export default function ComparePage() {
                               }}
                             >
                               <ImageThemeBlock theme={theme} size={40} />
-                              <JsonLanguageBlock
+                              <Typography
                                 variant="h2"
                                 sx={{
                                   wordWrap: "anywhere",
                                   fontSize: 18,
                                 }}
                                 color="text.secondary"
-                                value={theme.name}
-                              />
+                              >
+                                {theme.title}
+                              </Typography>
                             </Grid>
                             <Grid item xs={12} sx={{ p: 1 }}>
                               <Grid

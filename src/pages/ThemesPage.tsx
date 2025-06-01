@@ -1,6 +1,6 @@
-import { Box, Grid } from "@mui/material";
+import { Box, debounce, Grid } from "@mui/material";
 import { percent, px } from "csx";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { FavoriteBlock } from "src/component/FavoriteBlock";
@@ -34,11 +34,19 @@ export default function ThemesPage() {
   const refHeadPage = useRef<HTMLDivElement | null>(null);
 
   const [search, setSearch] = useState("");
+  const [searchApi, setSearchApi] = useState("");
   const [displaySearch, setDisplaySearch] = useState(false);
 
   useEffect(() => {
     refHeadPage.current?.scrollIntoView();
   }, [search]);
+
+  const debouncedSetQuery = useCallback(
+    debounce((value: string) => {
+      setSearchApi(value);
+    }, 300),
+    []
+  );
 
   const hasPlayChallenge = useMemo(() => {
     const today = moment();
@@ -47,6 +55,11 @@ export default function ThemesPage() {
       : null;
     return lastPlay !== null ? today.isSame(lastPlay, "day") : false;
   }, [profile]);
+
+  const handleChange = (value: string) => {
+    setSearch(value);
+    debouncedSetQuery(value);
+  };
 
   return (
     <Grid container>
@@ -89,7 +102,7 @@ export default function ThemesPage() {
             >
               <BasicSearchInput
                 label={t("commun.search")}
-                onChange={(value) => setSearch(value)}
+                onChange={handleChange}
                 onFocus={() => setDisplaySearch(true)}
                 value={search}
               />
@@ -113,7 +126,7 @@ export default function ThemesPage() {
               )}
             </Grid>
             {displaySearch ? (
-              <SearchThemeScrollBlock search={search} />
+              <SearchThemeScrollBlock search={searchApi} />
             ) : (
               <>
                 <Grid item xs={12}>

@@ -175,9 +175,7 @@ export default function MyProfilPage() {
   const level = useMemo(() => (stat ? getLevel(stat.xp) : undefined), [stat]);
 
   const scoresDisplay = useMemo(() => {
-    let res = [...scores].filter((el) =>
-      searchString(search, el.theme.name[language.iso])
-    );
+    let res = [...scores].filter((el) => searchString(search, el.theme.title));
     switch (sort) {
       case "alphabetical":
         res = [...res].sort((a, b) => sortByName(language, a.theme, b.theme));
@@ -412,15 +410,16 @@ export default function MyProfilPage() {
                             <ImageThemeBlock theme={score.theme} size={40} />
                           </Link>
                           <Box>
-                            <JsonLanguageBlock
+                            <Typography
                               variant="h2"
                               sx={{
                                 wordWrap: "anywhere",
                                 fontSize: 18,
                               }}
                               color="text.secondary"
-                              value={score.theme.name}
-                            />
+                            >
+                              {score.theme.title}
+                            </Typography>
                           </Box>
                         </Box>
                       </Grid>

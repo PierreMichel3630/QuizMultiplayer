@@ -80,66 +80,64 @@ export default function PlayPage() {
         <Container maxWidth="md">
           <Box sx={{ p: 1 }}>
             <Grid container spacing={2} justifyContent="center">
+              <Grid item xs={12}>
+                <Divider sx={{ borderBottomWidth: 5 }} />
+              </Grid>
               <Grid item xs={12} sx={{ textAlign: "center" }}>
-                <Typography variant="h4">
-                  {t("commun.selectgamemode")}
-                </Typography>
+                <Typography variant="h4">{t("commun.selecttheme")}</Typography>
               </Grid>
-              <Grid item xs={6}>
-                <ButtonColorSelect
-                  select={mode === "duel"}
-                  value={Colors.red}
-                  label={t("commun.duel")}
-                  icon={OfflineBoltIcon}
-                  onClick={() => setMode("duel")}
-                  variant="contained"
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <ButtonColorSelect
-                  select={mode === "solo"}
-                  value={Colors.blue2}
-                  label={t("commun.solo")}
-                  icon={PlayCircleIcon}
-                  onClick={() => setMode("solo")}
-                  variant="contained"
-                />
-              </Grid>
-              {mode !== null && (
+              {theme ? (
+                <Grid item xs={12} sx={{ textAlign: "center" }}>
+                  <CardThemeHorizontal
+                    theme={theme}
+                    onChange={() => setTheme(undefined)}
+                  />
+                </Grid>
+              ) : (
                 <>
                   <Grid item xs={12}>
-                    <Divider sx={{ borderBottomWidth: 5 }} />
+                    <BasicSearchInput
+                      label={t("commun.search")}
+                      onChange={(value) => setSearch(value)}
+                      value={search}
+                      clear={() => setSearch("")}
+                    />
                   </Grid>
+                  <Grid item xs={12}>
+                    <SearchThemeSelectScrollBlock
+                      search={search}
+                      onSelect={(value) => setTheme(value)}
+                    />
+                  </Grid>
+                </>
+              )}
+              {theme && (
+                <>
                   <Grid item xs={12} sx={{ textAlign: "center" }}>
                     <Typography variant="h4">
-                      {t("commun.selecttheme")}
+                      {t("commun.selectgamemode")}
                     </Typography>
                   </Grid>
-                  {theme ? (
-                    <Grid item xs={12} sx={{ textAlign: "center" }}>
-                      <CardThemeHorizontal
-                        theme={theme}
-                        onChange={() => setTheme(undefined)}
-                      />
-                    </Grid>
-                  ) : (
-                    <>
-                      <Grid item xs={12}>
-                        <BasicSearchInput
-                          label={t("commun.search")}
-                          onChange={(value) => setSearch(value)}
-                          value={search}
-                          clear={() => setSearch("")}
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <SearchThemeSelectScrollBlock
-                          search={search}
-                          onSelect={(value) => setTheme(value)}
-                        />
-                      </Grid>
-                    </>
-                  )}
+                  <Grid item xs={6}>
+                    <ButtonColorSelect
+                      select={mode === "duel"}
+                      value={Colors.red}
+                      label={t("commun.duel")}
+                      icon={OfflineBoltIcon}
+                      onClick={() => setMode("duel")}
+                      variant="contained"
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <ButtonColorSelect
+                      select={mode === "solo"}
+                      value={Colors.blue2}
+                      label={t("commun.solo")}
+                      icon={PlayCircleIcon}
+                      onClick={() => setMode("solo")}
+                      variant="contained"
+                    />
+                  </Grid>
                 </>
               )}
               {theme && mode === "duel" && (

@@ -8,7 +8,6 @@ import { launchTrainingGame } from "src/api/game";
 import { selectThemeById } from "src/api/theme";
 import { ButtonColor } from "src/component/Button";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { CustomSwitch } from "src/component/Switch";
 import { useUser } from "src/context/UserProvider";
 import { Theme } from "src/models/Theme";
@@ -87,11 +86,9 @@ export default function ConfigTrainingPage() {
                   }}
                 >
                   <ImageThemeBlock theme={theme} size={40} />
-                  <JsonLanguageBlock
-                    variant="h1"
-                    sx={{ fontSize: "20px !important" }}
-                    value={theme.name}
-                  />
+                  <Typography variant="h1" sx={{ fontSize: "20px !important" }}>
+                    {theme.title}
+                  </Typography>
                 </Grid>
                 <Grid item xs={12}>
                   <Divider

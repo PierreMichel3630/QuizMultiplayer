@@ -4,7 +4,6 @@ import { px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "src/context/UserProvider";
 import { Profile } from "src/models/Profile";
 import { Score } from "src/models/Score";
 import { Colors } from "src/style/Colors";
@@ -35,7 +34,6 @@ export const DonutGames = ({
 }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { language } = useUser();
 
   const MAXVALUEDISPLAY = 7;
 
@@ -47,9 +45,7 @@ export const DonutGames = ({
       [...scores].sort(sortByGamesDesc).reduce(
         (acc, score, index) => {
           if (index + 1 <= MAXVALUEDISPLAY) {
-            const label = score.theme.name[language.iso]
-              ? score.theme.name[language.iso]
-              : score.theme.name["fr-FR"];
+            const label = score.theme.title;
             return [
               ...acc,
               {
@@ -71,7 +67,7 @@ export const DonutGames = ({
           },
         ]
       ),
-    [scores, t, language.iso]
+    [scores, t]
   );
 
   const dataDuel = useMemo(
@@ -79,9 +75,7 @@ export const DonutGames = ({
       [...scores].sort(sortByDuelGamesDesc).reduce(
         (acc, score, index) => {
           if (index + 1 <= MAXVALUEDISPLAY) {
-            const label = score.theme.name[language.iso]
-              ? score.theme.name[language.iso]
-              : score.theme.name["fr-FR"];
+            const label = score.theme.title;
             return [
               ...acc,
               {
@@ -103,7 +97,7 @@ export const DonutGames = ({
           },
         ]
       ),
-    [scores, t, language.iso]
+    [scores, t]
   );
 
   const data = useMemo(() => {

@@ -1,8 +1,7 @@
 import moment from "moment";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { selectThemesByModifiedAt } from "src/api/theme";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
 import { Theme } from "src/models/Theme";
 import { CategoryBlock } from "../category/CategoryBlock";
 
@@ -20,26 +19,13 @@ export const UpdatedThemeBlock = () => {
     getThemes();
   }, []);
 
-  const themesNew = useMemo(
-    () =>
-      [...themes].map((el) => ({
-        id: el.id,
-        name: el.name,
-        image: el.image,
-        color: el.color,
-        link: `/theme/${el.id}`,
-        type: TypeCardEnum.THEME,
-      })),
-    [themes]
-  );
-
   return (
-    themesNew.length > 0 && (
+    themes.length > 0 && (
       <CategoryBlock
         title={t("commun.updated")}
-        count={themesNew.length}
+        count={themes.length}
         link={`/updated`}
-        values={themesNew}
+        values={themes}
       />
     )
   );

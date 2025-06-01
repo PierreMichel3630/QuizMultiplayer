@@ -24,7 +24,6 @@ import {
 import { AutocompleteInputTheme } from "src/component/Autocomplete";
 import { ButtonColor } from "src/component/Button";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { SelectDifficulty } from "src/component/Select";
 import { useMessage } from "src/context/MessageProvider";
 import { Difficulty } from "src/models/enum/DifficultyEnum";
@@ -324,7 +323,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
                       <ImageThemeBlock theme={el.theme} size={50} />
                     </Grid>
                     <Grid item xs>
-                      <JsonLanguageBlock value={el.theme.name} />
+                      <Typography>{el.theme.title}</Typography>
                     </Grid>
                     <Grid item>
                       <IconButton onClick={() => deleteTheme(el.id)}>

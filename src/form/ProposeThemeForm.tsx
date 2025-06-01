@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { insertTheme } from "src/api/theme";
 import { ButtonColor } from "src/component/Button";
 import { useMessage } from "src/context/MessageProvider";
+import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";
 import * as Yup from "yup";
 
@@ -20,18 +21,21 @@ interface Props {
 
 export const ProposeThemeForm = ({ validate }: Props) => {
   const { t } = useTranslation();
+  const { language } = useUser();
   const { setMessage, setSeverity } = useMessage();
 
   const initialValue: {
-    name: string;
+    title: string;
     color: string;
+    language: string;
   } = {
-    name: "",
+    title: "",
     color: Colors.blue2,
+    language: language.iso,
   };
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required(t("form.proposetheme.requiredname")),
+    title: Yup.string().required(t("form.proposetheme.requiredname")),
     color: Yup.string().required(t("form.proposetheme.requiredcolor")),
   });
 
@@ -41,8 +45,10 @@ export const ProposeThemeForm = ({ validate }: Props) => {
     onSubmit: async (values) => {
       try {
         const newTheme = {
-          name: { "fr-FR": values.name, "en-US": values.name },
+          title: values.title,
           color: values.color,
+          name: { "fr-FR": values.title, "en-US": values.title },
+          language: values.language,
         };
         const { error } = await insertTheme(newTheme);
         if (error) {
@@ -64,24 +70,24 @@ export const ProposeThemeForm = ({ validate }: Props) => {
         <Grid item xs={12}>
           <FormControl
             fullWidth
-            error={Boolean(formik.touched.name && formik.errors.name)}
+            error={Boolean(formik.touched.title && formik.errors.title)}
           >
-            <InputLabel htmlFor="name-input">
-              {t("form.proposetheme.name")}
+            <InputLabel htmlFor="title-input">
+              {t("form.proposetheme.title")}
             </InputLabel>
             <OutlinedInput
-              id="name-input"
+              id="title-input"
               type="text"
-              value={formik.values.name}
-              name="name"
+              value={formik.values.title}
+              name="title"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
-              label={t("form.proposetheme.name")}
+              label={t("form.proposetheme.title")}
               inputProps={{}}
             />
-            {formik.touched.name && formik.errors.name && (
-              <FormHelperText error id="error-namefr">
-                {formik.errors.name}
+            {formik.touched.title && formik.errors.title && (
+              <FormHelperText error id="error-title">
+                {formik.errors.title}
               </FormHelperText>
             )}
           </FormControl>

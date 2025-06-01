@@ -1,85 +1,132 @@
 import { Box, Divider, Grid } from "@mui/material";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useBreakpoint } from "src/utils/mediaQuery";
 import { CardImage, ICardImage } from "../card/CardImage";
 import { SkeletonThemes } from "../skeleton/SkeletonTheme";
 import { TitleCategories } from "./TitleCategories";
-import { JsonLanguage } from "src/models/Language";
+
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { px } from "csx";
+import { isMobile } from "react-device-detect";
 
 interface Props {
-  title: string | JsonLanguage;
-  count: number;
+  title: string;
+  count?: number;
   link?: string;
   values: Array<ICardImage>;
+  handleScroll?: () => void;
+  isLoading?: boolean;
 }
 
-export const CategoryBlock = ({ title, count, link, values }: Props) => {
-  const breakpoint = useBreakpoint();
-
+export const CategoryBlock = ({
+  title,
+  count,
+  link,
+  values,
+  handleScroll,
+  isLoading = true,
+}: Props) => {
   const ref = useRef<HTMLDivElement | null>(null);
-  const [maxIndex, setMaxIndex] = useState(5);
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastItemRef = useRef<HTMLDivElement | null>(null);
+  const [displayLeft, setDisplayLeft] = useState(false);
+  const [displayRight, setDisplayRight] = useState(true);
 
-  useEffect(() => {
-    const indexSize = {
-      xl: 15,
-      lg: 15,
-      md: 10,
-      sm: 8,
-      xs: 5,
-    };
-    setMaxIndex(indexSize[breakpoint]);
-  }, [breakpoint]);
-
-  const valuesDisplay = useMemo(
-    () => [...values].splice(0, maxIndex),
-    [values, maxIndex]
+  const isEnd = useMemo(
+    () => (count ? values.length >= count : true),
+    [count, values.length]
   );
 
   useEffect(() => {
-    const refCurrent = ref.current;
-    const handleScroll = () => {
-      if (
-        refCurrent &&
-        (refCurrent.offsetWidth + refCurrent.scrollLeft + 450 <=
-          refCurrent.scrollWidth ||
-          maxIndex >= values.length)
-      ) {
-        return;
-      }
-      setMaxIndex((prev) => prev + 5);
-    };
-    if (ref && refCurrent) {
-      refCurrent.addEventListener("scroll", handleScroll);
-    }
-    return () => {
-      if (refCurrent) {
-        refCurrent.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, [values, maxIndex]);
+    if (isLoading) return;
 
-  const isLoading = useMemo(() => maxIndex < values.length, [values, maxIndex]);
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        if (!isEnd) {
+          if (handleScroll) handleScroll();
+        } else {
+          setDisplayRight(false);
+        }
+      }
+    });
+
+    if (lastItemRef.current) {
+      observer.current.observe(lastItemRef.current);
+    }
+
+    return () => observer.current?.disconnect();
+  }, [isLoading, isEnd, handleScroll]);
+
+  const scroll = (scrollOffset: number) => {
+    if (ref.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = ref.current;
+      const newValue = scrollLeft + scrollOffset;
+      ref.current.scrollTo({
+        left: newValue,
+        behavior: "smooth",
+      });
+      setDisplayLeft(newValue > 0);
+      setDisplayRight(newValue + clientWidth <= scrollWidth);
+    }
+  };
 
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
         <TitleCategories title={title} count={count} link={link} />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} sx={{ display: "flex", position: "relative" }}>
+        {displayLeft && !isMobile && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: px(40),
+              zIndex: 1,
+              cursor: "pointer",
+            }}
+            onClick={() => scroll(-100)}
+          >
+            <ArrowBackIosIcon sx={{ fontSize: 40 }} />
+          </Box>
+        )}
         <Box
+          id={title}
           sx={{
             display: "flex",
             gap: 1,
             overflowX: "auto",
             scrollbarWidth: "none",
+            ml: displayLeft ? px(40) : 0,
+            mr: displayRight && !isMobile ? px(40) : 0,
           }}
           ref={ref}
         >
-          {valuesDisplay.map((value, index) => (
-            <CardImage key={index} value={value} />
+          {values.map((value, index) => (
+            <Box
+              key={index}
+              ref={index === values.length - 1 ? lastItemRef : null}
+            >
+              <CardImage value={value} />
+            </Box>
           ))}
-          {isLoading && <SkeletonThemes number={4} />}
+          {!isEnd && <SkeletonThemes number={4} />}
         </Box>
+        {displayRight && !isMobile && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: px(40),
+              right: px(0),
+              zIndex: 1,
+              cursor: "pointer",
+            }}
+            onClick={() => scroll(100)}
+          >
+            <ArrowForwardIosIcon sx={{ fontSize: 40 }} />
+          </Box>
+        )}
       </Grid>
       <Grid item xs={12}>
         <Divider sx={{ borderBottomWidth: 5 }} />

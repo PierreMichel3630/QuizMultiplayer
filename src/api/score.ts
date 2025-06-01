@@ -42,17 +42,23 @@ export const selectScore = (
   order: string,
   page: number,
   itemperpage = 25,
-  ids = [] as Array<number>
+  ids = [] as Array<number>,
+  idsProfile = [] as Array<string>
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
   let query = supabase
     .from(SUPABASE_SCORE_TABLE)
-    .select("*, profile(*, avatar(*), country(*)), theme(*), uuidgame(uuid, created_at)")
+    .select(
+      "*, profile(*, avatar(*), country(*)), theme(*), uuidgame(uuid, created_at)"
+    )
     .gt(order, 0)
     .not("profile", "in", `(${bots.join(",")})`);
   if (ids.length > 0) {
     query = query.in("theme", ids);
+  }
+  if (idsProfile.length > 0) {
+    query = query.in("profile", idsProfile);
   }
   return query
     .order(order, { ascending: false })

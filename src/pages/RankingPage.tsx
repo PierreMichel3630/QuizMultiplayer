@@ -1,4 +1,5 @@
-import { Box, Container, Grid } from "@mui/material";
+import { Box, Grid, Switch, Typography } from "@mui/material";
+import { percent } from "csx";
 import { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -13,6 +14,7 @@ import { ButtonRankingDuel } from "src/component/button/ButtonRankingDuel";
 import { ButtonRankingSolo } from "src/component/button/ButtonRankingSolo";
 import { DataRanking, RankingTable } from "src/component/table/RankingTable";
 import { useApp } from "src/context/AppProvider";
+import { useAuth } from "src/context/AuthProviderSupabase";
 import { BadgeLevel } from "src/icons/BadgeLevel";
 import {
   StatAccomplishment,
@@ -27,15 +29,16 @@ import {
   ClassementSoloTimeEnum,
 } from "src/models/enum/ClassementEnum";
 import { getLevel } from "src/utils/calcul";
-import { sortByRankAsc } from "src/utils/sort";
 
 export default function RankingPage() {
   const { t } = useTranslation();
-  const { headerSize } = useApp();
+  const { headerSize, idsFriend } = useApp();
+  const { profile } = useAuth();
   const [searchParams] = useSearchParams();
 
   const ITEMPERPAGE = 25;
 
+  const [isOnlyFriend, setIsOnlyFriend] = useState(false);
   const [type, setType] = useState(
     searchParams.has("sort")
       ? (searchParams.get("sort") as ClassementEnum)
@@ -55,7 +58,8 @@ export default function RankingPage() {
 
   const getDataRanking = useCallback(
     (page: number) => {
-      if (!isEnd) {
+      const ids = isOnlyFriend ? idsFriend : [];
+      if (page === 0 || !isEnd) {
         if (
           type === ClassementEnum.points &&
           (tabSoloMode === ClassementSoloModeEnum.day ||
@@ -63,7 +67,7 @@ export default function RankingPage() {
             tabSoloMode === ClassementSoloModeEnum.month)
         ) {
           const time = tabSoloMode as unknown as ClassementSoloTimeEnum;
-          selectGamesByTime(time, page, ITEMPERPAGE).then(({ data }) => {
+          selectGamesByTime(time, page, ITEMPERPAGE, ids).then(({ data }) => {
             const res: Array<any> = data ?? [];
             const newdata = [...res].map((el, index) => ({
               profile: el.profile,
@@ -72,7 +76,9 @@ export default function RankingPage() {
               rank: page * ITEMPERPAGE + index + 1,
             }));
             setIsEnd(newdata.length < ITEMPERPAGE);
-            setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
+            setData((prev) =>
+              page === 0 ? [...newdata] : [...prev, ...newdata]
+            );
           });
         } else if (
           (type === ClassementEnum.points &&
@@ -80,7 +86,7 @@ export default function RankingPage() {
           (type === ClassementEnum.rank &&
             tabDuelMode === ClassementDuelModeEnum.bestrank)
         ) {
-          selectScore(type, page, ITEMPERPAGE).then(({ data }) => {
+          selectScore(type, page, ITEMPERPAGE, [], ids).then(({ data }) => {
             const res = data as Array<Score>;
             const newdata = res.map((el, index) => {
               const champ = el[type];
@@ -92,13 +98,15 @@ export default function RankingPage() {
               };
             });
             setIsEnd(newdata.length < ITEMPERPAGE);
-            setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
+            setData((prev) =>
+              page === 0 ? [...newdata] : [...prev, ...newdata]
+            );
           });
         } else if (
           type === ClassementEnum.points &&
           tabSoloMode === ClassementSoloModeEnum.finishtheme
         ) {
-          getRankingFinishTheme(page, ITEMPERPAGE).then(({ data }) => {
+          getRankingFinishTheme(page, ITEMPERPAGE, ids).then(({ data }) => {
             const res = data as Array<FinishTheme>;
             const newdata = res.map((el, index) => ({
               profile: el.profile,
@@ -106,30 +114,40 @@ export default function RankingPage() {
               rank: page * ITEMPERPAGE + index + 1,
             }));
             setIsEnd(newdata.length < ITEMPERPAGE);
-            setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
+            setData((prev) =>
+              page === 0 ? [...newdata] : [...prev, ...newdata]
+            );
           });
         } else if (type === ClassementEnum.xp) {
-          selectStatAccomplishment(type, page, ITEMPERPAGE).then(({ data }) => {
-            const res = data as Array<StatAccomplishment>;
-            const newdata = res.map((el, index) => {
-              const value: any = el[type];
-              return {
-                profile: el.profile,
-                value: (
-                  <BadgeLevel level={getLevel(value)} size={35} fontSize={15} />
-                ),
-                rank: page * ITEMPERPAGE + index + 1,
-                size: 50,
-              };
-            });
-            setIsEnd(newdata.length < ITEMPERPAGE);
-            setData((prev) => [...prev, ...newdata].sort(sortByRankAsc));
-          });
+          selectStatAccomplishment(type, page, ITEMPERPAGE, ids).then(
+            ({ data }) => {
+              const res = data as Array<StatAccomplishment>;
+              const newdata = res.map((el, index) => {
+                const value: any = el[type];
+                return {
+                  profile: el.profile,
+                  value: (
+                    <BadgeLevel
+                      level={getLevel(value)}
+                      size={35}
+                      fontSize={15}
+                    />
+                  ),
+                  rank: page * ITEMPERPAGE + index + 1,
+                  size: 50,
+                };
+              });
+              setIsEnd(newdata.length < ITEMPERPAGE);
+              setData((prev) =>
+                page === 0 ? [...newdata] : [...prev, ...newdata]
+              );
+            }
+          );
         } else {
           const order = (type === ClassementEnum.points
             ? tabSoloMode
             : tabDuelMode) as unknown as StatAccomplishmentEnum;
-          selectStatAccomplishment(order, page, ITEMPERPAGE).then(
+          selectStatAccomplishment(order, page, ITEMPERPAGE, ids).then(
             ({ data }) => {
               const res = data as Array<StatAccomplishment>;
               const newdata = res.map((el, index) => {
@@ -141,13 +159,15 @@ export default function RankingPage() {
                 };
               });
               setIsEnd(newdata.length < ITEMPERPAGE);
-              setData((prev) => [...prev, ...newdata]);
+              setData((prev) =>
+                page === 0 ? [...newdata] : [...prev, ...newdata]
+              );
             }
           );
         }
       }
     },
-    [isEnd, tabDuelMode, tabSoloMode, type]
+    [isEnd, tabDuelMode, tabSoloMode, type, isOnlyFriend, idsFriend]
   );
 
   useEffect(() => {
@@ -217,6 +237,29 @@ export default function RankingPage() {
           />
         )}
       </Grid>
+      {profile && (
+        <Grid item xs={12}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              gap: 1,
+              width: percent(100),
+            }}
+          >
+            <Switch
+              color="secondary"
+              checked={isOnlyFriend}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setPage(0);
+                setIsOnlyFriend(event.target.checked);
+              }}
+            />
+            <Typography variant="body1">{t("commun.onlyfriend")}</Typography>
+          </Box>
+        </Grid>
+      )}
 
       <Grid item xs={12}>
         <InfiniteScroll
@@ -225,15 +268,7 @@ export default function RankingPage() {
           hasMore={!isEnd}
           loader={undefined}
         >
-          <Container maxWidth="sm">
-            <Box sx={{ p: 1 }}>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <RankingTable data={data} loading={!isEnd} />
-                </Grid>
-              </Grid>
-            </Box>
-          </Container>
+          <RankingTable data={data} loading={!isEnd} />
         </InfiniteScroll>
       </Grid>
     </Grid>

@@ -10,7 +10,6 @@ import { PageCategoryBlock } from "src/component/page/PageCategoryBlock";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
-import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
 import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
 import { FavoriteInsert } from "src/models/Favorite";
@@ -22,7 +21,6 @@ export default function CategoryPage() {
   const navigate = useNavigate();
 
   const { user } = useAuth();
-  const { language } = useUser();
   const { favorites, getFavorite } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
@@ -44,7 +42,7 @@ export default function CategoryPage() {
     () =>
       [...themes].map((el) => ({
         id: el.id,
-        name: el.name,
+        title: el.title,
         image: el.image,
         color: el.color,
         link: `/theme/${el.id}`,
@@ -97,20 +95,18 @@ export default function CategoryPage() {
     <Grid container>
       <Helmet>
         <title>
-          {category
-            ? `${category.name[language.iso]} - ${t("appname")}`
-            : t("appname")}
+          {category ? `${category.title} - ${t("appname")}` : t("appname")}
         </title>
         {category && (
           <meta
             name="description"
-            content={`${t("appname")} Catégorie ${category.name[language.iso]}`}
+            content={`${t("appname")} Catégorie ${category.title}`}
           />
         )}
       </Helmet>
       <Grid item xs={12}>
         <PageCategoryBlock
-          title={category?.name}
+          title={category?.title}
           values={themesDisplay}
           addFavorite={addFavorite}
           favorite={favorite !== undefined}

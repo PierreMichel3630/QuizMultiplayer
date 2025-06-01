@@ -1,5 +1,5 @@
 import { Alert, Grid } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {
@@ -20,42 +20,63 @@ export const SearchThemeScrollBlock = ({ search }: Props) => {
   const { language } = useUser();
 
   const [, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [isEnd, setIsEnd] = useState(false);
   const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
 
-  const getCategories = useCallback(
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastItemRef = useRef<HTMLDivElement | null>(null);
+
+  const getSearch = useCallback(
     (page: number) => {
-      const itemperpage = 60;
-      if (!isEnd) {
-        searchThemesAndCategoriesPaginate(search, page, itemperpage).then(
-          ({ data }) => {
-            const result = data ?? [];
-            setIsEnd(result.length < itemperpage);
-            setItemsSearch((prev) => [...prev, ...result]);
-          }
+      if (loading) return;
+
+      setLoading(true);
+      const itemperpage = 40;
+      searchThemesAndCategoriesPaginate(
+        search,
+        page,
+        itemperpage,
+        language.iso
+      ).then(({ data }) => {
+        const result = data ?? [];
+        setIsEnd(result.length < itemperpage);
+        setItemsSearch((prev) =>
+          page === 0 ? [...result] : [...prev, ...result]
         );
-      }
+        setLoading(false);
+      });
     },
-    [isEnd, search]
+    [search, loading, language.iso]
   );
 
   useEffect(() => {
     setPage(0);
-    setIsEnd(false);
     setItemsSearch([]);
-  }, [search, language]);
-
-  const handleLoadMoreData = () => {
-    setPage((prevPage) => {
-      const nextPage = prevPage + 1;
-      getCategories(nextPage);
-      return nextPage;
-    });
-  };
+    setIsEnd(false);
+    getSearch(0);
+  }, [search]);
 
   useEffect(() => {
-    getCategories(0);
-  }, [getCategories]);
+    if (loading) return;
+
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !isEnd) {
+        setPage((prev) => {
+          getSearch(prev + 1);
+          return prev + 1;
+        });
+      }
+    });
+
+    if (lastItemRef.current) {
+      observer.current.observe(lastItemRef.current);
+    }
+
+    return () => observer.current?.disconnect();
+  }, [itemsSearch, loading, isEnd, getSearch]);
 
   return (
     <>
@@ -65,20 +86,18 @@ export const SearchThemeScrollBlock = ({ search }: Props) => {
         </Grid>
       ) : (
         <Grid item xs={12}>
-          <InfiniteScroll
-            dataLength={itemsSearch.length}
-            next={handleLoadMoreData}
-            hasMore={!isEnd}
-            loader={<SkeletonThemesGrid number={15} />}
-          >
-            <Grid container spacing={1} justifyContent="center" sx={{ mb: 1 }}>
-              {itemsSearch.map((item, index) => (
-                <Grid item key={index}>
-                  <CardImage value={item} />
-                </Grid>
-              ))}
-            </Grid>
-          </InfiniteScroll>
+          <Grid container spacing={1} justifyContent="center" sx={{ mb: 1 }}>
+            {itemsSearch.map((item, index) => (
+              <Grid
+                item
+                key={index}
+                ref={index === itemsSearch.length - 1 ? lastItemRef : null}
+              >
+                <CardImage value={item} />
+              </Grid>
+            ))}
+            {!isEnd && <SkeletonThemesGrid number={10} />}
+          </Grid>
         </Grid>
       )}
     </>
@@ -98,40 +117,60 @@ export const SearchThemeSelectScrollBlock = ({
   const { language } = useUser();
 
   const [, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [isEnd, setIsEnd] = useState(false);
   const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
 
-  const getThemes = useCallback(
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastItemRef = useRef<HTMLDivElement | null>(null);
+
+  const getSearch = useCallback(
     (page: number) => {
-      const itemperpage = 30;
-      if (!isEnd) {
-        searchThemesPaginate(search, page, itemperpage).then(({ data }) => {
+      if (loading) return;
+
+      setLoading(true);
+      const itemperpage = 40;
+      searchThemesPaginate(search, page, itemperpage, language.iso).then(
+        ({ data }) => {
           const result = data ?? [];
           setIsEnd(result.length < itemperpage);
-          setItemsSearch((prev) => [...prev, ...result]);
-        });
-      }
+          setItemsSearch((prev) =>
+            page === 0 ? [...result] : [...prev, ...result]
+          );
+          setLoading(false);
+        }
+      );
     },
-    [isEnd, search]
+    [search, loading, language.iso]
   );
 
   useEffect(() => {
     setPage(0);
-    setIsEnd(false);
     setItemsSearch([]);
-  }, [search, language]);
-
-  const handleLoadMoreData = () => {
-    setPage((prevPage) => {
-      const nextPage = prevPage + 1;
-      getThemes(nextPage);
-      return nextPage;
-    });
-  };
+    setIsEnd(false);
+    getSearch(0);
+  }, [search]);
 
   useEffect(() => {
-    getThemes(0);
-  }, [getThemes]);
+    if (loading) return;
+
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !isEnd) {
+        setPage((prev) => {
+          getSearch(prev + 1);
+          return prev + 1;
+        });
+      }
+    });
+
+    if (lastItemRef.current) {
+      observer.current.observe(lastItemRef.current);
+    }
+
+    return () => observer.current?.disconnect();
+  }, [itemsSearch, loading, isEnd, getSearch]);
 
   return (
     <>
@@ -141,23 +180,18 @@ export const SearchThemeSelectScrollBlock = ({
         </Grid>
       ) : (
         <Grid item xs={12}>
-          <InfiniteScroll
-            dataLength={itemsSearch.length}
-            next={handleLoadMoreData}
-            hasMore={!isEnd}
-            loader={<SkeletonThemesGrid number={10} />}
-          >
-            <Grid container spacing={1} justifyContent="center">
-              {itemsSearch.map((item, index) => (
-                <Grid item key={index}>
-                  <CardSelectTheme
-                    theme={item}
-                    onSelect={() => onSelect(item)}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </InfiniteScroll>{" "}
+          <Grid container spacing={1} justifyContent="center" sx={{ mb: 1 }}>
+            {itemsSearch.map((item, index) => (
+              <Grid
+                item
+                key={index}
+                ref={index === itemsSearch.length - 1 ? lastItemRef : null}
+              >
+                <CardSelectTheme theme={item} onSelect={() => onSelect(item)} />
+              </Grid>
+            ))}
+            {!isEnd && <SkeletonThemesGrid number={10} />}
+          </Grid>
         </Grid>
       )}
     </>

@@ -181,7 +181,7 @@ export const AutocompleteTheme = ({
             }}
           >
             <ImageThemeBlock theme={v} size={30} />
-            <JsonLanguageBlock variant="h6" value={v.name} />
+            <Typography variant="h6">{v.title}</Typography>
             <ClearIcon
               sx={{ width: 15, height: 15, cursor: "pointer" }}
               onClick={() => deleteTheme(v.id)}
@@ -221,10 +221,10 @@ export const SelectCategory = ({ category, onChange }: PropsSelectCategory) => {
         onChange(newValue);
       }}
       options={[...categories].sort((a, b) => sortByName(language, a, b))}
-      getOptionLabel={(option) => option.name[language.iso]}
+      getOptionLabel={(option) => option.title}
       renderOption={(props, option) => (
         <Box component="li" {...props}>
-          <JsonLanguageBlock value={option.name} />
+          <Typography>{option.title}</Typography>
         </Box>
       )}
       fullWidth
@@ -241,7 +241,7 @@ export const SelectCategory = ({ category, onChange }: PropsSelectCategory) => {
 
 interface PropsSelectThemeShop {
   theme: ThemeShop | null;
-  onChange: (value: Category | null) => void;
+  onChange: (value: ThemeShop | null) => void;
 }
 
 export const SelectThemeShop = ({ theme, onChange }: PropsSelectThemeShop) => {
