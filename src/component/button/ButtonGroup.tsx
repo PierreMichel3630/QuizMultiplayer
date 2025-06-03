@@ -16,6 +16,7 @@ import { AllGameModeEnum, GameModeEnum } from "src/models/enum/GameEnum";
 import { Colors } from "src/style/Colors";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { ChallengeTypeResultEnum } from "src/models/enum/ChallengeEnum";
+import { useUser } from "src/context/UserProvider";
 
 interface Props {
   selected: string;
@@ -119,15 +120,10 @@ export const GroupButtonAllGameMode = ({
   onChange,
 }: PropsGroupButtonAllGameMode) => {
   const { t } = useTranslation();
+  const { hasChallenge } = useUser();
 
-  const options = useMemo(
-    () => [
-      {
-        icon: <EmojiEventsIcon />,
-        label: t("commun.challenge"),
-        value: AllGameModeEnum.CHALLENGE,
-        color: Colors.green,
-      },
+  const options = useMemo(() => {
+    const values = [
       {
         icon: <PlayCircleIcon />,
         label: t("commun.solo"),
@@ -140,9 +136,19 @@ export const GroupButtonAllGameMode = ({
         value: AllGameModeEnum.DUEL,
         color: Colors.red,
       },
-    ],
-    [t]
-  );
+    ];
+    return hasChallenge
+      ? [
+          {
+            icon: <EmojiEventsIcon />,
+            label: t("commun.challenge"),
+            value: AllGameModeEnum.CHALLENGE,
+            color: Colors.green,
+          },
+          ...values,
+        ]
+      : [...values];
+  }, [t, hasChallenge]);
 
   return (
     <GroupButton

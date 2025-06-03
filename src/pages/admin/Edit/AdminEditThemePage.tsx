@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Avatar, Chip, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ButtonColor } from "src/component/Button";
 import { Theme } from "src/models/Theme";
@@ -8,6 +8,7 @@ import { useState } from "react";
 import { BasicSearchInput } from "src/component/Input";
 import { CreateEditThemeDialog } from "src/component/modal/CreateEditThemeDialog";
 import { ThemeAdminListScrollBlock } from "src/component/scroll/ThemeScroll";
+import { LANGUAGES, LANGUAGESDEFAULT } from "src/models/Language";
 import { Colors } from "src/style/Colors";
 
 export default function AdminEditThemePage() {
@@ -16,7 +17,16 @@ export default function AdminEditThemePage() {
   const [theme, setTheme] = useState<Theme | undefined>(undefined);
   const [openModal, setOpenModal] = useState(false);
   const [search, setSearch] = useState("");
+  const [languages, setLanguages] = useState([LANGUAGESDEFAULT.iso]);
 
+  const selectLanguage = (language: string) => {
+    const isSelect = languages.find((el) => el === language);
+    if (isSelect) {
+      setLanguages((prev) => [...prev].filter((el) => el !== language));
+    } else {
+      setLanguages((prev) => [...prev, language]);
+    }
+  };
   return (
     <Grid container spacing={1} justifyContent="center">
       <Grid item xs={12}>
@@ -36,9 +46,29 @@ export default function AdminEditThemePage() {
           clear={() => setSearch("")}
         />
       </Grid>
+      <Grid
+        item
+        xs={12}
+        sx={{ display: "flex", gap: 1, justifyContent: "center" }}
+      >
+        {LANGUAGES.map((lang, index) => {
+          const isSelect = languages.find((el) => el === lang.iso);
+          return (
+            <Chip
+              key={index}
+              variant={isSelect ? "filled" : "outlined"}
+              color={isSelect ? "success" : "default"}
+              avatar={<Avatar src={lang.icon} />}
+              label={lang.name}
+              onClick={() => selectLanguage(lang.iso)}
+            />
+          );
+        })}
+      </Grid>
       <Grid item xs={12}>
         <ThemeAdminListScrollBlock
           search={search}
+          languages={languages}
           onSelect={(value) => setTheme(value)}
         />
       </Grid>

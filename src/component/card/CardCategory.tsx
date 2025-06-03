@@ -13,6 +13,7 @@ import { CreateEditCategoryDialog } from "../modal/CreateEditCategoryDialog";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { deleteCategoryById } from "src/api/category";
+import { LanguageBlock } from "../language/LanguageBlock";
 
 interface Props {
   category: Category;
@@ -91,20 +92,14 @@ export const CardAdminCategory = ({
   return (
     <Paper sx={{ p: 1 }}>
       <Grid container spacing={1} alignItems="center">
-        <Grid
-          item
-          xs
-          sx={{
-            display: "flex",
-            gap: 2,
-            alignItems: "center",
-            justifyContent: "flex-start",
-          }}
-        >
+        <Grid item xs={2} md={1}>
           <Typography variant="h2">{category.id}</Typography>
+        </Grid>
+        <Grid item xs>
           <Typography variant="h4" component="span">
             {category.title}
           </Typography>
+          <LanguageBlock iso={category.language} />
         </Grid>
         <Grid item>
           <IconButton aria-label="edit" onClick={() => setOpenModal(true)}>

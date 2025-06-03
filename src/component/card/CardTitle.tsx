@@ -5,7 +5,7 @@ import { Title } from "src/models/Title";
 import { Colors } from "src/style/Colors";
 import { BadgeTitle } from "../Badge";
 import { useMemo } from "react";
-import { sortByTitle } from "src/utils/sort";
+import { sortTitle } from "src/utils/sort";
 import { useUser } from "src/context/UserProvider";
 import { Link } from "react-router-dom";
 
@@ -19,7 +19,7 @@ export const CardTitle = ({ titles, loading }: Props) => {
   const { language } = useUser();
 
   const titleOrder = useMemo(
-    () => [...titles].sort((a, b) => sortByTitle(language, a, b)),
+    () => [...titles].sort((a, b) => sortTitle(language, a, b)),
     [titles, language]
   );
 

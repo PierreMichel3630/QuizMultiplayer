@@ -3,6 +3,9 @@ import { initReactI18next } from "react-i18next";
 
 import enGB from "./locales/en-GB.json";
 import frFR from "./locales/fr-FR.json";
+import itIT from "./locales/it-IT.json";
+import esES from "./locales/es-ES.json";
+import deDE from "./locales/de-DE.json";
 
 const defaultLanguage = "fr-FR";
 
@@ -14,6 +17,15 @@ export const resources = {
   },
   fr: {
     [defaultNamespace]: frFR,
+  },
+  it: {
+    [defaultNamespace]: itIT,
+  },
+  de: {
+    [defaultNamespace]: deDE,
+  },
+  es: {
+    [defaultNamespace]: esES,
   },
 };
 

@@ -43,10 +43,12 @@ import {
 } from "src/models/Challenge";
 import { ClassementChallengeTimeEnum } from "src/models/enum/ClassementEnum";
 import { Profile } from "src/models/Profile";
+import { useUser } from "src/context/UserProvider";
 
 export default function ChallengeProfilPage() {
   const { t } = useTranslation();
   const { uuid } = useParams();
+  const { language } = useUser();
   const { profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -109,15 +111,17 @@ export default function ChallengeProfilPage() {
     const isChallengeAvailable = () => {
       if (profile) {
         const date = moment();
-        countChallengeGameByDateAndProfileId(date, profile.id).then(
-          ({ count }) => {
-            setHasPlayChallenge(count !== null && count > 0);
-          }
-        );
+        countChallengeGameByDateAndProfileId(
+          date,
+          profile.id,
+          language.iso
+        ).then(({ count }) => {
+          setHasPlayChallenge(count !== null && count > 0);
+        });
       }
     };
     isChallengeAvailable();
-  }, [profile]);
+  }, [profile, language]);
 
   return (
     <Grid

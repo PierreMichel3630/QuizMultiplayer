@@ -31,7 +31,6 @@ import {
   sortByName,
   sortByPointsDesc,
   sortByRankDesc,
-  sortByTitle,
   sortByUsername,
   sortByXP,
 } from "src/utils/sort";
@@ -43,6 +42,7 @@ import { ProfileAction } from "src/component/ProfileAction";
 import { SortButton } from "src/component/SortBlock";
 import { StatusProfileBlock } from "src/component/StatusProfileBlock";
 import { CardBadge } from "src/component/card/CardBadge";
+import { CardChallenge } from "src/component/card/CardChallenge";
 import { CardFinishTheme } from "src/component/card/CardFinishTheme";
 import { CardFriends } from "src/component/card/CardFriends";
 import { CardOpposition } from "src/component/card/CardOpposition";
@@ -54,12 +54,11 @@ import { StatAccomplishment } from "src/models/Accomplishment";
 import { Friend, FRIENDSTATUS } from "src/models/Friend";
 import { getLevel } from "src/utils/calcul";
 import { searchString } from "src/utils/string";
-import { CardChallenge } from "src/component/card/CardChallenge";
 
 export default function ProfilPage() {
   const { t } = useTranslation();
   const { id } = useParams();
-  const { uuid, language } = useUser();
+  const { uuid, language, hasChallenge } = useUser();
   const { user } = useAuth();
   const { friends, headerSize } = useApp();
 
@@ -237,11 +236,6 @@ export default function ProfilPage() {
     [scores]
   );
 
-  const titleOrder = useMemo(
-    () => [...titles].sort((a, b) => sortByTitle(language, a, b)),
-    [titles, language]
-  );
-
   const level = useMemo(() => (stat ? getLevel(stat.xp) : undefined), [stat]);
 
   const scoresWithRankAndOpposition = useMemo(() => {
@@ -412,14 +406,17 @@ export default function ProfilPage() {
               <Alert severity="warning">{t("commun.noresultgame")}</Alert>
             </Grid>
           )}
-          <Grid item xs={12}>
-            <CardChallenge profileId={id} />
-          </Grid>
+          {hasChallenge && (
+            <Grid item xs={12}>
+              <CardChallenge profileId={id} />
+            </Grid>
+          )}
+
           <Grid item xs={12}>
             <CardBadge badges={badges} loading={isLoadingBadge} />
           </Grid>
           <Grid item xs={12}>
-            <CardTitle titles={titleOrder} loading={isLoadingTitle} />
+            <CardTitle titles={titles} loading={isLoadingTitle} />
           </Grid>
           <Grid item xs={12}>
             <CardFriends friends={friendsAvatar} loading={isLoadingFriends} />

@@ -26,6 +26,7 @@ import { Link } from "react-router-dom";
 
 export const WinnerChallengeBlock = () => {
   const { t } = useTranslation();
+
   const { winDay, winWeek, winMonth, loseDay, loseWeek, loseMonth } =
     useChallenge();
 

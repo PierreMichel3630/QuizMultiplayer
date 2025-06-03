@@ -77,15 +77,15 @@ export const ThemeListScrollBlock = ({
 
 interface PropsThemeAdminListScrollBlock {
   search: string;
+  languages: Array<string>;
   onSelect: (value: Theme) => void;
 }
 
 export const ThemeAdminListScrollBlock = ({
   search,
+  languages,
   onSelect,
 }: PropsThemeAdminListScrollBlock) => {
-  const { language } = useUser();
-
   const [, setPage] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
   const [themes, setThemes] = useState<Array<Theme>>([]);
@@ -94,21 +94,21 @@ export const ThemeAdminListScrollBlock = ({
     (page: number) => {
       const itemperpage = 30;
       if (!isEnd) {
-        searchThemes(search, page, itemperpage).then(({ data }) => {
+        searchThemes(search, page, itemperpage, languages).then(({ data }) => {
           const result = data ?? [];
           setIsEnd(result.length < itemperpage);
           setThemes((prev) => [...prev, ...result]);
         });
       }
     },
-    [isEnd, search]
+    [isEnd, search, languages]
   );
 
   useEffect(() => {
     setPage(0);
     setIsEnd(false);
     setThemes([]);
-  }, [search, language]);
+  }, [search, languages]);
 
   const handleLoadMoreData = () => {
     setPage((prevPage) => {

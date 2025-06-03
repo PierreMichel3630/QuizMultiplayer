@@ -766,7 +766,8 @@
     "notconnect2": "Pour jouer à ce mode de jeu vous devez <anchor1>{{link}}</anchor1> ou <anchor2>{{link2}}</anchor2>",
     "duplicateusername": "Le pseudonyme est déjà utilisé.",
     "vote": "Votre vote a été pris en compte.",
-    "addquestionpropose": "Votre proposition de question a été prise en compte."
+    "addquestionpropose": "Votre proposition de question a été prise en compte.",
+    "nochallengegame": "Cette langue ne dispose pas de Défis du Jour"
   },
   "confidentiality": {
     "title": "Politique de confidentialité",
@@ -884,6 +885,8 @@
     "other": "Autre"
   },
   "mode": {
-    "fightfriend":"Combat contre un ami"
+    "fightfriend":"Combat contre un ami",
+    "randomquestion": "Question Aléatoire",
+    "randomtheme": "Thème Aléatoire"
   }
 }

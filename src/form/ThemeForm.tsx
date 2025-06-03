@@ -16,13 +16,14 @@ import { insertCategoryTheme } from "src/api/category";
 import { BUCKET_THEME, URL_STORAGE, storeFile } from "src/api/storage";
 import { insertThemeAdmin, updateTheme } from "src/api/theme";
 import { ButtonColor } from "src/component/Button";
-import { SelectCategory } from "src/component/Select";
+import { SelectCategory, SelectIso } from "src/component/Select";
 import { FileUploadInput } from "src/component/input/FileUploadInput";
 import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
+import { removeAccentsAndLowercase } from "src/utils/string";
 import * as Yup from "yup";
 
 interface Props {
@@ -46,7 +47,7 @@ export const ThemeForm = ({ validate, theme }: Props) => {
     color: theme ? theme.color : "",
     image: theme ? theme.image : null,
     category: theme ? theme.category : null,
-    language: language.iso,
+    language: theme ? theme.language : language.iso,
   };
 
   const validationSchema = Yup.object().shape({
@@ -57,6 +58,7 @@ export const ThemeForm = ({ validate, theme }: Props) => {
       .shape({ id: Yup.number().required() })
       .default(null)
       .required(t("form.createtheme.requiredcategory")),
+    language: Yup.string().required(t("form.createtheme.requiredlanguage")),
   });
 
   const formik = useFormik({
@@ -90,6 +92,8 @@ export const ThemeForm = ({ validate, theme }: Props) => {
               : image,
           color: values.color,
           title: values.title,
+          titlelower: removeAccentsAndLowercase(values.title),
+          name: { "fr-FR": values.title, "en-US": values.title },
         };
         const { error, data } = theme
           ? await updateTheme({ id: theme.id, ...newTheme })
@@ -128,6 +132,20 @@ export const ThemeForm = ({ validate, theme }: Props) => {
             />
             <FormHelperText error id={`error-category`}>
               {formik.errors.category}
+            </FormHelperText>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl
+            fullWidth
+            error={Boolean(formik.touched.language && formik.errors.language)}
+          >
+            <SelectIso
+              value={formik.values.language}
+              onChange={(value) => formik.setFieldValue("language", value)}
+            />
+            <FormHelperText error id={`error-language`}>
+              {formik.errors.language}
             </FormHelperText>
           </FormControl>
         </Grid>

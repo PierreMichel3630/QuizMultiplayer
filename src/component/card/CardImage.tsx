@@ -44,7 +44,6 @@ export const CardImage = ({ value, width = 90 }: Props) => {
   );
 
   const goLink = () => {
-    console.log(value);
     if (value.type)
       navigate(
         value.type === TypeCardEnum.THEME

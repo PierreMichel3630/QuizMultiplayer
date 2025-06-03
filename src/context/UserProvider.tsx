@@ -1,6 +1,7 @@
 import i18next from "i18next";
 import moment from "moment";
 import { createContext, useContext, useEffect, useState } from "react";
+import { selectChallengeByDateAndLanguage } from "src/api/challenge";
 import { LANGUAGES, Language } from "src/models/Language";
 
 type Props = {
@@ -17,6 +18,7 @@ export const UserContext = createContext<{
   setSound: (value: number) => void;
   mode: "light" | "dark";
   setMode: (mode: "light" | "dark") => void;
+  hasChallenge?: boolean;
 }>({
   uuid:
     localStorage.getItem("uuid") !== null
@@ -33,6 +35,7 @@ export const UserContext = createContext<{
   setSound: () => {},
   mode: "dark",
   setMode: () => {},
+  hasChallenge: undefined,
 });
 
 export const useUser = () => useContext(UserContext);
@@ -70,6 +73,10 @@ export const UserProvider = ({ children }: Props) => {
       : 20
   );
 
+  const [hasChallenge, setHasChallenge] = useState<undefined | boolean>(
+    undefined
+  );
+
   useEffect(() => {
     if (language) {
       moment.locale(language.iso);
@@ -98,6 +105,15 @@ export const UserProvider = ({ children }: Props) => {
     }
   }, [mode]);
 
+  useEffect(() => {
+    selectChallengeByDateAndLanguage(moment(), language.iso).then(
+      ({ data }) => {
+        console.log(data);
+        setHasChallenge(data !== null);
+      }
+    );
+  }, [language]);
+
   return (
     <UserContext.Provider
       value={{
@@ -110,6 +126,7 @@ export const UserProvider = ({ children }: Props) => {
         setSound,
         setMode,
         mode,
+        hasChallenge,
       }}
     >
       {children}

@@ -8,7 +8,6 @@ export const encrypt = (text: string) => {
 };
 
 export const decrypt = (encryptedBase64: string) => {
-  console.log(key);
   const decrypted = CryptoJS.AES.decrypt(encryptedBase64, key);
   if (decrypted) {
     try {

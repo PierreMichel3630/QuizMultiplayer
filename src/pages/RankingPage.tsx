@@ -15,6 +15,7 @@ import { ButtonRankingSolo } from "src/component/button/ButtonRankingSolo";
 import { DataRanking, RankingTable } from "src/component/table/RankingTable";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { useUser } from "src/context/UserProvider";
 import { BadgeLevel } from "src/icons/BadgeLevel";
 import {
   StatAccomplishment,
@@ -34,6 +35,7 @@ export default function RankingPage() {
   const { t } = useTranslation();
   const { headerSize, idsFriend } = useApp();
   const { profile } = useAuth();
+  const { language } = useUser();
   const [searchParams] = useSearchParams();
 
   const ITEMPERPAGE = 25;
@@ -67,41 +69,45 @@ export default function RankingPage() {
             tabSoloMode === ClassementSoloModeEnum.month)
         ) {
           const time = tabSoloMode as unknown as ClassementSoloTimeEnum;
-          selectGamesByTime(time, page, ITEMPERPAGE, ids).then(({ data }) => {
-            const res: Array<any> = data ?? [];
-            const newdata = [...res].map((el, index) => ({
-              profile: el.profile,
-              value: el.points,
-              theme: el.theme,
-              rank: page * ITEMPERPAGE + index + 1,
-            }));
-            setIsEnd(newdata.length < ITEMPERPAGE);
-            setData((prev) =>
-              page === 0 ? [...newdata] : [...prev, ...newdata]
-            );
-          });
+          selectGamesByTime(time, page, ITEMPERPAGE, language.iso, ids).then(
+            ({ data }) => {
+              const res: Array<any> = data ?? [];
+              const newdata = [...res].map((el, index) => ({
+                profile: el.profile,
+                value: el.points,
+                theme: el.theme,
+                rank: page * ITEMPERPAGE + index + 1,
+              }));
+              setIsEnd(newdata.length < ITEMPERPAGE);
+              setData((prev) =>
+                page === 0 ? [...newdata] : [...prev, ...newdata]
+              );
+            }
+          );
         } else if (
           (type === ClassementEnum.points &&
             tabSoloMode === ClassementSoloModeEnum.alltime) ||
           (type === ClassementEnum.rank &&
             tabDuelMode === ClassementDuelModeEnum.bestrank)
         ) {
-          selectScore(type, page, ITEMPERPAGE, [], ids).then(({ data }) => {
-            const res = data as Array<Score>;
-            const newdata = res.map((el, index) => {
-              const champ = el[type];
-              return {
-                profile: el.profile,
-                value: Array.isArray(champ) ? champ.length : champ,
-                theme: el.theme,
-                rank: page * ITEMPERPAGE + index + 1,
-              };
-            });
-            setIsEnd(newdata.length < ITEMPERPAGE);
-            setData((prev) =>
-              page === 0 ? [...newdata] : [...prev, ...newdata]
-            );
-          });
+          selectScore(type, page, ITEMPERPAGE, language.iso, [], ids).then(
+            ({ data }) => {
+              const res = data as Array<Score>;
+              const newdata = res.map((el, index) => {
+                const champ = el[type];
+                return {
+                  profile: el.profile,
+                  value: Array.isArray(champ) ? champ.length : champ,
+                  theme: el.theme,
+                  rank: page * ITEMPERPAGE + index + 1,
+                };
+              });
+              setIsEnd(newdata.length < ITEMPERPAGE);
+              setData((prev) =>
+                page === 0 ? [...newdata] : [...prev, ...newdata]
+              );
+            }
+          );
         } else if (
           type === ClassementEnum.points &&
           tabSoloMode === ClassementSoloModeEnum.finishtheme
@@ -167,7 +173,15 @@ export default function RankingPage() {
         }
       }
     },
-    [isEnd, tabDuelMode, tabSoloMode, type, isOnlyFriend, idsFriend]
+    [
+      isOnlyFriend,
+      idsFriend,
+      isEnd,
+      type,
+      tabSoloMode,
+      tabDuelMode,
+      language.iso,
+    ]
   );
 
   useEffect(() => {
@@ -238,7 +252,7 @@ export default function RankingPage() {
         )}
       </Grid>
       {profile && (
-        <Grid item xs={12}>
+        <Grid item xs={12} sx={{ pl: 1, pr: 1 }}>
           <Box
             sx={{
               display: "flex",
@@ -261,7 +275,7 @@ export default function RankingPage() {
         </Grid>
       )}
 
-      <Grid item xs={12}>
+      <Grid item xs={12} sx={{ p: 1 }}>
         <InfiniteScroll
           dataLength={data.length}
           next={handleLoadMoreData}

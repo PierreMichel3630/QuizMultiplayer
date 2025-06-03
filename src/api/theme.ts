@@ -27,8 +27,16 @@ export const selectThemesByCreatedAt = (created_at: Moment) =>
     .gte("created_at", created_at.toISOString())
     .order("created_at", { ascending: false });
 
-export const selectThemesById = (ids: Array<string | number>) =>
-  supabase.from(SUPABASE_THEME_TABLE).select().in("id", ids);
+export const selectThemesById = (
+  ids: Array<string | number>,
+  language?: string
+) => {
+  let query = supabase.from(SUPABASE_THEME_TABLE).select();
+  if (language) {
+    query = query.eq("language", language);
+  }
+  return query.eq("language", language).in("id", ids);
+};
 
 export const selectThemesByCategory = (
   id: number | string,
@@ -56,7 +64,7 @@ export const searchThemes = (
   search = "",
   page = 0,
   itemperpage = 20,
-  language = "fr-FR"
+  languages = ["fr-FR"]
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
@@ -64,9 +72,10 @@ export const searchThemes = (
   return supabase
     .from(SUPABASE_THEME_TABLE)
     .select()
-    .ilike(`name->>${language}`, `%${search}%`)
+    .ilike(`titlelower`, `%${search}%`)
+    .in("language", languages)
     .range(from, to)
-    .order(`name->>${language}`, { ascending: true });
+    .order(`titlelower`, { ascending: true });
 };
 
 export const countThemes = () =>
@@ -105,7 +114,14 @@ export const selectThemesShop = () =>
 export const insertTheme = (value: ThemeInsert) =>
   supabase.from(SUPABASE_THEME_TABLE).insert(value).select().single();
 
-export const selectThemesPropose = () =>
+export const selectThemesPropose = (language: string) =>
+  supabase
+    .from(SUPABASE_VUETHEME_TABLE)
+    .select("*, category(*)")
+    .eq("language", language)
+    .eq("validate", false);
+
+export const selectThemesProposeAdmin = () =>
   supabase
     .from(SUPABASE_VUETHEME_TABLE)
     .select("*, category(*)")

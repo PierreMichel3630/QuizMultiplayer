@@ -14,6 +14,7 @@ import shopAnimate from "src/assets/animation/shop.json";
 import voteAnimate from "src/assets/animation/vote.json";
 import wheelAnimate from "src/assets/animation/wheelprize.json";
 import { TimeLeftLabel, TimeLeftToNextDayHoverLabel } from "./TimeLeftBlock";
+import { useUser } from "src/context/UserProvider";
 
 export const ShopBlock = () => {
   return (
@@ -31,6 +32,7 @@ export const ShopBlock = () => {
 export const ShopItems = () => {
   const { t } = useTranslation();
   const { profile } = useAuth();
+  const { hasChallenge, language } = useUser();
 
   const [hasPlayChallenge, setHasPlayChallenge] = useState(false);
 
@@ -40,39 +42,20 @@ export const ShopItems = () => {
     const isChallengeAvailable = () => {
       if (profile) {
         const date = moment();
-        countChallengeGameByDateAndProfileId(date, profile.id).then(
-          ({ count }) => {
-            setHasPlayChallenge(count !== null && count > 0);
-          }
-        );
+        countChallengeGameByDateAndProfileId(
+          date,
+          profile.id,
+          language.iso
+        ).then(({ count }) => {
+          setHasPlayChallenge(count !== null && count > 0);
+        });
       }
     };
     isChallengeAvailable();
-  }, [profile]);
+  }, [profile, language]);
 
-  const options = useMemo(
-    () => [
-      {
-        title: t("commun.daychallenge"),
-        animation: duelAnimate,
-        link: "/challenge",
-        extra: (
-          <>
-            {hasPlayChallenge && (
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: percent(50),
-                  transform: "translate(0%, -50%)",
-                  zIndex: 2,
-                }}
-              >
-                <TimeLeftToNextDayHoverLabel size="small" />
-              </Box>
-            )}
-          </>
-        ),
-      },
+  const options = useMemo(() => {
+    const values = [
       {
         title: t("commun.proposetheme"),
         animation: voteAnimate,
@@ -118,9 +101,35 @@ export const ShopItems = () => {
         animation: addfriendsAnimate,
         link: "/share",
       },
-    ],
-    [t, wheelDate, hasPlayChallenge]
-  );
+    ];
+
+    return hasChallenge
+      ? [
+          {
+            title: t("commun.daychallenge"),
+            animation: duelAnimate,
+            link: "/challenge",
+            extra: (
+              <>
+                {hasPlayChallenge && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: percent(50),
+                      transform: "translate(0%, -50%)",
+                      zIndex: 2,
+                    }}
+                  >
+                    <TimeLeftToNextDayHoverLabel size="small" />
+                  </Box>
+                )}
+              </>
+            ),
+          },
+          ...values,
+        ]
+      : values;
+  }, [t, wheelDate, hasPlayChallenge, hasChallenge]);
 
   return (
     <Box

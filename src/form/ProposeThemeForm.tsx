@@ -13,6 +13,7 @@ import { ButtonColor } from "src/component/Button";
 import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";
+import { removeAccentsAndLowercase } from "src/utils/string";
 import * as Yup from "yup";
 
 interface Props {
@@ -46,6 +47,7 @@ export const ProposeThemeForm = ({ validate }: Props) => {
       try {
         const newTheme = {
           title: values.title,
+          titlelower: removeAccentsAndLowercase(values.title),
           color: values.color,
           name: { "fr-FR": values.title, "en-US": values.title },
           language: values.language,

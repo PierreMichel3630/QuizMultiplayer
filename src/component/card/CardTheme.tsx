@@ -28,6 +28,7 @@ import { useMessage } from "src/context/MessageProvider";
 import { ConfirmDialog } from "../modal/ConfirmModal";
 import { CreateEditThemeDialog } from "../modal/CreateEditThemeDialog";
 import { ICardImage } from "./CardImage";
+import { LanguageBlock } from "../language/LanguageBlock";
 
 interface Props {
   theme: Theme;
@@ -256,24 +257,18 @@ export const CardAdminTheme = ({ theme, onChange }: PropsCardAdminTheme) => {
     <Paper sx={{ p: 1 }}>
       <Grid container spacing={1} alignItems="center">
         <Grid item>
-          <Box sx={{ width: px(90) }}>
+          <Box sx={{ width: px(60) }}>
             <ImageThemeBlock theme={theme} />
           </Box>
         </Grid>
-        <Grid
-          item
-          xs
-          sx={{
-            display: "flex",
-            gap: 2,
-            alignItems: "center",
-            justifyContent: "flex-start",
-          }}
-        >
+        <Grid item xs={2} md={1}>
           <Typography variant="h2">{theme.id}</Typography>
+        </Grid>
+        <Grid item xs>
           <Typography variant="h4" component="span">
             {theme.title}
           </Typography>
+          <LanguageBlock iso={theme.language} />
         </Grid>
         <Grid item>
           <FormGroup>

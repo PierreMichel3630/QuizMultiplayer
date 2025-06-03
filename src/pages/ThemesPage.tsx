@@ -1,6 +1,6 @@
 import { Box, debounce, Grid } from "@mui/material";
 import { percent, px } from "csx";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { FavoriteBlock } from "src/component/FavoriteBlock";
@@ -17,16 +17,19 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 
 import CloseIcon from "@mui/icons-material/Close";
 import moment from "moment";
+import { countChallengeGameByDateAndProfileId } from "src/api/challenge";
 import { ChallengeButton } from "src/component/button/ChallengeButton";
 import { HeaderApp } from "src/component/header/HeaderApp";
 import { CategoriesScrollBlock } from "src/component/scroll/CategoriesScrollBlock";
 import { SearchThemeScrollBlock } from "src/component/scroll/SearchThemeScrollBlock";
 import { ShopBlock } from "src/component/ShopBlock";
 import { UpdatedThemeBlock } from "src/component/theme/UpdatedThemeBlock";
+import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";
 
 export default function ThemesPage() {
   const { t } = useTranslation();
+  const { hasChallenge, language } = useUser();
 
   const { user, profile } = useAuth();
   const { headerSize } = useApp();
@@ -36,6 +39,9 @@ export default function ThemesPage() {
   const [search, setSearch] = useState("");
   const [searchApi, setSearchApi] = useState("");
   const [displaySearch, setDisplaySearch] = useState(false);
+  const [hasPlayChallenge, setHasPlayChallenge] = useState<undefined | boolean>(
+    undefined
+  );
 
   useEffect(() => {
     refHeadPage.current?.scrollIntoView();
@@ -48,13 +54,21 @@ export default function ThemesPage() {
     []
   );
 
-  const hasPlayChallenge = useMemo(() => {
-    const today = moment();
-    const lastPlay = profile?.lastchallengeplay
-      ? moment(profile?.lastchallengeplay)
-      : null;
-    return lastPlay !== null ? today.isSame(lastPlay, "day") : false;
-  }, [profile]);
+  useEffect(() => {
+    const isChallengeAvailable = () => {
+      if (profile) {
+        const date = moment();
+        countChallengeGameByDateAndProfileId(
+          date,
+          profile.id,
+          language.iso
+        ).then(({ count }) => {
+          setHasPlayChallenge(count !== null && count > 0);
+        });
+      }
+    };
+    isChallengeAvailable();
+  }, [profile, language.iso]);
 
   const handleChange = (value: string) => {
     setSearch(value);
@@ -82,7 +96,7 @@ export default function ThemesPage() {
           }}
         >
           <Grid container spacing={1}>
-            {!hasPlayChallenge && (
+            {hasChallenge && !hasPlayChallenge && (
               <Grid item xs={12}>
                 <ChallengeButton />
               </Grid>

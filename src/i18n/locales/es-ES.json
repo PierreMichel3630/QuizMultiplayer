@@ -1,0 +1,892 @@
+{
+  "appname": "Interrogante",
+  "description": "Cuestionario multijugador en línea",
+  "commun": {
+    "qcm": "Opción múltiple",
+    "inputquestion": "Pregunta con la incautación del teclado",
+    "typequestion": "Tipo de pregunta",
+    "difficulties": "Dificultades",
+    "thememaintenance": "Actualmente en mantenimiento, el tema volverá lo más rápido posible.",
+    "themenotvalidate": "Tema que espera la validación de un administrador.",
+    "images": "Imágenes",
+    "validatequestion": "Pregunta validada",
+    "deniedquestion": "Pregunta poco probable",
+    "all": "Todo",
+    "per": "por",
+    "image": "Imagen",
+    "seegame": "Ver el juego",
+    "questionwithimage": "Preguntas con imagen",
+    "mygames": "Mis partes",
+    "chooseusername": "Elige tu apodo",
+    "play": "Jugar",
+    "ranking": "Clasificación",
+    "rankingday": "Ranking diurno",
+    "rankingweek": "Ranking semanal",
+    "rankingmonth": "Clasificación mensual",
+    "rankingyear": "Clasificación anual",
+    "rankingalltime": "Clasificación de todos los tiempos",
+    "games": "Regiones",
+    "game_one": "{{count}} Parte",
+    "game_other": "{{count}} Regiones",
+    "devine": "¡Adivina la respuesta!",
+    "question": "Pregunta",
+    "startgame": "El juego comenzará pronto",
+    "start": "Para empezar",
+    "keyboardmessage": "A tus teclados!",
+    "noplayer": "No hay jugador",
+    "player_one": "{{count}} jugador",
+    "player_other": "{{count}} jugadores",
+    "position_one": "{{count}}<sup>jerga</sup>",
+    "position_other": "{{count}}<sup>th</sup>",
+    "questions": "preguntas",
+    "wait": "En espera",
+    "createprivategame": "Crear una parte privada",
+    "launchgame": "Lanzar el juego",
+    "parameters": "Parámetros",
+    "players": "Jugadores",
+    "theme": "Tema",
+    "levelquestionmin": "Nivel de nivel mínimo",
+    "levelquestionmax": "Nivel máximo de preguntas",
+    "solo": "Solo",
+    "sologame": "Parte en solitario",
+    "duelgame": "Parte de duelo",
+    "privategame": "Parte privada",
+    "goodresponse": "Buena respuesta",
+    "goodresponse_one": "{{count}} Buena respuesta",
+    "goodresponse_other": "{{count}} Buenas respuestas",
+    "badresponse": "Mala respuesta",
+    "badresponse_one": "{{count}} Mala respuesta",
+    "badresponse_other": "{{count}} Respuestas malas",
+    "score": "Puntaje",
+    "tryagain": "Intentar otra vez",
+    "login": "Conectar",
+    "backhome": "Bienvenido de regreso",
+    "error": "Oops se produjo un error. Por favor rehash",
+    "myfriends": "Mis amigos",
+    "myparameter": "Mis parámetros",
+    "logout": "Desconectar",
+    "email": "Dirección de correo electrónico",
+    "avatar": "Avatar",
+    "avatars": "Avatares",
+    "banners": "Fotos de portada",
+    "myparameters": "Mis parámetros",
+    "username": "Seudónimo",
+    "add": "Agregar",
+    "addfriend": "Agregar amigos",
+    "waitinvitation": "Invitación enviada",
+    "searchid": "Buscar la identificación de una pregunta",
+    "searchfriend": "Buscar un amigo a través de su nombre de usuario",
+    "searchtheme": "Buscar un tema",
+    "searchplayer": "Buscar un jugador",
+    "noresult": "No hay resultados correspondientes a su búsqueda.",
+    "addtofriend": "Amigable",
+    "deletefriend": "Borrar",
+    "waitvalidation": "Esperando la validación",
+    "notificationfriend": "{{username}} te pregunta como amigo",
+    "myrequests": "Mis solicitudes",
+    "myinvitation": "Mis invitaciones",
+    "noresultinvitation": "Sin invitación de espera.",
+    "noresultrequest": "No hay solicitud para un amigo que espera.",
+    "noresultfriends": "Todavía no tienes un amigo.",
+    "noresultgame": "No se jugó ningún papel.",
+    "myrecord": "Mejor",
+    "hi": "Buen día, {{username}}",
+    "dayvalue": "Día {{value}}",
+    "daysupvalue": "+ + {{value}} Días ",
+    "deleteaccountmessage": "Tenga en cuenta que está en el punto de eliminar su cuenta, esta acción es final e inmediata, toda su información personal, así como sus clasificaciones, registros, ... se eliminarán.",
+    "mystatistics": "Mis estadísticas",
+    "gamesplay": "Partes jugadas",
+    "playsolo": "Jugar solo",
+    "duel": "Duelo",
+    "friendduel": "Duelo con un amigo",
+    "return": "Atrás",
+    "returnhome": "Volver a la recepción",
+    "createdthe": "Registrado desde el {{value}}",
+    "validate": "Para validar",
+    "validation": "Válido",
+    "enabled": "Activado",
+    "join": "Unirse",
+    "refuse": "Rechazar",
+    "delete": "BORRAR",
+    "deleteaccount": "Eliminar mi cuenta",
+    "challengeuser": "<bold>{{username}}</bold> te desafía al tema: <bold>{{theme}}</bold>",
+    "unknown": "desconocido",
+    "waitplayer": "Esperando al segundo jugador",
+    "gamebegin": "El juego comenzará",
+    "ready": "Listo",
+    "noready": "No listo",
+    "win": "Ganado !",
+    "loose": "Perdido !",
+    "equality": "¡Igualdad!",
+    "cancelgame": "Partido cancelado",
+    "opponentdontjoin": "Tu oponente no se ha unido al partido a tiempo.",
+    "color": "Color",
+    "myorigincountry": "País natal",
+    "search": "Para investigar",
+    "selectcountry": "Seleccione un país",
+    "myprofile": "Mi perfil",
+    "profile": "Perfil",
+    "seemyprofile": "Ver mi perfil",
+    "bestscore": "Mejor puntaje",
+    "themes": "Temas",
+    "people": "Jugadores",
+    "setting": "Parámetros",
+    "home": "Bienvenido",
+    "notifications": "Notificaciones",
+    "opposition": "Oposición",
+    "victory_one": "victoria",
+    "victory_other": "victorias",
+    "draw_one": "nulo",
+    "draw_other": "cero",
+    "defeat_one": "fracaso",
+    "defeat_other": "derrotas",
+    "selectadv": "Seleccione un oponente",
+    "friend": "Amigo",
+    "friends": "Amigos",
+    "total": "Total",
+    "points": "agujas",
+    "first": "Primero",
+    "second": "Segundo",
+    "third": "Tercero",
+    "changetheme": "Cambiar tema",
+    "revenge": "Venganza",
+    "notrank": "Sin asomé",
+    "yes": "Sí",
+    "no": "No",
+    "seeall": "Ver todo",
+    "seemore": "Ver el resto",
+    "seeallaccomplishment": "Ver todos los éxitos",
+    "favorite": "Favorito",
+    "addfavorite": "Agregar a los favoritos",
+    "removefavorite": "Retirar los favoritos",
+    "ytshort": "Tome un pantalón de YouTube",
+    "seequestions": "Ver las preguntas",
+    "seequestion": "Ver la pregunta",
+    "seequestionimageerror": "Vea las imágenes que no funcionan",
+    "signal": "Informarlo",
+    "adminquestions": "Preguntas",
+    "administration": "Administración",
+    "possibleresponses": "Posibles respuestas",
+    "addresponse": "Agregar una respuesta",
+    "editresponse": "Cambiar una respuesta",
+    "report": "Informe",
+    "reportquestion": "Informar la pregunta",
+    "typeproblem": "Tipo de problema *",
+    "selecttypeerror": "Seleccione un tipo de error",
+    "descriptionerror": "Descripción del error",
+    "placeholderdescriptionerror": "Por favor, proporcione información para resolver el problema.",
+    "replay": "Repetición",
+    "edittheme": "Modificar un tema",
+    "addtheme": "Agregar un tema",
+    "addcategory": "Agregar una categoría",
+    "addquestion": "Agregar una pregunta",
+    "addlanguage": "Agregar una lengua",
+    "addavatar": "Agregar un avatar",
+    "addbanner": "Agregar una foto de portada",
+    "removelanguage": "Eliminar el idioma",
+    "editquestion": "Cambiar una pregunta",
+    "editcategory": "Modificar una categoría",
+    "editavatar": "Modificar un avatar",
+    "editbanner": "Modificar una foto de portada",
+    "selecttheme": "Seleccione un tema",
+    "selectlanguage": "Seleccione un idioma",
+    "selectcategory": "Seleccione una categoría",
+    "proposequestion": "Proponer una pregunta",
+    "category": "Categoría",
+    "categories": "Categorías",
+    "edit": "Para modificar",
+    "language": "Idioma",
+    "languages": "Lenguas",
+    "others": "Otros",
+    "accomplishments": "Éxito",
+    "myaccomplishments": "Mis éxitos",
+    "goaccomplishments": "Ver mis éxitos",
+    "unlockaccomplishments": "Desbloquear a través del éxito",
+    "unlock": "Descubrir",
+    "unlocknewbadges": "Desbloquear nuevas insignias",
+    "unlocknewavatars": "Desbloquear nuevos avatares",
+    "unlocknewtitles": "Desbloquear nuevos títulos",
+    "unlocknewbanners": "Desbloquear nuevas fotos de portada",
+    "reward": "Premio",
+    "title": "Título",
+    "titles": "Valores",
+    "badge": "Insignia",
+    "badges": "Insignias",
+    "training": "Capacitación",
+    "modetraining": "Moda de entrenamiento",
+    "nextquestion": "Siguiente pregunta",
+    "percentsuccess": "% éxito",
+    "rankingby": "Clasificado por",
+    "personalizedprofile": "Personaliza tu perfil",
+    "selecttitle": "Seleccione un título",
+    "launchpartie": "El juego comenzará",
+    "menus": "Menús",
+    "reportpropose": "Informar una mejora de problemas/ ofertas",
+    "improvetext": "Puede ofrecer preguntas yendo a la página de un tema y haciendo clic en el botón 'Proporcionar una pregunta' o unirse a la discordia con el botón a continuación.",
+    "signalproblemtext": "Puede informar problemas técnicos, haciendo clic en el siguiente botón:",
+    "joindiscord": "Unirse a Discord",
+    "pertheme": "Por tema",
+    "pertype": "Por tipo",
+    "selectplayer": "Seleccione un jugador",
+    "selectopponent": "Seleccione un oponente",
+    "selectgamemode": "Seleccione un modo de juego",
+    "global": "En general",
+    "victory": "Victoria",
+    "defeat": "Fracaso",
+    "draw": "Dibujar",
+    "select2player": "Seleccione 2 jugadores para comparar",
+    "compare": "Comparar",
+    "howtoplay": "¿Cómo jugar?",
+    "faq": "Preguntas frecuentes",
+    "installation": "Instalar",
+    "modes": "Los modos del juego",
+    "rules": "Pasos",
+    "warnings": "Advertencias",
+    "link": "Enlace",
+    "reportproblem": "Informar un problema",
+    "android": "Androide",
+    "apple": "Manzana",
+    "solution1": "Solución 1",
+    "solution2": "Solución 2",
+    "clickon": "Hacer clic en",
+    "installapplication": "Instalar la aplicación",
+    "computer": "Computadora",
+    "new": "Novedades",
+    "leave": "Para irse",
+    "gamemode": "Modo de juego",
+    "themesselected": "Temas seleccionados",
+    "gamehistory": "Historia de las fiestas",
+    "reset": "Restablecer el juego",
+    "next": "Siguiente",
+    "versus": "VS",
+    "pointsabbreviation": "Pts",
+    "victoryabbreviation": "V",
+    "drawabbreviation": "norte",
+    "defeatabbreviation": "D",
+    "filtermygames": "Filtrar mis partes",
+    "filter": "Filtrar",
+    "online": "En línea",
+    "notonline": "Desconectado",
+    "mylevel": "Mi nivel",
+    "level": "Nivel",
+    "xp": "experiencia",
+    "matchscore": "Puntaje",
+    "victorybonus": "victoria",
+    "match": "Parte",
+    "totalxp": "Total",
+    "xpabbreviation": "XP",
+    "xpnextlevel": "XP restante",
+    "goal": "Objetivo",
+    "configuration": "Configuración",
+    "googleplay": "Google Play",
+    "letgo": "Empiece a jugar !!!",
+    "previousgame": "Recientemente jugado",
+    "buy": "Comprar",
+    "confirmbuy": "¿Estás seguro de que quieres desbloquear este artículo?",
+    "equip": "Seleccionar",
+    "explainvideo": "Video explicativo",
+    "linkyt": "Enlace a YouTube",
+    "share": "Compartir",
+    "shareapplication": "Compartir la aplicación",
+    "sharefriend": "Compartir con un amigo",
+    "copy": "Copiar",
+    "sharetext": "Si encuentra interesante la aplicación, no dude en compartirla con quienes lo rodean, para ampliar la comunidad. Gracias por su ayuda.",
+    "day": "Día",
+    "week": "Semana",
+    "month": "Mes",
+    "year": "Año",
+    "alltime": "Todo el tiempo",
+    "darkmode": "Moda oscura",
+    "lightmode": "Moda clara",
+    "updated": "Actualizado",
+    "finishtheme": "Temas completados",
+    "unlockaccomplishmentplayer": "{{percent}}% de los jugadores han lanzado",
+    "perdate": "Por fecha",
+    "other": "Otro",
+    "seeshop": "Ver la tienda",
+    "rewardwheel": "Rueda de la suerte",
+    "launch": "Tirar",
+    "customizedprofile": "Personaliza tu perfil",
+    "shop": "Comercio",
+    "selectopponenttext": "No es obligatorio, sin elección, jugarás contra un oponente al azar.",
+    "nextlaunch": "Siguiente lanzamiento",
+    "displaymode": "Modo de visualización",
+    "votetheme": "Temas de oferta / votación",
+    "votethemetext": "Puede ofrecer temas, así como votar por los temas ofrecidos. Los temas con la mayor cantidad de votos se tendrán en cuenta regularmente. Para votar/ ofrecer un tema, debe tener una cuenta. Puede votar 1 vez cada 12 horas.",
+    "vote": "Votar",
+    "vote_one": "{{count}} votar",
+    "vote_other": "{{count}} votos",
+    "proposetheme": "Proponer un tema",
+    "proposethemes": "Temas ofrecidos",
+    "proposethemetext": "Puede ofrecer temas, serán validados por un administrador, tengan cuidado de no duplicar el tema.",
+    "streakexplain": "Jugando en 'defis del día' todos los días para obtener recompensas increíbles",
+    "ok": "DE ACUERDO",
+    "daychallenge": "Desafío del día",
+    "gotochallenge": "Desafío",
+    "profilechallenge": "Perfil de desafío diario",
+    "seestatchallenge": "Ver estadísticas",
+    "nextdaychallenge": "Siguiente desafío del día en",
+    "challenge": "Desafío",
+    "challengeexplain": "Se harán 10 preguntas, responda un máximo lo más rápido posible.",
+    "challengeexplain2": "Atención 1 intento máximo por día.",
+    "createaccount": "Crear una cuenta",
+    "top": "arriba",
+    "to": "seguro",
+    "propose": "Propuesta",
+    "proposition": "Propuesta {{count}}",
+    "addmodifydelete": "Adición / modificación / deleción",
+    "summaryabreviation": "Resumen.",
+    "onlyfriend": "Muestra solo a mis amigos",
+    "titleholder": "Sosteniendo el título",
+    "newversionavailable": "¡Una nueva versión de la aplicación está disponible!",
+    "install": "Instalar",
+    "version": "Versión",
+    "grades": "Notas",
+    "result": "Resultado"
+  },
+  "abrevation": {
+    "average": "Moy."
+  },
+  "offline": {
+    "title": "Conéctese a Internet",
+    "text": "No estás conectado. Revise su conexión."
+  },
+  "accomplishment": {
+    "SOLO": "Éxito de la moda en solitario",
+    "DUEL": "Éxito de la moda de duelo",
+    "SOCIAL": "Éxito social"
+  },
+  "ranking": {
+    "games": "Número de piezas en solitario",
+    "gamestenpts": "Número de piezas solo + 10 puntos",
+    "gamestwentypts": "Número de piezas solo + 20 puntos",
+    "gamesfiftypts": "Número de piezas solo + 50 puntos",
+    "gameshundredpts": "Número de piezas solo + 100 puntos",
+    "themetenpts": "Número de tema en más de 10 puntos",
+    "themetwentypts": "Número de tema en más de 20 puntos",
+    "duelgames": "Número de piezas de duelo",
+    "victoryduel": "Número de victorias de duelo",
+    "drawduel": "Número de asuntos aburridos de duelo",
+    "defeatduel": "Número de derrotas de duelo",
+    "xp": "XP total",
+    "bestgame": "La mejor parte en solitario",
+    "bestrank": "En general",
+    "finishtheme": "Temas completados",
+    "pointssolo": "Punto total"
+  },
+  "rules": {
+    "step1": "Elige un tema",
+    "step2": "Seleccione un modo de juego (solo, duelo, duelo contra amigos, entrenamiento)",
+    "step3": "¡Responda preguntas en el tiempo dada!"
+  },
+  "modes": {
+    "mode1": {
+      "title": "Solo",
+      "goal": "El objetivo es hacer que la serie más grande de una buena respuesta sobre el tema de Selected.",
+      "explain": "Las preguntas están vinculadas a usted para responder en el tiempo asignado, solo una mala respuesta y es el final del juego."
+    },
+    "mode2": {
+      "title": "Duelo",
+      "goal": "El objetivo es hacer más puntos que tu oponente.",
+      "explain": "Tendrá 5 preguntas con un tiempo dado para responderlas. Cuanto más rápido responderá, más puntos tendrá."
+    },
+    "mode3": {
+      "title": "Duelo contra amigos",
+      "goal": "El objetivo es hacer más puntos que tu amigo.",
+      "explain": "Tendrá 5 preguntas con un tiempo dado para responderlas. Cuanto más rápido responderá, más puntos tendrá."
+    },
+    "mode4": {
+      "title": "Capacitación",
+      "goal": "No hay objetivo",
+      "explain": "Cadena las preguntas sin límite de tiempo, sin importar si responde mal o."
+    }
+  },
+  "warning": {
+    "warning1": "Puedes jugar sin conectarte, pero tus puntajes no se guardarán."
+  },
+  "faq": {
+    "question1": {
+      "title": "¿Cómo instalo la aplicación?",
+      "explain": "Para instalar la aplicación en el teléfono, la tableta o la PC, haga clic en esto <anchor>{{link}}</anchor>"
+    },
+    "question2": {
+      "title": "¿Cómo crear una cuenta?",
+      "explain": "Haga clic en esto <anchor>{{link}}</anchor>"
+    },
+    "question3": {
+      "title": "¿Cómo agrego un amigo?",
+      "explain": "Ir a la página de los jugadores (<anchor>{{link}}</anchor>), luego haga clic en el avatar del jugador que desea agregar. Una vez en su perfil, haces clic en el botón de amigo verde"
+    },
+    "question4": {
+      "title": "¿Cómo eliminar a un amigo?",
+      "explain": "Ir a la página de los jugadores (<anchor>{{link}}</anchor>), luego haga clic en el avatar del jugador que desea agregar. Una vez en su perfil, haces clic en el botón Red Friend"
+    },
+    "question5": {
+      "title": "¿Cómo agrego un tema?",
+      "explain": "Haga clic en esto <anchor>{{link}}</anchor>"
+    },
+    "question6": {
+      "title": "¿Cómo agrego una pregunta?",
+      "explain": "Haga clic en esto <anchor>{{link}}</anchor>"
+    },
+    "question7": {
+      "title": "¿Cómo reporto un problema?",
+      "explain": "Al final de un juego, puede informar una pregunta a través del botón de señal. Si el problema no es vincular a una pregunta, vaya a la página informar un problema (<anchor>{{link}}</anchor>))"
+    }
+  },
+  "installation": {
+    "android": "Para dispositivos Android",
+    "android1": "Enlace a Google Play",
+    "android2": "Disponible en Google Play a través del siguiente enlace",
+    "apple": "Para dispositivos Apple",
+    "apple1": "En la barra de direcciones, presione compartir.",
+    "apple2": "Busque la opción Agregar en la pantalla de inicio, luego presione.",
+    "apple3": "Presione agregar",
+    "computer": "Para computadoras",
+    "computer1": "Siga el siguiente enlace: <anchor>{{link}}</anchor>"
+  },
+  "pages": {
+    "home": {
+      "title": "Bienvenido"
+    },
+    "compare": {
+      "title": "Comparar jugadores"
+    },
+    "menu": {
+      "title": "Menús"
+    },
+    "report": {
+      "title": "Informar un problema"
+    },
+    "perzonalised": {
+      "title": "Personalizado tu perfil"
+    },
+    "accomplishments": {
+      "title": "Mis éxitos"
+    },
+    "previousgame": {
+      "title": "Recientemente jugado"
+    },
+    "favorite": {
+      "title": "Favorito"
+    },
+    "play": {
+      "title": "Jugar"
+    },
+    "people": {
+      "title": "Jugadores"
+    },
+    "parameters": {
+      "title": "Mis parámetros"
+    },
+    "privategame": {
+      "title": "Parte privada"
+    },
+    "friend": {
+      "title": "Mis amigos"
+    },
+    "themes": {
+      "title": "Bienvenido"
+    },
+    "notifications": {
+      "title": "Mis notificaciones"
+    },
+    "register": {
+      "title": "Registro"
+    },
+    "login": {
+      "title": "Conexión"
+    },
+    "forgotpassword": {
+      "title": "Has olvidado tu contraseña"
+    },
+    "help": {
+      "title": "¿Cómo jugar?"
+    },
+    "faq": {
+      "title": "Preguntas frecuentes"
+    },
+    "installation": {
+      "title": "Instalación"
+    },
+    "improve": {
+      "title": "Propuesta"
+    },
+    "battle": {
+      "title": "Lucha contra un amigo"
+    },
+    "history": {
+      "title": "Historia de las fiestas"
+    },
+    "badge": {
+      "title": "Insignia"
+    },
+    "title": {
+      "title": "Título"
+    },
+    "new": {
+      "title": "Novedades"
+    },
+    "updated": {
+      "title": "Actualizado"
+    },
+    "resetpassword": {
+      "title": "Reinitalice su contraseña"
+    },
+    "categories": {
+      "title": "Categorías"
+    },
+    "banner": {
+      "title": "Foto"
+    },
+    "avatar": {
+      "title": "Avatar"
+    },
+    "shop": {
+      "title": "Comercio"
+    },
+    "wheel": {
+      "title": "Rueda de la suerte"
+    },
+    "sharefriend": {
+      "title": "Compartir con un amigo"
+    },
+    "proposetheme": {
+      "title": "Proponer un tema"
+    },
+    "streak": {
+      "title": "Serie de conexión"
+    },
+    "challenge": {
+      "title": "Desafíos diarios"
+    },
+    "notification": {
+      "title": "Notificación"
+    }
+  },
+  "enum": {
+    "difficulty": {
+      "FACILE": "Fácil",
+      "MOYEN": "PROMEDIO",
+      "DIFFICILE": "Difícil",
+      "IMPOSSIBLE": "Imposible"
+    }
+  },
+  "form": {
+    "mandatoryvalue": "* Campos obligatorios",
+    "login": {
+      "email": "Dirección de correo electrónico",
+      "password": "Contraseña",
+      "rememberme": "Acuérdate de mí",
+      "createaccount": "Crear una cuenta",
+      "forgotpassword": "¿Has olvidado tu contraseña?",
+      "connect": "Conectar",
+      "connectgoogle": "Conectarse a través de Google",
+      "connectmail": "Conectarse por dirección de correo electrónico",
+      "haveaccount": "¿No tienes una cuenta?",
+      "requiredpassword": "Ingrese una contraseña",
+      "requiredmail": "Ingrese una dirección de correo electrónico",
+      "formatmail": "Por favor, introduce una dirección de correo electrónico válida",
+      "errorconnect": "La dirección de correo electrónico o la contraseña están incorrectas"
+    },
+    "register": {
+      "username": "Seudónimo *",
+      "email": "Dirección de correo electrónico *",
+      "password": "Contraseña *",
+      "createaccount": "Crear una cuenta",
+      "createaccountemail": "Crear una cuenta a través de la dirección de correo electrónico",
+      "createaccountgoogle": "Crear una cuenta a través de Google",
+      "continue": "Continuar",
+      "requiredusername": "Por favor ingrese un seudónimo",
+      "minusername": "El seudónimo debe contener al menos 3 caracteres.",
+      "maxusername": "El seudónimo debe contener con el máximo 155 caracteres.",
+      "nospaceusername": "El seudónimo no debe contener espacio.",
+      "duplicateusername": "El seudónimo ya se usa.",
+      "requiredpassword": "Ingrese una contraseña",
+      "minpassword": "Ingrese una contraseña de más de 6 caracteres",
+      "requiredmail": "Ingrese una dirección de correo electrónico",
+      "formatmail": "Por favor, introduce una dirección de correo electrónico válida",
+      "alreadyaccount": "¿Ya es una cuenta?",
+      "connect": "Conectar",
+      "errorcreatemail": "La dirección de correo electrónico ya se usa"
+    },
+    "forgotpassword": {
+      "forgotpassword": "¿Has olvidado tu contraseña?",
+      "email": "Dirección de correo electrónico *",
+      "createaccount": "Crear una cuenta",
+      "continue": "Para validar",
+      "requiredmail": "Ingrese una dirección de correo electrónico",
+      "formatmail": "Por favor, introduce una dirección de correo electrónico válida",
+      "modality": "Ingrese la dirección de correo electrónico utilizada al registrarse. Recibirá un correo electrónico que contiene las instrucciones a seguir para restablecer su contraseña.",
+      "connection": "Conexión",
+      "notforget": "¿Recuerdas tu contraseña?",
+      "successsendmail": "Correo electrónico enviado",
+      "limitsendemail": "Espere los años 60 antes de devolver un correo electrónico",
+      "sendemail": "Correo electrónico enviado",
+      "sendemailinfo": "El correo electrónico puede tomar entre 1 y 5 minutos antes de estar en su buzón. Revise su spam."
+    },
+    "resetpassword": {
+      "resetpassword": "Restablecer su contraseña",
+      "password": "Nueva contraseña *",
+      "confirmpassword": "Confirmación de la nueva contraseña *",
+      "continue": "Para validar",
+      "passwordmatch": "Las contraseñas deben corresponder",
+      "requiredpassword": "Ingrese una contraseña",
+      "minpassword": "Ingrese una contraseña de más de 6 caracteres",
+      "resetpasswordexplain": "Ingrese su nueva contraseña a continuación."
+    },
+    "createresponse": {
+      "image": "Imagen",
+      "type": "amable",
+      "value": "Respuesta *",
+      "requiredvalue": "Ingrese una respuesta"
+    },
+    "createtheme": {
+      "title": "Nombre *",
+      "color": "Color",
+      "logo": "Logo",
+      "background": "Fondo",
+      "requirednameen": "Por favor ingrese un nombre de tema en inglés",
+      "requirednamefr": "Ingrese un nombre de tema en francés",
+      "requiredcategory": "Seleccione una categoría"
+    },
+    "createcategory": {
+      "namefr": "Nombre en francés *",
+      "nameen": "Nombre en inglés *",
+      "requirednameen": "Por favor ingrese un nombre de tema en inglés",
+      "requirednamefr": "Ingrese un nombre de tema en francés"
+    },
+    "createthemeshop": {
+      "namefr": "Nombre en francés *",
+      "nameen": "Nombre en inglés *",
+      "requirednameen": "Por favor ingrese un nombre de tema en inglés",
+      "requirednamefr": "Ingrese un nombre de tema en francés"
+    },
+    "createavatar": {
+      "price": "Precio *",
+      "isaccomplishment": "Es exitoso?",
+      "requiredprice": "Por favor ingrese un precio",
+      "requiredtheme": "Seleccione un tema",
+      "icon": "Icono"
+    },
+    "createbanner": {
+      "price": "Precio *",
+      "isaccomplishment": "Es exitoso?",
+      "requiredprice": "Por favor ingrese un precio",
+      "requiredtheme": "Seleccione un tema",
+      "icon": "Icono"
+    },
+    "createtitle": {
+      "price": "Precio *",
+      "isaccomplishment": "Es exitoso?",
+      "requiredprice": "Por favor ingrese un precio",
+      "requiredtheme": "Seleccione un tema",
+      "icon": "Icono"
+    },
+    "proposetheme": {
+      "title": "Nombre del tema *",
+      "requiredname": "Ingrese un nombre de tema",
+      "color": "Color del tema *",
+      "requiredcolor": "Seleccione un color"
+    },
+    "createquestion": {
+      "isqcm": "Opción múltiple",
+      "extra": "Extra",
+      "typequestion": "Tipo de pregunta *",
+      "validate": "Validado",
+      "exact": "Exacto",
+      "allresponse": "Todas las respuestas",
+      "question": "Pregunta *",
+      "response": "Respuesta *",
+      "responses": "Mala respuesta *",
+      "language": "Idioma *",
+      "typeResponse": "Respuesta",
+      "image": "Imagen",
+      "requiredquestionfr": "Por favor ingrese una pregunta",
+      "requiredresponsefr": "Ingrese una respuesta",
+      "requiredtyperesponse": "Ingrese un tipo de respuesta"
+    },
+    "proposequestion": {
+      "question": "Pregunta *",
+      "placehoderquestion": "Ejemplo: ¿De qué color es el caballo blanco de Henri IV?",
+      "response": "Respuesta *",
+      "placehoderresponse": "Ejemplo: blanco",
+      "wrongresponse1": "Mala respuesta 1",
+      "placeholderwrongresponse1": "Ejemplo: rojo",
+      "wrongresponse2": "Mala respuesta 2",
+      "placeholderwrongresponse2": "Ejemplo: azul",
+      "wrongresponse3": "Mala respuesta 3",
+      "placeholderwrongresponse3": "Ejemplo: verde",
+      "requiredquestion": "Por favor ingrese una pregunta",
+      "requiredresponse": "Ingrese una respuesta",
+      "requiredwrongresponses": "Por favor ingrese una mala respuesta"
+    }
+  },
+  "input": {
+    "dragdrop": {
+      "drophere": "Poner",
+      "text": "Haga clic o deslice para agregar una imagen"
+    }
+  },
+  "modal": {
+    "delete": "¿Estás seguro de que quieres eliminar?",
+    "resetgame": "¿Estás seguro de que quieres restablecer la parte (puntaje e historia de las partes)?"
+  },
+  "error": {
+    "selectatleast1theme": "Seleccione al menos un tema",
+    "selectadv": "Seleccione un oponente"
+  },
+  "alert": {
+    "pagenotfound": "Esta página no está disponible.",
+    "noresult": "Sin resultados.",
+    "updatequestion": "Su modificación de la pregunta se ha tenido en cuenta.",
+    "allresponseanswer": "Respondiste todas las preguntas del tema.",
+    "nofriend": "No hay solicitud de amistad.",
+    "noaccomplishment": "No hay éxito desbloqueado.",
+    "nogame": "Sin duelo en progreso.",
+    "addreport": "Su aplazamiento se ha tenido en cuenta.",
+    "deletefriend": "Su eliminación se ha tenido en cuenta.",
+    "addfavorite": "Su adición se ha tenido en cuenta.",
+    "deletefavorite": "Su eliminación se ha tenido en cuenta.",
+    "updateavatarsuccess": "Su modificación de avatar se ha tenido en cuenta.",
+    "updatebadgesuccess": "Su modificación de la insignia se ha tenido en cuenta.",
+    "updatebanneruccess": "Su modificación de la foto de portada se ha tenido en cuenta.",
+    "updatetitlesuccess": "Su cambio de título se ha tenido en cuenta.",
+    "updateorigincountrysuccess": "El cambio de su país se ha tenido en cuenta.",
+    "updateusernamesuccess": "Su modificación del seudónimo se ha tenido en cuenta.",
+    "updatecolorsuccess": "Su modificación de color se ha tenido en cuenta.",
+    "sendfriendrequest": "Tu solicitud de amistad ha sido enviada.",
+    "validatefriendrequest": "Aplicación de un amigo validado.",
+    "refusefriendrequest": "Rechazó la solicitud de amistad.",
+    "updateemailsuccess": "La modificación de su dirección de correo electrónico está en marcha. Confirme en su antiguo y nuevo correo electrónico.",
+    "noenoughtmoney": "No tienes suficiente para desbloquear este artículo.",
+    "buyitem": "Su compra se ha tenido en cuenta.",
+    "usernametooshort": "Su nombre de usuario debe contener al menos 4 caracteres.",
+    "notconnect": "No está conectado, sus puntajes no se guardarán. <br> <anchor1>{{link}}</anchor1> O <anchor2>{{link2}}</anchor2>",
+    "notconnect2": "Para jugar este modo de juego debes <anchor1>{{link}}</anchor1> O <anchor2>{{link2}}</anchor2>",
+    "duplicateusername": "El seudónimo ya se usa.",
+    "vote": "Su voto fue tomado en cuenta.",
+    "addquestionpropose": "Su propuesta de pregunta se ha tenido en cuenta.",
+    "nochallengegame": "Este idioma no tiene desafíos diarios"
+  },
+  "confidentiality": {
+    "title": "política de privacidad",
+    "date": "Revisado el 16 de septiembre de 2024",
+    "mentionslegales": {
+      "title": "Avisos legales",
+      "rules1": {
+        "title": "Artículo 1 - Cuenta en la aplicación",
+        "text": "El usuario que crea una cuenta en la aplicación tiene la posibilidad de acceder a ella iniciando sesión gracias a los identificadores proporcionados al registrarse. El usuario es totalmente responsable de la protección de la contraseña que eligió. Se le recomienda usar contraseñas complejas. En caso de olvido de una contraseña, el usuario tiene la posibilidad de generar uno nuevo utilizando el correo electrónico proporcionado al registrarse. Esta contraseña constituye la garantía de la confidencialidad de la información contenida en su cuenta y, por lo tanto, el usuario se abstiene de transmitirla o comunicarla a un tercero. De lo contrario, el editor de aplicaciones no puede ser responsable del acceso no autorizado a la cuenta de usuario. El usuario conectado puede ingresar información personal adicional para personalizar su cuenta: país de origen. Quizbattle se reserva el derecho exclusivo de eliminar la cuenta de cualquier miembro que hubiera infringido estas condiciones generales. Dicha eliminación no es probable que constituya daños al usuario excluido que no podrá reclamar ninguna compensación por este hecho. Esta exclusión no es exclusiva de la posibilidad, para que el editor, realice procedimientos legales contra el miembro, cuando los hechos lo han justificado."
+      },
+      "rules2": {
+        "title": "Artículo 2 - Exención de la responsabilidad del editor como parte de la ejecución de este contrato",
+        "text": "En el caso de imposibilidad de acceder a la aplicación, debido a problemas técnicos o de todo tipo, el usuario no puede reclamar daños y no puede reclamar ninguna compensación. La falta de disponibilidad, incluso prolongada y sin ninguna duración limitante, no puede constituir un prejuicio para los usuarios y de ninguna manera no puede dar lugar a la concesión de daños por parte del editor."
+      },
+      "rules3": {
+        "title": "Artículo 3 - Acceso a la aplicación por conexión a Internet",
+        "text": "La responsabilidad del editor no puede participar debido a una falta de disponibilidad técnica de la conexión, ya sea en particular en un caso de fuerza mayor, mantenimiento, actualización, modificación, intervención por parte del huésped, un ataque interno o externo, un desglose eléctrico de la red, un apagón eléctrico o incluso una mala configuración o uso del dispositivo del usuario."
+      },
+      "rules4": {
+        "title": "Artículo 4 - Cierre de la cuenta",
+        "text": "Cada usuario es libre de cerrar su cuenta en la aplicación. Para esto, el usuario debe ir al menú My Configuración y hacer clic en el botón Eliminar. Todos los datos relacionados con el usuario se eliminarán y no se puede recuperar sus datos."
+      },
+      "rules5": {
+        "title": "Artículo 5 - Ley y mediación aplicables",
+        "text": "Estas condiciones generales están sujetas a la aplicación de la ley francesa. El editor puede modificarlos en cualquier momento. Las condiciones generales aplicables al usuario son las vigentes el día de su conexión en la aplicación. El editor obviamente se compromete a mantener todas sus viejas condiciones generales y enviarlas a cualquier usuario que los solicite. Excepto las disposiciones de orden público, todas las disputas que pueden surgir dentro del marco de la ejecución de estas condiciones generales pueden antes de que cualquier acción legal esté sujeta a la evaluación del editor para un acuerdo amistoso. Se recuerda expresamente que las solicitudes de liquidación amigable no suspenden los plazos abiertos para traer acciones legales. A menos que se proporcione lo contrario, de orden público, cualquier acción legal relacionada con la ejecución de este contrato debe estar sujeta a la jurisdicción de las jurisdicciones de la jurisdicción de la Corte de Apelaciones incautadas."
+      }
+    },
+    "charte": {
+      "title": "Carta de datos personales",
+      "rules1": {
+        "title": "Introducción y papel de la Carta",
+        "text": "Esta carta tiene como objetivo informarle sobre los compromisos de la aplicación con respecto a su privacidad y la protección de los datos personales con respecto a usted, recopilado y procesado durante su uso de la aplicación."
+      },
+      "rules2": {
+        "title": "Datos personales",
+        "text": "Quizbattle recopila su dirección de correo electrónico y contraseña si crea una cuenta para autenticarlo, pero sigue siendo confidencial y no se muestra para otros usuarios. Puede personalizar su perfil agregando su país de origen y un identificador. Esta información será pública dentro de la aplicación."
+      },
+      "rules3": {
+        "title": "Datos guardados",
+        "text": "Quizbattle ahorra todos los resultados de sus piezas de solo y duelo para mostrar sus estadísticas en su perfil y calcular su clasificación."
+      },
+      "rules4": {
+        "title": "Compras",
+        "text": "Quizbattle es 100% gratuito y no utiliza ninguna compra en línea."
+      },
+      "rules5": {
+        "title": "Contacto",
+        "text": "Para todas las quejas, preguntas o ideas, puede usar la siguiente dirección de correo electrónico: Pierremichel804@gmail.com"
+      }
+    }
+  },
+  "sort": {
+    "alphabetical": "Ordenar en orden alfabético",
+    "gamessolo": "Ordenar por número de piezas solistas",
+    "gamesduel": "Ordenar por número de piezas de duelo",
+    "scoresolo": "Ordenar por mejor puntaje en parte solo",
+    "scoreduel": "Ordenar por la mejor clasificación en parte duelo",
+    "level": "Ordenar por nivel",
+    "ranking": "Ordenar por clasificación",
+    "time": "Prueba en el tiempo de respuesta",
+    "points": "Ordenar por puntaje",
+    "pointsavg": "Ordenar por el puntaje de Moy.",
+    "games": "Ordenar por número de piezas"
+  },
+  "tutorial": {
+    "title": "Bienvenido a Quizbattle",
+    "explain": "Quizbattle es un juego de cuestionario que le permite evaluar su conocimiento de una multitud de temas gracias a 3 modos de juego divertidos y gratuitos.",
+    "available": "Disponible en"
+  },
+  "notification": {
+    "accomplishment": {
+      "message": "Has desbloqueado el éxito: ",
+      "button": "Ver éxito"
+    }
+  },
+  "share": {
+    "title": "Interrogante",
+    "score": "Únete a Quizbattle y ven y vence mi puntaje {{score}} Sobre el tema {{theme}}.",
+    "text": "Únase a Quizbattle y ven y me desafíe en una multitud de temas."
+  },
+  "wheel": {
+    "gain1gold": "Gana 1 Quizcoin",
+    "gain10gold": "Gana 10 Quizcoin",
+    "gain100gold": "Gana 100 Quizcoin",
+    "gain250gold": "Gana 250 Quizcoin",
+    "gain500gold": "Gana 500 Quizcoin"
+  },
+  "challenge": {
+    "winner": {
+      "day": "Defensor de {{value}}",
+      "week": "Campeón semanal {{value}}",
+      "month": "Campeón {{value}}",
+      "alltime": "Campeón de todos los tiempos"
+    },
+    "loser": {
+      "day": "Perdedor {{value}}",
+      "week": "Perdedor {{value}}",
+      "month": "Perdedor {{value}}",
+      "alltime": "Perdedor todo el tiempo"
+    },
+    "result": {
+      "winner": "Ganador",
+      "loser": "Vencido"
+    }
+  },
+  "chart": {
+    "distribution": "Distribución",
+    "grade": "Nota",
+    "position": "Posición",
+    "top1": "Top 1",
+    "top3": "Top 3",
+    "top5": "Top 5",
+    "top10": "Top 10",
+    "top100": "Top 100",
+    "other": "Otro"
+  },
+  "mode": {
+    "fightfriend": "Lucha contra un amigo",
+    "randomquestion": "Pregunta Aleatoria",
+    "randomtheme": "Tema Aleatorio"
+  }
+}

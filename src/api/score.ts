@@ -42,6 +42,7 @@ export const selectScore = (
   order: string,
   page: number,
   itemperpage = 25,
+  language = "fr-FR",
   ids = [] as Array<number>,
   idsProfile = [] as Array<string>
 ) => {
@@ -53,7 +54,9 @@ export const selectScore = (
       "*, profile(*, avatar(*), country(*)), theme(*), uuidgame(uuid, created_at)"
     )
     .gt(order, 0)
-    .not("profile", "in", `(${bots.join(",")})`);
+    .not("profile", "in", `(${bots.join(",")})`)
+    .eq("theme.language", language)
+    .not("theme", "is", null);
   if (ids.length > 0) {
     query = query.in("theme", ids);
   }

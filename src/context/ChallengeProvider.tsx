@@ -16,6 +16,7 @@ import {
   ChallengeRankingMonth,
   ChallengeRankingWeek,
 } from "src/models/Challenge";
+import { useUser } from "./UserProvider";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[];
@@ -44,6 +45,7 @@ const ChallengeContext = createContext<{
 export const useChallenge = () => useContext(ChallengeContext);
 
 export const ChallengeProvider = ({ children }: Props) => {
+  const { language } = useUser();
   const [winDay, setWinDay] = useState<ChallengeRankingDate | undefined>(
     undefined
   );
@@ -73,16 +75,18 @@ export const ChallengeProvider = ({ children }: Props) => {
   useEffect(() => {
     const getRankingDay = () => {
       const date = moment().subtract(1, "day");
-      selectFirstRankingChallengeByDay(date.format("YYYY-MM-DD")).then(
-        ({ data }) => {
-          setWinDay(data);
-        }
-      );
-      selectLastRankingChallengeByDay(date.format("YYYY-MM-DD")).then(
-        ({ data }) => {
-          setLoseDay(data);
-        }
-      );
+      selectFirstRankingChallengeByDay(
+        date.format("YYYY-MM-DD"),
+        language.iso
+      ).then(({ data }) => {
+        setWinDay(data);
+      });
+      selectLastRankingChallengeByDay(
+        date.format("YYYY-MM-DD"),
+        language.iso
+      ).then(({ data }) => {
+        setLoseDay(data);
+      });
     };
     const getRankingWeek = () => {
       const date = moment().subtract(1, "weeks");
@@ -122,7 +126,7 @@ export const ChallengeProvider = ({ children }: Props) => {
     getRankingWeek();
     getRankingMonth();
     getRankingAllTime();
-  }, []);
+  }, [language]);
 
   const value = useMemo(
     () => ({

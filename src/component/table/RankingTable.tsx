@@ -563,10 +563,6 @@ export const RankingTableSoloDuelPaginate = ({
   }, [tab, theme]);
 
   useEffect(() => {
-    console.log(isEnd);
-  }, [isEnd]);
-
-  useEffect(() => {
     if (isLoading) return;
 
     if (observer.current) observer.current.disconnect();

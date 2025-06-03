@@ -6,10 +6,10 @@ import { Helmet } from "react-helmet-async";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { px } from "csx";
-import { Colors } from "src/style/Colors";
-import { useUser } from "src/context/UserProvider";
 import { useMemo } from "react";
 import { LanguageSelect } from "src/component/select/LanguageSelect";
+import { useUser } from "src/context/UserProvider";
+import { Colors } from "src/style/Colors";
 
 export default function ParameterPage() {
   const { t } = useTranslation();
@@ -114,7 +114,7 @@ export default function ParameterPage() {
               </Grid>
               <Grid item xs={12} sx={{ textAlign: "center" }}>
                 <Typography variant="caption">
-                  {t("commun.version")} : 1.7.0
+                  {t("commun.version")} : 1.8.0
                 </Typography>
               </Grid>
             </Grid>

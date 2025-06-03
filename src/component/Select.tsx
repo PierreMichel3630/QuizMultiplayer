@@ -31,7 +31,7 @@ import { selectThemesShop } from "src/api/theme";
 import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
 import { colorDifficulty, Difficulty } from "src/models/enum/DifficultyEnum";
-import { Language, LANGUAGESQUESTION } from "src/models/Language";
+import { Language, LANGUAGES } from "src/models/Language";
 import { ThemeShop } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import { sortByName } from "src/utils/sort";
@@ -291,7 +291,7 @@ interface PropsSelectIso {
 export const SelectIso = ({ value, onChange }: PropsSelectIso) => {
   const { t } = useTranslation();
   const language = useMemo(
-    () => LANGUAGESQUESTION.find((el) => el.iso === value),
+    () => LANGUAGES.find((el) => el.iso === value),
     [value]
   );
 
@@ -303,7 +303,7 @@ export const SelectIso = ({ value, onChange }: PropsSelectIso) => {
       onChange={(_event: SyntheticEvent, newValue: Language | null) => {
         if (newValue) onChange(newValue.iso);
       }}
-      options={LANGUAGESQUESTION}
+      options={LANGUAGES}
       getOptionLabel={(option) => option.name}
       renderOption={(props, option) => (
         <Box

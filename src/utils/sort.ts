@@ -134,8 +134,16 @@ export const sortByDuelGamesDesc = (
 export const sortByName = (language: Language, a: any, b: any) =>
   a.name[language.iso].localeCompare(b.name[language.iso]);
 
-export const sortByTitle = (language: Language, a: Title, b: Title) =>
-  a.name[language.iso].localeCompare(b.name[language.iso]);
+export const sortTitle = (language: Language, a: Title, b: Title) => {
+  const namea = a.name[language.iso] ?? a.name["fr-FR"];
+  const nameb = b.name[language.iso] ?? b.name["fr-FR"];
+  return namea.localeCompare(nameb);
+};
+
+export const sortByThemeTitle = (
+  a: { theme: { title: string } },
+  b: { theme: { title: string } }
+) => a.theme.title.localeCompare(b.theme.title);
 
 export const sortByUnlock = (
   a: { unlock: boolean; price: number },

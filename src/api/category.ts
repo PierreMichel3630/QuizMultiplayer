@@ -25,7 +25,7 @@ export const searchCategories = (
   search = "",
   page = 0,
   itemperpage = 20,
-  language = "fr-FR"
+  languages = ["fr-FR"]
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
@@ -34,7 +34,7 @@ export const searchCategories = (
     .from(SUPABASE_CATEGORY_TABLE)
     .select("*")
     .ilike(`titlelower`, `%${search}%`)
-    .eq("language", language)
+    .in("language", languages)
     .range(from, to)
     .order(`titlelower`, { ascending: true });
 };

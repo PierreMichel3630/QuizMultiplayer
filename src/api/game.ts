@@ -258,6 +258,7 @@ export const selectGamesByTime = (
   time: ClassementSoloTimeEnum,
   page: number,
   itemperpage = 25,
+  language = "fr-FR",
   idsProfile = [] as Array<string>
 ) => {
   const from = page * itemperpage;
@@ -276,7 +277,9 @@ export const selectGamesByTime = (
     .from(SUPABASE_HISTORYSOLOGAMES_TABLE)
     .select("id, points, profile, theme!sologame_themequestion_fkey(*)")
     .lt("created_at", dateEnd.toISOString())
-    .gt("created_at", dateStart.toISOString());
+    .gt("created_at", dateStart.toISOString())
+    .eq("theme.language", language)
+    .not("theme", "is", null);
 
   if (idsProfile.length > 0) {
     query = query.in("player", idsProfile);

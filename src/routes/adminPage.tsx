@@ -1,10 +1,9 @@
-import AdminEditPage from "src/pages/admin/Edit/AdminEditPage";
 import AdminGamesPage from "src/pages/admin/AdminGamesPage";
 import AdminProposePage from "src/pages/admin/AdminProposePage";
 import AdminQuestionPage from "src/pages/admin/AdminQuestionPage";
 import AdminReportPage from "src/pages/admin/AdminReportPage";
-import AdminThemesPage from "src/pages/admin/AdminThemesPage";
 import AdminEditCategoryPage from "src/pages/admin/Edit/AdminEditCategoryPage";
+import AdminEditPage from "src/pages/admin/Edit/AdminEditPage";
 import AdminEditQuestionsPage from "src/pages/admin/Edit/AdminEditQuestionsPage";
 import AdminEditShopPage from "src/pages/admin/Edit/AdminEditShopPage";
 import AdminEditThemePage from "src/pages/admin/Edit/AdminEditThemePage";
@@ -17,10 +16,6 @@ export const AdminRoutes = [
   {
     path: "report",
     element: <AdminReportPage />,
-  },
-  {
-    path: "themes",
-    element: <AdminThemesPage />,
   },
   {
     path: "games",

@@ -50,6 +50,7 @@ import {
   DataRankingChallenge,
   RankingChallengeTable,
 } from "./table/RankingChallengeTable";
+import { useUser } from "src/context/UserProvider";
 
 interface Props {
   hasPlayChallenge?: boolean;
@@ -59,6 +60,7 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const { friends } = useApp();
+  const { language } = useUser();
   const [searchParams] = useSearchParams();
 
   const [search, setSearch] = useState("");
@@ -200,6 +202,7 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
       if (tabTime === ClassementChallengeTimeEnum.day) {
         selectRankingChallengeByDatePaginate(
           date,
+          language.iso,
           search,
           page,
           rowsPerPage,

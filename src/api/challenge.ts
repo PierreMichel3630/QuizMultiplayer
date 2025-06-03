@@ -12,11 +12,15 @@ export const SUPABASE_RANKINGCHALLENGE_VIEW = "rankingchallenge";
 export const SUPABASE_LAUNCHCHALLENGE_FUNCTION = "launch-challengeV2";
 export const SUPABASE_ENDCHALLENGE_FUNCTION = "end-challenge";
 
-export const selectChallengeByDate = (date: Moment) =>
+export const selectChallengeByDateAndLanguage = (
+  date: Moment,
+  language = "fr-FR"
+) =>
   supabase
     .from(SUPABASE_CHALLENGE_TABLE)
     .select()
     .eq("date", date.format("YYYY-MM-DD"))
+    .eq("language", language)
     .maybeSingle();
 
 export const countChallengeGameByDate = (
@@ -37,14 +41,16 @@ export const countChallengeGameByDate = (
 
 export const countChallengeGameByDateAndProfileId = (
   date: Moment,
-  id: string
+  id: string,
+  language: string
 ) =>
   supabase
     .from(SUPABASE_CHALLENGEGAME_TABLE)
     .select("* , challenge(*)", { count: "exact", head: true })
     .eq("profile", id)
     .not("challenge", "is", null)
-    .eq("challenge.date", date.format("YYYY-MM-DD"));
+    .eq("challenge.date", date.format("YYYY-MM-DD"))
+    .eq("challenge.language", language);
 
 export const selectChallengeGameByDateAndProfileId = (
   date: Moment,
@@ -91,6 +97,7 @@ export const selectChallengeGameByProfileIdGroupByRanking = (id: string) =>
 
 export const selectRankingChallengeByDatePaginate = (
   date: Moment,
+  language = "fr-FR",
   search = "",
   page = 0,
   itemperpage = 5,
@@ -106,6 +113,7 @@ export const selectRankingChallengeByDatePaginate = (
       "uuid, ranking, id, time,score, profile(*, title(*), avatar(*), badge(*), banner(*), country(*)), challenge(date)"
     )
     .eq("challenge.date", date.format("YYYY-MM-DD"))
+    .eq("challenge.language", language)
     .not("challenge", "is", null)
     .ilike("profile.username", `%${search}%`)
     .not("profile", "is", null);
@@ -115,7 +123,8 @@ export const selectRankingChallengeByDatePaginate = (
   return query.range(from, to).order(sort, { ascending: ascending });
 };
 export const selectFirstRankingChallengeByDay = (
-  date: string // Format YYYY-MM-DD
+  date: string, // Format YYYY-MM-DD
+  language: string
 ) => {
   return supabase
     .from(SUPABASE_RANKINGCHALLENGE_VIEW)
@@ -123,6 +132,7 @@ export const selectFirstRankingChallengeByDay = (
       "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*)), challenge(*)"
     )
     .eq("challenge.date", date)
+    .eq("challenge.language", language)
     .not("challenge", "is", null)
     .not("profile", "is", null)
     .eq("ranking", 1)
@@ -130,7 +140,8 @@ export const selectFirstRankingChallengeByDay = (
 };
 
 export const selectLastRankingChallengeByDay = (
-  date: string // Format YYYY-MM-DD
+  date: string, // Format YYYY-MM-DD
+  language: string
 ) => {
   return supabase
     .from(SUPABASE_RANKINGCHALLENGE_VIEW)
@@ -138,6 +149,7 @@ export const selectLastRankingChallengeByDay = (
       "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*)), challenge(*)"
     )
     .eq("challenge.date", date)
+    .eq("challenge.language", language)
     .not("challenge", "is", null)
     .not("profile", "is", null)
     .order("ranking", { ascending: false })
@@ -459,10 +471,11 @@ export const selectRankingChallengeByDateAndProfileId = (
     .not("challenge", "is", null)
     .maybeSingle();
 
-export const launchChallenge = (date: string) =>
+export const launchChallenge = (date: string, language: string) =>
   supabase.functions.invoke(SUPABASE_LAUNCHCHALLENGE_FUNCTION, {
     body: {
       date,
+      language,
     },
   });
 

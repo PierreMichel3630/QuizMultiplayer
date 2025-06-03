@@ -8,6 +8,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
 import { CardImage, ICardImage } from "./card/CardImage";
 import { TitleCount } from "./title/TitleCount";
+import { useUser } from "src/context/UserProvider";
 
 interface Mode {
   id: number;
@@ -20,6 +21,7 @@ interface Mode {
 export const GameModeBlock = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const { language } = useUser();
   const navigate = useNavigate();
 
   const [themes, setThemes] = useState<Array<ICardImage>>([]);
@@ -52,7 +54,7 @@ export const GameModeBlock = () => {
 
   useEffect(() => {
     const idThemes = [271, 272];
-    selectThemesById(idThemes).then(({ data }) => {
+    selectThemesById(idThemes, language.iso).then(({ data }) => {
       const res = data ?? [];
       setThemes(
         [...res].map((el) => ({
@@ -65,7 +67,7 @@ export const GameModeBlock = () => {
         }))
       );
     });
-  }, []);
+  }, [language]);
 
   const count = useMemo(() => themes.length + modes.length, [themes, modes]);
 

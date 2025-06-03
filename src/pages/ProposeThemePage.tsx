@@ -1,6 +1,7 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import NoPhotographyIcon from "@mui/icons-material/NoPhotography";
 import {
+  Alert,
   Box,
   Button,
   Container,
@@ -8,32 +9,38 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { selectThemesPropose } from "src/api/theme";
 import { CardImage } from "src/component/card/CardImage";
 import { ProposeThemeModal } from "src/component/modal/ProposeThemeModal";
 import { GoBackButtonIcon } from "src/component/navigation/GoBackButton";
+import { SkeletonThemesGrid } from "src/component/skeleton/SkeletonTheme";
+import { useUser } from "src/context/UserProvider";
 import { ProposeTheme } from "src/models/Theme";
 import { sortByVoteDesc } from "src/utils/sort";
 
 export default function ProposeThemePage() {
   const { t } = useTranslation();
+  const { language } = useUser();
 
   const [themes, setThemes] = useState<Array<ProposeTheme>>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [openModalPropose, setOpenModalPropose] = useState(false);
 
-  const getThemePropose = () => {
-    selectThemesPropose().then(({ data }) => {
+  const getThemePropose = useCallback(() => {
+    setIsLoading(true);
+    selectThemesPropose(language.iso).then(({ data }) => {
       const res = data ?? [];
       setThemes([...res].sort(sortByVoteDesc));
+      setIsLoading(false);
     });
-  };
+  }, [language]);
 
   useEffect(() => {
     getThemePropose();
-  }, []);
+  }, [getThemePropose]);
 
   const onProposeTheme = () => {
     setOpenModalPropose(true);
@@ -114,6 +121,12 @@ export default function ProposeThemePage() {
                   <CardImage value={value} />
                 </Grid>
               ))}
+              {isLoading && <SkeletonThemesGrid number={10} />}
+              {!isLoading && cardThemes.length === 0 && (
+                <Grid item xs={12}>
+                  <Alert severity="warning">{t("commun.noresult")}</Alert>
+                </Grid>
+              )}
             </Grid>
           </Box>
         </Grid>

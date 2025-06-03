@@ -10,10 +10,12 @@ import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
 import { insertCategory, updateCategory } from "src/api/category";
 import { ButtonColor } from "src/component/Button";
+import { SelectIso } from "src/component/Select";
 import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
 import { Colors } from "src/style/Colors";
+import { removeAccentsAndLowercase } from "src/utils/string";
 import * as Yup from "yup";
 
 interface Props {
@@ -31,11 +33,12 @@ export const CategoryForm = ({ validate, category }: Props) => {
     language: string;
   } = {
     title: category ? category.title : "",
-    language: language.iso,
+    language: category ? category.language : language.iso,
   };
 
   const validationSchema = Yup.object().shape({
-    namefr: Yup.string().required(t("form.createcategory.requirednamefr")),
+    title: Yup.string().required(t("form.createcategory.requirednamefr")),
+    language: Yup.string().required(t("form.createtheme.requiredlanguage")),
   });
 
   const formik = useFormik({
@@ -45,6 +48,8 @@ export const CategoryForm = ({ validate, category }: Props) => {
       try {
         const newValue = {
           title: values.title,
+          titlelower: removeAccentsAndLowercase(values.title),
+          name: { "fr-FR": values.title, "en-US": values.title },
           language: values.language,
         };
         const { error } = category
@@ -66,6 +71,20 @@ export const CategoryForm = ({ validate, category }: Props) => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={2} alignItems="center">
+        <Grid item xs={12}>
+          <FormControl
+            fullWidth
+            error={Boolean(formik.touched.language && formik.errors.language)}
+          >
+            <SelectIso
+              value={formik.values.language}
+              onChange={(value) => formik.setFieldValue("language", value)}
+            />
+            <FormHelperText error id={`error-language`}>
+              {formik.errors.language}
+            </FormHelperText>
+          </FormControl>
+        </Grid>
         <Grid item xs={12}>
           <FormControl
             fullWidth

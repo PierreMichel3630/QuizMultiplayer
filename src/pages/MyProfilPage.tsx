@@ -27,7 +27,7 @@ import {
   sortByName,
   sortByPointsDesc,
   sortByRankDesc,
-  sortByTitle,
+  sortByThemeTitle,
   sortByUsername,
   sortByXP,
 } from "src/utils/sort";
@@ -38,6 +38,7 @@ import { BasicSearchInput } from "src/component/Input";
 import { ShopItems } from "src/component/ShopBlock";
 import { SortButton } from "src/component/SortBlock";
 import { CardBadge } from "src/component/card/CardBadge";
+import { CardChallenge } from "src/component/card/CardChallenge";
 import { CardFinishTheme } from "src/component/card/CardFinishTheme";
 import { CardFriends } from "src/component/card/CardFriends";
 import { CardTitle } from "src/component/card/CardTitle";
@@ -48,11 +49,10 @@ import { StatAccomplishment } from "src/models/Accomplishment";
 import { Friend, FRIENDSTATUS } from "src/models/Friend";
 import { getLevel } from "src/utils/calcul";
 import { searchString } from "src/utils/string";
-import { CardChallenge } from "src/component/card/CardChallenge";
 
 export default function MyProfilPage() {
   const { t } = useTranslation();
-  const { language } = useUser();
+  const { language, hasChallenge } = useUser();
   const { user, profile } = useAuth();
   const { headerSize } = useApp();
 
@@ -167,18 +167,13 @@ export default function MyProfilPage() {
     [scores]
   );
 
-  const titleOrder = useMemo(
-    () => [...titles].sort((a, b) => sortByTitle(language, a, b)),
-    [titles, language]
-  );
-
   const level = useMemo(() => (stat ? getLevel(stat.xp) : undefined), [stat]);
 
   const scoresDisplay = useMemo(() => {
     let res = [...scores].filter((el) => searchString(search, el.theme.title));
     switch (sort) {
       case "alphabetical":
-        res = [...res].sort((a, b) => sortByName(language, a.theme, b.theme));
+        res = [...res].sort(sortByThemeTitle);
         break;
       case "gamessolo":
         res = [...res].sort(sortByGamesDesc);
@@ -320,14 +315,16 @@ export default function MyProfilPage() {
               <Alert severity="warning">{t("commun.noresultgame")}</Alert>
             </Grid>
           )}
-          <Grid item xs={12}>
-            <CardChallenge profileId={profile?.id} />
-          </Grid>
+          {hasChallenge && (
+            <Grid item xs={12}>
+              <CardChallenge profileId={profile?.id} />
+            </Grid>
+          )}
           <Grid item xs={12}>
             <CardBadge badges={badges} loading={isLoadingBadge} />
           </Grid>
           <Grid item xs={12}>
-            <CardTitle titles={titleOrder} loading={isLoadingTitle} />
+            <CardTitle titles={titles} loading={isLoadingTitle} />
           </Grid>
           <Grid item xs={12}>
             <CardFriends friends={friendsAvatar} loading={isLoadingFriends} />

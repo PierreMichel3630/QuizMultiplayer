@@ -1,4 +1,4 @@
-import { Box, Divider, Grid, Typography } from "@mui/material";
+import { Alert, Box, Divider, Grid, Typography } from "@mui/material";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { NeedConnectAlert } from "src/component/alert/ConnectAlert";
@@ -19,10 +19,12 @@ import { WinnerChallengeBlock } from "src/component/challenge/WinnerChallengeBlo
 import { RankingChallenge } from "src/component/RankingChallenge";
 import { TimeLeftToNextDayLabel } from "src/component/TimeLeftBlock";
 import { Colors } from "src/style/Colors";
+import { useUser } from "src/context/UserProvider";
 
 export default function ChallengePage() {
   const { t } = useTranslation();
   const { profile } = useAuth();
+  const { language, hasChallenge } = useUser();
   const navigate = useNavigate();
 
   const [hasPlayChallenge, setHasPlayChallenge] = useState<undefined | boolean>(
@@ -32,7 +34,7 @@ export default function ChallengePage() {
   const launch = useCallback(async () => {
     if (profile) {
       const date = moment().format("YYYY-MM-DD");
-      launchChallenge(date).then(async ({ data }) => {
+      launchChallenge(date, language.iso).then(async ({ data }) => {
         const newProfile = {
           id: profile.id,
           lastchallengeplay: date,
@@ -43,21 +45,23 @@ export default function ChallengePage() {
     } else {
       navigate("/login");
     }
-  }, [navigate, profile]);
+  }, [navigate, profile, language]);
 
   useEffect(() => {
     const isChallengeAvailable = () => {
       if (profile) {
         const date = moment();
-        countChallengeGameByDateAndProfileId(date, profile.id).then(
-          ({ count }) => {
-            setHasPlayChallenge(count !== null && count > 0);
-          }
-        );
+        countChallengeGameByDateAndProfileId(
+          date,
+          profile.id,
+          language.iso
+        ).then(({ count }) => {
+          setHasPlayChallenge(count !== null && count > 0);
+        });
       }
     };
     isChallengeAvailable();
-  }, [profile]);
+  }, [profile, language.iso]);
 
   return (
     <Grid container>
@@ -81,26 +85,35 @@ export default function ChallengePage() {
                 <NeedConnectAlert />
               </Grid>
             )}
-            {hasPlayChallenge !== undefined && (
-              <Grid item xs={12}>
-                {hasPlayChallenge ? (
-                  <TimeLeftToNextDayLabel
-                    label={t("commun.nextdaychallenge")}
-                  />
-                ) : (
-                  <ButtonColor
-                    fullWidth
-                    value={Colors.blue}
-                    label={t("commun.launch")}
-                    icon={RocketLaunchIcon}
-                    variant="contained"
-                    onClick={() => {
-                      launch();
-                    }}
-                  />
+            {hasChallenge ? (
+              <>
+                {hasPlayChallenge !== undefined && (
+                  <Grid item xs={12}>
+                    {hasPlayChallenge ? (
+                      <TimeLeftToNextDayLabel
+                        label={t("commun.nextdaychallenge")}
+                      />
+                    ) : (
+                      <ButtonColor
+                        fullWidth
+                        value={Colors.blue}
+                        label={t("commun.launch")}
+                        icon={RocketLaunchIcon}
+                        variant="contained"
+                        onClick={() => {
+                          launch();
+                        }}
+                      />
+                    )}
+                  </Grid>
                 )}
+              </>
+            ) : (
+              <Grid item xs={12}>
+                <Alert severity="warning">{t("alert.nochallengegame")}</Alert>
               </Grid>
             )}
+
             <Grid item xs={12}>
               <Divider sx={{ borderBottomWidth: 5 }} />
             </Grid>
