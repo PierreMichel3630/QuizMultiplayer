@@ -9,9 +9,13 @@ import { selectStatAccomplishment } from "src/api/accomplishment";
 import { selectGamesByTime } from "src/api/game";
 import { getRankingFinishTheme } from "src/api/ranking";
 import { selectScore } from "src/api/score";
-import { GroupButtonClassement } from "src/component/button/ButtonGroup";
+import {
+  GroupButtonChallengeGlobal,
+  GroupButtonClassement,
+} from "src/component/button/ButtonGroup";
 import { ButtonRankingDuel } from "src/component/button/ButtonRankingDuel";
 import { ButtonRankingSolo } from "src/component/button/ButtonRankingSolo";
+import { WinBlock } from "src/component/challenge/winBlock";
 import { DataRanking, RankingTable } from "src/component/table/RankingTable";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
@@ -24,6 +28,7 @@ import {
 import { FinishTheme } from "src/models/FinishTheme";
 import { Score } from "src/models/Score";
 import {
+  ClassementChallengeGlobalTimeEnum,
   ClassementDuelModeEnum,
   ClassementEnum,
   ClassementSoloModeEnum,
@@ -58,6 +63,10 @@ export default function RankingPage() {
     ClassementDuelModeEnum.bestrank
   );
 
+  const [tabChallengeMode, setTabChallengeMode] = useState(
+    ClassementChallengeGlobalTimeEnum.windaychallenge
+  );
+
   const getDataRanking = useCallback(
     (page: number) => {
       const ids = isOnlyFriend ? idsFriend : [];
@@ -77,6 +86,7 @@ export default function RankingPage() {
                 value: el.points,
                 theme: el.theme,
                 rank: page * ITEMPERPAGE + index + 1,
+                size: 60,
               }));
               setIsEnd(newdata.length < ITEMPERPAGE);
               setData((prev) =>
@@ -100,6 +110,7 @@ export default function RankingPage() {
                   value: Array.isArray(champ) ? champ.length : champ,
                   theme: el.theme,
                   rank: page * ITEMPERPAGE + index + 1,
+                  size: 60,
                 };
               });
               setIsEnd(newdata.length < ITEMPERPAGE);
@@ -118,6 +129,7 @@ export default function RankingPage() {
               profile: el.profile,
               value: el.nbtheme,
               rank: page * ITEMPERPAGE + index + 1,
+              size: 60,
             }));
             setIsEnd(newdata.length < ITEMPERPAGE);
             setData((prev) =>
@@ -149,6 +161,28 @@ export default function RankingPage() {
               );
             }
           );
+        } else if (type === ClassementEnum.challenge) {
+          selectStatAccomplishment(
+            tabChallengeMode,
+            page,
+            ITEMPERPAGE,
+            ids
+          ).then(({ data }) => {
+            const res = data as Array<StatAccomplishment>;
+            const newdata = res.map((el, index) => {
+              const champ = el[tabChallengeMode];
+              return {
+                profile: el.profile,
+                value: <WinBlock value={champ} />,
+                rank: page * ITEMPERPAGE + index + 1,
+                size: 60,
+              };
+            });
+            setIsEnd(newdata.length < ITEMPERPAGE);
+            setData((prev) =>
+              page === 0 ? [...newdata] : [...prev, ...newdata]
+            );
+          });
         } else {
           const order = (type === ClassementEnum.points
             ? tabSoloMode
@@ -162,6 +196,7 @@ export default function RankingPage() {
                   profile: el.profile,
                   value: Array.isArray(champ) ? champ.length : champ,
                   rank: page * ITEMPERPAGE + index + 1,
+                  size: 60,
                 };
               });
               setIsEnd(newdata.length < ITEMPERPAGE);
@@ -180,6 +215,7 @@ export default function RankingPage() {
       type,
       tabSoloMode,
       tabDuelMode,
+      tabChallengeMode,
       language.iso,
     ]
   );
@@ -247,6 +283,17 @@ export default function RankingPage() {
               setPage(0);
               setData([]);
               setTabDuelMode(value);
+            }}
+          />
+        )}
+        {type === ClassementEnum.challenge && (
+          <GroupButtonChallengeGlobal
+            selected={tabChallengeMode}
+            onChange={(value) => {
+              setIsEnd(false);
+              setPage(0);
+              setData([]);
+              setTabChallengeMode(value);
             }}
           />
         )}

@@ -7,6 +7,7 @@ export const SUPABASE_CHALLENGEGAMEALLTIME_VIEW = "viewchallengealltime";
 export const SUPABASE_CHALLENGEGAMEMONTH_VIEW = "viewchallengemonth";
 export const SUPABASE_CHALLENGEGAMEYEAR_VIEW = "viewchallengeyear";
 export const SUPABASE_CHALLENGEGAMEWEEK_VIEW = "viewchallengeweek";
+export const SUPABASE_CHALLENGEAVGGAMEDAY_VIEW = "viewavgchallengeday";
 export const SUPABASE_RANKINGCHALLENGE_VIEW = "rankingchallenge";
 
 export const SUPABASE_LAUNCHCHALLENGE_FUNCTION = "launch-challengeV2";
@@ -25,13 +26,19 @@ export const selectChallengeByDateAndLanguage = (
 
 export const countChallengeGameByDate = (
   date: Moment,
-  idsProfile: undefined | Array<string> = undefined
+  idsProfile: undefined | Array<string> = undefined,
+  search = ""
 ) => {
   let query = supabase
     .from(SUPABASE_CHALLENGEGAME_TABLE)
-    .select("* , challenge(*)", { count: "exact", head: true })
+    .select("* , challenge(*), profile(username)", {
+      count: "exact",
+      head: true,
+    })
     .not("challenge", "is", null)
-    .eq("challenge.date", date.format("YYYY-MM-DD"));
+    .eq("challenge.date", date.format("YYYY-MM-DD"))
+    .ilike("profile.username", `%${search}%`)
+    .not("profile", "is", null);
 
   if (idsProfile) {
     query = query.in("profile.id", idsProfile);
@@ -110,7 +117,7 @@ export const selectRankingChallengeByDatePaginate = (
   let query = supabase
     .from(SUPABASE_RANKINGCHALLENGE_VIEW)
     .select(
-      "uuid, ranking, id, time,score, profile(*, title(*), avatar(*), badge(*), banner(*), country(*)), challenge(date)"
+      "uuid, ranking, id, time,score, profile(*, title(*), avatar(*), badge(*), banner(*), country(*)), challenge(date, language)"
     )
     .eq("challenge.date", date.format("YYYY-MM-DD"))
     .eq("challenge.language", language)
@@ -122,6 +129,21 @@ export const selectRankingChallengeByDatePaginate = (
   }
   return query.range(from, to).order(sort, { ascending: ascending });
 };
+
+//DAY
+export const selectAvgChallengeByDateAndLanguage = (
+  date: Moment,
+  language: string
+) => {
+  return supabase
+    .from(SUPABASE_CHALLENGEAVGGAMEDAY_VIEW)
+    .select("*, challenge(date, language)")
+    .eq("challenge.date", date.format("YYYY-MM-DD"))
+    .eq("challenge.language", language)
+    .not("challenge", "is", null)
+    .maybeSingle();
+};
+
 export const selectFirstRankingChallengeByDay = (
   date: string, // Format YYYY-MM-DD
   language: string
@@ -228,6 +250,15 @@ export const selectLastRankingChallengeByAllTime = () => {
     .maybeSingle();
 };
 
+export const selectAvgChallengeByAllTime = () => {
+  return supabase
+    .from(SUPABASE_CHALLENGEGAMEALLTIME_VIEW)
+    .select(
+      "players:count(),games:games.avg(),score:score.avg(), time:time.avg()"
+    )
+    .maybeSingle();
+};
+
 // BY MONTH
 export const selectRankingChallengeByMonthPaginate = (
   date: string, // Format MM/YYYY
@@ -292,7 +323,7 @@ export const selectRankingChallengeMonthByProfileId = (id: string) =>
     .order("month", { ascending: false });
 
 export const selectFirstRankingChallengeByMonth = (
-  date: string // Format WW/YYYY
+  date: string // Format MM/YYYY
 ) => {
   return supabase
     .from(SUPABASE_CHALLENGEGAMEMONTH_VIEW)
@@ -306,7 +337,7 @@ export const selectFirstRankingChallengeByMonth = (
 };
 
 export const selectLastRankingChallengeByMonth = (
-  date: string // Format WW/YYYY
+  date: string // Format MM/YYYY
 ) => {
   return supabase
     .from(SUPABASE_CHALLENGEGAMEMONTH_VIEW)
@@ -316,6 +347,17 @@ export const selectLastRankingChallengeByMonth = (
     .eq("month", date)
     .not("profile", "is", null)
     .order("ranking", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+};
+
+export const selectAvgChallengeByMonth = (date: Moment) => {
+  return supabase
+    .from(SUPABASE_CHALLENGEGAMEMONTH_VIEW)
+    .select(
+      "month,players:count(),games:games.avg(),score:score.avg(), time:time.avg()"
+    )
+    .eq("month", date.format("MM/YYYY"))
     .limit(1)
     .maybeSingle();
 };
@@ -450,6 +492,17 @@ export const selectLastRankingChallengeByWeek = (
     .eq("week", date)
     .not("profile", "is", null)
     .order("ranking", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+};
+
+export const selectAvgChallengeByWeek = (date: Moment) => {
+  return supabase
+    .from(SUPABASE_CHALLENGEGAMEWEEK_VIEW)
+    .select(
+      "week,players:count(),games:games.avg(),score:score.avg(), time:time.avg()"
+    )
+    .eq("week", date.format("WW/YYYY"))
     .limit(1)
     .maybeSingle();
 };

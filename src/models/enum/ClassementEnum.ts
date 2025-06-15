@@ -13,6 +13,10 @@ export enum ClassementEnum {
   xp = "xp",
   points = "points",
   rank = "rank",
+  challenge = "challenge",
+  windaychallenge = "windaychallenge",
+  winmonthchallenge = "winmonthchallenge",
+  winweekchallenge = "winweekchallenge",
 }
 
 export enum ClassementScoreEnum {
@@ -35,11 +39,22 @@ export enum ClassementSoloTimeEnum {
   month = "month",
 }
 
+export enum ClassementChallengeEnum {
+  perdate = "perdate",
+  global = "global",
+}
+
 export enum ClassementChallengeTimeEnum {
   alltime = "alltime",
   day = "day",
   month = "month",
   week = "week",
+}
+
+export enum ClassementChallengeGlobalTimeEnum {
+  windaychallenge = "windaychallenge",
+  winmonthchallenge = "winmonthchallenge",
+  winweekchallenge = "winweekchallenge",
 }
 
 export enum ClassementSoloModeEnum {

@@ -20,6 +20,10 @@ import {
   countRankingChallengeAllTime,
   countRankingChallengeByMonth,
   countRankingChallengeByWeek,
+  selectAvgChallengeByAllTime,
+  selectAvgChallengeByDateAndLanguage,
+  selectAvgChallengeByMonth,
+  selectAvgChallengeByWeek,
   selectRankingChallengeAllTimePaginate,
   selectRankingChallengeByDatePaginate,
   selectRankingChallengeByMonthPaginate,
@@ -28,21 +32,30 @@ import {
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { useUser } from "src/context/UserProvider";
 import {
+  ChallengeAvg,
   ChallengeRankingAllTime,
   ChallengeRankingMonth,
   ChallengeRankingWeek,
 } from "src/models/Challenge";
-import { ClassementChallengeTimeEnum } from "src/models/enum/ClassementEnum";
+import {
+  ClassementChallengeEnum,
+  ClassementChallengeGlobalTimeEnum,
+  ClassementChallengeTimeEnum,
+} from "src/models/enum/ClassementEnum";
 import { FRIENDSTATUS } from "src/models/Friend";
-import { GroupButtonChallengeTime } from "./button/ButtonGroup";
+import {
+  GroupButtonChallenge,
+  GroupButtonChallengeGlobal,
+  GroupButtonChallengeTime,
+} from "./button/ButtonGroup";
 import { WinnerTextRankingBlock } from "./challenge/WinnerChallengeBlock";
 import {
   ResultAllTimeChallengeBlock,
   ResultDayChallengeBlock,
   ResultMonthChallengeBlock,
   ResultWeekChallengeBlock,
-  ResultYearChallengeBlock,
 } from "./ChallengeBlock";
 import { BasicSearchInput } from "./Input";
 import { SortButton } from "./SortBlock";
@@ -50,7 +63,12 @@ import {
   DataRankingChallenge,
   RankingChallengeTable,
 } from "./table/RankingChallengeTable";
-import { useUser } from "src/context/UserProvider";
+import {
+  countStatAccomplishment,
+  selectStatAccomplishment,
+} from "src/api/accomplishment";
+import { StatAccomplishment } from "src/models/Accomplishment";
+import { WinBlock } from "./challenge/winBlock";
 
 interface Props {
   hasPlayChallenge?: boolean;
@@ -70,10 +88,15 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState({ value: "ranking", ascending: true });
   const [isOnlyFriend, setIsOnlyFriend] = useState(false);
+  const [avg, setAvg] = useState<null | ChallengeAvg>(null);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const [tab, setTab] = useState(ClassementChallengeEnum.perdate);
+  const [tabChallengeMode, setTabChallengeMode] = useState(
+    ClassementChallengeGlobalTimeEnum.windaychallenge
+  );
   const [tabTime, setTabTime] = useState(
     searchParams.has("time")
       ? (searchParams.get("time") as ClassementChallengeTimeEnum)
@@ -155,34 +178,43 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
 
   useEffect(() => {
     const getTotal = () => {
-      if (tabTime === ClassementChallengeTimeEnum.day) {
-        countChallengeGameByDate(date, idFriends).then(({ count }) => {
-          setTotal(count);
-        });
-      } else if (tabTime === ClassementChallengeTimeEnum.month) {
-        countRankingChallengeByMonth(
-          date.format("MM/YYYY"),
-          search,
-          idFriends
-        ).then(({ count }) => {
-          setTotal(count);
-        });
-      } else if (tabTime === ClassementChallengeTimeEnum.week) {
-        countRankingChallengeByWeek(
-          date.format("WW/YYYY"),
-          search,
-          idFriends
-        ).then(({ count }) => {
-          setTotal(count);
-        });
-      } else if (tabTime === ClassementChallengeTimeEnum.alltime) {
-        countRankingChallengeAllTime(search, idFriends).then(({ count }) => {
+      if (tab === ClassementChallengeEnum.perdate) {
+        if (tabTime === ClassementChallengeTimeEnum.day) {
+          countChallengeGameByDate(date, idFriends, search).then(
+            ({ count }) => {
+              console.log(count);
+              setTotal(count);
+            }
+          );
+        } else if (tabTime === ClassementChallengeTimeEnum.month) {
+          countRankingChallengeByMonth(
+            date.format("MM/YYYY"),
+            search,
+            idFriends
+          ).then(({ count }) => {
+            setTotal(count);
+          });
+        } else if (tabTime === ClassementChallengeTimeEnum.week) {
+          countRankingChallengeByWeek(
+            date.format("WW/YYYY"),
+            search,
+            idFriends
+          ).then(({ count }) => {
+            setTotal(count);
+          });
+        } else if (tabTime === ClassementChallengeTimeEnum.alltime) {
+          countRankingChallengeAllTime(search, idFriends).then(({ count }) => {
+            setTotal(count);
+          });
+        }
+      } else {
+        countStatAccomplishment(search, idFriends).then(({ count }) => {
           setTotal(count);
         });
       }
     };
     getTotal();
-  }, [date, tabTime, search, idFriends]);
+  }, [date, tabTime, tabChallengeMode, search, idFriends, tab]);
 
   const isDisabledNextDay = useMemo(() => {
     const today = moment().startOf("day");
@@ -198,257 +230,327 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
   }, [date, tabTime]);
 
   useEffect(() => {
-    const getRanking = () => {
+    const getAvg = () => {
       if (tabTime === ClassementChallengeTimeEnum.day) {
-        selectRankingChallengeByDatePaginate(
-          date,
-          language.iso,
-          search,
-          page,
-          rowsPerPage,
-          sort.value,
-          sort.ascending,
-          idFriends
-        ).then(({ data }) => {
-          const res: Array<any> = data ?? [];
-          const newdata = res.map((el) => {
-            return {
-              profile: el.profile,
-              profileExtra: <WinnerTextRankingBlock profile={el.profile} />,
-              value: (
-                <TableCell
-                  sx={{
-                    p: px(4),
-                    color: "inherit",
-                  }}
-                  width={70}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                      width: px(60),
-                    }}
-                  >
-                    <Typography variant="h6" noWrap>
-                      {el.score} / {NUMBER_QUESTIONS_CHALLENGE}
-                    </Typography>
-                    <Typography variant="h6" noWrap>
-                      {(el.time / 1000).toFixed(2)}s
-                    </Typography>
-                  </Box>
-                </TableCell>
-              ),
-              rank: el.ranking,
-              uuid: el.uuid,
-            };
-          });
-          setData(newdata);
-          setLoading(false);
+        selectAvgChallengeByDateAndLanguage(date, language.iso).then(
+          ({ data }) => {
+            setAvg(data);
+          }
+        );
+      } else if (tabTime === ClassementChallengeTimeEnum.week) {
+        selectAvgChallengeByWeek(date).then(({ data }) => {
+          setAvg(data);
         });
       } else if (tabTime === ClassementChallengeTimeEnum.month) {
-        selectRankingChallengeByMonthPaginate(
-          date.format("MM/YYYY"),
-          search,
-          page,
-          rowsPerPage,
-          sort.value,
-          sort.ascending,
-          idFriends
-        ).then(({ data }) => {
-          const res = (data ?? []) as Array<ChallengeRankingMonth>;
-          const newdata = res.map((el) => {
-            return {
-              profile: el.profile,
-              profileExtra: <WinnerTextRankingBlock profile={el.profile} />,
-              value: (
-                <TableCell
-                  sx={{
-                    p: px(4),
-                    color: "inherit",
-                  }}
-                  width={92}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Box>
-                      <Typography variant="h6" noWrap>
-                        {el.score} {t("commun.pointsabbreviation")} (
-                        {el.scoreavg.toFixed(1)})
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="h6" noWrap>
-                        {(el.time / 1000).toFixed(2)}s
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        gap: px(4),
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Typography variant="h6" noWrap>
-                        {el.games}
-                      </Typography>
-                      <Typography variant="body1" noWrap>
-                        {t("commun.games")}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </TableCell>
-              ),
-              rank: el.ranking,
-            };
-          });
-          setData(newdata);
-          setLoading(false);
-        });
-      } else if (tabTime === ClassementChallengeTimeEnum.week) {
-        selectRankingChallengeByWeekPaginate(
-          date.format("WW/YYYY"),
-          search,
-          page,
-          rowsPerPage,
-          sort.value,
-          sort.ascending,
-          idFriends
-        ).then(({ data }) => {
-          const res = (data ?? []) as Array<ChallengeRankingWeek>;
-          const newdata = res.map((el) => {
-            return {
-              profile: el.profile,
-              profileExtra: <WinnerTextRankingBlock profile={el.profile} />,
-              value: (
-                <TableCell
-                  sx={{
-                    p: px(4),
-                    color: "inherit",
-                  }}
-                  width={92}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Box>
-                      <Typography variant="h6" noWrap>
-                        {el.score} {t("commun.pointsabbreviation")} (
-                        {el.scoreavg.toFixed(1)})
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="h6" noWrap>
-                        {(el.time / 1000).toFixed(2)}s
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        gap: px(4),
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Typography variant="h6" noWrap>
-                        {el.games}
-                      </Typography>
-                      <Typography variant="body1" noWrap>
-                        {t("commun.games")}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </TableCell>
-              ),
-              rank: el.ranking,
-            };
-          });
-          setData(newdata);
-          setLoading(false);
+        selectAvgChallengeByMonth(date).then(({ data }) => {
+          setAvg(data);
         });
       } else if (tabTime === ClassementChallengeTimeEnum.alltime) {
-        selectRankingChallengeAllTimePaginate(
-          search,
+        selectAvgChallengeByAllTime().then(({ data }) => {
+          setAvg(data);
+        });
+      }
+    };
+    getAvg();
+  }, [tabTime, date, language.iso]);
+
+  useEffect(() => {
+    const getRanking = () => {
+      if (tab === ClassementChallengeEnum.perdate) {
+        if (tabTime === ClassementChallengeTimeEnum.day) {
+          selectRankingChallengeByDatePaginate(
+            date,
+            language.iso,
+            search,
+            page,
+            rowsPerPage,
+            sort.value,
+            sort.ascending,
+            idFriends
+          ).then(({ data }) => {
+            const res: Array<any> = data ?? [];
+            const newdata = res.map((el) => {
+              return {
+                profile: el.profile,
+                profileExtra: <WinnerTextRankingBlock profile={el.profile} />,
+                value: (
+                  <TableCell
+                    sx={{
+                      p: px(4),
+                      color: "inherit",
+                    }}
+                    width={70}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        textAlign: "center",
+                        width: px(60),
+                      }}
+                    >
+                      <Typography variant="h6" noWrap>
+                        {el.score} / {NUMBER_QUESTIONS_CHALLENGE}
+                      </Typography>
+                      <Typography variant="h6" noWrap>
+                        {(el.time / 1000).toFixed(2)}s
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                ),
+                rank: el.ranking,
+                uuid: el.uuid,
+              };
+            });
+            setData(newdata);
+            setLoading(false);
+          });
+        } else if (tabTime === ClassementChallengeTimeEnum.month) {
+          selectRankingChallengeByMonthPaginate(
+            date.format("MM/YYYY"),
+            search,
+            page,
+            rowsPerPage,
+            sort.value,
+            sort.ascending,
+            idFriends
+          ).then(({ data }) => {
+            const res = (data ?? []) as Array<ChallengeRankingMonth>;
+            const newdata = res.map((el) => {
+              return {
+                profile: el.profile,
+                profileExtra: <WinnerTextRankingBlock profile={el.profile} />,
+                value: (
+                  <TableCell
+                    sx={{
+                      p: px(4),
+                      color: "inherit",
+                    }}
+                    width={92}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        textAlign: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Box>
+                        <Typography variant="h6" noWrap>
+                          {el.score} {t("commun.pointsabbreviation")} (
+                          {el.scoreavg.toFixed(1)})
+                        </Typography>
+                      </Box>
+                      <Box>
+                        <Typography variant="h6" noWrap>
+                          {(el.time / 1000).toFixed(2)}s
+                        </Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: px(4),
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Typography variant="h6" noWrap>
+                          {el.games}
+                        </Typography>
+                        <Typography variant="body1" noWrap>
+                          {t("commun.games")}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </TableCell>
+                ),
+                rank: el.ranking,
+              };
+            });
+            setData(newdata);
+            setLoading(false);
+          });
+        } else if (tabTime === ClassementChallengeTimeEnum.week) {
+          selectRankingChallengeByWeekPaginate(
+            date.format("WW/YYYY"),
+            search,
+            page,
+            rowsPerPage,
+            sort.value,
+            sort.ascending,
+            idFriends
+          ).then(({ data }) => {
+            const res = (data ?? []) as Array<ChallengeRankingWeek>;
+            const newdata = res.map((el) => {
+              return {
+                profile: el.profile,
+                profileExtra: <WinnerTextRankingBlock profile={el.profile} />,
+                value: (
+                  <TableCell
+                    sx={{
+                      p: px(4),
+                      color: "inherit",
+                    }}
+                    width={92}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        textAlign: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Box>
+                        <Typography variant="h6" noWrap>
+                          {el.score} {t("commun.pointsabbreviation")} (
+                          {el.scoreavg.toFixed(1)})
+                        </Typography>
+                      </Box>
+                      <Box>
+                        <Typography variant="h6" noWrap>
+                          {(el.time / 1000).toFixed(2)}s
+                        </Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: px(4),
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Typography variant="h6" noWrap>
+                          {el.games}
+                        </Typography>
+                        <Typography variant="body1" noWrap>
+                          {t("commun.games")}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </TableCell>
+                ),
+                rank: el.ranking,
+              };
+            });
+            setData(newdata);
+            setLoading(false);
+          });
+        } else if (tabTime === ClassementChallengeTimeEnum.alltime) {
+          selectRankingChallengeAllTimePaginate(
+            search,
+            page,
+            rowsPerPage,
+            sort.value,
+            sort.ascending,
+            idFriends
+          ).then(({ data }) => {
+            const res = (data ?? []) as Array<ChallengeRankingAllTime>;
+            const newdata = res.map((el) => {
+              return {
+                profile: el.profile,
+                profileExtra: <WinnerTextRankingBlock profile={el.profile} />,
+                value: (
+                  <TableCell
+                    sx={{
+                      p: px(4),
+                      color: "inherit",
+                    }}
+                    width={95}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        textAlign: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Box>
+                        <Typography variant="h6" noWrap>
+                          {el.score} {t("commun.pointsabbreviation")} (
+                          {el.scoreavg.toFixed(1)})
+                        </Typography>
+                      </Box>
+                      <Box>
+                        <Typography variant="h6" noWrap>
+                          {(el.time / 1000).toFixed(2)}s
+                        </Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: px(4),
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Typography variant="h6" noWrap>
+                          {el.games}
+                        </Typography>
+                        <Typography variant="body1" noWrap>
+                          {t("commun.games")}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </TableCell>
+                ),
+                rank: el.ranking,
+              };
+            });
+            setData(newdata);
+            setLoading(false);
+          });
+        }
+      } else {
+        selectStatAccomplishment(
+          tabChallengeMode,
           page,
           rowsPerPage,
-          sort.value,
-          sort.ascending,
           idFriends
         ).then(({ data }) => {
-          const res = (data ?? []) as Array<ChallengeRankingAllTime>;
-          const newdata = res.map((el) => {
+          const res = data as Array<StatAccomplishment>;
+          const newdata = res.map((el, index) => {
+            const champ = el[tabChallengeMode];
             return {
               profile: el.profile,
-              profileExtra: <WinnerTextRankingBlock profile={el.profile} />,
               value: (
                 <TableCell
                   sx={{
                     p: px(4),
                     color: "inherit",
                   }}
-                  width={92}
+                  width={60}
                 >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Box>
-                      <Typography variant="h6" noWrap>
-                        {el.score} {t("commun.pointsabbreviation")} (
-                        {el.scoreavg.toFixed(1)})
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="h6" noWrap>
-                        {(el.time / 1000).toFixed(2)}s
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        gap: px(4),
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Typography variant="h6" noWrap>
-                        {el.games}
-                      </Typography>
-                      <Typography variant="body1" noWrap>
-                        {t("commun.games")}
-                      </Typography>
-                    </Box>
-                  </Box>
+                  <WinBlock value={champ} />
                 </TableCell>
               ),
-              rank: el.ranking,
+              rank: page * rowsPerPage + index + 1,
             };
           });
-          setData(newdata);
+          setData((prev) =>
+            page === 0 ? [...newdata] : [...prev, ...newdata]
+          );
           setLoading(false);
         });
       }
     };
     const timeout = setTimeout(getRanking, 200);
     return () => clearTimeout(timeout);
-  }, [search, page, rowsPerPage, date, tabTime, t, sort, idFriends]);
+  }, [
+    search,
+    page,
+    rowsPerPage,
+    date,
+    tabTime,
+    t,
+    sort,
+    idFriends,
+    language.iso,
+    tab,
+    tabChallengeMode,
+  ]);
 
   const diffValue = useMemo(() => {
     let result: "day" | "month" | "week" = "day";
@@ -467,7 +569,9 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
     } else if (tabTime === ClassementChallengeTimeEnum.month) {
       result = date.format("MM/YYYY");
     } else if (tabTime === ClassementChallengeTimeEnum.week) {
-      result = date.format("WW/YYYY");
+      const start = date.clone().weekday(1);
+      const end = date.clone().weekday(7);
+      result = `${start.format("DD MMM")} - ${end.format("DD MMM YYYY")}`;
     }
     return result;
   }, [date, tabTime]);
@@ -519,17 +623,49 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
   return (
     <Grid container spacing={1} justifyContent="center">
       <Grid item xs={12}>
-        <GroupButtonChallengeTime
-          selected={tabTime}
+        <GroupButtonChallenge
+          selected={tab}
           onChange={(value) => {
-            if (value === ClassementChallengeTimeEnum.day) {
+            if (value === ClassementChallengeEnum.global) {
+              setSort({
+                value: ClassementChallengeGlobalTimeEnum.windaychallenge,
+                ascending: true,
+              });
+              setTabChallengeMode(
+                ClassementChallengeGlobalTimeEnum.windaychallenge
+              );
+            } else {
               setSort({ value: "ranking", ascending: true });
+              setTabTime(ClassementChallengeTimeEnum.day);
             }
-            setDate(moment());
-            setTabTime(value);
-            setPage(0);
+            setTab(value);
           }}
         />
+      </Grid>
+      <Grid item xs={12}>
+        {tab === ClassementChallengeEnum.global ? (
+          <GroupButtonChallengeGlobal
+            selected={tabChallengeMode}
+            onChange={(value) => {
+              setSort({ value: value, ascending: true });
+              setDate(moment());
+              setTabChallengeMode(value);
+              setPage(0);
+            }}
+          />
+        ) : (
+          <GroupButtonChallengeTime
+            selected={tabTime}
+            onChange={(value) => {
+              if (value === ClassementChallengeTimeEnum.day) {
+                setSort({ value: "ranking", ascending: true });
+              }
+              setDate(moment());
+              setTabTime(value);
+              setPage(0);
+            }}
+          />
+        )}
       </Grid>
       {dateDisplay && (
         <Grid item xs={12}>
@@ -544,7 +680,9 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
             <IconButton onClick={substractDate} size="small">
               <KeyboardArrowLeftIcon fontSize="large" />
             </IconButton>
-            <Typography variant="h4">{dateDisplay}</Typography>
+            <Typography variant="h4" sx={{ textAlign: "center" }}>
+              {dateDisplay}
+            </Typography>
             <IconButton
               onClick={addDate}
               disabled={isDisabledNextDay}
@@ -555,17 +693,34 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
           </Box>
         </Grid>
       )}
-      {hasPlayChallenge && (
+      {tab === ClassementChallengeEnum.perdate && (
         <Grid item>
           {
             {
-              day: <ResultDayChallengeBlock date={date} profile={profile} />,
-              week: <ResultWeekChallengeBlock date={date} profile={profile} />,
-              month: (
-                <ResultMonthChallengeBlock date={date} profile={profile} />
+              day: (
+                <ResultDayChallengeBlock
+                  date={date}
+                  profile={profile}
+                  avg={avg}
+                />
               ),
-              year: <ResultYearChallengeBlock date={date} profile={profile} />,
-              alltime: <ResultAllTimeChallengeBlock profile={profile} />,
+              week: (
+                <ResultWeekChallengeBlock
+                  date={date}
+                  profile={profile}
+                  avg={avg}
+                />
+              ),
+              month: (
+                <ResultMonthChallengeBlock
+                  date={date}
+                  profile={profile}
+                  avg={avg}
+                />
+              ),
+              alltime: (
+                <ResultAllTimeChallengeBlock profile={profile} avg={avg} />
+              ),
             }[tabTime]
           }
         </Grid>

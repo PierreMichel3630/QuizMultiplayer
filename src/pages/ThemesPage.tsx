@@ -47,13 +47,6 @@ export default function ThemesPage() {
     refHeadPage.current?.scrollIntoView();
   }, [search]);
 
-  const debouncedSetQuery = useCallback(
-    debounce((value: string) => {
-      setSearchApi(value);
-    }, 300),
-    []
-  );
-
   useEffect(() => {
     const isChallengeAvailable = () => {
       if (profile) {
@@ -72,7 +65,9 @@ export default function ThemesPage() {
 
   const handleChange = (value: string) => {
     setSearch(value);
-    debouncedSetQuery(value);
+    debounce(() => {
+      setSearchApi(value);
+    }, 300);
   };
 
   return (

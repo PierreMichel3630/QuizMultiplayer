@@ -48,9 +48,10 @@ import { isStringOrNumber } from "src/utils/type";
 import { CountryImageBlock } from "../CountryBlock";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { DefaultTabs } from "../Tabs";
+import { ProfileTitleBlock } from "../title/ProfileTitle";
 
 export interface DataRanking {
-  profile: Profile;
+  profile: Profile | null;
   value: number | string | JSX.Element;
   uuid?: string;
   extra?: string;
@@ -149,8 +150,10 @@ export const RankingTable = ({
           <Table size="small" sx={{ tableLayout: "fixed" }}>
             <TableBody>
               {data.map((el, index) => {
-                const isMe = profile && el.profile.id === profile.id;
-                const isFriend = idFriend.includes(el.profile.id);
+                const isMe = profile && el.profile?.id === profile.id;
+                const isFriend = el.profile
+                  ? idFriend.includes(el.profile.id)
+                  : false;
                 const colorFriend = isFriend ? Colors.purple : "initial";
                 const color = isMe ? Colors.colorApp : colorFriend;
                 const colorText =
@@ -168,15 +171,19 @@ export const RankingTable = ({
                         {getIcon(el.rank, colorText)}
                       </TableCell>
                       <TableCell sx={{ p: px(4), width: px(50) }}>
-                        <Link
-                          to={`/profil/${el.profile.id}`}
-                          style={{ textDecoration: "inherit" }}
-                        >
-                          <AvatarAccount
-                            avatar={el.profile.avatar.icon}
-                            size={40}
-                          />
-                        </Link>
+                        {el.profile ? (
+                          <Link
+                            to={`/profil/${el.profile.id}`}
+                            style={{ textDecoration: "inherit" }}
+                          >
+                            <AvatarAccount
+                              avatar={el.profile.avatar.icon}
+                              size={40}
+                            />
+                          </Link>
+                        ) : (
+                          <Avatar sx={{ bgcolor: Colors.black }}>I</Avatar>
+                        )}
                       </TableCell>
                       <TableCell
                         align="left"
@@ -191,28 +198,45 @@ export const RankingTable = ({
                             gap: px(4),
                           }}
                         >
-                          <Link
-                            to={`/profil/${el.profile.id}`}
-                            style={{
-                              textDecoration: "inherit",
-                              display: "flex",
-                              gap: px(8),
-                              alignItems: "center",
-                            }}
-                          >
-                            {el.profile.country && (
-                              <CountryImageBlock country={el.profile.country} />
-                            )}
+                          {el.profile ? (
+                            <>
+                              <Link
+                                to={`/profil/${el.profile.id}`}
+                                style={{
+                                  textDecoration: "inherit",
+                                  display: "flex",
+                                  gap: px(8),
+                                  alignItems: "center",
+                                }}
+                              >
+                                {el.profile.country && (
+                                  <CountryImageBlock
+                                    country={el.profile.country}
+                                  />
+                                )}
+                                <Typography
+                                  variant="h6"
+                                  sx={{
+                                    color: colorText,
+                                  }}
+                                  noWrap
+                                >
+                                  {el.profile.username}
+                                </Typography>
+                              </Link>
+                              <ProfileTitleBlock title={el.profile.title} />
+                            </>
+                          ) : (
                             <Typography
-                              variant={el.theme ? "h4" : "h6"}
+                              variant="h6"
                               sx={{
                                 color: colorText,
                               }}
                               noWrap
                             >
-                              {el.profile.username}
+                              {t("commun.notconnect")}
                             </Typography>
-                          </Link>
+                          )}
                           {el.date && (
                             <Typography
                               variant="caption"

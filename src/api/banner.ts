@@ -7,7 +7,7 @@ export const SUPABASE_BANNER_TABLE = "banner";
 export const selectBanners = () =>
   supabase
     .from(SUPABASE_BANNER_TABLE)
-    .select()
+    .select("*, theme(*)")
     .order("id", { ascending: false });
 
 export const selectBannerByProfile = (profile: string) =>

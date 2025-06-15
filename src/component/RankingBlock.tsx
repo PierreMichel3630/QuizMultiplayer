@@ -96,15 +96,17 @@ export const RankingTop5Block = () => {
   const { t } = useTranslation();
   const { language, hasChallenge } = useUser();
 
-  const [tab, setTab] = useState(
-    hasChallenge ? AllGameModeEnum.CHALLENGE : AllGameModeEnum.SOLO
-  );
+  const [tab, setTab] = useState(AllGameModeEnum.CHALLENGE);
   const [tabTimeSolo, setTabTimeSolo] = useState(ClassementSoloTimeEnum.week);
   const [tabTimeChallenge, setTabTimeChallenge] = useState(
     ClassementChallengeTimeEnum.day
   );
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<Array<DataRanking>>([]);
+
+  useEffect(() => {
+    setTab(hasChallenge ? AllGameModeEnum.CHALLENGE : AllGameModeEnum.SOLO);
+  }, [hasChallenge]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -136,6 +138,7 @@ export const RankingTop5Block = () => {
                   </Box>
                 ),
                 rank: el.ranking,
+                size: 65,
               };
             });
             setData(newdata);
@@ -164,11 +167,6 @@ export const RankingTop5Block = () => {
                         {el.scoreavg.toFixed(1)})
                       </Typography>
                     </Box>
-                    <Box sx={{ width: px(80) }}>
-                      <Typography variant="h6" noWrap>
-                        {(el.time / 1000).toFixed(2)}s
-                      </Typography>
-                    </Box>
                     <Box
                       sx={{
                         display: "flex",
@@ -186,6 +184,7 @@ export const RankingTop5Block = () => {
                     </Box>
                   </Box>
                 ),
+                size: 90,
                 rank: el.ranking,
               };
             });
@@ -232,6 +231,7 @@ export const RankingTop5Block = () => {
                     </Box>
                   </Box>
                 ),
+                size: 90,
                 rank: el.ranking,
               };
             });
@@ -254,7 +254,7 @@ export const RankingTop5Block = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <Box sx={{ width: px(80) }}>
+                  <Box sx={{ width: px(100) }}>
                     <Typography variant="h6" noWrap>
                       {el.score} {t("commun.pointsabbreviation")} (
                       {el.scoreavg.toFixed(1)})
@@ -277,6 +277,7 @@ export const RankingTop5Block = () => {
                   </Box>
                 </Box>
               ),
+              size: 100,
               rank: el.ranking,
             };
           });
@@ -291,9 +292,14 @@ export const RankingTop5Block = () => {
           const champ = el.rank;
           return {
             profile: el.profile,
-            value: Array.isArray(champ) ? champ.length : champ,
+            value: (
+              <Typography variant="h2" noWrap>
+                {champ}
+              </Typography>
+            ),
             theme: el.theme,
             rank: index + 1,
+            size: 70,
           };
         });
         setData(newdata);
@@ -307,9 +313,14 @@ export const RankingTop5Block = () => {
             const champ = el.points;
             return {
               profile: el.profile,
-              value: Array.isArray(champ) ? champ.length : champ,
+              value: (
+                <Typography variant="h2" noWrap>
+                  {Array.isArray(champ) ? champ.length : champ}
+                </Typography>
+              ),
               theme: el.theme,
               rank: index + 1,
+              size: 60,
             };
           });
           setData(newdata);
@@ -321,9 +332,14 @@ export const RankingTop5Block = () => {
           const newdata = res.map((el, index) => {
             return {
               profile: el.profile,
-              value: el.points,
+              value: (
+                <Typography variant="h2" noWrap>
+                  {el.points}
+                </Typography>
+              ),
               theme: el.theme,
               rank: index + 1,
+              size: 60,
             };
           });
           setData(newdata);

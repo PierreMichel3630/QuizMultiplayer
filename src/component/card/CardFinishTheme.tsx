@@ -34,6 +34,8 @@ export const CardFinishTheme = ({ profile }: Props) => {
     });
   }, [profile]);
 
+  console.log(themes);
+
   return (
     themes.length > 0 && (
       <Paper

@@ -62,15 +62,17 @@ export const selectStatAccomplishment = (
   order: string,
   page: number,
   itemperpage = 25,
-  idsProfile = [] as Array<string>
+  idsProfile = [] as Array<string>,
+  search = ""
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
 
   let query = supabase
     .from(SUPABASE_VIEWSTATACCOMPLISHMENT_TABLE)
-    .select("*, profile(*, avatar(*), country(*))")
+    .select("*, profile(*, avatar(*), country(*), title(*))")
     .gt(order, 0)
+    .ilike("profile.username", `%${search}%`)
     .not("profile", "in", `(${bots.join(",")})`);
   if (idsProfile.length > 0) {
     query = query.in("profile.id", idsProfile).not("profile", "is", null);
@@ -79,6 +81,21 @@ export const selectStatAccomplishment = (
     .order(order, { ascending: false })
     .order("created_at", { ascending: true })
     .range(from, to);
+};
+
+export const countStatAccomplishment = (
+  search = "",
+  idsProfile: undefined | Array<string> = undefined
+) => {
+  let query = supabase
+    .from(SUPABASE_VIEWSTATACCOMPLISHMENT_TABLE)
+    .select("*, profile(*)", { count: "exact", head: true })
+    .ilike("profile.username", `%${search}%`)
+    .not("profile", "is", null);
+  if (idsProfile) {
+    query = query.in("profile.id", idsProfile);
+  }
+  return query;
 };
 
 export const unlockAccomplishment = (id: number) =>

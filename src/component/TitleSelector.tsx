@@ -21,8 +21,7 @@ export const TitleSelector = ({ onSelect }: Props) => {
       <Grid item xs={12}>
         <Grid container spacing={1} alignItems="center">
           {myTitles.map((title) => {
-            const isSelect =
-              profile && profile.title && profile.title.id === title.id;
+            const isSelect = profile?.title && profile.title.id === title.id;
 
             return (
               <Grid item xs={12} sm={6} key={title.id}>

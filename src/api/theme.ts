@@ -35,7 +35,7 @@ export const selectThemesById = (
   if (language) {
     query = query.eq("language", language);
   }
-  return query.eq("language", language).in("id", ids);
+  return query.in("id", ids);
 };
 
 export const selectThemesByCategory = (

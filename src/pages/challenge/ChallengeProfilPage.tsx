@@ -30,12 +30,12 @@ import {
   ResultDayChallengeBlock,
   ResultMonthChallengeBlock,
   ResultWeekChallengeBlock,
-  ResultYearChallengeBlock,
 } from "src/component/ChallengeBlock";
 import { CountryImageBlock } from "src/component/CountryBlock";
 import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { BarNavigation } from "src/component/navigation/BarNavigation";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { useUser } from "src/context/UserProvider";
 import {
   ChallengeRanking,
   ChallengeRankingMonth,
@@ -43,7 +43,6 @@ import {
 } from "src/models/Challenge";
 import { ClassementChallengeTimeEnum } from "src/models/enum/ClassementEnum";
 import { Profile } from "src/models/Profile";
-import { useUser } from "src/context/UserProvider";
 
 export default function ChallengeProfilPage() {
   const { t } = useTranslation();
@@ -244,25 +243,13 @@ export default function ChallengeProfilPage() {
                         ))}
                       </>
                     ),
-                    year: (
-                      <>
-                        <Grid item xs={12}>
-                          <ResultYearChallengeBlock
-                            profile={profileUser}
-                            title={t("commun.year")}
-                          />
-                        </Grid>
-                      </>
-                    ),
                     alltime: (
-                      <>
-                        <Grid item xs={12}>
-                          <ResultAllTimeChallengeBlock
-                            profile={profileUser}
-                            title={t("commun.alltime")}
-                          />
-                        </Grid>
-                      </>
+                      <Grid item xs={12}>
+                        <ResultAllTimeChallengeBlock
+                          profile={profileUser}
+                          title={t("commun.alltime")}
+                        />
+                      </Grid>
                     ),
                   }[tabTime]
                 }

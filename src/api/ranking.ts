@@ -64,7 +64,7 @@ export const getRankingFinishTheme = (
 
   let query = supabase
     .from(SUPABASE_FINISHTHEME_TABLE)
-    .select("*,profile(*, avatar(*), country(*))");
+    .select("*,profile(*, avatar(*), country(*), title(*))");
   if (idsProfile.length > 0) {
     query = query.in("profile.id", idsProfile).not("profile", "is", null);
   }

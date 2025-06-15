@@ -31,6 +31,8 @@ export const BannerForm = ({ validate, banner }: Props) => {
   const { t } = useTranslation();
   const { setMessage, setSeverity } = useMessage();
 
+  console.log(banner);
+
   const initialValue: {
     src: null | File | string | undefined;
     price: number;
@@ -118,7 +120,7 @@ export const BannerForm = ({ validate, banner }: Props) => {
             fullWidth
             error={Boolean(formik.touched.price && formik.errors.price)}
           >
-            <InputLabel htmlFor="namefr-input">
+            <InputLabel htmlFor="price-input">
               {t("form.createbanner.price")}
             </InputLabel>
             <OutlinedInput

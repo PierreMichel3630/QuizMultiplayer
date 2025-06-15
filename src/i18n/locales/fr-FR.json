@@ -111,6 +111,7 @@
     "deleteaccount": "Supprimer mon compte",
     "challengeuser": "<bold>{{username}}</bold> vous défie au thème : <bold>{{theme}}</bold>",
     "unknown": "inconnu",
+    "notconnect": "Joueur Non connecté",
     "waitplayer": "En attente du deuxième joueur",
     "gamebegin": "La partie va commencer",
     "ready": "Prêt",
@@ -342,7 +343,8 @@
     "install": "Installer",
     "version": "Version",
     "grades": "Notes",
-    "result" : "Résultat"
+    "result" : "Résultat",
+    "average": "Moyenne"
   },
   "abrevation": {
     "average": "Moy."

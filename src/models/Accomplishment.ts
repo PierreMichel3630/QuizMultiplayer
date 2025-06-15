@@ -37,6 +37,9 @@ export interface StatAccomplishment {
   defeatduel: number;
   xp: number;
   points: number;
+  windaychallenge: number;
+  winweekchallenge: number;
+  winmonthchallenge: number;
 }
 
 export enum StatAccomplishmentEnum {

@@ -6,6 +6,8 @@ import { padding, px } from "csx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  ClassementChallengeEnum,
+  ClassementChallengeGlobalTimeEnum,
   ClassementChallengeTimeEnum,
   ClassementEnum,
   ClassementScoreEnum,
@@ -54,7 +56,7 @@ export const GroupButton = ({ options, selected, onChange }: Props) => {
               key={index}
               sx={{
                 borderRadius: px(50),
-                p: padding(2, 12),
+                p: padding(2, 8),
                 color: isSelect ? Colors.white : "text.primary",
                 backgroundColor: isSelect ? color : "initial",
                 cursor: "pointer",
@@ -279,6 +281,43 @@ export const GroupButtonChallengeTime = ({
   );
 };
 
+interface PropsGroupButtonChallengeGlobal {
+  selected: ClassementChallengeGlobalTimeEnum;
+  onChange: (value: ClassementChallengeGlobalTimeEnum) => void;
+}
+export const GroupButtonChallengeGlobal = ({
+  selected,
+  onChange,
+}: PropsGroupButtonChallengeGlobal) => {
+  const { t } = useTranslation();
+
+  const options = useMemo(
+    () => [
+      {
+        label: t("commun.day"),
+        value: ClassementChallengeGlobalTimeEnum.windaychallenge,
+      },
+      {
+        label: t("commun.week"),
+        value: ClassementChallengeGlobalTimeEnum.winweekchallenge,
+      },
+      {
+        label: t("commun.month"),
+        value: ClassementChallengeGlobalTimeEnum.winmonthchallenge,
+      },
+    ],
+    [t]
+  );
+
+  return (
+    <GroupButton
+      options={options}
+      selected={selected}
+      onChange={(value) => onChange(value as ClassementChallengeGlobalTimeEnum)}
+    />
+  );
+};
+
 interface PropsGroupButtonClassement {
   selected: ClassementEnum;
   onChange: (value: ClassementEnum) => void;
@@ -308,6 +347,12 @@ export const GroupButtonClassement = ({
         label: t("commun.level"),
         value: ClassementEnum.xp,
         color: Colors.pink,
+      },
+      {
+        icon: <EmojiEventsIcon />,
+        label: t("commun.challenge"),
+        value: ClassementEnum.challenge,
+        color: Colors.green,
       },
     ],
     [t]
@@ -394,6 +439,41 @@ export const GroupButtonResultChallenge = ({
       options={options}
       selected={selected}
       onChange={(value) => onChange(value as ChallengeTypeResultEnum)}
+    />
+  );
+};
+
+interface PropsGroupButtonChallenge {
+  selected: ClassementChallengeEnum;
+  onChange: (value: ClassementChallengeEnum) => void;
+}
+export const GroupButtonChallenge = ({
+  selected,
+  onChange,
+}: PropsGroupButtonChallenge) => {
+  const { t } = useTranslation();
+
+  const options = useMemo(
+    () => [
+      {
+        label: t("commun.perdate"),
+        value: ClassementChallengeEnum.perdate,
+        color: Colors.blue,
+      },
+      {
+        label: t("commun.global"),
+        value: ClassementChallengeEnum.global,
+        color: Colors.red,
+      },
+    ],
+    [t]
+  );
+
+  return (
+    <GroupButton
+      options={options}
+      selected={selected}
+      onChange={(value) => onChange(value as ClassementChallengeEnum)}
     />
   );
 };

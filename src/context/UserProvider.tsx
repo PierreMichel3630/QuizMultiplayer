@@ -1,6 +1,6 @@
 import i18next from "i18next";
 import moment from "moment";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { selectChallengeByDateAndLanguage } from "src/api/challenge";
 import { LANGUAGES, Language } from "src/models/Language";
 
@@ -108,28 +108,36 @@ export const UserProvider = ({ children }: Props) => {
   useEffect(() => {
     selectChallengeByDateAndLanguage(moment(), language.iso).then(
       ({ data }) => {
-        console.log(data);
         setHasChallenge(data !== null);
       }
     );
   }, [language]);
 
-  return (
-    <UserContext.Provider
-      value={{
-        uuid,
-        setUuid,
-        languages: LANGUAGES,
-        language,
-        setLanguage,
-        sound,
-        setSound,
-        setMode,
-        mode,
-        hasChallenge,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
+  const value = useMemo(
+    () => ({
+      uuid,
+      setUuid,
+      languages: LANGUAGES,
+      language,
+      setLanguage,
+      sound,
+      setSound,
+      setMode,
+      mode,
+      hasChallenge,
+    }),
+    [
+      uuid,
+      setUuid,
+      language,
+      setLanguage,
+      sound,
+      setSound,
+      setMode,
+      mode,
+      hasChallenge,
+    ]
   );
+
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

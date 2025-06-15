@@ -62,3 +62,10 @@ export interface ValueExtraChallenge {
   previousValue: number;
   newValue: number;
 }
+
+export interface ChallengeAvg {
+  score: number;
+  time: number;
+  players: number;
+  games?: number;
+}

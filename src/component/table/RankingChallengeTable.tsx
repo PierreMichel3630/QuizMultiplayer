@@ -14,9 +14,9 @@ import {
 import { AvatarAccount } from "../avatar/AvatarAccount";
 
 import { percent, px } from "csx";
-import { Fragment, useMemo } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import rank1 from "src/assets/rank/rank1.png";
 import rank2 from "src/assets/rank/rank2.png";
 import rank3 from "src/assets/rank/rank3.png";
@@ -27,6 +27,7 @@ import { Colors } from "src/style/Colors";
 import { CountryImageBlock } from "../CountryBlock";
 
 import { Profile } from "src/models/Profile";
+import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 export interface DataRankingChallenge {
   profile: Profile;
@@ -44,6 +45,7 @@ interface Props {
 
 export const RankingChallengeTable = ({ data, loading = false }: Props) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { profile } = useAuth();
   const { friends } = useApp();
 
@@ -119,72 +121,78 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                   isMe || isFriend ? Colors.white : "text.primary";
 
                 return (
-                  <Fragment key={index}>
-                    <TableRow
+                  <TableRow
+                    key={index}
+                    sx={{
+                      backgroundColor: color,
+                      color: `${colorText} !important`,
+                      cursor: "pointer",
+                    }}
+                    onClick={() =>
+                      navigate(`/challenge/profil/${el.profile.id}`)
+                    }
+                  >
+                    <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
+                      {getIcon(el.rank, colorText)}
+                    </TableCell>
+                    <TableCell sx={{ p: px(4), width: px(45) }}>
+                      <Link
+                        to={`/challenge/profil/${el.profile.id}`}
+                        style={{ textDecoration: "inherit" }}
+                      >
+                        <AvatarAccount
+                          avatar={el.profile.avatar.icon}
+                          size={38}
+                        />
+                      </Link>
+                    </TableCell>
+                    <TableCell
+                      align="left"
                       sx={{
-                        backgroundColor: color,
-                        color: `${colorText} !important`,
+                        p: px(4),
                       }}
                     >
-                      <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
-                        {getIcon(el.rank, colorText)}
-                      </TableCell>
-                      <TableCell sx={{ p: px(4), width: px(45) }}>
-                        <Link
-                          to={`/challenge/profil/${el.profile.id}`}
-                          style={{ textDecoration: "inherit" }}
-                        >
-                          <AvatarAccount
-                            avatar={el.profile.avatar.icon}
-                            size={38}
-                          />
-                        </Link>
-                      </TableCell>
-                      <TableCell
-                        align="left"
+                      <Box
                         sx={{
-                          p: px(4),
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: px(4),
                         }}
                       >
                         <Box
                           sx={{
+                            textDecoration: "inherit",
                             display: "flex",
-                            flexDirection: "column",
                             gap: px(4),
+                            alignItems: "center",
                           }}
                         >
-                          <Link
-                            to={`/challenge/profil/${el.profile.id}`}
-                            style={{
-                              textDecoration: "inherit",
-                              display: "flex",
-                              gap: px(4),
-                              alignItems: "center",
+                          {el.profile.country && (
+                            <CountryImageBlock
+                              country={el.profile.country}
+                              size={20}
+                            />
+                          )}
+                          <Typography
+                            variant={"h6"}
+                            sx={{
+                              color: colorText,
                             }}
+                            noWrap
                           >
-                            {el.profile.country && (
-                              <CountryImageBlock
-                                country={el.profile.country}
-                                size={20}
-                              />
-                            )}
-                            <Typography
-                              variant={"h6"}
-                              sx={{
-                                color: colorText,
-                              }}
-                              noWrap
-                            >
-                              {el.profile.username}
-                            </Typography>
-                          </Link>
-                          {el.profileExtra}
+                            {el.profile.username}
+                          </Typography>
                         </Box>
-                      </TableCell>
-                      {el.value}
-                      {el.extra}
-                    </TableRow>
-                  </Fragment>
+                        {el.profile.title && (
+                          <JsonLanguageBlock
+                            variant="caption"
+                            value={el.profile.title.name}
+                          />
+                        )}
+                      </Box>
+                    </TableCell>
+                    {el.value}
+                  </TableRow>
                 );
               })}
               {loading &&

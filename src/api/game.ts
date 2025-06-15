@@ -8,7 +8,7 @@ import { GameModeEnum } from "src/models/enum/GameEnum";
 
 export const SUPABASE_PREVIOUSTHEMES_TABLE = "previousthemes";
 export const SUPABASE_HISTORYGAMES_TABLE = "historygames";
-export const SUPABASE_HISTORYSOLOGAMES_TABLE = "historysologames";
+export const SUPABASE_HISTORYSOLOGAMES_TABLE = "viewhistorysologames";
 
 export const SUPABASE_RESPONSESOLOGAME_FUNCTION = "response-solo-game";
 export const SUPABASE_LAUNCHSOLOGAME_FUNCTION = "launch-solo-gameV2";

@@ -95,7 +95,7 @@ export const AppProvider = ({ children }: Props) => {
 
   const headerSize = useMemo(() => (user ? 70 : 50), [user]);
 
-  const idsFriend = useMemo(
+  const idsFriendAndMe = useMemo(
     () =>
       user
         ? [
@@ -108,6 +108,7 @@ export const AppProvider = ({ children }: Props) => {
                     : [...acc, value.user2.id],
                 [] as Array<string>
               ),
+            user.id,
           ]
         : [],
     [friends, user]
@@ -231,7 +232,7 @@ export const AppProvider = ({ children }: Props) => {
     () => ({
       nbThemes,
       friends,
-      idsFriend,
+      idsFriend: idsFriendAndMe,
       getFriends,
       favorites,
       getFavorite,
@@ -252,7 +253,7 @@ export const AppProvider = ({ children }: Props) => {
     [
       favorites,
       friends,
-      idsFriend,
+      idsFriendAndMe,
       getFriends,
       getMyAccomplishments,
       getMyAvatars,
