@@ -37,7 +37,8 @@ export const ThemeShopBlock = ({ theme }: Props) => {
         const isBanner =
           el.type === ShopType.BANNER && mybanners.find((a) => a.id === el.id);
         const isTitle =
-          el.type === ShopType.TITLE && myTitles.find((a) => a.id === el.id);
+          el.type === ShopType.TITLE &&
+          myTitles.find((a) => a.title.id === el.id);
 
         return !(isAvatar || isBadge || isBanner || isTitle);
       })

@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import { percent, px } from "csx";
 import moment from "moment";
 import {
@@ -97,11 +96,6 @@ export const RankingTable = ({
           ]
         : [],
     [friends, profile]
-  );
-
-  const hasGame = useMemo(
-    () => data.reduce((acc, value) => acc || value.uuid !== undefined, false),
-    [data]
   );
 
   const getIcon = (rank: number, colorText: string) => {
@@ -224,7 +218,9 @@ export const RankingTable = ({
                                   {el.profile.username}
                                 </Typography>
                               </Link>
-                              <ProfileTitleBlock title={el.profile.title} />
+                              <ProfileTitleBlock
+                                titleprofile={el.profile.titleprofile}
+                              />
                             </>
                           ) : (
                             <Typography
@@ -316,24 +312,6 @@ export const RankingTable = ({
                           )}
                         </Box>
                       </TableCell>
-                      {hasGame && (
-                        <TableCell sx={{ p: px(4) }} width={50}>
-                          {el.uuid && (
-                            <Link
-                              to={`/game/solo/${el.uuid}`}
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                              }}
-                            >
-                              <VisibilityIcon
-                                fontSize="small"
-                                sx={{ color: colorText }}
-                              />
-                            </Link>
-                          )}
-                        </TableCell>
-                      )}
                     </TableRow>
                   </Fragment>
                 );
@@ -449,7 +427,6 @@ export const RankingTableSoloDuel = ({
               uuid: el.uuidgame !== null ? el.uuidgame.uuid : undefined,
               extra: t("commun.pointsabbreviation"),
               rank: el.ranking,
-              date: el.dategame,
             })) as Array<DataRanking>;
             setData(newData);
             setIsLoading(false);
@@ -529,6 +506,7 @@ export const RankingTableSoloDuelPaginate = ({
               profile: el.profile,
               value: el.rank,
               rank: el.ranking,
+              size: 70,
             })) as Array<DataRanking>;
             setIsEnd(result.length < itemperpage);
             setData((prev) =>
@@ -557,7 +535,7 @@ export const RankingTableSoloDuelPaginate = ({
               uuid: el.uuidgame !== null ? el.uuidgame.uuid : undefined,
               extra: t("commun.pointsabbreviation"),
               rank: el.ranking,
-              date: el.dategame,
+              size: 70,
             })) as Array<DataRanking>;
             setIsEnd(result.length < itemperpage);
             setData((prev) =>

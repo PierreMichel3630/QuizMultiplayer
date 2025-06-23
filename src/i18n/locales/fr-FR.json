@@ -356,7 +356,8 @@
   "accomplishment": {
     "SOLO": "Succès Mode Solo",
     "DUEL": "Succès Mode Duel",
-    "SOCIAL": "Succès Social"
+    "SOCIAL": "Succès Social",
+    "CHALLENGE": "Succès Defis du jour"
   },
   "ranking": {
     "games": "Nombre de parties Solo",

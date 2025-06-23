@@ -5,17 +5,17 @@ import { useNavigate } from "react-router-dom";
 import { DuelGame } from "src/models/DuelGame";
 import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 
 import BoltIcon from "@mui/icons-material/Bolt";
 import HomeIcon from "@mui/icons-material/Home";
-import { ButtonColor } from "../Button";
-import { LabelRankBlock } from "../RankBlock";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import { useEffect, useMemo, useState } from "react";
 import { selectScoreByThemeAndPlayer } from "src/api/score";
 import { Score } from "src/models/Score";
+import { ButtonColor } from "../Button";
+import { LabelRankBlock } from "../RankBlock";
+import { ProfileTitleBlock } from "../title/ProfileTitle";
 
 interface Props {
   game: DuelGame;
@@ -106,12 +106,7 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
           <Typography variant="h4" sx={{ color: Colors.colorDuel1 }}>
             {game.player1.username}
           </Typography>
-          {game.player1.title && (
-            <JsonLanguageBlock
-              variant="caption"
-              value={game.player1.title.name}
-            />
-          )}
+          <ProfileTitleBlock titleprofile={game.player1.titleprofile} />
           <LabelRankBlock loading={loadingP1} score={scoreP1} />
         </Grid>
         <Grid
@@ -143,12 +138,7 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
           <Typography variant="h4" sx={{ color: Colors.colorDuel2 }}>
             {game.player2.username}
           </Typography>
-          {game.player2.title && (
-            <JsonLanguageBlock
-              variant="caption"
-              value={game.player2.title.name}
-            />
-          )}
+          <ProfileTitleBlock titleprofile={game.player2.titleprofile} />
           <LabelRankBlock loading={loadingP2} score={scoreP2} />
         </Grid>
         <Grid item xs={12}>

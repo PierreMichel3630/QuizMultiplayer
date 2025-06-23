@@ -7,7 +7,6 @@ import BattlePage from "src/pages/play/BattlePage";
 import DuelPage from "src/pages/play/DuelPage";
 import SoloPage from "src/pages/play/SoloPage";
 import TrainingPage from "src/pages/play/TrainingPage";
-import YtShortPage from "src/pages/play/YtShortPage";
 import ChallengeGamePage from "src/pages/challenge/ChallengeGamePage";
 import ChallengeProfilPage from "src/pages/challenge/ChallengeProfilPage";
 
@@ -27,10 +26,6 @@ export const PlayRoutes = [
         <PlayChallengePage />
       </ProtectedRoute>
     ),
-  },
-  {
-    path: "/ytshort/:uuidGame",
-    element: <YtShortPage />,
   },
   {
     path: "/solo/:uuidGame",

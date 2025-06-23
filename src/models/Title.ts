@@ -11,4 +11,5 @@ export interface TitleProfile {
   id: number;
   profile: string;
   title: Title;
+  multiplicator: number | null;
 }

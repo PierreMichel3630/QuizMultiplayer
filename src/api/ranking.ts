@@ -11,7 +11,9 @@ export const selectRankingSoloByThemeAndProfile = (
 ) =>
   supabase
     .from(SUPABASE_RANKINGSOLO_TABLE)
-    .select("*,profile(*, avatar(*), country(*)), uuidgame(uuid)")
+    .select(
+      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*))), uuidgame(uuid)"
+    )
     .eq("theme", theme)
     .or(`ranking.lte.${maxRank},profile.in.(${idFriends.join(",")})`);
 
@@ -24,7 +26,9 @@ export const selectRankingSoloByThemePaginate = (
   const to = from + itemperpage - 1;
   return supabase
     .from(SUPABASE_RANKINGSOLO_TABLE)
-    .select("*,profile(*, avatar(*), country(*)), uuidgame(uuid)")
+    .select(
+      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*))), uuidgame(uuid)"
+    )
     .eq("theme", theme)
     .range(from, to);
 };
@@ -36,7 +40,9 @@ export const selectRankingDuelByThemeAndProfile = (
 ) =>
   supabase
     .from(SUPABASE_RANKINGDUEL_TABLE)
-    .select("*,profile(*, avatar(*), country(*))")
+    .select(
+      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*)))"
+    )
     .eq("theme", theme)
     .or(`ranking.lte.${maxRank},profile.in.(${idFriends.join(",")})`);
 
@@ -49,7 +55,9 @@ export const selectRankingDuelByThemePaginate = (
   const to = from + itemperpage - 1;
   return supabase
     .from(SUPABASE_RANKINGDUEL_TABLE)
-    .select("*,profile(*, avatar(*), country(*))")
+    .select(
+      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*)))"
+    )
     .eq("theme", theme)
     .range(from, to);
 };
@@ -64,7 +72,9 @@ export const getRankingFinishTheme = (
 
   let query = supabase
     .from(SUPABASE_FINISHTHEME_TABLE)
-    .select("*,profile(*, avatar(*), country(*), title(*))");
+    .select(
+      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*)))"
+    );
   if (idsProfile.length > 0) {
     query = query.in("profile.id", idsProfile).not("profile", "is", null);
   }

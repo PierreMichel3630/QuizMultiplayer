@@ -1,10 +1,12 @@
 import { Badge, Box, Typography } from "@mui/material";
-import { padding, px } from "csx";
+import { padding, percent, px } from "csx";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { JsonLanguage } from "src/models/Language";
 import { Colors } from "src/style/Colors";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
+import { TitleProfile } from "src/models/Title";
+import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
 
 interface Props {
   value: string;
@@ -75,19 +77,14 @@ export const BadgeAccountActive = ({
 interface PropsBadgeTitle {
   label: JsonLanguage;
   onClick?: () => void;
-  color?: string;
 }
 
-export const BadgeTitle = ({
-  label,
-  onClick,
-  color = Colors.colorApp,
-}: PropsBadgeTitle) => {
+export const BadgeTitle = ({ label, onClick }: PropsBadgeTitle) => {
   return (
     <Box
       sx={{
         p: padding(3, 10),
-        backgroundColor: color,
+        backgroundColor: Colors.colorApp,
         cursor: onClick ? "pointer" : "default",
         userSelect: "none",
         textAlign: "center",
@@ -96,6 +93,60 @@ export const BadgeTitle = ({
       onClick={onClick}
     >
       <JsonLanguageBlock variant="h6" color="text.secondary" value={label} />
+    </Box>
+  );
+};
+
+interface PropsBadgeTitleProfile {
+  onClick?: () => void;
+  isSelect?: boolean;
+  title: TitleProfile;
+}
+
+export const BadgeTitleProfile = ({
+  isSelect,
+  onClick,
+  title,
+}: PropsBadgeTitleProfile) => {
+  return (
+    <Box
+      sx={{
+        p: padding(3, 10),
+        backgroundColor: Colors.colorApp,
+        cursor: onClick ? "pointer" : "default",
+        userSelect: "none",
+        textAlign: "center",
+        borderRadius: px(5),
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+        justifyContent: "center",
+      }}
+      onClick={onClick}
+    >
+      <Box>
+        {title.multiplicator !== null && (
+          <Typography variant="h6" component="span">
+            {title.multiplicator} x{" "}
+          </Typography>
+        )}
+        <JsonLanguageBlock
+          component="span"
+          variant="h6"
+          color="text.secondary"
+          value={title.title.name}
+        />
+      </Box>
+      {isSelect && (
+        <CheckCircleTwoToneIcon
+          sx={{
+            color: Colors.green2,
+            backgroundColor: "white",
+            borderRadius: percent(50),
+            zIndex: 2,
+          }}
+        />
+      )}
     </Box>
   );
 };

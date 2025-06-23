@@ -4,7 +4,6 @@ import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import SupervisedUserCircleRoundedIcon from "@mui/icons-material/SupervisedUserCircleRounded";
-import YouTubeIcon from "@mui/icons-material/YouTube";
 import {
   Alert,
   Box,
@@ -105,14 +104,6 @@ export default function ThemePage() {
     if (uuid && id) {
       launchSoloGame(uuid, Number(id)).then(({ data }) => {
         navigate(`/solo/${data.uuid}`);
-      });
-    }
-  };
-
-  const playYtShort = () => {
-    if (uuid && id) {
-      launchSoloGame(uuid, Number(id)).then(({ data }) => {
-        navigate(`/ytshort/${data.uuid}`);
       });
     }
   };
@@ -346,19 +337,6 @@ export default function ThemePage() {
                             variant="contained"
                           />
                         </Grid>*/}
-                        {profile?.isadmin && (
-                          <Grid item xs={12}>
-                            <ButtonColor
-                              size="small"
-                              value={Colors.orange}
-                              label={t("commun.ytshort")}
-                              icon={YouTubeIcon}
-                              onClick={() => playYtShort()}
-                              variant="contained"
-                            />
-                          </Grid>
-                        )}
-
                         {(!theme.enabled || !theme.validate) && (
                           <Grid item xs={12}>
                             <ButtonColor

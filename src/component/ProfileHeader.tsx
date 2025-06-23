@@ -11,6 +11,7 @@ import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { JsonLanguage } from "src/models/Language";
 import { getLevel } from "src/utils/calcul";
+import { ProfileTitleBlock } from "./title/ProfileTitle";
 
 interface Props {
   profile: Profile;
@@ -86,15 +87,17 @@ export const ProfilHeader = ({
           >
             {profile.username}
           </Typography>
-          {(title || profile.title) && (
+          {title ? (
             <JsonLanguageBlock
               variant="caption"
               color="text.secondary"
-              value={title ?? profile.title!.name}
+              value={title}
               sx={{
                 textShadow: "1px 1px 2px black",
               }}
             />
+          ) : (
+            <ProfileTitleBlock titleprofile={profile.titleprofile} />
           )}
         </Grid>
         {profile.country && (

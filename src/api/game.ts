@@ -10,7 +10,6 @@ export const SUPABASE_PREVIOUSTHEMES_TABLE = "previousthemes";
 export const SUPABASE_HISTORYGAMES_TABLE = "historygames";
 export const SUPABASE_HISTORYSOLOGAMES_TABLE = "viewhistorysologames";
 
-export const SUPABASE_RESPONSESOLOGAME_FUNCTION = "response-solo-game";
 export const SUPABASE_LAUNCHSOLOGAME_FUNCTION = "launch-solo-gameV2";
 export const SUPABASE_ENDSOLOGAME_FUNCTION = "end-solo-game";
 
@@ -111,15 +110,6 @@ export const selectSoloGameById = (uuid: string) =>
     .eq("uuid", uuid)
     .maybeSingle();
 
-export const responseSoloGame = (
-  game: number,
-  response: string,
-  language: string
-) =>
-  supabase.functions.invoke(SUPABASE_RESPONSESOLOGAME_FUNCTION, {
-    body: { game: game, response: response, language: language },
-  });
-
 //DUEL GAME
 export const deleteDuelByUuid = (uuid: string) =>
   supabase.from(SUPABASE_DUELGAME_TABLE).delete().eq("uuid", uuid);
@@ -152,7 +142,7 @@ export const selectDuelGameById = (uuid: string) =>
   supabase
     .from(SUPABASE_DUELGAME_TABLE)
     .select(
-      "*, player1(*, avatar(*), title(*), badge(*), banner(*), country(*)), player2(*, avatar(*), title(*), badge(*), banner(*), country(*)), theme!public_duelgame_theme_fkey(*)"
+      "*, player1(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*)), badge(*), banner(*), country(*)), player2(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*)), badge(*), banner(*), country(*)), theme!public_duelgame_theme_fkey(*)"
     )
     .eq("uuid", uuid)
     .maybeSingle();

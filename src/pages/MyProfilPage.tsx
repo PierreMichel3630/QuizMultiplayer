@@ -13,14 +13,13 @@ import { selectBadgeByProfile } from "src/api/badge";
 import { selectScoresByProfile } from "src/api/score";
 import { selectTitleByProfile } from "src/api/title";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { BarVictory } from "src/component/chart/BarVictory";
 import { DonutGames } from "src/component/chart/DonutGames";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { Badge, BadgeProfile } from "src/models/Badge";
 import { Score } from "src/models/Score";
-import { Title, TitleProfile } from "src/models/Title";
+import { TitleProfile } from "src/models/Title";
 import {
   sortByDuelGamesDesc,
   sortByGamesDesc,
@@ -44,6 +43,7 @@ import { CardFriends } from "src/component/card/CardFriends";
 import { CardTitle } from "src/component/card/CardTitle";
 import { SkeletonAvatarPlayer } from "src/component/skeleton/SkeletonPlayer";
 import { SkeletonProfilTheme } from "src/component/skeleton/SkeletonTheme";
+import { ProfileTitleBlock } from "src/component/title/ProfileTitle";
 import { useApp } from "src/context/AppProvider";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { Friend, FRIENDSTATUS } from "src/models/Friend";
@@ -57,7 +57,7 @@ export default function MyProfilPage() {
   const { headerSize } = useApp();
 
   const [scores, setScores] = useState<Array<Score>>([]);
-  const [titles, setTitles] = useState<Array<Title>>([]);
+  const [titles, setTitles] = useState<Array<TitleProfile>>([]);
   const [badges, setBadges] = useState<Array<Badge>>([]);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("alphabetical");
@@ -110,8 +110,7 @@ export default function MyProfilPage() {
       setIsLoadingTitle(true);
       if (user) {
         selectTitleByProfile(user.id).then(({ data }) => {
-          const res = data as Array<TitleProfile>;
-          setTitles([...res].map((el) => el.title));
+          setTitles(data ?? []);
           setIsLoadingTitle(false);
         });
       }
@@ -280,13 +279,8 @@ export default function MyProfilPage() {
                 >
                   {profile.username}
                 </Typography>
-                {profile.title && (
-                  <JsonLanguageBlock
-                    variant="caption"
-                    color="text.secondary"
-                    value={profile.title.name}
-                    sx={{ textShadow: "1px 1px 2px black" }}
-                  />
+                {profile.titleprofile && (
+                  <ProfileTitleBlock titleprofile={profile.titleprofile} />
                 )}
               </Grid>
               {profile?.country && (

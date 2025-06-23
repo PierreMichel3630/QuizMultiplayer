@@ -27,7 +27,7 @@ import { Colors } from "src/style/Colors";
 import { CountryImageBlock } from "../CountryBlock";
 
 import { Profile } from "src/models/Profile";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
+import { ProfileTitleBlock } from "../title/ProfileTitle";
 
 export interface DataRankingChallenge {
   profile: Profile;
@@ -183,12 +183,9 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                             {el.profile.username}
                           </Typography>
                         </Box>
-                        {el.profile.title && (
-                          <JsonLanguageBlock
-                            variant="caption"
-                            value={el.profile.title.name}
-                          />
-                        )}
+                        <ProfileTitleBlock
+                          titleprofile={el.profile.titleprofile}
+                        />
                       </Box>
                     </TableCell>
                     {el.value}

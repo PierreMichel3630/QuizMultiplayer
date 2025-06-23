@@ -9,14 +9,14 @@ import { CardSignalQuestion } from "src/component/card/CardQuestion";
 import { Colors } from "src/style/Colors";
 
 import BoltIcon from "@mui/icons-material/Bolt";
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import { selectDuelGameById } from "src/api/game";
 import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
-import { ImageThemeBlock } from "src/component/ImageThemeBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
-import { BarNavigation } from "src/component/navigation/BarNavigation";
-import { DuelGame } from "src/models/DuelGame";
 import { ButtonColor } from "src/component/Button";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import { ImageThemeBlock } from "src/component/ImageThemeBlock";
+import { BarNavigation } from "src/component/navigation/BarNavigation";
+import { ProfileTitleBlock } from "src/component/title/ProfileTitle";
+import { DuelGame } from "src/models/DuelGame";
 
 export default function GameDuelPage() {
   const { t } = useTranslation();
@@ -100,12 +100,9 @@ export default function GameDuelPage() {
                     <Typography variant="h4" sx={{ color: Colors.colorDuel1 }}>
                       {game.player1.username}
                     </Typography>
-                    {game.player1.title && (
-                      <JsonLanguageBlock
-                        variant="caption"
-                        value={game.player1.title.name}
-                      />
-                    )}
+                    <ProfileTitleBlock
+                      titleprofile={game.player1.titleprofile}
+                    />
                   </Box>
                 </Grid>
                 <Grid
@@ -146,12 +143,9 @@ export default function GameDuelPage() {
                     <Typography variant="h4" sx={{ color: Colors.colorDuel2 }}>
                       {game.player2.username}
                     </Typography>
-                    {game.player2.title && (
-                      <JsonLanguageBlock
-                        variant="caption"
-                        value={game.player2.title.name}
-                      />
-                    )}
+                    <ProfileTitleBlock
+                      titleprofile={game.player2.titleprofile}
+                    />
                   </Box>
                 </Grid>
                 <Grid item xs={12}>

@@ -31,8 +31,6 @@ export const BannerForm = ({ validate, banner }: Props) => {
   const { t } = useTranslation();
   const { setMessage, setSeverity } = useMessage();
 
-  console.log(banner);
-
   const initialValue: {
     src: null | File | string | undefined;
     price: number;

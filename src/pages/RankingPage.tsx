@@ -1,9 +1,8 @@
 import { Box, Grid, Switch, Typography } from "@mui/material";
 import { percent } from "csx";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { useSearchParams } from "react-router-dom";
 import { selectStatAccomplishment } from "src/api/accomplishment";
 import { selectGamesByTime } from "src/api/game";
@@ -15,7 +14,7 @@ import {
 } from "src/component/button/ButtonGroup";
 import { ButtonRankingDuel } from "src/component/button/ButtonRankingDuel";
 import { ButtonRankingSolo } from "src/component/button/ButtonRankingSolo";
-import { WinBlock } from "src/component/challenge/winBlock";
+import { WinBlock } from "src/component/challenge/WinBlock";
 import { DataRanking, RankingTable } from "src/component/table/RankingTable";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
@@ -45,6 +44,7 @@ export default function RankingPage() {
 
   const ITEMPERPAGE = 25;
 
+  const [loading, setLoading] = useState(false);
   const [isOnlyFriend, setIsOnlyFriend] = useState(false);
   const [type, setType] = useState(
     searchParams.has("sort")
@@ -67,9 +67,13 @@ export default function RankingPage() {
     ClassementChallengeGlobalTimeEnum.windaychallenge
   );
 
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastItemRef = useRef<HTMLTableRowElement | null>(null);
+
   const getDataRanking = useCallback(
     (page: number) => {
       const ids = isOnlyFriend ? idsFriend : [];
+      setLoading(true);
       if (page === 0 || !isEnd) {
         if (
           type === ClassementEnum.points &&
@@ -92,6 +96,7 @@ export default function RankingPage() {
               setData((prev) =>
                 page === 0 ? [...newdata] : [...prev, ...newdata]
               );
+              setLoading(false);
             }
           );
         } else if (
@@ -117,6 +122,7 @@ export default function RankingPage() {
               setData((prev) =>
                 page === 0 ? [...newdata] : [...prev, ...newdata]
               );
+              setLoading(false);
             }
           );
         } else if (
@@ -135,6 +141,7 @@ export default function RankingPage() {
             setData((prev) =>
               page === 0 ? [...newdata] : [...prev, ...newdata]
             );
+            setLoading(false);
           });
         } else if (type === ClassementEnum.xp) {
           selectStatAccomplishment(type, page, ITEMPERPAGE, ids).then(
@@ -159,6 +166,7 @@ export default function RankingPage() {
               setData((prev) =>
                 page === 0 ? [...newdata] : [...prev, ...newdata]
               );
+              setLoading(false);
             }
           );
         } else if (type === ClassementEnum.challenge) {
@@ -182,6 +190,7 @@ export default function RankingPage() {
             setData((prev) =>
               page === 0 ? [...newdata] : [...prev, ...newdata]
             );
+            setLoading(false);
           });
         } else {
           const order = (type === ClassementEnum.points
@@ -203,6 +212,7 @@ export default function RankingPage() {
               setData((prev) =>
                 page === 0 ? [...newdata] : [...prev, ...newdata]
               );
+              setLoading(false);
             }
           );
         }
@@ -221,16 +231,39 @@ export default function RankingPage() {
   );
 
   useEffect(() => {
+    setPage(0);
+    setData([]);
+    setIsEnd(false);
     getDataRanking(0);
-  }, [getDataRanking]);
+  }, [
+    type,
+    tabSoloMode,
+    tabDuelMode,
+    tabChallengeMode,
+    isOnlyFriend,
+    idsFriend,
+  ]);
 
-  const handleLoadMoreData = () => {
-    setPage((prevPage) => {
-      const nextPage = prevPage + 1;
-      getDataRanking(nextPage);
-      return nextPage;
+  useEffect(() => {
+    if (loading) return;
+
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !isEnd) {
+        setPage((prev) => {
+          getDataRanking(prev + 1);
+          return prev + 1;
+        });
+      }
     });
-  };
+
+    if (lastItemRef.current) {
+      observer.current.observe(lastItemRef.current);
+    }
+
+    return () => observer.current?.disconnect();
+  }, [loading, isEnd, getDataRanking]);
 
   return (
     <Grid container>
@@ -323,14 +356,7 @@ export default function RankingPage() {
       )}
 
       <Grid item xs={12} sx={{ p: 1 }}>
-        <InfiniteScroll
-          dataLength={data.length}
-          next={handleLoadMoreData}
-          hasMore={!isEnd}
-          loader={undefined}
-        >
-          <RankingTable data={data} loading={!isEnd} />
-        </InfiniteScroll>
+        <RankingTable data={data} loading={!isEnd} lastItemRef={lastItemRef} />
       </Grid>
     </Grid>
   );

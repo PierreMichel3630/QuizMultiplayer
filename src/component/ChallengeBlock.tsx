@@ -739,3 +739,41 @@ export const ResultAllTimeChallengeBlock = ({
     </Box>
   );
 };
+
+interface PropsRecapAvgChallenge {
+  avg: ChallengeAvg;
+}
+
+export const RecapAvgChallenge = ({ avg }: PropsRecapAvgChallenge) => {
+  const { t } = useTranslation();
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+        justifyContent: "center",
+      }}
+    >
+      <Typography variant="h4">
+        <Trans
+          i18nKey={t("commun.player")}
+          values={{
+            count: avg.players,
+          }}
+        />
+      </Typography>
+      <Box>
+        <Typography variant="body1" component="span">
+          {`( ${t("abrevation.average")} `}
+        </Typography>
+        <Typography variant="h6" component="span">
+          {`${avg.score.toFixed(2)} - ${(avg.time / 1000).toFixed(2)}s`}
+        </Typography>
+        <Typography variant="body1" component="span">
+          {` )`}
+        </Typography>
+      </Box>
+    </Box>
+  );
+};

@@ -1,6 +1,6 @@
 import { Box, debounce, Grid } from "@mui/material";
 import { percent, px } from "csx";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { FavoriteBlock } from "src/component/FavoriteBlock";

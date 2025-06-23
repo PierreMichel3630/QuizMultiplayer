@@ -68,7 +68,7 @@ import {
   selectStatAccomplishment,
 } from "src/api/accomplishment";
 import { StatAccomplishment } from "src/models/Accomplishment";
-import { WinBlock } from "./challenge/winBlock";
+import { WinBlock } from "./challenge/WinBlock";
 
 interface Props {
   hasPlayChallenge?: boolean;
@@ -182,7 +182,6 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
         if (tabTime === ClassementChallengeTimeEnum.day) {
           countChallengeGameByDate(date, idFriends, search).then(
             ({ count }) => {
-              console.log(count);
               setTotal(count);
             }
           );
@@ -208,9 +207,11 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
           });
         }
       } else {
-        countStatAccomplishment(search, idFriends).then(({ count }) => {
-          setTotal(count);
-        });
+        countStatAccomplishment(tabChallengeMode, search, idFriends).then(
+          ({ count }) => {
+            setTotal(count);
+          }
+        );
       }
     };
     getTotal();
@@ -231,28 +232,32 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
 
   useEffect(() => {
     const getAvg = () => {
-      if (tabTime === ClassementChallengeTimeEnum.day) {
-        selectAvgChallengeByDateAndLanguage(date, language.iso).then(
-          ({ data }) => {
+      if (tab === ClassementChallengeEnum.perdate) {
+        if (tabTime === ClassementChallengeTimeEnum.day) {
+          selectAvgChallengeByDateAndLanguage(date, language.iso).then(
+            ({ data }) => {
+              setAvg(data);
+            }
+          );
+        } else if (tabTime === ClassementChallengeTimeEnum.week) {
+          selectAvgChallengeByWeek(date).then(({ data }) => {
             setAvg(data);
-          }
-        );
-      } else if (tabTime === ClassementChallengeTimeEnum.week) {
-        selectAvgChallengeByWeek(date).then(({ data }) => {
-          setAvg(data);
-        });
-      } else if (tabTime === ClassementChallengeTimeEnum.month) {
-        selectAvgChallengeByMonth(date).then(({ data }) => {
-          setAvg(data);
-        });
-      } else if (tabTime === ClassementChallengeTimeEnum.alltime) {
-        selectAvgChallengeByAllTime().then(({ data }) => {
-          setAvg(data);
-        });
+          });
+        } else if (tabTime === ClassementChallengeTimeEnum.month) {
+          selectAvgChallengeByMonth(date).then(({ data }) => {
+            setAvg(data);
+          });
+        } else if (tabTime === ClassementChallengeTimeEnum.alltime) {
+          selectAvgChallengeByAllTime().then(({ data }) => {
+            setAvg(data);
+          });
+        }
+      } else {
+        setAvg(null);
       }
     };
     getAvg();
-  }, [tabTime, date, language.iso]);
+  }, [tab, tabTime, date, language.iso]);
 
   useEffect(() => {
     const getRanking = () => {
@@ -508,7 +513,8 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
           tabChallengeMode,
           page,
           rowsPerPage,
-          idFriends
+          idFriends,
+          search
         ).then(({ data }) => {
           const res = data as Array<StatAccomplishment>;
           const newdata = res.map((el, index) => {
@@ -529,9 +535,7 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
               rank: page * rowsPerPage + index + 1,
             };
           });
-          setData((prev) =>
-            page === 0 ? [...newdata] : [...prev, ...newdata]
-          );
+          setData(newdata);
           setLoading(false);
         });
       }
@@ -749,7 +753,9 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
             value={search}
             clear={() => setSearch("")}
           />
-          <SortButton menus={sorts} />
+          {tab === ClassementChallengeEnum.perdate && (
+            <SortButton menus={sorts} />
+          )}
         </Box>
         {profile && (
           <Box

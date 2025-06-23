@@ -1,5 +1,5 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Helmet } from "react-helmet-async";
@@ -8,15 +8,23 @@ import { Dictionary, groupBy } from "lodash";
 import {
   selectAccomplishment,
   selectStatAccomplishmentByProfile,
+  selectUnlockAccomplishmentByProfile,
 } from "src/api/accomplishment";
-import { CardAccomplishment } from "src/component/card/CardAccomplishment";
-import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
+import {
+  CardAccomplishment,
+  CardUnlockAccomplishment,
+} from "src/component/card/CardAccomplishment";
+import {
+  Accomplishment,
+  ProfileAccomplishment,
+  StatAccomplishment,
+} from "src/models/Accomplishment";
 
+import { px } from "csx";
 import award from "src/assets/award.png";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
-import { px } from "csx";
 
 export default function AccomplishmentPage() {
   const { t } = useTranslation();
@@ -29,19 +37,18 @@ export default function AccomplishmentPage() {
     Dictionary<Array<Accomplishment>>
   >({});
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
-
-  const accomplishmentsToUnlock = useMemo(() => {
-    const ids = myaccomplishments
-      .filter((el) => !el.validate)
-      .map((el) => el.accomplishment.id);
-    return accomplishments.filter((el) => ids.includes(el.id));
-  }, [accomplishments, myaccomplishments]);
+  const [accomplishmentsToUnlock, setAccomplishmentsToUnlock] = useState<
+    Array<ProfileAccomplishment>
+  >([]);
 
   useEffect(() => {
     const getMyStat = () => {
       if (profile) {
         selectStatAccomplishmentByProfile(profile.id).then(({ data }) => {
           setStat(data as StatAccomplishment);
+        });
+        selectUnlockAccomplishmentByProfile(profile.id).then(({ data }) => {
+          setAccomplishmentsToUnlock(data ?? []);
         });
       }
     };
@@ -76,18 +83,16 @@ export default function AccomplishmentPage() {
           <Grid container spacing={1}>
             <Grid item xs={12}>
               <Grid container spacing={1} alignItems="center">
-                {accomplishmentsToUnlock.map((accomplishment) => {
-                  return (
-                    <Grid item xs={12} lg={6} key={accomplishment.id}>
-                      <CardAccomplishment
-                        accomplishment={accomplishment}
-                        stat={stat}
-                        badge
-                        title
-                      />
-                    </Grid>
-                  );
-                })}
+                {accomplishmentsToUnlock.map((profileaccomplishment) => (
+                  <Grid item xs={12} lg={6} key={profileaccomplishment.id}>
+                    <CardUnlockAccomplishment
+                      profileaccomplishment={profileaccomplishment}
+                      stat={stat}
+                      badge
+                      title
+                    />
+                  </Grid>
+                ))}
               </Grid>
             </Grid>
             {Object.keys(accomplishmentsGroupBy).map((el, index) => {

@@ -7,6 +7,7 @@ import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import {
   Accomplishment,
+  ProfileAccomplishment,
   StatAccomplishment,
   StatAccomplishmentEnum,
 } from "src/models/Accomplishment";
@@ -16,21 +17,19 @@ import { ImageThemeBlock } from "../ImageThemeBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 import LockOpenIcon from "@mui/icons-material/LockOpen";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import { percent, px } from "csx";
 import { unlockAccomplishment } from "src/api/accomplishment";
+import { selectThemesById } from "src/api/theme";
+import { Theme } from "src/models/Theme";
 import { BarAccomplishment } from "../bar/Bar";
 import { AddMoneyBlock } from "../MoneyBlock";
 import { AddXpBlock } from "../XpBlock";
-import { Theme } from "src/models/Theme";
-import { selectThemesById } from "src/api/theme";
 
 interface Props {
   accomplishment: Accomplishment;
   stat?: StatAccomplishment;
   badge?: boolean;
   title?: boolean;
-  notification?: boolean;
 }
 
 export const CardAccomplishment = ({
@@ -38,11 +37,9 @@ export const CardAccomplishment = ({
   stat,
   badge = false,
   title = false,
-  notification = false,
 }: Props) => {
   const { t } = useTranslation();
-  const { refreshProfil } = useAuth();
-  const { myaccomplishments, getMyAccomplishments } = useApp();
+  const { myaccomplishments } = useApp();
 
   const [themes, setThemes] = useState<Array<Theme>>([]);
 
@@ -66,7 +63,7 @@ export const CardAccomplishment = ({
 
   const themesAccomplishment = useMemo(
     () =>
-      Array.isArray(champ)
+      Array.isArray(champ) && accomplishment.value
         ? uniqBy(
             themes
               .filter((el) => champ.includes(el.id))
@@ -90,22 +87,6 @@ export const CardAccomplishment = ({
     [myaccomplishment]
   );
 
-  const isUnlock = useMemo(
-    () => myaccomplishment !== undefined && !myaccomplishment.validate,
-    [myaccomplishment]
-  );
-
-  const unlock = async () => {
-    if (accomplishment) {
-      unlockAccomplishment(accomplishment.id).then((res) => {
-        if (res.data === true) {
-          getMyAccomplishments();
-          refreshProfil();
-        }
-      });
-    }
-  };
-
   return (
     <Paper
       elevation={12}
@@ -113,7 +94,7 @@ export const CardAccomplishment = ({
         p: 1,
         backgroundColor: isFinish ? Colors.correctanswer : "initial",
         color: isFinish ? Colors.white : "text.primary",
-        border: isUnlock ? `3px solid ${Colors.purple}` : "2px solid white",
+        border: "2px solid white",
         height: percent(100),
       }}
     >
@@ -138,7 +119,7 @@ export const CardAccomplishment = ({
             </Link>
           </Grid>
         )}
-        <Grid item xs={7}>
+        <Grid item xs={accomplishment.value ? 7 : 12}>
           <Grid container spacing={1} alignItems="center">
             {title && accomplishment.title && (
               <Grid item xs={12}>
@@ -190,14 +171,16 @@ export const CardAccomplishment = ({
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs sx={{ textAlign: "end" }}>
-          <Typography variant="h2" component="span">
-            {value > accomplishment.value ? accomplishment.value : value}
-          </Typography>
-          <Typography variant="body1" component="span">
-            {`/ ${accomplishment.value}`}
-          </Typography>
-        </Grid>
+        {accomplishment.value && (
+          <Grid item xs sx={{ textAlign: "end" }}>
+            <Typography variant="h2" component="span">
+              {value > accomplishment.value ? accomplishment.value : value}
+            </Typography>
+            <Typography variant="body1" component="span">
+              {`/ ${accomplishment.value}`}
+            </Typography>
+          </Grid>
+        )}
         {themesAccomplishment.length > 0 && (
           <Grid item xs={12}>
             <Grid container spacing={1}>
@@ -214,65 +197,204 @@ export const CardAccomplishment = ({
         <Grid item xs={12}>
           <BarAccomplishment value={accomplishment.nbplayers} />
         </Grid>
-        {isUnlock && (
-          <Grid item xs={12}>
-            <ButtonColor
-              typography="h6"
-              iconSize={20}
-              value={Colors.purple}
-              label={t("commun.unlock")}
-              icon={LockOpenIcon}
-              variant="contained"
-              onClick={unlock}
-            />
-          </Grid>
-        )}
-        {notification && (
-          <Grid item xs={12}>
-            <Link to={`/accomplishments`}>
-              <ButtonColor
-                typography="h6"
-                iconSize={20}
-                value={Colors.yellow}
-                label={t("commun.seeallaccomplishment")}
-                icon={VisibilityIcon}
-                variant="contained"
-              />
-            </Link>
-          </Grid>
-        )}
       </Grid>
     </Paper>
   );
 };
 
-interface PropsUnlock {
-  accomplishment: Accomplishment;
+interface PropsCardUnlockAccomplishment {
+  profileaccomplishment: ProfileAccomplishment;
+  stat?: StatAccomplishment;
+  badge?: boolean;
+  title?: boolean;
 }
 
-export const CardAccomplishmentUnlock = ({ accomplishment }: PropsUnlock) => {
+export const CardUnlockAccomplishment = ({
+  profileaccomplishment,
+  stat,
+  badge = false,
+  title = false,
+}: PropsCardUnlockAccomplishment) => {
   const { t } = useTranslation();
+  const { refreshProfil } = useAuth();
+  const { getMyAccomplishments } = useApp();
+
+  const [themes, setThemes] = useState<Array<Theme>>([]);
+
+  const champ = useMemo(
+    () =>
+      stat
+        ? stat[
+            profileaccomplishment.accomplishment.champ as StatAccomplishmentEnum
+          ]
+        : 0,
+    [profileaccomplishment.accomplishment.champ, stat]
+  );
+
+  const value = useMemo(
+    () => (Array.isArray(champ) ? champ.length : champ),
+    [champ]
+  );
+
+  useEffect(() => {
+    if (Array.isArray(champ) && champ.length > 0) {
+      selectThemesById(champ).then(({ data }) => {
+        setThemes(data ?? []);
+      });
+    }
+  }, [champ]);
+
+  const themesAccomplishment = useMemo(
+    () =>
+      Array.isArray(champ) && profileaccomplishment.accomplishment.value
+        ? uniqBy(
+            themes
+              .filter((el) => champ.includes(el.id))
+              .splice(0, profileaccomplishment.accomplishment.value),
+            (el) => el.id
+          )
+        : [],
+    [profileaccomplishment.accomplishment.value, champ, themes]
+  );
+
+  const unlock = async () => {
+    unlockAccomplishment(profileaccomplishment.id).then((res) => {
+      if (res.data === true) {
+        getMyAccomplishments();
+        refreshProfil();
+      }
+    });
+  };
+
   return (
     <Paper
-      elevation={5}
+      elevation={12}
       sx={{
         p: 1,
         backgroundColor: "initial",
-        color: "initial",
+        color: "text.primary",
+        border: `3px solid ${Colors.purple}`,
+        height: percent(100),
       }}
     >
-      <Grid container spacing={1} alignItems="center">
-        <Grid item xs container>
+      <Grid
+        container
+        spacing={1}
+        alignItems="center"
+        sx={{ height: percent(100) }}
+      >
+        <Grid item xs={12}>
+          <JsonLanguageBlock
+            variant="h4"
+            value={profileaccomplishment.accomplishment.label}
+          />
+        </Grid>
+        {profileaccomplishment.extra && (
           <Grid item xs={12}>
-            <Typography variant="body1" component="span">
-              {t("notification.accomplishment.message")}
+            <Typography variant="caption">
+              {profileaccomplishment.extra}
             </Typography>
-            <JsonLanguageBlock
-              variant="h4"
-              component="span"
-              value={accomplishment.label}
-            />
           </Grid>
+        )}
+        {badge && profileaccomplishment.accomplishment.badge && (
+          <Grid item>
+            <Link to={`/personalized#badges`}>
+              <img
+                alt="badge"
+                src={profileaccomplishment.accomplishment.badge.icon}
+                width={40}
+                loading="lazy"
+              />
+            </Link>
+          </Grid>
+        )}
+        <Grid item xs={profileaccomplishment.accomplishment.value ? 7 : 12}>
+          <Grid container spacing={1} alignItems="center">
+            {title && profileaccomplishment.accomplishment.title && (
+              <Grid item xs={12}>
+                <Typography variant="body1" component="span">
+                  {`${t("commun.title")} "`}
+                </Typography>
+                <Link
+                  to={`/personalized#titles`}
+                  style={{
+                    textDecoration: "none",
+                  }}
+                >
+                  <JsonLanguageBlock
+                    variant="h6"
+                    component="span"
+                    value={profileaccomplishment.accomplishment.title.name}
+                  />
+                </Link>
+                <Typography variant="body1" component="span">
+                  {`"`}
+                </Typography>
+              </Grid>
+            )}
+            <Grid item xs={12}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  gap: px(10),
+                }}
+              >
+                {profileaccomplishment.accomplishment.xp > 0 && (
+                  <AddXpBlock
+                    xp={profileaccomplishment.accomplishment.xp}
+                    variant="h4"
+                    color={"text.primary"}
+                  />
+                )}
+                {profileaccomplishment.accomplishment.gold > 0 && (
+                  <AddMoneyBlock
+                    money={profileaccomplishment.accomplishment.gold}
+                    variant="h4"
+                    color={"text.primary"}
+                    width={18}
+                  />
+                )}
+              </Box>
+            </Grid>
+          </Grid>
+        </Grid>
+        {profileaccomplishment.accomplishment.value && (
+          <Grid item xs sx={{ textAlign: "end" }}>
+            <Typography variant="h2" component="span">
+              {value > profileaccomplishment.accomplishment.value
+                ? profileaccomplishment.accomplishment.value
+                : value}
+            </Typography>
+            <Typography variant="body1" component="span">
+              {`/ ${profileaccomplishment.accomplishment.value}`}
+            </Typography>
+          </Grid>
+        )}
+        {themesAccomplishment.length > 0 && (
+          <Grid item xs={12}>
+            <Grid container spacing={1}>
+              {themesAccomplishment.map((theme) => (
+                <Grid item key={theme.id}>
+                  <Link to={`/theme/${theme.id}`}>
+                    <ImageThemeBlock theme={theme} size={35} />
+                  </Link>
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
+        )}
+        <Grid item xs={12}>
+          <ButtonColor
+            typography="h6"
+            iconSize={20}
+            value={Colors.purple}
+            label={t("commun.unlock")}
+            icon={LockOpenIcon}
+            variant="contained"
+            onClick={unlock}
+          />
         </Grid>
       </Grid>
     </Paper>

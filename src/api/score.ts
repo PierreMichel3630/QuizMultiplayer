@@ -51,7 +51,7 @@ export const selectScore = (
   let query = supabase
     .from(SUPABASE_SCORE_TABLE)
     .select(
-      "*, profile(*, avatar(*), country(*), title(*)), theme(*), uuidgame(uuid, created_at)"
+      "*, profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*))), theme(*), uuidgame(uuid, created_at)"
     )
     .gt(order, 0)
     .not("profile", "in", `(${bots.join(",")})`)

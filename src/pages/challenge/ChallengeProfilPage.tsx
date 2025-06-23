@@ -32,8 +32,8 @@ import {
   ResultWeekChallengeBlock,
 } from "src/component/ChallengeBlock";
 import { CountryImageBlock } from "src/component/CountryBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { BarNavigation } from "src/component/navigation/BarNavigation";
+import { ProfileTitleBlock } from "src/component/title/ProfileTitle";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import {
@@ -165,12 +165,9 @@ export default function ChallengeProfilPage() {
                         {profileUser.username}
                       </Typography>
                     </Box>
-                    {profileUser.title && (
-                      <JsonLanguageBlock
-                        variant="caption"
-                        value={profileUser.title.name}
-                      />
-                    )}
+                    <ProfileTitleBlock
+                      titleprofile={profileUser.titleprofile}
+                    />
                   </Box>
                 </Grid>
                 <Grid item xs={12}>

@@ -19,15 +19,15 @@ import { Avatar } from "src/models/Avatar";
 import { Badge } from "src/models/Badge";
 import { Banner } from "src/models/Banner";
 import { Profile } from "src/models/Profile";
-import { Title } from "src/models/Title";
+import { TitleProfile } from "src/models/Title";
 import { Colors } from "src/style/Colors";
 
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { useNavigate } from "react-router-dom";
+import { DeleteAccountButton } from "src/component/button/DeleteAcccountButton";
+import { EmailInput } from "src/component/input/EmailInput";
 import { UsernameInput } from "src/component/input/UsernameInput";
 import { Country } from "src/models/Country";
-import { EmailInput } from "src/component/input/EmailInput";
-import { DeleteAccountButton } from "src/component/button/DeleteAcccountButton";
 
 export default function PersonalizedPage() {
   const { t } = useTranslation();
@@ -42,9 +42,9 @@ export default function PersonalizedPage() {
     getMyBadges();
   }, [getMyBadges, getMyTitles]);
 
-  const changeTitle = async (value: Title) => {
+  const changeTitleProfile = async (value: TitleProfile) => {
     if (user) {
-      const newProfil = { id: user.id, title: value.id };
+      const newProfil = { id: user.id, titleprofile: value.id };
       const { data, error } = await updateSelectProfil(newProfil);
       if (error) {
         setSeverity("error");
@@ -251,7 +251,7 @@ export default function PersonalizedPage() {
               <Typography variant="h4">{t("commun.titles")}</Typography>
             </Grid>
             <Grid item xs={12}>
-              <TitleSelector onSelect={changeTitle} />
+              <TitleSelector onSelect={changeTitleProfile} />
             </Grid>
             <Grid item xs={12}>
               <ButtonColor

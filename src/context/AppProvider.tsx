@@ -23,7 +23,7 @@ import { Banner, BannerProfile } from "src/models/Banner";
 import { Favorite } from "src/models/Favorite";
 import { FRIENDSTATUS, Friend } from "src/models/Friend";
 import { ReportMessage } from "src/models/Report";
-import { Title, TitleProfile } from "src/models/Title";
+import { TitleProfile } from "src/models/Title";
 import { useAuth } from "./AuthProviderSupabase";
 
 type Props = {
@@ -45,7 +45,7 @@ const AppContext = createContext<{
   getMyBadges: () => void;
   mybanners: Array<Banner>;
   getMyBanners: () => void;
-  myTitles: Array<Title>;
+  myTitles: Array<TitleProfile>;
   getMyTitles: () => void;
   nbQuestions?: number;
   nbThemes?: number;
@@ -83,7 +83,7 @@ export const AppProvider = ({ children }: Props) => {
   const [myAvatars, setMyAvatars] = useState<Array<Avatar>>([]);
   const [myBadges, setMyBadges] = useState<Array<Badge>>([]);
   const [mybanners, setMybanners] = useState<Array<Banner>>([]);
-  const [myTitles, setMyTitles] = useState<Array<Title>>([]);
+  const [myTitles, setMyTitles] = useState<Array<TitleProfile>>([]);
   const [friends, setFriends] = useState<Array<Friend>>([]);
   const [favorites, setFavorites] = useState<Array<Favorite>>([]);
   const [reportmessages, setReportmessages] = useState<Array<ReportMessage>>(
@@ -200,8 +200,7 @@ export const AppProvider = ({ children }: Props) => {
   const getMyTitles = useCallback(() => {
     if (user) {
       selectTitleByProfile(user.id).then(({ data }) => {
-        const res = data !== null ? (data as Array<TitleProfile>) : [];
-        setMyTitles(res.map((el) => el.title));
+        setMyTitles(data ?? []);
       });
     }
   }, [user]);

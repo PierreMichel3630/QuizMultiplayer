@@ -12,7 +12,7 @@ export interface Accomplishment {
   badge: Badge | null;
   avatar: Avatar | null;
   banner: Banner | null;
-  value: number;
+  value: number | null;
   champ: string;
   type: string;
   xp: number;
@@ -61,4 +61,5 @@ export interface ProfileAccomplishment {
   profile: string;
   accomplishment: Accomplishment;
   validate: boolean;
+  extra: string | null;
 }

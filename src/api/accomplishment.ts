@@ -13,6 +13,13 @@ export const selectAccomplishmentByProfile = (profile: string) =>
     .select("*, accomplishment(*, title(*), avatar(*), badge(*), banner(*))")
     .eq("profile", profile);
 
+export const selectUnlockAccomplishmentByProfile = (profile: string) =>
+  supabase
+    .from(SUPABASE_PROFILEACCOMPLISHMENT_TABLE)
+    .select("*, accomplishment(*, title(*), avatar(*), badge(*), banner(*))")
+    .eq("profile", profile)
+    .eq("validate", false);
+
 export const selectAccomplishment = () =>
   supabase
     .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
@@ -70,10 +77,13 @@ export const selectStatAccomplishment = (
 
   let query = supabase
     .from(SUPABASE_VIEWSTATACCOMPLISHMENT_TABLE)
-    .select("*, profile(*, avatar(*), country(*), title(*))")
+    .select(
+      "*, profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*)))"
+    )
     .gt(order, 0)
     .ilike("profile.username", `%${search}%`)
-    .not("profile", "in", `(${bots.join(",")})`);
+    .not("profile.id", "in", `(${bots.join(",")})`)
+    .not("profile", "is", null);
   if (idsProfile.length > 0) {
     query = query.in("profile.id", idsProfile).not("profile", "is", null);
   }
@@ -84,13 +94,16 @@ export const selectStatAccomplishment = (
 };
 
 export const countStatAccomplishment = (
+  order: string,
   search = "",
   idsProfile: undefined | Array<string> = undefined
 ) => {
   let query = supabase
     .from(SUPABASE_VIEWSTATACCOMPLISHMENT_TABLE)
     .select("*, profile(*)", { count: "exact", head: true })
+    .gt(order, 0)
     .ilike("profile.username", `%${search}%`)
+    .not("profile.id", "in", `(${bots.join(",")})`)
     .not("profile", "is", null);
   if (idsProfile) {
     query = query.in("profile.id", idsProfile);
@@ -99,6 +112,6 @@ export const countStatAccomplishment = (
 };
 
 export const unlockAccomplishment = (id: number) =>
-  supabase.functions.invoke("unlock-accomplishment", {
+  supabase.functions.invoke("unlock-accomplishment-v2", {
     body: JSON.stringify({ id: id }),
   });

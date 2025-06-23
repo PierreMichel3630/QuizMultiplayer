@@ -8,7 +8,9 @@ export const SUPABASE_UPDATEPROFIL_FUNCTION = "update-profil";
 export const getProfilById = (uuid: string) =>
   supabase
     .from(SUPABASE_PROFILE_TABLE)
-    .select("*, avatar(*), badge(*), title(*), banner(*), country(*)")
+    .select(
+      "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*))"
+    )
     .eq("id", uuid)
     .single();
 
@@ -20,7 +22,9 @@ export const updateSelectProfil = (profil: ProfileUpdate) =>
     .from(SUPABASE_PROFILE_TABLE)
     .update(profil)
     .eq("id", profil.id)
-    .select("*, avatar(*), badge(*), title(*), banner(*), country(*)")
+    .select(
+      "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*))"
+    )
     .single();
 
 export const searchProfile = (search: string, notin: Array<string>) =>

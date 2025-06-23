@@ -26,7 +26,7 @@ export default function TitlesPage() {
   }, []);
 
   const titlesDisplay = useMemo(() => {
-    const idsBuy = myTitles.map((el) => el.id);
+    const idsBuy = myTitles.map((el) => el.title.id);
     return [...titles]
       .filter((el) => !idsBuy.includes(el.id))
       .sort(sortByPriceDesc);

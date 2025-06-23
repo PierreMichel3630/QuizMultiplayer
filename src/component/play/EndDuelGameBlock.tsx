@@ -12,7 +12,6 @@ import { useNavigate } from "react-router-dom";
 import { launchDuelGame, matchmakingDuelGame } from "src/api/game";
 import { ButtonColor } from "../Button";
 import { ImageThemeBlock } from "../ImageThemeBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
@@ -26,6 +25,7 @@ import { ExperienceDuelBlock } from "../ExperienceBlock";
 import { ReportModal } from "../modal/ReportModal";
 import { AddMoneyBlock } from "../MoneyBlock";
 import { RankingTableSoloDuel } from "../table/RankingTable";
+import { ProfileTitleBlock } from "../title/ProfileTitle";
 
 interface Props {
   game: DuelGame;
@@ -159,12 +159,7 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
             <Typography variant="h4" sx={{ color: Colors.colorDuel1 }}>
               {game.player1.username}
             </Typography>
-            {game.player1.title && (
-              <JsonLanguageBlock
-                variant="caption"
-                value={game.player1.title.name}
-              />
-            )}
+            <ProfileTitleBlock titleprofile={game.player1.titleprofile} />
             <Box>
               {extra && (
                 <>
@@ -228,12 +223,7 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
             <Typography variant="h4" sx={{ color: Colors.colorDuel2 }}>
               {game.player2.username}
             </Typography>
-            {game.player2.title && (
-              <JsonLanguageBlock
-                variant="caption"
-                value={game.player2.title.name}
-              />
-            )}
+            <ProfileTitleBlock titleprofile={game.player2.titleprofile} />
             <Box>
               {extra && (
                 <>

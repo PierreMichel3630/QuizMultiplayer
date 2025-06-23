@@ -4,6 +4,10 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  selectAvgChallengeByAllTime,
+  selectAvgChallengeByDateAndLanguage,
+  selectAvgChallengeByMonth,
+  selectAvgChallengeByWeek,
   selectRankingChallengeAllTimePaginate,
   selectRankingChallengeByDatePaginate,
   selectRankingChallengeByMonthPaginate,
@@ -13,6 +17,7 @@ import { selectGamesByTime } from "src/api/game";
 import { selectScore } from "src/api/score";
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import {
+  ChallengeAvg,
   ChallengeRankingAllTime,
   ChallengeRankingMonth,
   ChallengeRankingWeek,
@@ -32,6 +37,7 @@ import {
 } from "./button/ButtonGroup";
 import { DataRanking, RankingTable } from "./table/RankingTable";
 import { useUser } from "src/context/UserProvider";
+import { RecapAvgChallenge } from "./ChallengeBlock";
 
 interface Props {
   themes?: Array<number>;
@@ -56,6 +62,7 @@ export const RankingBlock = ({ themes }: Props) => {
           value: Array.isArray(champ) ? champ.length : champ,
           theme: el.theme,
           rank: index + 1,
+          size: 60,
         };
       });
       setData(newdata);
@@ -103,6 +110,7 @@ export const RankingTop5Block = () => {
   );
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<Array<DataRanking>>([]);
+  const [avg, setAvg] = useState<null | ChallengeAvg>(null);
 
   useEffect(() => {
     setTab(hasChallenge ? AllGameModeEnum.CHALLENGE : AllGameModeEnum.SOLO);
@@ -361,6 +369,36 @@ export const RankingTop5Block = () => {
     return res;
   }, [tab, tabTimeSolo, tabTimeChallenge]);
 
+  useEffect(() => {
+    const getAvg = () => {
+      if (tab === AllGameModeEnum.CHALLENGE) {
+        const date = moment();
+        if (tabTimeChallenge === ClassementChallengeTimeEnum.day) {
+          selectAvgChallengeByDateAndLanguage(date, language.iso).then(
+            ({ data }) => {
+              setAvg(data);
+            }
+          );
+        } else if (tabTimeChallenge === ClassementChallengeTimeEnum.week) {
+          selectAvgChallengeByWeek(date).then(({ data }) => {
+            setAvg(data);
+          });
+        } else if (tabTimeChallenge === ClassementChallengeTimeEnum.month) {
+          selectAvgChallengeByMonth(date).then(({ data }) => {
+            setAvg(data);
+          });
+        } else if (tabTimeChallenge === ClassementChallengeTimeEnum.alltime) {
+          selectAvgChallengeByAllTime().then(({ data }) => {
+            setAvg(data);
+          });
+        }
+      } else {
+        setAvg(null);
+      }
+    };
+    getAvg();
+  }, [tab, tabTimeChallenge, language.iso]);
+
   return (
     <Grid container spacing={1} alignItems="center">
       <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
@@ -371,24 +409,31 @@ export const RankingTop5Block = () => {
           }}
         />
       </Grid>
-      <Grid item xs={12}>
-        {tab === AllGameModeEnum.SOLO && (
+      {tab === AllGameModeEnum.SOLO && (
+        <Grid item xs={12}>
           <GroupButtonTime
             selected={tabTimeSolo}
             onChange={(value) => {
               setTabTimeSolo(value);
             }}
           />
-        )}
-        {tab === AllGameModeEnum.CHALLENGE && (
+        </Grid>
+      )}
+      {tab === AllGameModeEnum.CHALLENGE && (
+        <Grid item xs={12}>
           <GroupButtonChallengeTime
             selected={tabTimeChallenge}
             onChange={(value) => {
               setTabTimeChallenge(value);
             }}
           />
-        )}
-      </Grid>
+        </Grid>
+      )}
+      {avg && (
+        <Grid item xs={12}>
+          <RecapAvgChallenge avg={avg} />
+        </Grid>
+      )}
       <Grid item xs={12}>
         <Container maxWidth="sm">
           <Box sx={{ p: 1 }}>

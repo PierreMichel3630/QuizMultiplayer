@@ -117,7 +117,7 @@ export const selectRankingChallengeByDatePaginate = (
   let query = supabase
     .from(SUPABASE_RANKINGCHALLENGE_VIEW)
     .select(
-      "uuid, ranking, id, time,score, profile(*, title(*), avatar(*), badge(*), banner(*), country(*)), challenge(date, language)"
+      "uuid, ranking, id, time,score, profile(*, titleprofile!profiles_titleprofile_fkey(*,title(*)), avatar(*), badge(*), banner(*), country(*)), challenge(date, language)"
     )
     .eq("challenge.date", date.format("YYYY-MM-DD"))
     .eq("challenge.language", language)
@@ -193,7 +193,7 @@ export const selectRankingChallengeAllTimePaginate = (
   let query = supabase
     .from(SUPABASE_CHALLENGEGAMEALLTIME_VIEW)
     .select(
-      "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*))"
+      "*, profile(*, titleprofile!profiles_titleprofile_fkey(*,title(*)), avatar(*), badge(*), banner(*), country(*))"
     )
     .ilike("profile.username", `%${search}%`)
     .not("profile", "is", null);
@@ -274,7 +274,7 @@ export const selectRankingChallengeByMonthPaginate = (
   let query = supabase
     .from(SUPABASE_CHALLENGEGAMEMONTH_VIEW)
     .select(
-      "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*))"
+      "*, profile(*, titleprofile!profiles_titleprofile_fkey(*,title(*)), avatar(*), badge(*), banner(*), country(*))"
     )
     .eq("month", date)
     .ilike("profile.username", `%${search}%`)
@@ -420,7 +420,7 @@ export const selectRankingChallengeByWeekPaginate = (
   let query = supabase
     .from(SUPABASE_CHALLENGEGAMEWEEK_VIEW)
     .select(
-      "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*))"
+      "*, profile(*, titleprofile!profiles_titleprofile_fkey(*,title(*)), avatar(*), badge(*), banner(*), country(*))"
     )
     .eq("week", date)
     .ilike("profile.username", `%${search}%`)

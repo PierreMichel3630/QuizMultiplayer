@@ -25,7 +25,7 @@ import { useUser } from "src/context/UserProvider";
 import { Badge, BadgeProfile } from "src/models/Badge";
 import { Profile } from "src/models/Profile";
 import { Opposition, Score } from "src/models/Score";
-import { Title, TitleProfile } from "src/models/Title";
+import { TitleProfile } from "src/models/Title";
 import { Colors } from "src/style/Colors";
 import {
   sortByDuelGamesDesc,
@@ -46,7 +46,7 @@ export default function ComparePage() {
   const [profile1, setProfile1] = useState<Profile | undefined>(
     location.state ? location.state.profile1 : undefined
   );
-  const [titles1, setTitles1] = useState<Array<Title>>([]);
+  const [titles1, setTitles1] = useState<Array<TitleProfile>>([]);
   const [badges1, setBadges1] = useState<Array<Badge>>([]);
   const [scores1, setScores1] = useState<Array<Score>>([]);
   const [openModalFriend1, setOpenModalFriend1] = useState(false);
@@ -54,7 +54,7 @@ export default function ComparePage() {
   const [profile2, setProfile2] = useState<Profile | undefined>(
     location.state ? location.state.profile2 : undefined
   );
-  const [titles2, setTitles2] = useState<Array<Title>>([]);
+  const [titles2, setTitles2] = useState<Array<TitleProfile>>([]);
   const [badges2, setBadges2] = useState<Array<Badge>>([]);
   const [scores2, setScores2] = useState<Array<Score>>([]);
   const [openModalFriend2, setOpenModalFriend2] = useState(false);
@@ -79,10 +79,12 @@ export default function ComparePage() {
     });
   };
 
-  const getTitles = (uuid: string, set: (value: Array<Title>) => void) => {
+  const getTitles = (
+    uuid: string,
+    set: (value: Array<TitleProfile>) => void
+  ) => {
     selectTitleByProfile(uuid).then(({ data }) => {
-      const res = data as Array<TitleProfile>;
-      set(res.map((el) => el.title));
+      set(data ?? []);
     });
   };
 

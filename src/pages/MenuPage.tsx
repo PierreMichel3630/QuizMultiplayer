@@ -17,7 +17,6 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { CountryBlock } from "src/component/CountryBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
@@ -37,6 +36,7 @@ import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { HeadTitle } from "src/component/HeadTitle";
 import { MoneyBlock } from "src/component/MoneyBlock";
 import { ShareApplicationBlock } from "src/component/ShareApplicationBlock";
+import { ProfileTitleBlock } from "src/component/title/ProfileTitle";
 import { useApp } from "src/context/AppProvider";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { getLevel } from "src/utils/calcul";
@@ -238,13 +238,7 @@ export default function MenuPage() {
                 <Typography variant="h2" color="text.secondary">
                   {profile.username}
                 </Typography>
-                {profile.title && (
-                  <JsonLanguageBlock
-                    variant="caption"
-                    color="text.secondary"
-                    value={profile.title.name}
-                  />
-                )}
+                <ProfileTitleBlock titleprofile={profile.titleprofile} />
               </Grid>
               {profile && (
                 <Grid

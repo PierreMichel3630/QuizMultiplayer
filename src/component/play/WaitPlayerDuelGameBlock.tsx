@@ -14,8 +14,8 @@ import { StatusGameDuel } from "src/models/enum/StatusGame";
 import { getLevel } from "src/utils/calcul";
 import { CountryBlock } from "../CountryBlock";
 import { ImageThemeBlock } from "../ImageThemeBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { LabelRankBlock } from "../RankBlock";
+import { ProfileTitleBlock } from "../title/ProfileTitle";
 import { SearchPlayerBlock } from "./SearchPlayerBlock";
 
 interface Props {
@@ -126,16 +126,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           >
             {game.player1.username}
           </Typography>
-          {game.player1.title && (
-            <JsonLanguageBlock
-              variant="caption"
-              color="text.secondary"
-              value={game.player1.title.name}
-              sx={{
-                textShadow: "1px 1px 2px black",
-              }}
-            />
-          )}
+          <ProfileTitleBlock titleprofile={game.player1.titleprofile} />
           <LabelRankBlock loading={loadingP1} score={scoreP1} />
           {game.player1.country && (
             <CountryBlock
@@ -220,16 +211,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
               >
                 {game.player2.username}
               </Typography>
-              {game.player2.title && (
-                <JsonLanguageBlock
-                  variant="caption"
-                  color="text.secondary"
-                  value={game.player2.title.name}
-                  sx={{
-                    textShadow: "1px 1px 2px black",
-                  }}
-                />
-              )}
+              <ProfileTitleBlock titleprofile={game.player2.titleprofile} />
               <LabelRankBlock loading={loadingP2} score={scoreP2} />
               {game.player2.country && (
                 <CountryBlock

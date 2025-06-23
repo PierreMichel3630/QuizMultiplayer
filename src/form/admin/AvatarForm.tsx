@@ -31,8 +31,6 @@ export const AvatarForm = ({ validate, avatar }: Props) => {
   const { t } = useTranslation();
   const { setMessage, setSeverity } = useMessage();
 
-  console.log(avatar);
-
   const initialValue: {
     icon: null | File | string | undefined;
     price: number;

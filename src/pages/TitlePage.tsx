@@ -101,7 +101,7 @@ export default function TitlePage() {
         setSeverity("error");
         setMessage(t("alert.noenoughtmoney"));
       } else {
-        buyItem("title", title.id).then((_res) => {
+        buyItem("title", title.id).then(() => {
           setSeverity("success");
           setMessage(t("alert.buyitem"));
           getMyTitles();
@@ -119,7 +119,7 @@ export default function TitlePage() {
     () =>
       !loading &&
       title &&
-      myTitles.find((el) => el.id === title.id) !== undefined,
+      myTitles.find((el) => el.title.id === title.id) !== undefined,
     [loading, myTitles, title]
   );
 
