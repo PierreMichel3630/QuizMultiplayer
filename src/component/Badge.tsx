@@ -126,7 +126,7 @@ export const BadgeTitleProfile = ({
     >
       <Box>
         {title.multiplicator !== null && (
-          <Typography variant="h6" component="span">
+          <Typography variant="h6" component="span" color="text.secondary">
             {title.multiplicator} x{" "}
           </Typography>
         )}

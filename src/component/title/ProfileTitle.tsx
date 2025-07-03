@@ -27,19 +27,13 @@ export const ProfileTitleBlock = ({ titleprofile }: PropsProfileTitleBlock) => {
     titleprofile?.title && (
       <Box>
         {titleprofile.multiplicator !== null && (
-          <Typography
-            variant="caption"
-            component="span"
-            sx={{ textShadow: "1px 1px 2px black" }}
-          >
+          <Typography variant="caption" component="span">
             {titleprofile.multiplicator} x{" "}
           </Typography>
         )}
         <JsonLanguageBlock
           component="span"
           variant="caption"
-          color="text.secondary"
-          sx={{ textShadow: "1px 1px 2px black" }}
           value={titleprofile.title.name}
         />
       </Box>

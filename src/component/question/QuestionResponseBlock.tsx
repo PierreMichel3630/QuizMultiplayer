@@ -29,7 +29,11 @@ export const QuestionResponseBlock = ({
     <>
       {question && (
         <>
-          <QuestionBlock question={question} timer={timer} />
+          <QuestionBlock
+            question={question}
+            timer={timer}
+            onSubmit={onSubmit}
+          />
           {question?.isqcm ? (
             <ResponsesQCMBlock
               responseplayer1={responseplayer1}

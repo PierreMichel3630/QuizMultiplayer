@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -26,6 +26,7 @@ export default function PlayChallengePage() {
   const navigate = useNavigate();
 
   const DELAY_BETWEEN_QUESTION = 500;
+  const questionsGameRef = useRef<Array<unknown>>([]);
 
   const [questions, setQuestions] = useState<Array<QuestionSolo>>([]);
 
@@ -67,8 +68,6 @@ export default function PlayChallengePage() {
     [correctAnswer, wrongAnswer]
   );
 
-  const localStorageId = useMemo(() => `challenge-${uuidGame}`, [uuidGame]);
-
   const validateResponse = (value?: Answer) => {
     clearTimeout(timeoutQuestion);
     setTimer(undefined);
@@ -77,16 +76,14 @@ export default function PlayChallengePage() {
     if (question) {
       const result = value ? verifyResponse(language, question, value) : false;
       const response = decryptToJsonLanguage(question.response);
-      const questionsgame: Array<unknown> = JSON.parse(
-        localStorage.getItem(localStorageId) ?? "[]"
-      );
+      const questionsgame: Array<unknown> = [...questionsGameRef.current];
       questionsgame.push({
         ...question,
         response: response,
         resultPlayer1: result,
         responsePlayer1: myResponseValue,
       });
-      localStorage.setItem(localStorageId, JSON.stringify(questionsgame));
+      questionsGameRef.current = questionsgame;
       setCorrectAnswer((prev) => (result ? prev + 1 : prev));
       setWrongAnswer((prev) => (result ? prev : prev + 1));
       setResponse({
@@ -108,12 +105,10 @@ export default function PlayChallengePage() {
     }
   };
 
-  const end = () => {
+  const end = useCallback(() => {
     if (uuidGame) {
-      const questionsgame: Array<unknown> = JSON.parse(
-        localStorage.getItem(localStorageId) ?? "[]"
-      );
-      endChallenge(questionsgame, uuidGame).then(({ data }) => {
+      console.log(questionsGameRef.current);
+      endChallenge(questionsGameRef.current, uuidGame).then(({ data }) => {
         navigate(`/challenge/game/${uuidGame}`, {
           state: {
             previousPath: "/challenge",
@@ -122,9 +117,8 @@ export default function PlayChallengePage() {
           },
         });
       });
-      localStorage.removeItem(localStorageId);
     }
-  };
+  }, [navigate, uuidGame]);
 
   const responseP1 = useMemo(
     () => myresponse ?? (response ? response.responsePlayer1 : undefined),
@@ -135,13 +129,48 @@ export default function PlayChallengePage() {
     if (question) {
       setTimer(question.time);
       const newtimeoutQuestion = setTimeout(async () => {
-        validateResponse();
+        if (question) {
+          const result = false;
+          const response = decryptToJsonLanguage(question.response);
+          const questionsgame: Array<unknown> = [...questionsGameRef.current];
+          questionsgame.push({
+            ...question,
+            response: response,
+            resultPlayer1: result,
+            responsePlayer1: undefined,
+          });
+          questionsGameRef.current = questionsgame;
+          setCorrectAnswer((prev) => (result ? prev + 1 : prev));
+          setWrongAnswer((prev) => (result ? prev : prev + 1));
+          setResponse({
+            response: response,
+            result: result,
+            responsePlayer1: undefined,
+          });
+          setMyresponse(undefined);
+          setTimeout(() => {
+            scrollTop();
+            const indexNextQuestion = questionsgame.length;
+            if (indexNextQuestion < questions.length) {
+              setResponse(undefined);
+              setQuestion(questions[indexNextQuestion]);
+            } else {
+              end();
+            }
+          }, DELAY_BETWEEN_QUESTION);
+        }
       }, question.time * 1000);
       setTimeoutQuestion(newtimeoutQuestion);
     } else {
       setTimer(undefined);
     }
-  }, [question]);
+  }, [end, question, questions]);
+
+  useEffect(() => {
+    return () => {
+      end();
+    };
+  }, [end]);
 
   return (
     <Box>
@@ -195,7 +224,6 @@ export default function PlayChallengePage() {
                 </Typography>
               </Box>
             </Box>
-            <Box></Box>
           </Box>
           <Box
             sx={{

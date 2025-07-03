@@ -275,7 +275,14 @@ export default function MyProfilPage() {
                 <Typography
                   variant="h2"
                   color="text.secondary"
-                  sx={{ textShadow: "1px 1px 2px black" }}
+                  sx={{
+                    overflow: "hidden",
+                    display: "block",
+                    lineClamp: 1,
+                    boxOrient: "vertical",
+                    textOverflow: "ellipsis",
+                    textShadow: "1px 1px 2px black",
+                  }}
                 >
                   {profile.username}
                 </Typography>

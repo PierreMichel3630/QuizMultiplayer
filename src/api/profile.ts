@@ -45,7 +45,9 @@ export const searchProfilePagination = (
   const to = from + itemperpage - 1;
   return supabase
     .from(SUPABASE_PROFILE_TABLE)
-    .select("*, avatar(*)")
+    .select(
+      "*, avatar(*), badge(*),country(*), titleprofile!profiles_titleprofile_fkey(*,title(*))"
+    )
     .ilike("username", `%${search}%`)
     .not("id", "in", `(${notin.join(",")})`)
     .order("lower_name", { ascending: true })

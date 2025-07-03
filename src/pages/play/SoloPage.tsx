@@ -1,5 +1,5 @@
 import { Box, Container, Typography } from "@mui/material";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -32,14 +32,12 @@ export default function SoloPage() {
   const [score, setScore] = useState<number>(0);
   const [timer, setTimer] = useState<undefined | number>(undefined);
   const [audio, setAudio] = useState<undefined | HTMLAudioElement>(undefined);
-  const [timeoutQuestion, setTimeoutQuestion] = useState<
-    string | number | NodeJS.Timeout | undefined
-  >(undefined);
   const [images, setImages] = useState<Array<string>>([]);
   const [myresponse, setMyresponse] = useState<string | number | undefined>(
     undefined
   );
 
+  const timeoutQuestion = useRef<NodeJS.Timeout | null>(null);
   const localStorageId = useMemo(() => `game-solo-${uuidGame}`, [uuidGame]);
 
   const generateQuestion = useCallback(
@@ -97,7 +95,7 @@ export default function SoloPage() {
                 setTimer(questionSolo.time - 1);
                 setResponse(undefined);
                 scrollTop();
-                const newtimeoutQuestion = setTimeout(async () => {
+                timeoutQuestion.current = setTimeout(async () => {
                   const response = decryptToJsonLanguage(questionSolo.response);
                   const questionsgame: Array<unknown> = JSON.parse(
                     localStorage.getItem(localStorageId) ?? "[]"
@@ -119,21 +117,7 @@ export default function SoloPage() {
                   });
                   setTimer(undefined);
                   scrollTop();
-                  setTimeout(async () => {
-                    const questionsgame: Array<unknown> = JSON.parse(
-                      localStorage.getItem(localStorageId) ?? "[]"
-                    );
-                    endSoloGame(questionsgame, game.uuid).then(() => {
-                      navigate(`/recapsolo/${game.uuid}`, {
-                        state: {
-                          allquestion: false,
-                        },
-                      });
-                    });
-                    localStorage.removeItem(localStorageId);
-                  }, 1500);
                 }, questionSolo.time * 1000);
-                setTimeoutQuestion(newtimeoutQuestion);
               }
             }, delay);
           });
@@ -144,7 +128,7 @@ export default function SoloPage() {
 
   const validateResponse = useCallback(
     async (value: Answer) => {
-      clearTimeout(timeoutQuestion);
+      clearInterval(timeoutQuestion.current!);
       setTimer(undefined);
       const myResponseValue = value?.value ?? undefined;
       setMyresponse(myResponseValue);
@@ -195,7 +179,6 @@ export default function SoloPage() {
       localStorageId,
       navigate,
       question,
-      timeoutQuestion,
     ]
   );
 

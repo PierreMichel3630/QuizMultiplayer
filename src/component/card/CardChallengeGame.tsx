@@ -30,6 +30,7 @@ export const CardChallengeGame = ({ game, hasPlayChallenge }: Props) => {
       sx={{
         p: 1,
       }}
+      elevation={8}
     >
       <Grid
         container

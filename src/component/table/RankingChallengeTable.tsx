@@ -67,15 +67,10 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
     [friends, profile]
   );
 
-  const getIcon = (rank: number, colorText: string) => {
+  const getIcon = (rank: number) => {
     let icon = (
-      <Avatar sx={{ bgcolor: Colors.grey, width: 25, height: 25 }}>
-        <Typography
-          variant="h6"
-          sx={{
-            color: colorText,
-          }}
-        >
+      <Avatar sx={{ bgcolor: Colors.grey4, width: 25, height: 25 }}>
+        <Typography variant="h6" color="text.secondary">
           {rank}
         </Typography>
       </Avatar>
@@ -117,15 +112,12 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                 const isFriend = idFriend.includes(el.profile.id);
                 const colorFriend = isFriend ? Colors.purple : "initial";
                 const color = isMe ? Colors.colorApp : colorFriend;
-                const colorText =
-                  isMe || isFriend ? Colors.white : "text.primary";
 
                 return (
                   <TableRow
                     key={index}
                     sx={{
                       backgroundColor: color,
-                      color: `${colorText} !important`,
                       cursor: "pointer",
                     }}
                     onClick={() =>
@@ -133,7 +125,7 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                     }
                   >
                     <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
-                      {getIcon(el.rank, colorText)}
+                      {getIcon(el.rank)}
                     </TableCell>
                     <TableCell sx={{ p: px(4), width: px(45) }}>
                       <Link
@@ -173,13 +165,7 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                               size={20}
                             />
                           )}
-                          <Typography
-                            variant={"h6"}
-                            sx={{
-                              color: colorText,
-                            }}
-                            noWrap
-                          >
+                          <Typography variant={"h6"} noWrap>
                             {el.profile.username}
                           </Typography>
                         </Box>

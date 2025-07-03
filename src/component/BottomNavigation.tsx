@@ -43,6 +43,8 @@ export const BottomNavigationBlock = () => {
         right: 0,
         zIndex: 10,
         borderTop: `2px solid ${Colors.lightgrey}`,
+        pb: "calc(env(safe-area-inset-bottom, 0px))",
+        backgroundColor: "background.paper",
       }}
     >
       <BottomNavigation

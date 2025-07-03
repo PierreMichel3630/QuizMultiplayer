@@ -98,15 +98,10 @@ export const RankingTable = ({
     [friends, profile]
   );
 
-  const getIcon = (rank: number, colorText: string) => {
+  const getIcon = (rank: number) => {
     let icon = (
-      <Avatar sx={{ bgcolor: Colors.grey, width: 25, height: 25 }}>
-        <Typography
-          variant="h6"
-          sx={{
-            color: colorText,
-          }}
-        >
+      <Avatar sx={{ bgcolor: Colors.grey4, width: 25, height: 25 }}>
+        <Typography variant="h6" color="text.secondary">
           {rank}
         </Typography>
       </Avatar>
@@ -140,6 +135,7 @@ export const RankingTable = ({
             borderTopLeftRadius: px(0),
             borderTopRightRadius: px(0),
           }}
+          elevation={8}
         >
           <Table size="small" sx={{ tableLayout: "fixed" }}>
             <TableBody>
@@ -150,8 +146,6 @@ export const RankingTable = ({
                   : false;
                 const colorFriend = isFriend ? Colors.purple : "initial";
                 const color = isMe ? Colors.colorApp : colorFriend;
-                const colorText =
-                  isMe || isFriend ? Colors.white : "text.primary";
 
                 return (
                   <Fragment key={index}>
@@ -162,7 +156,7 @@ export const RankingTable = ({
                       ref={index === data.length - 1 ? lastItemRef : null}
                     >
                       <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
-                        {getIcon(el.rank, colorText)}
+                        {getIcon(el.rank)}
                       </TableCell>
                       <TableCell sx={{ p: px(4), width: px(50) }}>
                         {el.profile ? (
@@ -208,13 +202,7 @@ export const RankingTable = ({
                                     country={el.profile.country}
                                   />
                                 )}
-                                <Typography
-                                  variant="h6"
-                                  sx={{
-                                    color: colorText,
-                                  }}
-                                  noWrap
-                                >
+                                <Typography variant="h6" noWrap>
                                   {el.profile.username}
                                 </Typography>
                               </Link>
@@ -223,23 +211,12 @@ export const RankingTable = ({
                               />
                             </>
                           ) : (
-                            <Typography
-                              variant="h6"
-                              sx={{
-                                color: colorText,
-                              }}
-                              noWrap
-                            >
+                            <Typography variant="h6" noWrap>
                               {t("commun.notconnect")}
                             </Typography>
                           )}
                           {el.date && (
-                            <Typography
-                              variant="caption"
-                              sx={{
-                                color: colorText,
-                              }}
-                            >
+                            <Typography variant="caption">
                               {moment(el.date).format("DD/MM/YYYY HH:mm")}
                             </Typography>
                           )}
@@ -263,7 +240,6 @@ export const RankingTable = ({
                                 <Typography
                                   variant="body1"
                                   sx={{
-                                    color: colorText,
                                     overflow: "hidden",
                                     display: "block",
                                     lineClamp: 1,
@@ -286,11 +262,7 @@ export const RankingTable = ({
                         }}
                         width={el.size ?? 90}
                       >
-                        <Box
-                          sx={{
-                            color: colorText,
-                          }}
-                        >
+                        <Box>
                           {isStringOrNumber(el.value) ? (
                             <Typography variant="h2" component="span" noWrap>
                               {el.value}
@@ -300,13 +272,7 @@ export const RankingTable = ({
                           )}
 
                           {el.extra && (
-                            <Typography
-                              variant="body1"
-                              component="span"
-                              sx={{
-                                color: colorText,
-                              }}
-                            >
+                            <Typography variant="body1" component="span">
                               {el.extra}
                             </Typography>
                           )}

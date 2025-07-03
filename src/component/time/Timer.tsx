@@ -5,9 +5,10 @@ import { Colors } from "src/style/Colors";
 
 interface Props {
   time?: number;
+  end?: () => void;
 }
 
-export const Timer = ({ time }: Props) => {
+export const Timer = ({ time, end }: Props) => {
   const DELAY = 100;
   const [intervalTimer, setIntervalTimer] = useState<
     NodeJS.Timeout | undefined
@@ -33,10 +34,11 @@ export const Timer = ({ time }: Props) => {
   }, [time]);
 
   useEffect(() => {
-    if (timer <= 0) {
+    if (timer && timer <= 0) {
       clearInterval(intervalTimer);
+      if (end) end();
     }
-  }, [intervalTimer, timer]);
+  }, [end, intervalTimer, timer]);
 
   const pourcentage = (timer / (totalTime * 1000)) * 100;
 

@@ -26,7 +26,7 @@ export const ChallengeButton = () => {
         background: `linear-gradient(${Colors.black}, ${Colors.black}) padding-box, conic-gradient(from var(--border-angle),oklch(100% 100% 0deg),oklch(100% 100% 45deg),oklch(100% 100% 90deg),oklch(100% 100% 135deg),oklch(100% 100% 180deg),oklch(100% 100% 225deg),oklch(100% 100% 270deg),oklch(100% 100% 315deg),oklch(100% 100% 360deg)) border-box`,
       }}
     >
-      <AnimationBlock width={40} height={40} data={duelAnimate} />
+      <AnimationBlock width={35} height={35} data={duelAnimate} />
       <Typography variant="h4" sx={{ color: Colors.white }}>
         {t("commun.gotochallenge")}
       </Typography>

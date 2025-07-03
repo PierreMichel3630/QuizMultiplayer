@@ -1,4 +1,4 @@
-import { Box, Container, Divider, Grid, Typography } from "@mui/material";
+import { Box, Container, Divider, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { px, viewHeight } from "csx";
@@ -12,32 +12,27 @@ import { useEffect, useState } from "react";
 import {
   countChallengeGameByDateAndProfileId,
   selectChallengeGameByProfileId,
+  selectRankingChallengeAllTimeByProfileId,
   selectRankingChallengeMonthByProfileId,
   selectRankingChallengeWeekByProfileId,
 } from "src/api/challenge";
 import { getProfilById } from "src/api/profile";
-import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
 import { ButtonColor } from "src/component/Button";
 import { GroupButtonChallengeTime } from "src/component/button/ButtonGroup";
 import {
+  CardChallengeAllTime,
   CardChallengeMonth,
   CardChallengeWeek,
 } from "src/component/card/CardChallenge";
 import { CardChallengeGame } from "src/component/card/CardChallengeGame";
 import { RatingChallenge } from "src/component/challenge/RatingChallenge";
-import {
-  ResultAllTimeChallengeBlock,
-  ResultDayChallengeBlock,
-  ResultMonthChallengeBlock,
-  ResultWeekChallengeBlock,
-} from "src/component/ChallengeBlock";
-import { CountryImageBlock } from "src/component/CountryBlock";
 import { BarNavigation } from "src/component/navigation/BarNavigation";
-import { ProfileTitleBlock } from "src/component/title/ProfileTitle";
+import { ProfileBlock } from "src/component/profile/ProfileBlock";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import {
   ChallengeRanking,
+  ChallengeRankingAllTime,
   ChallengeRankingMonth,
   ChallengeRankingWeek,
 } from "src/models/Challenge";
@@ -59,6 +54,8 @@ export default function ChallengeProfilPage() {
   const [games, setGames] = useState<Array<ChallengeRanking>>([]);
   const [statMonth, setStatMonth] = useState<Array<ChallengeRankingMonth>>([]);
   const [statWeek, setStatWeek] = useState<Array<ChallengeRankingWeek>>([]);
+  const [statAllTime, setStatAllTime] =
+    useState<null | ChallengeRankingAllTime>(null);
 
   const [hasPlayChallenge, setHasPlayChallenge] = useState<undefined | boolean>(
     undefined
@@ -90,9 +87,20 @@ export default function ChallengeProfilPage() {
         );
       }
     };
+
+    const getStatAllTime = () => {
+      if (profileUser) {
+        selectRankingChallengeAllTimeByProfileId(profileUser.id).then(
+          ({ data }) => {
+            setStatAllTime(data);
+          }
+        );
+      }
+    };
     getGames();
     getStatWeek();
     getStatMonth();
+    getStatAllTime();
   }, [profileUser]);
 
   useEffect(() => {
@@ -145,30 +153,8 @@ export default function ChallengeProfilPage() {
           >
             {profileUser && (
               <Grid container spacing={1}>
-                <Grid
-                  item
-                  xs={12}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: 1,
-                  }}
-                >
-                  <AvatarAccountBadge profile={profileUser} size={60} />
-                  <Box>
-                    <Box sx={{ display: "flex", gap: px(3) }}>
-                      {profileUser.country && (
-                        <CountryImageBlock country={profileUser.country} />
-                      )}
-                      <Typography variant="h2">
-                        {profileUser.username}
-                      </Typography>
-                    </Box>
-                    <ProfileTitleBlock
-                      titleprofile={profileUser.titleprofile}
-                    />
-                  </Box>
+                <Grid item xs={12}>
+                  <ProfileBlock profile={profileUser} />
                 </Grid>
                 <Grid item xs={12}>
                   <GroupButtonChallengeTime
@@ -182,12 +168,6 @@ export default function ChallengeProfilPage() {
                   {
                     day: (
                       <>
-                        <Grid item xs={12}>
-                          <ResultDayChallengeBlock
-                            profile={profileUser}
-                            title={t("commun.day")}
-                          />
-                        </Grid>
                         <Grid item xs={12}>
                           <RatingChallenge />
                         </Grid>
@@ -206,15 +186,6 @@ export default function ChallengeProfilPage() {
                     ),
                     week: (
                       <>
-                        <Grid item xs={12}>
-                          <ResultWeekChallengeBlock
-                            profile={profileUser}
-                            title={t("commun.week")}
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <Divider sx={{ borderBottomWidth: 5 }} />
-                        </Grid>
                         {statWeek.map((stat, index) => (
                           <Grid item xs={12} key={index}>
                             <CardChallengeWeek value={stat} />
@@ -224,15 +195,6 @@ export default function ChallengeProfilPage() {
                     ),
                     month: (
                       <>
-                        <Grid item xs={12}>
-                          <ResultMonthChallengeBlock
-                            profile={profileUser}
-                            title={t("commun.month")}
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <Divider sx={{ borderBottomWidth: 5 }} />
-                        </Grid>
                         {statMonth.map((stat, index) => (
                           <Grid item xs={12} key={index}>
                             <CardChallengeMonth value={stat} />
@@ -241,12 +203,13 @@ export default function ChallengeProfilPage() {
                       </>
                     ),
                     alltime: (
-                      <Grid item xs={12}>
-                        <ResultAllTimeChallengeBlock
-                          profile={profileUser}
-                          title={t("commun.alltime")}
-                        />
-                      </Grid>
+                      <>
+                        {statAllTime && (
+                          <Grid item xs={12}>
+                            <CardChallengeAllTime value={statAllTime} />
+                          </Grid>
+                        )}
+                      </>
                     ),
                   }[tabTime]
                 }

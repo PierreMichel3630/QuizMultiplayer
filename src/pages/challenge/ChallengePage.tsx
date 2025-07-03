@@ -80,38 +80,43 @@ export default function ChallengePage() {
                 {t("commun.challengeexplain2")}
               </Typography>
             </Grid>
-            {!profile && (
+            {!profile ? (
               <Grid item xs={12}>
                 <NeedConnectAlert />
               </Grid>
-            )}
-            {hasChallenge ? (
+            ) : (
               <>
-                {hasPlayChallenge !== undefined && (
-                  <Grid item xs={12}>
-                    {hasPlayChallenge ? (
-                      <TimeLeftToNextDayLabel
-                        label={t("commun.nextdaychallenge")}
-                      />
-                    ) : (
-                      <ButtonColor
-                        fullWidth
-                        value={Colors.blue}
-                        label={t("commun.launch")}
-                        icon={RocketLaunchIcon}
-                        variant="contained"
-                        onClick={() => {
-                          launch();
-                        }}
-                      />
+                {hasChallenge ? (
+                  <>
+                    {hasPlayChallenge !== undefined && (
+                      <Grid item xs={12}>
+                        {hasPlayChallenge ? (
+                          <TimeLeftToNextDayLabel
+                            label={t("commun.nextdaychallenge")}
+                          />
+                        ) : (
+                          <ButtonColor
+                            fullWidth
+                            value={Colors.blue}
+                            label={t("commun.launch")}
+                            icon={RocketLaunchIcon}
+                            variant="contained"
+                            onClick={() => {
+                              launch();
+                            }}
+                          />
+                        )}
+                      </Grid>
                     )}
+                  </>
+                ) : (
+                  <Grid item xs={12}>
+                    <Alert severity="warning">
+                      {t("alert.nochallengegame")}
+                    </Alert>
                   </Grid>
                 )}
               </>
-            ) : (
-              <Grid item xs={12}>
-                <Alert severity="warning">{t("alert.nochallengegame")}</Alert>
-              </Grid>
             )}
 
             <Grid item xs={12}>

@@ -1,6 +1,6 @@
-import { Box, debounce, Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { percent, px } from "csx";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { FavoriteBlock } from "src/component/FavoriteBlock";
@@ -16,6 +16,7 @@ import { RankingTop5Block } from "src/component/RankingBlock";
 import { useAuth } from "src/context/AuthProviderSupabase";
 
 import CloseIcon from "@mui/icons-material/Close";
+import { debounce } from "lodash";
 import moment from "moment";
 import { countChallengeGameByDateAndProfileId } from "src/api/challenge";
 import { ChallengeButton } from "src/component/button/ChallengeButton";
@@ -65,10 +66,14 @@ export default function ThemesPage() {
 
   const handleChange = (value: string) => {
     setSearch(value);
-    debounce(() => {
-      setSearchApi(value);
-    }, 300);
+    debouncedSetSearchApi(value);
   };
+
+  const debouncedSetSearchApi = useMemo(() => {
+    return debounce((val: string) => {
+      setSearchApi(val);
+    }, 300);
+  }, []);
 
   return (
     <Grid container>
@@ -162,7 +167,7 @@ export default function ThemesPage() {
                   <ShopBlock />
                 </Grid>
                 <Grid item xs={12}>
-                  <RankingTop5Block />
+                  <RankingTop5Block hasPlayChallenge={hasPlayChallenge} />
                 </Grid>
                 <Grid item xs={12}>
                   <CategoriesScrollBlock />

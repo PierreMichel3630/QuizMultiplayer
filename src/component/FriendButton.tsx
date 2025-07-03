@@ -84,65 +84,67 @@ export const FriendButton = ({ profile, small = false }: Props) => {
   };
 
   return user && friend ? (
-    friend.status === FRIENDSTATUS.PROGRESS ? (
-      <>
-        {user.id === friend.user2.id ? (
-          <Box
-            sx={{
-              display: "flex",
-              gap: 1,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: Colors.purple,
-              p: 1,
-              borderRadius: px(5),
-            }}
-          >
-            <MailIcon sx={{ color: Colors.white }} fontSize="small" />
-            <Typography variant="body1" color="text.secondary">
-              {t("commun.waitvalidation")}
-            </Typography>
-          </Box>
-        ) : (
-          <Box
-            sx={{
-              display: "flex",
-              gap: 1,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: Colors.purple,
-              p: 1,
-              borderRadius: px(5),
-            }}
-          >
-            <MailIcon sx={{ color: Colors.white }} fontSize="small" />
-            <Typography variant="body1" color="text.secondary">
-              {t("commun.waitinvitation")}
-            </Typography>
-          </Box>
-        )}
-      </>
-    ) : (
-      <ButtonColor
-        fullWidth={!small}
-        value={Colors.red}
-        label={t("commun.deletefriend")}
-        icon={RemoveCircleIcon}
-        variant="contained"
-        onClick={(ev) => {
-          ev.preventDefault();
-          ev.stopPropagation();
-          deleteFriend();
-        }}
-        typography={small ? "body1" : undefined}
-        iconSize={small ? 15 : undefined}
-      />
-    )
+    <>
+      {friend.status === FRIENDSTATUS.PROGRESS ? (
+        <>
+          {user.id === friend.user2.id ? (
+            <Box
+              sx={{
+                display: "flex",
+                gap: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: Colors.purple,
+                p: 1,
+                borderRadius: px(5),
+              }}
+            >
+              <MailIcon sx={{ color: Colors.white }} fontSize="small" />
+              <Typography variant="body1" color="text.secondary">
+                {t("commun.waitvalidation")}
+              </Typography>
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                gap: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: Colors.purple,
+                p: 1,
+                borderRadius: px(5),
+              }}
+            >
+              <MailIcon sx={{ color: Colors.white }} fontSize="small" />
+              <Typography variant="body1" color="text.secondary">
+                {t("commun.waitinvitation")}
+              </Typography>
+            </Box>
+          )}
+        </>
+      ) : (
+        <ButtonColor
+          fullWidth={!small}
+          value={Colors.red}
+          label={t("commun.delete")}
+          icon={RemoveCircleIcon}
+          variant="contained"
+          onClick={(ev) => {
+            ev.preventDefault();
+            ev.stopPropagation();
+            deleteFriend();
+          }}
+          typography={small ? "body1" : undefined}
+          iconSize={small ? 15 : undefined}
+        />
+      )}
+    </>
   ) : (
     <ButtonColor
       fullWidth={!small}
       value={Colors.green}
-      label={t("commun.addtofriend")}
+      label={t("commun.add")}
       icon={AddCircleIcon}
       variant="contained"
       onClick={(ev) => {

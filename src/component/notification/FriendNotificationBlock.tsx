@@ -48,6 +48,7 @@ export const FriendNotificationBlock = ({ friend }: Props) => {
         p: 1,
         width: percent(100),
       }}
+      elevation={8}
     >
       <Box
         sx={{
@@ -72,7 +73,7 @@ export const FriendNotificationBlock = ({ friend }: Props) => {
           <Box
             sx={{
               p: px(5),
-              backgroundColor: Colors.green2,
+              backgroundColor: Colors.correctanswer,
               borderRadius: px(5),
               cursor: "pointer",
               display: "flex",
@@ -86,7 +87,7 @@ export const FriendNotificationBlock = ({ friend }: Props) => {
           <Box
             sx={{
               p: px(5),
-              backgroundColor: Colors.red2,
+              backgroundColor: Colors.wronganswer,
               borderRadius: px(5),
               cursor: "pointer",
               display: "flex",

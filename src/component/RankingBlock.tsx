@@ -38,6 +38,7 @@ import {
 import { DataRanking, RankingTable } from "./table/RankingTable";
 import { useUser } from "src/context/UserProvider";
 import { RecapAvgChallenge } from "./ChallengeBlock";
+import { ChallengeButton } from "./button/ChallengeButton";
 
 interface Props {
   themes?: Array<number>;
@@ -99,7 +100,12 @@ export const RankingBlock = ({ themes }: Props) => {
   );
 };
 
-export const RankingTop5Block = () => {
+interface PropsRankingTop5Block {
+  hasPlayChallenge?: boolean;
+}
+export const RankingTop5Block = ({
+  hasPlayChallenge = false,
+}: PropsRankingTop5Block) => {
   const { t } = useTranslation();
   const { language, hasChallenge } = useUser();
 
@@ -420,20 +426,28 @@ export const RankingTop5Block = () => {
         </Grid>
       )}
       {tab === AllGameModeEnum.CHALLENGE && (
-        <Grid item xs={12}>
-          <GroupButtonChallengeTime
-            selected={tabTimeChallenge}
-            onChange={(value) => {
-              setTabTimeChallenge(value);
-            }}
-          />
-        </Grid>
+        <>
+          <Grid item xs={12}>
+            <GroupButtonChallengeTime
+              selected={tabTimeChallenge}
+              onChange={(value) => {
+                setTabTimeChallenge(value);
+              }}
+            />
+          </Grid>
+          {avg && (
+            <Grid item xs={12}>
+              <RecapAvgChallenge avg={avg} />
+            </Grid>
+          )}
+          {hasChallenge && !hasPlayChallenge && (
+            <Grid item xs={12}>
+              <ChallengeButton />
+            </Grid>
+          )}
+        </>
       )}
-      {avg && (
-        <Grid item xs={12}>
-          <RecapAvgChallenge avg={avg} />
-        </Grid>
-      )}
+
       <Grid item xs={12}>
         <Container maxWidth="sm">
           <Box sx={{ p: 1 }}>

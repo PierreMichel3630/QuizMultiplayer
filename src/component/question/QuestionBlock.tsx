@@ -9,13 +9,15 @@ import { Timer } from "../time/Timer";
 import { Question } from "src/models/Question";
 import { useMemo } from "react";
 import { TypeQuestionEnum } from "src/models/enum/TypeQuestionEnum";
+import { Answer } from "./ResponseBlock";
 
 interface Props {
   question: Question;
   timer?: number;
+  onSubmit?: (value: Answer) => void;
 }
 
-export const QuestionBlock = ({ question, timer }: Props) => {
+export const QuestionBlock = ({ question, timer, onSubmit }: Props) => {
   const isQuestionOrder = useMemo(
     () => question.typequestion === TypeQuestionEnum.ORDER,
     [question]
@@ -77,7 +79,12 @@ export const QuestionBlock = ({ question, timer }: Props) => {
                 pb: px(3),
               }}
             >
-              <Timer time={timer} />
+              <Timer
+                time={timer}
+                end={() => {
+                  if (onSubmit) onSubmit({ value: undefined, exact: true });
+                }}
+              />
             </Box>
           )}
         </>

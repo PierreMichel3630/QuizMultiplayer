@@ -26,7 +26,7 @@ export interface ResponseLanguageString {
 }
 
 export interface Answer {
-  value: string | number;
+  value?: string | number;
   exact: boolean;
 }
 

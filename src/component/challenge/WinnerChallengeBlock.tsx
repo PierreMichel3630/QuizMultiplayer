@@ -1,5 +1,5 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { px } from "csx";
+import { percent, px } from "csx";
 import moment from "moment";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -103,7 +103,19 @@ const ResultChallengeBlock = ({
         {profile && (
           <>
             <AvatarAccountBadge profile={profile} size={60} />
-            <Typography variant="h6">{profile?.username}</Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                overflow: "hidden",
+                display: "block",
+                lineClamp: 1,
+                boxOrient: "vertical",
+                textOverflow: "ellipsis",
+                maxWidth: percent(100),
+              }}
+            >
+              {profile?.username}
+            </Typography>
           </>
         )}
         {extra}
