@@ -116,6 +116,15 @@ export const sortByPriceDesc = (a: { price: number }, b: { price: number }) => {
   return valueA - valueB;
 };
 
+export const sortByIsaccomplishmentAndPriceDesc = (
+  a: { isaccomplishment: boolean; price: number },
+  b: { isaccomplishment: boolean; price: number }
+) => {
+  return (
+    Number(a.isaccomplishment) - Number(b.isaccomplishment) || a.price - b.price
+  );
+};
+
 export const sortByCreatedAt = (
   a: { created_at: Date },
   b: { created_at: Date }

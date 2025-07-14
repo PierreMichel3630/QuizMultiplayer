@@ -1,10 +1,7 @@
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   Box,
   Grid,
-  IconButton,
   Switch,
   TableCell,
   TablePagination,
@@ -12,9 +9,13 @@ import {
 } from "@mui/material";
 import { percent, px } from "csx";
 import moment, { Moment } from "moment";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useSearchParams } from "react-router-dom";
+import {
+  countStatAccomplishment,
+  selectStatAccomplishment,
+} from "src/api/accomplishment";
 import {
   countChallengeGameByDate,
   countRankingChallengeAllTime,
@@ -33,6 +34,7 @@ import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
+import { StatAccomplishment } from "src/models/Accomplishment";
 import {
   ChallengeAvg,
   ChallengeRankingAllTime,
@@ -50,6 +52,7 @@ import {
   GroupButtonChallengeGlobal,
   GroupButtonChallengeTime,
 } from "./button/ButtonGroup";
+import { WinBlock } from "./challenge/WinBlock";
 import { WinnerTextRankingBlock } from "./challenge/WinnerChallengeBlock";
 import {
   ResultAllTimeChallengeBlock,
@@ -57,18 +60,13 @@ import {
   ResultMonthChallengeBlock,
   ResultWeekChallengeBlock,
 } from "./ChallengeBlock";
+import { ChangeDateBlock, DateFormat } from "./date/ChangeDateBlock";
 import { BasicSearchInput } from "./Input";
 import { SortButton } from "./SortBlock";
 import {
   DataRankingChallenge,
   RankingChallengeTable,
 } from "./table/RankingChallengeTable";
-import {
-  countStatAccomplishment,
-  selectStatAccomplishment,
-} from "src/api/accomplishment";
-import { StatAccomplishment } from "src/models/Accomplishment";
-import { WinBlock } from "./challenge/WinBlock";
 
 interface Props {
   hasPlayChallenge?: boolean;
@@ -216,19 +214,6 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
     };
     getTotal();
   }, [date, tabTime, tabChallengeMode, search, idFriends, tab]);
-
-  const isDisabledNextDay = useMemo(() => {
-    const today = moment().startOf("day");
-    let future = moment(date).startOf("day");
-    if (tabTime === ClassementChallengeTimeEnum.day) {
-      future = future.add(1, "day");
-    } else if (tabTime === ClassementChallengeTimeEnum.month) {
-      future = future.add(1, "month");
-    } else if (tabTime === ClassementChallengeTimeEnum.week) {
-      future = future.add(1, "week");
-    }
-    return today.diff(future) < 0;
-  }, [date, tabTime]);
 
   useEffect(() => {
     const getAvg = () => {
@@ -556,16 +541,6 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
     tabChallengeMode,
   ]);
 
-  const diffValue = useMemo(() => {
-    let result: "day" | "month" | "week" = "day";
-    if (tabTime === ClassementChallengeTimeEnum.month) {
-      result = "month";
-    } else if (tabTime === ClassementChallengeTimeEnum.week) {
-      result = "week";
-    }
-    return result;
-  }, [tabTime]);
-
   const dateDisplay = useMemo(() => {
     let result = undefined;
     if (tabTime === ClassementChallengeTimeEnum.day) {
@@ -579,14 +554,6 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
     }
     return result;
   }, [date, tabTime]);
-
-  const substractDate = useCallback(() => {
-    setDate((prev) => moment(prev).subtract(1, diffValue));
-  }, [diffValue]);
-
-  const addDate = useCallback(() => {
-    setDate((prev) => moment(prev).add(1, diffValue));
-  }, [diffValue]);
 
   const dataDisplay = useMemo(() => {
     return [...data].map((el) => ({
@@ -672,30 +639,11 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
         )}
       </Grid>
       {dateDisplay && (
-        <Grid item xs={12}>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <IconButton onClick={substractDate} size="small">
-              <KeyboardArrowLeftIcon fontSize="large" />
-            </IconButton>
-            <Typography variant="h4" sx={{ textAlign: "center" }}>
-              {dateDisplay}
-            </Typography>
-            <IconButton
-              onClick={addDate}
-              disabled={isDisabledNextDay}
-              size="small"
-            >
-              <KeyboardArrowRightIcon fontSize="large" />
-            </IconButton>
-          </Box>
-        </Grid>
+        <ChangeDateBlock
+          date={date}
+          format={tabTime as unknown as DateFormat}
+          onChange={(value) => setDate(value)}
+        />
       )}
       {tab === ClassementChallengeEnum.perdate && (
         <Grid item>

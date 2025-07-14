@@ -8,6 +8,7 @@ enum Menu {
   THEME = "THEME",
   QUESTIONS = "QUESTIONS",
   SHOP = "SHOP",
+  CHALLENGE = "CHALLENGE",
 }
 
 interface MenuItem {
@@ -21,10 +22,15 @@ export default function AdminEditPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [value, setValue] = useState(
-    location.pathname.split("/").pop()?.toUpperCase() ?? Menu.CATEGORIES
+    location.pathname.split("/").pop()?.toUpperCase() ?? Menu.CHALLENGE
   );
 
   const menus: Array<MenuItem> = [
+    {
+      value: Menu.CHALLENGE,
+      label: t("commun.challenge"),
+      link: "/administration/edit/challenge",
+    },
     {
       value: Menu.CATEGORIES,
       label: t("commun.categories"),

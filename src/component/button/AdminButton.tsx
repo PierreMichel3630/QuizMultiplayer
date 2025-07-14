@@ -43,7 +43,7 @@ export const AdminButton = () => {
             {
               name: t("commun.addmodifydelete"),
               icon: <EditIcon />,
-              url: "/administration/edit/categories",
+              url: "/administration/edit/challenge",
             },
             {
               name: t("commun.games"),

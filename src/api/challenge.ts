@@ -72,6 +72,28 @@ export const selectChallengeGameByDateAndProfileId = (
     .eq("challenge.date", date.format("YYYY-MM-DD"))
     .maybeSingle();
 
+export const selectChallengeGameByDatePaginate = (
+  date: Moment,
+  search: string,
+  page: number,
+  itemperpage: number
+) => {
+  const from = page * itemperpage;
+  const to = from + itemperpage - 1;
+
+  return supabase
+    .from(SUPABASE_CHALLENGEGAME_TABLE)
+    .select(
+      "* , challenge(*), profile(*, titleprofile!profiles_titleprofile_fkey(*,title(*)), avatar(*), badge(*), banner(*), country(*))"
+    )
+    .not("challenge", "is", null)
+    .eq("challenge.date", date.format("YYYY-MM-DD"))
+    .ilike("profile.username", `%${search}%`)
+    .not("profile", "is", null)
+    .order("profile(username)", { ascending: true })
+    .range(from, to);
+};
+
 export const selectChallengeGameByUuid = (uuid: string) =>
   supabase
     .from(SUPABASE_CHALLENGEGAME_TABLE)
@@ -80,6 +102,9 @@ export const selectChallengeGameByUuid = (uuid: string) =>
     )
     .eq("uuid", uuid)
     .maybeSingle();
+
+export const deleteChallengeGameById = (id: number) =>
+  supabase.from(SUPABASE_CHALLENGEGAME_TABLE).delete().eq("id", id);
 
 export const selectChallengeGameByProfileId = (id: string) =>
   supabase

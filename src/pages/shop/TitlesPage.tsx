@@ -7,7 +7,7 @@ import { TitleShop } from "src/component/shop/TitleShop";
 import { TitleBlock } from "src/component/title/Title";
 import { useApp } from "src/context/AppProvider";
 import { Title } from "src/models/Title";
-import { sortByPriceDesc } from "src/utils/sort";
+import { sortByIsaccomplishmentAndPriceDesc } from "src/utils/sort";
 
 export default function TitlesPage() {
   const { t } = useTranslation();
@@ -29,7 +29,7 @@ export default function TitlesPage() {
     const idsBuy = myTitles.map((el) => el.title.id);
     return [...titles]
       .filter((el) => !idsBuy.includes(el.id))
-      .sort(sortByPriceDesc);
+      .sort(sortByIsaccomplishmentAndPriceDesc);
   }, [titles, myTitles]);
 
   return (

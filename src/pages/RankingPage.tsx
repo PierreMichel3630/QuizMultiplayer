@@ -205,7 +205,8 @@ export default function RankingPage() {
                   profile: el.profile,
                   value: Array.isArray(champ) ? champ.length : champ,
                   rank: page * ITEMPERPAGE + index + 1,
-                  size: 60,
+                  size:
+                    tabSoloMode === ClassementSoloModeEnum.pointssolo ? 80 : 60,
                 };
               });
               setIsEnd(newdata.length < ITEMPERPAGE);

@@ -25,6 +25,8 @@ import { FRIENDSTATUS, Friend } from "src/models/Friend";
 import { ReportMessage } from "src/models/Report";
 import { TitleProfile } from "src/models/Title";
 import { useAuth } from "./AuthProviderSupabase";
+import { sortByName } from "src/utils/sort";
+import { useUser } from "./UserProvider";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[];
@@ -77,6 +79,7 @@ export const useApp = () => useContext(AppContext);
 
 export const AppProvider = ({ children }: Props) => {
   const { user } = useAuth();
+  const { language } = useUser();
 
   const [nbThemes, setNbThemes] = useState<undefined | number>(undefined);
   const [nbPlayers, setNbPlayers] = useState<undefined | number>(undefined);
@@ -198,12 +201,15 @@ export const AppProvider = ({ children }: Props) => {
   }, [getMyBanners, user]);
 
   const getMyTitles = useCallback(() => {
-    if (user) {
+    if (user && language) {
       selectTitleByProfile(user.id).then(({ data }) => {
-        setMyTitles(data ?? []);
+        const res = data ?? [];
+        setMyTitles(
+          [...res].sort((a, b) => sortByName(language, a.title, b.title))
+        );
       });
     }
-  }, [user]);
+  }, [user, language]);
 
   useEffect(() => {
     getMyTitles();

@@ -112,6 +112,7 @@ const ResultChallengeBlock = ({
                 boxOrient: "vertical",
                 textOverflow: "ellipsis",
                 maxWidth: percent(100),
+                whiteSpace: "nowrap",
               }}
             >
               {profile?.username}

@@ -145,7 +145,12 @@ export const AvatarForm = ({ validate, avatar }: Props) => {
           <Typography variant="h6">{t("form.createavatar.icon")}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <FileUploadInput formik={formik} field="icon" />
+          <FileUploadInput
+            formik={formik}
+            field="icon"
+            maxWidth={100}
+            maxSize={25}
+          />
         </Grid>
         <Grid item xs={12}>
           <ButtonColor

@@ -184,11 +184,13 @@
     "addlanguage": "Ajouter une langue",
     "addavatar": "Ajouter un avatar",
     "addbanner": "Ajouter une photo de couverture",
+    "addtitle" : "Ajouter un titre",
     "removelanguage": "Supprimer la langue",
     "editquestion": "Modifier une question",
     "editcategory": "Modifier une catégorie",
     "editavatar": "Modifier un avatar",
     "editbanner": "Modifier une photo de couverture",
+    "edittitle": "Modifier un titre",
     "selecttheme": "Sélectionner un thème",
     "selectlanguage": "Sélectionner une langue",
     "selectcategory": "Sélectionner une catégorie",
@@ -344,7 +346,8 @@
     "version": "Version",
     "grades": "Notes",
     "result" : "Résultat",
-    "average": "Moyenne"
+    "average": "Moyenne",
+    "time": "Temps"
   },
   "abrevation": {
     "average": "Moy."
@@ -527,6 +530,9 @@
     "title": {
       "title": "Titre"
     },
+    "titles": {
+      "title": "Titres"
+    },
     "new": {
       "title": "Nouveautés"
     },
@@ -672,14 +678,14 @@
       "requiredtheme": "Veuillez sélectionner un thème",
       "icon": "Icone"
     },
-    "createbanner": {
+    "createtitle": {
       "price": "Prix *",
       "isaccomplishment": "Est succès ?",
       "requiredprice": "Veuillez saisir un prix",
-      "requiredtheme": "Veuillez sélectionner un thème",
-      "icon": "Icone"
+      "requiredname": "Veuillez saisir un nom",
+      "name": "Nom*"
     },
-    "createtitle": {
+    "createbanner": {
       "price": "Prix *",
       "isaccomplishment": "Est succès ?",
       "requiredprice": "Veuillez saisir un prix",
@@ -737,7 +743,8 @@
   },
   "error": {
     "selectatleast1theme": "Sélectionner au moins un thème",
-    "selectadv": "Sélectionner un adversaire"
+    "selectadv": "Sélectionner un adversaire",
+    "sizetoolarge": "Taille du fichier trop grande"
   },
   "alert": {
     "pagenotfound": "Cette page n'est pas disponible.",

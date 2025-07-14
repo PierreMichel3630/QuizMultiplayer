@@ -406,50 +406,50 @@ export const RankingTop5Block = ({
   }, [tab, tabTimeChallenge, language.iso]);
 
   return (
-    <Grid container spacing={1} alignItems="center">
-      <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-        <GroupButtonAllGameMode
-          selected={tab}
-          onChange={(value) => {
-            setTab(value);
-          }}
-        />
-      </Grid>
-      {tab === AllGameModeEnum.SOLO && (
-        <Grid item xs={12}>
-          <GroupButtonTime
-            selected={tabTimeSolo}
+    <Container maxWidth="sm">
+      <Grid container spacing={1} alignItems="center">
+        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <GroupButtonAllGameMode
+            selected={tab}
             onChange={(value) => {
-              setTabTimeSolo(value);
+              setTab(value);
             }}
           />
         </Grid>
-      )}
-      {tab === AllGameModeEnum.CHALLENGE && (
-        <>
+        {tab === AllGameModeEnum.SOLO && (
           <Grid item xs={12}>
-            <GroupButtonChallengeTime
-              selected={tabTimeChallenge}
+            <GroupButtonTime
+              selected={tabTimeSolo}
               onChange={(value) => {
-                setTabTimeChallenge(value);
+                setTabTimeSolo(value);
               }}
             />
           </Grid>
-          {avg && (
+        )}
+        {tab === AllGameModeEnum.CHALLENGE && (
+          <>
             <Grid item xs={12}>
-              <RecapAvgChallenge avg={avg} />
+              <GroupButtonChallengeTime
+                selected={tabTimeChallenge}
+                onChange={(value) => {
+                  setTabTimeChallenge(value);
+                }}
+              />
             </Grid>
-          )}
-          {hasChallenge && !hasPlayChallenge && (
-            <Grid item xs={12}>
-              <ChallengeButton />
-            </Grid>
-          )}
-        </>
-      )}
+            {avg && (
+              <Grid item xs={12}>
+                <RecapAvgChallenge avg={avg} />
+              </Grid>
+            )}
+            {hasChallenge && !hasPlayChallenge && (
+              <Grid item xs={12}>
+                <ChallengeButton />
+              </Grid>
+            )}
+          </>
+        )}
 
-      <Grid item xs={12}>
-        <Container maxWidth="sm">
+        <Grid item xs={12}>
           <Box sx={{ p: 1 }}>
             <RankingTable
               data={data}
@@ -460,8 +460,8 @@ export const RankingTop5Block = ({
               }}
             />
           </Box>
-        </Container>
+        </Grid>
       </Grid>
-    </Grid>
+    </Container>
   );
 };

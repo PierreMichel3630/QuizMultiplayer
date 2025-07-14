@@ -107,7 +107,6 @@ export default function PlayChallengePage() {
 
   const end = useCallback(() => {
     if (uuidGame) {
-      console.log(questionsGameRef.current);
       endChallenge(questionsGameRef.current, uuidGame).then(({ data }) => {
         navigate(`/challenge/game/${uuidGame}`, {
           state: {

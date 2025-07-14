@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import AdminEditThemeShopPage from "./shop/AdminEditThemeShopPage";
 import AdminEditAvatarShopPage from "./shop/AdminEditAvatarShopPage";
 import AdminEditBannerShopPage from "./shop/AdminEditBannerShopPage";
+import AdminEditTitleShopPage from "./shop/AdminEditTitleShopPage";
 
 enum Menu {
   themes = "themes",
@@ -42,7 +43,7 @@ export default function AdminEditShopPage() {
             themes: <AdminEditThemeShopPage />,
             avatars: <AdminEditAvatarShopPage />,
             banners: <AdminEditBannerShopPage />,
-            titles: <AdminEditThemeShopPage />,
+            titles: <AdminEditTitleShopPage />,
           }[value]
         }
       </Grid>

@@ -1,7 +1,7 @@
 import { Alert, Box, Divider, Grid, Paper, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CountryBlock } from "src/component/CountryBlock";
 import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
 import { Profile } from "src/models/Profile";
@@ -55,6 +55,7 @@ export default function MyProfilPage() {
   const { language, hasChallenge } = useUser();
   const { user, profile } = useAuth();
   const { headerSize } = useApp();
+  const navigate = useNavigate();
 
   const [scores, setScores] = useState<Array<Score>>([]);
   const [titles, setTitles] = useState<Array<TitleProfile>>([]);
@@ -232,6 +233,10 @@ export default function MyProfilPage() {
     };
   }, [maxIndex]);
 
+  const goPersonalized = () => {
+    navigate(`/personalized`);
+  };
+
   return (
     <Box>
       <Helmet>
@@ -247,7 +252,9 @@ export default function MyProfilPage() {
           backgroundSize: "cover",
           backgroundPosition: "center",
           position: "relative",
+          cursor: "pointer",
         }}
+        onClick={goPersonalized}
       >
         <Grid container spacing={1} justifyContent="center">
           <Grid item sx={{ mb: 1 }}>

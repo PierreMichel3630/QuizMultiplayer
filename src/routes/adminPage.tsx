@@ -3,6 +3,7 @@ import AdminProposePage from "src/pages/admin/AdminProposePage";
 import AdminQuestionPage from "src/pages/admin/AdminQuestionPage";
 import AdminReportPage from "src/pages/admin/AdminReportPage";
 import AdminEditCategoryPage from "src/pages/admin/Edit/AdminEditCategoryPage";
+import AdminEditChallengePage from "src/pages/admin/Edit/AdminEditChallengePage";
 import AdminEditPage from "src/pages/admin/Edit/AdminEditPage";
 import AdminEditQuestionsPage from "src/pages/admin/Edit/AdminEditQuestionsPage";
 import AdminEditShopPage from "src/pages/admin/Edit/AdminEditShopPage";
@@ -44,6 +45,10 @@ export const AdminRoutes = [
       {
         path: "shop",
         element: <AdminEditShopPage />,
+      },
+      {
+        path: "challenge",
+        element: <AdminEditChallengePage />,
       },
     ],
   },

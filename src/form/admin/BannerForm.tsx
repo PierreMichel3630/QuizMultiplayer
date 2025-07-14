@@ -145,7 +145,12 @@ export const BannerForm = ({ validate, banner }: Props) => {
           <Typography variant="h6">{t("form.createbanner.icon")}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <FileUploadInput formik={formik} field="src" />
+          <FileUploadInput
+            formik={formik}
+            field="src"
+            maxWidth={900}
+            maxSize={300}
+          />
         </Grid>
         <Grid item xs={12}>
           <ButtonColor

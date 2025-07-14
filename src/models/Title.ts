@@ -13,3 +13,16 @@ export interface TitleProfile {
   title: Title;
   multiplicator: number | null;
 }
+
+export interface TitleInsert {
+  name: JsonLanguage;
+  price: number;
+  isaccomplishment: boolean;
+}
+
+export interface TitleUpdate {
+  id: number;
+  name: JsonLanguage;
+  price: number;
+  isaccomplishment: boolean;
+}

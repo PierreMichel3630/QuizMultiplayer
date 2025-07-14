@@ -17,6 +17,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Avatar } from "src/models/Avatar";
 import { Banner } from "src/models/Banner";
+import { Title } from "src/models/Title";
 
 interface PropsCardAdminThemeShop {
   theme: ThemeShop;
@@ -145,6 +146,39 @@ export const CardAdminBanner = ({ banner, onEdit }: PropsCardAdminBanner) => {
         <Grid item xs>
           <Typography variant="h4">
             {banner.isaccomplishment.toString()}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <IconButton aria-label="edit" onClick={onEdit}>
+            <EditIcon />
+          </IconButton>
+        </Grid>
+      </Grid>
+    </Paper>
+  );
+};
+
+interface PropsCardAdminTitle {
+  title: Title;
+  onEdit: () => void;
+}
+
+export const CardAdminTitle = ({ title, onEdit }: PropsCardAdminTitle) => {
+  return (
+    <Paper sx={{ p: 1 }}>
+      <Grid container spacing={1} alignItems="center">
+        <Grid item xs>
+          <Typography variant="h2">{title.id}</Typography>
+        </Grid>
+        <Grid item xs>
+          <JsonLanguageBlock variant="h4" component="span" value={title.name} />
+        </Grid>
+        <Grid item xs>
+          <Typography variant="h4">{title.price}</Typography>
+        </Grid>
+        <Grid item xs>
+          <Typography variant="h4">
+            {title.isaccomplishment.toString()}
           </Typography>
         </Grid>
         <Grid item>

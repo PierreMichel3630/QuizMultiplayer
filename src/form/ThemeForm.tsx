@@ -206,7 +206,12 @@ export const ThemeForm = ({ validate, theme }: Props) => {
           <Typography variant="h6">{t("form.createtheme.logo")}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <FileUploadInput formik={formik} field="image" />
+          <FileUploadInput
+            formik={formik}
+            field="image"
+            maxWidth={150}
+            maxSize={50}
+          />
         </Grid>
         <Grid item xs={12}>
           <ButtonColor
