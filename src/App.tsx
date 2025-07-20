@@ -4,28 +4,33 @@ import { AuthProviderSupabase } from "./context/AuthProviderSupabase";
 import { UserProvider, useUser } from "./context/UserProvider";
 import "./i18n/config";
 import { ThemeBlock } from "./style/ThemeBlock";
+import { useViewportHeight } from "./hook/useViewportHeight";
+import { Box } from "@mui/material";
 
 function App() {
   const { language } = useUser();
+  useViewportHeight();
 
   return (
-    <AuthProviderSupabase>
-      <UserProvider>
-        <AppProvider>
-          <Helmet
-            htmlAttributes={{
-              lang: language.iso,
-            }}
-          >
-            <meta
-              name="description"
-              content="Testez vos connaissances. Jouez en Solo ou multijoueurs sur un quiz avec plus de 500 thèmes: Cinéma, Histoire, Géographie, Sports, ..."
-            />
-          </Helmet>
-          <ThemeBlock />
-        </AppProvider>
-      </UserProvider>
-    </AuthProviderSupabase>
+    <Box className="fullscreen">
+      <AuthProviderSupabase>
+        <UserProvider>
+          <AppProvider>
+            <Helmet
+              htmlAttributes={{
+                lang: language.iso,
+              }}
+            >
+              <meta
+                name="description"
+                content="Testez vos connaissances. Jouez en Solo ou multijoueurs sur un quiz avec plus de 500 thèmes: Cinéma, Histoire, Géographie, Sports, ..."
+              />
+            </Helmet>
+            <ThemeBlock />
+          </AppProvider>
+        </UserProvider>
+      </AuthProviderSupabase>
+    </Box>
   );
 }
 

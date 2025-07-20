@@ -252,7 +252,15 @@ export default function BattlePage() {
   }, [game]);
 
   return (
-    <Container maxWidth="md">
+    <Container
+      maxWidth="md"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        p: 0,
+      }}
+      className="page"
+    >
       <Helmet>
         <title>{`${t("pages.battle.title")} - ${t("appname")}`}</title>
       </Helmet>

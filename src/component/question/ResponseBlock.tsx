@@ -154,6 +154,117 @@ export const ResponsesQCMBlock = ({
   );
 };
 
+interface ResponsesQCMEditBlockProps {
+  question: Question;
+  onSubmit: (value: Answer) => void;
+  responseplayer1?: string | number;
+  responseplayer2?: string | number;
+  response?: Response;
+}
+
+export const ResponsesQCMEditBlock = ({
+  question,
+  responseplayer1,
+  responseplayer2,
+  response,
+  onSubmit,
+}: ResponsesQCMEditBlockProps) => {
+  const { mode } = useUser();
+
+  const isDarkMode = useMemo(() => mode === "dark", [mode]);
+
+  const isQuestionOrder = useMemo(
+    () => question.typequestion === TypeQuestionEnum.ORDER,
+    [question]
+  );
+
+  const hasImage = useMemo(
+    () => question.image ?? question.typequestion === "MAPPOSITION",
+    [question]
+  );
+
+  const columns = useMemo(() => {
+    const responsesImage = [...question.responses].filter((el) => el.image);
+    const isPairResponses = question.responses.length % 2 === 0;
+    return question.typequestion !== TypeQuestionEnum.ORDER &&
+      (hasImage || responsesImage.length > 0) &&
+      isPairResponses
+      ? 2
+      : 1;
+  }, [question, hasImage]);
+
+  const rows = useMemo(() => {
+    return question.responses.length / columns;
+  }, [question.responses.length, columns]);
+
+  return (
+    <Box
+      sx={{
+        width: percent(100),
+        maxHeight: isQuestionOrder ? "auto" : viewHeight(50),
+        flexGrow: isQuestionOrder ? 1 : "initial",
+        flex: isQuestionOrder ? "1 1 0" : "initial",
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center",
+        justifyContent: hasImage ? "center" : "flex-end",
+        gap: px(6 / columns),
+        display: "grid",
+        gridTemplateRows: `repeat(${rows}, 1fr)`,
+        gridTemplateColumns: `repeat(${columns}, ${100 / columns}%)`,
+        mb: 1,
+      }}
+    >
+      {question.responses.map((r, index) => {
+        const isCorrectResponse =
+          response && Number(response.response) === index;
+        const isAnswerP1 = Number(responseplayer1) === index;
+        const isAnswerP2 = Number(responseplayer2) === index;
+        const colorOrder = index === 0 ? Colors.blue4 : Colors.pink2;
+        const colorBase = isDarkMode ? Colors.black2 : Colors.white;
+
+        let color: string = isQuestionOrder ? colorOrder : colorBase;
+        const arrowColor: string = isDarkMode ? Colors.white : Colors.black2;
+        let borderColor: string = isDarkMode ? Colors.white : Colors.black2;
+        if (isCorrectResponse) {
+          color = Colors.correctanswer;
+          borderColor = Colors.correctanswerborder;
+        } else if ((isAnswerP1 || isAnswerP2) && response !== undefined) {
+          color = Colors.wronganswer;
+          borderColor = Colors.wronganswerborder;
+        } else if ((isAnswerP1 || isAnswerP2) && response === undefined) {
+          color = Colors.waitanswer;
+          borderColor = Colors.waitanswerborder;
+        }
+
+        return (
+          <ResponseQCMBlock
+            key={index}
+            color={color}
+            borderColor={borderColor}
+            index={index}
+            label={r.label}
+            extra={response ? r.extra : undefined}
+            image={r.image}
+            answer1={isAnswerP1}
+            answer2={isAnswerP2}
+            hasAnswer={false}
+            arrowColor={arrowColor}
+            type={
+              isQuestionOrder
+                ? TypeResponseEnum.ORDER
+                : TypeResponseEnum.DEFAULT
+            }
+            onSubmit={(value) => {
+              onSubmit(value);
+            }}
+          />
+        );
+      })}
+    </Box>
+  );
+};
+
 interface ResponseQCMBlockProps {
   color: string;
   image?: string;

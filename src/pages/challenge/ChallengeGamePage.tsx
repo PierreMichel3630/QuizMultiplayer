@@ -1,7 +1,7 @@
 import { Box, Container, Divider, Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import { px, viewHeight } from "csx";
+import { px } from "csx";
 import { Fragment, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -62,11 +62,7 @@ export default function ChallengeGamePage() {
   }, [location]);
 
   return (
-    <Grid
-      container
-      sx={{ minHeight: viewHeight(100) }}
-      alignContent="flex-start"
-    >
+    <Grid container className="page" alignContent="flex-start">
       <Helmet>
         <title>{`${t("commun.daychallenge")} - ${t("appname")}`}</title>
       </Helmet>

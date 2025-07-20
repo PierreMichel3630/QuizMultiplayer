@@ -1,20 +1,20 @@
 import { Box, Container, Divider, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import { px, viewHeight } from "csx";
+import { px } from "csx";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useParams } from "react-router-dom";
 import { CardSignalQuestion } from "src/component/card/CardQuestion";
 import { Colors } from "src/style/Colors";
 
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import { selectSoloGameById } from "src/api/game";
+import { ButtonColor } from "src/component/Button";
 import { BarNavigation } from "src/component/navigation/BarNavigation";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
-import { SoloGame } from "src/models/Game";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-import { ButtonColor } from "src/component/Button";
 import { SkeletonQuestion } from "src/component/skeleton/SkeletonQuestion";
+import { SoloGame } from "src/models/Game";
 
 export default function GameSoloPage() {
   const { t } = useTranslation();
@@ -72,11 +72,7 @@ export default function GameSoloPage() {
   }, [game, maxIndex]);
 
   return (
-    <Grid
-      container
-      sx={{ minHeight: viewHeight(100) }}
-      alignContent="flex-start"
-    >
+    <Grid container className="page" alignContent="flex-start">
       <Helmet>
         <title>{`${t("commun.sologame")} - ${t("appname")}`}</title>
       </Helmet>

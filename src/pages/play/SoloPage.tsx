@@ -8,7 +8,7 @@ import { supabase } from "src/api/supabase";
 import { useUser } from "src/context/UserProvider";
 import { QuestionSolo } from "src/models/Question";
 
-import { percent, viewHeight } from "csx";
+import { percent } from "csx";
 import { LoadingDot } from "src/component/Loading";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
@@ -17,7 +17,7 @@ import { SoloGame } from "src/models/Game";
 import { StatusGameSolo } from "src/models/enum/StatusGame";
 import { decryptToJsonLanguage } from "src/utils/crypt";
 import { PreloadImages } from "src/utils/preload";
-import { verifyResponse } from "src/utils/response";
+import { verifyResponseCrypt } from "src/utils/response";
 
 export default function SoloPage() {
   const { t } = useTranslation();
@@ -133,7 +133,7 @@ export default function SoloPage() {
       const myResponseValue = value?.value ?? undefined;
       setMyresponse(myResponseValue);
       if (question && game && language) {
-        const result = verifyResponse(language, question, value);
+        const result = verifyResponseCrypt(language, question, value);
         const response = decryptToJsonLanguage(question.response);
         const questionsgame: Array<unknown> = JSON.parse(
           localStorage.getItem(localStorageId) ?? "[]"
@@ -225,74 +225,72 @@ export default function SoloPage() {
   );
 
   return (
-    <Box>
-      <Container
-        maxWidth="md"
+    <Container
+      maxWidth="md"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        p: 0,
+      }}
+      className="page"
+    >
+      <Helmet>
+        <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
+      </Helmet>
+      <PreloadImages urls={images} />
+      <Box
         sx={{
           display: "flex",
+          flex: "1 1 0",
+          p: 1,
           flexDirection: "column",
-          height: viewHeight(100),
-          p: 0,
+          gap: 1,
         }}
       >
-        <Helmet>
-          <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
-        </Helmet>
-        <PreloadImages urls={images} />
+        {game && (
+          <Box>
+            <ScoreThemeBlock theme={game.theme} score={score} />
+          </Box>
+        )}
         <Box
           sx={{
+            flexGrow: 1,
             display: "flex",
-            flex: "1 1 0",
-            p: 1,
             flexDirection: "column",
+            alignItems: "flex-end",
+            flex: "1 1 0",
             gap: 1,
+            minHeight: 0,
           }}
         >
-          {game && (
-            <Box>
-              <ScoreThemeBlock theme={game.theme} score={score} />
+          {question ? (
+            <QuestionResponseBlock
+              responseplayer1={responseP1}
+              response={response}
+              question={question}
+              onSubmit={validateResponse}
+              timer={timer}
+            />
+          ) : (
+            <Box
+              sx={{
+                flexGrow: 1,
+                flex: "1 1 0",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                gap: 1,
+                width: percent(100),
+              }}
+            >
+              <Typography variant="h4">{t("commun.launchpartie")}</Typography>
+              <LoadingDot />
             </Box>
           )}
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-              flex: "1 1 0",
-              gap: 1,
-              minHeight: 0,
-            }}
-          >
-            {question ? (
-              <QuestionResponseBlock
-                responseplayer1={responseP1}
-                response={response}
-                question={question}
-                onSubmit={validateResponse}
-                timer={timer}
-              />
-            ) : (
-              <Box
-                sx={{
-                  flexGrow: 1,
-                  flex: "1 1 0",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  textAlign: "center",
-                  gap: 1,
-                  width: percent(100),
-                }}
-              >
-                <Typography variant="h4">{t("commun.launchpartie")}</Typography>
-                <LoadingDot />
-              </Box>
-            )}
-          </Box>
         </Box>
-      </Container>
-    </Box>
+      </Box>
+    </Container>
   );
 }

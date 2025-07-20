@@ -11,7 +11,7 @@ import {
 import { useUser } from "src/context/UserProvider";
 import { QuestionResult, QuestionTraining } from "src/models/Question";
 
-import { percent, viewHeight } from "csx";
+import { percent } from "csx";
 import { ButtonColor } from "src/component/Button";
 import { LoadingDot } from "src/component/Loading";
 import { EndTrainingGameBlock } from "src/component/play/training/EndTrainingGameBlock";
@@ -21,7 +21,7 @@ import { Answer, Response } from "src/component/question/ResponseBlock";
 import { SoloGame, TrainingGame } from "src/models/Game";
 import { Colors } from "src/style/Colors";
 import { PreloadImages } from "src/utils/preload";
-import { verifyResponse } from "src/utils/response";
+import { verifyResponseCrypt } from "src/utils/response";
 
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import LastPageIcon from "@mui/icons-material/LastPage";
@@ -108,7 +108,7 @@ export default function TrainingPage() {
     setNextQuestion(undefined);
     setMyresponse(myResponseValue);
     if (question) {
-      const result = verifyResponse(language, question, value);
+      const result = verifyResponseCrypt(language, question, value);
       const response = decryptToJsonLanguage(question.response);
       setQuestions((prev) => [
         {
@@ -193,120 +193,117 @@ export default function TrainingPage() {
   );
 
   return (
-    <Box>
-      <Container
-        maxWidth="md"
+    <Container
+      maxWidth="md"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        p: 0,
+      }}
+      className="page"
+    >
+      <Helmet>
+        <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
+      </Helmet>
+      <PreloadImages urls={images} />
+
+      <Box
         sx={{
           display: "flex",
+          flex: isEnd ? "auto" : "1 1 0",
+          p: 1,
           flexDirection: "column",
-          height: isEnd ? "auto" : viewHeight(100),
-          minHeight: isEnd ? viewHeight(100) : "auto",
-          p: 0,
+          gap: 1,
         }}
       >
-        <Helmet>
-          <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
-        </Helmet>
-        <PreloadImages urls={images} />
-
+        <HeaderTrainingGame
+          theme={game?.theme}
+          goodAnswer={goodAnswer}
+          badAnswer={badAnswer}
+        />
         <Box
           sx={{
+            flexGrow: 1,
             display: "flex",
-            flex: isEnd ? "auto" : "1 1 0",
-            p: 1,
             flexDirection: "column",
+            alignItems: "flex-end",
+            flex: isEnd ? "auto" : "1 1 0",
             gap: 1,
+            minHeight: 0,
           }}
         >
-          <HeaderTrainingGame
-            theme={game?.theme}
-            goodAnswer={goodAnswer}
-            badAnswer={badAnswer}
-          />
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-              flex: isEnd ? "auto" : "1 1 0",
-              gap: 1,
-              minHeight: 0,
-            }}
-          >
-            {isLoading ? (
-              <Box
-                sx={{
-                  flexGrow: 1,
-                  flex: "1 1 0",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  textAlign: "center",
-                  gap: 1,
-                  width: percent(100),
-                }}
-              >
-                <Typography variant="h4">{t("commun.launchpartie")}</Typography>
-                <LoadingDot />
-              </Box>
-            ) : (
-              <>
-                {isEnd ? (
-                  <EndTrainingGameBlock
-                    questions={questions}
-                    game={game}
-                    isAllQuestion={isAllQuestion}
+          {isLoading ? (
+            <Box
+              sx={{
+                flexGrow: 1,
+                flex: "1 1 0",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                gap: 1,
+                width: percent(100),
+              }}
+            >
+              <Typography variant="h4">{t("commun.launchpartie")}</Typography>
+              <LoadingDot />
+            </Box>
+          ) : (
+            <>
+              {isEnd ? (
+                <EndTrainingGameBlock
+                  questions={questions}
+                  game={game}
+                  isAllQuestion={isAllQuestion}
+                />
+              ) : (
+                <>
+                  <QuestionResponseBlock
+                    responseplayer1={responseP1}
+                    response={response}
+                    question={question}
+                    onSubmit={validateResponse}
                   />
-                ) : (
-                  <>
-                    <QuestionResponseBlock
-                      responseplayer1={responseP1}
-                      response={response}
-                      question={question}
-                      onSubmit={validateResponse}
-                    />
-                    {(question === undefined ||
-                      (question && response) ||
-                      isEnd) && (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          width: percent(100),
-                        }}
-                      >
-                        <Grid container spacing={1}>
-                          {!isEnd && (
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                value={Colors.blue2}
-                                label={t("commun.nextquestion")}
-                                icon={LastPageIcon}
-                                onClick={() => changeQuestion()}
-                                variant="contained"
-                              />
-                            </Grid>
-                          )}
+                  {(question === undefined ||
+                    (question && response) ||
+                    isEnd) && (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        width: percent(100),
+                      }}
+                    >
+                      <Grid container spacing={1}>
+                        {!isEnd && (
                           <Grid item xs={12}>
                             <ButtonColor
-                              value={Colors.red}
-                              label={t("commun.leave")}
-                              icon={ExitToAppIcon}
-                              onClick={() => quit()}
+                              value={Colors.blue2}
+                              label={t("commun.nextquestion")}
+                              icon={LastPageIcon}
+                              onClick={() => changeQuestion()}
                               variant="contained"
                             />
                           </Grid>
+                        )}
+                        <Grid item xs={12}>
+                          <ButtonColor
+                            value={Colors.red}
+                            label={t("commun.leave")}
+                            icon={ExitToAppIcon}
+                            onClick={() => quit()}
+                            variant="contained"
+                          />
                         </Grid>
-                      </Box>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-          </Box>
+                      </Grid>
+                    </Box>
+                  )}
+                </>
+              )}
+            </>
+          )}
         </Box>
-      </Container>
-    </Box>
+      </Box>
+    </Container>
   );
 }

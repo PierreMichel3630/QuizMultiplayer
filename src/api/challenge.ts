@@ -1,4 +1,5 @@
 import { Moment } from "moment";
+import { ChallengeGameUpdate } from "src/models/Challenge";
 import { supabase } from "./supabase";
 
 export const SUPABASE_CHALLENGE_TABLE = "challenge";
@@ -12,6 +13,14 @@ export const SUPABASE_RANKINGCHALLENGE_VIEW = "rankingchallenge";
 
 export const SUPABASE_LAUNCHCHALLENGE_FUNCTION = "launch-challengeV2";
 export const SUPABASE_ENDCHALLENGE_FUNCTION = "end-challenge";
+
+export const updateChallengeGame = (value: ChallengeGameUpdate) =>
+  supabase
+    .from(SUPABASE_CHALLENGEGAME_TABLE)
+    .update(value)
+    .eq("id", value.id)
+    .select()
+    .single();
 
 export const selectChallengeByDateAndLanguage = (
   date: Moment,

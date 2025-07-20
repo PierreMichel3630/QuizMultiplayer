@@ -19,6 +19,13 @@ export interface ChallengeGame {
   questions: Array<QuestionResult>;
 }
 
+export interface ChallengeGameUpdate {
+  id: number;
+  score: number;
+  time: number;
+  questions: Array<QuestionResult>;
+}
+
 export interface ChallengeRanking {
   id: number;
   uuid: string;

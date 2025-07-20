@@ -1,7 +1,7 @@
 import { Box, Container, Divider, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import { px, viewHeight } from "csx";
+import { px } from "csx";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Colors } from "src/style/Colors";
@@ -131,11 +131,7 @@ export default function ChallengeProfilPage() {
   }, [profile, language]);
 
   return (
-    <Grid
-      container
-      sx={{ minHeight: viewHeight(100) }}
-      alignContent="flex-start"
-    >
+    <Grid container className="page" alignContent="flex-start">
       <Helmet>
         <title>{`${t("commun.profilechallenge")} - ${t("appname")}`}</title>
       </Helmet>

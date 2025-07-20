@@ -1,7 +1,7 @@
 import { Alert, Box, Container, debounce, Divider, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import { px, viewHeight } from "csx";
+import { px } from "csx";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -95,159 +95,152 @@ export default function RecapSoloPage() {
   );
 
   return (
-    <Box>
-      <Container
-        maxWidth="md"
+    <Container
+      maxWidth="md"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        p: 0,
+      }}
+      className="page"
+    >
+      <Helmet>
+        <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
+      </Helmet>
+
+      <Box
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          p: 0,
-          minHeight: viewHeight(100),
+          p: 1,
         }}
       >
-        <Helmet>
-          <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
-        </Helmet>
-
-        <Box
-          sx={{
-            p: 1,
-            mb: px(140),
-          }}
-        >
-          {game && (
-            <>
-              <Grid container spacing={1}>
+        {game && (
+          <>
+            <Grid container spacing={1}>
+              <Grid item xs={12}>
+                <ScoreThemeBlock theme={game.theme} />
+              </Grid>
+              {allquestion && (
                 <Grid item xs={12}>
-                  <ScoreThemeBlock theme={game.theme} />
+                  <Alert severity="warning">
+                    {t("alert.allresponseanswer")}
+                  </Alert>
                 </Grid>
-                {allquestion && (
-                  <Grid item xs={12}>
-                    <Alert severity="warning">
-                      {t("alert.allresponseanswer")}
-                    </Alert>
-                  </Grid>
-                )}
-                <Grid item xs={12}>
-                  <MyExperienceSoloBlock
-                    xp={{
-                      match: 50,
-                      matchscore: 10 * game.points,
-                    }}
+              )}
+              <Grid item xs={12}>
+                <MyExperienceSoloBlock
+                  xp={{
+                    match: 50,
+                    matchscore: 10 * game.points,
+                  }}
+                />
+              </Grid>
+              {profile !== null ? (
+                <Grid
+                  item
+                  xs={12}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <AddMoneyBlock
+                    money={game.points * 10}
+                    variant="h4"
+                    width={25}
                   />
                 </Grid>
-                {profile !== null ? (
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{ display: "flex", justifyContent: "center" }}
-                  >
-                    <AddMoneyBlock
-                      money={game.points * 10}
-                      variant="h4"
-                      width={25}
-                    />
-                  </Grid>
-                ) : (
-                  <Grid item xs={12}>
-                    <ConnectAlert />
-                  </Grid>
-                )}
+              ) : (
                 <Grid item xs={12}>
-                  <BestScoreBlock theme={game.theme} points={game.points} />
+                  <ConnectAlert />
                 </Grid>
-                <Grid item xs={12}>
-                  <RankingTableSoloDuel
-                    theme={game.theme}
-                    max={3}
-                    mode="SOLO"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Grid container spacing={1}>
-                    {questionsDisplay.map((el, index) => (
-                      <Fragment key={index}>
-                        <Grid item xs={12}>
-                          <CardSignalQuestion
-                            question={el}
-                            report={() => setQuestion(el)}
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <Divider
-                            sx={{
-                              borderBottomWidth: 5,
-                              borderRadius: px(5),
-                            }}
-                          />
-                        </Grid>
-                      </Fragment>
-                    ))}
-                  </Grid>
+              )}
+              <Grid item xs={12}>
+                <BestScoreBlock theme={game.theme} points={game.points} />
+              </Grid>
+              <Grid item xs={12}>
+                <RankingTableSoloDuel theme={game.theme} max={3} mode="SOLO" />
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  {questionsDisplay.map((el, index) => (
+                    <Fragment key={index}>
+                      <Grid item xs={12}>
+                        <CardSignalQuestion
+                          question={el}
+                          report={() => setQuestion(el)}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Divider
+                          sx={{
+                            borderBottomWidth: 5,
+                            borderRadius: px(5),
+                          }}
+                        />
+                      </Grid>
+                    </Fragment>
+                  ))}
                 </Grid>
               </Grid>
-              <Box
+            </Grid>
+            <Box
+              sx={{
+                position: "fixed",
+                bottom: 0,
+                left: 0,
+                right: 0,
+              }}
+            >
+              <Container
+                maxWidth="md"
                 sx={{
-                  position: "fixed",
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
+                  backgroundColor: "background.paper",
                 }}
               >
-                <Container
-                  maxWidth="md"
+                <Box
                   sx={{
-                    backgroundColor: "background.paper",
+                    display: "flex",
+                    gap: 1,
+                    p: 1,
+                    flexDirection: "column",
                   }}
                 >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: 1,
-                      p: 1,
-                      flexDirection: "column",
+                  <ButtonColor
+                    value={Colors.red}
+                    label={t("commun.tryagain")}
+                    icon={ReplayIcon}
+                    onClick={() => playSolo()}
+                    variant="contained"
+                  />
+                  <ButtonColor
+                    value={Colors.blue}
+                    label={t("commun.return")}
+                    icon={KeyboardReturnIcon}
+                    onClick={() => {
+                      getMyAccomplishments();
+                      navigate(`/theme/${game.theme.id}`);
                     }}
-                  >
-                    <ButtonColor
-                      value={Colors.red}
-                      label={t("commun.tryagain")}
-                      icon={ReplayIcon}
-                      onClick={() => playSolo()}
-                      variant="contained"
-                    />
-                    <ButtonColor
-                      value={Colors.blue}
-                      label={t("commun.return")}
-                      icon={KeyboardReturnIcon}
-                      onClick={() => {
-                        getMyAccomplishments();
-                        navigate(`/theme/${game.theme.id}`);
-                      }}
-                      variant="contained"
-                    />
-                    <ButtonColor
-                      value={Colors.green}
-                      label={t("commun.returnhome")}
-                      icon={HomeIcon}
-                      onClick={() => {
-                        getMyAccomplishments();
-                        navigate("/");
-                      }}
-                      variant="contained"
-                    />
-                  </Box>
-                </Container>
-              </Box>
-            </>
-          )}
-        </Box>
-        <ReportModal
-          open={question !== undefined}
-          close={() => setQuestion(undefined)}
-          question={question}
-          sologame={game}
-        />
-      </Container>
-    </Box>
+                    variant="contained"
+                  />
+                  <ButtonColor
+                    value={Colors.green}
+                    label={t("commun.returnhome")}
+                    icon={HomeIcon}
+                    onClick={() => {
+                      getMyAccomplishments();
+                      navigate("/");
+                    }}
+                    variant="contained"
+                  />
+                </Box>
+              </Container>
+            </Box>
+          </>
+        )}
+      </Box>
+      <ReportModal
+        open={question !== undefined}
+        close={() => setQuestion(undefined)}
+        question={question}
+        sologame={game}
+      />
+    </Container>
   );
 }

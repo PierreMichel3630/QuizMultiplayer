@@ -6,7 +6,7 @@ import { useUser } from "src/context/UserProvider";
 import { QuestionSolo } from "src/models/Question";
 
 import { Box, Container, Typography } from "@mui/material";
-import { percent, viewHeight } from "csx";
+import { percent } from "csx";
 import { endChallenge, selectChallengeGameByUuid } from "src/api/challenge";
 import { ImageCard } from "src/component/image/ImageCard";
 import { LoadingDot } from "src/component/Loading";
@@ -17,7 +17,7 @@ import { Colors } from "src/style/Colors";
 
 import challengeIcon from "src/assets/challenge.png";
 import { decryptToJsonLanguage } from "src/utils/crypt";
-import { verifyResponse } from "src/utils/response";
+import { verifyResponseCrypt } from "src/utils/response";
 
 export default function PlayChallengePage() {
   const { t } = useTranslation();
@@ -74,7 +74,9 @@ export default function PlayChallengePage() {
     const myResponseValue = value?.value ?? undefined;
     setMyresponse(myResponseValue);
     if (question) {
-      const result = value ? verifyResponse(language, question, value) : false;
+      const result = value
+        ? verifyResponseCrypt(language, question, value)
+        : false;
       const response = decryptToJsonLanguage(question.response);
       const questionsgame: Array<unknown> = [...questionsGameRef.current];
       questionsgame.push({
@@ -172,98 +174,96 @@ export default function PlayChallengePage() {
   }, [end]);
 
   return (
-    <Box>
-      <Container
-        maxWidth="md"
+    <Container
+      maxWidth="md"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        p: 0,
+      }}
+      className="page"
+    >
+      <Helmet>
+        <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
+      </Helmet>
+      <Box
         sx={{
           display: "flex",
+          flex: "1 1 0",
+          p: 1,
           flexDirection: "column",
-          height: viewHeight(100),
-          p: 0,
+          gap: 1,
         }}
       >
-        <Helmet>
-          <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
-        </Helmet>
         <Box
           sx={{
             display: "flex",
-            flex: "1 1 0",
-            p: 1,
-            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "space-between",
             gap: 1,
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 1,
-            }}
-          >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <ImageCard
-                value={{
-                  image: challengeIcon,
-                  color: Colors.blue,
-                }}
-                size={80}
-              />
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 1,
-                }}
-              >
-                <Typography variant="h2">{t("commun.daychallenge")}</Typography>
-                <Typography variant="h2">
-                  {correctAnswer} / {numberQuestions}
-                </Typography>
-              </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <ImageCard
+              value={{
+                image: challengeIcon,
+                color: Colors.blue,
+              }}
+              size={80}
+            />
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 1,
+              }}
+            >
+              <Typography variant="h2">{t("commun.daychallenge")}</Typography>
+              <Typography variant="h2">
+                {correctAnswer} / {numberQuestions}
+              </Typography>
             </Box>
           </Box>
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-              flex: "1 1 0",
-              gap: 1,
-              minHeight: 0,
-            }}
-          >
-            {question ? (
-              <QuestionResponseBlock
-                responseplayer1={responseP1}
-                response={response}
-                question={question}
-                onSubmit={validateResponse}
-                timer={timer}
-              />
-            ) : (
-              <Box
-                sx={{
-                  flexGrow: 1,
-                  flex: "1 1 0",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  textAlign: "center",
-                  gap: 1,
-                  width: percent(100),
-                }}
-              >
-                <Typography variant="h4">{t("commun.launchpartie")}</Typography>
-                <LoadingDot />
-              </Box>
-            )}
-          </Box>
         </Box>
-      </Container>
-    </Box>
+        <Box
+          sx={{
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+            flex: "1 1 0",
+            gap: 1,
+            minHeight: 0,
+          }}
+        >
+          {question ? (
+            <QuestionResponseBlock
+              responseplayer1={responseP1}
+              response={response}
+              question={question}
+              onSubmit={validateResponse}
+              timer={timer}
+            />
+          ) : (
+            <Box
+              sx={{
+                flexGrow: 1,
+                flex: "1 1 0",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                gap: 1,
+                width: percent(100),
+              }}
+            >
+              <Typography variant="h4">{t("commun.launchpartie")}</Typography>
+              <LoadingDot />
+            </Box>
+          )}
+        </Box>
+      </Box>
+    </Container>
   );
 }

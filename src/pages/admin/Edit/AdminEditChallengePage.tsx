@@ -21,6 +21,7 @@ import { BasicSearchInput } from "src/component/Input";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import { ProfileBlock } from "src/component/profile/ProfileBlock";
 import { useMessage } from "src/context/MessageProvider";
+import { EditChallengeGameModal } from "src/component/modal/EditChallengeGameModal";
 
 export default function AdminEditChallengePage() {
   const { t } = useTranslation();
@@ -38,6 +39,9 @@ export default function AdminEditChallengePage() {
   const [challengeGame, setChallengeGame] = useState<ChallengeGame | null>(
     null
   );
+  const [challengeGameEdit, setChallengeGameEdit] = useState<
+    ChallengeGame | undefined
+  >(undefined);
 
   const columns = [
     { label: t("commun.profile"), key: "profile" },
@@ -63,7 +67,10 @@ export default function AdminEditChallengePage() {
       ),
       action: (
         <Box sx={{ display: "flex", gap: 1 }}>
-          <IconButton aria-label="delete">
+          <IconButton
+            aria-label="edit"
+            onClick={() => setChallengeGameEdit(el)}
+          >
             <EditIcon />
           </IconButton>
           <IconButton aria-label="delete" onClick={() => setChallengeGame(el)}>
@@ -188,6 +195,16 @@ export default function AdminEditChallengePage() {
         }
         onClose={() => setChallengeGame(null)}
         onConfirm={deleteChallengeGame}
+      />
+      <EditChallengeGameModal
+        game={challengeGameEdit}
+        open={challengeGameEdit !== undefined}
+        close={() => {
+          setChallengeGameEdit(undefined);
+          setPage(1);
+          setSearch("");
+          getGames(date, "", 1, ITEMPERPAGE);
+        }}
       />
     </Grid>
   );

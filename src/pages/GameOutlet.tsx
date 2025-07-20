@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import { percent } from "csx";
 import { Outlet } from "react-router-dom";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   selectInvitationBattleByUser,
   selectInvitationBattleByUuid,
@@ -25,6 +25,8 @@ import { UpdateNotificationBlock } from "src/component/notification/UpdateNotifi
 export default function GameOutlet() {
   const { user, profile, setStreak } = useAuth();
   const { getFriends } = useApp();
+
+  const channelRef = useRef<RealtimeChannel | null>(null);
 
   const [gamesChange, setGamesChange] = useState<Array<DuelGameChange>>([]);
   const [games, setGames] = useState<Array<DuelGame>>([]);
@@ -89,135 +91,135 @@ export default function GameOutlet() {
     return () => {};
   }, [getFriends, profile?.id]);
 
+  const subscribeToEventRealtime = useCallback(
+    (profileId: string) => {
+      const newChannel = supabase.channel("duelgame");
+      newChannel
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "duelgame",
+            filter: `player2=eq.${profileId}`,
+          },
+          (payload) => {
+            setGamesChange((prev) => [...prev, payload.new as DuelGameChange]);
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "duelgame",
+            filter: `player2=eq.${profileId}`,
+          },
+          (payload) => {
+            const game = payload.new as DuelGameChange;
+            if (game.status === StatusGameDuel.CANCEL) {
+              setGamesChange((prev) =>
+                [...prev].filter((el) => el.id !== game.id)
+              );
+            }
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "battlegame",
+            filter: `player2=eq.${profileId}`,
+          },
+          (payload) => {
+            setBattlesChange((prev) => [
+              ...prev,
+              payload.new as BattleGameChange,
+            ]);
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "DELETE",
+            schema: "public",
+            table: "battlegame",
+            filter: `player2=eq.${profileId}`,
+          },
+          (payload) => {
+            setGamesChange((prev) =>
+              [...prev].filter(
+                (el) => el.id !== (payload.old as BattleGameChange).id
+              )
+            );
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "DELETE",
+            schema: "public",
+            table: "battlegame",
+            filter: `player1=eq.${profileId}`,
+          },
+          (payload) => {
+            setGamesChange((prev) =>
+              [...prev].filter(
+                (el) => el.id !== (payload.old as BattleGameChange).id
+              )
+            );
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "friend",
+            filter: `user2=eq.${profileId}`,
+          },
+          () => {
+            getFriends();
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "friend",
+            filter: `user1=eq.${profileId}`,
+          },
+          () => {
+            getFriends();
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "friend",
+            filter: `user2=eq.${profileId}`,
+          },
+          () => {
+            getFriends();
+          }
+        );
+      newChannel.subscribe();
+      channelRef.current = newChannel;
+    },
+    [getFriends]
+  );
+
   useEffect(() => {
-    let channel: undefined | RealtimeChannel = undefined;
-    const subscribeToRealtime = () => {
-      if (profile?.id) {
-        channel = supabase
-          .channel(profile.id)
-          .on(
-            "postgres_changes",
-            {
-              event: "INSERT",
-              schema: "public",
-              table: "duelgame",
-              filter: `player2=eq.${profile.id}`,
-            },
-            (payload) => {
-              setGamesChange((prev) => [
-                ...prev,
-                payload.new as DuelGameChange,
-              ]);
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "UPDATE",
-              schema: "public",
-              table: "duelgame",
-              filter: `player2=eq.${profile.id}`,
-            },
-            (payload) => {
-              const game = payload.new as DuelGameChange;
-              if (game.status === StatusGameDuel.CANCEL) {
-                setGamesChange((prev) =>
-                  [...prev].filter((el) => el.id !== game.id)
-                );
-              }
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "UPDATE",
-              schema: "public",
-              table: "battlegame",
-              filter: `player2=eq.${profile.id}`,
-            },
-            (payload) => {
-              setBattlesChange((prev) => [
-                ...prev,
-                payload.new as BattleGameChange,
-              ]);
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "DELETE",
-              schema: "public",
-              table: "battlegame",
-              filter: `player2=eq.${profile.id}`,
-            },
-            (payload) => {
-              setGamesChange((prev) =>
-                [...prev].filter(
-                  (el) => el.id !== (payload.old as BattleGameChange).id
-                )
-              );
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "DELETE",
-              schema: "public",
-              table: "battlegame",
-              filter: `player1=eq.${profile.id}`,
-            },
-            (payload) => {
-              setGamesChange((prev) =>
-                [...prev].filter(
-                  (el) => el.id !== (payload.old as BattleGameChange).id
-                )
-              );
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "INSERT",
-              schema: "public",
-              table: "friend",
-              filter: `user2=eq.${profile.id}`,
-            },
-            () => {
-              getFriends();
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "UPDATE",
-              schema: "public",
-              table: "friend",
-              filter: `user1=eq.${profile.id}`,
-            },
-            () => {
-              getFriends();
-            }
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "UPDATE",
-              schema: "public",
-              table: "friend",
-              filter: `user2=eq.${profile.id}`,
-            },
-            () => {
-              getFriends();
-            }
-          )
-          .subscribe();
-      }
-    };
+    if (profile?.id) {
+      subscribeToEventRealtime(profile?.id);
+    }
     const handleVisibility = async () => {
-      if (!document.hidden) {
-        subscribeToRealtime();
-      } else {
-        channel?.unsubscribe();
+      if (document.hidden) {
+        channelRef.current?.unsubscribe();
       }
       if (profile?.id && !document.hidden) {
         updateProfilByFunction().then(({ data }) => {
@@ -230,9 +232,9 @@ export default function GameOutlet() {
     document.addEventListener("visibilitychange", handleVisibility);
     return () => {
       document.removeEventListener("visibilitychange", handleVisibility);
-      channel?.unsubscribe();
+      channelRef.current?.unsubscribe();
     };
-  }, [getFriends, setStreak, profile?.id]);
+  }, [profile?.id, setStreak, subscribeToEventRealtime]);
 
   return (
     <>

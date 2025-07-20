@@ -191,6 +191,7 @@
     "editavatar": "Modifier un avatar",
     "editbanner": "Modifier une photo de couverture",
     "edittitle": "Modifier un titre",
+    "editgame": "Modifier une partie",
     "selecttheme": "Sélectionner un thème",
     "selectlanguage": "Sélectionner une langue",
     "selectcategory": "Sélectionner une catégorie",
@@ -347,7 +348,8 @@
     "grades": "Notes",
     "result" : "Résultat",
     "average": "Moyenne",
-    "time": "Temps"
+    "time": "Temps",
+    "save": "Enregistrer"
   },
   "abrevation": {
     "average": "Moy."
@@ -691,6 +693,11 @@
       "requiredprice": "Veuillez saisir un prix",
       "requiredtheme": "Veuillez sélectionner un thème",
       "icon": "Icone"
+    },
+    "createchallengegame": {
+      "time": "Temps en ms",
+      "score": "Score",
+      "requiredtime": "Veuillez saisir un temps"
     },
     "proposetheme": {
       "title": "Nom du thème *",

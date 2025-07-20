@@ -638,44 +638,46 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
           />
         )}
       </Grid>
-      {dateDisplay && (
-        <ChangeDateBlock
-          date={date}
-          format={tabTime as unknown as DateFormat}
-          onChange={(value) => setDate(value)}
-        />
-      )}
       {tab === ClassementChallengeEnum.perdate && (
-        <Grid item>
-          {
+        <>
+          {dateDisplay && (
+            <ChangeDateBlock
+              date={date}
+              format={tabTime as unknown as DateFormat}
+              onChange={(value) => setDate(value)}
+            />
+          )}
+          <Grid item>
             {
-              day: (
-                <ResultDayChallengeBlock
-                  date={date}
-                  profile={profile}
-                  avg={avg}
-                />
-              ),
-              week: (
-                <ResultWeekChallengeBlock
-                  date={date}
-                  profile={profile}
-                  avg={avg}
-                />
-              ),
-              month: (
-                <ResultMonthChallengeBlock
-                  date={date}
-                  profile={profile}
-                  avg={avg}
-                />
-              ),
-              alltime: (
-                <ResultAllTimeChallengeBlock profile={profile} avg={avg} />
-              ),
-            }[tabTime]
-          }
-        </Grid>
+              {
+                day: (
+                  <ResultDayChallengeBlock
+                    date={date}
+                    profile={profile}
+                    avg={avg}
+                  />
+                ),
+                week: (
+                  <ResultWeekChallengeBlock
+                    date={date}
+                    profile={profile}
+                    avg={avg}
+                  />
+                ),
+                month: (
+                  <ResultMonthChallengeBlock
+                    date={date}
+                    profile={profile}
+                    avg={avg}
+                  />
+                ),
+                alltime: (
+                  <ResultAllTimeChallengeBlock profile={profile} avg={avg} />
+                ),
+              }[tabTime]
+            }
+          </Grid>
+        </>
       )}
       <Grid
         item

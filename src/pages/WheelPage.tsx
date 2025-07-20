@@ -3,7 +3,6 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { TitleBlock } from "src/component/title/Title";
 
-import { viewHeight } from "csx";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { launchWheel } from "src/api/wheel";
@@ -17,10 +16,10 @@ import { TypeWheelEnum } from "src/models/enum/TypeWheelEnum";
 import { WheelResult } from "src/models/Wheel";
 import { Colors } from "src/style/Colors";
 
+import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
 import { ExperienceBlock } from "src/component/ExperienceBlock";
 import { StatAccomplishment } from "src/models/Accomplishment";
-import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 
 export default function WheelPage() {
   const navigate = useNavigate();
@@ -138,16 +137,15 @@ export default function WheelPage() {
   };
 
   return (
-    <Box>
+    <>
       <Container
         maxWidth="md"
         sx={{
           display: "flex",
           flexDirection: "column",
-          height: viewHeight(100),
-          minHeight: viewHeight(100),
           p: 0,
         }}
+        className="page"
       >
         <Helmet>
           <title>{`${t("pages.wheel.title")} - ${t("appname")}`}</title>
@@ -297,6 +295,6 @@ export default function WheelPage() {
           </>
         )}
       </Backdrop>
-    </Box>
+    </>
   );
 }
