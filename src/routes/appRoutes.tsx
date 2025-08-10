@@ -33,7 +33,6 @@ import BadgePage from "src/pages/BadgePage";
 import BannerPage from "src/pages/BannerPage";
 import TitlePage from "src/pages/TitlePage";
 
-import MyProfilPage from "src/pages/MyProfilPage";
 import OutletPage from "src/pages/OutletPage";
 import ParameterPage from "src/pages/ParameterPage";
 import PlayPage from "src/pages/PlayPage";
@@ -42,6 +41,7 @@ import ProposeThemePage from "src/pages/ProposeThemePage";
 import StreakPage from "src/pages/StreakPage";
 import UpdatedThemePage from "src/pages/UpdatedThemePage";
 import WheelPage from "src/pages/WheelPage";
+import ChallengeOutletPage from "src/pages/challenge/ChallengeOutletPage";
 import ChallengePage from "src/pages/challenge/ChallengePage";
 import SharePage from "src/pages/help/SharePage";
 import AvatarsPage from "src/pages/shop/AvatarsPage";
@@ -50,7 +50,6 @@ import BannersPage from "src/pages/shop/BannersPage";
 import ShopPage from "src/pages/shop/ShopPage";
 import ShopThemePage from "src/pages/shop/ShopThemePage";
 import TitlesPage from "src/pages/shop/TitlesPage";
-import ChallengeOutletPage from "src/pages/challenge/ChallengeOutletPage";
 
 export const AppRoutes = [
   {
@@ -133,14 +132,6 @@ export const AppRoutes = [
       {
         path: "/report",
         element: <ReportPage />,
-      },
-      {
-        path: "/myprofile",
-        element: (
-          <ProtectedRoute>
-            <MyProfilPage />
-          </ProtectedRoute>
-        ),
       },
       {
         path: "/profil/:id",

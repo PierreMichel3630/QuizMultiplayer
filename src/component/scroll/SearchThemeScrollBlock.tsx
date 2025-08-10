@@ -33,21 +33,23 @@ export const SearchThemeScrollBlock = ({ search }: Props) => {
 
       setLoading(true);
       const itemperpage = 40;
-      searchThemesAndCategoriesPaginate(
-        search,
-        page,
-        itemperpage,
-        language.iso
-      ).then(({ data }) => {
-        const result = data ?? [];
-        setIsEnd(result.length < itemperpage);
-        setItemsSearch((prev) =>
-          page === 0 ? [...result] : [...prev, ...result]
-        );
-        setLoading(false);
-      });
+      if (language) {
+        searchThemesAndCategoriesPaginate(
+          language,
+          search,
+          page,
+          itemperpage
+        ).then(({ data }) => {
+          const result = data ?? [];
+          setIsEnd(result.length < itemperpage);
+          setItemsSearch((prev) =>
+            page === 0 ? [...result] : [...prev, ...result]
+          );
+          setLoading(false);
+        });
+      }
     },
-    [search, loading, language.iso]
+    [search, loading, language]
   );
 
   useEffect(() => {
@@ -130,18 +132,20 @@ export const SearchThemeSelectScrollBlock = ({
 
       setLoading(true);
       const itemperpage = 40;
-      searchThemesPaginate(search, page, itemperpage, language.iso).then(
-        ({ data }) => {
-          const result = data ?? [];
-          setIsEnd(result.length < itemperpage);
-          setItemsSearch((prev) =>
-            page === 0 ? [...result] : [...prev, ...result]
-          );
-          setLoading(false);
-        }
-      );
+      if (language) {
+        searchThemesPaginate(language, search, page, itemperpage).then(
+          ({ data }) => {
+            const result = data ?? [];
+            setIsEnd(result.length < itemperpage);
+            setItemsSearch((prev) =>
+              page === 0 ? [...result] : [...prev, ...result]
+            );
+            setLoading(false);
+          }
+        );
+      }
     },
-    [search, loading, language.iso]
+    [search, loading, language]
   );
 
   useEffect(() => {
@@ -219,15 +223,17 @@ export const SearchThemeSelectAvatarScrollBlock = ({
   const getThemes = useCallback(
     (page: number) => {
       const itemperpage = 30;
-      if (!isEnd) {
-        searchThemesPaginate(search, page, itemperpage).then(({ data }) => {
-          const result = data ?? [];
-          setIsEnd(result.length < itemperpage);
-          setItemsSearch((prev) => [...prev, ...result]);
-        });
+      if (!isEnd && language) {
+        searchThemesPaginate(language, search, page, itemperpage).then(
+          ({ data }) => {
+            const result = data ?? [];
+            setIsEnd(result.length < itemperpage);
+            setItemsSearch((prev) => [...prev, ...result]);
+          }
+        );
       }
     },
-    [isEnd, search]
+    [isEnd, search, language]
   );
 
   useEffect(() => {

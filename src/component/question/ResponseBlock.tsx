@@ -2,20 +2,18 @@ import { Box, Paper, Typography } from "@mui/material";
 import { important, percent, px, viewHeight } from "csx";
 import { Colors } from "src/style/Colors";
 
+import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useUser } from "src/context/UserProvider";
 import { TypeQuestionEnum } from "src/models/enum/TypeQuestionEnum";
 import { TypeResponseEnum } from "src/models/enum/TypeResponseEnum";
-import { JsonLanguage } from "src/models/Language";
 import { Question } from "src/models/Question";
 import { ExtraResponse } from "src/models/Response";
 import { ArrowLeft, ArrowRight } from "../icon/Arrow";
 import { ImageQCMBlock } from "../ImageBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { ExtraResponseBlock } from "../response/ExtraResponseBlock";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 
 export interface ResponseLanguage {
   [iso: string]: Array<string> | string;
@@ -31,7 +29,7 @@ export interface Answer {
 }
 
 export interface Response {
-  response: number | ResponseLanguage;
+  response: number | string;
   result: boolean;
   responsePlayer1?: string | number;
   responsePlayer2?: string | number;
@@ -268,7 +266,7 @@ export const ResponsesQCMEditBlock = ({
 interface ResponseQCMBlockProps {
   color: string;
   image?: string;
-  label?: JsonLanguage;
+  label?: string;
   extra?: ExtraResponse;
   borderColor?: string;
   arrowColor?: string;
@@ -350,17 +348,18 @@ export const ResponseQCMBlock = ({
       {imageDisplay && <ImageQCMBlock src={imageDisplay} />}
       <Box>
         {label && (
-          <JsonLanguageBlock
+          <Typography
             variant="h3"
             component="p"
-            value={label}
             sx={{
               color: isOrder ? Colors.white : "auto",
               wordBreak: "break-word",
               textShadow: textShadow,
               fontSize: isOrder ? important(px(40)) : "initial",
             }}
-          />
+          >
+            {label}
+          </Typography>
         )}
         {extra && <ExtraResponseBlock extra={extra} />}
       </Box>
@@ -393,11 +392,8 @@ export const ResponseInputBlock = ({
   responseplayer2,
 }: ResponseInputBlockProps) => {
   const { t } = useTranslation();
-  const { mode, language } = useUser();
-  const value =
-    typeof response.response === "number"
-      ? response.response
-      : response.response[language.iso] ?? response.response["fr-FR"];
+  const { mode } = useUser();
+  const value = response.response;
 
   const label = Array.isArray(value) ? value[0] ?? "" : value;
 

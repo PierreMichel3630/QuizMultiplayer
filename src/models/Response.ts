@@ -6,7 +6,7 @@ export interface Response {
 }
 
 export interface ResponseQCM {
-  label?: ResponseLanguageString;
+  label?: string;
   image?: string;
   extra?: ExtraResponse;
 }
@@ -37,7 +37,7 @@ export interface ResponseDuel {
   result: boolean;
   time: number;
   answer: string | number;
-  correctanswer: ResponseLanguage | number;
+  correctanswer: string | number;
   ptsplayer1: number;
   ptsplayer2: number;
 }

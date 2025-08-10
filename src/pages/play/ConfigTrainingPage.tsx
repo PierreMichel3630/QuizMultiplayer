@@ -19,9 +19,9 @@ export interface ConfigTraining {
 }
 export default function ConfigTrainingPage() {
   const { themeid } = useParams();
-  const { uuid } = useUser();
-  const navigate = useNavigate();
+  const { uuid, language } = useUser();
   const { mode } = useUser();
+  const navigate = useNavigate();
 
   const isDarkMode = useMemo(() => mode === "dark", [mode]);
   const color = useMemo(
@@ -37,10 +37,12 @@ export default function ConfigTrainingPage() {
   });
 
   const play = () => {
-    if (uuid && themeid) {
-      launchTrainingGame(uuid, Number(themeid), configGame).then(({ data }) => {
-        navigate(`/training/${data.uuid}`);
-      });
+    if (uuid && themeid && language) {
+      launchTrainingGame(uuid, Number(themeid), configGame, language).then(
+        ({ data }) => {
+          navigate(`/training/${data.uuid}`);
+        }
+      );
     }
   };
 

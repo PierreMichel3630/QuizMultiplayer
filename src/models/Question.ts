@@ -3,6 +3,7 @@ import {
   JsonLanguage,
   JsonLanguageArray,
   JsonLanguageArrayOrString,
+  Language,
 } from "./Language";
 import { ResponseQCM } from "./Response";
 import { Theme } from "./Theme";
@@ -30,20 +31,20 @@ export interface QuestionPosition {
 }
 
 export interface QuestionAdmin {
+  id: number;
   image?: string;
-  question: JsonLanguage;
-  typeResponse: string;
+  audio?: string;
   typequestion: string;
   difficulty: string;
-  id: number;
-  theme?: Theme;
   isqcm: boolean | null;
-  exact: boolean;
-  allresponse: boolean;
   validate: boolean;
-  response: JsonLanguageArray;
-  responses: Array<JsonLanguage>;
-  extra: JsonLanguage | null;
+  questiontranslation: Array<QuestionTranslation>;
+}
+
+export interface QuestionTranslation {
+  id: number;
+  label: string;
+  language: Language;
 }
 
 export interface QuestionInsertAdmin {
@@ -96,15 +97,17 @@ export interface QuestionUpdate {
 export interface Question {
   id: number;
   typequestion: TypeQuestionEnum;
+  label: string;
   image?: string;
   extra?: JsonLanguage;
   audio?: string;
   isqcm: boolean;
   time: number;
-  question: JsonLanguage;
+  question?: JsonLanguage;
   theme: Theme;
   difficulty: string;
   typeResponse: string;
+  answerset?: number;
   allresponse: boolean;
   exact: boolean;
   responses: Array<ResponseQCM>;
@@ -117,7 +120,7 @@ export interface Question {
 }
 
 export interface QuestionResult extends Question {
-  response: JsonLanguage | number;
+  response: string | number;
   resultPlayer1?: boolean;
   responsePlayer1?: string | number;
   responsePlayer2?: string | number;

@@ -1,11 +1,11 @@
 import { StatusGameChallenge } from "./enum/StatusGame";
 import { Profile } from "./Profile";
-import { QuestionResult } from "./Question";
+import { QuestionResult, QuestionSolo } from "./Question";
 
 export interface Challenge {
   id: number;
   date: Date;
-  questions: Array<any>;
+  questionsv2: Array<QuestionSolo>;
 }
 
 export interface ChallengeGame {

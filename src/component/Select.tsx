@@ -1,11 +1,11 @@
 import {
   Autocomplete,
-  Avatar,
   Box,
   Divider,
   FormControl,
   Grid,
   InputLabel,
+  Menu,
   MenuItem,
   Paper,
   Select,
@@ -14,24 +14,15 @@ import {
   Typography,
 } from "@mui/material";
 import { padding, percent, px } from "csx";
-import {
-  SyntheticEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { SyntheticEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ClearIcon from "@mui/icons-material/Clear";
-import { selectCategories } from "src/api/category";
 import { selectThemesShop } from "src/api/theme";
 import { useUser } from "src/context/UserProvider";
-import { Category } from "src/models/Category";
 import { colorDifficulty, Difficulty } from "src/models/enum/DifficultyEnum";
-import { Language, LANGUAGES } from "src/models/Language";
+import { Language } from "src/models/Language";
 import { ThemeShop } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import { sortByName } from "src/utils/sort";
@@ -40,6 +31,7 @@ import { ICardImage } from "./card/CardImage";
 import { ImageThemeBlock } from "./ImageThemeBlock";
 import { BasicSearchInput } from "./Input";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
+import { LanguageIcon } from "./language/LanguageBlock";
 
 interface Props {
   value: Difficulty;
@@ -181,7 +173,7 @@ export const AutocompleteTheme = ({
             }}
           >
             <ImageThemeBlock theme={v} size={30} />
-            <Typography variant="h6">{v.title}</Typography>
+            <Typography variant="h6">{v.name}</Typography>
             <ClearIcon
               sx={{ width: 15, height: 15, cursor: "pointer" }}
               onClick={() => deleteTheme(v.id)}
@@ -190,52 +182,6 @@ export const AutocompleteTheme = ({
         </Grid>
       ))}
     </Grid>
-  );
-};
-
-interface PropsSelectCategory {
-  category: Category | null;
-  onChange: (value: Category | null) => void;
-}
-
-export const SelectCategory = ({ category, onChange }: PropsSelectCategory) => {
-  const { t } = useTranslation();
-  const { language } = useUser();
-  const [categories, setCategories] = useState<Array<Category>>([]);
-
-  const getCategories = useCallback(() => {
-    selectCategories().then(({ data }) => {
-      const value = data ?? [];
-      setCategories(value);
-    });
-  }, []);
-  useEffect(() => {
-    getCategories();
-  }, [getCategories]);
-
-  return (
-    <Autocomplete
-      id="themeinput"
-      value={category}
-      onChange={(_event: SyntheticEvent, newValue: Category | null) => {
-        onChange(newValue);
-      }}
-      options={[...categories].sort((a, b) => sortByName(language, a, b))}
-      getOptionLabel={(option) => option.title}
-      renderOption={(props, option) => (
-        <Box component="li" {...props}>
-          <Typography>{option.title}</Typography>
-        </Box>
-      )}
-      fullWidth
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label={t("commun.category")}
-          placeholder={t("commun.selectcategory")}
-        />
-      )}
-    />
   );
 };
 
@@ -256,6 +202,12 @@ export const SelectThemeShop = ({ theme, onChange }: PropsSelectThemeShop) => {
     });
   }, []);
 
+  const options = useMemo(
+    () =>
+      language ? [...themes].sort((a, b) => sortByName(language, a, b)) : [],
+    [language, themes]
+  );
+
   return (
     <Autocomplete
       id="themeinput"
@@ -263,8 +215,8 @@ export const SelectThemeShop = ({ theme, onChange }: PropsSelectThemeShop) => {
       onChange={(_event: SyntheticEvent, newValue: ThemeShop | null) => {
         onChange(newValue);
       }}
-      options={[...themes].sort((a, b) => sortByName(language, a, b))}
-      getOptionLabel={(option) => option.name[language.iso]}
+      options={options}
+      getOptionLabel={(option) => (language ? option.name[language.iso] : "")}
       renderOption={(props, option) => (
         <Box component="li" {...props}>
           <JsonLanguageBlock value={option.name} />
@@ -283,52 +235,51 @@ export const SelectThemeShop = ({ theme, onChange }: PropsSelectThemeShop) => {
   );
 };
 
-interface PropsSelectIso {
-  value: string;
-  onChange: (value: string) => void;
+interface PropsSelectLanguage {
+  value: Language;
+  onChange: (value: Language) => void;
+  languages: Array<Language>;
 }
 
-export const SelectIso = ({ value, onChange }: PropsSelectIso) => {
-  const { t } = useTranslation();
-  const language = useMemo(
-    () => LANGUAGES.find((el) => el.iso === value),
-    [value]
-  );
+export const SelectLanguage = ({
+  languages,
+  value,
+  onChange,
+}: PropsSelectLanguage) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
-    <Autocomplete
-      disablePortal
-      id="isoinput"
-      value={language}
-      onChange={(_event: SyntheticEvent, newValue: Language | null) => {
-        if (newValue) onChange(newValue.iso);
-      }}
-      options={LANGUAGES}
-      getOptionLabel={(option) => option.name}
-      renderOption={(props, option) => (
-        <Box
-          component="li"
-          sx={{
-            "& > img": { mr: 2, flexShrink: 0 },
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          }}
-          {...props}
-        >
-          <Avatar src={option.icon} sx={{ width: 32, height: 32, mr: 1 }} />
-          <Typography variant="h6">{option.name}</Typography>
-        </Box>
-      )}
-      fullWidth
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label={t("commun.language")}
-          placeholder={t("commun.selectlanguage")}
-        />
-      )}
-    />
+    <>
+      <LanguageIcon language={value} size={40} onClick={handleClick} />
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+      >
+        {languages.map((el, index) => (
+          <MenuItem
+            key={index}
+            onClick={() => {
+              handleClose();
+              onChange(el);
+            }}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <LanguageIcon language={el} />
+              <Typography variant="h6">{el.name}</Typography>
+            </Box>
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
   );
 };
 

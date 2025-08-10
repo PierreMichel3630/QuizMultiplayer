@@ -18,7 +18,7 @@ function App() {
           <AppProvider>
             <Helmet
               htmlAttributes={{
-                lang: language.iso,
+                lang: language?.iso,
               }}
             >
               <meta

@@ -28,3 +28,7 @@ export const decryptToJsonLanguage = (encryptedBase64: string) => {
   const decryptResponse = decrypt(encryptedBase64);
   return decryptResponse ? (JSON.parse(decryptResponse) as JsonLanguage) : {};
 };
+
+export const decryptToString = (encryptedBase64: string) => {
+  return decrypt(encryptedBase64) as string | number;
+};

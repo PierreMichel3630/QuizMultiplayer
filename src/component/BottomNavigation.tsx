@@ -16,9 +16,11 @@ import { important, padding, px } from "csx";
 import { useApp } from "src/context/AppProvider";
 import { LogoIcon } from "src/icons/LogoIcon";
 import { Colors } from "src/style/Colors";
+import { useAuth } from "src/context/AuthProviderSupabase";
 
 export const BottomNavigationBlock = () => {
   const { t } = useTranslation();
+  const { profile } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const { myaccomplishments } = useApp();
@@ -95,8 +97,13 @@ export const BottomNavigationBlock = () => {
           value={"myprofile"}
           label={t("commun.profile")}
           icon={<AccountCircleIcon />}
-          component={Link}
-          to={"/myprofile"}
+          onClick={() => {
+            if (profile) {
+              navigate(`/profil/${profile.id}`);
+            } else {
+              navigate("/login");
+            }
+          }}
         />
       </BottomNavigation>
       <Box

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { useUser } from "src/context/UserProvider";
 import { QuestionSolo } from "src/models/Question";
 
 import { Box, Container, Typography } from "@mui/material";
@@ -16,12 +15,11 @@ import { ChallengeGame } from "src/models/Challenge";
 import { Colors } from "src/style/Colors";
 
 import challengeIcon from "src/assets/challenge.png";
-import { decryptToJsonLanguage } from "src/utils/crypt";
+import { decryptToString } from "src/utils/crypt";
 import { verifyResponseCrypt } from "src/utils/response";
 
 export default function PlayChallengePage() {
   const { t } = useTranslation();
-  const { language } = useUser();
   const { uuidGame } = useParams();
   const navigate = useNavigate();
 
@@ -48,7 +46,7 @@ export default function PlayChallengePage() {
       if (uuidGame) {
         selectChallengeGameByUuid(uuidGame).then(({ data }) => {
           const challengeGame = data as ChallengeGame;
-          const questions = challengeGame.challenge.questions;
+          const questions = challengeGame.challenge.questionsv2;
           setQuestions(questions);
           setTimeout(() => {
             setQuestion(questions[0]);
@@ -74,10 +72,8 @@ export default function PlayChallengePage() {
     const myResponseValue = value?.value ?? undefined;
     setMyresponse(myResponseValue);
     if (question) {
-      const result = value
-        ? verifyResponseCrypt(language, question, value)
-        : false;
-      const response = decryptToJsonLanguage(question.response);
+      const result = value ? verifyResponseCrypt(question, value) : false;
+      const response = decryptToString(question.response);
       const questionsgame: Array<unknown> = [...questionsGameRef.current];
       questionsgame.push({
         ...question,
@@ -132,7 +128,7 @@ export default function PlayChallengePage() {
       const newtimeoutQuestion = setTimeout(async () => {
         if (question) {
           const result = false;
-          const response = decryptToJsonLanguage(question.response);
+          const response = decryptToString(question.response);
           const questionsgame: Array<unknown> = [...questionsGameRef.current];
           questionsgame.push({
             ...question,

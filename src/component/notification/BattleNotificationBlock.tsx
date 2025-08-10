@@ -82,7 +82,7 @@ export const BattleNotificationBlock = ({ game, refuse }: Props) => {
                       ? game.player2.username
                       : t("commun.unknown")
                     : game.player1.username,
-                theme: mode.name[language.iso],
+                theme: language ? mode.name[language.iso] : "",
               }}
               components={{ bold: <strong /> }}
             />

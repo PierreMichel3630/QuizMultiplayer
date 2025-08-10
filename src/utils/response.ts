@@ -1,9 +1,7 @@
 import { Answer } from "src/component/question/ResponseBlock";
-import { Language } from "src/models/Language";
-import { ResponseLanguage } from "src/models/Response";
+import { QuestionResult } from "src/models/Question";
 import { compareTwoStrings } from "string-similarity";
 import { decrypt } from "./crypt";
-import { QuestionResult } from "src/models/Question";
 
 const LIMIT = 0.7;
 const LIMITEXACT = 1;
@@ -48,7 +46,6 @@ interface QuestionProps {
   isqcm: boolean;
 }
 export const verifyResponseCrypt = (
-  language: Language,
   question: QuestionProps,
   answer: Answer
 ) => {
@@ -59,11 +56,8 @@ export const verifyResponseCrypt = (
     if (question.isqcm) {
       result = Number(myResponseValue) === Number(decryptResponse);
     } else {
-      const response = JSON.parse(
-        decryptResponse.toString()
-      ) as ResponseLanguage;
       result = checkResponse(
-        response[language.iso],
+        decryptResponse,
         question.exact ?? answer.exact,
         myResponseValue
       );
@@ -72,27 +66,12 @@ export const verifyResponseCrypt = (
   return result;
 };
 
-export const verifyResponse = (
-  language: Language,
-  question: QuestionResult,
-  answer: Answer
-) => {
+export const verifyResponse = (question: QuestionResult, answer: Answer) => {
   let result = false;
   const myResponseValue = answer.value;
   const decryptResponse = question.response;
   if (decryptResponse !== undefined) {
-    if (question.isqcm) {
-      result = Number(myResponseValue) === Number(decryptResponse);
-    } else {
-      const response = JSON.parse(
-        decryptResponse.toString()
-      ) as ResponseLanguage;
-      result = checkResponse(
-        response[language.iso],
-        question.exact ?? answer.exact,
-        myResponseValue
-      );
-    }
+    result = Number(myResponseValue) === Number(decryptResponse);
   }
   return result;
 };

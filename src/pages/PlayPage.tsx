@@ -31,7 +31,7 @@ export default function PlayPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { uuid } = useUser();
+  const { uuid, language } = useUser();
   const { user } = useAuth();
   const { setMessage, setSeverity } = useMessage();
 
@@ -44,29 +44,31 @@ export default function PlayPage() {
   );
 
   const play = () => {
-    if (theme && mode === "solo") {
-      launchSoloGame(uuid, theme.id).then(({ data }) => {
-        navigate(`/solo/${data.uuid}`);
-      });
-    } else if (theme && mode === "duel" && profileAdv !== undefined) {
-      if (user) {
-        launchDuelGame(uuid, profileAdv.id, theme.id).then(({ data }) => {
-          if (data) navigate(`/duel/${data.uuid}`);
+    if (language) {
+      if (theme && mode === "solo" && language) {
+        launchSoloGame(uuid, theme.id, language).then(({ data }) => {
+          navigate(`/solo/${data.uuid}`);
         });
+      } else if (theme && mode === "duel" && profileAdv !== undefined) {
+        if (user) {
+          launchDuelGame(uuid, profileAdv.id, theme.id).then(({ data }) => {
+            if (data) navigate(`/duel/${data.uuid}`);
+          });
+        } else {
+          navigate(`/login`);
+        }
+      } else if (theme && mode === "duel" && profileAdv === undefined) {
+        if (user) {
+          matchmakingDuelGame(uuid, theme.id).then(({ data }) => {
+            if (data) navigate(`/duel/${data.uuid}`);
+          });
+        } else {
+          navigate(`/login`);
+        }
       } else {
-        navigate(`/login`);
+        setSeverity("error");
+        setMessage(t("error.selectatleast1theme"));
       }
-    } else if (theme && mode === "duel" && profileAdv === undefined) {
-      if (user) {
-        matchmakingDuelGame(uuid, theme.id).then(({ data }) => {
-          if (data) navigate(`/duel/${data.uuid}`);
-        });
-      } else {
-        navigate(`/login`);
-      }
-    } else {
-      setSeverity("error");
-      setMessage(t("error.selectatleast1theme"));
     }
   };
 

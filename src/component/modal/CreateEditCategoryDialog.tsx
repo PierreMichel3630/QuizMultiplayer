@@ -4,7 +4,7 @@ import { CategoryForm } from "src/form/CategoryForm";
 import { Category } from "src/models/Category";
 
 interface Props {
-  category: Category | undefined;
+  category: Category | null;
   open: boolean;
   close: () => void;
 }

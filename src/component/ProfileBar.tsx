@@ -102,7 +102,7 @@ export const ProfileBar = () => {
               </Link>
             )}
             <Link
-              to={`/myprofile`}
+              to={profile ? `/profil/${profile.id}` : "/login"}
               style={{ textDecoration: "none", maxWidth: "calc(100% -30px)" }}
             >
               {profile ? (

@@ -31,7 +31,7 @@ export default function RecapSoloPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { uuidGame } = useParams();
-  const { uuid } = useUser();
+  const { uuid, language } = useUser();
   const { refreshProfil, profile } = useAuth();
   const { getMyAccomplishments } = useApp();
 
@@ -59,8 +59,8 @@ export default function RecapSoloPage() {
   }, [uuidGame]);
 
   const playSolo = () => {
-    if (game && uuid) {
-      launchSoloGame(uuid, Number(game.theme.id)).then(({ data }) => {
+    if (game && uuid && language) {
+      launchSoloGame(uuid, Number(game.theme.id), language).then(({ data }) => {
         navigate(`/solo/${data.uuid}`);
       });
     }

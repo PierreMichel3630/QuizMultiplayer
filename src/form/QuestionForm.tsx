@@ -1,9 +1,6 @@
 import {
-  Chip,
-  Divider,
   FormControl,
   FormControlLabel,
-  FormGroup,
   FormHelperText,
   FormLabel,
   Grid,
@@ -13,68 +10,38 @@ import {
   Radio,
   RadioGroup,
   Select,
-  Switch,
 } from "@mui/material";
 import { px } from "csx";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
-import {
-  insertQuestionAdmin,
-  insertQuestionTheme,
-  updateQuestion,
-} from "src/api/question";
 import { ButtonColor } from "src/component/Button";
 import { ImageQuestionBlock } from "src/component/ImageBlock";
-import { InputEnter } from "src/component/Input";
 import { SelectDifficulty } from "src/component/Select";
 import { useMessage } from "src/context/MessageProvider";
 import { Difficulty } from "src/models/enum/DifficultyEnum";
 import { QuestionAdmin } from "src/models/Question";
-import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import * as Yup from "yup";
 
 interface Props {
   question?: QuestionAdmin;
-  theme?: Theme;
   validate: () => void;
 }
 
-export const QuestionForm = ({ question, validate, theme }: Props) => {
+export const QuestionForm = ({ question, validate }: Props) => {
   const { t } = useTranslation();
   const { setMessage, setSeverity } = useMessage();
 
   const initialValue: {
-    difficulty: string;
-    typeResponse: string | null;
-    image: undefined | string;
-    theme: undefined | Theme;
-    question: string;
-    response: Array<string>;
     typequestion: string;
-    exact: boolean;
-    allresponse: boolean;
-    responses: Array<string>;
+    difficulty: string;
+    image: undefined | string;
     isqcm: boolean | null;
-    extra: string;
   } = {
-    exact: question ? question.exact : false,
-    allresponse: question ? question.allresponse : false,
-    question: question ? question.question["fr-FR"] : "",
     typequestion: question ? question.typequestion : "DEFAULT",
-    response: question
-      ? Array.isArray(question.response["fr-FR"])
-        ? question.response["fr-FR"]
-        : [question.response["fr-FR"]]
-      : [],
     difficulty: question ? question.difficulty : "FACILE",
-    typeResponse: question ? question.typeResponse : null,
-    image: question && question.image ? question.image : undefined,
-    theme:
-      question && question.theme ? question.theme : theme ? theme : undefined,
-    responses: question ? question.responses.map((el) => el["fr-FR"]) : [],
+    image: question?.image ? question.image : undefined,
     isqcm: question ? question.isqcm : true,
-    extra: question && question.extra !== null ? question.extra["fr-FR"] : "",
   };
 
   const validationSchema = Yup.object().shape({
@@ -96,60 +63,10 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
-        const newQuestion = {
-          question: question
-            ? {
-                ...question.question,
-                "fr-FR": values.question,
-              }
-            : {
-                "fr-FR": values.question,
-              },
-          response: question
-            ? {
-                ...question.response,
-                "fr-FR": values.response,
-              }
-            : {
-                "fr-FR": values.response,
-              },
-          responses: values.responses.map((el) => ({ "fr-FR": el })),
-          exact: values.exact,
-          allresponse: values.allresponse,
-          typequestion: values.typequestion,
-          image: values.image ? values.image : null,
-          difficulty: values.difficulty,
-          typeResponse: values.typeResponse,
-          isqcm: values.isqcm,
-          extra:
-            question && values.extra !== ""
-              ? {
-                  ...question.extra,
-                  "fr-FR": values.extra,
-                }
-              : question
-              ? question.extra
-              : null,
-        };
-        const { error, data } = question
-          ? await updateQuestion({ id: question.id, ...newQuestion })
-          : await insertQuestionAdmin(newQuestion);
-        if (error) {
-          setSeverity("error");
-          setMessage(t("commun.error"));
-        } else {
-          if (!question) {
-            const insertTheme = {
-              question: data.id,
-              theme: values.theme ? values.theme.id : 1,
-            };
-            await insertQuestionTheme(insertTheme);
-          }
-          setSeverity("success");
-          setMessage(t("alert.updatequestion"));
-          validate();
-        }
+        console.log(values);
+        validate();
       } catch (err) {
+        console.error(err);
         setSeverity("error");
         setMessage(t("commun.error"));
       }
@@ -180,40 +97,6 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <FormGroup>
-            {/*<FormControlLabel
-              control={
-                <Switch
-                  checked={formik.values.validate}
-                  onChange={formik.handleChange}
-                  name="validate"
-                />
-              }
-              label={t("form.createquestion.validate")}
-            />*/}
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={formik.values.exact}
-                  onChange={formik.handleChange}
-                  name="exact"
-                />
-              }
-              label={t("form.createquestion.exact")}
-            />
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={formik.values.allresponse}
-                  onChange={formik.handleChange}
-                  name="allresponse"
-                />
-              }
-              label={t("form.createquestion.allresponse")}
-            />
-          </FormGroup>
-        </Grid>
-        <Grid item xs={12}>
           <FormControl>
             <FormLabel id="radio-isqcm-label" color="error">
               {t("form.createquestion.isqcm")}
@@ -234,10 +117,6 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
               />
             </RadioGroup>
           </FormControl>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Divider sx={{ borderBottomWidth: 5 }} />
         </Grid>
         <Grid item xs={12}>
           <FormControl
@@ -285,148 +164,7 @@ export const QuestionForm = ({ question, validate, theme }: Props) => {
             <ImageQuestionBlock src={formik.values.image} />
           </Grid>
         )}
-        {formik.values.typequestion !== "QCM" && (
-          <Grid item xs={12}>
-            <FormControl
-              fullWidth
-              error={Boolean(
-                formik.touched.typeResponse && formik.errors.typeResponse
-              )}
-            >
-              <InputLabel htmlFor="typeResponse-input">
-                {t("form.createquestion.typeResponse")}
-              </InputLabel>
-              <OutlinedInput
-                id="typeResponse-input"
-                type="text"
-                value={formik.values.typeResponse}
-                name="typeResponse"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                label={t("form.createquestion.typeResponse")}
-                inputProps={{}}
-              />
-              {formik.touched.typeResponse && formik.errors.typeResponse && (
-                <FormHelperText error id="error-typeResponse">
-                  {formik.errors.typeResponse}
-                </FormHelperText>
-              )}
-            </FormControl>
-          </Grid>
-        )}
-        <Grid item xs={12}>
-          <FormControl
-            fullWidth
-            error={Boolean(formik.touched.question && formik.errors.question)}
-          >
-            <InputLabel htmlFor="question-input">
-              {t("form.createquestion.question")}
-            </InputLabel>
-            <OutlinedInput
-              id="question-input"
-              type="text"
-              value={formik.values.question}
-              name="question"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              label={t("form.createquestion.question")}
-              inputProps={{}}
-            />
-            {formik.touched.question && formik.errors.question && (
-              <FormHelperText error id="error-question">
-                {formik.errors.question}
-              </FormHelperText>
-            )}
-          </FormControl>
-        </Grid>
-        <Grid item xs={12}>
-          <FormControl
-            fullWidth
-            error={Boolean(formik.touched.extra && formik.errors.extra)}
-          >
-            <InputLabel htmlFor="extra-input">
-              {t("form.createquestion.extra")}
-            </InputLabel>
-            <OutlinedInput
-              id="extra-input"
-              type="text"
-              value={formik.values.extra}
-              name="extra"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              label={t("form.createquestion.extra")}
-              inputProps={{}}
-            />
-            {formik.touched.extra && formik.errors.extra && (
-              <FormHelperText error id="error-extra">
-                {formik.errors.extra}
-              </FormHelperText>
-            )}
-          </FormControl>
-        </Grid>
-        <Grid item xs={12}>
-          <InputEnter
-            onChange={(value) =>
-              formik.setFieldValue(`response`, [
-                ...formik.values.response,
-                value,
-              ])
-            }
-            label={t("form.createquestion.response")}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={1}>
-            {formik.values.response.map((response, i) => (
-              <Grid item key={i}>
-                <Chip
-                  label={response}
-                  onDelete={() =>
-                    formik.setFieldValue(
-                      `response`,
-                      [...formik.values.response].filter((r) => r !== response)
-                    )
-                  }
-                />
-              </Grid>
-            ))}
-          </Grid>
-        </Grid>
 
-        {formik.values.typequestion === "QCM" && (
-          <>
-            <Grid item xs={12}>
-              <InputEnter
-                onChange={(value) =>
-                  formik.setFieldValue(`responses`, [
-                    ...formik.values.responses,
-                    value,
-                  ])
-                }
-                label={t("form.createquestion.responses")}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container spacing={1}>
-                {formik.values.responses.map((response, i) => (
-                  <Grid item key={i}>
-                    <Chip
-                      label={response}
-                      onDelete={() =>
-                        formik.setFieldValue(
-                          `responses`,
-                          [...formik.values.responses].filter(
-                            (r) => r !== response
-                          )
-                        )
-                      }
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            </Grid>
-          </>
-        )}
         <Grid item xs={12}>
           <ButtonColor
             value={Colors.green}

@@ -174,11 +174,6 @@ export const GroupButtonAllTypeGame = ({
   const options = useMemo(
     () => [
       {
-        label: t("commun.all"),
-        value: GameModeEnum.all,
-        color: Colors.green,
-      },
-      {
         icon: <PlayCircleIcon />,
         label: t("commun.solo"),
         value: GameModeEnum.solo,

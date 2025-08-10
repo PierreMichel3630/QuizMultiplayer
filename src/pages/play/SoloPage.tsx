@@ -15,7 +15,7 @@ import { QuestionResponseBlock } from "src/component/question/QuestionResponseBl
 import { Answer, Response } from "src/component/question/ResponseBlock";
 import { SoloGame } from "src/models/Game";
 import { StatusGameSolo } from "src/models/enum/StatusGame";
-import { decryptToJsonLanguage } from "src/utils/crypt";
+import { decryptToString } from "src/utils/crypt";
 import { PreloadImages } from "src/utils/preload";
 import { verifyResponseCrypt } from "src/utils/response";
 
@@ -47,7 +47,7 @@ export default function SoloPage() {
           localStorage.getItem(localStorageId) ?? "[]"
         );
         supabase.functions
-          .invoke("question-solo-gameV3", {
+          .invoke("question-solo-gameV4", {
             body: {
               game: game.uuid,
               questions: questionsgame,
@@ -96,7 +96,7 @@ export default function SoloPage() {
                 setResponse(undefined);
                 scrollTop();
                 timeoutQuestion.current = setTimeout(async () => {
-                  const response = decryptToJsonLanguage(questionSolo.response);
+                  const response = decryptToString(questionSolo.response);
                   const questionsgame: Array<unknown> = JSON.parse(
                     localStorage.getItem(localStorageId) ?? "[]"
                   );
@@ -133,8 +133,8 @@ export default function SoloPage() {
       const myResponseValue = value?.value ?? undefined;
       setMyresponse(myResponseValue);
       if (question && game && language) {
-        const result = verifyResponseCrypt(language, question, value);
-        const response = decryptToJsonLanguage(question.response);
+        const result = verifyResponseCrypt(question, value);
+        const response = decryptToString(question.response);
         const questionsgame: Array<unknown> = JSON.parse(
           localStorage.getItem(localStorageId) ?? "[]"
         );

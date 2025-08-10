@@ -24,6 +24,7 @@ import {
   launchSoloGame,
   matchmakingDuelGame,
 } from "src/api/game";
+import { countQuestionByThemeAndLanguage } from "src/api/question";
 import { countPlayersByTheme } from "src/api/score";
 import { selectThemeById } from "src/api/theme";
 import { ButtonColor } from "src/component/Button";
@@ -47,7 +48,7 @@ export default function ThemePage() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { uuid } = useUser();
+  const { uuid, language } = useUser();
   const { user, profile } = useAuth();
   const { favorites, getFavorite } = useApp();
   const { setMessage, setSeverity } = useMessage();
@@ -55,6 +56,7 @@ export default function ThemePage() {
   const [openModalFriend, setOpenModalFriend] = useState(false);
   const [openProposeQuestion, setOpenProposeQuestion] = useState(false);
   const [players, setPlayers] = useState<number | undefined>(undefined);
+  const [questions, setQuestions] = useState<number | undefined>(undefined);
   const [theme, setTheme] = useState<Theme | undefined>(undefined);
   const [loadingTheme, setLoadingTheme] = useState(true);
 
@@ -82,6 +84,14 @@ export default function ThemePage() {
     getPlayers();
   }, [id]);
 
+  useEffect(() => {
+    if (theme && language) {
+      countQuestionByThemeAndLanguage(theme.id, language).then(({ data }) => {
+        setQuestions(data ? data.questions : 0);
+      });
+    }
+  }, [language, theme]);
+
   const playFriend = async (profile: Profile) => {
     if (profile && id) {
       const { data } = await launchDuelGame(uuid, profile.id, Number(id));
@@ -101,8 +111,8 @@ export default function ThemePage() {
   };
 
   const playSolo = () => {
-    if (uuid && id) {
-      launchSoloGame(uuid, Number(id)).then(({ data }) => {
+    if (uuid && id && language) {
+      launchSoloGame(uuid, Number(id), language).then(({ data }) => {
         navigate(`/solo/${data.uuid}`);
       });
     }
@@ -390,7 +400,7 @@ export default function ThemePage() {
                 <Grid item xs={6}>
                   <InfoBlock
                     title={t("commun.questions")}
-                    value={theme ? theme.questions : "-"}
+                    value={questions ?? "-"}
                   />
                 </Grid>
               </Grid>

@@ -11,7 +11,6 @@ import { useApp } from "src/context/AppProvider";
 import { CategoriesBlock } from "src/component/CategoriesBlock";
 import { GameModeBlock } from "src/component/GameModeBlock";
 import { NewBlock } from "src/component/NewBlock";
-import { PreviousGameBlock } from "src/component/PreviousGameBlock";
 import { RankingTop5Block } from "src/component/RankingBlock";
 import { useAuth } from "src/context/AuthProviderSupabase";
 
@@ -32,7 +31,7 @@ export default function ThemesPage() {
   const { t } = useTranslation();
   const { hasChallenge, language } = useUser();
 
-  const { user, profile } = useAuth();
+  const { profile } = useAuth();
   const { headerSize } = useApp();
 
   const refHeadPage = useRef<HTMLDivElement | null>(null);
@@ -50,7 +49,7 @@ export default function ThemesPage() {
 
   useEffect(() => {
     const isChallengeAvailable = () => {
-      if (profile) {
+      if (profile && language) {
         const date = moment();
         countChallengeGameByDateAndProfileId(
           date,
@@ -62,7 +61,7 @@ export default function ThemesPage() {
       }
     };
     isChallengeAvailable();
-  }, [profile, language.iso]);
+  }, [profile, language]);
 
   const handleChange = (value: string) => {
     setSearch(value);
@@ -146,11 +145,11 @@ export default function ThemesPage() {
                 <Grid item xs={12}>
                   <FavoriteBlock />
                 </Grid>
-                {user && (
+                {/*user && (
                   <Grid item xs={12}>
                     <PreviousGameBlock />
                   </Grid>
-                )}
+                )*/}
                 <Grid item xs={12}>
                   <NewBlock />
                 </Grid>

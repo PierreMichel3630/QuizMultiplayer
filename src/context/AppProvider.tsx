@@ -149,10 +149,12 @@ export const AppProvider = ({ children }: Props) => {
   }, [user]);
 
   useEffect(() => {
-    countThemes().then(({ count }) => {
-      setNbThemes(count ?? 0);
-    });
-  }, []);
+    if (language) {
+      countThemes(language, "").then(({ count }) => {
+        setNbThemes(count ?? 0);
+      });
+    }
+  }, [language]);
 
   const getMessage = () => {
     selectReportMessage().then(({ data }) => {

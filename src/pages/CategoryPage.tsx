@@ -10,6 +10,7 @@ import { PageCategoryBlock } from "src/component/page/PageCategoryBlock";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
+import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
 import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
 import { FavoriteInsert } from "src/models/Favorite";
@@ -21,6 +22,7 @@ export default function CategoryPage() {
   const navigate = useNavigate();
 
   const { user } = useAuth();
+  const { language } = useUser();
   const { favorites, getFavorite } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
@@ -32,17 +34,19 @@ export default function CategoryPage() {
       selectCategoryById(id).then(({ data }) => {
         setCategory(data);
       });
-      selectThemesByCategory(id).then(({ data }) => {
-        setThemes(data ?? []);
-      });
+      if (language) {
+        selectThemesByCategory(language, id).then(({ data }) => {
+          setThemes(data ?? []);
+        });
+      }
     }
-  }, [id]);
+  }, [id, language]);
 
   const themesDisplay = useMemo(
     () =>
       [...themes].map((el) => ({
         id: el.id,
-        title: el.title,
+        name: el.name,
         image: el.image,
         color: el.color,
         link: `/theme/${el.id}`,
@@ -91,22 +95,30 @@ export default function CategoryPage() {
     }
   };
 
+  const title = useMemo(() => {
+    if (category && language) {
+      const translations = [...category.categorytranslation];
+      const trad = translations.find((el) => el.language.id === language.id);
+      return trad ? trad.name : translations[1].name;
+    } else {
+      return "";
+    }
+  }, [language, category]);
+
   return (
     <Grid container>
       <Helmet>
-        <title>
-          {category ? `${category.title} - ${t("appname")}` : t("appname")}
-        </title>
+        <title>{title ? `${title} - ${t("appname")}` : t("appname")}</title>
         {category && (
           <meta
             name="description"
-            content={`${t("appname")} Catégorie ${category.title}`}
+            content={`${t("appname")} - ${t("category")} ${title}`}
           />
         )}
       </Helmet>
       <Grid item xs={12}>
         <PageCategoryBlock
-          title={category?.title}
+          title={title}
           values={themesDisplay}
           addFavorite={addFavorite}
           favorite={favorite !== undefined}

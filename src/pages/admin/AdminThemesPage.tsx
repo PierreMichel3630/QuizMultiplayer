@@ -12,7 +12,7 @@ import { Colors } from "src/style/Colors";
 export default function AdminThemesPage() {
   const { t } = useTranslation();
 
-  const [theme, setTheme] = useState<Theme | undefined>(undefined);
+  const [theme, setTheme] = useState<Theme | null>(null);
   const [openModal, setOpenModal] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -39,7 +39,7 @@ export default function AdminThemesPage() {
         theme={theme}
         open={openModal}
         close={() => {
-          setTheme(undefined);
+          setTheme(null);
           setOpenModal(false);
         }}
       />

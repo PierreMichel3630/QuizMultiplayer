@@ -116,7 +116,7 @@ export default function ChallengeProfilPage() {
 
   useEffect(() => {
     const isChallengeAvailable = () => {
-      if (profile) {
+      if (profile && language) {
         const date = moment();
         countChallengeGameByDateAndProfileId(
           date,

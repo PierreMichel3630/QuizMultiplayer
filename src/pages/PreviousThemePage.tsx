@@ -34,7 +34,7 @@ export default function PreviousThemePage() {
     () =>
       themesPrevious.map((el) => ({
         id: el.id,
-        title: el.title,
+        name: el.title,
         image: el.image,
         color: el.color,
         link: `/theme/${el.id}`,

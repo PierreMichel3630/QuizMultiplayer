@@ -14,7 +14,7 @@ interface Mode {
   id: number;
   image: string;
   color: string;
-  title: string;
+  name: string;
   onClick: () => void;
 }
 
@@ -45,7 +45,7 @@ export const GameModeBlock = () => {
         image:
           "https://cperjgnbmoqyyqgkyqws.supabase.co/storage/v1/object/public/theme/mode/swords.png",
         color: "#a569bd",
-        title: t("mode.fightfriend"),
+        name: t("mode.fightfriend"),
         onClick: () => launchBattleGame(),
       },
     ],
@@ -54,19 +54,21 @@ export const GameModeBlock = () => {
 
   useEffect(() => {
     const idThemes = [271, 272];
-    selectThemesById(idThemes, language.iso).then(({ data }) => {
-      const res = data ?? [];
-      setThemes(
-        [...res].map((el) => ({
-          id: el.id,
-          title: el.title,
-          image: el.image,
-          color: el.color,
-          link: `/theme/${el.id}`,
-          type: TypeCardEnum.THEME,
-        }))
-      );
-    });
+    if (language) {
+      selectThemesById(idThemes, language.iso).then(({ data }) => {
+        const res = data ?? [];
+        setThemes(
+          [...res].map((el) => ({
+            id: el.id,
+            name: el.title,
+            image: el.image,
+            color: el.color,
+            link: `/theme/${el.id}`,
+            type: TypeCardEnum.THEME,
+          }))
+        );
+      });
+    }
   }, [language]);
 
   const count = useMemo(() => themes.length + modes.length, [themes, modes]);

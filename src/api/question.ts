@@ -6,10 +6,23 @@ import {
 } from "src/models/Question";
 import { supabase } from "./supabase";
 import { FilterQuestion } from "src/pages/admin/Edit/AdminEditQuestionsPage";
+import { Language } from "src/models/Language";
 
 export const SUPABASE_QUESTION_TABLE = "question";
 export const SUPABASE_QUESTIONTHEME_TABLE = "questiontheme";
 export const SUPABASE_RANDOMQUESTION_TABLE = "randomquestion";
+export const SUPABASE_COUNTQUESTION_TABLE = "viewquestionbythemeandlanguage";
+
+export const countQuestionByThemeAndLanguage = (
+  theme: number,
+  language: Language
+) =>
+  supabase
+    .from(SUPABASE_COUNTQUESTION_TABLE)
+    .select("*")
+    .eq("theme", theme)
+    .eq("language", language.id)
+    .maybeSingle();
 
 export const selectQuestionWithImage = () =>
   supabase
@@ -19,7 +32,13 @@ export const selectQuestionWithImage = () =>
     .eq("theme", 5);
 
 export const selectQuestionById = (id: number) =>
-  supabase.from(SUPABASE_QUESTION_TABLE).select().eq("id", id).maybeSingle();
+  supabase
+    .from(SUPABASE_QUESTION_TABLE)
+    .select(
+      "*, questiontranslation(*, language(*)), questionanswer(*, answer(*, answertranslation(*, language(*))))"
+    )
+    .eq("id", id)
+    .maybeSingle();
 
 export const selectQuestionThemeByQuestion = (question: number) =>
   supabase

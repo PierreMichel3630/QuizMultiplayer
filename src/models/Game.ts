@@ -25,6 +25,7 @@ export interface TrainingGame {
 
 export interface SoloGame {
   id: number;
+  profile: Profile;
   points: number;
   questions: Array<QuestionResult>;
   player: string;
@@ -32,6 +33,7 @@ export interface SoloGame {
   themequestion: Theme;
   uuid: string;
   status: StatusGameSolo;
+  created_at: Date;
 }
 
 export interface SoloGameResult extends SoloGame {

@@ -32,9 +32,9 @@ export default function ChallengePage() {
   );
 
   const launch = useCallback(async () => {
-    if (profile) {
+    if (profile && language) {
       const date = moment().format("YYYY-MM-DD");
-      launchChallenge(date, language.iso).then(async ({ data }) => {
+      launchChallenge(date, language.id).then(async ({ data }) => {
         const newProfile = {
           id: profile.id,
           lastchallengeplay: date,
@@ -49,7 +49,7 @@ export default function ChallengePage() {
 
   useEffect(() => {
     const isChallengeAvailable = () => {
-      if (profile) {
+      if (profile && language) {
         const date = moment();
         countChallengeGameByDateAndProfileId(
           date,
@@ -61,7 +61,7 @@ export default function ChallengePage() {
       }
     };
     isChallengeAvailable();
-  }, [profile, language.iso]);
+  }, [profile, language]);
 
   return (
     <Grid container>

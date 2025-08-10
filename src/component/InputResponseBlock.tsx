@@ -34,7 +34,12 @@ export const InputResponseBlock = ({
   useEffect(() => {
     setResponses([]);
     const timer = setTimeout(() => {
-      if (typeResponse && value.length >= 3 && myresponse === undefined) {
+      if (
+        typeResponse &&
+        value.length >= 3 &&
+        myresponse === undefined &&
+        language
+      ) {
         searchResponseByTypeAndValue(value, typeResponse).then(({ data }) => {
           const res = data as Array<ResponseUpdate>;
           const arrayString = res.map((el) => el.value[language.iso]);

@@ -6,25 +6,30 @@ import { getThemesAndCategoriesById } from "src/api/search";
 import { ICardImage } from "src/component/card/CardImage";
 import { PageCategoryBlock } from "src/component/page/PageCategoryBlock";
 import { useApp } from "src/context/AppProvider";
+import { useUser } from "src/context/UserProvider";
 
 export default function FavoritePage() {
   const { t } = useTranslation();
+  const { language } = useUser();
   const { favorites } = useApp();
+
   const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
 
   useEffect(() => {
-    if (favorites.length > 0) {
+    if (favorites.length > 0 && language) {
       const idCategories = [...favorites]
         .filter((el) => el.category)
         .map((el) => Number(el.category));
       const idThemes = [...favorites]
         .filter((el) => el.theme)
         .map((el) => Number(el.theme));
-      getThemesAndCategoriesById(idCategories, idThemes).then(({ data }) => {
-        setItemsSearch(data ?? []);
-      });
+      getThemesAndCategoriesById(language, idCategories, idThemes).then(
+        ({ data }) => {
+          setItemsSearch(data ?? []);
+        }
+      );
     }
-  }, [favorites]);
+  }, [favorites, language]);
 
   return (
     <Grid container>

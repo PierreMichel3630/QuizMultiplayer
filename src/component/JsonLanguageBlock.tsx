@@ -7,11 +7,12 @@ interface Props extends TypographyProps {
 }
 export const JsonLanguageBlock = ({ value, ...props }: Props) => {
   const { language } = useUser();
-  const label = value
-    ? value[language.iso]
+  const label =
+    value && language
       ? value[language.iso]
-      : value["fr-FR"]
-    : "";
+        ? value[language.iso]
+        : value["fr-FR"]
+      : "";
   const split = label.toString().split("\n");
   return split.map((el, index) => (
     <Typography {...props} key={index}>
@@ -29,7 +30,11 @@ export const JsonLanguageArrayBlock = ({ value, ...props }: PropsArray) => {
     <Typography {...props}>
       {value
         .map((el) => {
-          const label = el[language.iso] ? el[language.iso] : el["fr-FR"];
+          const label = language
+            ? el[language.iso]
+              ? el[language.iso]
+              : el["fr-FR"]
+            : "";
           return label;
         })
         .join(", ")}
@@ -47,9 +52,11 @@ export const JsonLanguageArrayOrStringBlock = ({
   ...props
 }: PropsArrayOrString) => {
   const { language } = useUser();
-  const valueLanguage = value[language.iso]
+  const valueLanguage = language
     ? value[language.iso]
-    : value["fr-FR"];
+      ? value[language.iso]
+      : value["fr-FR"]
+    : "";
 
   const label = Array.isArray(valueLanguage)
     ? all

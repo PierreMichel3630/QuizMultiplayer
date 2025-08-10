@@ -11,7 +11,7 @@ export const SUPABASE_CHALLENGEGAMEWEEK_VIEW = "viewchallengeweek";
 export const SUPABASE_CHALLENGEAVGGAMEDAY_VIEW = "viewavgchallengeday";
 export const SUPABASE_RANKINGCHALLENGE_VIEW = "rankingchallenge";
 
-export const SUPABASE_LAUNCHCHALLENGE_FUNCTION = "launch-challengeV2";
+export const SUPABASE_LAUNCHCHALLENGE_FUNCTION = "launch-challengeV3";
 export const SUPABASE_ENDCHALLENGE_FUNCTION = "end-challenge";
 
 export const updateChallengeGame = (value: ChallengeGameUpdate) =>
@@ -558,7 +558,7 @@ export const selectRankingChallengeByDateAndProfileId = (
     .not("challenge", "is", null)
     .maybeSingle();
 
-export const launchChallenge = (date: string, language: string) =>
+export const launchChallenge = (date: string, language: number) =>
   supabase.functions.invoke(SUPABASE_LAUNCHCHALLENGE_FUNCTION, {
     body: {
       date,

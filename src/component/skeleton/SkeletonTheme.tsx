@@ -12,13 +12,11 @@ export const SkeletonThemes = ({ number }: Props) => {
 };
 
 export const SkeletonThemesGrid = ({ number }: Props) => {
-  return (
-      Array.from(new Array(number)).map((_, index) => (
-        <Grid item key={index}>
-          <SkeletonTheme />
-        </Grid>
-      ))
-  );
+  return Array.from(new Array(number)).map((_, index) => (
+    <Grid item key={index}>
+      <SkeletonTheme />
+    </Grid>
+  ));
 };
 
 export const SkeletonTheme = () => {
@@ -81,7 +79,7 @@ export const SkeletonProfilTheme = () => {
     <Paper
       sx={{
         overflow: "hidden",
-        backgroundColor: Colors.lightgrey,
+        backgroundColor: "background.paper",
         height: percent(100),
       }}
     >

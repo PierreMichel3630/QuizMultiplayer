@@ -31,7 +31,7 @@ export const TitleForm = ({ title, validate }: Props) => {
     price: number;
     isaccomplishment: boolean;
   } = {
-    name: title ? title.name[language.iso] : "",
+    name: title && language ? title.name[language.iso] : "",
     isaccomplishment: title ? title.isaccomplishment : false,
     price: title ? title.price : 0,
   };
@@ -47,9 +47,10 @@ export const TitleForm = ({ title, validate }: Props) => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
+        const iso = language ? language.iso : "fr-FR";
         const newTitle = {
           name: {
-            [language.iso]: values.name,
+            [iso]: values.name,
           },
           price: values.price,
           isaccomplishment: values.isaccomplishment,
@@ -57,13 +58,10 @@ export const TitleForm = ({ title, validate }: Props) => {
         const { error } = title
           ? await updateTitle({ id: title.id, ...newTitle })
           : await insertTitle(newTitle);
-        if (error) {
-          setSeverity("error");
-          setMessage(t("commun.error"));
-        } else {
-          validate();
-        }
+        if (error) throw error;
+        validate();
       } catch (err) {
+        console.error(err);
         setSeverity("error");
         setMessage(t("commun.error"));
       }

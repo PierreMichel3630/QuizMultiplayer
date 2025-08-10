@@ -4,7 +4,6 @@ import { useUser } from "src/context/UserProvider";
 import {
   Response,
   ResponseDuel,
-  ResponseLanguage,
   ResponseSolo,
   ResponseTraining,
 } from "src/models/Response";
@@ -17,35 +16,6 @@ import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { InputResponseBlock } from "./question/InputResponseBlock";
 
-interface ResponseProps {
-  response: ResponseLanguage;
-}
-
-export const ResponseBlock = ({ response }: ResponseProps) => {
-  const { language } = useUser();
-  const value = response[language.iso]
-    ? response[language.iso]
-    : response["fr-FR"];
-
-  const label = Array.isArray(value) ? value[0] ?? "" : value;
-
-  return (
-    <Paper
-      sx={{
-        p: 1,
-        backgroundColor: Colors.green,
-        borderRadius: px(10),
-        textAlign: "center",
-        width: percent(100),
-      }}
-    >
-      <Typography variant="h2" sx={{ color: "white" }}>
-        {label}
-      </Typography>
-    </Paper>
-  );
-};
-
 interface ResponseSoloProps {
   response: ResponseSolo;
 }
@@ -53,12 +23,13 @@ interface ResponseSoloProps {
 export const ResponseSoloBlock = ({ response }: ResponseSoloProps) => {
   const { t } = useTranslation();
   const { language } = useUser();
-  const value =
-    typeof response.response === "number"
+  const value = language
+    ? typeof response.response === "number"
       ? response.response
       : response.response[language.iso]
       ? response.response[language.iso]
-      : response.response["fr-FR"];
+      : response.response["fr-FR"]
+    : "";
 
   const label = Array.isArray(value) ? value[0] ?? "" : value;
 
@@ -93,12 +64,13 @@ interface ResponseTrainingProps {
 export const ResponseTrainingBlock = ({ response }: ResponseTrainingProps) => {
   const { t } = useTranslation();
   const { language } = useUser();
-  const value =
-    typeof response.response === "number"
+  const value = language
+    ? typeof response.response === "number"
       ? response.response
       : response.response[language.iso]
       ? response.response[language.iso]
-      : response.response["fr-FR"];
+      : response.response["fr-FR"]
+    : "";
 
   const label = Array.isArray(value) ? value[0] ?? "" : value;
 

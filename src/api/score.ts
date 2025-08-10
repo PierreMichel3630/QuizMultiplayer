@@ -1,5 +1,7 @@
+import { Language } from "src/models/Language";
 import { bots } from "./bots";
 import { supabase } from "./supabase";
+import { Moment } from "moment";
 
 export const SUPABASE_SCORE_TABLE = "score";
 export const SUPABASE_OPPOSITION_TABLE = "opposition";
@@ -30,6 +32,24 @@ export const selectScoresByProfile = (uuid: string) =>
     .or("games.gt.0,duelgames.gt.0")
     .eq("profile", uuid);
 
+export const selectScoresByProfilePaginate = (
+  uuid: string,
+  order: string,
+  page = 0,
+  itemperpage = 25
+) => {
+  const from = page * itemperpage;
+  const to = from + itemperpage - 1;
+
+  return supabase
+    .from(SUPABASE_SCORE_TABLE)
+    .select("*, theme(color,image ,themetranslation!inner(name, language(*)))")
+    .or("games.gt.0,duelgames.gt.0")
+    .eq("profile", uuid)
+    .order(order, { ascending: false })
+    .range(from, to);
+};
+
 export const selectScoreByThemeAndPlayer = (player: string, theme: number) =>
   supabase
     .from(SUPABASE_SCORE_TABLE)
@@ -39,23 +59,24 @@ export const selectScoreByThemeAndPlayer = (player: string, theme: number) =>
     .maybeSingle();
 
 export const selectScore = (
+  language: Language,
   order: string,
   page: number,
   itemperpage = 25,
-  language = "fr-FR",
   ids = [] as Array<number>,
-  idsProfile = [] as Array<string>
+  idsProfile = [] as Array<string>,
+  start = undefined as Moment | undefined,
+  end = undefined as Moment | undefined
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
   let query = supabase
     .from(SUPABASE_SCORE_TABLE)
     .select(
-      "*, profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*))), theme(*), uuidgame(uuid, created_at)"
+      "*, profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*))), theme(color,image ,themetranslation!inner(name, language(*))), uuidgame(uuid, created_at)"
     )
     .gt(order, 0)
     .not("profile", "in", `(${bots.join(",")})`)
-    .eq("theme.language", language)
     .not("theme", "is", null);
   if (ids.length > 0) {
     query = query.in("theme", ids);
@@ -63,7 +84,15 @@ export const selectScore = (
   if (idsProfile.length > 0) {
     query = query.in("profile", idsProfile);
   }
+  if (start) {
+    query = query.gte("created_at", start.toISOString());
+  }
+  if (end) {
+    query = query.lte("created_at", end.toISOString());
+  }
   return query
+    .eq("theme.themetranslation.language", language.id)
+    .not("theme.themetranslation.language", "is", null)
     .order(order, { ascending: false })
     .order("uuidgame(created_at)", { ascending: false })
     .range(from, to);

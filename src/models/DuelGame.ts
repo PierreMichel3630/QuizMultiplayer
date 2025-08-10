@@ -15,6 +15,7 @@ export interface DuelGame {
   status: StatusGameDuel;
   questions: Array<QuestionResult>;
   battlegame: null | string;
+  created_at: Date;
 }
 
 export interface DuelGameChange {

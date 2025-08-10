@@ -6,10 +6,7 @@ import {
   QuestionUpdate,
 } from "src/models/Question";
 import { ImageQuestionBlock } from "../ImageBlock";
-import {
-  JsonLanguageArrayOrStringBlock,
-  JsonLanguageBlock,
-} from "../JsonLanguageBlock";
+import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { SelectDifficulty } from "../Select";
 
 import BugReportIcon from "@mui/icons-material/BugReport";
@@ -20,11 +17,9 @@ import { ButtonColor } from "../Button";
 
 import EditIcon from "@mui/icons-material/Edit";
 import { Difficulty } from "src/models/enum/DifficultyEnum";
-import { ImageThemeBlock } from "../ImageThemeBlock";
 import { MapPositionBlock } from "../MapPositionBlock";
 import { QcmBlockDuelResultBlock } from "../QcmBlock";
 import { ValidateButton } from "../button/ValidateButton";
-import { JsonLanguage } from "src/models/Language";
 
 interface Props {
   question: QuestionAdmin;
@@ -69,38 +64,17 @@ export const CardAdminQuestion = ({
       variant="outlined"
     >
       <Grid container spacing={1} justifyContent="center">
-        {question.theme && (
-          <Grid
-            item
-            xs={12}
-            sx={{ display: "flex", gap: 1, alignItems: "center" }}
-          >
-            <ImageThemeBlock theme={question.theme} size={50} />
-            <Box>
-              <Typography variant="h4">{`${t("commun.question")} ${
-                question.id
-              }`}</Typography>
-              <Typography variant="h6">{question.theme.title}</Typography>
-            </Box>
-          </Grid>
-        )}
         <Grid item xs={12}>
           <SelectDifficulty
             value={question.difficulty as Difficulty}
             onSelect={onChangeDifficulty}
           />
         </Grid>
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
-          <JsonLanguageBlock sx={{ fontSize: 18 }} value={question.question} />
-        </Grid>
         {question.image && (
           <Grid item xs={12} sx={{ height: px(200) }}>
             <ImageQuestionBlock src={question.image} />
           </Grid>
         )}
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
-          <JsonLanguageArrayOrStringBlock all value={question.response} />
-        </Grid>
         <Grid item xs={12} sx={{ mt: 2 }}>
           <ValidateButton
             validate={question.validate}
@@ -152,11 +126,18 @@ export const CardSignalQuestion = ({
     >
       <Grid container spacing={1} justifyContent="center">
         <Grid item xs={12} sx={{ textAlign: "center" }}>
-          <JsonLanguageBlock
-            variant="h2"
-            color={color}
-            value={question.question}
-          />
+          {question.label && (
+            <Typography variant="h2" color={color}>
+              {question.label}
+            </Typography>
+          )}
+          {question.question && (
+            <JsonLanguageBlock
+              variant="h2"
+              color={color}
+              value={question.question}
+            />
+          )}
         </Grid>
         {question.extra && (
           <Grid item xs={12} sx={{ textAlign: "center" }}>
@@ -209,13 +190,9 @@ export const CardSignalQuestion = ({
                     <Typography variant="h6" color={color} component="span">
                       {`${t("commun.goodresponse")} :   `}
                     </Typography>
-                    <JsonLanguageArrayOrStringBlock
-                      component="span"
-                      color={color}
-                      variant="h2"
-                      all={question.allresponse}
-                      value={question.response as JsonLanguage}
-                    />
+                    <Typography component="span" color={color} variant="h2">
+                      {question.response}
+                    </Typography>
                   </Box>
                 </Paper>
               )}
@@ -249,13 +226,9 @@ export const CardSignalQuestion = ({
                     <Typography variant="h6" color={color} component="span">
                       {`${t("commun.goodresponse")} :   `}
                     </Typography>
-                    <JsonLanguageArrayOrStringBlock
-                      component="span"
-                      color={color}
-                      variant="h2"
-                      all={question.allresponse}
-                      value={question.response as JsonLanguage}
-                    />
+                    <Typography component="span" color={color} variant="h2">
+                      {question.response}
+                    </Typography>
                   </Box>
                 </Paper>
               )}
@@ -289,13 +262,9 @@ export const CardSignalQuestion = ({
                     <Typography variant="h6" color={color} component="span">
                       {`${t("commun.goodresponse")} :   `}
                     </Typography>
-                    <JsonLanguageArrayOrStringBlock
-                      component="span"
-                      color={color}
-                      variant="h2"
-                      all={question.allresponse}
-                      value={question.response as JsonLanguage}
-                    />
+                    <Typography component="span" color={color} variant="h2">
+                      {question.response}
+                    </Typography>
                   </Box>
                 </Paper>
               )}

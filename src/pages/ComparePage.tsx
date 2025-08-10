@@ -143,25 +143,27 @@ export default function ComparePage() {
     let res = [...themesWithScoreAndRank].filter((el) =>
       searchString(search, el.title)
     );
-    switch (sort) {
-      case "alphabetical":
-        res = [...res].sort((a, b) => sortByName(language, a, b));
-        break;
-      case "gamessolo":
-        res = [...res].sort(sortByGamesScore1Or2Desc);
-        break;
-      case "gamesduel":
-        res = [...res].sort(sortByDuelGamesScore1Or2Desc);
-        break;
-      case "scoresolo":
-        res = [...res].sort(sortByPointsGamesScore1Or2Desc);
-        break;
-      case "scoreduel":
-        res = [...res].sort(sortByRankGamesScore1Or2Desc);
-        break;
-      default:
-        res = [...res].sort((a, b) => sortByName(language, a, b));
-        break;
+    if (language) {
+      switch (sort) {
+        case "alphabetical":
+          res = [...res].sort((a, b) => sortByName(language, a, b));
+          break;
+        case "gamessolo":
+          res = [...res].sort(sortByGamesScore1Or2Desc);
+          break;
+        case "gamesduel":
+          res = [...res].sort(sortByDuelGamesScore1Or2Desc);
+          break;
+        case "scoresolo":
+          res = [...res].sort(sortByPointsGamesScore1Or2Desc);
+          break;
+        case "scoreduel":
+          res = [...res].sort(sortByRankGamesScore1Or2Desc);
+          break;
+        default:
+          res = [...res].sort((a, b) => sortByName(language, a, b));
+          break;
+      }
     }
 
     return res;

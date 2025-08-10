@@ -2,7 +2,6 @@ import { Alert, Box, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { useCallback, useEffect, useState } from "react";
-import { selectGames } from "src/api/game";
 import { GroupButtonAllTypeGame } from "src/component/button/ButtonGroup";
 import { CardHistoryGameAdmin } from "src/component/card/CardHistoryGame";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
@@ -18,14 +17,12 @@ export default function AdminGamesPage() {
   const { t } = useTranslation();
   const { headerSize } = useApp();
 
-  const ITEMPERPAGE = 25;
-
   const [games, setGames] = useState<Array<HistoryGameAdmin>>([]);
   const [page, setPage] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<FilterGame>({
-    type: GameModeEnum.all,
+    type: GameModeEnum.solo,
     themes: [],
     player: null,
     opponent: undefined,
@@ -35,12 +32,12 @@ export default function AdminGamesPage() {
 
   const getGames = useCallback(() => {
     setIsLoading(true);
-    selectGames(filter, page, ITEMPERPAGE).then(({ data }) => {
+    /*selectGames(filter, page, ITEMPERPAGE).then(({ data }) => {
       const result = data as Array<HistoryGameAdmin>;
       setGames((prev) => (page === 0 ? [...result] : [...prev, ...result]));
       setIsEnd(result.length === 0);
       setIsLoading(false);
-    });
+    });*/
   }, [page, filter]);
 
   useEffect(() => {

@@ -1,22 +1,6 @@
-import { Title, TitleProfile } from "src/models/Title";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { Box, Typography } from "@mui/material";
-
-interface Props {
-  title: Title | null;
-}
-
-export const TitleBlock = ({ title }: Props) => {
-  return (
-    title && (
-      <JsonLanguageBlock
-        variant="caption"
-        color="text.secondary"
-        value={title.name}
-      />
-    )
-  );
-};
+import { TitleProfile } from "src/models/Title";
+import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 interface PropsProfileTitleBlock {
   titleprofile: TitleProfile | null;

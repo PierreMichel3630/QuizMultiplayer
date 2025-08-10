@@ -2,31 +2,24 @@ import { Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { selectCategories } from "src/api/category";
+import { getCategories } from "src/api/search";
 import { ICardImage } from "src/component/card/CardImage";
 import { PageCategoryBlock } from "src/component/page/PageCategoryBlock";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { useUser } from "src/context/UserProvider";
 
 export default function CategoriesPage() {
   const { t } = useTranslation();
+  const { language } = useUser();
 
   const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
 
   useEffect(() => {
-    const getCategories = () => {
-      selectCategories().then(({ data }) => {
-        const res = data ?? [];
-        setItemsSearch(
-          res.map((el) => ({
-            id: el.id,
-            title: el.title,
-            type: TypeCardEnum.CATEGORY,
-          }))
-        );
+    if (language) {
+      getCategories(language).then(({ data }) => {
+        setItemsSearch(data ?? []);
       });
-    };
-    getCategories();
-  }, []);
+    }
+  }, [language]);
 
   return (
     <Grid container>

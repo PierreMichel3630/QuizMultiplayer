@@ -89,6 +89,7 @@ export const CardFriends = ({ friends, loading }: Props) => {
                               boxOrient: "vertical",
                               textOverflow: "ellipsis",
                               width: percent(100),
+                              whiteSpace: "nowrap",
                             }}
                           >
                             {friend.username}

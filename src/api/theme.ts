@@ -1,13 +1,11 @@
 import { ThemeInsert, ThemeInsertAdmin, ThemeUpdate } from "src/models/Theme";
 import { supabase } from "./supabase";
 import { Moment } from "moment";
+import { Language } from "src/models/Language";
 
 export const SUPABASE_THEME_TABLE = "theme";
 export const SUPABASE_THEMESHOP_TABLE = "themeshop";
-export const SUPABASE_VUETHEME_TABLE = "viewthemev2";
-
-export const selectThemes = () =>
-  supabase.from(SUPABASE_VUETHEME_TABLE).select("*, category(*)");
+export const SUPABASE_VUETHEME_TABLE = "viewthemev3";
 
 export const selectThemesByModifiedAt = (modify_at: Moment) =>
   supabase
@@ -39,11 +37,11 @@ export const selectThemesById = (
 };
 
 export const selectThemesByCategory = (
+  language: Language,
   id: number | string,
   search = "",
   page = 0,
-  itemperpage = 20,
-  language = "fr-FR"
+  itemperpage = 20
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
@@ -53,46 +51,30 @@ export const selectThemesByCategory = (
     .eq("category", id)
     .eq("validate", true)
     .eq("enabled", true)
-    .ilike(`titlelower`, `%${search}%`)
-    .eq("language", language)
+    .ilike(`namelower`, `%${search}%`)
+    .eq("language", language.id)
     .range(from, to)
     .order("isfirst", { ascending: false })
-    .order(`titlelower`, { ascending: true });
+    .order(`namelower`, { ascending: true });
 };
 
-export const searchThemes = (
-  search = "",
-  page = 0,
-  itemperpage = 20,
-  languages = ["fr-FR"]
-) => {
-  const from = page * itemperpage;
-  const to = from + itemperpage - 1;
-
-  return supabase
-    .from(SUPABASE_THEME_TABLE)
-    .select()
-    .ilike(`titlelower`, `%${search}%`)
-    .in("language", languages)
-    .range(from, to)
-    .order(`titlelower`, { ascending: true });
-};
-
-export const countThemes = () =>
-  supabase
-    .from(SUPABASE_VUETHEME_TABLE)
-    .select("*", { count: "exact", head: true })
-    .eq("enabled", true);
-
-export const countThemesByCategory = (id: number | string) =>
+export const countThemesByCategory = (
+  id: number | string,
+  language: Language
+) =>
   supabase
     .from(SUPABASE_VUETHEME_TABLE)
     .select("*", { count: "exact", head: true })
     .eq("category", id)
+    .eq("language", language.id)
     .eq("enabled", true);
 
 export const selectThemeById = (id: number) =>
-  supabase.from(SUPABASE_THEME_TABLE).select().eq("id", id).maybeSingle();
+  supabase
+    .from(SUPABASE_THEME_TABLE)
+    .select("*, themetranslation!inner(id, name, language(*))")
+    .eq("id", id)
+    .maybeSingle();
 
 export const updateTheme = (value: ThemeUpdate) =>
   supabase
@@ -126,3 +108,42 @@ export const selectThemesProposeAdmin = () =>
     .from(SUPABASE_VUETHEME_TABLE)
     .select("*, category(*)")
     .eq("validate", false);
+
+export const countThemes = (language: Language, search: string) => {
+  let query = supabase
+    .from(SUPABASE_THEME_TABLE)
+    .select("id, themetranslation!inner(name, language)", {
+      count: "exact",
+      head: true,
+    });
+  if (search !== "") {
+    query = query
+      .eq("themetranslation.language", language.id)
+      .not("themetranslation.language", "is", null)
+      .ilike("themetranslation.name", `%${search}%`);
+  }
+
+  return query;
+};
+
+export const searchThemes = (
+  language: Language,
+  search: string,
+  page = 0,
+  itemperpage = 20
+) => {
+  const from = page * itemperpage;
+  const to = from + itemperpage - 1;
+  let query = supabase
+    .from(SUPABASE_THEME_TABLE)
+    .select("*, themetranslation!inner(id, name, language(*))");
+
+  if (search !== "") {
+    query = query
+      .eq("themetranslation.language", language.id)
+      .not("themetranslation.language", "is", null)
+      .ilike("themetranslation.name", `%${search}%`);
+  }
+
+  return query.range(from, to).order("id");
+};

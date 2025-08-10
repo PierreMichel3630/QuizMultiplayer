@@ -45,8 +45,8 @@ import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import { isStringOrNumber } from "src/utils/type";
 import { CountryImageBlock } from "../CountryBlock";
-import { ImageThemeBlock } from "../ImageThemeBlock";
 import { DefaultTabs } from "../Tabs";
+import { ThemeBlock } from "../theme/ThemeBlock";
 import { ProfileTitleBlock } from "../title/ProfileTitle";
 
 export interface DataRanking {
@@ -225,32 +225,7 @@ export const RankingTable = ({
                               to={`/theme/${el.theme.id}`}
                               style={{ textDecoration: "inherit" }}
                             >
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  gap: px(4),
-                                  alignItems: "center",
-                                }}
-                              >
-                                <ImageThemeBlock
-                                  theme={el.theme}
-                                  size={20}
-                                  border={false}
-                                />
-                                <Typography
-                                  variant="body1"
-                                  sx={{
-                                    overflow: "hidden",
-                                    display: "block",
-                                    lineClamp: 1,
-                                    boxOrient: "vertical",
-                                    textOverflow: "ellipsis",
-                                  }}
-                                  noWrap
-                                >
-                                  {el.theme.title}
-                                </Typography>
-                              </Box>
+                              <ThemeBlock theme={el.theme} />
                             </Link>
                           )}
                         </Box>

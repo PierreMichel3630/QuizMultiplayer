@@ -2,7 +2,8 @@ import i18next from "i18next";
 import moment from "moment";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { selectChallengeByDateAndLanguage } from "src/api/challenge";
-import { LANGUAGES, Language } from "src/models/Language";
+import { selectLanguages } from "src/api/language";
+import { Language } from "src/models/Language";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[];
@@ -11,7 +12,7 @@ type Props = {
 export const UserContext = createContext<{
   uuid: string;
   setUuid: (uuid: string) => void;
-  language: Language;
+  language?: Language;
   languages: Array<Language>;
   setLanguage: (language: Language) => void;
   sound: number;
@@ -28,7 +29,7 @@ export const UserContext = createContext<{
   language:
     localStorage.getItem("language") !== null
       ? (JSON.parse(localStorage.getItem("language")!) as Language)
-      : LANGUAGES[0],
+      : undefined,
   languages: [],
   setLanguage: () => {},
   sound: 20,
@@ -46,19 +47,6 @@ export const UserProvider = ({ children }: Props) => {
       ? (localStorage.getItem("uuid")! as string)
       : crypto.randomUUID()
   );
-  const getDefaultLanguage = () => {
-    let result: undefined | Language = undefined;
-    if (navigator.languages.length > 0) {
-      const languageBrower = navigator.languages[0].split(/-|_/)[0];
-
-      result = LANGUAGES.find((el) => el.browser === languageBrower);
-    }
-    return result ?? LANGUAGES[0];
-  };
-  const getLanguage = () =>
-    localStorage.getItem("language") !== null
-      ? (JSON.parse(localStorage.getItem("language")!) as Language)
-      : getDefaultLanguage();
 
   const [mode, setMode] = useState<"light" | "dark">(
     localStorage.getItem("mode") !== null
@@ -66,16 +54,49 @@ export const UserProvider = ({ children }: Props) => {
       : "dark"
   );
 
-  const [language, setLanguage] = useState<Language>(getLanguage());
+  const [languages, setLanguages] = useState<Array<Language>>([]);
+  const [language, setLanguage] = useState<Language | undefined>(undefined);
   const [sound, setSound] = useState<number>(
     localStorage.getItem("sound") !== null
       ? Number(localStorage.getItem("sound")!)
       : 20
   );
-
   const [hasChallenge, setHasChallenge] = useState<undefined | boolean>(
     undefined
   );
+
+  useEffect(() => {
+    selectLanguages().then(({ data }) => {
+      setLanguages(data ?? []);
+    });
+  }, []);
+
+  useEffect(() => {
+    const getLanguage = () => {
+      if (languages.length > 0) {
+        let result: undefined | Language = undefined;
+        if (navigator.languages.length > 0) {
+          const languageBrower = navigator.languages[0].split(/-|_/)[0];
+
+          result = languages.find((el) => el.browser === languageBrower);
+        }
+        setLanguage(result ?? languages[0]);
+      }
+    };
+
+    if (localStorage.getItem("language") !== null) {
+      const newLanguage = JSON.parse(
+        localStorage.getItem("language")!
+      ) as Language;
+      if (newLanguage.id) {
+        setLanguage(newLanguage);
+      } else {
+        getLanguage();
+      }
+    } else {
+      getLanguage();
+    }
+  }, [languages]);
 
   useEffect(() => {
     if (language) {
@@ -106,18 +127,20 @@ export const UserProvider = ({ children }: Props) => {
   }, [mode]);
 
   useEffect(() => {
-    selectChallengeByDateAndLanguage(moment(), language.iso).then(
-      ({ data }) => {
-        setHasChallenge(data !== null);
-      }
-    );
+    if (language) {
+      selectChallengeByDateAndLanguage(moment(), language.iso).then(
+        ({ data }) => {
+          setHasChallenge(data !== null);
+        }
+      );
+    }
   }, [language]);
 
   const value = useMemo(
     () => ({
       uuid,
       setUuid,
-      languages: LANGUAGES,
+      languages,
       language,
       setLanguage,
       sound,
@@ -126,17 +149,7 @@ export const UserProvider = ({ children }: Props) => {
       mode,
       hasChallenge,
     }),
-    [
-      uuid,
-      setUuid,
-      language,
-      setLanguage,
-      sound,
-      setSound,
-      setMode,
-      mode,
-      hasChallenge,
-    ]
+    [uuid, languages, language, sound, mode, hasChallenge]
   );
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

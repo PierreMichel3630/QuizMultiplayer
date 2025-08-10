@@ -12,9 +12,11 @@ export const NewBlock = () => {
   const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
 
   useEffect(() => {
-    getThemesAndCategoriesByDate(language.iso).then(({ data }) => {
-      setItemsSearch(data ?? []);
-    });
+    if (language) {
+      getThemesAndCategoriesByDate(language).then(({ data }) => {
+        setItemsSearch(data ?? []);
+      });
+    }
   }, [language]);
 
   return (

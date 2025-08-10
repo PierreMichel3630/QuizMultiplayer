@@ -1,134 +1,53 @@
-import BoltIcon from "@mui/icons-material/Bolt";
 import { Box, Grid, IconButton, Paper, Typography } from "@mui/material";
-import { px } from "csx";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { useMessage } from "src/context/MessageProvider";
 import { Category } from "src/models/Category";
-import { Colors } from "src/style/Colors";
-import { ConfirmDialog } from "../modal/ConfirmModal";
-import { CreateEditCategoryDialog } from "../modal/CreateEditCategoryDialog";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { deleteCategoryById } from "src/api/category";
-import { LanguageBlock } from "../language/LanguageBlock";
-
-interface Props {
-  category: Category;
-  link?: string;
-  width?: number;
-}
-
-export const CardCategory = ({ category, link, width = 90 }: Props) => {
-  const navigate = useNavigate();
-
-  const goCategory = () => {
-    navigate(link ?? `/category/${category.id}`);
-  };
-
-  return (
-    <Box
-      onClick={() => goCategory()}
-      sx={{
-        width: width,
-        display: "flex",
-        justifyContent: "flex-start",
-        flexDirection: "column",
-        cursor: "pointer",
-        borderRadius: px(10),
-        gap: px(2),
-      }}
-    >
-      <Box
-        sx={{
-          backgroundColor: Colors.colorApp,
-          width: width,
-          aspectRatio: "1/1",
-          borderRadius: px(5),
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <BoltIcon
-          sx={{ width: px(width - 10), height: px(width - 10), color: "white" }}
-        />
-      </Box>
-      <Typography variant="h6" sx={{ textAlign: "center" }}>
-        {category.title}
-      </Typography>
-    </Box>
-  );
-};
+import { LanguageIcon } from "../language/LanguageBlock";
 
 interface PropsCardAdminCategory {
   category: Category;
-  onChange: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
 export const CardAdminCategory = ({
   category,
-  onChange,
+  onEdit,
+  onDelete,
 }: PropsCardAdminCategory) => {
-  const { t } = useTranslation();
-  const { setMessage, setSeverity } = useMessage();
-  const [openModal, setOpenModal] = useState(false);
-  const [openConfirmModal, setOpenConfirmModal] = useState(false);
-
-  const deleteCategory = () => {
-    deleteCategoryById(category.id).then((res) => {
-      if (res.error) {
-        setSeverity("error");
-        setMessage(t("commun.error"));
-      } else {
-        onChange();
-      }
-      setOpenConfirmModal(false);
-    });
-  };
-
   return (
-    <Paper sx={{ p: 1 }}>
+    <Paper sx={{ p: 1 }} elevation={12}>
       <Grid container spacing={1} alignItems="center">
         <Grid item xs={2} md={1}>
           <Typography variant="h2">{category.id}</Typography>
         </Grid>
         <Grid item xs>
-          <Typography variant="h4" component="span">
-            {category.title}
-          </Typography>
-          <LanguageBlock iso={category.language} />
+          <Box sx={{ display: "flex", gap: 2 }}>
+            {category.categorytranslation.map((el, index) => (
+              <Box
+                key={index}
+                sx={{ display: "flex", gap: 1, alignItems: "center" }}
+              >
+                <LanguageIcon language={el.language} />
+                <Typography variant="h4" component="span">
+                  {el.name}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
         </Grid>
         <Grid item>
-          <IconButton aria-label="edit" onClick={() => setOpenModal(true)}>
+          <IconButton aria-label="edit" onClick={onEdit}>
             <EditIcon />
           </IconButton>
         </Grid>
         <Grid item>
-          <IconButton
-            aria-label="edit"
-            onClick={() => setOpenConfirmModal(true)}
-          >
+          <IconButton aria-label="edit" onClick={onDelete}>
             <DeleteIcon />
           </IconButton>
         </Grid>
       </Grid>
-      <CreateEditCategoryDialog
-        category={category}
-        open={openModal}
-        close={() => {
-          setOpenModal(false);
-          onChange();
-        }}
-      />
-      <ConfirmDialog
-        title={t("modal.delete")}
-        open={openConfirmModal}
-        onClose={() => setOpenConfirmModal(false)}
-        onConfirm={deleteCategory}
-      />
     </Paper>
   );
 };

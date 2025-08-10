@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CategoryBlock } from "./category/CategoryBlock";
 
-import { countCategory, selectCategories } from "src/api/category";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
-import { ICardImage } from "./card/CardImage";
+import { countCategoryByLanguage } from "src/api/category";
+import { getCategories } from "src/api/search";
 import { useUser } from "src/context/UserProvider";
+import { ICardImage } from "./card/CardImage";
 
 export const CategoriesBlock = () => {
   const { t } = useTranslation();
@@ -16,25 +16,14 @@ export const CategoriesBlock = () => {
   const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
 
   useEffect(() => {
-    const getTotal = () => {
-      countCategory(language.iso).then(({ count }) => {
+    if (language) {
+      countCategoryByLanguage(language).then(({ count }) => {
         setTotal(count ?? 0);
       });
-    };
-    const getCategories = () => {
-      selectCategories(language.iso).then(({ data }) => {
-        const res = data ?? [];
-        setItemsSearch(
-          [...res].map((el) => ({
-            id: el.id,
-            title: el.title,
-            type: TypeCardEnum.CATEGORY,
-          }))
-        );
+      getCategories(language).then(({ data }) => {
+        setItemsSearch(data ?? []);
       });
-    };
-    getCategories();
-    getTotal();
+    }
   }, [language]);
 
   return (

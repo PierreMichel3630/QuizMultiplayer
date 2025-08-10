@@ -8,25 +8,30 @@ import { CategoryBlock } from "./category/CategoryBlock";
 
 import { getThemesAndCategoriesById, getThemesById } from "src/api/search";
 import { ICardImage } from "./card/CardImage";
+import { useUser } from "src/context/UserProvider";
 
 export const FavoriteBlock = () => {
   const { t } = useTranslation();
+  const { language } = useUser();
   const { favorites } = useApp();
+
   const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
 
   useEffect(() => {
-    if (favorites.length > 0) {
+    if (favorites.length > 0 && language) {
       const idCategories = [...favorites]
         .filter((el) => el.category)
         .map((el) => Number(el.category));
       const idThemes = [...favorites]
         .filter((el) => el.theme)
         .map((el) => Number(el.theme));
-      getThemesAndCategoriesById(idCategories, idThemes).then(({ data }) => {
-        setItemsSearch(data ?? []);
-      });
+      getThemesAndCategoriesById(language, idCategories, idThemes).then(
+        ({ data }) => {
+          setItemsSearch(data ?? []);
+        }
+      );
     }
-  }, [favorites]);
+  }, [favorites, language]);
 
   return (
     itemsSearch.length > 0 && (

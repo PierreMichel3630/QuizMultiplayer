@@ -20,7 +20,7 @@ export const PreviousGameBlock = () => {
         const previousTheme = res.map((el) => el.theme);
         const result = previousTheme.map((el) => ({
           id: el.id,
-          title: el.title,
+          name: el.title,
           image: el.image,
           color: el.color,
           type: TypeCardEnum.THEME,

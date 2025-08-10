@@ -19,7 +19,10 @@ export const CardTitle = ({ titles, loading }: Props) => {
   const { language } = useUser();
 
   const titleOrder = useMemo(
-    () => [...titles].sort((a, b) => sortTitle(language, a.title, b.title)),
+    () =>
+      language
+        ? [...titles].sort((a, b) => sortTitle(language, a.title, b.title))
+        : [],
     [titles, language]
   );
 

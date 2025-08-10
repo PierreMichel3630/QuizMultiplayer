@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { important, percent, px } from "csx";
 import { ImageQuestionBlock } from "../ImageBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
@@ -38,11 +38,12 @@ export const QuestionBlock = ({ question, timer, onSubmit }: Props) => {
     >
       {question ? (
         <>
-          <JsonLanguageBlock
+          <Typography
             variant="h2"
             sx={{ fontSize: important(px(30)), wordBreak: "break-word" }}
-            value={question.question}
-          />
+          >
+            {question.label}
+          </Typography>
           {question.image && (
             <Box
               sx={{

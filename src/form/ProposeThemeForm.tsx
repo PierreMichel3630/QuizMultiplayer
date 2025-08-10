@@ -32,7 +32,7 @@ export const ProposeThemeForm = ({ validate }: Props) => {
   } = {
     title: "",
     color: Colors.blue2,
-    language: language.iso,
+    language: language ? language.iso : "fr-FR",
   };
 
   const validationSchema = Yup.object().shape({
@@ -53,13 +53,10 @@ export const ProposeThemeForm = ({ validate }: Props) => {
           language: values.language,
         };
         const { error } = await insertTheme(newTheme);
-        if (error) {
-          setSeverity("error");
-          setMessage(t("commun.error"));
-        } else {
-          validate();
-        }
+        if (error) throw error;
+        validate();
       } catch (err) {
+        console.error(err);
         setSeverity("error");
         setMessage(t("commun.error"));
       }

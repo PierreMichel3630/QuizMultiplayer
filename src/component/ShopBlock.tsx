@@ -40,7 +40,7 @@ export const ShopItems = () => {
 
   useEffect(() => {
     const isChallengeAvailable = () => {
-      if (profile) {
+      if (profile && language) {
         const date = moment();
         countChallengeGameByDateAndProfileId(
           date,

@@ -1,11 +1,12 @@
 import { Box, Grid, Switch, Typography } from "@mui/material";
 import { percent } from "csx";
+import moment, { Moment } from "moment";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { selectStatAccomplishment } from "src/api/accomplishment";
-import { selectGamesByTime } from "src/api/game";
+import { selectSoloGameByDate } from "src/api/game";
 import { getRankingFinishTheme } from "src/api/ranking";
 import { selectScore } from "src/api/score";
 import {
@@ -31,7 +32,6 @@ import {
   ClassementDuelModeEnum,
   ClassementEnum,
   ClassementSoloModeEnum,
-  ClassementSoloTimeEnum,
 } from "src/models/enum/ClassementEnum";
 import { getLevel } from "src/utils/calcul";
 
@@ -74,15 +74,22 @@ export default function RankingPage() {
     (page: number) => {
       const ids = isOnlyFriend ? idsFriend : [];
       setLoading(true);
-      if (page === 0 || !isEnd) {
+      if ((page === 0 || !isEnd) && language) {
         if (
           type === ClassementEnum.points &&
           (tabSoloMode === ClassementSoloModeEnum.day ||
             tabSoloMode === ClassementSoloModeEnum.week ||
             tabSoloMode === ClassementSoloModeEnum.month)
         ) {
-          const time = tabSoloMode as unknown as ClassementSoloTimeEnum;
-          selectGamesByTime(time, page, ITEMPERPAGE, language.iso, ids).then(
+          let start: Moment | undefined = undefined;
+          if (tabSoloMode === ClassementSoloModeEnum.month) {
+            start = moment().subtract(1, "month");
+          } else if (tabSoloMode === ClassementSoloModeEnum.week) {
+            start = moment().subtract(1, "week");
+          } else {
+            start = undefined;
+          }
+          selectSoloGameByDate(language, page, ITEMPERPAGE, start).then(
             ({ data }) => {
               const res: Array<any> = data ?? [];
               const newdata = [...res].map((el, index) => ({
@@ -105,7 +112,7 @@ export default function RankingPage() {
           (type === ClassementEnum.rank &&
             tabDuelMode === ClassementDuelModeEnum.bestrank)
         ) {
-          selectScore(type, page, ITEMPERPAGE, language.iso, [], ids).then(
+          selectScore(language, type, page, ITEMPERPAGE, [], ids).then(
             ({ data }) => {
               const res = data as Array<Score>;
               const newdata = res.map((el, index) => {
@@ -227,7 +234,7 @@ export default function RankingPage() {
       tabSoloMode,
       tabDuelMode,
       tabChallengeMode,
-      language.iso,
+      language,
     ]
   );
 
@@ -243,6 +250,7 @@ export default function RankingPage() {
     tabChallengeMode,
     isOnlyFriend,
     idsFriend,
+    language,
   ]);
 
   useEffect(() => {

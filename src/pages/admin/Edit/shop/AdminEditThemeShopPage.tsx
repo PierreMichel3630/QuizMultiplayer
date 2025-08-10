@@ -27,13 +27,16 @@ export default function AdminEditThemeShopPage() {
   const [search, setSearch] = useState("");
 
   const themesShopDisplay = useMemo(() => {
-    setIsLoading(false);
-    return uniqBy(
-      [...themes]
-        .filter((el) => searchString(search, el.name[language.iso]))
-        .sort((a, b) => sortByName(language, a, b)),
-      (el) => el.id
-    );
+    if (language) {
+      setIsLoading(false);
+      return uniqBy(
+        [...themes]
+          .filter((el) => searchString(search, el.name[language.iso]))
+          .sort((a, b) => sortByName(language, a, b)),
+        (el) => el.id
+      );
+    }
+    return [];
   }, [themes, language, search]);
 
   useEffect(() => {

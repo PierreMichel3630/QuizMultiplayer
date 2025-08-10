@@ -25,7 +25,7 @@ import { verifyResponseCrypt } from "src/utils/response";
 
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import LastPageIcon from "@mui/icons-material/LastPage";
-import { decryptToJsonLanguage } from "src/utils/crypt";
+import { decryptToString } from "src/utils/crypt";
 
 export default function TrainingPage() {
   const { t } = useTranslation();
@@ -107,9 +107,9 @@ export default function TrainingPage() {
     const myResponseValue = value.value;
     setNextQuestion(undefined);
     setMyresponse(myResponseValue);
-    if (question) {
-      const result = verifyResponseCrypt(language, question, value);
-      const response = decryptToJsonLanguage(question.response);
+    if (question && language) {
+      const result = verifyResponseCrypt(question, value);
+      const response = decryptToString(question.response);
       setQuestions((prev) => [
         {
           ...question,

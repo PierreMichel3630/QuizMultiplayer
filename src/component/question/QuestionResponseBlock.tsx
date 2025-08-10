@@ -54,7 +54,7 @@ export const QuestionResponseBlock = ({
               ) : (
                 <InputResponseBlock
                   onSubmit={onSubmit}
-                  typeResponse={question.typeResponse}
+                  answerset={question.answerset}
                 />
               )}
             </>
@@ -104,7 +104,7 @@ export const QuestionResponseEditBlock = ({
               ) : (
                 <InputResponseBlock
                   onSubmit={onSubmit}
-                  typeResponse={question.typeResponse}
+                  answerset={question.answerset}
                 />
               )}
             </>

@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { percent, px } from "csx";
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "src/context/AppProvider";
 import { Theme, ThemeUpdate } from "src/models/Theme";
@@ -23,12 +23,10 @@ import { ImageThemeBlock } from "../ImageThemeBlock";
 import DeleteIcon from "@mui/icons-material/Delete";
 import StarIcon from "@mui/icons-material/Star";
 import { useTranslation } from "react-i18next";
-import { deleteThemeById, updateTheme } from "src/api/theme";
+import { updateTheme } from "src/api/theme";
 import { useMessage } from "src/context/MessageProvider";
-import { ConfirmDialog } from "../modal/ConfirmModal";
-import { CreateEditThemeDialog } from "../modal/CreateEditThemeDialog";
+import { LanguageIcon } from "../language/LanguageBlock";
 import { ICardImage } from "./CardImage";
-import { LanguageBlock } from "../language/LanguageBlock";
 
 interface Props {
   theme: Theme;
@@ -98,7 +96,7 @@ export const CardTheme = ({ theme, link, width = 95 }: Props) => {
 interface PropsCardSelectAvatarTheme {
   theme: {
     id: number;
-    title: string;
+    name: string;
     image?: string | JSX.Element;
     color?: string;
   };
@@ -159,14 +157,14 @@ export const CardSelectAvatarTheme = ({
         <ImageThemeBlock theme={theme} size={width} />
       </Badge>
       <Typography variant="h6" sx={{ textAlign: "center" }}>
-        {theme.title}
+        {theme.name}
       </Typography>
     </Box>
   );
 };
 
 interface PropsCardSelectTheme {
-  theme: { title: string; image?: string | JSX.Element; color?: string };
+  theme: { name: string; image?: string | JSX.Element; color?: string };
   onSelect: () => void;
   width?: number;
 }
@@ -205,7 +203,7 @@ export const CardSelectTheme = ({
           textAlign: "center",
         }}
       >
-        {theme.title}
+        {theme.name}
       </Typography>
     </Box>
   );
@@ -214,13 +212,18 @@ export const CardSelectTheme = ({
 interface PropsCardAdminTheme {
   theme: Theme;
   onChange: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
-export const CardAdminTheme = ({ theme, onChange }: PropsCardAdminTheme) => {
+export const CardAdminTheme = ({
+  theme,
+  onChange,
+  onDelete,
+  onEdit,
+}: PropsCardAdminTheme) => {
   const { t } = useTranslation();
   const { setMessage, setSeverity } = useMessage();
-  const [openModal, setOpenModal] = useState(false);
-  const [openConfirmModal, setOpenConfirmModal] = useState(false);
 
   const changeEnabled = (event: ChangeEvent<HTMLInputElement>) => {
     update({ id: theme.id, enabled: event.target.checked });
@@ -241,34 +244,31 @@ export const CardAdminTheme = ({ theme, onChange }: PropsCardAdminTheme) => {
     });
   };
 
-  const deleteQuestion = () => {
-    deleteThemeById(theme.id).then((res) => {
-      if (res.error) {
-        setSeverity("error");
-        setMessage(t("commun.error"));
-      } else {
-        onChange();
-      }
-      setOpenConfirmModal(false);
-    });
-  };
-
   return (
     <Paper sx={{ p: 1 }}>
       <Grid container spacing={1} alignItems="center">
+        <Grid item sx={{ width: px(50) }}>
+          <Typography variant="h2">{theme.id}</Typography>
+        </Grid>
         <Grid item>
           <Box sx={{ width: px(60) }}>
             <ImageThemeBlock theme={theme} />
           </Box>
         </Grid>
-        <Grid item xs={2} md={1}>
-          <Typography variant="h2">{theme.id}</Typography>
-        </Grid>
         <Grid item xs>
-          <Typography variant="h4" component="span">
-            {theme.title}
-          </Typography>
-          <LanguageBlock iso={theme.language} />
+          <Box sx={{ display: "flex", gap: 2 }}>
+            {theme.themetranslation.map((el, index) => (
+              <Box
+                key={index}
+                sx={{ display: "flex", gap: 1, alignItems: "center" }}
+              >
+                <LanguageIcon language={el.language} />
+                <Typography variant="h4" component="span">
+                  {el.name}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
         </Grid>
         <Grid item>
           <FormGroup>
@@ -295,33 +295,16 @@ export const CardAdminTheme = ({ theme, onChange }: PropsCardAdminTheme) => {
           </FormGroup>
         </Grid>
         <Grid item>
-          <IconButton aria-label="edit" onClick={() => setOpenModal(true)}>
+          <IconButton aria-label="edit" onClick={onEdit}>
             <EditIcon />
           </IconButton>
         </Grid>
         <Grid item>
-          <IconButton
-            aria-label="edit"
-            onClick={() => setOpenConfirmModal(true)}
-          >
+          <IconButton aria-label="edit" onClick={onDelete}>
             <DeleteIcon />
           </IconButton>
         </Grid>
       </Grid>
-      <CreateEditThemeDialog
-        theme={theme}
-        open={openModal}
-        close={() => {
-          setOpenModal(false);
-          onChange();
-        }}
-      />
-      <ConfirmDialog
-        title={t("modal.delete")}
-        open={openConfirmModal}
-        onClose={() => setOpenConfirmModal(false)}
-        onConfirm={deleteQuestion}
-      />
     </Paper>
   );
 };
@@ -352,7 +335,7 @@ export const CardThemeHorizontal = ({
       onClick={() => onChange()}
     >
       <ImageThemeBlock theme={theme} size={width} />
-      <Typography variant="h2">{theme.title}</Typography>
+      <Typography variant="h2">{theme.name}</Typography>
       <DeleteIcon
         sx={{ cursor: "pointer" }}
         fontSize="large"

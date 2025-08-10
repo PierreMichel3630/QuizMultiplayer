@@ -34,7 +34,10 @@ export const CategoryBlock = ({ category }: Props) => {
   }, [breakpoint]);
 
   const themesCategory = useMemo(
-    () => [...category.themes].sort((a, b) => sortByName(language, a, b)),
+    () =>
+      language
+        ? [...category.themes].sort((a, b) => sortByName(language, a, b))
+        : [],
     [category, language]
   );
 

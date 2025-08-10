@@ -1,28 +1,28 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { selectThemesByModifiedAt } from "src/api/theme";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { getThemesByModifiedAt } from "src/api/search";
+import { useUser } from "src/context/UserProvider";
 import { ICardImage } from "../card/CardImage";
 import { CategoryBlock } from "../category/CategoryBlock";
 
 export const UpdatedThemeBlock = () => {
   const { t } = useTranslation();
+  const { language } = useUser();
+
   const [themes, setThemes] = useState<Array<ICardImage>>([]);
 
   useEffect(() => {
     const getThemes = () => {
-      const date = moment().subtract(7, "days");
-      selectThemesByModifiedAt(date).then(({ data }) => {
-        const res = (data ?? []).map((el) => ({
-          ...el,
-          type: TypeCardEnum.THEME,
-        }));
-        setThemes(res);
-      });
+      if (language) {
+        const date = moment().subtract(7, "days");
+        getThemesByModifiedAt(language, date).then(({ data }) => {
+          setThemes(data ?? []);
+        });
+      }
     };
     getThemes();
-  }, []);
+  }, [language]);
 
   return (
     themes.length > 0 && (

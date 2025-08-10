@@ -1,6 +1,6 @@
 import { Category } from "./Category";
 import { Difficulty } from "./enum/DifficultyEnum";
-import { JsonLanguage } from "./Language";
+import { JsonLanguage, Language } from "./Language";
 
 export interface ProposeTheme {
   id: number;
@@ -13,9 +13,15 @@ export interface ProposeTheme {
   modify_at: Date;
 }
 
+export interface ThemeTranslation {
+  name: string;
+  language: Language;
+}
+
 export interface Theme {
   id: number;
   title: string;
+  name: string;
   language: string;
   image?: string;
   questions: number;
@@ -26,6 +32,7 @@ export interface Theme {
   validate: boolean;
   created_at: Date;
   modify_at: Date;
+  themetranslation: Array<ThemeTranslation>;
 }
 
 export interface ThemeInsertAdmin {

@@ -18,9 +18,8 @@ import { Colors } from "src/style/Colors";
 import * as Yup from "yup";
 
 import SaveIcon from "@mui/icons-material/Save";
-import { useUser } from "src/context/UserProvider";
-import { verifyResponse } from "src/utils/response";
 import { updateChallengeGame } from "src/api/challenge";
+import { verifyResponse } from "src/utils/response";
 
 interface Props {
   game?: ChallengeGame;
@@ -29,7 +28,6 @@ interface Props {
 
 export const ChallengeGameForm = ({ game, validate }: Props) => {
   const { t } = useTranslation();
-  const { language } = useUser();
   const { setMessage, setSeverity } = useMessage();
 
   const initialValue: {
@@ -42,7 +40,7 @@ export const ChallengeGameForm = ({ game, validate }: Props) => {
     questions: game
       ? game.questions.length > 0
         ? game.questions
-        : game.challenge.questions
+        : game.challenge.questionsv2
       : [],
   };
 
@@ -55,25 +53,19 @@ export const ChallengeGameForm = ({ game, validate }: Props) => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
-        if (game) {
-          const newGameChallenge: ChallengeGameUpdate = {
-            id: game.id,
-            questions: values.questions,
-            score: values.score,
-            time: values.time,
-          };
-          const { error } = await updateChallengeGame(newGameChallenge);
-          if (error) {
-            setSeverity("error");
-            setMessage(t("commun.error"));
-          } else {
-            validate();
-          }
-        } else {
-          setSeverity("error");
-          setMessage(t("commun.error"));
-        }
+        if (game === undefined) throw new Error("No game Found");
+        const newGameChallenge: ChallengeGameUpdate = {
+          id: game.id,
+          questions: values.questions,
+          score: values.score,
+          time: values.time,
+        };
+        const { error } = await updateChallengeGame(newGameChallenge);
+
+        if (error) throw error;
+        validate();
       } catch (err) {
+        console.error(err);
         setSeverity("error");
         setMessage(t("commun.error"));
       }
@@ -85,7 +77,7 @@ export const ChallengeGameForm = ({ game, validate }: Props) => {
       (el) => el.id === question.id
     );
     const newQuestions = [...formik.values.questions];
-    const result = verifyResponse(language, question, value);
+    const result = verifyResponse(question, value);
     newQuestions[index] = {
       ...question,
       responsePlayer1: value.value,

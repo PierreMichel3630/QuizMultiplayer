@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { countThemesByCategory, selectThemesByCategory } from "src/api/theme";
 import { useUser } from "src/context/UserProvider";
-import { Category } from "src/models/Category";
+import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
 import { ICardImage } from "./card/CardImage";
 import { CategoryBlock } from "./category/CategoryBlock";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
 
 interface Props {
-  category: Category;
+  category: {
+    id: number;
+    name: string;
+  };
 }
 export const CategoryWithThemeBlock = ({ category }: Props) => {
   const { language } = useUser();
@@ -19,25 +21,29 @@ export const CategoryWithThemeBlock = ({ category }: Props) => {
   const getTheme = useCallback(
     (page: number) => {
       setIsLoading(true);
-      selectThemesByCategory(category.id, "", page, 15, language.iso).then(
-        ({ data }) => {
-          const res = (data ?? []).map((el) => ({
-            ...el,
-            type: TypeCardEnum.THEME,
-          }));
-          setThemes((prev) => (page === 0 ? [...res] : [...prev, ...res]));
-          setIsLoading(false);
-        }
-      );
+      if (language) {
+        selectThemesByCategory(language, category.id, "", page, 15).then(
+          ({ data }) => {
+            const res = (data ?? []).map((el) => ({
+              ...el,
+              type: TypeCardEnum.THEME,
+            }));
+            setThemes((prev) => (page === 0 ? [...res] : [...prev, ...res]));
+            setIsLoading(false);
+          }
+        );
+      }
     },
-    [category.id, language.iso]
+    [category.id, language]
   );
 
   useEffect(() => {
     const getCount = () => {
-      countThemesByCategory(category.id).then(({ count }) => {
-        setCount(count ?? 0);
-      });
+      if (language) {
+        countThemesByCategory(category.id, language).then(({ count }) => {
+          setCount(count ?? 0);
+        });
+      }
     };
     getCount();
   }, [category, language]);
@@ -49,7 +55,7 @@ export const CategoryWithThemeBlock = ({ category }: Props) => {
   return (
     themes.length > 0 && (
       <CategoryBlock
-        title={category.title}
+        title={category.name}
         count={count}
         link={`/category/${category.id}`}
         values={themes}

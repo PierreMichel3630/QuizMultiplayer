@@ -12,7 +12,7 @@ import { ImageCard } from "../image/ImageCard";
 
 export interface ICardImage {
   id: number;
-  title: string;
+  name: string;
   image?: string | JSX.Element;
   color?: string;
   type?: TypeCardEnum;
@@ -79,7 +79,7 @@ export const CardImage = ({ value, width = 90 }: Props) => {
           textAlign: "center",
         }}
       >
-        {value.title}
+        {value.name}
       </Typography>
       {isFavorite && (
         <StarIcon

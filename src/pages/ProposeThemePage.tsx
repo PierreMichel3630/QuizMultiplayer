@@ -31,11 +31,13 @@ export default function ProposeThemePage() {
 
   const getThemePropose = useCallback(() => {
     setIsLoading(true);
-    selectThemesPropose(language.iso).then(({ data }) => {
-      const res = data ?? [];
-      setThemes([...res].sort(sortByVoteDesc));
-      setIsLoading(false);
-    });
+    if (language) {
+      selectThemesPropose(language.iso).then(({ data }) => {
+        const res = data ?? [];
+        setThemes([...res].sort(sortByVoteDesc));
+        setIsLoading(false);
+      });
+    }
   }, [language]);
 
   useEffect(() => {
@@ -65,7 +67,7 @@ export default function ProposeThemePage() {
         );
         return {
           id: index,
-          title: theme.title,
+          name: theme.title,
           color: theme.color,
           image,
           link: `/theme/${theme.id}`,
