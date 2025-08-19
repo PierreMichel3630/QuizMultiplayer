@@ -59,7 +59,7 @@ export default function PlayPage() {
         }
       } else if (theme && mode === "duel" && profileAdv === undefined) {
         if (user) {
-          matchmakingDuelGame(uuid, theme.id).then(({ data }) => {
+          matchmakingDuelGame(uuid, theme.id, language).then(({ data }) => {
             if (data) navigate(`/duel/${data.uuid}`);
           });
         } else {

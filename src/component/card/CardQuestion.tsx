@@ -20,6 +20,7 @@ import { Difficulty } from "src/models/enum/DifficultyEnum";
 import { MapPositionBlock } from "../MapPositionBlock";
 import { QcmBlockDuelResultBlock } from "../QcmBlock";
 import { ValidateButton } from "../button/ValidateButton";
+import { TextLabelBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   question: QuestionAdmin;
@@ -126,18 +127,11 @@ export const CardSignalQuestion = ({
     >
       <Grid container spacing={1} justifyContent="center">
         <Grid item xs={12} sx={{ textAlign: "center" }}>
-          {question.label && (
-            <Typography variant="h2" color={color}>
-              {question.label}
-            </Typography>
-          )}
-          {question.question && (
-            <JsonLanguageBlock
-              variant="h2"
-              color={color}
-              value={question.question}
-            />
-          )}
+          <TextLabelBlock
+            variant="h2"
+            color={color}
+            values={question.questiontranslation}
+          />
         </Grid>
         {question.extra && (
           <Grid item xs={12} sx={{ textAlign: "center" }}>

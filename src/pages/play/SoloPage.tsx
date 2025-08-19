@@ -15,9 +15,9 @@ import { QuestionResponseBlock } from "src/component/question/QuestionResponseBl
 import { Answer, Response } from "src/component/question/ResponseBlock";
 import { SoloGame } from "src/models/Game";
 import { StatusGameSolo } from "src/models/enum/StatusGame";
-import { decryptToString } from "src/utils/crypt";
+import { decryptToNumber } from "src/utils/crypt";
 import { PreloadImages } from "src/utils/preload";
-import { verifyResponseCrypt } from "src/utils/response";
+import { getResponse, verifyResponseCrypt } from "src/utils/response";
 
 export default function SoloPage() {
   const { t } = useTranslation();
@@ -33,9 +33,6 @@ export default function SoloPage() {
   const [timer, setTimer] = useState<undefined | number>(undefined);
   const [audio, setAudio] = useState<undefined | HTMLAudioElement>(undefined);
   const [images, setImages] = useState<Array<string>>([]);
-  const [myresponse, setMyresponse] = useState<string | number | undefined>(
-    undefined
-  );
 
   const timeoutQuestion = useRef<NodeJS.Timeout | null>(null);
   const localStorageId = useMemo(() => `game-solo-${uuidGame}`, [uuidGame]);
@@ -54,28 +51,8 @@ export default function SoloPage() {
             },
           })
           .then(({ data }) => {
-            const questionSolo = data as QuestionSolo;
-            let urls: Array<string> = [];
-            if (questionSolo.image) {
-              urls = [...urls, questionSolo.image];
-            }
-            if (questionSolo.typequestion === "IMAGE") {
-              const images = questionSolo.responses.reduce(
-                (acc, v) => (v.image ? [...acc, v.image] : acc),
-                [] as Array<string>
-              );
-              urls = [...urls, ...images];
-            }
-            setImages(urls);
-
-            let audio: HTMLAudioElement | undefined = undefined;
-            if (questionSolo.audio) {
-              audio = new Audio(questionSolo.audio);
-              audio.load();
-            }
-
-            setTimeout(async () => {
-              if (questionSolo.allresponse === true) {
+            if (data.allresponse === true) {
+              setTimeout(async () => {
                 const questionsgame: Array<unknown> = JSON.parse(
                   localStorage.getItem(localStorageId) ?? "[]"
                 );
@@ -87,7 +64,29 @@ export default function SoloPage() {
                   });
                 });
                 localStorage.removeItem(localStorageId);
-              } else {
+              }, delay);
+            } else {
+              const questionSolo = data as QuestionSolo;
+              let urls: Array<string> = [];
+              if (questionSolo.image) {
+                urls = [...urls, questionSolo.image];
+              }
+              if (questionSolo.typequestion === "IMAGE") {
+                const images = questionSolo.answers.reduce(
+                  (acc, v) => (v.image ? [...acc, v.image] : acc),
+                  [] as Array<string>
+                );
+                urls = [...urls, ...images];
+              }
+              setImages(urls);
+
+              let audio: HTMLAudioElement | undefined = undefined;
+              if (questionSolo.audio) {
+                audio = new Audio(questionSolo.audio);
+                audio.load();
+              }
+
+              setTimeout(async () => {
                 if (audio) {
                   setAudio(audio);
                 }
@@ -96,7 +95,7 @@ export default function SoloPage() {
                 setResponse(undefined);
                 scrollTop();
                 timeoutQuestion.current = setTimeout(async () => {
-                  const response = decryptToString(questionSolo.response);
+                  const response = decryptToNumber(questionSolo.answer);
                   const questionsgame: Array<unknown> = JSON.parse(
                     localStorage.getItem(localStorageId) ?? "[]"
                   );
@@ -111,15 +110,15 @@ export default function SoloPage() {
                     JSON.stringify(questionsgame)
                   );
                   setResponse({
-                    response: response,
+                    answer: response,
                     result: false,
                     responsePlayer1: undefined,
                   });
                   setTimer(undefined);
                   scrollTop();
                 }, questionSolo.time * 1000);
-              }
-            }, delay);
+              }, delay);
+            }
           });
       }
     },
@@ -131,10 +130,9 @@ export default function SoloPage() {
       clearInterval(timeoutQuestion.current!);
       setTimer(undefined);
       const myResponseValue = value?.value ?? undefined;
-      setMyresponse(myResponseValue);
       if (question && game && language) {
-        const result = verifyResponseCrypt(question, value);
-        const response = decryptToString(question.response);
+        const result = verifyResponseCrypt(question, language, value);
+        const response = getResponse(question, language);
         const questionsgame: Array<unknown> = JSON.parse(
           localStorage.getItem(localStorageId) ?? "[]"
         );
@@ -146,11 +144,11 @@ export default function SoloPage() {
         });
         localStorage.setItem(localStorageId, JSON.stringify(questionsgame));
         setResponse({
-          response: response,
+          answer: response,
           result: result,
           responsePlayer1: myResponseValue,
+          resultPlayer1: result,
         });
-        setMyresponse(undefined);
         if (result) {
           setScore((prev) => prev + 1);
           generateQuestion(game, 1500);
@@ -219,11 +217,6 @@ export default function SoloPage() {
     window.scrollTo(0, 0);
   };
 
-  const responseP1 = useMemo(
-    () => myresponse ?? (response ? response.responsePlayer1 : undefined),
-    [myresponse, response]
-  );
-
   return (
     <Container
       maxWidth="md"
@@ -265,7 +258,6 @@ export default function SoloPage() {
         >
           {question ? (
             <QuestionResponseBlock
-              responseplayer1={responseP1}
               response={response}
               question={question}
               onSubmit={validateResponse}

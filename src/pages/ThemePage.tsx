@@ -101,8 +101,8 @@ export default function ThemePage() {
 
   const playDuel = async () => {
     if (user) {
-      if (uuid && id) {
-        const { data } = await matchmakingDuelGame(uuid, Number(id));
+      if (uuid && id && language) {
+        const { data } = await matchmakingDuelGame(uuid, Number(id), language);
         navigate(`/duel/${data.uuid}`);
       }
     } else {
@@ -264,6 +264,7 @@ export default function ThemePage() {
                         title={theme.title}
                         addFavorite={addFavorite}
                         favorite={favorite !== undefined}
+                        link="/"
                       />
                     </Grid>
                     {!theme.enabled && (

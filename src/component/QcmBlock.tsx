@@ -9,8 +9,8 @@ import { QuestionResult } from "src/models/Question";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { useUser } from "src/context/UserProvider";
+import { TextLabelBlock } from "./language/TextLanguageBlock";
 import { ExtraResponseResultBlock } from "./response/ExtraResponseBlock";
-import { ResponseBlock } from "./response/ResponseBlock";
 
 interface PropsQcmBlockDuelResultBlock {
   question: QuestionResult;
@@ -28,13 +28,13 @@ export const QcmBlockDuelResultBlock = ({
   const responsePlayer2 = question.responsePlayer2;
 
   const columns = useMemo(() => {
-    const modulo = question.responses.length % 2;
+    const modulo = question.answers.length % 2;
     return modulo === 0 ? 2 : 1;
-  }, [question.responses.length]);
+  }, [question.answers.length]);
 
   const rows = useMemo(() => {
-    return question.responses.length / columns;
-  }, [question.responses.length, columns]);
+    return question.answers.length / columns;
+  }, [question.answers.length, columns]);
 
   return (
     <Box
@@ -45,7 +45,8 @@ export const QcmBlockDuelResultBlock = ({
         gap: px(4),
       }}
     >
-      {question.responses.map((res, index) => {
+      {question.answers.map((res) => {
+        const index = res.id;
         const isCorrectResponse = Number(response) === index;
 
         const isArrowRight =
@@ -99,7 +100,13 @@ export const QcmBlockDuelResultBlock = ({
             )}
             <Box sx={{ width: percent(100) }}>
               {res.image && <ImageQCMBlock src={res.image} />}
-              {res.label && <ResponseBlock label={res.label} />}
+              {res.answertranslation && (
+                <TextLabelBlock
+                  variant="h3"
+                  component="p"
+                  values={res.answertranslation}
+                />
+              )}
               {res.extra && <ExtraResponseResultBlock extra={res.extra} />}
             </Box>
             {isArrowLeft && (

@@ -1,7 +1,14 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { RealtimeChannel, RealtimePresenceState } from "@supabase/supabase-js";
 import { px } from "csx";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import moment, { Moment } from "moment";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -14,35 +21,39 @@ import { QuestionResponseBlock } from "src/component/question/QuestionResponseBl
 import { Answer, Response } from "src/component/question/ResponseBlock";
 import { RoundTimer, VerticalTimer } from "src/component/time/Timer";
 import { useUser } from "src/context/UserProvider";
-import { DuelGame, DuelGameChange, ExtraDuelGame } from "src/models/DuelGame";
+import { DuelGame, DuelGameChange } from "src/models/DuelGame";
 import { QuestionDuel } from "src/models/Question";
 import { ResponseDuel } from "src/models/Response";
 import { StatusGameDuel } from "src/models/enum/StatusGame";
 import { Colors } from "src/style/Colors";
+import { Bot, getBotByUuid, getResponseBot } from "src/utils/bot";
+import { decrypt } from "src/utils/crypt";
 import { PreloadImages } from "src/utils/preload";
+import { verifyResponseCrypt } from "src/utils/response";
 
 export default function DuelPage() {
   const { t } = useTranslation();
   const { uuidGame } = useParams();
-  const { uuid, language, sound } = useUser();
+  const { uuid, sound, language } = useUser();
   const navigate = useNavigate();
 
+  const POINTSCORRECTANSWER = 25;
+
+  const [bot, setBot] = useState<Bot | undefined>(undefined);
+  const [time, setTime] = useState<Moment>(moment());
   const [players, setPlayers] = useState<Array<string>>([]);
   const [game, setGame] = useState<undefined | DuelGame>(undefined);
   const [channel, setChannel] = useState<RealtimeChannel | undefined>(
     undefined
   );
   const [timer, setTimer] = useState<undefined | number>(undefined);
+  const [questions, setQuestions] = useState<Array<QuestionDuel>>([]);
   const [question, setQuestion] = useState<undefined | QuestionDuel>(undefined);
   const [response, setResponse] = useState<undefined | Response>(undefined);
   const [audio, setAudio] = useState<undefined | HTMLAudioElement>(undefined);
-  const [responsePlayer1, setResponsePlayer1] = useState<
-    undefined | ResponseDuel
-  >(undefined);
-  const [responsePlayer2, setResponsePlayer2] = useState<
-    undefined | ResponseDuel
-  >(undefined);
   const [images, setImages] = useState<Array<string>>([]);
+  const [scoreP1, setScoreP1] = useState(0);
+  const [scoreP2, setScoreP2] = useState(0);
 
   useEffect(() => {
     const getGame = () => {
@@ -59,52 +70,12 @@ export default function DuelPage() {
     getGame();
   }, [navigate, uuidGame]);
 
-  const isPlayer1 = useMemo(() => {
-    return uuid === game?.player1.id;
-  }, [game, uuid]);
-
-  const idPlayer1 = useMemo(
-    () => (game?.player1 ? game.player1.id : null),
-    [game]
-  );
-  const idPlayer2 = useMemo(
-    () => (game?.player2 ? game.player2.id : null),
-    [game]
-  );
-
-  const getBroadcastValidate = useCallback(
-    (res: ResponseDuel) => {
-      if (res.uuid === idPlayer1) {
-        setResponsePlayer1(res);
-        if (isPlayer1) {
-          setResponse({
-            responsePlayer1: res.answer,
-            response: res.correctanswer,
-            result: res.result,
-          });
-        }
-      } else if (res.uuid === idPlayer2) {
-        setResponsePlayer2(res);
-        if (!isPlayer1) {
-          setResponse({
-            responsePlayer2: res.answer,
-            response: res.correctanswer,
-            result: res.result,
-          });
-        }
-      }
-      setGame((prev) =>
-        prev
-          ? {
-              ...prev,
-              ptsplayer1: res.ptsplayer1,
-              ptsplayer2: res.ptsplayer2,
-            }
-          : undefined
-      );
-    },
-    [idPlayer1, idPlayer2, isPlayer1]
-  );
+  useEffect(() => {
+    if (game && game.player2) {
+      const bot = getBotByUuid(game?.player2.id);
+      setBot(bot);
+    }
+  }, [game]);
 
   useEffect(() => {
     if (uuidGame) {
@@ -142,26 +113,19 @@ export default function DuelPage() {
           const res = value.payload as DuelGame;
           setGame(res);
         })
-        .on("broadcast", { event: "question" }, (value) => {
-          const questionduel = value.payload as QuestionDuel;
-          let urls: Array<string> = [];
+        .on("broadcast", { event: "questions" }, (value) => {
+          const questions = value.payload as Array<QuestionDuel>;
+          setQuestions(questions);
+          const urls: Array<string> = [...questions]
+            .filter((el) => el.image !== undefined)
+            .map((el) => el.image as string);
+          setImages(urls);
+          const questionduel = questions[0];
           let audio: HTMLAudioElement | undefined = undefined;
           if (questionduel.audio) {
             audio = new Audio(questionduel.audio);
             audio.load();
           }
-
-          if (questionduel.image) {
-            urls = [...urls, questionduel.image];
-          }
-          if (questionduel.typequestion === "IMAGE") {
-            const images = questionduel.responses.reduce(
-              (acc, v) => (v.image ? [...acc, v.image] : acc),
-              [] as Array<string>
-            );
-            urls = [...urls, ...images];
-          }
-          setImages(urls);
           setTimeout(async () => {
             if (audio) {
               audio.volume = sound / 100;
@@ -169,36 +133,17 @@ export default function DuelPage() {
               setAudio(audio);
             }
             setTimer(questionduel.time);
+            setTime(moment());
             setQuestion(questionduel);
             setResponse(undefined);
-            setResponsePlayer1(undefined);
-            setResponsePlayer2(undefined);
-          }, 2000);
-        })
-        .on("broadcast", { event: "endquestion" }, (value) => {
-          const res = value.payload as Response;
-          setTimer(undefined);
-          setResponse((prev) => ({ ...res, ...prev }));
-        })
-        .on("broadcast", { event: "validate" }, (value) => {
-          const res = value.payload as ResponseDuel;
-          getBroadcastValidate(res);
-        })
-        .on("broadcast", { event: "end" }, (value) => {
-          const res = value.payload as {
-            extra: ExtraDuelGame;
-          };
-          channel.unsubscribe();
-          setTimeout(() => {
-            navigate(`/recapduel/${uuidGame}`, {
-              state: {
-                extra: res.extra,
-              },
-            });
           }, 2000);
         })
         .on("broadcast", { event: "cancel" }, () => {
           navigate(`/recapduel/${uuidGame}`);
+        })
+        .on("broadcast", { event: "response" }, (value) => {
+          const res = value.payload as ResponseDuel;
+          console.log(res);
         })
         .subscribe(async (status) => {
           if (status !== "SUBSCRIBED") {
@@ -214,24 +159,71 @@ export default function DuelPage() {
         }
       };
     }
-  }, [uuidGame, navigate, uuid, audio, sound, getBroadcastValidate]);
+  }, [uuidGame, navigate, uuid, audio, sound]);
 
-  const validateResponse = async (value: Answer) => {
-    if (channel && game && language && uuid) {
-      channel.send({
-        type: "broadcast",
-        event: "response",
-        payload: {
-          response: value.value,
-          language: language.iso,
-          uuid: uuid,
-        },
-      });
-      if (audio) {
-        audio.pause();
+  const validateResponse = useCallback(
+    async (value: Answer) => {
+      const timeDiff = moment().diff(time);
+      if (channel && question && language) {
+        const result = value
+          ? verifyResponseCrypt(question, language, value)
+          : false;
+        const answer = decrypt(question.answer) as string;
+        if (game?.player1.id === value.uuid) {
+          setResponse((prev) => ({
+            ...prev,
+            result: result,
+            responsePlayer1: value.value,
+            resultPlayer1: result,
+            timePlayer1: timeDiff,
+            answer: answer,
+          }));
+          updateScore(setScoreP1, result, timeDiff);
+        } else if (game?.player2.id === value.uuid) {
+          setResponse((prev) => ({
+            ...prev,
+            result: result,
+            responsePlayer2: value.value,
+            resultPlayer2: result,
+            timePlayer2: timeDiff,
+            answer: answer,
+          }));
+          updateScore(setScoreP2, result, timeDiff);
+        }
+        channel.send({
+          type: "broadcast",
+          event: "response",
+          payload: {
+            uuid: uuid,
+            answerPlayer: value.value,
+            result: result,
+            answer: answer,
+          },
+        });
+        if (audio) {
+          audio.pause();
+        }
       }
+    },
+    [audio, channel, game, question, time, uuid, language]
+  );
+
+  const goNextQuestion = useCallback(() => {
+    const index = question
+      ? questions.findIndex((el) => el.id === question.id)
+      : undefined;
+    if (index === undefined || index < questions.length - 1) {
+      const idNextQuestion = index !== undefined ? index + 1 : 0;
+      const question = questions[idNextQuestion];
+      setResponse(undefined);
+      setQuestion(question);
+      setTimer(question.time);
+      setTime(moment());
+    } else {
+      console.log("end");
+      console.log(questions);
     }
-  };
+  }, [question, questions]);
 
   useEffect(() => {
     if (audio) {
@@ -240,33 +232,52 @@ export default function DuelPage() {
     }
   }, [audio, sound]);
 
-  const responseP1 = useMemo(
-    () =>
-      isPlayer1
-        ? responsePlayer1
-          ? responsePlayer1.answer
-          : undefined
-        : response
-        ? responsePlayer1
-          ? responsePlayer1.answer
-          : undefined
-        : undefined,
-    [isPlayer1, responsePlayer1, response]
-  );
+  const handleEnd = useCallback(() => {
+    if (question) {
+      const answer = decrypt(question.answer) as string;
 
-  const responseP2 = useMemo(
-    () =>
-      !isPlayer1
-        ? responsePlayer2
-          ? responsePlayer2.answer
-          : undefined
-        : response
-        ? responsePlayer2
-          ? responsePlayer2.answer
-          : undefined
-        : undefined,
-    [isPlayer1, responsePlayer2, response]
-  );
+      setResponse((prev) =>
+        prev
+          ? {
+              ...prev,
+              answer: answer,
+            }
+          : prev
+      );
+    }
+    setTimer(undefined);
+    setTimeout(() => {
+      goNextQuestion();
+    }, 2000);
+  }, [goNextQuestion, question]);
+
+  const updateScore = (
+    set: Dispatch<SetStateAction<number>>,
+    result: boolean,
+    time: number
+  ) => {
+    if (result) {
+      const score = POINTSCORRECTANSWER - Math.round(time / 1000);
+      set((prev) => prev + score);
+    }
+  };
+
+  useEffect(() => {
+    if (bot && question) {
+      const response = getResponseBot(bot, question);
+      setTimeout(() => {
+        setResponse((prev) => ({
+          ...prev,
+          responsePlayer2: response.response,
+          resultPlayer2: response.result,
+          timePlayer2: response.time,
+        }));
+        updateScore(setScoreP2, response.result, response.time);
+      }, response.time);
+    }
+  }, [bot, question, validateResponse]);
+
+  console.log(response);
 
   return (
     <Container
@@ -335,7 +346,7 @@ export default function DuelPage() {
                           variant="h2"
                           sx={{ color: Colors.colorDuel1 }}
                         >
-                          {game.ptsplayer1}
+                          {scoreP1}
                         </Typography>
                       </Box>
                     </Grid>
@@ -347,6 +358,7 @@ export default function DuelPage() {
                             size={45}
                             thickness={6}
                             fontSize={15}
+                            end={handleEnd}
                           />
                         </Box>
                       )}
@@ -379,7 +391,7 @@ export default function DuelPage() {
                             textAlign: "right",
                           }}
                         >
-                          {game.ptsplayer2}
+                          {scoreP2}
                         </Typography>
                       </Box>
                       <AvatarAccount
@@ -402,7 +414,7 @@ export default function DuelPage() {
                   <VerticalTimer
                     time={timer}
                     color={Colors.colorDuel1}
-                    answer={responsePlayer1 ? responsePlayer1.time : undefined}
+                    answer={response?.timePlayer1}
                   />
                   <Box
                     sx={{
@@ -422,8 +434,6 @@ export default function DuelPage() {
                       }}
                     >
                       <QuestionResponseBlock
-                        responseplayer1={responseP1}
-                        responseplayer2={responseP2}
                         response={response}
                         question={question}
                         onSubmit={validateResponse}
@@ -433,7 +443,7 @@ export default function DuelPage() {
                   <VerticalTimer
                     time={timer}
                     color={Colors.colorDuel2}
-                    answer={responsePlayer2 ? responsePlayer2.time : undefined}
+                    answer={response?.timePlayer2}
                   />
                 </Box>
               </Box>

@@ -1,11 +1,11 @@
 import { Point } from "react-simple-maps";
+import { Answer } from "./Answer";
 import {
   JsonLanguage,
   JsonLanguageArray,
   JsonLanguageArrayOrString,
   Language,
 } from "./Language";
-import { ResponseQCM } from "./Response";
 import { Theme } from "./Theme";
 import { TypeQuestionEnum } from "./enum/TypeQuestionEnum";
 
@@ -97,26 +97,23 @@ export interface QuestionUpdate {
 export interface Question {
   id: number;
   typequestion: TypeQuestionEnum;
-  label: string;
   image?: string;
   extra?: JsonLanguage;
   audio?: string;
   isqcm: boolean;
   time: number;
-  question?: JsonLanguage;
   theme: Theme;
   difficulty: string;
-  typeResponse: string;
   answerset?: number;
-  allresponse: boolean;
-  exact: boolean;
-  responses: Array<ResponseQCM>;
   data: null | {
     code: string;
     property: string;
     zoom: number;
     coordinates: Point;
   };
+  answer: string;
+  answers: Array<Answer>;
+  questiontranslation: Array<QuestionTranslation>;
 }
 
 export interface QuestionResult extends Question {
@@ -133,8 +130,8 @@ export interface QuestionTraining extends Question {
 
 export interface QuestionDuel extends Question {
   resultPlayer1?: boolean;
-  responsePlayer1?: string;
-  responsePlayer2?: string;
+  responsePlayer1?: string | number;
+  responsePlayer2?: string | number;
   resultPlayer2?: boolean;
 }
 

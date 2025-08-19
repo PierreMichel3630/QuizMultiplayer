@@ -36,7 +36,9 @@ export const Timer = ({ time, end }: Props) => {
   useEffect(() => {
     if (timer && timer <= 0) {
       clearInterval(intervalTimer);
-      if (end) end();
+      if (end) {
+        end();
+      }
     }
   }, [end, intervalTimer, timer]);
 
@@ -82,31 +84,47 @@ export const Timer = ({ time, end }: Props) => {
 interface PropsVerticalTimer {
   time: number | undefined;
   color: string;
-  answer: number | undefined;
+  answer?: number;
 }
 
 export const VerticalTimer = ({ time, color, answer }: PropsVerticalTimer) => {
   const DELAY = 100;
+  const [intervalTimer, setIntervalTimer] = useState<
+    NodeJS.Timeout | undefined
+  >(undefined);
+  const [totalTime, setTotalTime] = useState(1);
   const [timer, setTimer] = useState(0);
 
   useEffect(() => {
-    setTimer(time ? time * 1000 : 0);
-  }, [time]);
+    if (time) {
+      setTotalTime(time);
+      setTimer(time * 1000);
+    } else {
+      clearInterval(intervalTimer);
+    }
+  }, [intervalTimer, time]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setTimer((prev) => prev - DELAY);
     }, DELAY);
+    setIntervalTimer(interval);
     return () => clearInterval(interval);
   }, [time]);
 
+  useEffect(() => {
+    if (timer && timer <= 0) {
+      clearInterval(intervalTimer);
+    }
+  }, [intervalTimer, timer]);
+
   const pourcentage = useMemo(
-    () => (time ? (timer / (time * 1000)) * 100 : 0),
-    [time, timer]
+    () => (timer / (totalTime * 1000)) * 100,
+    [totalTime, timer]
   );
   const pourcentageAnswer = useMemo(
-    () => (answer ? 100 - (answer / ((time ? time : 10) * 1000)) * 100 : 0),
-    [time, answer]
+    () => (answer ? 100 - (answer / (totalTime * 1000)) * 100 : 0),
+    [totalTime, answer]
   );
 
   return (
@@ -150,6 +168,7 @@ interface PropsRoundTimer {
   size?: number;
   thickness?: number;
   fontSize?: number;
+  end?: () => void;
 }
 
 export const RoundTimer = ({
@@ -157,22 +176,42 @@ export const RoundTimer = ({
   size = 50,
   thickness = 6,
   fontSize = 50,
+  end,
 }: PropsRoundTimer) => {
   const DELAY = 100;
-  const [timer, setTimer] = useState(time * 1000);
+  const [intervalTimer, setIntervalTimer] = useState<
+    NodeJS.Timeout | undefined
+  >(undefined);
+  const [totalTime, setTotalTime] = useState(1);
+  const [timer, setTimer] = useState(0);
 
   useEffect(() => {
-    setTimer(time * 1000);
-  }, [time]);
+    if (time) {
+      setTotalTime(time);
+      setTimer(time * 1000);
+    } else {
+      clearInterval(intervalTimer);
+    }
+  }, [intervalTimer, time]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setTimer((prev) => prev - DELAY);
     }, DELAY);
+    setIntervalTimer(interval);
     return () => clearInterval(interval);
   }, [time]);
 
-  const pourcentage = (timer / (time * 1000)) * 100;
+  useEffect(() => {
+    if (timer && timer <= 0) {
+      clearInterval(intervalTimer);
+      if (end) {
+        end();
+      }
+    }
+  }, [end, intervalTimer, timer]);
+
+  const pourcentage = (timer / (totalTime * 1000)) * 100;
 
   const getColor = (pourcentage: number) => {
     let color: string = Colors.green;
@@ -187,7 +226,6 @@ export const RoundTimer = ({
     }
     return color;
   };
-  const timeValue = timer / 1000;
 
   return (
     <Box
@@ -218,7 +256,7 @@ export const RoundTimer = ({
         }}
       >
         <Typography variant="h2" component="div" sx={{ fontSize: fontSize }}>
-          {timeValue < 0 ? 0 : Math.floor(timeValue)}
+          {timer < 0 ? 0 : Math.floor(timer / 1000)}
         </Typography>
       </Box>
     </Box>

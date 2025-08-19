@@ -1,15 +1,11 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  deleteTrainingGame,
-  getQuestionTrainingGame,
-  selectTrainingGameById,
-} from "src/api/game";
+import { getQuestionTrainingGame, selectTrainingGameById } from "src/api/game";
 import { useUser } from "src/context/UserProvider";
-import { QuestionResult, QuestionTraining } from "src/models/Question";
+import { QuestionTraining } from "src/models/Question";
 
 import { percent } from "csx";
 import { ButtonColor } from "src/component/Button";
@@ -21,11 +17,10 @@ import { Answer, Response } from "src/component/question/ResponseBlock";
 import { SoloGame, TrainingGame } from "src/models/Game";
 import { Colors } from "src/style/Colors";
 import { PreloadImages } from "src/utils/preload";
-import { verifyResponseCrypt } from "src/utils/response";
+import { getResponse, verifyResponseCrypt } from "src/utils/response";
 
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import LastPageIcon from "@mui/icons-material/LastPage";
-import { decryptToString } from "src/utils/crypt";
 
 export default function TrainingPage() {
   const { t } = useTranslation();
@@ -40,7 +35,6 @@ export default function TrainingPage() {
   const [nextQuestion, setNextQuestion] = useState<
     undefined | QuestionTraining
   >(undefined);
-  const [questions, setQuestions] = useState<Array<QuestionResult>>([]);
   const [response, setResponse] = useState<undefined | Response>(undefined);
   const [audio, setAudio] = useState<undefined | HTMLAudioElement>(undefined);
   const [isLoading, setIsLoading] = useState(true);
@@ -51,10 +45,9 @@ export default function TrainingPage() {
   const [isNextAllQuestion, setIsNextAllQuestion] = useState(false);
   const [goodAnswer, setGoodAnswer] = useState(0);
   const [badAnswer, setBadAnswer] = useState(0);
-  const [myresponse, setMyresponse] = useState<string | number | undefined>(
-    undefined
-  );
   const [images, setImages] = useState<Array<string>>([]);
+
+  const localStorageId = useMemo(() => `game-training-${uuidGame}`, [uuidGame]);
 
   useEffect(() => {
     if (audio) {
@@ -63,10 +56,12 @@ export default function TrainingPage() {
     }
   }, [audio, sound]);
 
-  const getQuestion = (uuid: string, isfirstquestion = false) => {
-    setMyresponse(undefined);
+  const getQuestion = useCallback((uuid: string, isfirstquestion = false) => {
+    const questionsgame: Array<unknown> = JSON.parse(
+      localStorage.getItem(`game-training-${uuid}`) ?? "[]"
+    );
     setIsLoadingQuestion(true);
-    getQuestionTrainingGame(uuid).then(({ data }) => {
+    getQuestionTrainingGame(uuid, questionsgame).then(({ data }) => {
       if (data) {
         const questionSolo = data as QuestionTraining;
         let urls: Array<string> = [];
@@ -74,7 +69,7 @@ export default function TrainingPage() {
           urls = [...urls, questionSolo.image];
         }
         if (questionSolo.typequestion === "IMAGE") {
-          const images = questionSolo.responses.reduce(
+          const images = questionSolo.answers.reduce(
             (acc, v) => (v.image ? [...acc, v.image] : acc),
             [] as Array<string>
           );
@@ -101,32 +96,32 @@ export default function TrainingPage() {
       }
       setIsLoadingQuestion(false);
     });
-  };
+  }, []);
 
   const validateResponse = async (value: Answer) => {
     const myResponseValue = value.value;
     setNextQuestion(undefined);
-    setMyresponse(myResponseValue);
     if (question && language) {
-      const result = verifyResponseCrypt(question, value);
-      const response = decryptToString(question.response);
-      setQuestions((prev) => [
-        {
-          ...question,
-          response: response,
-          resultPlayer1: result,
-          responsePlayer1: myResponseValue,
-        },
-        ...prev,
-      ]);
+      const result = verifyResponseCrypt(question, language, value);
+      const response = getResponse(question, language);
+      const questionsgame: Array<unknown> = JSON.parse(
+        localStorage.getItem(localStorageId) ?? "[]"
+      );
+      questionsgame.push({
+        ...question,
+        response: response,
+        resultPlayer1: result,
+        responsePlayer1: myResponseValue,
+      });
+      localStorage.setItem(localStorageId, JSON.stringify(questionsgame));
       setGoodAnswer((prev) => (result ? prev + 1 : prev));
       setBadAnswer((prev) => (result ? prev : prev + 1));
       setResponse({
-        response: response,
+        answer: response,
         result: result,
         responsePlayer1: myResponseValue,
+        resultPlayer1: result,
       });
-      setMyresponse(undefined);
       if (game) getQuestion(game.uuid);
     }
     if (audio) {
@@ -171,7 +166,7 @@ export default function TrainingPage() {
       }
     };
     getGame();
-  }, [navigate, uuidGame]);
+  }, [getQuestion, navigate, uuidGame]);
 
   useEffect(() => {
     return () => {
@@ -180,17 +175,6 @@ export default function TrainingPage() {
       }
     };
   }, [audio]);
-
-  useEffect(() => {
-    return () => {
-      if (uuidGame) deleteTrainingGame(uuidGame);
-    };
-  }, [uuidGame]);
-
-  const responseP1 = useMemo(
-    () => myresponse ?? (response ? response.responsePlayer1 : undefined),
-    [myresponse, response]
-  );
 
   return (
     <Container
@@ -253,14 +237,12 @@ export default function TrainingPage() {
             <>
               {isEnd ? (
                 <EndTrainingGameBlock
-                  questions={questions}
                   game={game}
                   isAllQuestion={isAllQuestion}
                 />
               ) : (
                 <>
                   <QuestionResponseBlock
-                    responseplayer1={responseP1}
                     response={response}
                     question={question}
                     onSubmit={validateResponse}

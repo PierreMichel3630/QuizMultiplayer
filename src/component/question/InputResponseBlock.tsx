@@ -13,16 +13,16 @@ import { useTranslation } from "react-i18next";
 import { searchAnswerByLanguageAndSet } from "src/api/answer";
 import { useUser } from "src/context/UserProvider";
 import { AnswerTranslation } from "src/models/Answer";
-import { MyResponse } from "src/models/Response";
 import { Colors } from "src/style/Colors";
+import { Answer } from "./ResponseBlock";
 
 interface Props {
-  onSubmit: (value: MyResponse) => void;
+  onSubmit: (value: Answer) => void;
   answerset?: number;
 }
 export const InputResponseBlock = ({ onSubmit, answerset }: Props) => {
   const { t } = useTranslation();
-  const { language } = useUser();
+  const { uuid, language } = useUser();
 
   const [value, setValue] = useState("");
   const [responses, setResponses] = useState<Array<string>>([]);
@@ -69,8 +69,8 @@ export const InputResponseBlock = ({ onSubmit, answerset }: Props) => {
               onClick={() => {
                 setValue(response);
                 onSubmit({
+                  uuid: uuid,
                   value: response,
-                  exact: true,
                 });
               }}
             >
@@ -98,8 +98,8 @@ export const InputResponseBlock = ({ onSubmit, answerset }: Props) => {
               onSubmit={(event) => {
                 event.preventDefault();
                 onSubmit({
+                  uuid: uuid,
                   value: value,
-                  exact: false,
                 });
                 setValue("");
               }}

@@ -1,15 +1,17 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { important, percent, px } from "csx";
+import { useMemo } from "react";
+import { TypeQuestionEnum } from "src/models/enum/TypeQuestionEnum";
+import { Question } from "src/models/Question";
 import { ImageQuestionBlock } from "../ImageBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
+import { TextLabelBlock } from "../language/TextLanguageBlock";
 import { CircularLoading } from "../Loading";
 import { MapPositionBlock } from "../MapPositionBlock";
 import { SoundBar } from "../SoundBar";
 import { Timer } from "../time/Timer";
-import { Question } from "src/models/Question";
-import { useMemo } from "react";
-import { TypeQuestionEnum } from "src/models/enum/TypeQuestionEnum";
 import { Answer } from "./ResponseBlock";
+import { useUser } from "src/context/UserProvider";
 
 interface Props {
   question: Question;
@@ -18,6 +20,7 @@ interface Props {
 }
 
 export const QuestionBlock = ({ question, timer, onSubmit }: Props) => {
+  const { uuid } = useUser();
   const isQuestionOrder = useMemo(
     () => question.typequestion === TypeQuestionEnum.ORDER,
     [question]
@@ -38,12 +41,12 @@ export const QuestionBlock = ({ question, timer, onSubmit }: Props) => {
     >
       {question ? (
         <>
-          <Typography
+          <TextLabelBlock
             variant="h2"
             sx={{ fontSize: important(px(30)), wordBreak: "break-word" }}
-          >
-            {question.label}
-          </Typography>
+            values={question.questiontranslation}
+          />
+
           {question.image && (
             <Box
               sx={{
@@ -83,7 +86,7 @@ export const QuestionBlock = ({ question, timer, onSubmit }: Props) => {
               <Timer
                 time={timer}
                 end={() => {
-                  if (onSubmit) onSubmit({ value: undefined, exact: true });
+                  if (onSubmit) onSubmit({ uuid: uuid, value: undefined });
                 }}
               />
             </Box>

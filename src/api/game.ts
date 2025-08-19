@@ -22,7 +22,7 @@ export const SUPABASE_TRAININGGAME_TABLE = "traininggame";
 
 export const SUPABASE_DUELGAME_TABLE = "duelgame";
 export const SUPABASE_LAUNCHDUELGAME_FUNCTION = "launch-duel-gameV2";
-export const SUPABASE_MATCHMAKINGDUELGAME_FUNCTION = "matchmaking-duel-gameV2";
+export const SUPABASE_MATCHMAKINGDUELGAME_FUNCTION = "matchmaking-duel-gameV3";
 
 export const SUPABASE_BATTLEGAME_TABLE = "battlegame";
 
@@ -78,14 +78,12 @@ export const launchTrainingGame = (
     },
   });
 
-export const getQuestionTrainingGame = (game: string) =>
+export const getQuestionTrainingGame = (
+  game: string,
+  questions: Array<unknown>
+) =>
   supabase.functions.invoke(SUPABASE_QUESTIONTRAININGGAME_FUNCTION, {
-    body: { game: game },
-  });
-
-export const deleteTrainingGame = (game: string) =>
-  supabase.functions.invoke(SUPABASE_QUESTIONTRAININGGAME_FUNCTION, {
-    body: { game: game, delete: true },
+    body: { game: game, questions: questions },
   });
 
 export const selectTrainingGameById = (uuid: string) =>
@@ -194,9 +192,13 @@ export const launchDuelGame = (
     },
   });
 
-export const matchmakingDuelGame = (player: string, theme: number) =>
+export const matchmakingDuelGame = (
+  player: string,
+  theme: number,
+  language: Language
+) =>
   supabase.functions.invoke(SUPABASE_MATCHMAKINGDUELGAME_FUNCTION, {
-    body: { player: player, theme: theme },
+    body: { player: player, theme: theme, language: language.id },
   });
 
 // HISTORY

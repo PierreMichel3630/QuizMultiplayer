@@ -35,7 +35,7 @@ interface Props {
 export const EndDuelGameBlock = ({ game, extra }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { uuid } = useUser();
+  const { uuid, language } = useUser();
   const { user } = useAuth();
   const { refreshProfil } = useAuth();
   const { getMyAccomplishments } = useApp();
@@ -94,8 +94,12 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
 
   const playDuel = async () => {
     if (user) {
-      if (uuid) {
-        const { data } = await matchmakingDuelGame(uuid, game.theme.id);
+      if (uuid && language) {
+        const { data } = await matchmakingDuelGame(
+          uuid,
+          game.theme.id,
+          language
+        );
         navigate(`/duel/${data.uuid}`);
       }
     } else {

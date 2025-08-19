@@ -152,7 +152,7 @@ export const ChallengeGameForm = ({ game, validate }: Props) => {
         </Grid>
         {formik.values.questions.map((question) => {
           const response: Response = {
-            response: question.response,
+            answer: question.response,
             result: question.resultPlayer1 ?? false,
             responsePlayer1: question.responsePlayer1,
           };

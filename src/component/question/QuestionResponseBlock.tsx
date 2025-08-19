@@ -11,8 +11,6 @@ import {
 
 interface Props {
   question?: Question;
-  responseplayer1?: string | number;
-  responseplayer2?: string | number;
   response?: Response;
   timer?: number;
   onSubmit: (value: Answer) => void;
@@ -20,8 +18,6 @@ interface Props {
 
 export const QuestionResponseBlock = ({
   question,
-  responseplayer1,
-  responseplayer2,
   response,
   timer,
   onSubmit,
@@ -35,10 +31,8 @@ export const QuestionResponseBlock = ({
             timer={timer}
             onSubmit={onSubmit}
           />
-          {question?.isqcm ? (
+          {question.isqcm ? (
             <ResponsesQCMBlock
-              responseplayer1={responseplayer1}
-              responseplayer2={responseplayer2}
               response={response}
               question={question}
               onSubmit={onSubmit}
@@ -46,11 +40,7 @@ export const QuestionResponseBlock = ({
           ) : (
             <>
               {response ? (
-                <ResponseInputBlock
-                  response={response}
-                  responseplayer1={responseplayer1}
-                  responseplayer2={responseplayer2}
-                />
+                <ResponseInputBlock response={response} />
               ) : (
                 <InputResponseBlock
                   onSubmit={onSubmit}
@@ -96,11 +86,7 @@ export const QuestionResponseEditBlock = ({
           ) : (
             <>
               {response ? (
-                <ResponseInputBlock
-                  response={response}
-                  responseplayer1={responseplayer1}
-                  responseplayer2={responseplayer2}
-                />
+                <ResponseInputBlock response={response} />
               ) : (
                 <InputResponseBlock
                   onSubmit={onSubmit}

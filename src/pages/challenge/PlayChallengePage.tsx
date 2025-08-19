@@ -15,12 +15,14 @@ import { ChallengeGame } from "src/models/Challenge";
 import { Colors } from "src/style/Colors";
 
 import challengeIcon from "src/assets/challenge.png";
-import { decryptToString } from "src/utils/crypt";
+import { decryptToNumber } from "src/utils/crypt";
 import { verifyResponseCrypt } from "src/utils/response";
+import { useUser } from "src/context/UserProvider";
 
 export default function PlayChallengePage() {
   const { t } = useTranslation();
   const { uuidGame } = useParams();
+  const { language } = useUser();
   const navigate = useNavigate();
 
   const DELAY_BETWEEN_QUESTION = 500;
@@ -34,9 +36,6 @@ export default function PlayChallengePage() {
   const [timeoutQuestion, setTimeoutQuestion] = useState<
     string | number | NodeJS.Timeout | undefined
   >(undefined);
-  const [myresponse, setMyresponse] = useState<string | number | undefined>(
-    undefined
-  );
 
   const [correctAnswer, setCorrectAnswer] = useState<number>(0);
   const [wrongAnswer, setWrongAnswer] = useState<number>(0);
@@ -70,10 +69,11 @@ export default function PlayChallengePage() {
     clearTimeout(timeoutQuestion);
     setTimer(undefined);
     const myResponseValue = value?.value ?? undefined;
-    setMyresponse(myResponseValue);
-    if (question) {
-      const result = value ? verifyResponseCrypt(question, value) : false;
-      const response = decryptToString(question.response);
+    if (question && language) {
+      const result = value
+        ? verifyResponseCrypt(question, language, value)
+        : false;
+      const response = decryptToNumber(question.response);
       const questionsgame: Array<unknown> = [...questionsGameRef.current];
       questionsgame.push({
         ...question,
@@ -85,11 +85,11 @@ export default function PlayChallengePage() {
       setCorrectAnswer((prev) => (result ? prev + 1 : prev));
       setWrongAnswer((prev) => (result ? prev : prev + 1));
       setResponse({
-        response: response,
+        answer: response,
         result: result,
         responsePlayer1: myResponseValue,
+        resultPlayer1: result,
       });
-      setMyresponse(undefined);
       setTimeout(() => {
         scrollTop();
         const indexNextQuestion = questionsgame.length;
@@ -117,18 +117,13 @@ export default function PlayChallengePage() {
     }
   }, [navigate, uuidGame]);
 
-  const responseP1 = useMemo(
-    () => myresponse ?? (response ? response.responsePlayer1 : undefined),
-    [myresponse, response]
-  );
-
   useEffect(() => {
     if (question) {
       setTimer(question.time);
       const newtimeoutQuestion = setTimeout(async () => {
         if (question) {
           const result = false;
-          const response = decryptToString(question.response);
+          const response = decryptToNumber(question.response);
           const questionsgame: Array<unknown> = [...questionsGameRef.current];
           questionsgame.push({
             ...question,
@@ -140,11 +135,11 @@ export default function PlayChallengePage() {
           setCorrectAnswer((prev) => (result ? prev + 1 : prev));
           setWrongAnswer((prev) => (result ? prev : prev + 1));
           setResponse({
-            response: response,
+            answer: response,
             result: result,
             responsePlayer1: undefined,
+            resultPlayer1: result,
           });
-          setMyresponse(undefined);
           setTimeout(() => {
             scrollTop();
             const indexNextQuestion = questionsgame.length;
@@ -234,7 +229,6 @@ export default function PlayChallengePage() {
         >
           {question ? (
             <QuestionResponseBlock
-              responseplayer1={responseP1}
               response={response}
               question={question}
               onSubmit={validateResponse}

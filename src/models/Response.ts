@@ -33,15 +33,11 @@ export interface ResponseTraining {
 }
 
 export interface ResponseDuel {
-  uuid: string;
   result: boolean;
-  time: number;
+  answerPlayer?: string | number;
   answer: string | number;
-  correctanswer: string | number;
-  ptsplayer1: number;
-  ptsplayer2: number;
+  time: number;
 }
-
 export interface ResponseLanguage {
   [iso: string]: Array<string> | string;
 }

@@ -9,7 +9,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { HistoryGame, HistoryGameAdmin } from "src/models/Game";
 import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
-import { ThemeNameBlock } from "../theme/ThemeBlock";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   game: HistoryGame;
@@ -51,7 +51,10 @@ export const CardHistoryGame = ({ game }: Props) => {
                 to={`/theme/${game.theme.id}`}
                 style={{ textDecoration: "none" }}
               >
-                <ThemeNameBlock theme={game.theme} variant="h4" />
+                <TextNameBlock
+                  variant="h4"
+                  values={game.theme.themetranslation}
+                />
               </Link>
               <Typography variant="caption">
                 {moment(game.created_at).format("DD/MM/YYYY HH:mm")}
@@ -92,7 +95,10 @@ export const CardHistoryGame = ({ game }: Props) => {
                 to={`/theme/${game.theme.id}`}
                 style={{ textDecoration: "none" }}
               >
-                <ThemeNameBlock theme={game.theme} variant="h4" />
+                <TextNameBlock
+                  variant="h4"
+                  values={game.theme.themetranslation}
+                />
               </Link>
               <Typography variant="caption">
                 {moment(game.created_at).format("DD/MM/YYYY HH:mm")}
