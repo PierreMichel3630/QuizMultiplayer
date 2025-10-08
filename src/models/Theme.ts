@@ -1,4 +1,4 @@
-import { Category } from "./Category";
+import { CategoryTheme } from "./Category";
 import { Difficulty } from "./enum/DifficultyEnum";
 import { JsonLanguage, Language } from "./Language";
 
@@ -14,8 +14,25 @@ export interface ProposeTheme {
 }
 
 export interface ThemeTranslation {
+  id: number;
   name: string;
+  namelower: string;
   language: Language;
+}
+
+export interface ThemeTranslationInsert {
+  name: string;
+  namelower: string;
+  language: number;
+  theme: number;
+}
+
+export interface ThemeTranslationUpdate {
+  id: number;
+  name: string;
+  namelower: string;
+  language: number;
+  theme: number;
 }
 
 export interface Theme {
@@ -26,13 +43,14 @@ export interface Theme {
   image?: string;
   questions: number;
   color: string;
-  category: Category;
   isfirst: boolean;
   enabled: boolean;
   validate: boolean;
   created_at: Date;
   modify_at: Date;
   themetranslation: Array<ThemeTranslation>;
+  categorytheme: Array<CategoryTheme>;
+  generatequestion: boolean;
 }
 
 export interface ThemeInsertAdmin {
@@ -40,6 +58,8 @@ export interface ThemeInsertAdmin {
   language: string;
   image: null | string;
   color: string;
+  enabled: boolean;
+  validate: boolean;
 }
 
 export interface ThemeInsert {

@@ -7,23 +7,24 @@ import {
   SetStateAction,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectDuelGameById } from "src/api/game";
+import { endDuelGame, selectDuelGameById } from "src/api/game";
 import { supabase } from "src/api/supabase";
 import { CircularLoading } from "src/component/Loading";
 import { AvatarAccount } from "src/component/avatar/AvatarAccount";
 import { WaitPlayerDuelGameBlock } from "src/component/play/WaitPlayerDuelGameBlock";
 import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
-import { Answer, Response } from "src/component/question/ResponseBlock";
+import { AnswerUser, Response } from "src/component/question/ResponseBlock";
 import { RoundTimer, VerticalTimer } from "src/component/time/Timer";
 import { useUser } from "src/context/UserProvider";
 import { DuelGame, DuelGameChange } from "src/models/DuelGame";
 import { QuestionDuel } from "src/models/Question";
-import { ResponseDuel } from "src/models/Response";
+import { ResponseDuel, ResponseDuelV2 } from "src/models/Response";
 import { StatusGameDuel } from "src/models/enum/StatusGame";
 import { Colors } from "src/style/Colors";
 import { Bot, getBotByUuid, getResponseBot } from "src/utils/bot";
@@ -54,6 +55,29 @@ export default function DuelPage() {
   const [images, setImages] = useState<Array<string>>([]);
   const [scoreP1, setScoreP1] = useState(0);
   const [scoreP2, setScoreP2] = useState(0);
+
+  const [responsesAdverse, setResponsesAdverse] = useState<
+    Array<ResponseDuelV2>
+  >([]);
+
+  const uuidAdverse = useMemo(() => {
+    let res: string | undefined = undefined;
+    if (uuid === game?.player2?.id) {
+      res = game?.player1?.id;
+    } else if (uuid === game?.player1?.id) {
+      res = game?.player2?.id;
+    }
+    return res;
+  }, [uuid, game?.player2?.id, game?.player1?.id]);
+
+  const isPlayer1 = useMemo(
+    () => uuid === game?.player1?.id,
+    [uuid, game?.player1?.id]
+  );
+  const isPlayer2 = useMemo(
+    () => uuid === game?.player2?.id,
+    [uuid, game?.player2?.id]
+  );
 
   useEffect(() => {
     const getGame = () => {
@@ -145,6 +169,12 @@ export default function DuelPage() {
           const res = value.payload as ResponseDuel;
           console.log(res);
         })
+        .on("broadcast", { event: "responseV2" }, (value) => {
+          const res = value.payload as ResponseDuelV2;
+          if (res.uuid === uuidAdverse) {
+            setResponsesAdverse((prev) => [...prev, res]);
+          }
+        })
         .subscribe(async (status) => {
           if (status !== "SUBSCRIBED") {
             return;
@@ -159,10 +189,10 @@ export default function DuelPage() {
         }
       };
     }
-  }, [uuidGame, navigate, uuid, audio, sound]);
+  }, [uuidGame, navigate, uuid, audio, sound, uuidAdverse]);
 
   const validateResponse = useCallback(
-    async (value: Answer) => {
+    async (value: AnswerUser) => {
       const timeDiff = moment().diff(time);
       if (channel && question && language) {
         const result = value
@@ -174,56 +204,91 @@ export default function DuelPage() {
             ...prev,
             result: result,
             responsePlayer1: value.value,
-            resultPlayer1: result,
             timePlayer1: timeDiff,
             answer: answer,
           }));
+          channel.send({
+            type: "broadcast",
+            event: "responseV2",
+            payload: {
+              question: question.id,
+              uuid: value.uuid,
+              result: result,
+              time: timeDiff,
+              answer: value.value,
+            } as ResponseDuelV2,
+          });
           updateScore(setScoreP1, result, timeDiff);
-        } else if (game?.player2.id === value.uuid) {
+        } else if (game?.player2?.id === value.uuid) {
           setResponse((prev) => ({
             ...prev,
             result: result,
             responsePlayer2: value.value,
-            resultPlayer2: result,
             timePlayer2: timeDiff,
             answer: answer,
           }));
+          channel.send({
+            type: "broadcast",
+            event: "responseV2",
+            payload: {
+              question: question.id,
+              uuid: value.uuid,
+              result: result,
+              time: timeDiff,
+              answer: value.value,
+            } as ResponseDuelV2,
+          });
           updateScore(setScoreP2, result, timeDiff);
         }
-        channel.send({
-          type: "broadcast",
-          event: "response",
-          payload: {
-            uuid: uuid,
-            answerPlayer: value.value,
-            result: result,
-            answer: answer,
-          },
-        });
         if (audio) {
           audio.pause();
         }
       }
     },
-    [audio, channel, game, question, time, uuid, language]
+    [audio, channel, game, question, time, language]
   );
 
   const goNextQuestion = useCallback(() => {
-    const index = question
-      ? questions.findIndex((el) => el.id === question.id)
-      : undefined;
-    if (index === undefined || index < questions.length - 1) {
-      const idNextQuestion = index !== undefined ? index + 1 : 0;
-      const question = questions[idNextQuestion];
-      setResponse(undefined);
-      setQuestion(question);
-      setTimer(question.time);
-      setTime(moment());
-    } else {
-      console.log("end");
-      console.log(questions);
+    if (uuidGame) {
+      const index = question
+        ? questions.findIndex((el) => el.id === question.id)
+        : undefined;
+
+      const questionsgame: Array<unknown> = JSON.parse(
+        localStorage.getItem(uuidGame) ?? "[]"
+      );
+      questionsgame.push({
+        ...question,
+        timePlayer1: response?.timePlayer1,
+        responsePlayer1: response?.responsePlayer1,
+        timePlayer2: response?.timePlayer2,
+        responsePlayer2: response?.responsePlayer2,
+      });
+      localStorage.setItem(uuidGame, JSON.stringify(questionsgame));
+      if (index === undefined || index < questions.length - 1) {
+        const idNextQuestion = index !== undefined ? index + 1 : 0;
+        const question = questions[idNextQuestion];
+        setResponse(undefined);
+        setQuestion(question);
+        setTimer(question.time);
+        setTime(moment());
+      } else {
+        if (bot) {
+          Promise.all([
+            endDuelGame(questionsgame, uuidGame, uuid),
+            endDuelGame(questionsgame, uuidGame, bot.uuid),
+          ]).then(() => {
+            navigate(`/recapduel/${uuidGame}`);
+          });
+        } else {
+          endDuelGame(questionsgame, uuidGame, uuid).then(() => {
+            navigate(`/recapduel/${uuidGame}`);
+          });
+        }
+        localStorage.removeItem(uuidGame);
+      }
     }
-  }, [question, questions]);
+  }, [navigate, question, questions, response, uuidGame, uuid, bot]);
 
   useEffect(() => {
     if (audio) {
@@ -251,6 +316,20 @@ export default function DuelPage() {
     }, 2000);
   }, [goNextQuestion, question]);
 
+  useEffect(() => {
+    if (
+      timer !== undefined &&
+      response !== undefined &&
+      response.responsePlayer1 !== undefined &&
+      response.responsePlayer2 !== undefined
+    ) {
+      setTimer(undefined);
+      setTimeout(() => {
+        goNextQuestion();
+      }, 2000);
+    }
+  }, [timer, response, goNextQuestion]);
+
   const updateScore = (
     set: Dispatch<SetStateAction<number>>,
     result: boolean,
@@ -275,9 +354,34 @@ export default function DuelPage() {
         updateScore(setScoreP2, response.result, response.time);
       }, response.time);
     }
-  }, [bot, question, validateResponse]);
+  }, [bot, question]);
 
-  console.log(response);
+  useEffect(() => {
+    if (question) {
+      const response = [...responsesAdverse].find(
+        (el) => el.question === question.id
+      );
+      if (response) {
+        if (isPlayer1) {
+          setResponse((prev) => ({
+            ...prev,
+            responsePlayer2: response.answer,
+            resultPlayer2: response.result,
+            timePlayer2: response.time,
+          }));
+          updateScore(setScoreP2, response.result, response.time);
+        } else if (isPlayer2) {
+          setResponse((prev) => ({
+            ...prev,
+            responsePlayer1: response.answer,
+            resultPlayer1: response.result,
+            timePlayer1: response.time,
+          }));
+          updateScore(setScoreP1, response.result, response.time);
+        }
+      }
+    }
+  }, [question, responsesAdverse, isPlayer1, isPlayer2]);
 
   return (
     <Container
@@ -382,7 +486,7 @@ export default function DuelPage() {
                             fontSize: 9,
                           }}
                         >
-                          {game.player2.username}
+                          {game.player2?.username}
                         </Typography>
                         <Typography
                           variant="h2"
@@ -394,11 +498,13 @@ export default function DuelPage() {
                           {scoreP2}
                         </Typography>
                       </Box>
-                      <AvatarAccount
-                        avatar={game.player2.avatar.icon}
-                        size={50}
-                        color={Colors.colorDuel2}
-                      />
+                      {game.player2 && (
+                        <AvatarAccount
+                          avatar={game.player2?.avatar.icon}
+                          size={50}
+                          color={Colors.colorDuel2}
+                        />
+                      )}
                     </Grid>
                   </Grid>
                 </Box>

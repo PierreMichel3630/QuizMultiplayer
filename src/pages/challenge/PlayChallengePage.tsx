@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useBlocker, useNavigate, useParams } from "react-router-dom";
 import { QuestionSolo } from "src/models/Question";
 
 import { Box, Container, Typography } from "@mui/material";
@@ -10,14 +10,16 @@ import { endChallenge, selectChallengeGameByUuid } from "src/api/challenge";
 import { ImageCard } from "src/component/image/ImageCard";
 import { LoadingDot } from "src/component/Loading";
 import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
-import { Answer, Response } from "src/component/question/ResponseBlock";
+import { AnswerUser, Response } from "src/component/question/ResponseBlock";
 import { ChallengeGame } from "src/models/Challenge";
 import { Colors } from "src/style/Colors";
 
 import challengeIcon from "src/assets/challenge.png";
-import { decryptToNumber } from "src/utils/crypt";
-import { verifyResponseCrypt } from "src/utils/response";
+import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import { useUser } from "src/context/UserProvider";
+import { decryptToNumber } from "src/utils/crypt";
+import { preloadAllImages } from "src/utils/preload";
+import { getResponse, verifyResponseCrypt } from "src/utils/response";
 
 export default function PlayChallengePage() {
   const { t } = useTranslation();
@@ -25,8 +27,8 @@ export default function PlayChallengePage() {
   const { language } = useUser();
   const navigate = useNavigate();
 
-  const DELAY_BETWEEN_QUESTION = 500;
-  const questionsGameRef = useRef<Array<unknown>>([]);
+  const DELAY_START = 500;
+  const DELAY_BETWEEN_QUESTION = 1000;
 
   const [questions, setQuestions] = useState<Array<QuestionSolo>>([]);
 
@@ -40,21 +42,11 @@ export default function PlayChallengePage() {
   const [correctAnswer, setCorrectAnswer] = useState<number>(0);
   const [wrongAnswer, setWrongAnswer] = useState<number>(0);
 
-  useEffect(() => {
-    const getGame = () => {
-      if (uuidGame) {
-        selectChallengeGameByUuid(uuidGame).then(({ data }) => {
-          const challengeGame = data as ChallengeGame;
-          const questions = challengeGame.challenge.questionsv2;
-          setQuestions(questions);
-          setTimeout(() => {
-            setQuestion(questions[0]);
-          }, DELAY_BETWEEN_QUESTION);
-        });
-      }
-    };
-    getGame();
-  }, [uuidGame]);
+  const [isEnd, setIsEnd] = useState(false);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [blockerState, setBlockerState] = useState<ReturnType<
+    typeof useBlocker
+  > | null>(null);
 
   const scrollTop = () => {
     window.scrollTo(0, 0);
@@ -65,23 +57,25 @@ export default function PlayChallengePage() {
     [correctAnswer, wrongAnswer]
   );
 
-  const validateResponse = (value?: Answer) => {
+  const validateResponse = (value?: AnswerUser) => {
     clearTimeout(timeoutQuestion);
     setTimer(undefined);
     const myResponseValue = value?.value ?? undefined;
-    if (question && language) {
+    if (question && language && uuidGame) {
       const result = value
         ? verifyResponseCrypt(question, language, value)
         : false;
-      const response = decryptToNumber(question.response);
-      const questionsgame: Array<unknown> = [...questionsGameRef.current];
+      const response = getResponse(question, language);
+      const questionsgame: Array<unknown> = JSON.parse(
+        localStorage.getItem(uuidGame) ?? "[]"
+      );
       questionsgame.push({
         ...question,
         response: response,
         resultPlayer1: result,
         responsePlayer1: myResponseValue,
       });
-      questionsGameRef.current = questionsgame;
+      localStorage.setItem(uuidGame, JSON.stringify(questionsgame));
       setCorrectAnswer((prev) => (result ? prev + 1 : prev));
       setWrongAnswer((prev) => (result ? prev : prev + 1));
       setResponse({
@@ -105,7 +99,12 @@ export default function PlayChallengePage() {
 
   const end = useCallback(() => {
     if (uuidGame) {
-      endChallenge(questionsGameRef.current, uuidGame).then(({ data }) => {
+      setIsEnd(true);
+      blockerState?.reset?.();
+      const questionsgame: Array<unknown> = JSON.parse(
+        localStorage.getItem(uuidGame) ?? "[]"
+      );
+      endChallenge(questionsgame, uuidGame).then(({ data }) => {
         navigate(`/challenge/game/${uuidGame}`, {
           state: {
             previousPath: "/challenge",
@@ -115,23 +114,25 @@ export default function PlayChallengePage() {
         });
       });
     }
-  }, [navigate, uuidGame]);
+  }, [blockerState, navigate, uuidGame]);
 
   useEffect(() => {
     if (question) {
       setTimer(question.time);
       const newtimeoutQuestion = setTimeout(async () => {
-        if (question) {
+        if (question && uuidGame) {
           const result = false;
           const response = decryptToNumber(question.response);
-          const questionsgame: Array<unknown> = [...questionsGameRef.current];
+          const questionsgame: Array<unknown> = JSON.parse(
+            localStorage.getItem(uuidGame) ?? "[]"
+          );
           questionsgame.push({
             ...question,
             response: response,
             resultPlayer1: result,
             responsePlayer1: undefined,
           });
-          questionsGameRef.current = questionsgame;
+          localStorage.setItem(uuidGame, JSON.stringify(questionsgame));
           setCorrectAnswer((prev) => (result ? prev + 1 : prev));
           setWrongAnswer((prev) => (result ? prev : prev + 1));
           setResponse({
@@ -156,13 +157,75 @@ export default function PlayChallengePage() {
     } else {
       setTimer(undefined);
     }
-  }, [end, question, questions]);
+  }, [end, question, questions, uuidGame]);
 
   useEffect(() => {
-    return () => {
-      end();
+    const getGame = () => {
+      if (uuidGame) {
+        selectChallengeGameByUuid(uuidGame).then(({ data }) => {
+          const challengeGame = data as ChallengeGame;
+          const questions = challengeGame.challenge.questionsv2;
+          const hasgame = localStorage.getItem(uuidGame) !== null;
+          if (hasgame) {
+            const questionsgame = JSON.parse(
+              localStorage.getItem(uuidGame) ?? "[]"
+            ) as Array<QuestionSolo>;
+            const indexNextQuestion = questionsgame.length;
+            setResponse(undefined);
+            const correct = [...questionsgame].reduce(
+              (acc, el) => (el.resultPlayer1 === true ? acc + 1 : acc),
+              0
+            );
+            const wrong = [...questionsgame].reduce(
+              (acc, el) => (el.resultPlayer1 === false ? acc + 1 : acc),
+              0
+            );
+            setCorrectAnswer(correct);
+            setWrongAnswer(wrong);
+            setQuestions(questions);
+            if (indexNextQuestion < questions.length - 1) {
+              setQuestion(questions[indexNextQuestion] as QuestionSolo);
+            } else {
+              navigate(`/challenge/game/${uuidGame}`, {
+                state: {
+                  previousPath: "/challenge",
+                },
+              });
+            }
+          } else {
+            setQuestions(questions);
+            const images = [...questions]
+              .filter((el) => el.image !== undefined)
+              .map((el) => el.image as string);
+            preloadAllImages(images).then(() => {
+              setTimeout(() => {
+                setQuestion(questions[0]);
+              }, DELAY_START);
+            });
+          }
+        });
+      }
     };
-  }, [end]);
+    getGame();
+  }, [uuidGame]);
+
+  const shouldBlock = useCallback(() => !isEnd, [isEnd]);
+  const blocker = useBlocker(shouldBlock);
+
+  if (blocker.state === "blocked" && !openConfirmModal) {
+    setOpenConfirmModal(true);
+    setBlockerState(blocker);
+  }
+
+  const handleConfirm = () => {
+    setOpenConfirmModal(false);
+    end();
+  };
+
+  const handleCancel = () => {
+    setOpenConfirmModal(false);
+    blockerState?.reset?.();
+  };
 
   return (
     <Container
@@ -249,11 +312,19 @@ export default function PlayChallengePage() {
               }}
             >
               <Typography variant="h4">{t("commun.launchpartie")}</Typography>
+              <Typography variant="h4">{t("commun.loadimage")}</Typography>
               <LoadingDot />
             </Box>
           )}
         </Box>
       </Box>
+      <ConfirmDialog
+        title={t("modal.quitchallenge")}
+        text={t("modal.quitchallengetext")}
+        open={openConfirmModal}
+        onClose={handleCancel}
+        onConfirm={handleConfirm}
+      />
     </Container>
   );
 }

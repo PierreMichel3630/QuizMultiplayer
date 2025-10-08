@@ -21,6 +21,7 @@ import { StreakBlock } from "src/component/StreakBlock";
 import { ExtraBlock } from "src/component/extra/ExtraBlock";
 import { HeaderProfile } from "src/component/profile/HeaderProfile";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { QuestionResult, QuestionResultV1 } from "src/models/Question";
 
 export default function ChallengeGamePage() {
   const { t } = useTranslation();
@@ -34,6 +35,9 @@ export default function ChallengeGamePage() {
   const [streakChallenge, setStreakChallenge] = useState<undefined | number>(
     undefined
   );
+  const [questions, setQuestions] = useState<
+    Array<QuestionResult | QuestionResultV1>
+  >([]);
 
   useEffect(() => {
     const getGame = () => {
@@ -41,6 +45,12 @@ export default function ChallengeGamePage() {
         selectChallengeGameByUuid(uuid).then(({ data }) => {
           const challengeGame = data as ChallengeGame;
           setGame(challengeGame);
+          const questions =
+            challengeGame.version === 1
+              ? (data.questions as Array<QuestionResultV1>)
+              : (data.questions as Array<QuestionResult>);
+
+          setQuestions(questions);
         });
       }
     };
@@ -138,10 +148,13 @@ export default function ChallengeGamePage() {
                     {(game.time / 1000).toFixed(2)}s
                   </Typography>
                 </Grid>
-                {game.questions.map((el, index) => (
+                {questions.map((el, index) => (
                   <Fragment key={index}>
                     <Grid item xs={12}>
-                      <CardSignalQuestion question={el} />
+                      <CardSignalQuestion
+                        question={el}
+                        version={game.version}
+                      />
                     </Grid>
                     <Grid item xs={12}>
                       <Divider

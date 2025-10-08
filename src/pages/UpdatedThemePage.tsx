@@ -12,14 +12,17 @@ export default function UpdatedThemePage() {
   const { t } = useTranslation();
   const { language } = useUser();
 
+  const [isLoading, setIsLoading] = useState(true);
   const [themes, setThemes] = useState<Array<ICardImage>>([]);
 
   useEffect(() => {
     const getThemes = () => {
       if (language) {
+        setIsLoading(true);
         const date = moment().subtract(7, "days");
         getThemesByModifiedAt(language, date).then(({ data }) => {
           setThemes(data ?? []);
+          setIsLoading(false);
         });
       }
     };
@@ -32,7 +35,11 @@ export default function UpdatedThemePage() {
         <title>{`${t("pages.updated.title")} - ${t("appname")}`}</title>
       </Helmet>
       <Grid item xs={12}>
-        <PageCategoryBlock title={t("pages.updated.title")} values={themes} />
+        <PageCategoryBlock
+          title={t("pages.updated.title")}
+          values={themes}
+          isLoading={isLoading}
+        />
       </Grid>
     </Grid>
   );

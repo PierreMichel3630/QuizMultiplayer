@@ -237,7 +237,9 @@ export const RankingTable = ({
                         }}
                         width={el.size ?? 90}
                       >
-                        <Box>
+                        <Box
+                          sx={{ display: "flex", justifyContent: "flex-end" }}
+                        >
                           {isStringOrNumber(el.value) ? (
                             <Typography variant="h2" component="span" noWrap>
                               {el.value}

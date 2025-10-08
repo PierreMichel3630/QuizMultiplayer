@@ -1,9 +1,16 @@
-import { ThemeInsert, ThemeInsertAdmin, ThemeUpdate } from "src/models/Theme";
+import {
+  ThemeInsert,
+  ThemeInsertAdmin,
+  ThemeTranslationInsert,
+  ThemeTranslationUpdate,
+  ThemeUpdate,
+} from "src/models/Theme";
 import { supabase } from "./supabase";
 import { Moment } from "moment";
 import { Language } from "src/models/Language";
 
 export const SUPABASE_THEME_TABLE = "theme";
+export const SUPABASE_THEME_TRANSLATION_TABLE = "themetranslation";
 export const SUPABASE_THEMESHOP_TABLE = "themeshop";
 export const SUPABASE_VUETHEME_TABLE = "viewthemev3";
 
@@ -72,7 +79,9 @@ export const countThemesByCategory = (
 export const selectThemeById = (id: number) =>
   supabase
     .from(SUPABASE_THEME_TABLE)
-    .select("*, themetranslation!inner(id, name, language(*))")
+    .select(
+      "*, themetranslation!inner(id, name, language(*)), categorytheme(*)"
+    )
     .eq("id", id)
     .maybeSingle();
 
@@ -96,18 +105,32 @@ export const selectThemesShop = () =>
 export const insertTheme = (value: ThemeInsert) =>
   supabase.from(SUPABASE_THEME_TABLE).insert(value).select().single();
 
-export const selectThemesPropose = (language: string) =>
+export const insertThemeTranslations = (
+  values: Array<ThemeTranslationInsert>
+) => supabase.from(SUPABASE_THEME_TRANSLATION_TABLE).insert(values);
+
+export const updateThemeTranslations = (
+  values: Array<ThemeTranslationUpdate>
+) => supabase.from(SUPABASE_THEME_TRANSLATION_TABLE).upsert(values);
+
+export const insertThemeTranslation = (values: Array<ThemeTranslationInsert>) =>
+  supabase.from(SUPABASE_THEME_TRANSLATION_TABLE).insert(values).select();
+
+export const selectThemesPropose = (language: Language) =>
   supabase
     .from(SUPABASE_VUETHEME_TABLE)
-    .select("*, category(*)")
-    .eq("language", language)
-    .eq("validate", false);
+    .select("*")
+    .eq("validate", false)
+    .eq("enabled", true)
+    .eq("language", language.id)
+    .order(`namelower`, { ascending: true });
 
 export const selectThemesProposeAdmin = () =>
   supabase
-    .from(SUPABASE_VUETHEME_TABLE)
-    .select("*, category(*)")
-    .eq("validate", false);
+    .from(SUPABASE_THEME_TABLE)
+    .select("*, themetranslation!inner(id, name, language(*))")
+    .eq("validate", false)
+    .eq("enabled", true);
 
 export const countThemes = (language: Language, search: string) => {
   let query = supabase

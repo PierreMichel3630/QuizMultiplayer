@@ -22,7 +22,7 @@ export const CreateEditQuestionDialog = ({ question, open, close }: Props) => {
   const { t } = useTranslation();
 
   return (
-    <Dialog onClose={close} open={open} fullWidth fullScreen>
+    <Dialog onClose={close} open={open} maxWidth="md" fullWidth>
       <AppBar sx={{ position: "relative" }}>
         <Toolbar>
           <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
@@ -35,9 +35,11 @@ export const CreateEditQuestionDialog = ({ question, open, close }: Props) => {
       </AppBar>
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <QuestionForm validate={close} question={question} />
-          </Grid>
+          {question && (
+            <Grid item xs={12}>
+              <QuestionForm validate={close} question={question} />
+            </Grid>
+          )}
         </Grid>
       </DialogContent>
     </Dialog>

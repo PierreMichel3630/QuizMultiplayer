@@ -12,23 +12,6 @@ export const SUPABASE_CATEGORY_TABLE = "category";
 export const SUPABASE_CATEGORYTRANSLATION_TABLE = "categorytranslation";
 export const SUPABASE_CATEGORYTHEME_TABLE = "categorytheme";
 
-export const selectCategories = (language = "fr-FR") =>
-  supabase
-    .from(SUPABASE_CATEGORY_TABLE)
-    .select()
-    .eq("language", language)
-    .order(`titlelower`, { ascending: true });
-
-export const selectCategoriesByLanguage = (language: Language) =>
-  supabase
-    .from(SUPABASE_CATEGORYTRANSLATION_TABLE)
-    .select()
-    .eq("language", language.id)
-    .order(`namelower`, { ascending: true });
-
-export const selectCategoriesById = (ids: Array<string | number>) =>
-  supabase.from(SUPABASE_CATEGORY_TABLE).select().in("id", ids);
-
 export const selectCategoryById = (id: string | number) =>
   supabase
     .from(SUPABASE_CATEGORY_TABLE)
@@ -36,16 +19,11 @@ export const selectCategoryById = (id: string | number) =>
     .eq("id", id)
     .maybeSingle();
 
-export const insertCategoryTheme = (value: CategoryThemeInsert) =>
-  supabase.from(SUPABASE_CATEGORYTHEME_TABLE).insert(value);
+export const insertCategoryTheme = (values: Array<CategoryThemeInsert>) =>
+  supabase.from(SUPABASE_CATEGORYTHEME_TABLE).insert(values);
 
-export const updateCategory = (value: CategoryUpdate) =>
-  supabase
-    .from(SUPABASE_CATEGORY_TABLE)
-    .update(value)
-    .eq("id", value.id)
-    .select()
-    .single();
+export const updateCategories = (values: Array<CategoryUpdate>) =>
+  supabase.from(SUPABASE_CATEGORY_TABLE).upsert(values);
 
 export const insertCategory = (value: CategoryInsert) =>
   supabase.from(SUPABASE_CATEGORY_TABLE).insert(value).select().single();
@@ -70,6 +48,9 @@ export const deleteCategoryTranslationById = (ids: Array<number>) =>
 
 export const deleteCategoryById = (id: number) =>
   supabase.from(SUPABASE_CATEGORY_TABLE).delete().eq("id", id);
+
+export const deleteCategoryByIds = (ids: Array<number>) =>
+  supabase.from(SUPABASE_CATEGORY_TABLE).delete().in("id", ids);
 
 export const countCategoryByLanguage = (language: Language) =>
   supabase

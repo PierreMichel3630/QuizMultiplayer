@@ -27,13 +27,13 @@ import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { SelectDifficulty } from "src/component/Select";
 import { useMessage } from "src/context/MessageProvider";
 import { Difficulty } from "src/models/enum/DifficultyEnum";
-import { QuestionPropose, QuestionUpdate } from "src/models/Question";
+import { QuestionAdmin, QuestionUpdate } from "src/models/Question";
 import { QuestionTheme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import * as Yup from "yup";
 
 interface Props {
-  question: QuestionPropose;
+  question: QuestionAdmin;
   validate: () => void;
 }
 
@@ -53,11 +53,11 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
     wrongresponse2: string;
     wrongresponse3: string;
   } = {
-    question: question.question["fr-FR"],
-    response: question.response["fr-FR"],
-    wrongresponse1: question.responses[0]["fr-FR"],
-    wrongresponse2: question.responses[1]["fr-FR"],
-    wrongresponse3: question.responses[2]["fr-FR"],
+    question: "",
+    response: "",
+    wrongresponse1: "",
+    wrongresponse2: "",
+    wrongresponse3: "",
     difficulty: question.difficulty,
   };
 

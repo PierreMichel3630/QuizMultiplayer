@@ -97,3 +97,37 @@ export const ImageQCMBlock = ({ src, width = 200 }: PropsImageQCMBlock) => {
     </Box>
   );
 };
+
+interface PropsImageQCMBlock {
+  src: string;
+  width?: number;
+}
+export const ImageQuestionAdminBlock = ({
+  src,
+  width = 100,
+}: PropsImageQCMBlock) => {
+  return (
+    <Box
+      sx={{
+        width: percent(100),
+        height: percent(100),
+        maxHeight: width ? px(width) : "auto",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        mt: 1,
+        mb: 1,
+      }}
+    >
+      <img
+        src={src}
+        style={{
+          height: percent(95),
+          width: percent(95),
+          objectFit: "contain",
+          maxHeight: "inherit",
+        }}
+      />
+    </Box>
+  );
+};

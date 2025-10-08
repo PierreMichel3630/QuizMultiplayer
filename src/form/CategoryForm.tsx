@@ -27,7 +27,7 @@ interface Props {
 
 export const CategoryForm = ({ validate, category }: Props) => {
   const { t } = useTranslation();
-  const { languages } = useUser();
+  const { languages, language } = useUser();
   const { setMessage, setSeverity } = useMessage();
 
   const initialValue: {
@@ -39,7 +39,9 @@ export const CategoryForm = ({ validate, category }: Props) => {
     }>;
   } = {
     id: category ? category.id : undefined,
-    traductions: category ? [...category.categorytranslation] : [],
+    traductions: category
+      ? [...category.categorytranslation]
+      : [{ name: "", language: language! }],
   };
 
   const validationSchema = Yup.object().shape({

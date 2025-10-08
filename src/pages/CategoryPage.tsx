@@ -28,15 +28,18 @@ export default function CategoryPage() {
 
   const [category, setCategory] = useState<Category | null>(null);
   const [themes, setThemes] = useState<Array<Theme>>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (id) {
+      setIsLoading(true);
       selectCategoryById(id).then(({ data }) => {
         setCategory(data);
       });
       if (language) {
         selectThemesByCategory(language, id).then(({ data }) => {
           setThemes(data ?? []);
+          setIsLoading(false);
         });
       }
     }
@@ -122,6 +125,7 @@ export default function CategoryPage() {
           values={themesDisplay}
           addFavorite={addFavorite}
           favorite={favorite !== undefined}
+          isLoading={isLoading}
         />
       </Grid>
     </Grid>

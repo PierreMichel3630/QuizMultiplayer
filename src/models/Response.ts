@@ -38,6 +38,14 @@ export interface ResponseDuel {
   answer: string | number;
   time: number;
 }
+
+export interface ResponseDuelV2 {
+  question: number;
+  uuid: string;
+  result: boolean;
+  answer: string | number;
+  time: number;
+}
 export interface ResponseLanguage {
   [iso: string]: Array<string> | string;
 }

@@ -1,5 +1,4 @@
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
 import "./index.css";
 
 import "@fontsource/montserrat/300.css";
@@ -10,14 +9,19 @@ import "@fontsource/montserrat/700.css";
 import "@fontsource/bowlby-one-sc/400.css";
 import "@fontsource/kalam";
 
-import { HelmetProvider } from "react-helmet-async";
 import moment from "moment";
 import "moment/dist/locale/fr";
+import { HelmetProvider } from "react-helmet-async";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./routes/index.tsx";
+import { UserProvider } from "./context/UserProvider.tsx";
 
 moment.locale("fr");
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <HelmetProvider>
-    <App />
+    <UserProvider>
+      <RouterProvider router={router} />
+    </UserProvider>
   </HelmetProvider>
 );

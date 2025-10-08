@@ -10,6 +10,7 @@ import { useMemo } from "react";
 import { LanguageSelect } from "src/component/select/LanguageSelect";
 import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";
+import { VERSION_APP } from "src/utils/config";
 
 export default function ParameterPage() {
   const { t } = useTranslation();
@@ -114,7 +115,7 @@ export default function ParameterPage() {
               </Grid>
               <Grid item xs={12} sx={{ textAlign: "center" }}>
                 <Typography variant="caption">
-                  {t("commun.version")} : 1.8.0
+                  {t("commun.version")} : {VERSION_APP}
                 </Typography>
               </Grid>
             </Grid>

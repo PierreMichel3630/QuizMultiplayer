@@ -11,12 +11,15 @@ export default function NewThemePage() {
   const { t } = useTranslation();
   const { language } = useUser();
 
+  const [isLoading, setIsLoading] = useState(true);
   const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
 
   useEffect(() => {
     if (language) {
+      setIsLoading(true);
       getThemesAndCategoriesByDate(language).then(({ data }) => {
         setItemsSearch(data ?? []);
+        setIsLoading(false);
       });
     }
   }, [language]);
@@ -27,7 +30,11 @@ export default function NewThemePage() {
         <title>{`${t("pages.new.title")} - ${t("appname")}`}</title>
       </Helmet>
       <Grid item xs={12}>
-        <PageCategoryBlock title={t("pages.new.title")} values={itemsSearch} />
+        <PageCategoryBlock
+          title={t("pages.new.title")}
+          values={itemsSearch}
+          isLoading={isLoading}
+        />
       </Grid>
     </Grid>
   );

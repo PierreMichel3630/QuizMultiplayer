@@ -31,9 +31,10 @@ export const Loading = () => (
 
 interface PropsLoadingDot {
   color?: string;
+  width?: number;
 }
 
-export const LoadingDot = ({ color }: PropsLoadingDot) => {
+export const LoadingDot = ({ color, width = 60 }: PropsLoadingDot) => {
   const { mode } = useUser();
   const isDarkMode = useMemo(() => mode === "dark", [mode]);
   const colorDot = useMemo(
@@ -44,7 +45,7 @@ export const LoadingDot = ({ color }: PropsLoadingDot) => {
   return (
     <Box
       sx={{
-        width: px(60),
+        width: px(width),
         aspectRatio: 2,
         background: `no-repeat radial-gradient(circle closest-side,${colorDot} 90%,transparent) 0% 50%, no-repeat radial-gradient(circle closest-side,${colorDot} 90%,transparent) 50% 50%, no-repeat radial-gradient(circle closest-side,${colorDot} 90%,transparent) 100% 50%`,
         backgroundSize: "calc(100%/3) 50%",

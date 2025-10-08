@@ -5,6 +5,7 @@ import { removeAccentsAndLowercase } from "src/utils/string";
 import { Language } from "src/models/Language";
 
 export const SUPABASE_VIEWSEARCH_TABLE = "viewsearchv2";
+export const SUPABASE_VIEWSEARCHADMIN_TABLE = "viewsearchadmin";
 
 export const searchThemesAndCategoriesPaginate = (
   language: Language,
@@ -38,7 +39,7 @@ export const searchThemesPaginate = (
   const searchLower = removeAccentsAndLowercase(search);
 
   return supabase
-    .from(SUPABASE_VIEWSEARCH_TABLE)
+    .from(SUPABASE_VIEWSEARCHADMIN_TABLE)
     .select("*")
     .ilike(`namelower`, `%${searchLower}%`)
     .eq("type", "THEME")
@@ -66,6 +67,16 @@ export const searchCategoriesPaginate = (
     .eq("language", language.id)
     .range(from, to)
     .order(`namelower`, { ascending: true });
+};
+
+export const getCategoryById = (id: number, language: Language) => {
+  return supabase
+    .from(SUPABASE_VIEWSEARCH_TABLE)
+    .select("*")
+    .eq("type", "CATEGORY")
+    .eq("id", id)
+    .eq("language", language.id)
+    .maybeSingle();
 };
 
 export const getThemesAndCategoriesById = (

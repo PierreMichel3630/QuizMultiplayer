@@ -34,6 +34,7 @@ export interface SoloGame {
   uuid: string;
   status: StatusGameSolo;
   created_at: Date;
+  version: number;
 }
 
 export interface SoloGameResult extends SoloGame {
@@ -80,7 +81,7 @@ export interface HistoryGame {
   type: "SOLO" | "DUEL";
   theme: Theme;
   player1: Profile;
-  player2: Profile | null;
+  player2?: Profile;
   ptsplayer1: number;
   ptsplayer2: number | null;
   created_at: Date;

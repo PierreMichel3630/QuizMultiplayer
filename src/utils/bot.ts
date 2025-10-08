@@ -107,18 +107,15 @@ export const getBotByUuid = (uuid: string) => {
 
 export const getResponseBot = (bot: Bot, question: QuestionDuel) => {
   const isCorrect = Math.random() <= bot.percent;
-  const delai = randomIntFromInterval(bot.delaiMin, bot.delaiMax);
+  const delai = randomIntFromInterval(bot.delaiMin * 1000, bot.delaiMax * 1000);
   let response = undefined;
   if (isCorrect) {
     response = decrypt(question.answer) as string;
   } else {
     if (question.isqcm) {
       const correctAnswer = decrypt(question.answer);
-      const numbers = Array.from(
-        { length: question.answers.length },
-        (_, i) => i
-      );
-      const filtered = numbers.filter((n) => n !== Number(correctAnswer));
+      const idsAnswer = [...question.answers].map((el) => el.id);
+      const filtered = idsAnswer.filter((n) => n !== Number(correctAnswer));
       response = randomFromArray(filtered);
     } else {
       response = "";
@@ -129,6 +126,6 @@ export const getResponseBot = (bot: Bot, question: QuestionDuel) => {
     uuid: bot.uuid,
     result: isCorrect,
     response: response,
-    time: delai * 1000,
+    time: delai,
   };
 };

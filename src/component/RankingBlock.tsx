@@ -122,7 +122,9 @@ export const RankingTop5Block = ({
   const [avg, setAvg] = useState<null | ChallengeAvg>(null);
 
   useEffect(() => {
-    setTab(hasChallenge ? AllGameModeEnum.CHALLENGE : AllGameModeEnum.SOLO);
+    if (hasChallenge) {
+      setTab(hasChallenge ? AllGameModeEnum.CHALLENGE : AllGameModeEnum.SOLO);
+    }
   }, [hasChallenge]);
 
   useEffect(() => {

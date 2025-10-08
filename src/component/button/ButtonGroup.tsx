@@ -10,6 +10,7 @@ import {
   ClassementChallengeGlobalTimeEnum,
   ClassementChallengeTimeEnum,
   ClassementEnum,
+  ClassementOtherEnum,
   ClassementScoreEnum,
   ClassementSoloModeEnum,
   ClassementSoloTimeEnum,
@@ -19,6 +20,8 @@ import { Colors } from "src/style/Colors";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { ChallengeTypeResultEnum } from "src/models/enum/ChallengeEnum";
 import { useUser } from "src/context/UserProvider";
+import WhatshotIcon from "@mui/icons-material/Whatshot";
+import PaidIcon from "@mui/icons-material/Paid";
 
 interface Props {
   selected: string;
@@ -276,6 +279,46 @@ export const GroupButtonChallengeTime = ({
   );
 };
 
+interface PropsGroupButtonOthersClassement {
+  selected: ClassementOtherEnum;
+  onChange: (value: ClassementOtherEnum) => void;
+}
+export const GroupButtonOthersClassement = ({
+  selected,
+  onChange,
+}: PropsGroupButtonOthersClassement) => {
+  const { t } = useTranslation();
+
+  const options = useMemo(
+    () => [
+      {
+        label: t("commun.level"),
+        icon: <MilitaryTechIcon />,
+        value: ClassementOtherEnum.xp,
+      },
+      {
+        label: t("commun.streak"),
+        icon: <WhatshotIcon />,
+        value: ClassementOtherEnum.streak,
+      },
+      {
+        label: t("commun.money"),
+        icon: <PaidIcon />,
+        value: ClassementOtherEnum.money,
+      },
+    ],
+    [t]
+  );
+
+  return (
+    <GroupButton
+      options={options}
+      selected={selected}
+      onChange={(value) => onChange(value as ClassementOtherEnum)}
+    />
+  );
+};
+
 interface PropsGroupButtonChallengeGlobal {
   selected: ClassementChallengeGlobalTimeEnum;
   onChange: (value: ClassementChallengeGlobalTimeEnum) => void;
@@ -338,16 +381,15 @@ export const GroupButtonClassement = ({
         color: Colors.red,
       },
       {
-        icon: <MilitaryTechIcon />,
-        label: t("commun.level"),
-        value: ClassementEnum.xp,
-        color: Colors.pink,
-      },
-      {
         icon: <EmojiEventsIcon />,
         label: t("commun.challenge"),
         value: ClassementEnum.challenge,
         color: Colors.green,
+      },
+      {
+        label: t("commun.others"),
+        value: ClassementEnum.others,
+        color: Colors.pink,
       },
     ],
     [t]
@@ -421,7 +463,7 @@ export const GroupButtonResultChallenge = ({
         color: Colors.green,
       },
       {
-        label: t("challenge.result.loser"),
+        label: t("challenge.result.alltime"),
         value: ChallengeTypeResultEnum.loser,
         color: Colors.red,
       },

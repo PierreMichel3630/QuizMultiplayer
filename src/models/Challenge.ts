@@ -17,6 +17,7 @@ export interface ChallengeGame {
   time: number;
   status: StatusGameChallenge;
   questions: Array<QuestionResult>;
+  version: number;
 }
 
 export interface ChallengeGameUpdate {
@@ -57,6 +58,10 @@ export interface ChallengeRankingYear extends ChallengeRankingDate {
 
 export interface ChallengeRankingWeek extends ChallengeRankingDate {
   week: string;
+}
+
+export interface ChallengeRankingDay extends ChallengeRankingDate {
+  challenge: Challenge;
 }
 
 export interface ExtraChallenge {

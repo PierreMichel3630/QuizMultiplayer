@@ -31,6 +31,7 @@ export interface CategoryTranslationUpdate {
 export interface CategoryThemeInsert {
   category: number;
   theme: number;
+  isfirst?: boolean;
 }
 
 export interface CategoryWithThemes {
@@ -44,4 +45,10 @@ export interface CategoryTranslation {
   id: number;
   name: string;
   language: Language;
+}
+
+export interface CategoryTheme {
+  id?: number;
+  isfirst: boolean;
+  category: number;
 }

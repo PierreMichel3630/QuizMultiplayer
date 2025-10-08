@@ -13,7 +13,7 @@ import { LoadingDot } from "src/component/Loading";
 import { EndTrainingGameBlock } from "src/component/play/training/EndTrainingGameBlock";
 import { HeaderTrainingGame } from "src/component/play/training/HeaderTrainingGame";
 import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
-import { Answer, Response } from "src/component/question/ResponseBlock";
+import { AnswerUser, Response } from "src/component/question/ResponseBlock";
 import { SoloGame, TrainingGame } from "src/models/Game";
 import { Colors } from "src/style/Colors";
 import { PreloadImages } from "src/utils/preload";
@@ -62,7 +62,7 @@ export default function TrainingPage() {
     );
     setIsLoadingQuestion(true);
     getQuestionTrainingGame(uuid, questionsgame).then(({ data }) => {
-      if (data) {
+      if (data !== null) {
         const questionSolo = data as QuestionTraining;
         let urls: Array<string> = [];
         if (questionSolo.image) {
@@ -92,13 +92,15 @@ export default function TrainingPage() {
         }
       } else {
         setIsEnd(true);
+        setIsAllQuestion(true);
         setIsNextAllQuestion(true);
+        setIsLoading(false);
       }
       setIsLoadingQuestion(false);
     });
   }, []);
 
-  const validateResponse = async (value: Answer) => {
+  const validateResponse = async (value: AnswerUser) => {
     const myResponseValue = value.value;
     setNextQuestion(undefined);
     if (question && language) {

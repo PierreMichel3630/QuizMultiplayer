@@ -17,6 +17,7 @@ import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { BarNavigation } from "src/component/navigation/BarNavigation";
 import { ProfileTitleBlock } from "src/component/title/ProfileTitle";
 import { DuelGame } from "src/models/DuelGame";
+import { QuestionResult, QuestionResultV1 } from "src/models/Question";
 
 export default function GameDuelPage() {
   const { t } = useTranslation();
@@ -24,12 +25,21 @@ export default function GameDuelPage() {
   const navigate = useNavigate();
 
   const [game, setGame] = useState<undefined | DuelGame>(undefined);
+  const [questions, setQuestions] = useState<
+    Array<QuestionResult | QuestionResultV1>
+  >([]);
 
   useEffect(() => {
     const getGame = () => {
       if (uuid) {
         selectDuelGameById(uuid).then(({ data }) => {
           setGame(data as DuelGame);
+          const questions =
+            data.version === 1
+              ? (data.questions as Array<QuestionResultV1>)
+              : (data.questions as Array<QuestionResult>);
+
+          setQuestions(questions);
         });
       }
     };
@@ -122,27 +132,36 @@ export default function GameDuelPage() {
                     gap: 1,
                   }}
                 >
-                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                    <AvatarAccountBadge
-                      profile={game.player2}
-                      size={60}
-                      color={Colors.colorDuel2}
-                    />
-                    <Typography
-                      variant="h2"
-                      sx={{ color: Colors.colorDuel2, fontSize: 35 }}
-                    >
-                      {game.ptsplayer2}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography variant="h4" sx={{ color: Colors.colorDuel2 }}>
-                      {game.player2.username}
-                    </Typography>
-                    <ProfileTitleBlock
-                      titleprofile={game.player2.titleprofile}
-                    />
-                  </Box>
+                  {game.player2 && (
+                    <>
+                      <Box
+                        sx={{ display: "flex", gap: 2, alignItems: "center" }}
+                      >
+                        <AvatarAccountBadge
+                          profile={game.player2}
+                          size={60}
+                          color={Colors.colorDuel2}
+                        />
+                        <Typography
+                          variant="h2"
+                          sx={{ color: Colors.colorDuel2, fontSize: 35 }}
+                        >
+                          {game.ptsplayer2}
+                        </Typography>
+                      </Box>
+                      <Box>
+                        <Typography
+                          variant="h4"
+                          sx={{ color: Colors.colorDuel2 }}
+                        >
+                          {game.player2.username}
+                        </Typography>
+                        <ProfileTitleBlock
+                          titleprofile={game.player2.titleprofile}
+                        />
+                      </Box>
+                    </>
+                  )}
                 </Grid>
                 <Grid item xs={12}>
                   <Divider
@@ -153,10 +172,13 @@ export default function GameDuelPage() {
                     }}
                   />
                 </Grid>
-                {game.questions.map((el) => (
+                {[...questions].map((el) => (
                   <Fragment key={el.id}>
                     <Grid item xs={12}>
-                      <CardSignalQuestion question={el} />
+                      <CardSignalQuestion
+                        question={el}
+                        version={game.version}
+                      />
                     </Grid>
                     <Grid item xs={12}>
                       <Divider

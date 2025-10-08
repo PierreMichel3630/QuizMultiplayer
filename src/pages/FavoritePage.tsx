@@ -13,10 +13,12 @@ export default function FavoritePage() {
   const { language } = useUser();
   const { favorites } = useApp();
 
+  const [isLoading, setIsLoading] = useState(true);
   const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
 
   useEffect(() => {
     if (favorites.length > 0 && language) {
+      setIsLoading(true);
       const idCategories = [...favorites]
         .filter((el) => el.category)
         .map((el) => Number(el.category));
@@ -26,6 +28,7 @@ export default function FavoritePage() {
       getThemesAndCategoriesById(language, idCategories, idThemes).then(
         ({ data }) => {
           setItemsSearch(data ?? []);
+          setIsLoading(false);
         }
       );
     }
@@ -40,6 +43,7 @@ export default function FavoritePage() {
         <PageCategoryBlock
           title={t("pages.favorite.title")}
           values={itemsSearch}
+          isLoading={isLoading}
         />
       </Grid>
     </Grid>

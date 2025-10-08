@@ -5,6 +5,7 @@ import { Language } from "src/models/Language";
 import { FilterGame } from "src/pages/HistoryGamePage";
 import { ConfigTraining } from "src/pages/play/ConfigTrainingPage";
 import { supabase } from "./supabase";
+import { VERSION_QUESTION } from "src/utils/config";
 
 export const SUPABASE_PREVIOUSTHEMES_TABLE = "previousthemes";
 export const SUPABASE_HISTORYGAMES_TABLE = "historygamesv2";
@@ -23,6 +24,7 @@ export const SUPABASE_TRAININGGAME_TABLE = "traininggame";
 export const SUPABASE_DUELGAME_TABLE = "duelgame";
 export const SUPABASE_LAUNCHDUELGAME_FUNCTION = "launch-duel-gameV2";
 export const SUPABASE_MATCHMAKINGDUELGAME_FUNCTION = "matchmaking-duel-gameV3";
+export const SUPABASE_ENDDUELGAME_FUNCTION = "end-duel-game";
 
 export const SUPABASE_BATTLEGAME_TABLE = "battlegame";
 
@@ -100,7 +102,12 @@ export const launchSoloGame = (
   language: Language
 ) =>
   supabase.functions.invoke(SUPABASE_LAUNCHSOLOGAME_FUNCTION, {
-    body: { player: player, theme: theme, language: language.id },
+    body: {
+      player: player,
+      theme: theme,
+      language: language.id,
+      version: VERSION_QUESTION,
+    },
   });
 
 export const endSoloGame = (questions: Array<unknown>, gameUuid: string) =>
@@ -199,6 +206,19 @@ export const matchmakingDuelGame = (
 ) =>
   supabase.functions.invoke(SUPABASE_MATCHMAKINGDUELGAME_FUNCTION, {
     body: { player: player, theme: theme, language: language.id },
+  });
+
+export const endDuelGame = (
+  questions: Array<unknown>,
+  gameUuid: string,
+  player: string
+) =>
+  supabase.functions.invoke(SUPABASE_ENDDUELGAME_FUNCTION, {
+    body: {
+      questions,
+      gameUuid,
+      player,
+    },
   });
 
 // HISTORY

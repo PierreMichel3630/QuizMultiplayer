@@ -1,23 +1,12 @@
-import AddIcon from "@mui/icons-material/Add";
 import { Box, FormControlLabel, Grid, Pagination, Switch } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import {
-  countQuestions,
-  deleteQuestionById,
-  selectQuestion,
-  updateQuestion,
-} from "src/api/question";
-import { ButtonColor } from "src/component/Button";
+import { countQuestions, selectQuestion } from "src/api/question";
 import { ICardImage } from "src/component/card/CardImage";
 import { CardAdminQuestion } from "src/component/card/CardQuestion";
-import { ConfirmDialog } from "src/component/modal/ConfirmModal";
-import { CreateEditQuestionDialog } from "src/component/modal/CreateEditQuestionDialog";
 import { AutocompleteNumber, AutocompleteTheme } from "src/component/Select";
-import { useMessage } from "src/context/MessageProvider";
-import { QuestionAdmin, QuestionUpdate } from "src/models/Question";
-import { Colors } from "src/style/Colors";
+import { QuestionAdmin } from "src/models/Question";
 
 export interface FilterQuestion {
   themes: Array<number>;
@@ -30,18 +19,12 @@ export default function AdminQuestionsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { setMessage, setSeverity } = useMessage();
 
   const ITEMPERPAGE = 29;
 
   const [count, setCount] = useState<number>(1);
   const [page, setPage] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Array<QuestionAdmin>>([]);
-  const [question, setQuestion] = useState<QuestionAdmin | undefined>(
-    undefined
-  );
-  const [openConfirmModal, setOpenConfirmModal] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
   const [filter, setFilter] = useState<FilterQuestion>({
     themes: [],
     isImage: false,
@@ -75,7 +58,6 @@ export default function AdminQuestionsPage() {
 
   const getPage = useCallback(() => {
     setQuestions([]);
-    setQuestion(undefined);
     if (page !== null) {
       selectQuestion(page - 1, ITEMPERPAGE, filter).then(({ data }) => {
         const result = data
@@ -89,35 +71,6 @@ export default function AdminQuestionsPage() {
   useEffect(() => {
     getPage();
   }, [page, ITEMPERPAGE, getPage]);
-
-  const modifyQuestion = (value: QuestionUpdate) => {
-    updateQuestion(value).then(({ data }) => {
-      if (data !== null) {
-        setQuestions((prev) => {
-          const res = [...prev].filter((el) => el.id !== value.id);
-          return [...res, data];
-        });
-      }
-    });
-  };
-
-  const deleteQuestion = () => {
-    if (question) {
-      deleteQuestionById(question.id).then((res) => {
-        setQuestion(undefined);
-        if (res.error) {
-          setSeverity("error");
-          setMessage(t("commun.error"));
-        } else {
-          setOpenConfirmModal(false);
-          getPage();
-        }
-      });
-    } else {
-      setSeverity("error");
-      setMessage(t("commun.error"));
-    }
-  };
 
   return (
     <Box sx={{ position: "relative", p: 1, mb: 7 }}>
@@ -170,26 +123,9 @@ export default function AdminQuestionsPage() {
             onChange={(value) => setFilter((prev) => ({ ...prev, ids: value }))}
           />
         </Grid>
-        <Grid item xs={12}>
-          <ButtonColor
-            icon={AddIcon}
-            label={t("commun.addquestion")}
-            value={Colors.green}
-            onClick={() => setOpenModal(true)}
-            variant="contained"
-          />
-        </Grid>
         {questions.map((question, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
-            <CardAdminQuestion
-              question={question}
-              onChange={modifyQuestion}
-              onDelete={() => {
-                setQuestion(question);
-                setOpenConfirmModal(true);
-              }}
-              onEdit={() => navigate(`/administration/question/${question.id}`)}
-            />
+            <CardAdminQuestion question={question} refresh={getPage} />
           </Grid>
         ))}
         <Box
@@ -220,21 +156,6 @@ export default function AdminQuestionsPage() {
           )}
         </Box>
       </Grid>
-      <ConfirmDialog
-        title={t("modal.delete")}
-        open={openConfirmModal}
-        onClose={() => setOpenConfirmModal(false)}
-        onConfirm={deleteQuestion}
-      />
-      <CreateEditQuestionDialog
-        question={question}
-        open={openModal}
-        close={() => {
-          setQuestion(undefined);
-          getPage();
-          setOpenModal(false);
-        }}
-      />
     </Box>
   );
 }

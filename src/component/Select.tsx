@@ -19,6 +19,7 @@ import { useTranslation } from "react-i18next";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ClearIcon from "@mui/icons-material/Clear";
+import { getCategoryById, searchCategoriesPaginate } from "src/api/search";
 import { selectThemesShop } from "src/api/theme";
 import { useUser } from "src/context/UserProvider";
 import { colorDifficulty, Difficulty } from "src/models/enum/DifficultyEnum";
@@ -384,5 +385,95 @@ export const AutocompleteNumber = ({
         </Grid>
       ))}
     </Grid>
+  );
+};
+
+interface PropsSelectCategory {
+  value: number | null;
+  onChange: (value: { id: number; name: string } | null) => void;
+}
+
+export const SelectCategory = ({ value, onChange }: PropsSelectCategory) => {
+  const { t } = useTranslation();
+  const { language } = useUser();
+
+  const listboxRef = useRef(null);
+
+  const [categories, setCategories] = useState<
+    Array<{ id: number; name: string }>
+  >([]);
+  const [category, setCategory] = useState<{ id: number; name: string } | null>(
+    null
+  );
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  useEffect(() => {
+    if (language) {
+      searchCategoriesPaginate(language, search, 0).then(({ data }) => {
+        setCategories(data ?? []);
+        setPage((prev) => prev + 1);
+      });
+    }
+  }, [language, search]);
+
+  useEffect(() => {
+    if (language && value) {
+      getCategoryById(value, language).then(({ data }) => {
+        setCategory(data);
+      });
+    }
+  }, [value, language]);
+
+  const handleScroll = (event: any) => {
+    if (loading || !hasMore) return;
+    const listboxNode = event.currentTarget;
+    const bottom =
+      listboxNode.scrollTop + listboxNode.clientHeight >=
+      listboxNode.scrollHeight - 5;
+    if (bottom && language) {
+      setLoading(true);
+      searchCategoriesPaginate(language, search, page).then(({ data }) => {
+        const res = data ?? [];
+        setHasMore(res.length > 0);
+        setCategories((prev) => [...prev, ...res]);
+        setPage((prev) => prev + 1);
+        setLoading(false);
+      });
+    }
+  };
+
+  return (
+    <Autocomplete
+      id="categoryinput"
+      value={category}
+      onChange={(_event: SyntheticEvent, newValue: any) => {
+        onChange(newValue.id);
+      }}
+      options={categories}
+      getOptionLabel={(option) => option.name}
+      renderOption={(props, option) => (
+        <Box component="li" {...props}>
+          <Typography>{option.name}</Typography>
+        </Box>
+      )}
+      ListboxProps={{
+        onScroll: handleScroll,
+        ref: listboxRef,
+      }}
+      fullWidth
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          label={t("commun.category")}
+          placeholder={t("commun.selectcategory")}
+        />
+      )}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
+    />
   );
 };

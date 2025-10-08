@@ -10,13 +10,13 @@ import { CircularLoading } from "../Loading";
 import { MapPositionBlock } from "../MapPositionBlock";
 import { SoundBar } from "../SoundBar";
 import { Timer } from "../time/Timer";
-import { Answer } from "./ResponseBlock";
+import { AnswerUser } from "./ResponseBlock";
 import { useUser } from "src/context/UserProvider";
 
 interface Props {
   question: Question;
   timer?: number;
-  onSubmit?: (value: Answer) => void;
+  onSubmit?: (value: AnswerUser) => void;
 }
 
 export const QuestionBlock = ({ question, timer, onSubmit }: Props) => {

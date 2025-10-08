@@ -14,10 +14,10 @@ import { searchAnswerByLanguageAndSet } from "src/api/answer";
 import { useUser } from "src/context/UserProvider";
 import { AnswerTranslation } from "src/models/Answer";
 import { Colors } from "src/style/Colors";
-import { Answer } from "./ResponseBlock";
+import { AnswerUser } from "./ResponseBlock";
 
 interface Props {
-  onSubmit: (value: Answer) => void;
+  onSubmit: (value: AnswerUser) => void;
   answerset?: number;
 }
 export const InputResponseBlock = ({ onSubmit, answerset }: Props) => {

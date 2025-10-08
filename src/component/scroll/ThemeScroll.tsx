@@ -1,4 +1,5 @@
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
+import { padding } from "csx";
 import { useCallback, useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { searchThemesPaginate } from "src/api/search";
@@ -64,9 +65,18 @@ export const ThemeListScrollBlock = ({
     >
       <Grid container spacing={1} justifyContent="center">
         {itemsSearch.map((item, index) => (
-          <Grid item key={index} onClick={() => onSelect(item)}>
-            <ImageThemeBlock theme={item} size={50} />
-            <Typography>{item.name}</Typography>
+          <Grid item xs={12} key={index} onClick={() => onSelect(item)}>
+            <Box
+              sx={{
+                display: "flex",
+                gap: 1,
+                alignItems: "center",
+                p: padding(2, 15),
+              }}
+            >
+              <ImageThemeBlock theme={item} size={40} />
+              <Typography variant="h4">{item.name}</Typography>
+            </Box>
           </Grid>
         ))}
       </Grid>

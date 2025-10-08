@@ -1,6 +1,8 @@
 import { ProfileUpdate } from "src/models/Profile";
 import { supabase } from "./supabase";
 import moment from "moment";
+import { VERSION_APP } from "src/utils/config";
+import { bots } from "./bots";
 
 export const SUPABASE_PROFILE_TABLE = "profiles";
 export const SUPABASE_UPDATEPROFIL_FUNCTION = "update-profil";
@@ -75,5 +77,33 @@ export const updateProfilByFunction = () =>
   supabase.functions.invoke(SUPABASE_UPDATEPROFIL_FUNCTION, {
     body: {
       date: moment(),
+      version: VERSION_APP,
     },
   });
+
+export const selectProfile = (
+  order: string,
+  page: number,
+  itemperpage = 25,
+  idsProfile = [] as Array<string>,
+  search = ""
+) => {
+  const from = page * itemperpage;
+  const to = from + itemperpage - 1;
+
+  let query = supabase
+    .from(SUPABASE_PROFILE_TABLE)
+    .select(
+      "*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*))"
+    )
+    .gt(order, 0)
+    .ilike("username", `%${search}%`)
+    .not("id", "in", `(${bots.join(",")})`);
+  if (idsProfile.length > 0) {
+    query = query.in("id", idsProfile);
+  }
+  return query
+    .order(order, { ascending: false })
+    .order("created_at", { ascending: true })
+    .range(from, to);
+};

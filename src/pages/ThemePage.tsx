@@ -24,9 +24,10 @@ import {
   launchSoloGame,
   matchmakingDuelGame,
 } from "src/api/game";
-import { countQuestionByThemeAndLanguage } from "src/api/question";
+import { countQuestionByTheme } from "src/api/question";
 import { countPlayersByTheme } from "src/api/score";
 import { selectThemeById } from "src/api/theme";
+import { AvatarLanguageGroup } from "src/component/language/AvatarLanguageGroup";
 import { ButtonColor } from "src/component/Button";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { InfoBlock } from "src/component/InfoBlock";
@@ -40,8 +41,10 @@ import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
 import { FavoriteInsert } from "src/models/Favorite";
 import { Profile } from "src/models/Profile";
+import { QuestionCount } from "src/models/Question";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
 export default function ThemePage() {
   const { t } = useTranslation();
@@ -56,9 +59,17 @@ export default function ThemePage() {
   const [openModalFriend, setOpenModalFriend] = useState(false);
   const [openProposeQuestion, setOpenProposeQuestion] = useState(false);
   const [players, setPlayers] = useState<number | undefined>(undefined);
-  const [questions, setQuestions] = useState<number | undefined>(undefined);
+  const [questionsCount, setQuestionsCount] = useState<Array<QuestionCount>>(
+    []
+  );
   const [theme, setTheme] = useState<Theme | undefined>(undefined);
   const [loadingTheme, setLoadingTheme] = useState(true);
+  const [loadingQuestions, setLoadingQuestions] = useState(true);
+
+  const loading = useMemo(
+    () => loadingTheme && loadingQuestions,
+    [loadingQuestions, loadingTheme]
+  );
 
   const favorite = useMemo(
     () => favorites.find((el) => el.theme === Number(id)),
@@ -85,9 +96,11 @@ export default function ThemePage() {
   }, [id]);
 
   useEffect(() => {
+    setLoadingQuestions(true);
     if (theme && language) {
-      countQuestionByThemeAndLanguage(theme.id, language).then(({ data }) => {
-        setQuestions(data ? data.questions : 0);
+      countQuestionByTheme(theme.id).then(({ data }) => {
+        setQuestionsCount(data ?? []);
+        setLoadingQuestions(false);
       });
     }
   }, [language, theme]);
@@ -159,6 +172,26 @@ export default function ThemePage() {
     }
   };
 
+  const languages = useMemo(
+    () => (theme ? theme.themetranslation.map((el) => el.language) : []),
+    [theme]
+  );
+
+  const questions = useMemo(() => {
+    let res: string | number = "";
+    if (theme && questionsCount && language && !loadingQuestions) {
+      if (theme.generatequestion) {
+        res = "∞";
+      } else {
+        const questionsLanguage = [...questionsCount].find(
+          (el) => el.language.id === language.id
+        );
+        res = questionsLanguage ? questionsLanguage.questions : 0;
+      }
+    }
+    return res;
+  }, [language, loadingQuestions, questionsCount, theme]);
+
   return (
     <Box sx={{ width: percent(100) }}>
       <Helmet>
@@ -173,7 +206,7 @@ export default function ThemePage() {
         )}
       </Helmet>
       <Grid container>
-        {loadingTheme ? (
+        {loading ? (
           <Grid item xs={12}>
             <Box
               sx={{
@@ -281,13 +314,20 @@ export default function ThemePage() {
                         </Alert>
                       </Grid>
                     )}
+                    {questions === 0 && (
+                      <Grid item xs={12}>
+                        <Alert severity="error">
+                          {t("commun.noquestions")}
+                        </Alert>
+                      </Grid>
+                    )}
                     <Grid item xs={5} sm={3} md={3} lg={3}>
                       <ImageThemeBlock theme={theme} />
                     </Grid>
                     <Grid item xs={7} sm={6} md={6} lg={6}>
                       <Grid container spacing={1}>
-                        {((theme.enabled && theme.validate) ||
-                          profile?.isadmin) && (
+                        {(theme.enabled && theme.validate && questions !== 0) ||
+                        profile?.isadmin ? (
                           <>
                             <Grid item xs={12}>
                               <ButtonColor
@@ -336,29 +376,44 @@ export default function ThemePage() {
                               />
                             </Grid>
                           </>
+                        ) : (
+                          <>
+                            <Grid item xs={12}>
+                              <ButtonColor
+                                value={Colors.blue}
+                                label={t("commun.return")}
+                                icon={KeyboardReturnIcon}
+                                onClick={() => navigate(-1)}
+                                variant="contained"
+                              />
+                            </Grid>
+                            <Grid item xs={12}>
+                              <ButtonColor
+                                value={Colors.green}
+                                label={t("commun.returnhome")}
+                                icon={HomeIcon}
+                                onClick={() => navigate("/")}
+                                variant="contained"
+                              />
+                            </Grid>
+                          </>
                         )}
-                        {/*
                         <Grid item xs={12}>
                           <ButtonColor
                             size="small"
                             value={Colors.pink}
                             label={t("commun.proposequestion")}
                             icon={QuestionMarkIcon}
-                            onClick={() => setOpenProposeQuestion(true)}
+                            onClick={() => {
+                              if (profile) {
+                                setOpenProposeQuestion(true);
+                              } else {
+                                navigate(`/login`);
+                              }
+                            }}
                             variant="contained"
                           />
-                        </Grid>*/}
-                        {(!theme.enabled || !theme.validate) && (
-                          <Grid item xs={12}>
-                            <ButtonColor
-                              value={Colors.blue}
-                              label={t("commun.return")}
-                              icon={KeyboardReturnIcon}
-                              onClick={() => navigate(-1)}
-                              variant="contained"
-                            />
-                          </Grid>
-                        )}
+                        </Grid>
                       </Grid>
                     </Grid>
                   </Grid>
@@ -378,7 +433,7 @@ export default function ThemePage() {
                   borderRadius: px(5),
                 }}
               >
-                <Grid item xs={6}>
+                <Grid item xs={3}>
                   <InfoBlock
                     title={t("commun.players")}
                     value={players ?? "-"}
@@ -398,10 +453,32 @@ export default function ThemePage() {
                     }}
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={3}>
+                  <InfoBlock title={t("commun.questions")} value={questions} />
+                </Grid>
+                <Grid
+                  item
+                  xs={1}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <Divider
+                    orientation="vertical"
+                    variant="middle"
+                    flexItem
+                    sx={{
+                      borderColor: Colors.grey5,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={4}>
                   <InfoBlock
-                    title={t("commun.questions")}
-                    value={questions ?? "-"}
+                    title={t("commun.languages")}
+                    content={
+                      <AvatarLanguageGroup
+                        languages={languages}
+                        questionsCount={questionsCount}
+                      />
+                    }
                   />
                 </Grid>
               </Grid>

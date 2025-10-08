@@ -29,6 +29,7 @@ export const StreakBlock = ({ value, logoSize = 25, textSize = 18 }: Props) => {
           backgroundColor: Colors.yellow4,
           border: `3px solid ${Colors.red4}`,
           padding: padding(0, 3),
+          width: "fit-content",
         }}
       >
         <LocalFireDepartmentIcon

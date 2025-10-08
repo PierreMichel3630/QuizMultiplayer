@@ -53,7 +53,6 @@ import {
   GroupButtonChallengeTime,
 } from "./button/ButtonGroup";
 import { WinBlock } from "./challenge/WinBlock";
-import { WinnerTextRankingBlock } from "./challenge/WinnerChallengeBlock";
 import {
   ResultAllTimeChallengeBlock,
   ResultDayChallengeBlock,
@@ -265,7 +264,6 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
               const newdata = res.map((el) => {
                 return {
                   profile: el.profile,
-                  profileExtra: <WinnerTextRankingBlock profile={el.profile} />,
                   value: (
                     <TableCell
                       sx={{
@@ -313,7 +311,6 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
             const newdata = res.map((el) => {
               return {
                 profile: el.profile,
-                profileExtra: <WinnerTextRankingBlock profile={el.profile} />,
                 value: (
                   <TableCell
                     sx={{
@@ -379,7 +376,6 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
             const newdata = res.map((el) => {
               return {
                 profile: el.profile,
-                profileExtra: <WinnerTextRankingBlock profile={el.profile} />,
                 value: (
                   <TableCell
                     sx={{
@@ -444,7 +440,6 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
             const newdata = res.map((el) => {
               return {
                 profile: el.profile,
-                profileExtra: <WinnerTextRankingBlock profile={el.profile} />,
                 value: (
                   <TableCell
                     sx={{

@@ -12,12 +12,12 @@ import { percent } from "csx";
 import { LoadingDot } from "src/component/Loading";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
-import { Answer, Response } from "src/component/question/ResponseBlock";
+import { AnswerUser, Response } from "src/component/question/ResponseBlock";
 import { SoloGame } from "src/models/Game";
 import { StatusGameSolo } from "src/models/enum/StatusGame";
 import { decryptToNumber } from "src/utils/crypt";
 import { PreloadImages } from "src/utils/preload";
-import { getResponse, verifyResponseCrypt } from "src/utils/response";
+import { verifyResponseCrypt } from "src/utils/response";
 
 export default function SoloPage() {
   const { t } = useTranslation();
@@ -126,13 +126,13 @@ export default function SoloPage() {
   );
 
   const validateResponse = useCallback(
-    async (value: Answer) => {
+    async (value: AnswerUser) => {
       clearInterval(timeoutQuestion.current!);
       setTimer(undefined);
       const myResponseValue = value?.value ?? undefined;
       if (question && game && language) {
+        const decryptResponse = decryptToNumber(question.answer);
         const result = verifyResponseCrypt(question, language, value);
-        const response = getResponse(question, language);
         const questionsgame: Array<unknown> = JSON.parse(
           localStorage.getItem(localStorageId) ?? "[]"
         );
@@ -144,7 +144,7 @@ export default function SoloPage() {
         });
         localStorage.setItem(localStorageId, JSON.stringify(questionsgame));
         setResponse({
-          answer: response,
+          answer: decryptResponse,
           result: result,
           responsePlayer1: myResponseValue,
           resultPlayer1: result,

@@ -10,11 +10,12 @@ import { FRIENDSTATUS } from "src/models/Friend";
 import { getLevel } from "src/utils/calcul";
 import { AvatarAccountBadge } from "./avatar/AvatarAccount";
 import { CountryImageBlock } from "./CountryBlock";
-import { MoneyBlock } from "./MoneyBlock";
+import { MoneyArrondieBlock } from "./MoneyBlock";
 
 import PeopleIcon from "@mui/icons-material/People";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";
 import { AdminButton } from "./button/AdminButton";
 import { SkeletonCircular } from "./skeleton/SkeletonCircular";
@@ -24,6 +25,7 @@ export const ProfileBar = () => {
   const navigate = useNavigate();
   const { logout, profile, streak } = useAuth();
   const { friends } = useApp();
+  const { language } = useUser();
 
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
 
@@ -142,7 +144,12 @@ export const ProfileBar = () => {
             {profile ? (
               <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
                 <Link to={`/shop`} style={{ textDecoration: "none" }}>
-                  <MoneyBlock money={profile.money} variant="h4" width={22} />
+                  <MoneyArrondieBlock
+                    money={profile.money}
+                    language={language}
+                    variant="h4"
+                    width={22}
+                  />
                 </Link>
               </Box>
             ) : (

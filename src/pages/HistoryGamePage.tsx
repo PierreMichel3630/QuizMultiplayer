@@ -60,6 +60,9 @@ export default function HistoryGamePage() {
 
   const getGames = useCallback(
     (page: number) => {
+      if (page === 0) {
+        window.scrollTo(0, 0);
+      }
       if (loading) return;
       if (!isEnd && filter.player !== null) {
         if (filter.type === GameModeEnum.solo) {
@@ -74,7 +77,7 @@ export default function HistoryGamePage() {
                   theme: el.theme,
                   player1: el.profile,
                   ptsplayer1: el.points,
-                  player2: null,
+                  player2: undefined,
                   ptsplayer2: null,
                   created_at: el.created_at,
                 };

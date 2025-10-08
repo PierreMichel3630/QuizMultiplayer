@@ -11,6 +11,7 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { useUser } from "src/context/UserProvider";
 import { TextLabelBlock } from "./language/TextLanguageBlock";
 import { ExtraResponseResultBlock } from "./response/ExtraResponseBlock";
+import { decryptToNumber } from "src/utils/crypt";
 
 interface PropsQcmBlockDuelResultBlock {
   question: QuestionResult;
@@ -22,7 +23,7 @@ export const QcmBlockDuelResultBlock = ({
   const { mode } = useUser();
 
   const isDarkMode = useMemo(() => mode === "dark", [mode]);
-  const response = question.response;
+  const answer = decryptToNumber(question.answer);
 
   const responsePlayer1 = question.responsePlayer1;
   const responsePlayer2 = question.responsePlayer2;
@@ -45,9 +46,9 @@ export const QcmBlockDuelResultBlock = ({
         gap: px(4),
       }}
     >
-      {question.answers.map((res) => {
+      {[...question.answers].map((res) => {
         const index = res.id;
-        const isCorrectResponse = Number(response) === index;
+        const isCorrectResponse = Number(answer) === index;
 
         const isArrowRight =
           responsePlayer1 !== undefined && Number(responsePlayer1) === index;
@@ -100,7 +101,7 @@ export const QcmBlockDuelResultBlock = ({
             )}
             <Box sx={{ width: percent(100) }}>
               {res.image && <ImageQCMBlock src={res.image} />}
-              {res.answertranslation && (
+              {res.answertranslation.length > 0 && (
                 <TextLabelBlock
                   variant="h3"
                   component="p"

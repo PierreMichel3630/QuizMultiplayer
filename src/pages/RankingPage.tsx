@@ -7,11 +7,15 @@ import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { selectStatAccomplishment } from "src/api/accomplishment";
 import { selectSoloGameByDate } from "src/api/game";
+import { selectProfile } from "src/api/profile";
 import { getRankingFinishTheme } from "src/api/ranking";
 import { selectScore } from "src/api/score";
+import { MoneyArrondieBlock } from "src/component/MoneyBlock";
+import { StreakBlock } from "src/component/StreakBlock";
 import {
   GroupButtonChallengeGlobal,
   GroupButtonClassement,
+  GroupButtonOthersClassement,
 } from "src/component/button/ButtonGroup";
 import { ButtonRankingDuel } from "src/component/button/ButtonRankingDuel";
 import { ButtonRankingSolo } from "src/component/button/ButtonRankingSolo";
@@ -26,11 +30,13 @@ import {
   StatAccomplishmentEnum,
 } from "src/models/Accomplishment";
 import { FinishTheme } from "src/models/FinishTheme";
+import { Profile } from "src/models/Profile";
 import { Score } from "src/models/Score";
 import {
   ClassementChallengeGlobalTimeEnum,
   ClassementDuelModeEnum,
   ClassementEnum,
+  ClassementOtherEnum,
   ClassementSoloModeEnum,
 } from "src/models/enum/ClassementEnum";
 import { getLevel } from "src/utils/calcul";
@@ -62,7 +68,7 @@ export default function RankingPage() {
   const [tabDuelMode, setTabDuelMode] = useState(
     ClassementDuelModeEnum.bestrank
   );
-
+  const [tabOthers, setTabOthers] = useState(ClassementOtherEnum.xp);
   const [tabChallengeMode, setTabChallengeMode] = useState(
     ClassementChallengeGlobalTimeEnum.windaychallenge
   );
@@ -150,32 +156,6 @@ export default function RankingPage() {
             );
             setLoading(false);
           });
-        } else if (type === ClassementEnum.xp) {
-          selectStatAccomplishment(type, page, ITEMPERPAGE, ids).then(
-            ({ data }) => {
-              const res = data as Array<StatAccomplishment>;
-              const newdata = res.map((el, index) => {
-                const value: any = el[type];
-                return {
-                  profile: el.profile,
-                  value: (
-                    <BadgeLevel
-                      level={getLevel(value)}
-                      size={35}
-                      fontSize={15}
-                    />
-                  ),
-                  rank: page * ITEMPERPAGE + index + 1,
-                  size: 50,
-                };
-              });
-              setIsEnd(newdata.length < ITEMPERPAGE);
-              setData((prev) =>
-                page === 0 ? [...newdata] : [...prev, ...newdata]
-              );
-              setLoading(false);
-            }
-          );
         } else if (type === ClassementEnum.challenge) {
           selectStatAccomplishment(
             tabChallengeMode,
@@ -199,6 +179,76 @@ export default function RankingPage() {
             );
             setLoading(false);
           });
+        } else if (type === ClassementEnum.others) {
+          if (tabOthers === ClassementOtherEnum.xp) {
+            selectStatAccomplishment(tabOthers, page, ITEMPERPAGE, ids).then(
+              ({ data }) => {
+                const res = data as Array<StatAccomplishment>;
+                const newdata = res.map((el, index) => {
+                  const value: any = el[tabOthers];
+                  return {
+                    profile: el.profile,
+                    value: (
+                      <BadgeLevel
+                        level={getLevel(value)}
+                        size={35}
+                        fontSize={15}
+                      />
+                    ),
+                    rank: page * ITEMPERPAGE + index + 1,
+                    size: 50,
+                  };
+                });
+                setIsEnd(newdata.length < ITEMPERPAGE);
+                setData((prev) =>
+                  page === 0 ? [...newdata] : [...prev, ...newdata]
+                );
+                setLoading(false);
+              }
+            );
+          } else if (tabOthers === ClassementOtherEnum.streak) {
+            selectProfile(tabOthers, page, ITEMPERPAGE, ids).then(
+              ({ data }) => {
+                const res = data as Array<Profile>;
+                const newdata = res.map((el, index) => {
+                  const value = el[tabOthers] as number;
+                  return {
+                    profile: el,
+                    value: <StreakBlock value={value} />,
+                    rank: page * ITEMPERPAGE + index + 1,
+                    size: 80,
+                  };
+                });
+                setIsEnd(newdata.length < ITEMPERPAGE);
+                setData((prev) =>
+                  page === 0 ? [...newdata] : [...prev, ...newdata]
+                );
+                setLoading(false);
+              }
+            );
+          } else if (tabOthers === ClassementOtherEnum.money) {
+            selectProfile(tabOthers, page, ITEMPERPAGE, ids).then(
+              ({ data }) => {
+                const res = data as Array<Profile>;
+                const newdata = res.map((el, index) => {
+                  const value: any = el[tabOthers];
+                  return {
+                    profile: el,
+                    value: (
+                      <MoneyArrondieBlock money={value} language={language} />
+                    ),
+                    rank: page * ITEMPERPAGE + index + 1,
+                    size: 100,
+                  };
+                });
+                setIsEnd(newdata.length < ITEMPERPAGE);
+                setData((prev) =>
+                  page === 0 ? [...newdata] : [...prev, ...newdata]
+                );
+                setLoading(false);
+              }
+            );
+          }
         } else {
           const order = (type === ClassementEnum.points
             ? tabSoloMode
@@ -230,11 +280,12 @@ export default function RankingPage() {
       isOnlyFriend,
       idsFriend,
       isEnd,
+      language,
       type,
       tabSoloMode,
       tabDuelMode,
       tabChallengeMode,
-      language,
+      tabOthers,
     ]
   );
 
@@ -248,6 +299,7 @@ export default function RankingPage() {
     tabSoloMode,
     tabDuelMode,
     tabChallengeMode,
+    tabOthers,
     isOnlyFriend,
     idsFriend,
     language,
@@ -336,6 +388,17 @@ export default function RankingPage() {
               setPage(0);
               setData([]);
               setTabChallengeMode(value);
+            }}
+          />
+        )}
+        {type === ClassementEnum.others && (
+          <GroupButtonOthersClassement
+            selected={tabOthers}
+            onChange={(value) => {
+              setIsEnd(false);
+              setPage(0);
+              setData([]);
+              setTabOthers(value);
             }}
           />
         )}

@@ -59,7 +59,7 @@ export const TitleBlock = ({
           {favorite ? (
             <StarIcon
               sx={{
-                fontSize: 50,
+                fontSize: 45,
                 color: Colors.yellow4,
                 cursor: "pointer",
                 stroke: colorBorderFavorite,
@@ -69,7 +69,7 @@ export const TitleBlock = ({
           ) : (
             <StarBorderOutlinedIcon
               sx={{
-                fontSize: 50,
+                fontSize: 45,
                 color: Colors.yellow4,
                 cursor: "pointer",
               }}

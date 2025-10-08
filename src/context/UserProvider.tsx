@@ -128,7 +128,7 @@ export const UserProvider = ({ children }: Props) => {
 
   useEffect(() => {
     if (language) {
-      selectChallengeByDateAndLanguage(moment(), language.iso).then(
+      selectChallengeByDateAndLanguage(moment(), language.id).then(
         ({ data }) => {
           setHasChallenge(data !== null);
         }

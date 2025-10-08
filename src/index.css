@@ -80,3 +80,10 @@ a {
 .page {
   flex: 1 1 0
 }
+
+
+/** INFINITE SCROLL **/
+
+.infinite-scroll-component__outerdiv {
+  width: 100% !important;
+}

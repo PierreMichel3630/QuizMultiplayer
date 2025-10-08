@@ -95,7 +95,10 @@ export const CardReport = ({ report, onDelete }: Props) => {
                 backgroundColor: Colors.black,
               }}
             >
-              <CardSignalQuestion question={report.questionjson} />
+              <CardSignalQuestion
+                question={report.questionjson}
+                version={report.version}
+              />
             </Box>
           )}
         </Grid>
@@ -124,7 +127,9 @@ export const CardReport = ({ report, onDelete }: Props) => {
               icon={VisibilityIcon}
               variant="contained"
               onClick={() =>
-                navigate(`/administration/question/${report.question?.id}`)
+                navigate(
+                  `/administration/edit/questions?ids=${report.question?.id}`
+                )
               }
             />
           )}

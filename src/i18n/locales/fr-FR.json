@@ -8,6 +8,7 @@
     "difficulties": "Difficultés",
     "thememaintenance": "Actuellement en maintenance, le thème reviendra le plus rapidement possible.",
     "themenotvalidate": "Thème en attente de validation par un administrateur.",
+    "noquestions": "Thème sans question, proposer une question pour nous aider.",
     "images": "Images",
     "validatequestion": "Question Validé",
     "deniedquestion": "Question Non Valide",
@@ -29,7 +30,6 @@
     "game_one": "{{count}} Partie",
     "game_other": "{{count}} Parties",
     "devine": "Devine la réponse !",
-    "question": "Question",
     "startgame": "La partie va bientôt commencer",
     "start": "Commencer",
     "keyboardmessage": "À vos claviers !",
@@ -39,6 +39,9 @@
     "position_one": "{{count}}<sup>er</sup>",
     "position_other": "{{count}}<sup>ème</sup>",
     "questions": "questions",
+    "question_one": "{{count}} question",
+    "question_other": "{{count}} questions",
+    "questionid": "Question {{id}}",
     "wait": "En attente",
     "createprivategame": "Créer une partie privée",
     "launchgame": "Lancer la partie",
@@ -78,6 +81,7 @@
     "searchfriend": "Rechercher un ami via son nom d'utilisateur",
     "searchtheme": "Rechercher un theme",
     "searchplayer": "Rechercher un joueur",
+    "searchinprogress": "Recherche en cours",
     "noresult": "Aucun résultat ne correspond à votre recherche.",
     "addtofriend": "Ajouter en ami",
     "deletefriend": "Supprimer ami",
@@ -170,6 +174,7 @@
     "possibleresponses": "Réponses possibles",
     "addresponse": "Ajouter une réponse",
     "editresponse": "Modifier une réponse",
+    "editresponses": "Modifier les réponses",
     "report": "Signaler",
     "reportquestion": "Signaler la question",
     "typeproblem": "Type de problème *",
@@ -188,6 +193,8 @@
     "addtranslation" : "Ajouter une traduction",
     "removelanguage": "Supprimer la langue",
     "editquestion": "Modifier une question",
+    "editthequestion": "Modifier la question",
+    "editthethemes": "Modifier les thèmes",
     "editcategory": "Modifier une catégorie",
     "editavatar": "Modifier un avatar",
     "editbanner": "Modifier une photo de couverture",
@@ -225,6 +232,7 @@
     "personalizedprofile": "Personnaliser votre profil",
     "selecttitle": "Sélectionner un titre",
     "launchpartie": "La partie va commencer",
+    "loadimage": "Chargement des images en cours (veuillez patienter quelques secondes)",
     "menus": "Menus",
     "reportpropose": "Signaler un problème/ Proposer amélioration",
     "improvetext": "Vous pouvez proposer des questions en allant sur la page d'un thème et en cliquant sur le bouton 'Proposer une question' ou alors rejoignez le Discord avec le bouton ci-dessous.",
@@ -350,7 +358,11 @@
     "result" : "Résultat",
     "average": "Moyenne",
     "time": "Temps",
-    "save": "Enregistrer"
+    "save": "Enregistrer",
+    "streak": "Série",
+    "money": "Argent",
+    "translations": "Traductions",
+    "totranslation": "À traduire"
   },
   "abrevation": {
     "average": "Moy."
@@ -746,7 +758,10 @@
     }
   },
   "modal": {
+    "quitchallenge": "Êtes-vous sûr de vouloir quitter la partie ?",
+    "quitchallengetext": "Votre partie sera enregistrée avec votre score actuelle et sans possibilité de la reprendre plus tard",
     "delete": "Êtes-vous sûr de vouloir supprimer ?",
+    "deletequestion": "Êtes-vous sûr de vouloir supprimer la question ?",
     "resetgame": "Êtes-vous sûr de vouloir réinitialiser la partie (score et historique des parties) ?"
   },
   "error": {
@@ -757,6 +772,7 @@
   "alert": {
     "pagenotfound": "Cette page n'est pas disponible.",
     "noresult": "Aucun résultat.",
+    "noresulttheme": "Aucun thème ne correspond à cette catégorie.",
     "updatequestion": "Votre modification de la question à été pris en compte.",
     "allresponseanswer": "Vous avez répondu à toutes les question du thème.",
     "nofriend": "Aucune demande d'ami.",
@@ -875,20 +891,18 @@
   },
   "challenge": {
     "winner" :{
-      "day": "Champion du {{value}}",
-      "week": "Champion semaine {{value}}",
-      "month": "Champion mois {{value}}",
-      "alltime": "Champion All Time"
+      "day": "Jour",
+      "week": "Semaine",
+      "month": "Mois"
     },
-    "loser" :{
-      "day": "Perdant jour {{value}}",
-      "week": "Perdant semaine {{value}}",
-      "month": "Perdant mois {{value}}",
-      "alltime": "Perdant All Time"
+    "alltime" :{
+      "day": "Jour",
+      "week": "Semaine",
+      "month": "Mois"
     },
     "result": {
-      "winner": "Gagnant",
-      "loser": "Perdant"
+      "winner": "Actuel",
+      "alltime": "All Time"
     }
   },
   "chart": {

@@ -4,18 +4,20 @@ import { Colors } from "src/style/Colors";
 
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useUser } from "src/context/UserProvider";
+import { Answer } from "src/models/Answer";
 import { TypeQuestionEnum } from "src/models/enum/TypeQuestionEnum";
 import { TypeResponseEnum } from "src/models/enum/TypeResponseEnum";
+import { Language } from "src/models/Language";
 import { Question } from "src/models/Question";
 import { ExtraResponse } from "src/models/Response";
+import { decryptToNumber } from "src/utils/crypt";
 import { ArrowLeft, ArrowRight } from "../icon/Arrow";
 import { ImageQCMBlock } from "../ImageBlock";
-import { ExtraResponseBlock } from "../response/ExtraResponseBlock";
-import { Language } from "src/models/Language";
 import { TextLabelBlock } from "../language/TextLanguageBlock";
+import { ExtraResponseBlock } from "../response/ExtraResponseBlock";
 
 export interface ResponseLanguage {
   [iso: string]: Array<string> | string;
@@ -25,7 +27,7 @@ export interface ResponseLanguageString {
   [iso: string]: string;
 }
 
-export interface Answer {
+export interface AnswerUser {
   uuid: string;
   value?: string | number;
 }
@@ -43,7 +45,7 @@ export interface Response {
 
 interface ResponsesQCMBlockProps {
   question: Question;
-  onSubmit: (value: Answer) => void;
+  onSubmit: (value: AnswerUser) => void;
   response?: Response;
 }
 
@@ -116,7 +118,6 @@ export const ResponsesQCMBlock = ({
         const colorBase = isDarkMode ? Colors.black2 : Colors.white;
 
         let color: string = isQuestionOrder ? colorOrder : colorBase;
-        const arrowColor: string = isDarkMode ? Colors.white : Colors.black2;
         let borderColor: string = isDarkMode ? Colors.white : Colors.black2;
         if (isCorrectResponse) {
           color = Colors.correctanswer;
@@ -138,7 +139,6 @@ export const ResponsesQCMBlock = ({
             answer1={isAnswerP1}
             answer2={isAnswerP2}
             hasAnswer={hasAnswer}
-            arrowColor={arrowColor}
             type={
               isQuestionOrder
                 ? TypeResponseEnum.ORDER
@@ -157,7 +157,7 @@ export const ResponsesQCMBlock = ({
 
 interface ResponsesQCMEditBlockProps {
   question: Question;
-  onSubmit: (value: Answer) => void;
+  onSubmit: (value: AnswerUser) => void;
   responseplayer1?: string | number;
   responseplayer2?: string | number;
   response?: Response;
@@ -224,7 +224,6 @@ export const ResponsesQCMEditBlock = ({
         const colorBase = isDarkMode ? Colors.black2 : Colors.white;
 
         let color: string = isQuestionOrder ? colorOrder : colorBase;
-        const arrowColor: string = isDarkMode ? Colors.white : Colors.black2;
         let borderColor: string = isDarkMode ? Colors.white : Colors.black2;
         if (isCorrectResponse) {
           color = Colors.correctanswer;
@@ -249,7 +248,6 @@ export const ResponsesQCMEditBlock = ({
             answer1={isAnswerP1}
             answer2={isAnswerP2}
             hasAnswer={false}
-            arrowColor={arrowColor}
             type={
               isQuestionOrder
                 ? TypeResponseEnum.ORDER
@@ -275,13 +273,12 @@ interface ResponseQCMBlockProps {
   }>;
   extra?: ExtraResponse;
   borderColor?: string;
-  arrowColor?: string;
   index: number;
   answer1: boolean;
   answer2: boolean;
   hasAnswer: boolean;
   type: TypeResponseEnum;
-  onSubmit: (value: Answer) => void;
+  onSubmit: (value: AnswerUser) => void;
 }
 
 export const ResponseQCMBlock = ({
@@ -295,15 +292,22 @@ export const ResponseQCMBlock = ({
   answer2 = false,
   hasAnswer = false,
   type = TypeResponseEnum.DEFAULT,
-  arrowColor = Colors.white,
   onSubmit,
 }: ResponseQCMBlockProps) => {
-  const { uuid } = useUser();
+  const { uuid, mode } = useUser();
+
+  const isDarkMode = useMemo(() => mode === "dark", [mode]);
+
   const padding = type === TypeResponseEnum.DEFAULT && !image ? "4px 12px" : 0;
   const isOrder = type === TypeResponseEnum.ORDER;
   const backgroundImage = isOrder ? image : undefined;
   const textShadow = isOrder ? "1px 1px 10px black" : "none";
   const imageDisplay = isOrder ? undefined : image;
+
+  const arrowColor: string = useMemo(
+    () => (isDarkMode ? Colors.white : Colors.black2),
+    [isDarkMode]
+  );
 
   return (
     <Paper
@@ -355,7 +359,7 @@ export const ResponseQCMBlock = ({
       )}
       {imageDisplay && <ImageQCMBlock src={imageDisplay} />}
       <Box>
-        {labels && (
+        {labels.length > 0 && (
           <TextLabelBlock
             variant="h3"
             component="p"
@@ -388,17 +392,15 @@ export const ResponseQCMBlock = ({
 };
 
 interface ResponseInputBlockProps {
+  question: Question;
   response: Response;
 }
 
-export const ResponseInputBlock = ({ response }: ResponseInputBlockProps) => {
-  const { t } = useTranslation();
+export const ResponseInputBlock = ({
+  question,
+  response,
+}: ResponseInputBlockProps) => {
   const { mode } = useUser();
-
-  const label = useMemo(() => {
-    const value = response.answer;
-    return Array.isArray(value) ? value[0] ?? "" : value;
-  }, [response]);
 
   const isDarkMode = useMemo(() => mode === "dark", [mode]);
   const arrowColor: string = useMemo(
@@ -460,13 +462,180 @@ export const ResponseInputBlock = ({ response }: ResponseInputBlockProps) => {
           </Typography>
         </Box>
       )}
+      <CorrectAnswerBlock question={question} />
+    </Paper>
+  );
+};
 
-      <Typography variant="h4" color="text.secondary" component="span">
-        {t("commun.goodresponse")} :{" "}
-      </Typography>
-      <Typography variant="h2" color="text.secondary" component="span">
-        {label}
-      </Typography>
+interface CorrectAnswerBlockProps {
+  question: Question;
+}
+
+export const CorrectAnswerBlock = ({ question }: CorrectAnswerBlockProps) => {
+  const { t } = useTranslation();
+
+  const answer = useMemo(() => {
+    const response = decryptToNumber(question.answer);
+    const correctAnswer = [...question.answers].find(
+      (el) => Number(el.id) === Number(response)
+    );
+    return correctAnswer;
+  }, [question]);
+  return (
+    answer && (
+      <>
+        <Typography variant="h4" color="text.secondary" component="span">
+          {t("commun.goodresponse")} :{" "}
+        </Typography>
+        <TextLabelBlock
+          variant="h2"
+          color="text.secondary"
+          component="span"
+          values={answer.answertranslation}
+        />
+      </>
+    )
+  );
+};
+
+interface PropsResponsesBlockAdmin {
+  answer: Answer;
+  wrongAnswers: Array<Answer>;
+  language: Language;
+}
+
+export const ResponsesBlockAdmin = ({
+  answer,
+  wrongAnswers,
+  language,
+}: PropsResponsesBlockAdmin) => {
+  const { mode } = useUser();
+  const isDarkMode = useMemo(() => mode === "dark", [mode]);
+  const color = isDarkMode ? Colors.black2 : Colors.white;
+  const borderColor = isDarkMode ? Colors.white : Colors.black2;
+
+  const numberAnswer = useMemo(
+    () => [answer, ...wrongAnswers].length,
+    [answer, wrongAnswers]
+  );
+
+  const columns = useMemo(() => {
+    const isPairResponses = numberAnswer % 2 === 0;
+    return isPairResponses ? 2 : 1;
+  }, [numberAnswer]);
+
+  const rows = useMemo(() => {
+    return numberAnswer / columns;
+  }, [numberAnswer, columns]);
+  return (
+    <Box
+      sx={{
+        width: percent(100),
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center",
+        justifyContent: "flex-end",
+        gap: px(6 / columns),
+        display: "grid",
+        gridTemplateRows: `repeat(${rows}, 1fr)`,
+        gridTemplateColumns: `repeat(${columns}, ${100 / columns}%)`,
+        mb: 1,
+      }}
+    >
+      <ResponseQCMAdminBlock
+        color={Colors.correctanswer}
+        borderColor={Colors.correctanswerborder}
+        labels={answer.answertranslation}
+        image={answer.image}
+        extra={answer.extra}
+        type={TypeResponseEnum.DEFAULT}
+        language={language}
+      />
+      {wrongAnswers.map((wrongAnswer, index) => (
+        <Fragment key={index}>
+          <ResponseQCMAdminBlock
+            color={color}
+            borderColor={borderColor}
+            image={answer.image}
+            labels={wrongAnswer.answertranslation}
+            extra={wrongAnswer.extra}
+            type={TypeResponseEnum.DEFAULT}
+            language={language}
+          />
+        </Fragment>
+      ))}
+    </Box>
+  );
+};
+
+interface ResponseQCMAdminBlockProps {
+  color: string;
+  image?: string;
+  labels: Array<{
+    id: number;
+    label: string;
+    language: Language;
+  }>;
+  extra?: ExtraResponse;
+  borderColor?: string;
+  type: TypeResponseEnum;
+  language: Language;
+}
+
+export const ResponseQCMAdminBlock = ({
+  color = "text.primary",
+  borderColor = Colors.white,
+  image,
+  labels,
+  extra,
+  type = TypeResponseEnum.DEFAULT,
+  language,
+}: ResponseQCMAdminBlockProps) => {
+  const padding = type === TypeResponseEnum.DEFAULT && !image ? "4px 12px" : 0;
+  const isOrder = type === TypeResponseEnum.ORDER;
+  const textShadow = isOrder ? "1px 1px 10px black" : "none";
+
+  return (
+    <Paper
+      sx={{
+        p: padding,
+        textAlign: "center",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
+        backgroundColor: color,
+        borderColor: borderColor,
+        borderWidth: isOrder ? 10 : 1,
+        borderStyle: "solid",
+        height: percent(100),
+        userSelect: "none",
+        "&:hover": {
+          cursor: "pointer",
+        },
+        minHeight: px(50),
+      }}
+      variant="outlined"
+    >
+      {image && <ImageQCMBlock src={image} />}
+      <Box>
+        {labels && !image && (
+          <TextLabelBlock
+            variant="h3"
+            component="p"
+            sx={{
+              color: isOrder ? Colors.white : "auto",
+              wordBreak: "break-word",
+              textShadow: textShadow,
+              fontSize: isOrder ? important(px(40)) : "initial",
+            }}
+            values={labels}
+            languageParameter={language}
+            noTranslation={true}
+          />
+        )}
+        {extra && <ExtraResponseBlock extra={extra} />}
+      </Box>
     </Paper>
   );
 };

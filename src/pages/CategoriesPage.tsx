@@ -11,12 +11,15 @@ export default function CategoriesPage() {
   const { t } = useTranslation();
   const { language } = useUser();
 
+  const [isLoading, setIsLoading] = useState(true);
   const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
 
   useEffect(() => {
     if (language) {
+      setIsLoading(true);
       getCategories(language).then(({ data }) => {
         setItemsSearch(data ?? []);
+        setIsLoading(false);
       });
     }
   }, [language]);
@@ -30,6 +33,7 @@ export default function CategoriesPage() {
         <PageCategoryBlock
           title={t("pages.categories.title")}
           values={itemsSearch}
+          isLoading={isLoading}
         />
       </Grid>
     </Grid>

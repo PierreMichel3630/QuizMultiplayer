@@ -1,17 +1,23 @@
-import { useRoutes } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 
 import { appNoOutletRoutes } from "./appNoOutletRoutes";
 import { AppRoutes } from "./appRoutes";
 import { PlayRoutes } from "./playRoutes";
 
 import GameOutlet from "src/pages/GameOutlet";
+import App from "src/App";
 
-export default function ThemeRoutes() {
-  const HomeRoute = {
+export const router = createBrowserRouter([
+  {
     path: "/",
-    element: <GameOutlet />,
-    children: [...AppRoutes, ...appNoOutletRoutes],
-  };
-
-  return useRoutes([HomeRoute, ...PlayRoutes]);
-}
+    element: <App />,
+    children: [
+      {
+        path: "/",
+        element: <GameOutlet />,
+        children: [...AppRoutes, ...appNoOutletRoutes],
+      },
+      ...PlayRoutes,
+    ],
+  },
+]);

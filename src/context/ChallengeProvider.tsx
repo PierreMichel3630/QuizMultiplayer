@@ -1,18 +1,15 @@
 import moment from "moment";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
-  selectFirstRankingChallengeByAllTime,
+  selectBestRankingChallengeByDay,
+  selectBestRankingChallengeByMonth,
+  selectBestRankingChallengeByWeek,
   selectFirstRankingChallengeByDay,
   selectFirstRankingChallengeByMonth,
   selectFirstRankingChallengeByWeek,
-  selectLastRankingChallengeByAllTime,
-  selectLastRankingChallengeByDay,
-  selectLastRankingChallengeByMonth,
-  selectLastRankingChallengeByWeek,
 } from "src/api/challenge";
 import {
-  ChallengeRankingAllTime,
-  ChallengeRankingDate,
+  ChallengeRankingDay,
   ChallengeRankingMonth,
   ChallengeRankingWeek,
 } from "src/models/Challenge";
@@ -23,30 +20,26 @@ type Props = {
 };
 
 const ChallengeContext = createContext<{
-  winDay: ChallengeRankingDate | undefined;
+  winDay: ChallengeRankingDay | undefined;
   winWeek: ChallengeRankingWeek | undefined;
   winMonth: ChallengeRankingMonth | undefined;
-  winAllTime: ChallengeRankingAllTime | undefined;
-  loseDay: ChallengeRankingDate | undefined;
-  loseWeek: ChallengeRankingWeek | undefined;
-  loseMonth: ChallengeRankingMonth | undefined;
-  loseAllTime: ChallengeRankingAllTime | undefined;
+  allTimeDay: ChallengeRankingDay | undefined;
+  allTimeWeek: ChallengeRankingWeek | undefined;
+  allTimeMonth: ChallengeRankingMonth | undefined;
 }>({
   winDay: undefined,
   winWeek: undefined,
   winMonth: undefined,
-  winAllTime: undefined,
-  loseDay: undefined,
-  loseWeek: undefined,
-  loseMonth: undefined,
-  loseAllTime: undefined,
+  allTimeDay: undefined,
+  allTimeWeek: undefined,
+  allTimeMonth: undefined,
 });
 
 export const useChallenge = () => useContext(ChallengeContext);
 
 export const ChallengeProvider = ({ children }: Props) => {
   const { language } = useUser();
-  const [winDay, setWinDay] = useState<ChallengeRankingDate | undefined>(
+  const [winDay, setWinDay] = useState<ChallengeRankingDay | undefined>(
     undefined
   );
   const [winWeek, setWinWeek] = useState<ChallengeRankingWeek | undefined>(
@@ -55,21 +48,15 @@ export const ChallengeProvider = ({ children }: Props) => {
   const [winMonth, setWinMonth] = useState<ChallengeRankingMonth | undefined>(
     undefined
   );
-  const [winAllTime, setWinAllTime] = useState<
-    ChallengeRankingAllTime | undefined
-  >(undefined);
 
-  const [loseDay, setLoseDay] = useState<ChallengeRankingDate | undefined>(
+  const [allTimeDay, setAllTimeDay] = useState<ChallengeRankingDay | undefined>(
     undefined
   );
-  const [loseWeek, setLoseWeek] = useState<ChallengeRankingWeek | undefined>(
-    undefined
-  );
-  const [loseMonth, setLoseMonth] = useState<ChallengeRankingMonth | undefined>(
-    undefined
-  );
-  const [loseAllTime, setLoseAllTime] = useState<
-    ChallengeRankingAllTime | undefined
+  const [allTimeWeek, setAllTimeWeek] = useState<
+    ChallengeRankingWeek | undefined
+  >(undefined);
+  const [allTimeMonth, setAllTimeMonth] = useState<
+    ChallengeRankingMonth | undefined
   >(undefined);
 
   useEffect(() => {
@@ -78,15 +65,12 @@ export const ChallengeProvider = ({ children }: Props) => {
         const date = moment().subtract(1, "day");
         selectFirstRankingChallengeByDay(
           date.format("YYYY-MM-DD"),
-          language.iso
+          language.id
         ).then(({ data }) => {
           setWinDay(data);
         });
-        selectLastRankingChallengeByDay(
-          date.format("YYYY-MM-DD"),
-          language.iso
-        ).then(({ data }) => {
-          setLoseDay(data);
+        selectBestRankingChallengeByDay(language.id).then(({ data }) => {
+          setAllTimeDay(data);
         });
       }
     };
@@ -97,11 +81,9 @@ export const ChallengeProvider = ({ children }: Props) => {
           setWinWeek(data);
         }
       );
-      selectLastRankingChallengeByWeek(date.format("WW/YYYY")).then(
-        ({ data }) => {
-          setLoseWeek(data);
-        }
-      );
+      selectBestRankingChallengeByWeek().then(({ data }) => {
+        setAllTimeWeek(data);
+      });
     };
     const getRankingMonth = () => {
       const date = moment().subtract(1, "month");
@@ -110,24 +92,13 @@ export const ChallengeProvider = ({ children }: Props) => {
           setWinMonth(data);
         }
       );
-      selectLastRankingChallengeByMonth(date.format("MM/YYYY")).then(
-        ({ data }) => {
-          setLoseMonth(data);
-        }
-      );
-    };
-    const getRankingAllTime = () => {
-      selectFirstRankingChallengeByAllTime().then(({ data }) => {
-        setWinAllTime(data);
-      });
-      selectLastRankingChallengeByAllTime().then(({ data }) => {
-        setLoseAllTime(data);
+      selectBestRankingChallengeByMonth().then(({ data }) => {
+        setAllTimeMonth(data);
       });
     };
     getRankingDay();
     getRankingWeek();
     getRankingMonth();
-    getRankingAllTime();
   }, [language]);
 
   const value = useMemo(
@@ -135,22 +106,11 @@ export const ChallengeProvider = ({ children }: Props) => {
       winDay,
       winWeek,
       winMonth,
-      winAllTime,
-      loseDay,
-      loseWeek,
-      loseMonth,
-      loseAllTime,
+      allTimeDay,
+      allTimeWeek,
+      allTimeMonth,
     }),
-    [
-      loseAllTime,
-      loseDay,
-      loseMonth,
-      loseWeek,
-      winAllTime,
-      winDay,
-      winMonth,
-      winWeek,
-    ]
+    [allTimeDay, allTimeWeek, allTimeMonth, winDay, winMonth, winWeek]
   );
 
   return (

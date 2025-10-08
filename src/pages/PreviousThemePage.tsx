@@ -14,10 +14,12 @@ export default function PreviousThemePage() {
   const { t } = useTranslation();
   const { user } = useAuth();
 
+  const [isLoading, setIsLoading] = useState(true);
   const [themesPrevious, setThemesPrevious] = useState<Array<Theme>>([]);
 
   useEffect(() => {
     if (user) {
+      setIsLoading(true);
       selectLastXThemeByPlayer(user.id, 10).then(({ data }) => {
         const res = data as Array<PreviousGame>;
         const previousTheme = uniqBy(
@@ -26,6 +28,7 @@ export default function PreviousThemePage() {
         );
 
         setThemesPrevious(previousTheme);
+        setIsLoading(false);
       });
     }
   }, [user]);
@@ -52,6 +55,7 @@ export default function PreviousThemePage() {
         <PageCategoryBlock
           title={t("pages.previousgame.title")}
           values={values}
+          isLoading={isLoading}
         />
       </Grid>
     </Grid>

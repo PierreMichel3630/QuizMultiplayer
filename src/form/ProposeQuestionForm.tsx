@@ -8,10 +8,21 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
-import { insertQuestion, insertQuestionTheme } from "src/api/question";
+import {
+  insertAnswers,
+  insertAnswerSet,
+  insertAnswerTranslations,
+} from "src/api/answer";
+import {
+  insertQuestion,
+  insertQuestionAnswer,
+  insertQuestionTheme,
+  insertQuestionTranslations,
+} from "src/api/question";
 import { ButtonColor } from "src/component/Button";
 import { SelectDifficulty } from "src/component/Select";
 import { useMessage } from "src/context/MessageProvider";
+import { useUser } from "src/context/UserProvider";
 import { Difficulty } from "src/models/enum/DifficultyEnum";
 import { QuestionInsert } from "src/models/Question";
 import { Theme } from "src/models/Theme";
@@ -25,6 +36,7 @@ interface Props {
 
 export const ProposeQuestionForm = ({ validate, theme }: Props) => {
   const { t } = useTranslation();
+  const { language } = useUser();
   const { setMessage, setSeverity } = useMessage();
 
   const initialValue: {
@@ -66,6 +78,57 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
+        if (!language) throw new Error("no language");
+        const resAnswerSet = await insertAnswerSet({ name: null });
+        if (resAnswerSet.error) throw resAnswerSet.error;
+
+        const resAnswers = await insertAnswers([
+          {
+            answerset: resAnswerSet.data.id,
+          },
+          {
+            answerset: resAnswerSet.data.id,
+          },
+          {
+            answerset: resAnswerSet.data.id,
+          },
+          {
+            answerset: resAnswerSet.data.id,
+          },
+        ]);
+        if (resAnswers.error) throw resAnswers.error;
+
+        const translations = [
+          {
+            answer: resAnswers.data[0].id,
+            label: values.response,
+            language: language.id,
+            otherlabel: [],
+          },
+          {
+            answer: resAnswers.data[1].id,
+            label: values.wrongresponse1,
+            language: language.id,
+            otherlabel: [],
+          },
+          {
+            answer: resAnswers.data[2].id,
+            label: values.wrongresponse2,
+            language: language.id,
+            otherlabel: [],
+          },
+          {
+            answer: resAnswers.data[3].id,
+            label: values.wrongresponse3,
+            language: language.id,
+            otherlabel: [],
+          },
+        ];
+        const resAnswerTranslation = await insertAnswerTranslations(
+          translations
+        );
+        if (resAnswerTranslation.error) throw resAnswerTranslation.error;
+
         const newQuestion: QuestionInsert = {
           question: { "fr-FR": values.question },
           response: { "fr-FR": values.response },
@@ -83,21 +146,32 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
           allresponse: false,
           exact: false,
         };
-        insertQuestion(newQuestion).then(async ({ error, data }) => {
-          if (error) {
-            setSeverity("error");
-            setMessage(t("commun.error"));
-          } else {
-            const insertTheme = {
-              question: data.id,
-              theme: values.theme.id,
-            };
-            await insertQuestionTheme(insertTheme);
-            setSeverity("success");
-            setMessage(t("alert.addquestionpropose"));
-            validate();
-          }
+        const resQuestion = await insertQuestion(newQuestion);
+        if (resQuestion.error) throw resQuestion.error;
+
+        const resQuestionTheme = await insertQuestionTheme({
+          question: resQuestion.data.id,
+          theme: values.theme.id,
         });
+        if (resQuestionTheme.error) throw resQuestion.error;
+        const resQuestionAnswer = await insertQuestionAnswer({
+          question: resQuestion.data.id,
+          answer: resAnswers.data[0].id,
+        });
+        if (resQuestionAnswer.error) throw resQuestionAnswer.error;
+
+        const resQuestionTranslation = await insertQuestionTranslations([
+          {
+            question: resQuestion.data.id,
+            label: values.question,
+            language: language.id,
+          },
+        ]);
+        if (resQuestionTranslation.error) throw resQuestionTranslation.error;
+
+        setSeverity("success");
+        setMessage(t("alert.addquestionpropose"));
+        validate();
       } catch (err) {
         setSeverity("error");
         setMessage(t("commun.error"));

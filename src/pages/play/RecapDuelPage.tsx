@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { selectDuelGameById } from "src/api/game";
 import { CircularLoading } from "src/component/Loading";
 import { CancelDuelGameBlock } from "src/component/play/CancelDuelGameBlock";
@@ -12,10 +12,7 @@ import { DuelGame } from "src/models/DuelGame";
 
 export default function RecapDuelPage() {
   const { t } = useTranslation();
-  const location = useLocation();
   const { uuidGame } = useParams();
-
-  const extra = location.state ? location.state.extra : undefined;
 
   const [game, setGame] = useState<null | DuelGame>(null);
   const [loading, setLoading] = useState(true);
@@ -58,7 +55,7 @@ export default function RecapDuelPage() {
           game && (
             <>
               {game.status === "END" ? (
-                <EndDuelGameBlock game={game} extra={extra} />
+                <EndDuelGameBlock game={game} />
               ) : (
                 <CancelDuelGameBlock game={game} />
               )}

@@ -145,11 +145,6 @@ export default function ThemesPage() {
                 <Grid item xs={12}>
                   <FavoriteBlock />
                 </Grid>
-                {/*user && (
-                  <Grid item xs={12}>
-                    <PreviousGameBlock />
-                  </Grid>
-                )*/}
                 <Grid item xs={12}>
                   <NewBlock />
                 </Grid>

@@ -47,7 +47,7 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
 
   useEffect(() => {
     const getRank = () => {
-      if (game.player2 !== null) {
+      if (game.player2) {
         selectScoreByThemeAndPlayer(game.player2.id, game.theme.id).then(
           ({ data }) => {
             const res = data as Score;
@@ -130,16 +130,20 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
             gap: 1,
           }}
         >
-          <AvatarAccountBadge
-            profile={game.player2}
-            size={80}
-            color={Colors.colorDuel2}
-          />
-          <Typography variant="h4" sx={{ color: Colors.colorDuel2 }}>
-            {game.player2.username}
-          </Typography>
-          <ProfileTitleBlock titleprofile={game.player2.titleprofile} />
-          <LabelRankBlock loading={loadingP2} score={scoreP2} />
+          {game.player2 && (
+            <>
+              <AvatarAccountBadge
+                profile={game.player2}
+                size={80}
+                color={Colors.colorDuel2}
+              />
+              <Typography variant="h4" sx={{ color: Colors.colorDuel2 }}>
+                {game.player2.username}
+              </Typography>
+              <ProfileTitleBlock titleprofile={game.player2.titleprofile} />
+              <LabelRankBlock loading={loadingP2} score={scoreP2} />
+            </>
+          )}
         </Grid>
         <Grid item xs={12}>
           <Box

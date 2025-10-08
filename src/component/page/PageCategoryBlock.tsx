@@ -1,16 +1,18 @@
-import { Box, Grid } from "@mui/material";
+import { Alert, Box, Grid } from "@mui/material";
 import { useMemo } from "react";
 import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
 import { JsonLanguage } from "src/models/Language";
 import { CardImage, ICardImage } from "../card/CardImage";
 import { RankingBlock } from "../RankingBlock";
 import { TitleBlock } from "../title/Title";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   title?: JsonLanguage | string;
   values: Array<ICardImage>;
   addFavorite?: () => void;
   favorite?: boolean;
+  isLoading: boolean;
 }
 
 export const PageCategoryBlock = ({
@@ -18,7 +20,10 @@ export const PageCategoryBlock = ({
   values,
   addFavorite,
   favorite,
+  isLoading = false,
 }: Props) => {
+  const { t } = useTranslation();
+
   const idThemes = useMemo(
     () =>
       values.filter((el) => el.type === TypeCardEnum.THEME).map((el) => el.id),
@@ -37,16 +42,30 @@ export const PageCategoryBlock = ({
             />
           )}
         </Grid>
-        {idThemes.length > 0 && (
-          <Grid item xs={12}>
-            <RankingBlock themes={idThemes} />
-          </Grid>
+        {isLoading ? (
+          <></>
+        ) : (
+          <>
+            {values.length > 0 ? (
+              <>
+                {idThemes.length > 0 && (
+                  <Grid item xs={12}>
+                    <RankingBlock themes={idThemes} />
+                  </Grid>
+                )}
+                {values.map((value, index) => (
+                  <Grid item key={index}>
+                    <CardImage value={value} />
+                  </Grid>
+                ))}
+              </>
+            ) : (
+              <>
+                <Alert severity="warning">{t("alert.noresulttheme")}</Alert>
+              </>
+            )}
+          </>
         )}
-        {values.map((value, index) => (
-          <Grid item key={index}>
-            <CardImage value={value} />
-          </Grid>
-        ))}
       </Grid>
     </Box>
   );

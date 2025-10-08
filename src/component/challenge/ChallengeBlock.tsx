@@ -79,49 +79,48 @@ export const ResultChallengeWeek = ({ value }: PropsResultChallengeWeek) => {
   );
 };
 
-
 interface PropsResultChallengeMonth {
-    value?: ChallengeRankingMonth;
-  }
-  export const ResultChallengeMonth = ({ value }: PropsResultChallengeMonth) => {
-    const { t } = useTranslation();
-    return (
-      value && (
+  value?: ChallengeRankingMonth;
+}
+export const ResultChallengeMonth = ({ value }: PropsResultChallengeMonth) => {
+  const { t } = useTranslation();
+  return (
+    value && (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          textAlign: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Box>
+          <Typography variant="h6" noWrap>
+            {value.score} {t("commun.pointsabbreviation")} (
+            {value.scoreavg.toFixed(1)})
+          </Typography>
+        </Box>
+        <Box>
+          <Typography variant="h6" noWrap>
+            {(value.time / 1000).toFixed(2)}s
+          </Typography>
+        </Box>
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
-            textAlign: "center",
+            gap: px(4),
+            alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <Box>
-            <Typography variant="h6" noWrap>
-              {value.score} {t("commun.pointsabbreviation")} (
-              {value.scoreavg.toFixed(1)})
-            </Typography>
-          </Box>
-          <Box>
-            <Typography variant="h6" noWrap>
-              {(value.time / 1000).toFixed(2)}s
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              gap: px(4),
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Typography variant="h6" noWrap>
-              {value.games}
-            </Typography>
-            <Typography variant="body1" noWrap>
-              {t("commun.games")}
-            </Typography>
-          </Box>
+          <Typography variant="h6" noWrap>
+            {value.games}
+          </Typography>
+          <Typography variant="body1" noWrap>
+            {t("commun.games")}
+          </Typography>
         </Box>
-      )
-    );
-  };
+      </Box>
+    )
+  );
+};

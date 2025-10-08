@@ -19,6 +19,7 @@ export interface Report {
   duelgame: DuelGame | null;
   questionjson: any;
   created_at: Date;
+  version: number;
 }
 
 export interface ReportInsert {

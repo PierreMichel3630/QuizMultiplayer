@@ -31,7 +31,6 @@ import { ProfileTitleBlock } from "../title/ProfileTitle";
 
 export interface DataRankingChallenge {
   profile: Profile;
-  profileExtra?: JSX.Element;
   value: JSX.Element;
   extra?: JSX.Element;
   rank: number;

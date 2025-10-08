@@ -2,7 +2,7 @@ import { Question } from "src/models/Question";
 import { InputResponseBlock } from "./InputResponseBlock";
 import { QuestionBlock } from "./QuestionBlock";
 import {
-  Answer,
+  AnswerUser,
   Response,
   ResponseInputBlock,
   ResponsesQCMBlock,
@@ -13,7 +13,7 @@ interface Props {
   question?: Question;
   response?: Response;
   timer?: number;
-  onSubmit: (value: Answer) => void;
+  onSubmit: (value: AnswerUser) => void;
 }
 
 export const QuestionResponseBlock = ({
@@ -40,7 +40,7 @@ export const QuestionResponseBlock = ({
           ) : (
             <>
               {response ? (
-                <ResponseInputBlock response={response} />
+                <ResponseInputBlock question={question} response={response} />
               ) : (
                 <InputResponseBlock
                   onSubmit={onSubmit}
@@ -60,7 +60,7 @@ interface PropsQuestionResponseEditBlock {
   responseplayer1?: string | number;
   responseplayer2?: string | number;
   response?: Response;
-  onSubmit: (value: Answer) => void;
+  onSubmit: (value: AnswerUser) => void;
 }
 
 export const QuestionResponseEditBlock = ({
@@ -86,7 +86,7 @@ export const QuestionResponseEditBlock = ({
           ) : (
             <>
               {response ? (
-                <ResponseInputBlock response={response} />
+                <ResponseInputBlock response={response} question={question} />
               ) : (
                 <InputResponseBlock
                   onSubmit={onSubmit}

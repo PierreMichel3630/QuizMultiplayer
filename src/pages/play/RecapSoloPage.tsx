@@ -111,6 +111,7 @@ export default function RecapSoloPage() {
       <Box
         sx={{
           p: 1,
+          mb: px(140),
         }}
       >
         {game && (

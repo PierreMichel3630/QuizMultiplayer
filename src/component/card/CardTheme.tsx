@@ -245,7 +245,7 @@ export const CardAdminTheme = ({
   };
 
   return (
-    <Paper sx={{ p: 1 }}>
+    <Paper sx={{ p: 1 }} elevation={6}>
       <Grid container spacing={1} alignItems="center">
         <Grid item sx={{ width: px(50) }}>
           <Typography variant="h2">{theme.id}</Typography>
@@ -255,20 +255,22 @@ export const CardAdminTheme = ({
             <ImageThemeBlock theme={theme} />
           </Box>
         </Grid>
-        <Grid item xs>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            {theme.themetranslation.map((el, index) => (
-              <Box
-                key={index}
-                sx={{ display: "flex", gap: 1, alignItems: "center" }}
-              >
-                <LanguageIcon language={el.language} />
-                <Typography variant="h4" component="span">
-                  {el.name}
-                </Typography>
-              </Box>
-            ))}
-          </Box>
+        <Grid
+          item
+          xs
+          sx={{ display: "flex", flexDirection: "column", gap: px(5) }}
+        >
+          {theme.themetranslation.map((el, index) => (
+            <Box
+              key={index}
+              sx={{ display: "flex", gap: 1, alignItems: "center" }}
+            >
+              <LanguageIcon language={el.language} />
+              <Typography variant="h4" component="span">
+                {el.name}
+              </Typography>
+            </Box>
+          ))}
         </Grid>
         <Grid item>
           <FormGroup>

@@ -1,6 +1,7 @@
 import { Moment } from "moment";
 import { ChallengeGameUpdate } from "src/models/Challenge";
 import { supabase } from "./supabase";
+import { VERSION_QUESTION } from "src/utils/config";
 
 export const SUPABASE_CHALLENGE_TABLE = "challenge";
 export const SUPABASE_CHALLENGEGAME_TABLE = "challengegame";
@@ -24,13 +25,13 @@ export const updateChallengeGame = (value: ChallengeGameUpdate) =>
 
 export const selectChallengeByDateAndLanguage = (
   date: Moment,
-  language = "fr-FR"
+  language: number
 ) =>
   supabase
     .from(SUPABASE_CHALLENGE_TABLE)
     .select()
     .eq("date", date.format("YYYY-MM-DD"))
-    .eq("language", language)
+    .eq("language_id", language)
     .maybeSingle();
 
 export const countChallengeGameByDate = (
@@ -180,7 +181,7 @@ export const selectAvgChallengeByDateAndLanguage = (
 
 export const selectFirstRankingChallengeByDay = (
   date: string, // Format YYYY-MM-DD
-  language: string
+  language: number
 ) => {
   return supabase
     .from(SUPABASE_RANKINGCHALLENGE_VIEW)
@@ -188,27 +189,24 @@ export const selectFirstRankingChallengeByDay = (
       "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*)), challenge(*)"
     )
     .eq("challenge.date", date)
-    .eq("challenge.language", language)
+    .eq("challenge.language_id", language)
     .not("challenge", "is", null)
     .not("profile", "is", null)
     .eq("ranking", 1)
     .maybeSingle();
 };
 
-export const selectLastRankingChallengeByDay = (
-  date: string, // Format YYYY-MM-DD
-  language: string
-) => {
+export const selectBestRankingChallengeByDay = (language: number) => {
   return supabase
     .from(SUPABASE_RANKINGCHALLENGE_VIEW)
     .select(
       "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*)), challenge(*)"
     )
-    .eq("challenge.date", date)
-    .eq("challenge.language", language)
+    .eq("challenge.language_id", language)
     .not("challenge", "is", null)
     .not("profile", "is", null)
-    .order("ranking", { ascending: false })
+    .order("score", { ascending: false })
+    .order("time")
     .limit(1)
     .maybeSingle();
 };
@@ -370,17 +368,15 @@ export const selectFirstRankingChallengeByMonth = (
     .maybeSingle();
 };
 
-export const selectLastRankingChallengeByMonth = (
-  date: string // Format MM/YYYY
-) => {
+export const selectBestRankingChallengeByMonth = () => {
   return supabase
     .from(SUPABASE_CHALLENGEGAMEMONTH_VIEW)
     .select(
       "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*))"
     )
-    .eq("month", date)
     .not("profile", "is", null)
-    .order("ranking", { ascending: false })
+    .order("score", { ascending: false })
+    .order("time")
     .limit(1)
     .maybeSingle();
 };
@@ -515,17 +511,15 @@ export const selectFirstRankingChallengeByWeek = (
     .maybeSingle();
 };
 
-export const selectLastRankingChallengeByWeek = (
-  date: string // Format WW/YYYY
-) => {
+export const selectBestRankingChallengeByWeek = () => {
   return supabase
     .from(SUPABASE_CHALLENGEGAMEWEEK_VIEW)
     .select(
       "*, profile(*, title(*), avatar(*), badge(*), banner(*), country(*))"
     )
-    .eq("week", date)
     .not("profile", "is", null)
-    .order("ranking", { ascending: false })
+    .order("score", { ascending: false })
+    .order("time")
     .limit(1)
     .maybeSingle();
 };
@@ -563,6 +557,7 @@ export const launchChallenge = (date: string, language: number) =>
     body: {
       date,
       language,
+      version: VERSION_QUESTION,
     },
   });
 

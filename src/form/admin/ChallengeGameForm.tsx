@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import { ButtonColor } from "src/component/Button";
 import { ProfileBlock } from "src/component/profile/ProfileBlock";
 import { QuestionResponseEditBlock } from "src/component/question/QuestionResponseBlock";
-import { Answer, Response } from "src/component/question/ResponseBlock";
+import { AnswerUser, Response } from "src/component/question/ResponseBlock";
 import { useMessage } from "src/context/MessageProvider";
 import { ChallengeGame, ChallengeGameUpdate } from "src/models/Challenge";
 import { QuestionResult } from "src/models/Question";
@@ -72,7 +72,7 @@ export const ChallengeGameForm = ({ game, validate }: Props) => {
     },
   });
 
-  const changeResponse = (question: QuestionResult, value: Answer) => {
+  const changeResponse = (question: QuestionResult, value: AnswerUser) => {
     const index = formik.values.questions.findIndex(
       (el) => el.id === question.id
     );

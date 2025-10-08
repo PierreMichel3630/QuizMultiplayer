@@ -1,4 +1,4 @@
-import { Answer } from "src/component/question/ResponseBlock";
+import { AnswerUser } from "src/component/question/ResponseBlock";
 import { Question, QuestionResult } from "src/models/Question";
 import { compareTwoStrings } from "string-similarity";
 import { decryptToNumber } from "./crypt";
@@ -43,7 +43,7 @@ const compareString = (a: string, b: string) =>
 export const verifyResponseCrypt = (
   question: Question,
   language: Language,
-  answer: Answer
+  answer: AnswerUser
 ) => {
   let result = false;
   const myResponseValue = answer.value;
@@ -95,7 +95,10 @@ export const getResponse = (question: Question, language: Language) => {
   return result;
 };
 
-export const verifyResponse = (question: QuestionResult, answer: Answer) => {
+export const verifyResponse = (
+  question: QuestionResult,
+  answer: AnswerUser
+) => {
   let result = false;
   const myResponseValue = answer.value;
   const decryptResponse = question.response;
