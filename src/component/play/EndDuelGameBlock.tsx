@@ -297,7 +297,7 @@ export const EndDuelGameBlock = ({ game }: Props) => {
             }}
           />
         </Grid>
-        {[...game.questionsv2].map((el) => (
+        {[...game.questions].map((el) => (
           <Fragment key={el.id}>
             <Grid item xs={12}>
               <CardSignalQuestion

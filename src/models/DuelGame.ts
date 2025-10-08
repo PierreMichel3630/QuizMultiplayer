@@ -15,7 +15,6 @@ export interface DuelGame {
   ptsplayer2: number;
   status: StatusGameDuel;
   questions: Array<QuestionResult>;
-  questionsv2: Array<QuestionResult>;
   battlegame: null | string;
   created_at: Date;
   version: number;
