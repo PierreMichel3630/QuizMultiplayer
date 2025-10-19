@@ -22,6 +22,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
 
 import BarChartIcon from "@mui/icons-material/BarChart";
+import PieChartIcon from "@mui/icons-material/PieChart";
 import BrushIcon from "@mui/icons-material/Brush";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
@@ -32,14 +33,15 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import SecurityIcon from "@mui/icons-material/Security";
+import EditIcon from "@mui/icons-material/Edit";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { HeadTitle } from "src/component/HeadTitle";
-import { MoneyBlock } from "src/component/MoneyBlock";
 import { ShareApplicationBlock } from "src/component/ShareApplicationBlock";
 import { ProfileTitleBlock } from "src/component/title/ProfileTitle";
 import { useApp } from "src/context/AppProvider";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { getLevel } from "src/utils/calcul";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 interface Menu {
   value: string;
@@ -80,6 +82,12 @@ export default function MenuPage() {
         label: t("commun.ranking"),
         icon: <BarChartIcon />,
         to: "/ranking",
+      },
+      {
+        value: "accomplishments",
+        label: t("commun.accomplishments"),
+        icon: <EmojiEventsIcon />,
+        to: "/accomplishments",
       },
       {
         value: "faq",
@@ -124,6 +132,12 @@ export default function MenuPage() {
         to: "/personalized",
       },
       {
+        value: "statistical",
+        label: t("commun.mystatistics"),
+        icon: <PieChartIcon />,
+        to: profile ? `/profil/${profile.id}` : "/login",
+      },
+      {
         value: "ranking",
         label: t("commun.ranking"),
         icon: <BarChartIcon />,
@@ -137,7 +151,13 @@ export default function MenuPage() {
             <EmojiEventsIcon />
           </Badge>
         ),
-        to: profile ? `/accomplishments` : `/login`,
+        to: `/accomplishments`,
+      },
+      {
+        value: "proposals",
+        label: t("commun.myproposals"),
+        icon: <EditIcon />,
+        to: profile ? `/myproposals` : "/login",
       },
       {
         value: "history",
@@ -152,6 +172,12 @@ export default function MenuPage() {
         value: "compare",
         to: "/compare",
         state: { profile1: profile },
+      },
+      {
+        label: t("commun.parameters"),
+        icon: <SettingsIcon />,
+        value: "parameters",
+        to: "/parameters",
       },
       {
         value: "faq",
@@ -240,19 +266,6 @@ export default function MenuPage() {
                 </Typography>
                 <ProfileTitleBlock titleprofile={profile.titleprofile} />
               </Grid>
-              {profile && (
-                <Grid
-                  item
-                  xs={12}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    color: "white",
-                  }}
-                >
-                  <MoneyBlock money={profile.money} />
-                </Grid>
-              )}
               {profile.country && (
                 <Grid
                   item

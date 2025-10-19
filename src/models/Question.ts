@@ -12,10 +12,17 @@ import { TypeQuestionEnum } from "./enum/TypeQuestionEnum";
 
 export interface QuestionPropose {
   id: number;
-  question: JsonLanguage;
-  response: JsonLanguage;
-  responses: Array<JsonLanguage>;
+  image?: string;
+  audio?: string;
+  typequestion: string;
   difficulty: string;
+  isqcm: boolean | null;
+  validate: boolean;
+  enabled: boolean;
+  questiontranslation: Array<QuestionTranslation>;
+  questionanswer: Array<QuestionAnswer>;
+  questiontheme: Array<QuestionTheme>;
+  answerset: number;
 }
 
 export interface QuestionEnd {
@@ -39,6 +46,7 @@ export interface QuestionAdmin {
   difficulty: string;
   isqcm: boolean | null;
   validate: boolean;
+  enabled: boolean;
   questiontranslation: Array<QuestionTranslation>;
   questionanswer: Array<QuestionAnswer>;
   questiontheme: Array<QuestionTheme>;
@@ -68,7 +76,7 @@ export interface QuestionInsert {
   difficulty: string;
   question: JsonLanguage;
   image: string | null;
-  response: JsonLanguage;
+  response: any;
   typeResponse: string | null;
   responses?: Array<JsonLanguage>;
   isqcm: boolean | null;
@@ -76,6 +84,7 @@ export interface QuestionInsert {
   validate: boolean;
   allresponse: boolean;
   exact: boolean;
+  proposeby?: string;
 }
 
 export interface QuestionTheme {

@@ -147,3 +147,11 @@ export const selectQuestionsPropose = () =>
       "*, questiontranslation(*, language(*)), questionanswer(*, answer(*, answertranslation(*, language(*)))), questiontheme(*, theme(id, color,image ,themetranslation!inner(name, language(*))))"
     )
     .eq("validate", false);
+
+export const selectQuestionsProposeBy = (uuid: string) =>
+  supabase
+    .from(SUPABASE_QUESTION_TABLE)
+    .select(
+      "*, questiontranslation(*, language(*)), questionanswer(*, answer(*, answertranslation(*, language(*)))), questiontheme(*, theme(id, color,image ,themetranslation!inner(name, language(*))))"
+    )
+    .eq("proposeby", uuid);

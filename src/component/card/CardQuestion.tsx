@@ -2,6 +2,7 @@ import { Box, Grid, Paper, Typography } from "@mui/material";
 import { percent, px } from "csx";
 import {
   QuestionAdmin,
+  QuestionPropose,
   QuestionResult,
   QuestionResultV1,
   QuestionUpdate,
@@ -40,6 +41,8 @@ import {
 import { CardSignalQuestionV1 } from "./CardQuestionV1";
 import { ThemesList } from "../theme/ThemesList";
 import { CreateEditThemeQuestionDialog } from "../modal/CreateEditThemeQuestionDialog";
+import { ProposeAlert } from "../alert/ProposeAlert";
+import { StatusPropose } from "src/models/enum/Propose";
 
 interface Props {
   question: QuestionAdmin;
@@ -438,5 +441,70 @@ export const CardSignalQuestionV2 = ({
         )}
       </Grid>
     </Box>
+  );
+};
+
+interface CardProposeQuestionProps {
+  question: QuestionPropose;
+}
+
+export const CardProposeQuestion = ({ question }: CardProposeQuestionProps) => {
+  const { language } = useUser();
+  const [wrongAnswers, setWrongAnswers] = useState<Array<Answer>>([]);
+
+  useEffect(() => {
+    getWrongAnswer(question).then(({ data }) => {
+      const res = data ?? [];
+      setWrongAnswers(res);
+    });
+  }, [question]);
+
+  const status = useMemo(() => {
+    let value = StatusPropose.INPROGRESS;
+    if (question.enabled && question.validate) {
+      value = StatusPropose.VALIDATE;
+    } else if (!question.enabled) {
+      value = StatusPropose.MAINTENANCE;
+    }
+    return value;
+  }, [question]);
+
+  return (
+    <Paper
+      sx={{
+        p: 1,
+        position: "relative",
+        backgroundColor: Colors.black,
+        color: Colors.white,
+      }}
+      elevation={24}
+    >
+      <Grid container spacing={1} justifyContent="center">
+        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <ProposeAlert value={status} />
+        </Grid>
+        {question.image && (
+          <Grid item xs={12} sx={{ height: px(200) }}>
+            <ImageQuestionBlock src={question.image} />
+          </Grid>
+        )}
+        {question.questiontranslation[0] && (
+          <Grid item xs={12} sx={{ textAlign: "center" }}>
+            <Typography variant="h2" component="span">
+              {question.questiontranslation[0].label}
+            </Typography>
+          </Grid>
+        )}
+        {language && (
+          <Grid item xs={12}>
+            <ResponsesBlockAdmin
+              answer={question.questionanswer[0].answer}
+              language={language}
+              wrongAnswers={wrongAnswers}
+            />
+          </Grid>
+        )}
+      </Grid>
+    </Paper>
   );
 };

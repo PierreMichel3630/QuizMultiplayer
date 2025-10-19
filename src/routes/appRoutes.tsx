@@ -50,6 +50,7 @@ import BannersPage from "src/pages/shop/BannersPage";
 import ShopPage from "src/pages/shop/ShopPage";
 import ShopThemePage from "src/pages/shop/ShopThemePage";
 import TitlesPage from "src/pages/shop/TitlesPage";
+import MyProposalsPage from "src/pages/MyProposalsPage";
 
 export const AppRoutes = [
   {
@@ -126,7 +127,7 @@ export const AppRoutes = [
         element: <RankingPage />,
       },
       {
-        path: "/menu",
+        path: "/menus",
         element: <MenuPage />,
       },
       {
@@ -164,6 +165,10 @@ export const AppRoutes = [
       {
         path: "/parameters",
         element: <ParameterPage />,
+      },
+      {
+        path: "/myproposals",
+        element: <MyProposalsPage />,
       },
       {
         path: "/share",

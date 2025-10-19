@@ -8,19 +8,17 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AppsIcon from "@mui/icons-material/Apps";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import { important, padding, px } from "csx";
+import MenuIcon from "@mui/icons-material/Menu";
+import { padding, px } from "csx";
 import { useApp } from "src/context/AppProvider";
 import { LogoIcon } from "src/icons/LogoIcon";
 import { Colors } from "src/style/Colors";
-import { useAuth } from "src/context/AuthProviderSupabase";
 
 export const BottomNavigationBlock = () => {
   const { t } = useTranslation();
-  const { profile } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const { myaccomplishments } = useApp();
@@ -89,21 +87,12 @@ export const BottomNavigationBlock = () => {
           to={"/ranking"}
         />
         <BottomNavigationAction
-          sx={{
-            p: padding(0, 5),
-            minWidth: px(30),
-            fontSize: important(px(10)),
-          }}
-          value={"myprofile"}
-          label={t("commun.profile")}
-          icon={<AccountCircleIcon />}
-          onClick={() => {
-            if (profile) {
-              navigate(`/profil/${profile.id}`);
-            } else {
-              navigate("/login");
-            }
-          }}
+          sx={{ p: padding(0, 5), minWidth: px(30) }}
+          value={"menus"}
+          label={t("commun.menus")}
+          icon={<MenuIcon />}
+          component={Link}
+          to={"/menus"}
         />
       </BottomNavigation>
       <Box

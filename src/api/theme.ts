@@ -132,6 +132,12 @@ export const selectThemesProposeAdmin = () =>
     .eq("validate", false)
     .eq("enabled", true);
 
+export const selectThemesProposeBy = (uuid: string) =>
+  supabase
+    .from(SUPABASE_THEME_TABLE)
+    .select("*, themetranslation!inner(id, name, language(*))")
+    .eq("proposeby", uuid);
+
 export const countThemes = (language: Language, search: string) => {
   let query = supabase
     .from(SUPABASE_THEME_TABLE)

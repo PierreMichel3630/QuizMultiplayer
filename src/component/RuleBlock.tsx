@@ -1,14 +1,16 @@
 import { Avatar, Box, Grid, Typography } from "@mui/material";
 import { percent } from "csx";
-import { useTranslation } from "react-i18next";
 
 import { Colors } from "src/style/Colors";
 
-export const RuleBlock = () => {
-  const { t } = useTranslation();
-
-  const rules = [t("rules.step1"), t("rules.step2"), t("rules.step3")];
-
+interface Rule {
+  label: string;
+  extra?: JSX.Element;
+}
+interface Props {
+  rules: Array<Rule>;
+}
+export const RuleBlock = ({ rules }: Props) => {
   return (
     <Grid container spacing={1}>
       {rules.map((rule, index) => (
@@ -32,9 +34,14 @@ export const RuleBlock = () => {
                 {index + 1}
               </Typography>
             </Avatar>
-            <Typography variant="h6" color="text.secondary">
-              {rule}
-            </Typography>
+            <Box
+              sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 1 }}
+            >
+              <Typography variant="h6" color="text.secondary">
+                {rule.label}
+              </Typography>
+              {rule.extra && <>{rule.extra}</>}
+            </Box>
           </Box>
         </Grid>
       ))}

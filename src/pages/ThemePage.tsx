@@ -67,7 +67,7 @@ export default function ThemePage() {
   const [loadingQuestions, setLoadingQuestions] = useState(true);
 
   const loading = useMemo(
-    () => loadingTheme && loadingQuestions,
+    () => loadingTheme || loadingQuestions,
     [loadingQuestions, loadingTheme]
   );
 
@@ -324,98 +324,102 @@ export default function ThemePage() {
                     <Grid item xs={5} sm={3} md={3} lg={3}>
                       <ImageThemeBlock theme={theme} />
                     </Grid>
-                    <Grid item xs={7} sm={6} md={6} lg={6}>
-                      <Grid container spacing={1}>
-                        {(theme.enabled && theme.validate && questions !== 0) ||
-                        profile?.isadmin ? (
-                          <>
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                size="small"
-                                value={Colors.red}
-                                label={t("commun.duel")}
-                                icon={OfflineBoltIcon}
-                                onClick={() => playDuel()}
-                                variant="contained"
-                              />
-                            </Grid>
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                size="small"
-                                value={Colors.blue2}
-                                label={t("commun.playsolo")}
-                                icon={PlayCircleIcon}
-                                onClick={() => playSolo()}
-                                variant="contained"
-                              />
-                            </Grid>
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                size="small"
-                                value={Colors.purple}
-                                label={t("commun.training")}
-                                icon={FitnessCenterIcon}
-                                onClick={() => playTraining()}
-                                variant="contained"
-                              />
-                            </Grid>
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                size="small"
-                                value={Colors.green}
-                                label={t("commun.friendduel")}
-                                icon={SupervisedUserCircleRoundedIcon}
-                                onClick={() => {
-                                  if (user) {
-                                    setOpenModalFriend(true);
-                                  } else {
-                                    navigate(`/login`);
-                                  }
-                                }}
-                                variant="contained"
-                              />
-                            </Grid>
-                          </>
-                        ) : (
-                          <>
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                value={Colors.blue}
-                                label={t("commun.return")}
-                                icon={KeyboardReturnIcon}
-                                onClick={() => navigate(-1)}
-                                variant="contained"
-                              />
-                            </Grid>
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                value={Colors.green}
-                                label={t("commun.returnhome")}
-                                icon={HomeIcon}
-                                onClick={() => navigate("/")}
-                                variant="contained"
-                              />
-                            </Grid>
-                          </>
-                        )}
-                        <Grid item xs={12}>
-                          <ButtonColor
-                            size="small"
-                            value={Colors.pink}
-                            label={t("commun.proposequestion")}
-                            icon={QuestionMarkIcon}
-                            onClick={() => {
-                              if (profile) {
-                                setOpenProposeQuestion(true);
-                              } else {
-                                navigate(`/login`);
-                              }
-                            }}
-                            variant="contained"
-                          />
+                    {!loadingQuestions && (
+                      <Grid item xs={7} sm={6} md={6} lg={6}>
+                        <Grid container spacing={1}>
+                          {(theme.enabled &&
+                            theme.validate &&
+                            questions !== 0) ||
+                          profile?.isadmin ? (
+                            <>
+                              <Grid item xs={12}>
+                                <ButtonColor
+                                  size="small"
+                                  value={Colors.red}
+                                  label={t("commun.duel")}
+                                  icon={OfflineBoltIcon}
+                                  onClick={() => playDuel()}
+                                  variant="contained"
+                                />
+                              </Grid>
+                              <Grid item xs={12}>
+                                <ButtonColor
+                                  size="small"
+                                  value={Colors.blue2}
+                                  label={t("commun.playsolo")}
+                                  icon={PlayCircleIcon}
+                                  onClick={() => playSolo()}
+                                  variant="contained"
+                                />
+                              </Grid>
+                              <Grid item xs={12}>
+                                <ButtonColor
+                                  size="small"
+                                  value={Colors.purple}
+                                  label={t("commun.training")}
+                                  icon={FitnessCenterIcon}
+                                  onClick={() => playTraining()}
+                                  variant="contained"
+                                />
+                              </Grid>
+                              <Grid item xs={12}>
+                                <ButtonColor
+                                  size="small"
+                                  value={Colors.green}
+                                  label={t("commun.friendduel")}
+                                  icon={SupervisedUserCircleRoundedIcon}
+                                  onClick={() => {
+                                    if (user) {
+                                      setOpenModalFriend(true);
+                                    } else {
+                                      navigate(`/login`);
+                                    }
+                                  }}
+                                  variant="contained"
+                                />
+                              </Grid>
+                            </>
+                          ) : (
+                            <>
+                              <Grid item xs={12}>
+                                <ButtonColor
+                                  value={Colors.blue}
+                                  label={t("commun.return")}
+                                  icon={KeyboardReturnIcon}
+                                  onClick={() => navigate(-1)}
+                                  variant="contained"
+                                />
+                              </Grid>
+                              <Grid item xs={12}>
+                                <ButtonColor
+                                  value={Colors.green}
+                                  label={t("commun.returnhome")}
+                                  icon={HomeIcon}
+                                  onClick={() => navigate("/")}
+                                  variant="contained"
+                                />
+                              </Grid>
+                            </>
+                          )}
+                          <Grid item xs={12}>
+                            <ButtonColor
+                              size="small"
+                              value={Colors.pink}
+                              label={t("commun.proposequestion")}
+                              icon={QuestionMarkIcon}
+                              onClick={() => {
+                                if (profile) {
+                                  setOpenProposeQuestion(true);
+                                } else {
+                                  navigate(`/login`);
+                                }
+                              }}
+                              variant="contained"
+                            />
+                          </Grid>
                         </Grid>
                       </Grid>
-                    </Grid>
+                    )}
                   </Grid>
                 </Box>
               </Grid>

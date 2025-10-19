@@ -132,6 +132,8 @@ export const AppProvider = ({ children }: Props) => {
         const value = data !== null ? (data as Array<Favorite>) : [];
         setFavorites(value);
       });
+    } else {
+      setFavorites([]);
     }
   }, [user]);
 
@@ -145,6 +147,8 @@ export const AppProvider = ({ children }: Props) => {
         const value = data !== null ? (data as Array<Friend>) : [];
         setFriends(value.filter((el) => el.status !== FRIENDSTATUS.REFUSE));
       });
+    } else {
+      setFriends([]);
     }
   }, [user]);
 
@@ -169,6 +173,8 @@ export const AppProvider = ({ children }: Props) => {
         const res = data !== null ? (data as Array<BadgeProfile>) : [];
         setMyBadges(res.map((el) => el.badge));
       });
+    } else {
+      setMyBadges([]);
     }
   }, [user]);
 
@@ -182,6 +188,8 @@ export const AppProvider = ({ children }: Props) => {
         const res = data !== null ? (data as Array<AvatarProfile>) : [];
         setMyAvatars(res.map((el) => el.avatar));
       });
+    } else {
+      setMyAvatars([]);
     }
   }, [user]);
 
@@ -195,6 +203,8 @@ export const AppProvider = ({ children }: Props) => {
         const res = data !== null ? (data as Array<BannerProfile>) : [];
         setMybanners(res.map((el) => el.banner));
       });
+    } else {
+      setMybanners([]);
     }
   }, [user]);
 
@@ -203,13 +213,17 @@ export const AppProvider = ({ children }: Props) => {
   }, [getMyBanners, user]);
 
   const getMyTitles = useCallback(() => {
-    if (user && language) {
+    if (user) {
       selectTitleByProfile(user.id).then(({ data }) => {
         const res = data ?? [];
         setMyTitles(
-          [...res].sort((a, b) => sortByName(language, a.title, b.title))
+          language
+            ? [...res].sort((a, b) => sortByName(language, a.title, b.title))
+            : [...res]
         );
       });
+    } else {
+      setMyTitles([]);
     }
   }, [user, language]);
 
@@ -223,6 +237,8 @@ export const AppProvider = ({ children }: Props) => {
         const res = data !== null ? (data as Array<ProfileAccomplishment>) : [];
         setMyaccomplishments(res);
       });
+    } else {
+      setMyaccomplishments([]);
     }
   }, [user]);
 

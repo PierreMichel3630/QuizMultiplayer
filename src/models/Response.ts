@@ -33,10 +33,8 @@ export interface ResponseTraining {
 }
 
 export interface ResponseDuel {
-  result: boolean;
-  answerPlayer?: string | number;
-  answer: string | number;
-  time: number;
+  uuid: string;
+  value?: string | number;
 }
 
 export interface ResponseDuelV2 {

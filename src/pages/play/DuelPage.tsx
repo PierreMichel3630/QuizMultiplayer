@@ -24,7 +24,7 @@ import { RoundTimer, VerticalTimer } from "src/component/time/Timer";
 import { useUser } from "src/context/UserProvider";
 import { DuelGame, DuelGameChange } from "src/models/DuelGame";
 import { QuestionDuel } from "src/models/Question";
-import { ResponseDuel, ResponseDuelV2 } from "src/models/Response";
+import { ResponseDuelV2 } from "src/models/Response";
 import { StatusGameDuel } from "src/models/enum/StatusGame";
 import { Colors } from "src/style/Colors";
 import { Bot, getBotByUuid, getResponseBot } from "src/utils/bot";
@@ -165,14 +165,15 @@ export default function DuelPage() {
         .on("broadcast", { event: "cancel" }, () => {
           navigate(`/recapduel/${uuidGame}`);
         })
-        .on("broadcast", { event: "response" }, (value) => {
-          const res = value.payload as ResponseDuel;
-          console.log(res);
-        })
         .on("broadcast", { event: "responseV2" }, (value) => {
           const res = value.payload as ResponseDuelV2;
           if (res.uuid === uuidAdverse) {
-            setResponsesAdverse((prev) => [...prev, res]);
+            setResponsesAdverse((prev) => {
+              const question = [...prev].find(
+                (el) => el.question === res.question
+              );
+              return question ? prev : [...prev, res];
+            });
           }
         })
         .subscribe(async (status) => {
@@ -199,6 +200,9 @@ export default function DuelPage() {
           ? verifyResponseCrypt(question, language, value)
           : false;
         const answer = decrypt(question.answer) as string;
+        const response = [...question.answers].findIndex(
+          (el) => el.id === value.value
+        );
         if (game?.player1.id === value.uuid) {
           setResponse((prev) => ({
             ...prev,
@@ -217,6 +221,15 @@ export default function DuelPage() {
               time: timeDiff,
               answer: value.value,
             } as ResponseDuelV2,
+          });
+          channel.send({
+            type: "broadcast",
+            event: "response",
+            payload: {
+              uuid: value.uuid,
+              language: language.iso,
+              response: response,
+            },
           });
           updateScore(setScoreP1, result, timeDiff);
         } else if (game?.player2?.id === value.uuid) {
@@ -237,6 +250,15 @@ export default function DuelPage() {
               time: timeDiff,
               answer: value.value,
             } as ResponseDuelV2,
+          });
+          channel.send({
+            type: "broadcast",
+            event: "response",
+            payload: {
+              uuid: value.uuid,
+              language: language.iso,
+              response: response,
+            },
           });
           updateScore(setScoreP2, result, timeDiff);
         }
@@ -370,7 +392,8 @@ export default function DuelPage() {
             timePlayer2: response.time,
           }));
           updateScore(setScoreP2, response.result, response.time);
-        } else if (isPlayer2) {
+        }
+        if (isPlayer2) {
           setResponse((prev) => ({
             ...prev,
             responsePlayer1: response.answer,

@@ -20,10 +20,8 @@ import {
   insertQuestionTranslations,
 } from "src/api/question";
 import { ButtonColor } from "src/component/Button";
-import { SelectDifficulty } from "src/component/Select";
 import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
-import { Difficulty } from "src/models/enum/DifficultyEnum";
 import { QuestionInsert } from "src/models/Question";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
@@ -36,7 +34,7 @@ interface Props {
 
 export const ProposeQuestionForm = ({ validate, theme }: Props) => {
   const { t } = useTranslation();
-  const { language } = useUser();
+  const { language, uuid } = useUser();
   const { setMessage, setSeverity } = useMessage();
 
   const initialValue: {
@@ -131,7 +129,7 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
 
         const newQuestion: QuestionInsert = {
           question: { "fr-FR": values.question },
-          response: { "fr-FR": values.response },
+          response: [{ "fr-FR": values.response }],
           difficulty: values.difficulty,
           isqcm: true,
           typequestion: "QCM",
@@ -145,6 +143,7 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
           typeResponse: null,
           allresponse: false,
           exact: false,
+          proposeby: uuid,
         };
         const resQuestion = await insertQuestion(newQuestion);
         if (resQuestion.error) throw resQuestion.error;
@@ -182,22 +181,6 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={2} alignItems="center">
-        <Grid item xs={12}>
-          <FormControl
-            fullWidth
-            error={Boolean(
-              formik.touched.difficulty && formik.errors.difficulty
-            )}
-          >
-            <SelectDifficulty
-              value={formik.values.difficulty as Difficulty}
-              onSelect={(value) => formik.setFieldValue("difficulty", value)}
-            />
-            <FormHelperText error id={`error-difficulty`}>
-              {formik.errors.difficulty}
-            </FormHelperText>
-          </FormControl>
-        </Grid>
         <Grid item xs={12}>
           <FormControl
             fullWidth

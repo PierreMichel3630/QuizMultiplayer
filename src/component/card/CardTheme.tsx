@@ -14,84 +14,19 @@ import {
 } from "@mui/material";
 import { percent, px } from "csx";
 import { ChangeEvent, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { useApp } from "src/context/AppProvider";
 import { Theme, ThemeUpdate } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-import StarIcon from "@mui/icons-material/Star";
 import { useTranslation } from "react-i18next";
 import { updateTheme } from "src/api/theme";
 import { useMessage } from "src/context/MessageProvider";
+import { StatusPropose } from "src/models/enum/Propose";
+import { ProposeAlert } from "../alert/ProposeAlert";
 import { LanguageIcon } from "../language/LanguageBlock";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 import { ICardImage } from "./CardImage";
-
-interface Props {
-  theme: Theme;
-  link?: string;
-  width?: number;
-}
-
-export const CardTheme = ({ theme, link, width = 95 }: Props) => {
-  const navigate = useNavigate();
-  const { favorites } = useApp();
-
-  const goTheme = () => {
-    navigate(link ?? `/theme/${theme.id}`);
-  };
-
-  const isFavorite = useMemo(
-    () => favorites.some((favorite) => favorite.theme === theme.id),
-    [favorites, theme]
-  );
-
-  return (
-    <Box
-      onClick={() => goTheme()}
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        flexDirection: "column",
-        cursor: "pointer",
-        borderRadius: px(10),
-        gap: px(2),
-        mt: 1,
-        width: width,
-        position: "relative",
-      }}
-    >
-      <ImageThemeBlock theme={theme} size={width} />
-      <Typography
-        variant="h6"
-        sx={{
-          width: percent(100),
-          overflow: "hidden",
-          display: "-webkit-box",
-          WebkitLineClamp: 3,
-          WebkitBoxOrient: "vertical",
-          textAlign: "center",
-        }}
-      >
-        {theme.title}
-      </Typography>
-      {isFavorite && (
-        <StarIcon
-          sx={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            transform: "translate(25%, -25%)",
-            fontSize: 40,
-            color: Colors.yellow4,
-            stroke: Colors.white,
-          }}
-        />
-      )}
-    </Box>
-  );
-};
 
 interface PropsCardSelectAvatarTheme {
   theme: {
@@ -346,6 +281,60 @@ export const CardThemeHorizontal = ({
           onChange();
         }}
       />
+    </Paper>
+  );
+};
+
+interface PropsCardProposeTheme {
+  theme: Theme;
+}
+
+export const CardProposeTheme = ({ theme }: PropsCardProposeTheme) => {
+  const status = useMemo(() => {
+    let value = StatusPropose.INPROGRESS;
+    if (theme.enabled && theme.validate) {
+      value = StatusPropose.VALIDATE;
+    } else if (!theme.enabled) {
+      value = StatusPropose.MAINTENANCE;
+    }
+    return value;
+  }, [theme]);
+
+  return (
+    <Paper
+      variant="outlined"
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 2,
+        p: px(5),
+        justifyContent: "space-between",
+        backgroundColor: Colors.grey,
+      }}
+    >
+      <Grid container spacing={1} justifyContent="center" alignItems="center">
+        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <ProposeAlert value={status} />
+        </Grid>
+        <Grid item>
+          <ImageThemeBlock theme={theme} size={35} border={false} />
+        </Grid>
+        <Grid item xs sx={{ textAlign: "center" }}>
+          <TextNameBlock
+            variant="h4"
+            sx={{
+              overflow: "hidden",
+              display: "block",
+              lineClamp: 1,
+              boxOrient: "vertical",
+              textOverflow: "ellipsis",
+            }}
+            noWrap
+            color="text.secondary"
+            values={theme.themetranslation}
+          />
+        </Grid>
+      </Grid>
     </Paper>
   );
 };

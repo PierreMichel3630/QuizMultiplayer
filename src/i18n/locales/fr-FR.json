@@ -38,7 +38,7 @@
     "player_other": "{{count}} joueurs",
     "position_one": "{{count}}<sup>er</sup>",
     "position_other": "{{count}}<sup>ème</sup>",
-    "questions": "questions",
+    "questions": "Questions",
     "question_one": "{{count}} question",
     "question_other": "{{count}} questions",
     "questionid": "Question {{id}}",
@@ -250,10 +250,11 @@
     "select2player": "Sélectionner 2 joueurs à comparer",
     "compare": "Comparer",
     "howtoplay": "Comment jouer ?",
-    "faq": "FAQ",
+    "faq": "Foire aux questions",
     "installation": "Installer",
     "modes": "Les Modes de Jeu",
     "rules": "Étapes",
+    "step": "Étape {{count}} - ",
     "warnings": "Avertissements",
     "link": "Lien",
     "reportproblem": "Signaler un problème",
@@ -362,7 +363,15 @@
     "streak": "Série",
     "money": "Argent",
     "translations": "Traductions",
-    "totranslation": "À traduire"
+    "totranslation": "À traduire",
+    "or": "Ou",
+    "viaexcel" : "Via Excel",
+    "viaform" : "Via Formulaire",
+    "template" : "Template",
+    "download": "Télécharger",
+    "inprogress": "En cours de traitement",
+    "myproposals": "Mes propositions (Thèmes / Questions)",
+    "propositionvalidate": "Vos propositions de questions on été prise en compte. Elles seront traités le plus rapidement possible par un administrateur."
   },
   "abrevation": {
     "average": "Moy."
@@ -738,7 +747,7 @@
     "proposequestion": {
       "question": "Question *",
       "placehoderquestion": "Exemple : De quelle couleur est le cheval blanc d'Henri IV ?",
-      "response": "Réponse *",
+      "response": "Bonne réponse *",
       "placehoderresponse": "Exemple : Blanc",
       "wrongresponse1": "Mauvaise réponse 1",
       "placeholderwrongresponse1": "Exemple : Rouge",
@@ -770,6 +779,9 @@
     "sizetoolarge": "Taille du fichier trop grande"
   },
   "alert": {
+    "inprogress": "En attente de validation",
+    "validate": "Demande validée" ,
+    "maintenance": "En maintenance",
     "pagenotfound": "Cette page n'est pas disponible.",
     "noresult": "Aucun résultat.",
     "noresulttheme": "Aucun thème ne correspond à cette catégorie.",
@@ -920,5 +932,23 @@
     "fightfriend":"Combat contre un ami",
     "randomquestion": "Question Aléatoire",
     "randomtheme": "Thème Aléatoire"
+  },
+  "proposequestion": {
+    "excel": {
+      "step1": "Télécharger le template",
+      "step2": "Remplir le template (exemple: sur la 1ère ligne du template)",
+      "step3": "Une fois vos questions rajoutées dans le template, sauvegarder, puis déposer le ci-dessous.",
+      "question": "Question",
+      "reponse": "Bonne reponse",
+      "wronganswer1": "Mauvaise reponse 1",
+      "wronganswer2": "Mauvaise reponse 2",
+      "wronganswer3": "Mauvaise reponse 3",
+      "examplequestion" : "De quelle couleur est le cheval blanc d'Henri IV ?",
+      "examplereponse" : "Blanc",
+      "examplewronganswer1" : "Rouge",
+      "examplewronganswer2" : "Bleu",
+      "examplewronganswer3" : "Vert",
+      "uploadfile" : "Déposer le fichier"
+    }
   }
 }

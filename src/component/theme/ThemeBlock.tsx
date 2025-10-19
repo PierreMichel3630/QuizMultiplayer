@@ -4,12 +4,15 @@ import { Link } from "react-router-dom";
 import { Theme } from "src/models/Theme";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { TextNameBlock } from "../language/TextLanguageBlock";
+import { Variant } from "@mui/material/styles/createTypography";
 
 interface Props {
   theme: Theme;
+  size?: number;
+  variant?: Variant;
 }
 
-export const ThemeBlock = ({ theme }: Props) => {
+export const ThemeBlock = ({ theme, size = 20, variant = "body1" }: Props) => {
   return (
     <Box
       sx={{
@@ -18,9 +21,9 @@ export const ThemeBlock = ({ theme }: Props) => {
         alignItems: "center",
       }}
     >
-      <ImageThemeBlock theme={theme} size={20} border={false} />
+      <ImageThemeBlock theme={theme} size={size} border={false} />
       <TextNameBlock
-        variant="body1"
+        variant={variant}
         sx={{
           overflow: "hidden",
           display: "block",
