@@ -24,6 +24,7 @@ import { Theme } from "src/models/Theme";
 import { BarAccomplishment } from "../bar/Bar";
 import { AddMoneyBlock } from "../MoneyBlock";
 import { AddXpBlock } from "../XpBlock";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   accomplishment: Accomplishment;
@@ -132,10 +133,10 @@ export const CardAccomplishment = ({
                     textDecoration: "none",
                   }}
                 >
-                  <JsonLanguageBlock
+                  <TextNameBlock
                     variant="h6"
                     component="span"
-                    value={accomplishment.title.name}
+                    values={accomplishment.title.titletranslation}
                   />
                 </Link>
                 <Typography variant="body1" component="span">
@@ -321,10 +322,13 @@ export const CardUnlockAccomplishment = ({
                     textDecoration: "none",
                   }}
                 >
-                  <JsonLanguageBlock
-                    variant="h6"
+                  <TextNameBlock
                     component="span"
-                    value={profileaccomplishment.accomplishment.title.name}
+                    variant="caption"
+                    values={
+                      profileaccomplishment.accomplishment.title
+                        .titletranslation
+                    }
                   />
                 </Link>
                 <Typography variant="body1" component="span">

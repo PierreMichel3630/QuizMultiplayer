@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   selectAvgChallengeByAllTime,
-  selectAvgChallengeByDateAndLanguage,
+  selectAvgChallengeByDate,
   selectAvgChallengeByMonth,
   selectAvgChallengeByWeek,
   selectRankingChallengeAllTimePaginate,
@@ -110,7 +110,7 @@ export const RankingTop5Block = ({
   hasPlayChallenge = false,
 }: PropsRankingTop5Block) => {
   const { t } = useTranslation();
-  const { language, hasChallenge } = useUser();
+  const { language } = useUser();
 
   const [tab, setTab] = useState(AllGameModeEnum.CHALLENGE);
   const [tabTimeSolo, setTabTimeSolo] = useState(ClassementSoloTimeEnum.week);
@@ -122,49 +122,43 @@ export const RankingTop5Block = ({
   const [avg, setAvg] = useState<null | ChallengeAvg>(null);
 
   useEffect(() => {
-    if (hasChallenge) {
-      setTab(hasChallenge ? AllGameModeEnum.CHALLENGE : AllGameModeEnum.SOLO);
-    }
-  }, [hasChallenge]);
-
-  useEffect(() => {
     setIsLoading(true);
     setData([]);
     if (language) {
       if (tab === AllGameModeEnum.CHALLENGE) {
         if (tabTimeChallenge === ClassementChallengeTimeEnum.day) {
-          selectRankingChallengeByDatePaginate(moment(), language.iso).then(
-            ({ data }) => {
-              const res: Array<any> = data ?? [];
-              const newdata = res.map((el) => {
-                return {
-                  profile: el.profile,
-                  value: (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        textAlign: "center",
-                        justifyContent: "center",
-                        width: px(60),
-                      }}
-                    >
-                      <Typography variant="h6" noWrap>
-                        {el.score} / {NUMBER_QUESTIONS_CHALLENGE}
-                      </Typography>
-                      <Typography variant="h6" noWrap>
-                        {(el.time / 1000).toFixed(2)}s
-                      </Typography>
-                    </Box>
-                  ),
-                  rank: el.ranking,
-                  size: 65,
-                };
-              });
-              setData(newdata);
-              setIsLoading(false);
-            }
-          );
+          selectRankingChallengeByDatePaginate(moment()).then(({ data }) => {
+            const res: Array<any> = data ?? [];
+            const newdata = res.map((el) => {
+              return {
+                profile: el.profile,
+                value: hasPlayChallenge ? (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      textAlign: "center",
+                      justifyContent: "center",
+                      width: px(60),
+                    }}
+                  >
+                    <Typography variant="h6" noWrap>
+                      {el.score} / {NUMBER_QUESTIONS_CHALLENGE}
+                    </Typography>
+                    <Typography variant="h6" noWrap>
+                      {(el.time / 1000).toFixed(2)}s
+                    </Typography>
+                  </Box>
+                ) : (
+                  <></>
+                ),
+                rank: el.ranking,
+                size: hasPlayChallenge ? 65 : 1,
+              };
+            });
+            setData(newdata);
+            setIsLoading(false);
+          });
         } else if (tabTimeChallenge === ClassementChallengeTimeEnum.week) {
           selectRankingChallengeByWeekPaginate(moment().format("WW/YYYY")).then(
             ({ data }) => {
@@ -354,7 +348,7 @@ export const RankingTop5Block = ({
         });
       }
     }
-  }, [tab, tabTimeSolo, tabTimeChallenge, t, language]);
+  }, [tab, tabTimeSolo, tabTimeChallenge, t, language, hasPlayChallenge]);
 
   const link = useMemo(() => {
     let res = "";
@@ -370,35 +364,31 @@ export const RankingTop5Block = ({
 
   useEffect(() => {
     const getAvg = () => {
-      if (language) {
-        if (tab === AllGameModeEnum.CHALLENGE) {
-          const date = moment();
-          if (tabTimeChallenge === ClassementChallengeTimeEnum.day) {
-            selectAvgChallengeByDateAndLanguage(date, language.iso).then(
-              ({ data }) => {
-                setAvg(data);
-              }
-            );
-          } else if (tabTimeChallenge === ClassementChallengeTimeEnum.week) {
-            selectAvgChallengeByWeek(date).then(({ data }) => {
-              setAvg(data);
-            });
-          } else if (tabTimeChallenge === ClassementChallengeTimeEnum.month) {
-            selectAvgChallengeByMonth(date).then(({ data }) => {
-              setAvg(data);
-            });
-          } else if (tabTimeChallenge === ClassementChallengeTimeEnum.alltime) {
-            selectAvgChallengeByAllTime().then(({ data }) => {
-              setAvg(data);
-            });
-          }
-        } else {
-          setAvg(null);
+      if (tab === AllGameModeEnum.CHALLENGE) {
+        const date = moment();
+        if (tabTimeChallenge === ClassementChallengeTimeEnum.day) {
+          selectAvgChallengeByDate(date).then(({ data }) => {
+            setAvg(data);
+          });
+        } else if (tabTimeChallenge === ClassementChallengeTimeEnum.week) {
+          selectAvgChallengeByWeek(date).then(({ data }) => {
+            setAvg(data);
+          });
+        } else if (tabTimeChallenge === ClassementChallengeTimeEnum.month) {
+          selectAvgChallengeByMonth(date).then(({ data }) => {
+            setAvg(data);
+          });
+        } else if (tabTimeChallenge === ClassementChallengeTimeEnum.alltime) {
+          selectAvgChallengeByAllTime().then(({ data }) => {
+            setAvg(data);
+          });
         }
+      } else {
+        setAvg(null);
       }
     };
     getAvg();
-  }, [tab, tabTimeChallenge, language]);
+  }, [tab, tabTimeChallenge]);
 
   return (
     <Container maxWidth="sm">
@@ -436,7 +426,7 @@ export const RankingTop5Block = ({
                 <RecapAvgChallenge avg={avg} />
               </Grid>
             )}
-            {hasChallenge && !hasPlayChallenge && (
+            {!hasPlayChallenge && (
               <Grid item xs={12}>
                 <ChallengeButton />
               </Grid>

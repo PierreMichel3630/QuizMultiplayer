@@ -16,6 +16,7 @@ import { Score } from "src/models/Score";
 import { ButtonColor } from "../Button";
 import { LabelRankBlock } from "../RankBlock";
 import { ProfileTitleBlock } from "../title/ProfileTitle";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   game: DuelGame;
@@ -76,9 +77,11 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
           <Box sx={{ width: px(70) }}>
             <ImageThemeBlock theme={game.theme} />
           </Box>
-          <Typography variant="h2" sx={{ wordBreak: "break-all" }}>
-            {game.theme.title}
-          </Typography>
+          <TextNameBlock
+            variant="h2"
+            sx={{ wordBreak: "break-all" }}
+            values={game.theme.themetranslation}
+          />
         </Grid>
         <Grid item xs={12} sx={{ textAlign: "center" }}>
           <Typography variant="h1">{t("commun.cancelgame")}</Typography>

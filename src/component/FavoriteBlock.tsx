@@ -6,9 +6,11 @@ import { useApp } from "src/context/AppProvider";
 import { CardSelectAvatarTheme } from "./card/CardTheme";
 import { CategoryBlock } from "./category/CategoryBlock";
 
-import { getThemesAndCategoriesById, getThemesById } from "src/api/search";
-import { ICardImage } from "./card/CardImage";
+import { getThemesAndCategoriesById } from "src/api/search";
+import { selectThemesById } from "src/api/theme";
 import { useUser } from "src/context/UserProvider";
+import { Theme } from "src/models/Theme";
+import { ICardImage } from "./card/CardImage";
 
 export const FavoriteBlock = () => {
   const { t } = useTranslation();
@@ -47,7 +49,7 @@ export const FavoriteBlock = () => {
 
 interface PropsSelectAvatar {
   avatars: Array<{ id: number; avatars: Array<string> }>;
-  select: (theme: ICardImage) => void;
+  select: (theme: Theme) => void;
 }
 export const FavoriteSelectAvatarBlock = ({
   avatars,
@@ -56,21 +58,21 @@ export const FavoriteSelectAvatarBlock = ({
   const { t } = useTranslation();
 
   const { favorites } = useApp();
-  const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
+  const [values, setValues] = useState<Array<Theme>>([]);
 
   useEffect(() => {
     const idThemes = [...favorites]
       .filter((el) => el.theme)
       .map((el) => Number(el.theme));
     if (idThemes.length > 0) {
-      getThemesById(idThemes).then(({ data }) => {
-        setItemsSearch(data ?? []);
+      selectThemesById(idThemes).then(({ data }) => {
+        setValues(data ?? []);
       });
     }
   }, [favorites]);
 
   return (
-    itemsSearch.length > 0 && (
+    values.length > 0 && (
       <Grid container spacing={1}>
         <Grid
           item
@@ -92,7 +94,7 @@ export const FavoriteSelectAvatarBlock = ({
               scrollbarWidth: "none",
             }}
           >
-            {itemsSearch.map((theme, index) => (
+            {values.map((theme, index) => (
               <CardSelectAvatarTheme
                 key={index}
                 theme={theme}

@@ -128,7 +128,7 @@ export default function RankingPage() {
                   value: Array.isArray(champ) ? champ.length : champ,
                   theme: el.theme,
                   rank: page * ITEMPERPAGE + index + 1,
-                  size: 60,
+                  size: 80,
                 };
               });
               setIsEnd(newdata.length < ITEMPERPAGE);
@@ -207,47 +207,53 @@ export default function RankingPage() {
               }
             );
           } else if (tabOthers === ClassementOtherEnum.streak) {
-            selectProfile(tabOthers, page, ITEMPERPAGE, ids).then(
-              ({ data }) => {
-                const res = data as Array<Profile>;
-                const newdata = res.map((el, index) => {
-                  const value = el[tabOthers] as number;
-                  return {
-                    profile: el,
-                    value: <StreakBlock value={value} />,
-                    rank: page * ITEMPERPAGE + index + 1,
-                    size: 80,
-                  };
-                });
-                setIsEnd(newdata.length < ITEMPERPAGE);
-                setData((prev) =>
-                  page === 0 ? [...newdata] : [...prev, ...newdata]
-                );
-                setLoading(false);
-              }
-            );
+            selectProfile(
+              { value: tabOthers, ascending: false },
+              page,
+              ITEMPERPAGE,
+              ids
+            ).then(({ data }) => {
+              const res = data as Array<Profile>;
+              const newdata = res.map((el, index) => {
+                const value = el[tabOthers] as number;
+                return {
+                  profile: el,
+                  value: <StreakBlock value={value} />,
+                  rank: page * ITEMPERPAGE + index + 1,
+                  size: 80,
+                };
+              });
+              setIsEnd(newdata.length < ITEMPERPAGE);
+              setData((prev) =>
+                page === 0 ? [...newdata] : [...prev, ...newdata]
+              );
+              setLoading(false);
+            });
           } else if (tabOthers === ClassementOtherEnum.money) {
-            selectProfile(tabOthers, page, ITEMPERPAGE, ids).then(
-              ({ data }) => {
-                const res = data as Array<Profile>;
-                const newdata = res.map((el, index) => {
-                  const value: any = el[tabOthers];
-                  return {
-                    profile: el,
-                    value: (
-                      <MoneyArrondieBlock money={value} language={language} />
-                    ),
-                    rank: page * ITEMPERPAGE + index + 1,
-                    size: 100,
-                  };
-                });
-                setIsEnd(newdata.length < ITEMPERPAGE);
-                setData((prev) =>
-                  page === 0 ? [...newdata] : [...prev, ...newdata]
-                );
-                setLoading(false);
-              }
-            );
+            selectProfile(
+              { value: tabOthers, ascending: false },
+              page,
+              ITEMPERPAGE,
+              ids
+            ).then(({ data }) => {
+              const res = data as Array<Profile>;
+              const newdata = res.map((el, index) => {
+                const value: any = el[tabOthers];
+                return {
+                  profile: el,
+                  value: (
+                    <MoneyArrondieBlock money={value} language={language} />
+                  ),
+                  rank: page * ITEMPERPAGE + index + 1,
+                  size: 100,
+                };
+              });
+              setIsEnd(newdata.length < ITEMPERPAGE);
+              setData((prev) =>
+                page === 0 ? [...newdata] : [...prev, ...newdata]
+              );
+              setLoading(false);
+            });
           }
         } else {
           const order = (type === ClassementEnum.points

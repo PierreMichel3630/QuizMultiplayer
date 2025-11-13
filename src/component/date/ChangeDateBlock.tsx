@@ -4,20 +4,21 @@ import { useCallback, useMemo } from "react";
 
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-
-export enum DateFormat {
-  DAY = "day",
-  MONTH = "month",
-  WEEK = "week",
-}
+import { DateFormat } from "src/models/enum/DateEnum";
 
 interface Props {
   date: Moment;
   format: DateFormat;
   onChange: (value: Moment) => void;
+  isDisabledDate?: boolean;
 }
 
-export const ChangeDateBlock = ({ date, format, onChange }: Props) => {
+export const ChangeDateBlock = ({
+  date,
+  format,
+  onChange,
+  isDisabledDate = true,
+}: Props) => {
   const dateDisplay = useMemo(() => {
     let result = undefined;
     if (format === "day") {
@@ -69,7 +70,11 @@ export const ChangeDateBlock = ({ date, format, onChange }: Props) => {
         <Typography variant="h4" sx={{ textAlign: "center" }}>
           {dateDisplay}
         </Typography>
-        <IconButton onClick={addDate} disabled={isDisabledNextDay} size="small">
+        <IconButton
+          onClick={addDate}
+          disabled={isDisabledDate ? isDisabledNextDay : false}
+          size="small"
+        >
           <KeyboardArrowRightIcon fontSize="large" />
         </IconButton>
       </Box>

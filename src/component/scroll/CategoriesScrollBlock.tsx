@@ -69,7 +69,7 @@ export const CategoriesScrollBlock = () => {
 
   return (
     <>
-      <Grid container spacing={1} sx={{ mb: 1 }}>
+      <Grid container sx={{ mb: 1 }}>
         {categories.map((category, index) => (
           <Grid
             item

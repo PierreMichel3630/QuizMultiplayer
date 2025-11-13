@@ -43,6 +43,9 @@ import {
 } from "../file/ExportCsvProposeQuestion";
 import { UploadButton } from "../file/ImportCsv";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   open: boolean;
@@ -54,12 +57,14 @@ enum Mode {
   FILE = "FILE",
   FORM = "FORM",
   LOADING = "LOADING",
+  FINISH = "FINISH",
 }
 
 export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
   const { t } = useTranslation();
   const { language, uuid } = useUser();
   const themeMui = useTheme();
+  const navigate = useNavigate();
   const fullScreen = useMediaQuery(themeMui.breakpoints.down("md"));
 
   const [mode, setMode] = useState(Mode.FORM);
@@ -92,6 +97,9 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
       questions.forEach((line) => {
         saveQuestion(line);
       });
+      if (questions.length === 0) {
+        setMode(Mode.FINISH);
+      }
     };
 
     reader.onerror = () => {
@@ -211,11 +219,17 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
     [numberQuestionsSave, numberQuestionsError, numberQuestions]
   );
 
+  useEffect(() => {
+    if (progress === 100) {
+      setMode(Mode.FINISH);
+    }
+  }, [progress]);
+
   return (
     <Dialog
       onClose={close}
       open={open}
-      maxWidth="lg"
+      maxWidth="md"
       fullWidth
       fullScreen={fullScreen}
     >
@@ -256,7 +270,13 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
                       </Divider>
                     </Grid>
                     <Grid item xs={12}>
-                      <ProposeQuestionForm validate={close} theme={theme} />
+                      <ProposeQuestionForm
+                        validate={() => {
+                          setNumberQuestions(1);
+                          setMode(Mode.FINISH);
+                        }}
+                        theme={theme}
+                      />
                     </Grid>
                   </>
                 ),
@@ -318,50 +338,76 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
                 ),
                 LOADING: (
                   <>
-                    {progress === 100 ? (
-                      <>
-                        <Grid item xs={12} sx={{ textAlign: "center" }}>
-                          <Alert severity="success">
-                            <Typography variant="h4">
-                              {t("commun.propositionvalidate")}
-                            </Typography>
-                          </Alert>
-                        </Grid>
-                        <Grid item xs={12}>
-                          <ButtonColor
-                            value={Colors.blue}
-                            label={t("commun.return")}
-                            icon={KeyboardReturnIcon}
-                            variant="contained"
-                            onClick={close}
-                          />
-                        </Grid>
-                      </>
-                    ) : (
-                      <>
-                        <Grid item xs={12} sx={{ textAlign: "center" }}>
-                          <Typography variant="h4">
-                            {t("commun.inprogress")}
-                          </Typography>
-                        </Grid>
-                        {numberQuestions > 1 && (
-                          <Grid item xs={12} sx={{ textAlign: "center" }}>
-                            <Typography variant="h6">
-                              {numberQuestionsSave} / {numberQuestions}{" "}
-                              {t("commun.questions")}
-                            </Typography>
-                          </Grid>
-                        )}
-                        <Grid item xs={12}>
-                          <Box sx={{ width: percent(100) }}>
-                            <LinearProgress
-                              variant="determinate"
-                              value={progress}
-                            />
-                          </Box>
-                        </Grid>
-                      </>
+                    <Grid item xs={12} sx={{ textAlign: "center" }}>
+                      <Typography variant="h4">
+                        {t("commun.inprogress")}
+                      </Typography>
+                    </Grid>
+                    {numberQuestions > 1 && (
+                      <Grid item xs={12} sx={{ textAlign: "center" }}>
+                        <Typography variant="h6">
+                          {numberQuestionsSave} / {numberQuestions}{" "}
+                          {t("commun.questions")}
+                        </Typography>
+                      </Grid>
                     )}
+                    <Grid item xs={12}>
+                      <Box sx={{ width: percent(100) }}>
+                        <LinearProgress
+                          variant="determinate"
+                          value={progress}
+                        />
+                      </Box>
+                    </Grid>
+                  </>
+                ),
+                FINISH: (
+                  <>
+                    <Grid item xs={12} sx={{ textAlign: "center" }}>
+                      {numberQuestions > 0 ? (
+                        <Alert severity="success">
+                          <Typography variant="h4">
+                            {t("commun.propositionvalidate")}
+                          </Typography>
+                        </Alert>
+                      ) : (
+                        <Alert severity="info">
+                          <Typography variant="h4">
+                            {t("commun.noquestionpropose")}
+                          </Typography>
+                        </Alert>
+                      )}
+                    </Grid>
+                    <Grid item xs={12}>
+                      <ButtonColor
+                        value={Colors.purple}
+                        label={t("commun.seeallproposequestion")}
+                        icon={VisibilityIcon}
+                        variant="contained"
+                        onClick={() => {
+                          close();
+                          navigate("/myproposals");
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <ButtonColor
+                        value={Colors.blue}
+                        label={t("commun.return")}
+                        icon={KeyboardReturnIcon}
+                        variant="contained"
+                        onClick={() => setMode(Mode.FORM)}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <ButtonColor
+                        value={Colors.red}
+                        label={t("commun.leave")}
+                        icon={HighlightOffIcon}
+                        variant="contained"
+                        onClick={close}
+                      />
+                    </Grid>
                   </>
                 ),
               }[mode]

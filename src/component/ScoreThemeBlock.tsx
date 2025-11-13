@@ -2,6 +2,7 @@ import { Box, Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Theme } from "src/models/Theme";
 import { ImageThemeBlock } from "./ImageThemeBlock";
+import { TextNameBlock } from "./language/TextLanguageBlock";
 
 interface Props {
   theme: Theme;
@@ -24,7 +25,7 @@ export const ScoreThemeBlock = ({
         <ImageThemeBlock theme={theme} />
       </Grid>
       <Grid item xs={9} sm={9} md={10}>
-        <Typography
+        <TextNameBlock
           variant="h1"
           color={color}
           sx={{
@@ -35,9 +36,8 @@ export const ScoreThemeBlock = ({
             boxOrient: "vertical",
           }}
           noWrap
-        >
-          {theme.title}
-        </Typography>
+          values={theme.themetranslation}
+        />
         {score !== undefined && (
           <Box
             sx={{

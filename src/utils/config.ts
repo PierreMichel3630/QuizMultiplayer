@@ -1,7 +1,7 @@
 export const MAX_DAY_NEW_THEME = 14;
 export const MAX_DAY_UPDATED_THEME = 14;
 export const VERSION_QUESTION = 2;
-export const VERSION_APP = "2.0.0";
+export const VERSION_APP = "2.0.1";
 
 // DUEL
 export const POINTGAME = 50;

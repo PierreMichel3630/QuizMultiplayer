@@ -51,7 +51,7 @@ import { ShopItems } from "src/component/ShopBlock";
 export default function ProfilPage() {
   const { t } = useTranslation();
   const { id } = useParams();
-  const { uuid, hasChallenge } = useUser();
+  const { uuid } = useUser();
   const { user, profile } = useAuth();
   const { friends, headerSize } = useApp();
   const navigate = useNavigate();
@@ -361,11 +361,9 @@ export default function ProfilPage() {
           <Grid item xs={12}>
             {isMe ? <ShopItems /> : <ProfileAction profileUser={profileUser} />}
           </Grid>
-          {hasChallenge && (
-            <Grid item xs={12}>
-              <CardChallenge profileId={id} />
-            </Grid>
-          )}
+          <Grid item xs={12}>
+            <CardChallenge profileId={id} />
+          </Grid>
 
           <Grid item xs={12}>
             <CardBadge badges={badges} loading={isLoadingBadge} />

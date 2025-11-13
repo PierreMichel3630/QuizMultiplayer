@@ -145,7 +145,7 @@ export default function AdminEditQuestionsPage() {
               page={page}
               onChange={(_event: React.ChangeEvent<unknown>, value: number) =>
                 navigate(
-                  `/administration/edit/questions?page=${value}&themes=${filter.theme}`
+                  `/administration/edit/questions?page=${value}&theme=${filter.theme}`
                 )
               }
               variant="outlined"

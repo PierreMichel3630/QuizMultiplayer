@@ -40,6 +40,6 @@ export const selectFriendByProfileId = (id: string) =>
   supabase
     .from(SUPABASE_FRIEND_TABLE)
     .select(
-      "*, user1(*, avatar(*), badge(*),country(*), titleprofile!profiles_titleprofile_fkey(*,title(*))), user2(*, avatar(*), badge(*),country(*), titleprofile!profiles_titleprofile_fkey(*,title(*)))"
+      "*, user1(*, avatar(*), badge(*),country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))), user2(*, avatar(*), badge(*),country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))))"
     )
     .or(`user1.eq.${id},user2.eq.${id}`);

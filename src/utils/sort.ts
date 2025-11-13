@@ -1,6 +1,5 @@
 import moment from "moment";
 import { Language } from "src/models/Language";
-import { Title } from "src/models/Title";
 
 export const sortByScore = (a: { score: number }, b: { score: number }) =>
   b.score - a.score;
@@ -142,12 +141,6 @@ export const sortByDuelGamesDesc = (
 
 export const sortByName = (language: Language, a: any, b: any) =>
   a.name[language.iso].localeCompare(b.name[language.iso]);
-
-export const sortTitle = (language: Language, a: Title, b: Title) => {
-  const namea = a.name[language.iso] ?? a.name["fr-FR"];
-  const nameb = b.name[language.iso] ?? b.name["fr-FR"];
-  return namea.localeCompare(nameb);
-};
 
 export const sortByThemeTitle = (
   a: { theme: { title: string } },

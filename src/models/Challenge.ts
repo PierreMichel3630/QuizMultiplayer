@@ -20,6 +20,14 @@ export interface ChallengeGame {
   version: number;
 }
 
+export interface ChallengeGameInsert {
+  profile: string;
+  score: number;
+  time: number;
+  questions: Array<QuestionResult>;
+  challenge: number;
+}
+
 export interface ChallengeGameUpdate {
   id: number;
   score: number;

@@ -27,6 +27,14 @@ export const AdminRoutes = [
     element: <AdminProposePage />,
   },
   {
+    path: "shop",
+    element: <AdminEditShopPage />,
+  },
+  {
+    path: "challenge",
+    element: <AdminEditChallengePage />,
+  },
+  {
     path: "edit",
     element: <AdminEditPage />,
     children: [
@@ -41,14 +49,6 @@ export const AdminRoutes = [
       {
         path: "categories",
         element: <AdminEditCategoryPage />,
-      },
-      {
-        path: "shop",
-        element: <AdminEditShopPage />,
-      },
-      {
-        path: "challenge",
-        element: <AdminEditChallengePage />,
       },
     ],
   },

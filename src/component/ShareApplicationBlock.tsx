@@ -7,6 +7,7 @@ import { urlPc } from "src/pages/help/InstallationPage";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "./Button";
 import { ShareModal } from "./modal/ShareModal";
+import { useUser } from "src/context/UserProvider";
 
 interface Props {
   title: string;
@@ -37,12 +38,14 @@ interface PropsScore {
 
 export const ShareScoreIcon = ({ score, theme }: PropsScore) => {
   const { t } = useTranslation();
+  const { language } = useUser();
 
   const themeText = useMemo(() => {
-    const themeLanguage = theme.title;
-    const themeFR = theme.title;
-    return themeLanguage ?? themeFR;
-  }, [theme]);
+    const themeLanguage = [...theme.themetranslation].find(
+      (el) => el.language.id === language?.id
+    );
+    return themeLanguage?.name ?? theme.themetranslation[0].name;
+  }, [theme, language]);
 
   const data = useMemo(
     () => ({

@@ -129,7 +129,7 @@ export const CategoryBlock = ({
         )}
       </Grid>
       <Grid item xs={12}>
-        <Divider sx={{ borderBottomWidth: 5 }} />
+        <Divider sx={{ borderBottomWidth: 5, mb: 1 }} />
       </Grid>
     </Grid>
   );

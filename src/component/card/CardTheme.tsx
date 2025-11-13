@@ -29,12 +29,7 @@ import { TextNameBlock } from "../language/TextLanguageBlock";
 import { ICardImage } from "./CardImage";
 
 interface PropsCardSelectAvatarTheme {
-  theme: {
-    id: number;
-    name: string;
-    image?: string | JSX.Element;
-    color?: string;
-  };
+  theme: Theme;
   avatars: Array<{ id: number; avatars: Array<string> }>;
   onSelect: () => void;
   width?: number;
@@ -91,9 +86,11 @@ export const CardSelectAvatarTheme = ({
       >
         <ImageThemeBlock theme={theme} size={width} />
       </Badge>
-      <Typography variant="h6" sx={{ textAlign: "center" }}>
-        {theme.name}
-      </Typography>
+      <TextNameBlock
+        variant="h6"
+        sx={{ textAlign: "center" }}
+        values={theme.themetranslation}
+      />
     </Box>
   );
 };

@@ -4,24 +4,28 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   countChallengeGameByDate,
+  createChallenge,
   deleteChallengeGameById,
+  selectChallengeByDate,
   selectChallengeGameByDatePaginate,
 } from "src/api/challenge";
-import {
-  ChangeDateBlock,
-  DateFormat,
-} from "src/component/date/ChangeDateBlock";
+import { ChangeDateBlock } from "src/component/date/ChangeDateBlock";
 import { BasicTable } from "src/component/table/BasicTable";
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
-import { ChallengeGame } from "src/models/Challenge";
+import { Challenge, ChallengeGame } from "src/models/Challenge";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { ButtonColor } from "src/component/Button";
 import { BasicSearchInput } from "src/component/Input";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
+import { EditChallengeGameModal } from "src/component/modal/EditChallengeGameModal";
+import { SeeChallengeModal } from "src/component/modal/SeeChallengeModal";
 import { ProfileBlock } from "src/component/profile/ProfileBlock";
 import { useMessage } from "src/context/MessageProvider";
-import { EditChallengeGameModal } from "src/component/modal/EditChallengeGameModal";
+import { DateFormat } from "src/models/enum/DateEnum";
+import { Colors } from "src/style/Colors";
 
 export default function AdminEditChallengePage() {
   const { t } = useTranslation();
@@ -33,6 +37,7 @@ export default function AdminEditChallengePage() {
   const [page, setPage] = useState<number>(1);
 
   const [date, setDate] = useState(moment());
+  const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [challengeGames, setChallengeGames] = useState<Array<ChallengeGame>>(
     []
   );
@@ -42,6 +47,9 @@ export default function AdminEditChallengePage() {
   const [challengeGameEdit, setChallengeGameEdit] = useState<
     ChallengeGame | undefined
   >(undefined);
+
+  const [openChallenge, setOpenChallenge] = useState(false);
+  const [openGame, setOpenGame] = useState(false);
 
   const columns = [
     { label: t("commun.profile"), key: "profile" },
@@ -69,7 +77,10 @@ export default function AdminEditChallengePage() {
         <Box sx={{ display: "flex", gap: 1 }}>
           <IconButton
             aria-label="edit"
-            onClick={() => setChallengeGameEdit(el)}
+            onClick={() => {
+              setOpenGame(true);
+              setChallengeGameEdit(el);
+            }}
           >
             <EditIcon />
           </IconButton>
@@ -93,6 +104,16 @@ export default function AdminEditChallengePage() {
       }
     );
   };
+
+  const getChallenge = (date: Moment) => {
+    selectChallengeByDate(date).then(({ data }) => {
+      setChallenge(data);
+    });
+  };
+
+  useEffect(() => {
+    getChallenge(date);
+  }, [date]);
 
   useEffect(() => {
     getGames(date, search, page, ITEMPERPAGE);
@@ -120,8 +141,13 @@ export default function AdminEditChallengePage() {
     }
   };
 
+  const createUpdateChallenge = async () => {
+    await createChallenge(date.format("YYYY-MM-DD"));
+    getChallenge(date);
+  };
+
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={1} justifyContent="center">
       <Grid item xs={12}>
         <ChangeDateBlock
           date={date}
@@ -130,8 +156,35 @@ export default function AdminEditChallengePage() {
             setPage(1);
             setDate(value);
           }}
+          isDisabledDate={false}
         />
       </Grid>
+      {challenge !== null && (
+        <Grid item xs={6}>
+          <ButtonColor
+            typography="h6"
+            iconSize={20}
+            value={Colors.purple}
+            label={t("commun.seechallenge")}
+            icon={VisibilityIcon}
+            variant="contained"
+            onClick={() => setOpenChallenge(true)}
+          />
+        </Grid>
+      )}
+      {date.isAfter(new Date(), "day") && (
+        <Grid item xs={6}>
+          <ButtonColor
+            typography="h6"
+            iconSize={20}
+            value={Colors.green}
+            label={t("commun.createmodifychallenge")}
+            icon={VisibilityIcon}
+            variant="contained"
+            onClick={createUpdateChallenge}
+          />
+        </Grid>
+      )}
       <Grid item xs={12}>
         <BasicSearchInput
           label={t("commun.searchplayer")}
@@ -141,6 +194,17 @@ export default function AdminEditChallengePage() {
           }}
           value={search}
           clear={() => setSearch("")}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <ButtonColor
+          typography="h6"
+          iconSize={20}
+          value={Colors.green}
+          label={t("commun.addchallengegame")}
+          icon={VisibilityIcon}
+          variant="contained"
+          onClick={() => setOpenGame(true)}
         />
       </Grid>
       <Grid item xs={12} sx={{ mb: 6 }}>
@@ -197,14 +261,21 @@ export default function AdminEditChallengePage() {
         onConfirm={deleteChallengeGame}
       />
       <EditChallengeGameModal
+        date={date}
         game={challengeGameEdit}
-        open={challengeGameEdit !== undefined}
+        open={openGame}
         close={() => {
+          setOpenGame(false);
           setChallengeGameEdit(undefined);
           setPage(1);
           setSearch("");
           getGames(date, "", 1, ITEMPERPAGE);
         }}
+      />
+      <SeeChallengeModal
+        challenge={challenge}
+        open={openChallenge}
+        close={() => setOpenChallenge(false)}
       />
     </Grid>
   );

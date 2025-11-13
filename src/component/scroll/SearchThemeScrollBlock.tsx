@@ -10,6 +10,8 @@ import { useUser } from "src/context/UserProvider";
 import { CardImage, ICardImage } from "../card/CardImage";
 import { CardSelectAvatarTheme, CardSelectTheme } from "../card/CardTheme";
 import { SkeletonThemesGrid } from "../skeleton/SkeletonTheme";
+import { Theme } from "src/models/Theme";
+import { searchThemes } from "src/api/theme";
 
 interface Props {
   search: string;
@@ -204,7 +206,7 @@ export const SearchThemeSelectScrollBlock = ({
 
 interface PropsSearchThemeSelectAvatarScrollBlock {
   search: string;
-  onSelect: (value: ICardImage) => void;
+  onSelect: (value: Theme) => void;
   avatars: Array<{ id: number; avatars: Array<string> }>;
 }
 
@@ -218,19 +220,17 @@ export const SearchThemeSelectAvatarScrollBlock = ({
 
   const [, setPage] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
-  const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
+  const [themes, setThemes] = useState<Array<Theme>>([]);
 
   const getThemes = useCallback(
     (page: number) => {
       const itemperpage = 30;
       if (!isEnd && language) {
-        searchThemesPaginate(language, search, page, itemperpage).then(
-          ({ data }) => {
-            const result = data ?? [];
-            setIsEnd(result.length < itemperpage);
-            setItemsSearch((prev) => [...prev, ...result]);
-          }
-        );
+        searchThemes(language, search, page, itemperpage).then(({ data }) => {
+          const result = data ?? [];
+          setIsEnd(result.length < itemperpage);
+          setThemes((prev) => [...prev, ...result]);
+        });
       }
     },
     [isEnd, search, language]
@@ -239,7 +239,7 @@ export const SearchThemeSelectAvatarScrollBlock = ({
   useEffect(() => {
     setPage(0);
     setIsEnd(false);
-    setItemsSearch([]);
+    setThemes([]);
   }, [search, language]);
 
   const handleLoadMoreData = () => {
@@ -256,25 +256,25 @@ export const SearchThemeSelectAvatarScrollBlock = ({
 
   return (
     <>
-      {itemsSearch.length === 0 && isEnd ? (
+      {themes.length === 0 && isEnd ? (
         <Grid item xs={12}>
           <Alert severity="warning">{t("commun.noresult")}</Alert>
         </Grid>
       ) : (
         <Grid item xs={12}>
           <InfiniteScroll
-            dataLength={itemsSearch.length}
+            dataLength={themes.length}
             next={handleLoadMoreData}
             hasMore={!isEnd}
             loader={<SkeletonThemesGrid number={10} />}
           >
             <Grid container spacing={1} justifyContent="center">
-              {itemsSearch.map((item, index) => (
+              {themes.map((theme, index) => (
                 <Grid item key={index}>
                   <CardSelectAvatarTheme
-                    theme={item}
+                    theme={theme}
                     avatars={avatars}
-                    onSelect={() => onSelect(item)}
+                    onSelect={() => onSelect(theme)}
                   />
                 </Grid>
               ))}

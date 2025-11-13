@@ -1,12 +1,12 @@
 import {
   CategoryInsert,
   CategoryThemeInsert,
+  CategoryThemeUpdate,
   CategoryTranslationInsert,
   CategoryTranslationUpdate,
-  CategoryUpdate,
 } from "src/models/Category";
-import { supabase } from "./supabase";
 import { Language } from "src/models/Language";
+import { supabase } from "./supabase";
 
 export const SUPABASE_CATEGORY_TABLE = "category";
 export const SUPABASE_CATEGORYTRANSLATION_TABLE = "categorytranslation";
@@ -22,8 +22,11 @@ export const selectCategoryById = (id: string | number) =>
 export const insertCategoryTheme = (values: Array<CategoryThemeInsert>) =>
   supabase.from(SUPABASE_CATEGORYTHEME_TABLE).insert(values);
 
-export const updateCategories = (values: Array<CategoryUpdate>) =>
-  supabase.from(SUPABASE_CATEGORY_TABLE).upsert(values);
+export const updateCategoriesTheme = (values: Array<CategoryThemeUpdate>) =>
+  supabase.from(SUPABASE_CATEGORYTHEME_TABLE).upsert(values);
+
+export const deleteCategoriesThemeByIds = (ids: Array<number>) =>
+  supabase.from(SUPABASE_CATEGORYTHEME_TABLE).delete().in("id", ids);
 
 export const insertCategory = (value: CategoryInsert) =>
   supabase.from(SUPABASE_CATEGORY_TABLE).insert(value).select().single();

@@ -12,7 +12,7 @@ export const selectRankingSoloByThemeAndProfile = (
   supabase
     .from(SUPABASE_RANKINGSOLO_TABLE)
     .select(
-      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*))), uuidgame(uuid)"
+      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))), uuidgame(uuid)"
     )
     .eq("theme", theme)
     .or(`ranking.lte.${maxRank},profile.in.(${idFriends.join(",")})`);
@@ -27,7 +27,7 @@ export const selectRankingSoloByThemePaginate = (
   return supabase
     .from(SUPABASE_RANKINGSOLO_TABLE)
     .select(
-      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*))), uuidgame(uuid)"
+      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))), uuidgame(uuid)"
     )
     .eq("theme", theme)
     .range(from, to);
@@ -41,7 +41,7 @@ export const selectRankingDuelByThemeAndProfile = (
   supabase
     .from(SUPABASE_RANKINGDUEL_TABLE)
     .select(
-      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*)))"
+      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))))"
     )
     .eq("theme", theme)
     .or(`ranking.lte.${maxRank},profile.in.(${idFriends.join(",")})`);
@@ -56,7 +56,7 @@ export const selectRankingDuelByThemePaginate = (
   return supabase
     .from(SUPABASE_RANKINGDUEL_TABLE)
     .select(
-      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*)))"
+      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))))"
     )
     .eq("theme", theme)
     .range(from, to);
@@ -73,7 +73,7 @@ export const getRankingFinishTheme = (
   let query = supabase
     .from(SUPABASE_FINISHTHEME_TABLE)
     .select(
-      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*)))"
+      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))))"
     );
   if (idsProfile.length > 0) {
     query = query.in("profile.id", idsProfile).not("profile", "is", null);

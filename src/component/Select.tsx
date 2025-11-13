@@ -20,19 +20,19 @@ import { useTranslation } from "react-i18next";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ClearIcon from "@mui/icons-material/Clear";
 import { getCategoryById, searchCategoriesPaginate } from "src/api/search";
-import { selectThemesShop } from "src/api/theme";
 import { useUser } from "src/context/UserProvider";
 import { colorDifficulty, Difficulty } from "src/models/enum/DifficultyEnum";
 import { Language } from "src/models/Language";
-import { ThemeShop } from "src/models/Theme";
+import { ThemeShop } from "src/models/Shop";
 import { Colors } from "src/style/Colors";
 import { sortByName } from "src/utils/sort";
 import { AutocompleteInputTheme } from "./Autocomplete";
 import { ICardImage } from "./card/CardImage";
 import { ImageThemeBlock } from "./ImageThemeBlock";
 import { BasicSearchInput } from "./Input";
-import { JsonLanguageBlock } from "./JsonLanguageBlock";
 import { LanguageIcon } from "./language/LanguageBlock";
+import { TextNameBlock } from "./language/TextLanguageBlock";
+import { selectThemeShop } from "src/api/shop";
 
 interface Props {
   value: Difficulty;
@@ -198,7 +198,7 @@ export const SelectThemeShop = ({ theme, onChange }: PropsSelectThemeShop) => {
   const [themes, setThemes] = useState<Array<ThemeShop>>([]);
 
   useEffect(() => {
-    selectThemesShop().then(({ data }) => {
+    selectThemeShop().then(({ data }) => {
       setThemes(data ?? []);
     });
   }, []);
@@ -217,10 +217,9 @@ export const SelectThemeShop = ({ theme, onChange }: PropsSelectThemeShop) => {
         onChange(newValue);
       }}
       options={options}
-      getOptionLabel={(option) => (language ? option.name[language.iso] : "")}
       renderOption={(props, option) => (
         <Box component="li" {...props}>
-          <JsonLanguageBlock value={option.name} />
+          <TextNameBlock values={option.themeshoptranslation} />
         </Box>
       )}
       fullWidth

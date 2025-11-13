@@ -10,26 +10,34 @@ export const SUPABASE_PROFILEACCOMPLISHMENT_TABLE = "profileaccomplishment";
 export const selectAccomplishmentByProfile = (profile: string) =>
   supabase
     .from(SUPABASE_PROFILEACCOMPLISHMENT_TABLE)
-    .select("*, accomplishment(*, title(*), avatar(*), badge(*), banner(*))")
+    .select(
+      "*, accomplishment(*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*))"
+    )
     .eq("profile", profile);
 
 export const selectUnlockAccomplishmentByProfile = (profile: string) =>
   supabase
     .from(SUPABASE_PROFILEACCOMPLISHMENT_TABLE)
-    .select("*, accomplishment(*, title(*), avatar(*), badge(*), banner(*))")
+    .select(
+      "*, accomplishment(*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*))"
+    )
     .eq("profile", profile)
     .eq("validate", false);
 
 export const selectAccomplishment = () =>
   supabase
     .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
-    .select("*, title(*), avatar(*), badge(*), banner(*)")
+    .select(
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*)"
+    )
     .order("id", { ascending: true });
 
 export const selectAccomplishmentByAvatar = (avatar: number) =>
   supabase
     .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
-    .select("*, title(*), avatar(*), badge(*), banner(*)")
+    .select(
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*)"
+    )
     .eq("avatar.id", avatar)
     .not("avatar", "is", null)
     .maybeSingle();
@@ -37,7 +45,9 @@ export const selectAccomplishmentByAvatar = (avatar: number) =>
 export const selectAccomplishmentByBadge = (id: number) =>
   supabase
     .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
-    .select("*, title(*), avatar(*), badge(*), banner(*)")
+    .select(
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*)"
+    )
     .eq("badge.id", id)
     .not("badge", "is", null)
     .maybeSingle();
@@ -45,7 +55,9 @@ export const selectAccomplishmentByBadge = (id: number) =>
 export const selectAccomplishmentByTitle = (id: number) =>
   supabase
     .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
-    .select("*, title(*), avatar(*), badge(*), banner(*)")
+    .select(
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*)"
+    )
     .eq("title.id", id)
     .not("title", "is", null)
     .maybeSingle();
@@ -53,7 +65,9 @@ export const selectAccomplishmentByTitle = (id: number) =>
 export const selectAccomplishmentByBanner = (id: number) =>
   supabase
     .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
-    .select("*, title(*), avatar(*), badge(*), banner(*)")
+    .select(
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*)"
+    )
     .eq("banner.id", id)
     .not("banner", "is", null)
     .maybeSingle();
@@ -78,7 +92,7 @@ export const selectStatAccomplishment = (
   let query = supabase
     .from(SUPABASE_VIEWSTATACCOMPLISHMENT_TABLE)
     .select(
-      "*, profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*)))"
+      "*, profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))))"
     )
     .gt(order, 0)
     .ilike("profile.username", `%${search}%`)

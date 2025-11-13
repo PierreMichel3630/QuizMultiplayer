@@ -1,17 +1,15 @@
 import { Grid, Typography } from "@mui/material";
-import { important, px } from "csx";
-import { JsonLanguage } from "src/models/Language";
+import { px } from "csx";
 import { Colors } from "src/style/Colors";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { GoBackButtonIcon } from "../navigation/GoBackButton";
 
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
-import { useUser } from "src/context/UserProvider";
 import { useMemo } from "react";
+import { useUser } from "src/context/UserProvider";
 
 interface Props {
-  title: JsonLanguage | string;
+  title: JSX.Element | string;
   favorite?: boolean;
   addFavorite?: () => void;
   link?: string;
@@ -43,15 +41,9 @@ export const TitleBlock = ({
       </Grid>
       <Grid item xs sx={{ textAlign: "center" }}>
         {typeof title === "string" ? (
-          <Typography variant="h2" sx={{ fontSize: important(px(25)) }}>
-            {title}
-          </Typography>
+          <Typography variant="h2">{title}</Typography>
         ) : (
-          <JsonLanguageBlock
-            variant="h2"
-            sx={{ fontSize: important(px(25)) }}
-            value={title}
-          />
+          title
         )}
       </Grid>
       {addFavorite && (

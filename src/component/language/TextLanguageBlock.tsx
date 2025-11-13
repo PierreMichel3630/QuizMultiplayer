@@ -69,7 +69,7 @@ export const TextNameBlock = ({
     const translations = [...values];
     if (language && translations.length > 0) {
       const trad = translations.find((el) => el.language.id === language?.id);
-      return trad ? trad.name : translations[1].name;
+      return trad ? trad.name : translations[0].name;
     }
     return "";
   }, [language, values]);

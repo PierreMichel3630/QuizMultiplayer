@@ -1,12 +1,11 @@
+import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
 import { Badge, Box, Typography } from "@mui/material";
 import { padding, percent, px } from "csx";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { JsonLanguage } from "src/models/Language";
+import { Title, TitleProfile } from "src/models/Title";
 import { Colors } from "src/style/Colors";
-import { JsonLanguageBlock } from "./JsonLanguageBlock";
-import { TitleProfile } from "src/models/Title";
-import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
+import { TextNameBlock } from "./language/TextLanguageBlock";
 
 interface Props {
   value: string;
@@ -75,11 +74,11 @@ export const BadgeAccountActive = ({
 );
 
 interface PropsBadgeTitle {
-  label: JsonLanguage;
+  title: Title;
   onClick?: () => void;
 }
 
-export const BadgeTitle = ({ label, onClick }: PropsBadgeTitle) => {
+export const BadgeTitle = ({ title, onClick }: PropsBadgeTitle) => {
   return (
     <Box
       sx={{
@@ -92,7 +91,11 @@ export const BadgeTitle = ({ label, onClick }: PropsBadgeTitle) => {
       }}
       onClick={onClick}
     >
-      <JsonLanguageBlock variant="h6" color="text.secondary" value={label} />
+      <TextNameBlock
+        variant="h6"
+        color="text.secondary"
+        values={title.titletranslation}
+      />
     </Box>
   );
 };
@@ -130,11 +133,11 @@ export const BadgeTitleProfile = ({
             {title.multiplicator} x{" "}
           </Typography>
         )}
-        <JsonLanguageBlock
+        <TextNameBlock
           component="span"
           variant="h6"
           color="text.secondary"
-          value={title.title.name}
+          values={title.title.titletranslation}
         />
       </Box>
       {isSelect && (

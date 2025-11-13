@@ -1,4 +1,5 @@
 import {
+  Box,
   Grid,
   IconButton,
   Avatar as MuiAvatar,
@@ -7,17 +8,18 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { deleteShopThemeById } from "src/api/shop";
+import { deleteThemeShopById } from "src/api/shop";
 import { useMessage } from "src/context/MessageProvider";
-import { ThemeShop } from "src/models/Theme";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { ConfirmDialog } from "../modal/ConfirmModal";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { px } from "csx";
 import { Avatar } from "src/models/Avatar";
 import { Banner } from "src/models/Banner";
+import { ThemeShop } from "src/models/Shop";
 import { Title } from "src/models/Title";
+import { LanguageIcon } from "../language/LanguageBlock";
 
 interface PropsCardAdminThemeShop {
   theme: ThemeShop;
@@ -35,7 +37,7 @@ export const CardAdminThemeShop = ({
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
 
   const deleteShopTheme = () => {
-    deleteShopThemeById(theme.id).then((res) => {
+    deleteThemeShopById(theme.id).then((res) => {
       if (res.error) {
         setSeverity("error");
         setMessage(t("commun.error"));
@@ -49,18 +51,21 @@ export const CardAdminThemeShop = ({
   return (
     <Paper sx={{ p: 1 }}>
       <Grid container spacing={1} alignItems="center">
-        <Grid
-          item
-          xs
-          sx={{
-            display: "flex",
-            gap: 2,
-            alignItems: "center",
-            justifyContent: "flex-start",
-          }}
-        >
+        <Grid item>
           <Typography variant="h2">{theme.id}</Typography>
-          <JsonLanguageBlock variant="h4" component="span" value={theme.name} />
+        </Grid>
+        <Grid item xs sx={{ display: "flex", gap: px(5) }}>
+          {theme.themeshoptranslation.map((el, index) => (
+            <Box
+              key={index}
+              sx={{ display: "flex", gap: 1, alignItems: "center" }}
+            >
+              <LanguageIcon language={el.language} />
+              <Typography variant="h4" component="span">
+                {el.name}
+              </Typography>
+            </Box>
+          ))}
         </Grid>
         <Grid item>
           <IconButton aria-label="edit" onClick={onEdit}>
@@ -167,16 +172,26 @@ export const CardAdminTitle = ({ title, onEdit }: PropsCardAdminTitle) => {
   return (
     <Paper sx={{ p: 1 }}>
       <Grid container spacing={1} alignItems="center">
-        <Grid item xs>
+        <Grid item>
           <Typography variant="h2">{title.id}</Typography>
         </Grid>
-        <Grid item xs>
-          <JsonLanguageBlock variant="h4" component="span" value={title.name} />
+        <Grid item xs sx={{ display: "flex", gap: px(5) }}>
+          {title.titletranslation.map((el, index) => (
+            <Box
+              key={index}
+              sx={{ display: "flex", gap: 1, alignItems: "center" }}
+            >
+              <LanguageIcon language={el.language} />
+              <Typography variant="h4" component="span">
+                {el.name}
+              </Typography>
+            </Box>
+          ))}
         </Grid>
-        <Grid item xs>
+        <Grid item>
           <Typography variant="h4">{title.price}</Typography>
         </Grid>
-        <Grid item xs>
+        <Grid item>
           <Typography variant="h4">
             {title.isaccomplishment.toString()}
           </Typography>

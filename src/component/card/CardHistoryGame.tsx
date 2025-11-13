@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { HistoryGame, HistoryGameAdmin } from "src/models/Game";
+import { HistoryGame } from "src/models/Game";
 import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { TextNameBlock } from "../language/TextLanguageBlock";
@@ -160,7 +160,7 @@ export const CardHistoryGame = ({ game }: Props) => {
 };
 
 interface PropsAdmin {
-  game: HistoryGameAdmin;
+  game: HistoryGame;
 }
 
 export const CardHistoryGameAdmin = ({ game }: PropsAdmin) => {
@@ -179,9 +179,11 @@ export const CardHistoryGameAdmin = ({ game }: PropsAdmin) => {
             {isSolo ? (
               <>
                 <Grid item xs={10}>
-                  <Typography variant="h2" noWrap>
-                    {game.theme.title}
-                  </Typography>
+                  <TextNameBlock
+                    variant="h2"
+                    noWrap
+                    values={game.theme.themetranslation}
+                  />
                   <Typography variant="caption">
                     {moment(game.created_at).format("DD/MM/YYYY HH:mm")}
                   </Typography>
@@ -219,9 +221,11 @@ export const CardHistoryGameAdmin = ({ game }: PropsAdmin) => {
             ) : (
               <>
                 <Grid item xs={10}>
-                  <Typography variant="h2" noWrap>
-                    {game.theme.title}
-                  </Typography>
+                  <TextNameBlock
+                    variant="h2"
+                    noWrap
+                    values={game.theme.themetranslation}
+                  />
                   <Typography variant="caption">
                     {moment(game.created_at).format("DD/MM/YYYY HH:mm")}
                   </Typography>

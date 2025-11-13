@@ -27,11 +27,6 @@ export default function AdminEditPage() {
 
   const menus: Array<MenuItem> = [
     {
-      value: Menu.CHALLENGE,
-      label: t("commun.challenge"),
-      link: "/administration/edit/challenge",
-    },
-    {
       value: Menu.CATEGORIES,
       label: t("commun.categories"),
       link: "/administration/edit/categories",
@@ -45,11 +40,6 @@ export default function AdminEditPage() {
       value: Menu.QUESTIONS,
       label: t("commun.questions"),
       link: "/administration/edit/questions",
-    },
-    {
-      value: Menu.SHOP,
-      label: t("commun.shop"),
-      link: "/administration/edit/shop",
     },
   ];
 

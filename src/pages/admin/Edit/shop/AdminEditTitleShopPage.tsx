@@ -1,10 +1,10 @@
-import { Grid } from "@mui/material";
+import { Box, Grid, Pagination } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ButtonColor } from "src/component/Button";
 
 import AddIcon from "@mui/icons-material/Add";
-import { useEffect, useState } from "react";
-import { selectTitles } from "src/api/title";
+import { useCallback, useEffect, useState } from "react";
+import { countTitles, searchTitles } from "src/api/title";
 import { CardAdminTitle } from "src/component/card/CardAdmin";
 import { CreateEditTitleDialog } from "src/component/modal/CreateEditTitleDialog";
 import { SkeletonCardTheme } from "src/component/skeleton/SkeletonTheme";
@@ -15,20 +15,40 @@ export default function AdminEditTitleShopPage() {
   const { t } = useTranslation();
 
   const [titles, setTitles] = useState<Array<Title>>([]);
-  const [title, setTitle] = useState<Title | undefined>(undefined);
-  const [openModal, setOpenModal] = useState(false);
+  const [title, setTitle] = useState<Title | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    getTitles();
+  const ITEMPERPAGE = 20;
+
+  const [count, setCount] = useState<number>(1);
+  const [page, setPage] = useState<number | null>(1);
+  const [openModal, setOpenModal] = useState(false);
+
+  const getCount = useCallback(() => {
+    countTitles().then(({ count }) => {
+      setCount(count ?? 0);
+    });
   }, []);
 
-  const getTitles = () => {
-    selectTitles().then(({ data }) => {
-      setTitles(data ?? []);
-      setIsLoading(false);
-    });
-  };
+  useEffect(() => {
+    getCount();
+  }, [getCount]);
+
+  const getPage = useCallback(() => {
+    setIsLoading(true);
+    setTitles([]);
+    setTitle(null);
+    if (page !== null) {
+      searchTitles(page - 1, ITEMPERPAGE).then(({ data }) => {
+        setTitles(data ?? []);
+        setIsLoading(false);
+      });
+    }
+  }, [page]);
+
+  useEffect(() => {
+    getPage();
+  }, [getPage]);
 
   return (
     <Grid container spacing={1} justifyContent="center">
@@ -61,13 +81,38 @@ export default function AdminEditTitleShopPage() {
           ))}
         </>
       )}
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 80,
+          left: 5,
+          right: 5,
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        {page !== null && (
+          <Pagination
+            count={count ? Math.ceil(count / ITEMPERPAGE) : 1}
+            page={page}
+            onChange={(_event: React.ChangeEvent<unknown>, value: number) =>
+              setPage(value)
+            }
+            variant="outlined"
+            shape="rounded"
+            sx={{
+              backgroundColor: "background.paper",
+            }}
+          />
+        )}
+      </Box>
       <CreateEditTitleDialog
         title={title}
         open={openModal}
         close={() => {
+          setTitle(null);
           setOpenModal(false);
-          setTitle(undefined);
-          getTitles();
+          getPage();
         }}
       />
     </Grid>

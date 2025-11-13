@@ -91,7 +91,9 @@ export const getQuestionTrainingGame = (
 export const selectTrainingGameById = (uuid: string) =>
   supabase
     .from(SUPABASE_TRAININGGAME_TABLE)
-    .select("*, theme!traininggame_theme_fkey(*)")
+    .select(
+      "*, theme!traininggame_theme_fkey(* ,themetranslation!inner(name, language(*)))"
+    )
     .eq("uuid", uuid)
     .maybeSingle();
 
@@ -121,7 +123,9 @@ export const endSoloGame = (questions: Array<unknown>, gameUuid: string) =>
 export const selectSoloGameById = (uuid: string) =>
   supabase
     .from(SUPABASE_SOLOGAME_TABLE)
-    .select("*, theme!public_sologame_theme_fkey(*), themequestion(*)")
+    .select(
+      "*, theme!public_sologame_theme_fkey(* ,themetranslation!inner(name, language(*))), themequestion(* ,themetranslation!inner(name, language(*)))"
+    )
     .eq("uuid", uuid)
     .maybeSingle();
 
@@ -136,7 +140,7 @@ export const selectSoloGameByDate = (
   let query = supabase
     .from(SUPABASE_SOLOGAME_TABLE)
     .select(
-      "*, profile(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*)), badge(*), banner(*), country(*)), theme!sologame_themequestion_fkey(color,image ,themetranslation!inner(name, language(*)))"
+      "*, profile(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))), badge(*), banner(*), country(*)), theme!sologame_themequestion_fkey(color,image ,themetranslation!inner(name, language(*)))"
     )
     .not("theme", "is", null)
     .eq("theme.themetranslation.language", language.id)
@@ -179,7 +183,7 @@ export const selectDuelGameById = (uuid: string) =>
   supabase
     .from(SUPABASE_DUELGAME_TABLE)
     .select(
-      "*, player1(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*)), badge(*), banner(*), country(*)), player2(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*)), badge(*), banner(*), country(*)), theme!public_duelgame_theme_fkey(*)"
+      "*, player1(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))), badge(*), banner(*), country(*)), player2(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))), badge(*), banner(*), country(*)), theme!public_duelgame_theme_fkey(*, themetranslation(*))"
     )
     .eq("uuid", uuid)
     .maybeSingle();
@@ -231,7 +235,7 @@ export const selectLastXThemeByPlayer = (player: string, x: number) => {
     .limit(x);
 };
 
-export const selectSoloGamesByPlayer = (
+export const selectSoloGames = (
   filter: FilterGame,
   page: number,
   itemperpage: number
@@ -243,7 +247,7 @@ export const selectSoloGamesByPlayer = (
   let query = supabase
     .from(SUPABASE_SOLOGAME_TABLE)
     .select(
-      "uuid, points,created_at, profile(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*)), badge(*), banner(*), country(*)), theme!sologame_themequestion_fkey(color, image,themetranslation!inner(name, language(*)))"
+      "uuid, points,created_at, profile(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))), badge(*), banner(*), country(*)), theme!sologame_themequestion_fkey(color, image,themetranslation!inner(name, language(*)))"
     );
   if (player) {
     query = query.eq("profile.id", player);
@@ -256,7 +260,7 @@ export const selectSoloGamesByPlayer = (
     .order("created_at", { ascending: false });
 };
 
-export const selectDuelGamesByPlayer = (
+export const selectDuelGames = (
   filter: FilterGame,
   page: number,
   itemperpage: number
@@ -265,18 +269,21 @@ export const selectDuelGamesByPlayer = (
   const opponent = filter.opponent ? filter.opponent.id : undefined;
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
-  const queryPlayer = opponent
-    ? `and(player1.id.eq.${player},player2.id.eq.${opponent}),and(player2.id.eq.${player},player1.id.eq.${opponent})`
-    : `player2.eq.${player},player1.eq.${player}`;
 
-  const query = supabase
+  let query = supabase
     .from(SUPABASE_DUELGAME_TABLE)
     .select(
-      "uuid, ptsplayer1, ptsplayer2, created_at,created_at, player1(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*)), badge(*), banner(*), country(*)), player2(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*)), badge(*), banner(*), country(*)), theme!public_duelgame_theme_fkey(color, image,themetranslation!inner(name, language(*)))"
+      "uuid, ptsplayer1, ptsplayer2, created_at,created_at, player1(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))), badge(*), banner(*), country(*)), player2(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))), badge(*), banner(*), country(*)), theme!public_duelgame_theme_fkey(color, image,themetranslation!inner(name, language(*)))"
     );
 
+  if (player || opponent) {
+    const queryPlayer = opponent
+      ? `and(player1.id.eq.${player},player2.id.eq.${opponent}),and(player2.id.eq.${player},player1.id.eq.${opponent})`
+      : `player2.eq.${player},player1.eq.${player}`;
+    query = query.or(queryPlayer);
+  }
+
   return query
-    .or(queryPlayer)
     .not("theme", "is", null)
     .range(from, to)
     .order("created_at", { ascending: false });

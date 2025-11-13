@@ -11,7 +11,6 @@ import { Language } from "src/models/Language";
 
 export const SUPABASE_THEME_TABLE = "theme";
 export const SUPABASE_THEME_TRANSLATION_TABLE = "themetranslation";
-export const SUPABASE_THEMESHOP_TABLE = "themeshop";
 export const SUPABASE_VUETHEME_TABLE = "viewthemev3";
 
 export const selectThemesByModifiedAt = (modify_at: Moment) =>
@@ -99,9 +98,6 @@ export const deleteThemeById = (id: number) =>
 export const insertThemeAdmin = (value: ThemeInsertAdmin) =>
   supabase.from(SUPABASE_THEME_TABLE).insert(value).select().single();
 
-export const selectThemesShop = () =>
-  supabase.from(SUPABASE_THEMESHOP_TABLE).select("*");
-
 export const insertTheme = (value: ThemeInsert) =>
   supabase.from(SUPABASE_THEME_TABLE).insert(value).select().single();
 
@@ -115,6 +111,9 @@ export const updateThemeTranslations = (
 
 export const insertThemeTranslation = (values: Array<ThemeTranslationInsert>) =>
   supabase.from(SUPABASE_THEME_TRANSLATION_TABLE).insert(values).select();
+
+export const deleteThemeTranslations = (ids: Array<number>) =>
+  supabase.from(SUPABASE_THEME_TRANSLATION_TABLE).delete().in("id", ids);
 
 export const selectThemesPropose = (language: Language) =>
   supabase

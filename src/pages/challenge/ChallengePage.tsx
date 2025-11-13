@@ -1,4 +1,4 @@
-import { Alert, Box, Divider, Grid, Typography } from "@mui/material";
+import { Box, Divider, Grid, Typography } from "@mui/material";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { NeedConnectAlert } from "src/component/alert/ConnectAlert";
@@ -18,13 +18,13 @@ import { ButtonColor } from "src/component/Button";
 import { WinnerChallengeBlock } from "src/component/challenge/WinnerChallengeBlock";
 import { RankingChallenge } from "src/component/RankingChallenge";
 import { TimeLeftToNextDayLabel } from "src/component/TimeLeftBlock";
-import { Colors } from "src/style/Colors";
 import { useUser } from "src/context/UserProvider";
+import { Colors } from "src/style/Colors";
 
 export default function ChallengePage() {
   const { t } = useTranslation();
   const { profile } = useAuth();
-  const { language, hasChallenge } = useUser();
+  const { language } = useUser();
   const navigate = useNavigate();
 
   const [hasPlayChallenge, setHasPlayChallenge] = useState<undefined | boolean>(
@@ -49,19 +49,17 @@ export default function ChallengePage() {
 
   useEffect(() => {
     const isChallengeAvailable = () => {
-      if (profile && language) {
+      if (profile) {
         const date = moment();
-        countChallengeGameByDateAndProfileId(
-          date,
-          profile.id,
-          language.iso
-        ).then(({ count }) => {
-          setHasPlayChallenge(count !== null && count > 0);
-        });
+        countChallengeGameByDateAndProfileId(date, profile.id).then(
+          ({ count }) => {
+            setHasPlayChallenge(count !== null && count > 0);
+          }
+        );
       }
     };
     isChallengeAvailable();
-  }, [profile, language]);
+  }, [profile]);
 
   return (
     <Grid container>
@@ -86,34 +84,24 @@ export default function ChallengePage() {
               </Grid>
             ) : (
               <>
-                {hasChallenge ? (
-                  <>
-                    {hasPlayChallenge !== undefined && (
-                      <Grid item xs={12}>
-                        {hasPlayChallenge ? (
-                          <TimeLeftToNextDayLabel
-                            label={t("commun.nextdaychallenge")}
-                          />
-                        ) : (
-                          <ButtonColor
-                            fullWidth
-                            value={Colors.blue}
-                            label={t("commun.launch")}
-                            icon={RocketLaunchIcon}
-                            variant="contained"
-                            onClick={() => {
-                              launch();
-                            }}
-                          />
-                        )}
-                      </Grid>
-                    )}
-                  </>
-                ) : (
+                {hasPlayChallenge !== undefined && (
                   <Grid item xs={12}>
-                    <Alert severity="warning">
-                      {t("alert.nochallengegame")}
-                    </Alert>
+                    {hasPlayChallenge ? (
+                      <TimeLeftToNextDayLabel
+                        label={t("commun.nextdaychallenge")}
+                      />
+                    ) : (
+                      <ButtonColor
+                        fullWidth
+                        value={Colors.blue}
+                        label={t("commun.launch")}
+                        icon={RocketLaunchIcon}
+                        variant="contained"
+                        onClick={() => {
+                          launch();
+                        }}
+                      />
+                    )}
                   </Grid>
                 )}
               </>

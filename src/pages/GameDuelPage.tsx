@@ -18,6 +18,7 @@ import { BarNavigation } from "src/component/navigation/BarNavigation";
 import { ProfileTitleBlock } from "src/component/title/ProfileTitle";
 import { DuelGame } from "src/models/DuelGame";
 import { QuestionResult, QuestionResultV1 } from "src/models/Question";
+import { TextNameBlock } from "src/component/language/TextLanguageBlock";
 
 export default function GameDuelPage() {
   const { t } = useTranslation();
@@ -75,9 +76,11 @@ export default function GameDuelPage() {
                   <Box sx={{ width: px(70) }}>
                     <ImageThemeBlock theme={game.theme} />
                   </Box>
-                  <Typography variant="h2" sx={{ wordBreak: "break-all" }}>
-                    {game.theme.title}
-                  </Typography>
+                  <TextNameBlock
+                    variant="h2"
+                    sx={{ wordBreak: "break-all" }}
+                    values={game.theme.themetranslation}
+                  />
                 </Grid>
                 <Grid
                   item

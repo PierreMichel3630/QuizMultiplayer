@@ -45,6 +45,7 @@ import { QuestionCount } from "src/models/Question";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+import { TextNameBlock } from "src/component/language/TextLanguageBlock";
 
 export default function ThemePage() {
   const { t } = useTranslation();
@@ -192,17 +193,23 @@ export default function ThemePage() {
     return res;
   }, [language, loadingQuestions, questionsCount, theme]);
 
+  const title = useMemo(() => {
+    let result = undefined;
+    if (theme && language) {
+      const themetranslation = [...theme.themetranslation].find(
+        (el) => el.language.id === language.id
+      );
+      result = themetranslation?.name ?? undefined;
+    }
+    return result;
+  }, [theme, language]);
+
   return (
     <Box sx={{ width: percent(100) }}>
       <Helmet>
-        <title>
-          {theme ? `${theme.title} - ${t("appname")}` : t("appname")}
-        </title>
-        {theme && (
-          <meta
-            name="description"
-            content={`${t("appname")} Quiz ${theme.title}`}
-          />
+        <title>{title ? `${title} - ${t("appname")}` : t("appname")}</title>
+        {title && (
+          <meta name="description" content={`${t("appname")} Quiz ${title}`} />
         )}
       </Helmet>
       <Grid container>
@@ -294,7 +301,12 @@ export default function ThemePage() {
                   >
                     <Grid item xs={12}>
                       <TitleBlock
-                        title={theme.title}
+                        title={
+                          <TextNameBlock
+                            variant="h2"
+                            values={theme.themetranslation}
+                          />
+                        }
                         addFavorite={addFavorite}
                         favorite={favorite !== undefined}
                         link="/"

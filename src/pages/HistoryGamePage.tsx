@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
-import { selectDuelGamesByPlayer, selectSoloGamesByPlayer } from "src/api/game";
+import { selectDuelGames, selectSoloGames } from "src/api/game";
 import { GroupButtonAllTypeGame } from "src/component/button/ButtonGroup";
 import { CardHistoryGame } from "src/component/card/CardHistoryGame";
 import { ICardImage } from "src/component/card/CardImage";
@@ -66,55 +66,51 @@ export default function HistoryGamePage() {
       if (loading) return;
       if (!isEnd && filter.player !== null) {
         if (filter.type === GameModeEnum.solo) {
-          selectSoloGamesByPlayer(filter, page, ITEMPERPAGE).then(
-            ({ data }) => {
-              const result = data as unknown as Array<SoloGame>;
+          selectSoloGames(filter, page, ITEMPERPAGE).then(({ data }) => {
+            const result = data as unknown as Array<SoloGame>;
 
-              const historygames: Array<HistoryGame> = result.map((el) => {
-                return {
-                  uuid: el.uuid,
-                  type: "SOLO",
-                  theme: el.theme,
-                  player1: el.profile,
-                  ptsplayer1: el.points,
-                  player2: undefined,
-                  ptsplayer2: null,
-                  created_at: el.created_at,
-                };
-              });
+            const historygames: Array<HistoryGame> = result.map((el) => {
+              return {
+                uuid: el.uuid,
+                type: "SOLO",
+                theme: el.theme,
+                player1: el.profile,
+                ptsplayer1: el.points,
+                player2: undefined,
+                ptsplayer2: null,
+                created_at: el.created_at,
+              };
+            });
 
-              setGames((prev) =>
-                page === 0 ? [...historygames] : [...prev, ...historygames]
-              );
-              setIsEnd(result.length === 0);
-              setLoading(false);
-            }
-          );
+            setGames((prev) =>
+              page === 0 ? [...historygames] : [...prev, ...historygames]
+            );
+            setIsEnd(result.length === 0);
+            setLoading(false);
+          });
         } else {
-          selectDuelGamesByPlayer(filter, page, ITEMPERPAGE).then(
-            ({ data }) => {
-              const result = data as unknown as Array<DuelGame>;
+          selectDuelGames(filter, page, ITEMPERPAGE).then(({ data }) => {
+            const result = data as unknown as Array<DuelGame>;
 
-              const historygames: Array<HistoryGame> = result.map((el) => {
-                return {
-                  uuid: el.uuid,
-                  type: "DUEL",
-                  theme: el.theme,
-                  player1: el.player1,
-                  ptsplayer1: el.ptsplayer1,
-                  player2: el.player2,
-                  ptsplayer2: el.ptsplayer2,
-                  created_at: el.created_at,
-                };
-              });
+            const historygames: Array<HistoryGame> = result.map((el) => {
+              return {
+                uuid: el.uuid,
+                type: "DUEL",
+                theme: el.theme,
+                player1: el.player1,
+                ptsplayer1: el.ptsplayer1,
+                player2: el.player2,
+                ptsplayer2: el.ptsplayer2,
+                created_at: el.created_at,
+              };
+            });
 
-              setGames((prev) =>
-                page === 0 ? [...historygames] : [...prev, ...historygames]
-              );
-              setIsEnd(result.length === 0);
-              setLoading(false);
-            }
-          );
+            setGames((prev) =>
+              page === 0 ? [...historygames] : [...prev, ...historygames]
+            );
+            setIsEnd(result.length === 0);
+            setLoading(false);
+          });
         }
       }
     },

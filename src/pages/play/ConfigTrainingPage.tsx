@@ -8,6 +8,7 @@ import { launchTrainingGame } from "src/api/game";
 import { selectThemeById } from "src/api/theme";
 import { ButtonColor } from "src/component/Button";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
+import { TextNameBlock } from "src/component/language/TextLanguageBlock";
 import { CustomSwitch } from "src/component/Switch";
 import { useUser } from "src/context/UserProvider";
 import { Theme } from "src/models/Theme";
@@ -93,9 +94,11 @@ export default function ConfigTrainingPage() {
                 }}
               >
                 <ImageThemeBlock theme={theme} size={40} />
-                <Typography variant="h1" sx={{ fontSize: "20px !important" }}>
-                  {theme.title}
-                </Typography>
+                <TextNameBlock
+                  variant="h1"
+                  sx={{ fontSize: "20px !important" }}
+                  values={theme.themetranslation}
+                />
               </Grid>
               <Grid item xs={12}>
                 <Divider

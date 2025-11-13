@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { TitleProfile } from "src/models/Title";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface PropsProfileTitleBlock {
   titleprofile: TitleProfile | null;
@@ -15,10 +15,10 @@ export const ProfileTitleBlock = ({ titleprofile }: PropsProfileTitleBlock) => {
             {titleprofile.multiplicator} x{" "}
           </Typography>
         )}
-        <JsonLanguageBlock
+        <TextNameBlock
           component="span"
           variant="caption"
-          value={titleprofile.title.name}
+          values={titleprofile.title.titletranslation}
         />
       </Box>
     )

@@ -61,18 +61,15 @@ export const ChallengeProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const getRankingDay = () => {
-      if (language) {
-        const date = moment().subtract(1, "day");
-        selectFirstRankingChallengeByDay(
-          date.format("YYYY-MM-DD"),
-          language.id
-        ).then(({ data }) => {
+      const date = moment().subtract(1, "day");
+      selectFirstRankingChallengeByDay(date.format("YYYY-MM-DD")).then(
+        ({ data }) => {
           setWinDay(data);
-        });
-        selectBestRankingChallengeByDay(language.id).then(({ data }) => {
-          setAllTimeDay(data);
-        });
-      }
+        }
+      );
+      selectBestRankingChallengeByDay().then(({ data }) => {
+        setAllTimeDay(data);
+      });
     };
     const getRankingWeek = () => {
       const date = moment().subtract(1, "weeks");

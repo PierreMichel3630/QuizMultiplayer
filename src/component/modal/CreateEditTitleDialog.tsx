@@ -4,7 +4,7 @@ import { TitleForm } from "src/form/admin/TitleForm";
 import { Title } from "src/models/Title";
 
 interface Props {
-  title?: Title;
+  title: Title | null;
   open: boolean;
   close: () => void;
 }

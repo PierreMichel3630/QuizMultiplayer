@@ -18,7 +18,7 @@ import { SelectThemeShop } from "src/component/Select";
 import { FileUploadInput } from "src/component/input/FileUploadInput";
 import { useMessage } from "src/context/MessageProvider";
 import { Avatar } from "src/models/Avatar";
-import { ThemeShop } from "src/models/Theme";
+import { ThemeShop } from "src/models/Shop";
 import { Colors } from "src/style/Colors";
 import * as Yup from "yup";
 

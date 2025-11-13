@@ -1,10 +1,29 @@
-import { JsonLanguage } from "./Language";
+import { JsonLanguage, Language } from "./Language";
 
 export interface Title {
   id: number;
-  name: JsonLanguage;
   price: number;
   isaccomplishment: boolean;
+  titletranslation: Array<TitleTranslation>;
+}
+
+export interface TitleTranslation {
+  id: number;
+  name: string;
+  language: Language;
+}
+
+export interface TitleTranslationInsert {
+  name: string;
+  language: number;
+  title: number;
+}
+
+export interface TitleTranslationUpdate {
+  id: number;
+  name: string;
+  language: number;
+  title: number;
 }
 
 export interface TitleProfile {

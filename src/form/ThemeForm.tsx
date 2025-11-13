@@ -17,12 +17,13 @@ import { deburr } from "lodash";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 import {
-  deleteCategoryByIds,
+  deleteCategoriesThemeByIds,
   insertCategoryTheme,
-  updateCategories,
+  updateCategoriesTheme,
 } from "src/api/category";
 import { BUCKET_THEME, storeFile, URL_STORAGE } from "src/api/storage";
 import {
+  deleteThemeTranslations,
   insertThemeAdmin,
   insertThemeTranslations,
   updateTheme,
@@ -33,6 +34,7 @@ import { SelectCategory, SelectLanguage } from "src/component/Select";
 import { FileUploadInput } from "src/component/input/FileUploadInput";
 import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
+import { CategoryTheme, CategoryThemeUpdate } from "src/models/Category";
 import { Language } from "src/models/Language";
 import { Theme, ThemeTranslationUpdate } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
@@ -42,18 +44,6 @@ import * as Yup from "yup";
 interface Props {
   theme: Theme | null;
   validate: () => void;
-}
-
-interface CategoryTheme {
-  id: number;
-  category: number;
-  isfirst: boolean;
-}
-
-interface CategoryThemeInsert {
-  id?: number;
-  category: number;
-  isfirst: boolean;
 }
 
 export const ThemeForm = ({ validate, theme }: Props) => {
@@ -183,14 +173,14 @@ export const ThemeForm = ({ validate, theme }: Props) => {
             await updateThemeTranslations(translationsToModify);
           }
           if (translationsToDelete.length > 0) {
-            await deleteCategoryByIds(translationsToDelete);
+            await deleteThemeTranslations(translationsToDelete);
           }
 
           // CATEGORIES
           const previousCategories = theme ? [...theme.categorytheme] : [];
           const newCategories = [...values.categorytheme].filter(
             (el) => el.category !== null
-          ) as Array<CategoryThemeInsert>;
+          ) as Array<CategoryTheme>;
           const categoriesToAdd = [...newCategories]
             .filter((el) => el.id === undefined)
             .map((el) => ({ ...el, theme: data.id }));
@@ -202,7 +192,10 @@ export const ThemeForm = ({ validate, theme }: Props) => {
               return isExist;
             })
             .filter((el) => el.id !== undefined)
-            .map((el) => ({ ...el, theme: data.id })) as Array<CategoryTheme>;
+            .map((el) => ({
+              ...el,
+              theme: data.id,
+            })) as Array<CategoryThemeUpdate>;
           const categoriesToDelete = [...previousCategories]
             .filter((el) => {
               const isExist = [...newCategories].find(
@@ -216,10 +209,10 @@ export const ThemeForm = ({ validate, theme }: Props) => {
             await insertCategoryTheme(categoriesToAdd);
           }
           if (categoriesToModify.length > 0) {
-            await updateCategories(categoriesToModify);
+            await updateCategoriesTheme(categoriesToModify);
           }
           if (categoriesToDelete.length > 0) {
-            await deleteCategoryByIds(categoriesToDelete);
+            await deleteCategoriesThemeByIds(categoriesToDelete);
           }
           validate();
         }

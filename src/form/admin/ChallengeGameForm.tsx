@@ -8,39 +8,58 @@ import {
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
 import { ButtonColor } from "src/component/Button";
-import { ProfileBlock } from "src/component/profile/ProfileBlock";
 import { QuestionResponseEditBlock } from "src/component/question/QuestionResponseBlock";
 import { AnswerUser, Response } from "src/component/question/ResponseBlock";
 import { useMessage } from "src/context/MessageProvider";
-import { ChallengeGame, ChallengeGameUpdate } from "src/models/Challenge";
+import {
+  Challenge,
+  ChallengeGame,
+  ChallengeGameInsert,
+  ChallengeGameUpdate,
+} from "src/models/Challenge";
 import { QuestionResult } from "src/models/Question";
 import { Colors } from "src/style/Colors";
 import * as Yup from "yup";
 
 import SaveIcon from "@mui/icons-material/Save";
-import { updateChallengeGame } from "src/api/challenge";
+import { Moment } from "moment";
+import { useEffect, useState } from "react";
+import {
+  insertChallengeGame,
+  selectChallengeByDate,
+  updateChallengeGame,
+} from "src/api/challenge";
+import { SelectProfileModal } from "src/component/modal/SelectProfileModal";
+import { SelectorProfileBlock } from "src/component/SelectorProfileBlock";
+import { Profile } from "src/models/Profile";
 import { verifyResponse } from "src/utils/response";
 
 interface Props {
+  date: Moment;
   game?: ChallengeGame;
   validate: () => void;
 }
 
-export const ChallengeGameForm = ({ game, validate }: Props) => {
+export const ChallengeGameForm = ({ date, game, validate }: Props) => {
   const { t } = useTranslation();
   const { setMessage, setSeverity } = useMessage();
 
+  const [openModalPlayer, setOpenModalPlayer] = useState(false);
+  const [challenge, setChallenge] = useState<Challenge | null>(null);
+
   const initialValue: {
+    profile?: Profile;
     time: number;
     score: number;
     questions: Array<QuestionResult>;
   } = {
+    profile: game?.profile,
     time: game ? game.time : 0,
     score: game ? game.score : 0,
     questions: game
-      ? game.questions.length > 0
-        ? game.questions
-        : game.challenge.questionsv2
+      ? [...game.questions]
+      : challenge
+      ? [...challenge.questionsv2]
       : [],
   };
 
@@ -50,19 +69,31 @@ export const ChallengeGameForm = ({ game, validate }: Props) => {
 
   const formik = useFormik({
     initialValues: initialValue,
+    enableReinitialize: true,
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
-        if (game === undefined) throw new Error("No game Found");
-        const newGameChallenge: ChallengeGameUpdate = {
-          id: game.id,
-          questions: values.questions,
-          score: values.score,
-          time: values.time,
-        };
-        const { error } = await updateChallengeGame(newGameChallenge);
+        if (game) {
+          const newGameChallenge: ChallengeGameUpdate = {
+            id: game.id,
+            questions: values.questions,
+            score: values.score,
+            time: values.time,
+          };
+          const { error } = await updateChallengeGame(newGameChallenge);
+          if (error) throw error;
+        } else {
+          const newGameChallenge: ChallengeGameInsert = {
+            profile: values.profile ? values.profile.id : "",
+            questions: values.questions,
+            score: values.score,
+            time: values.time,
+            challenge: challenge ? challenge.id : 0,
+          };
+          const { error } = await insertChallengeGame(newGameChallenge);
+          if (error) throw error;
+        }
 
-        if (error) throw error;
         validate();
       } catch (err) {
         console.error(err);
@@ -91,14 +122,33 @@ export const ChallengeGameForm = ({ game, validate }: Props) => {
     formik.setFieldValue(`score`, score);
   };
 
+  const getChallenge = (date: Moment) => {
+    selectChallengeByDate(date).then(({ data }) => {
+      setChallenge(data);
+    });
+  };
+
+  useEffect(() => {
+    getChallenge(date);
+  }, [date]);
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={2} alignItems="center" justifyContent="center">
-        {game && (
-          <Grid item>
-            <ProfileBlock profile={game.profile} variant="h4" avatarSize={50} />
-          </Grid>
-        )}
+        <Grid
+          item
+          sx={{
+            pointerEvents: game ? "none" : "initial",
+            opacity: game ? 0.5 : 1,
+          }}
+        >
+          <SelectorProfileBlock
+            label={t("commun.selectplayer")}
+            profile={formik.values.profile}
+            onDelete={() => formik.setFieldValue("profile", undefined)}
+            onChange={() => setOpenModalPlayer(true)}
+          />
+        </Grid>
         <Grid item xs={12}>
           <FormControl
             fullWidth
@@ -152,7 +202,7 @@ export const ChallengeGameForm = ({ game, validate }: Props) => {
         </Grid>
         {formik.values.questions.map((question) => {
           const response: Response = {
-            answer: question.response,
+            answer: question.answer,
             result: question.resultPlayer1 ?? false,
             responsePlayer1: question.responsePlayer1,
           };
@@ -177,6 +227,14 @@ export const ChallengeGameForm = ({ game, validate }: Props) => {
           />
         </Grid>
       </Grid>
+      <SelectProfileModal
+        open={openModalPlayer}
+        close={() => setOpenModalPlayer(false)}
+        onValid={(profile) => {
+          formik.setFieldValue("profile", profile);
+          setOpenModalPlayer(false);
+        }}
+      />
     </form>
   );
 };

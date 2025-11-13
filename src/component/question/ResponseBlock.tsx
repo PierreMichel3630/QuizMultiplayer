@@ -174,6 +174,8 @@ export const ResponsesQCMEditBlock = ({
 
   const isDarkMode = useMemo(() => mode === "dark", [mode]);
 
+  const answer = decryptToNumber(question.answer);
+
   const isQuestionOrder = useMemo(
     () => question.typequestion === TypeQuestionEnum.ORDER,
     [question]
@@ -216,24 +218,23 @@ export const ResponsesQCMEditBlock = ({
         mb: 1,
       }}
     >
-      {question.answers.map((r, index) => {
-        const isCorrectResponse = response && Number(response.answer) === index;
-        const isAnswerP1 = Number(responseplayer1) === index;
-        const isAnswerP2 = Number(responseplayer2) === index;
-        const colorOrder = index === 0 ? Colors.blue4 : Colors.pink2;
-        const colorBase = isDarkMode ? Colors.black2 : Colors.white;
+      {question.answers.map((res) => {
+        const index = res.id;
+        const isCorrectResponse = Number(answer) === index;
 
-        let color: string = isQuestionOrder ? colorOrder : colorBase;
+        const isArrowRight =
+          responseplayer1 !== undefined && Number(responseplayer1) === index;
+        const isArrowLeft =
+          responseplayer2 !== undefined && Number(responseplayer2) === index;
+        let color: string = isDarkMode ? Colors.black2 : Colors.white;
         let borderColor: string = isDarkMode ? Colors.white : Colors.black2;
+
         if (isCorrectResponse) {
           color = Colors.correctanswer;
           borderColor = Colors.correctanswerborder;
-        } else if ((isAnswerP1 || isAnswerP2) && response !== undefined) {
+        } else if (isArrowRight || isArrowLeft) {
           color = Colors.wronganswer;
           borderColor = Colors.wronganswerborder;
-        } else if ((isAnswerP1 || isAnswerP2) && response === undefined) {
-          color = Colors.waitanswer;
-          borderColor = Colors.waitanswerborder;
         }
 
         return (
@@ -242,11 +243,11 @@ export const ResponsesQCMEditBlock = ({
             color={color}
             borderColor={borderColor}
             index={index}
-            labels={r.answertranslation}
-            extra={response ? r.extra : undefined}
-            image={r.image}
-            answer1={isAnswerP1}
-            answer2={isAnswerP2}
+            labels={res.answertranslation}
+            extra={response ? res.extra : undefined}
+            image={res.image}
+            answer1={isArrowRight}
+            answer2={isArrowLeft}
             hasAnswer={false}
             type={
               isQuestionOrder

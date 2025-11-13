@@ -1,10 +1,14 @@
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
+import PaidIcon from "@mui/icons-material/Paid";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+import WhatshotIcon from "@mui/icons-material/Whatshot";
 import { Box, Typography } from "@mui/material";
 import { padding, px } from "csx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { ChallengeTypeResultEnum } from "src/models/enum/ChallengeEnum";
 import {
   ClassementChallengeEnum,
   ClassementChallengeGlobalTimeEnum,
@@ -17,11 +21,6 @@ import {
 } from "src/models/enum/ClassementEnum";
 import { AllGameModeEnum, GameModeEnum } from "src/models/enum/GameEnum";
 import { Colors } from "src/style/Colors";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import { ChallengeTypeResultEnum } from "src/models/enum/ChallengeEnum";
-import { useUser } from "src/context/UserProvider";
-import WhatshotIcon from "@mui/icons-material/Whatshot";
-import PaidIcon from "@mui/icons-material/Paid";
 
 interface Props {
   selected: string;
@@ -125,35 +124,27 @@ export const GroupButtonAllGameMode = ({
   onChange,
 }: PropsGroupButtonAllGameMode) => {
   const { t } = useTranslation();
-  const { hasChallenge } = useUser();
 
-  const options = useMemo(() => {
-    const values = [
-      {
-        icon: <PlayCircleIcon />,
-        label: t("commun.solo"),
-        value: AllGameModeEnum.SOLO,
-        color: Colors.blue2,
-      },
-      {
-        icon: <OfflineBoltIcon />,
-        label: t("commun.duel"),
-        value: AllGameModeEnum.DUEL,
-        color: Colors.red,
-      },
-    ];
-    return hasChallenge
-      ? [
-          {
-            icon: <EmojiEventsIcon />,
-            label: t("commun.challenge"),
-            value: AllGameModeEnum.CHALLENGE,
-            color: Colors.green,
-          },
-          ...values,
-        ]
-      : [...values];
-  }, [t, hasChallenge]);
+  const options = [
+    {
+      icon: <EmojiEventsIcon />,
+      label: t("commun.challenge"),
+      value: AllGameModeEnum.CHALLENGE,
+      color: Colors.green,
+    },
+    {
+      icon: <PlayCircleIcon />,
+      label: t("commun.solo"),
+      value: AllGameModeEnum.SOLO,
+      color: Colors.blue2,
+    },
+    {
+      icon: <OfflineBoltIcon />,
+      label: t("commun.duel"),
+      value: AllGameModeEnum.DUEL,
+      color: Colors.red,
+    },
+  ];
 
   return (
     <GroupButton

@@ -31,10 +31,10 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import HistoryIcon from "@mui/icons-material/History";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import { ICardImage } from "src/component/card/CardImage";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import { HistoryGameModal } from "src/component/modal/HistoryGameModal";
 import { SearchThemeSelectAvatarScrollBlock } from "src/component/scroll/SearchThemeScrollBlock";
+import { Theme } from "src/models/Theme";
 import { weightedRandom } from "src/utils/random";
 
 export default function BattlePage() {
@@ -148,7 +148,7 @@ export default function BattlePage() {
   };
 
   const selectTheme = useCallback(
-    async (theme: ICardImage) => {
+    async (theme: Theme) => {
       if (game && isPlayer1 !== null) {
         const myThemes = isPlayer1
           ? [...game.themesplayer1]

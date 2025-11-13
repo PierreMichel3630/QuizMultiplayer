@@ -4,12 +4,12 @@ import { t } from "i18next";
 import { Link } from "react-router-dom";
 import { Title } from "src/models/Title";
 import { Colors } from "src/style/Colors";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { MoneyBlock } from "../MoneyBlock";
 
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useBreakpoint } from "src/utils/mediaQuery";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 import { SkeletonTitles } from "../skeleton/SkeletonShop";
 
 interface PropsTitleShopBlock {
@@ -99,13 +99,12 @@ export const TitleShop = ({ title, noWrap = true }: Props) => {
           textAlign: "center",
         }}
       >
-        <JsonLanguageBlock
+        <TextNameBlock
           variant="h6"
           color="text.secondary"
-          value={title.name}
           noWrap={noWrap}
+          values={title.titletranslation}
         />
-
         {title.price > 0 ? (
           <Box
             sx={{

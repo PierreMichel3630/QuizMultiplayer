@@ -23,6 +23,7 @@ import { Colors } from "src/style/Colors";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 import { ButtonColor } from "../Button";
 import { ImageThemeBlock } from "../ImageThemeBlock";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   game: BattleGame;
@@ -119,9 +120,11 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
                       }}
                     >
                       <ImageThemeBlock theme={el.theme} size={40} />
-                      <Typography variant="h4" sx={{ textAlign: "center" }}>
-                        {el.theme.title}
-                      </Typography>
+                      <TextNameBlock
+                        variant="h4"
+                        sx={{ textAlign: "center" }}
+                        values={el.theme.themetranslation}
+                      />
                     </Grid>
                     <Grid
                       item

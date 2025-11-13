@@ -29,7 +29,6 @@ import { RatingChallenge } from "src/component/challenge/RatingChallenge";
 import { BarNavigation } from "src/component/navigation/BarNavigation";
 import { ProfileBlock } from "src/component/profile/ProfileBlock";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { useUser } from "src/context/UserProvider";
 import {
   ChallengeRanking,
   ChallengeRankingAllTime,
@@ -42,7 +41,6 @@ import { Profile } from "src/models/Profile";
 export default function ChallengeProfilPage() {
   const { t } = useTranslation();
   const { uuid } = useParams();
-  const { language } = useUser();
   const { profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -116,19 +114,17 @@ export default function ChallengeProfilPage() {
 
   useEffect(() => {
     const isChallengeAvailable = () => {
-      if (profile && language) {
+      if (profile) {
         const date = moment();
-        countChallengeGameByDateAndProfileId(
-          date,
-          profile.id,
-          language.iso
-        ).then(({ count }) => {
-          setHasPlayChallenge(count !== null && count > 0);
-        });
+        countChallengeGameByDateAndProfileId(date, profile.id).then(
+          ({ count }) => {
+            setHasPlayChallenge(count !== null && count > 0);
+          }
+        );
       }
     };
     isChallengeAvailable();
-  }, [profile, language]);
+  }, [profile]);
 
   return (
     <Grid container className="page" alignContent="flex-start">

@@ -132,9 +132,7 @@ export default function TitlePage() {
 
       <Grid item xs={12}>
         <Container maxWidth="md">
-          {title && profile && (
-            <ProfilHeader profile={profile} title={title.name} />
-          )}
+          {title && profile && <ProfilHeader profile={profile} title={title} />}
         </Container>
       </Grid>
       <Grid item xs={12}>
@@ -143,7 +141,7 @@ export default function TitlePage() {
             <Box sx={{ p: 2 }}>
               <Grid container spacing={2} justifyContent="center">
                 <Grid item xs={12}>
-                  <BadgeTitle label={title.name} />
+                  <BadgeTitle title={title} />
                 </Grid>
 
                 {accomplishment && (

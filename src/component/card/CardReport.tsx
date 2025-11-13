@@ -12,6 +12,7 @@ import { ButtonColor } from "../Button";
 import { CardSignalQuestion } from "./CardQuestion";
 import moment from "moment";
 import { ImageThemeBlock } from "../ImageThemeBlock";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   report: Report;
@@ -81,11 +82,15 @@ export const CardReport = ({ report, onDelete }: Props) => {
                   }
                   size={60}
                 />
-                <Typography color="text.secondary" variant="h4">
-                  {report.duelgame
-                    ? report.duelgame.themequestion.title
-                    : report.sologame!.themequestion.title}
-                </Typography>
+                <TextNameBlock
+                  color="text.secondary"
+                  variant="h4"
+                  values={
+                    report.duelgame
+                      ? report.duelgame.themequestion.themetranslation
+                      : report.sologame!.themequestion.themetranslation
+                  }
+                />
               </Box>
             </Box>
           )}

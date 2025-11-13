@@ -47,15 +47,20 @@ export default function CategoryPage() {
 
   const themesDisplay = useMemo(
     () =>
-      [...themes].map((el) => ({
-        id: el.id,
-        name: el.name,
-        image: el.image,
-        color: el.color,
-        link: `/theme/${el.id}`,
-        type: TypeCardEnum.THEME,
-      })),
-    [themes]
+      [...themes].map((el) => {
+        const translation = [...el.themetranslation].find(
+          (el) => el.language.id === language?.id
+        );
+        return {
+          id: el.id,
+          name: translation?.name ?? el.themetranslation[0].name,
+          image: el.image,
+          color: el.color,
+          link: `/theme/${el.id}`,
+          type: TypeCardEnum.THEME,
+        };
+      }),
+    [themes, language]
   );
 
   const favorite = useMemo(

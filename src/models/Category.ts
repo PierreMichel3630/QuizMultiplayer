@@ -34,6 +34,13 @@ export interface CategoryThemeInsert {
   isfirst?: boolean;
 }
 
+export interface CategoryThemeUpdate {
+  id: number;
+  category: number;
+  theme: number;
+  isfirst?: boolean;
+}
+
 export interface CategoryWithThemes {
   id: number;
   title: string;

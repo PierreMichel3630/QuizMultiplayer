@@ -1,11 +1,10 @@
-import { Grid, Box, Button, Typography, Divider } from "@mui/material";
+import { Box, Button, Divider, Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { JsonLanguage } from "src/models/Language";
 import { TitleCount } from "./title/TitleCount";
 
 interface Props {
-  title: string | JsonLanguage;
+  title: string | JSX.Element;
   count?: number;
   link: string;
   children: JSX.Element;

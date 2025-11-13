@@ -24,12 +24,10 @@ import { CategoriesScrollBlock } from "src/component/scroll/CategoriesScrollBloc
 import { SearchThemeScrollBlock } from "src/component/scroll/SearchThemeScrollBlock";
 import { ShopBlock } from "src/component/ShopBlock";
 import { UpdatedThemeBlock } from "src/component/theme/UpdatedThemeBlock";
-import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";
 
 export default function ThemesPage() {
   const { t } = useTranslation();
-  const { hasChallenge, language } = useUser();
 
   const { profile } = useAuth();
   const { headerSize } = useApp();
@@ -49,19 +47,17 @@ export default function ThemesPage() {
 
   useEffect(() => {
     const isChallengeAvailable = () => {
-      if (profile && language) {
+      if (profile) {
         const date = moment();
-        countChallengeGameByDateAndProfileId(
-          date,
-          profile.id,
-          language.iso
-        ).then(({ count }) => {
-          setHasPlayChallenge(count !== null && count > 0);
-        });
+        countChallengeGameByDateAndProfileId(date, profile.id).then(
+          ({ count }) => {
+            setHasPlayChallenge(count !== null && count > 0);
+          }
+        );
       }
     };
     isChallengeAvailable();
-  }, [profile, language]);
+  }, [profile]);
 
   const handleChange = (value: string) => {
     setSearch(value);
@@ -95,7 +91,7 @@ export default function ThemesPage() {
           }}
         >
           <Grid container spacing={1}>
-            {hasChallenge && !hasPlayChallenge && (
+            {!hasPlayChallenge && (
               <Grid item xs={12}>
                 <ChallengeButton />
               </Grid>

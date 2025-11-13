@@ -9,6 +9,9 @@ import { ImageThemeBlock } from "../ImageThemeBlock";
 
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import { supabase } from "src/api/supabase";
+import { useMemo } from "react";
+import { useUser } from "src/context/UserProvider";
 
 interface Props {
   game: DuelGame;
@@ -18,15 +21,33 @@ interface Props {
 export const DuelNotificationBlock = ({ game, refuse }: Props) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { language } = useUser();
 
   const playDuel = (uuid: string) => {
     navigate(`/duel/${uuid}`);
   };
 
   const refuseDuel = async (uuid: string) => {
+    const channel = supabase.channel(uuid);
+    channel.subscribe((status) => {
+      if (status !== "SUBSCRIBED") {
+        return null;
+      }
+      channel.send({
+        type: "broadcast",
+        event: "cancel",
+      });
+    });
     await cancelDuelByUuid(uuid);
     if (refuse) refuse();
   };
+
+  const themeText = useMemo(() => {
+    const themeLanguage = [...game.theme.themetranslation].find(
+      (el) => el.language.id === language?.id
+    );
+    return themeLanguage?.name ?? game.theme.themetranslation[0].name;
+  }, [game.theme, language]);
 
   return (
     <Paper
@@ -63,7 +84,7 @@ export const DuelNotificationBlock = ({ game, refuse }: Props) => {
                 username: game.player1
                   ? game.player1.username
                   : t("commun.unknown"),
-                theme: game ? game.theme.title : t("commun.unknown"),
+                theme: game ? themeText : t("commun.unknown"),
               }}
               components={{ bold: <strong /> }}
             />

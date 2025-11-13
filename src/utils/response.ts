@@ -99,13 +99,9 @@ export const verifyResponse = (
   question: QuestionResult,
   answer: AnswerUser
 ) => {
-  let result = false;
+  const decryptanswer = decryptToNumber(question.answer);
   const myResponseValue = answer.value;
-  const decryptResponse = question.response;
-  if (decryptResponse !== undefined) {
-    result = Number(myResponseValue) === Number(decryptResponse);
-  }
-  return result;
+  return Number(myResponseValue) === Number(decryptanswer);
 };
 
 const checkResponse = (

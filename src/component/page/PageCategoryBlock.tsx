@@ -1,14 +1,13 @@
 import { Alert, Box, Grid } from "@mui/material";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
-import { JsonLanguage } from "src/models/Language";
 import { CardImage, ICardImage } from "../card/CardImage";
 import { RankingBlock } from "../RankingBlock";
 import { TitleBlock } from "../title/Title";
-import { useTranslation } from "react-i18next";
 
 interface Props {
-  title?: JsonLanguage | string;
+  title?: JSX.Element | string;
   values: Array<ICardImage>;
   addFavorite?: () => void;
   favorite?: boolean;

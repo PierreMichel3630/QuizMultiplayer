@@ -11,7 +11,7 @@ export const getProfilById = (uuid: string) =>
   supabase
     .from(SUPABASE_PROFILE_TABLE)
     .select(
-      "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*))"
+      "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))"
     )
     .eq("id", uuid)
     .single();
@@ -25,7 +25,7 @@ export const updateSelectProfil = (profil: ProfileUpdate) =>
     .update(profil)
     .eq("id", profil.id)
     .select(
-      "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*))"
+      "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))"
     )
     .single();
 
@@ -48,7 +48,7 @@ export const searchProfilePagination = (
   return supabase
     .from(SUPABASE_PROFILE_TABLE)
     .select(
-      "*, avatar(*), badge(*),country(*), titleprofile!profiles_titleprofile_fkey(*,title(*))"
+      "*, avatar(*), badge(*),country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))"
     )
     .ilike("username", `%${search}%`)
     .not("id", "in", `(${notin.join(",")})`)
@@ -82,7 +82,7 @@ export const updateProfilByFunction = () =>
   });
 
 export const selectProfile = (
-  order: string,
+  order: { value: string; ascending: boolean },
   page: number,
   itemperpage = 25,
   idsProfile = [] as Array<string>,
@@ -94,16 +94,16 @@ export const selectProfile = (
   let query = supabase
     .from(SUPABASE_PROFILE_TABLE)
     .select(
-      "*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*))"
+      "*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))"
     )
-    .gt(order, 0)
+    .gt(order.value, 0)
     .ilike("username", `%${search}%`)
     .not("id", "in", `(${bots.join(",")})`);
   if (idsProfile.length > 0) {
     query = query.in("id", idsProfile);
   }
   return query
-    .order(order, { ascending: false })
+    .order(order.value, { ascending: order.ascending })
     .order("created_at", { ascending: true })
     .range(from, to);
 };

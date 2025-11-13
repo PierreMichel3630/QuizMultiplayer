@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { selectAvatar } from "src/api/avatar";
 import { selectBadges } from "src/api/badge";
 import { selectBanners } from "src/api/banner";
-import { selectThemesShop } from "src/api/theme";
+import { selectThemeShop } from "src/api/shop";
 import { selectTitles } from "src/api/title";
 import { CountBlock } from "src/component/CountBlock";
 import { AvatarShopBlock } from "src/component/shop/AvatarShop";
@@ -18,7 +18,7 @@ import { useApp } from "src/context/AppProvider";
 import { Avatar } from "src/models/Avatar";
 import { Badge } from "src/models/Badge";
 import { Banner } from "src/models/Banner";
-import { ThemeShop } from "src/models/Theme";
+import { ThemeShop } from "src/models/Shop";
 import { Title } from "src/models/Title";
 import { sortByPriceDesc } from "src/utils/sort";
 
@@ -58,7 +58,7 @@ export default function ShopPage() {
       });
     };
     const getThemes = () => {
-      selectThemesShop().then(({ data }) => {
+      selectThemeShop().then(({ data }) => {
         const value = data !== null ? (data as Array<ThemeShop>) : [];
         setThemesShop(value);
       });

@@ -26,6 +26,7 @@ import { ReportModal } from "../modal/ReportModal";
 import { AddMoneyBlock } from "../MoneyBlock";
 import { RankingTableSoloDuel } from "../table/RankingTable";
 import { ProfileTitleBlock } from "../title/ProfileTitle";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   game: DuelGame;
@@ -156,9 +157,11 @@ export const EndDuelGameBlock = ({ game }: Props) => {
           <Box sx={{ width: px(70) }}>
             <ImageThemeBlock theme={game.theme} />
           </Box>
-          <Typography variant="h2" sx={{ wordBreak: "break-all" }}>
-            {game.theme.title}
-          </Typography>
+          <TextNameBlock
+            variant="h2"
+            sx={{ wordBreak: "break-all" }}
+            values={game.theme.themetranslation}
+          />
         </Grid>
         <Grid item xs={12} sx={{ textAlign: "center" }}>
           <Typography variant="h1">

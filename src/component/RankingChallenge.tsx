@@ -22,7 +22,7 @@ import {
   countRankingChallengeByMonth,
   countRankingChallengeByWeek,
   selectAvgChallengeByAllTime,
-  selectAvgChallengeByDateAndLanguage,
+  selectAvgChallengeByDate,
   selectAvgChallengeByMonth,
   selectAvgChallengeByWeek,
   selectRankingChallengeAllTimePaginate,
@@ -59,13 +59,14 @@ import {
   ResultMonthChallengeBlock,
   ResultWeekChallengeBlock,
 } from "./ChallengeBlock";
-import { ChangeDateBlock, DateFormat } from "./date/ChangeDateBlock";
+import { ChangeDateBlock } from "./date/ChangeDateBlock";
 import { BasicSearchInput } from "./Input";
 import { SortButton } from "./SortBlock";
 import {
   DataRankingChallenge,
   RankingChallengeTable,
 } from "./table/RankingChallengeTable";
+import { DateFormat } from "src/models/enum/DateEnum";
 
 interface Props {
   hasPlayChallenge?: boolean;
@@ -218,13 +219,9 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
     const getAvg = () => {
       if (tab === ClassementChallengeEnum.perdate) {
         if (tabTime === ClassementChallengeTimeEnum.day) {
-          if (language) {
-            selectAvgChallengeByDateAndLanguage(date, language.iso).then(
-              ({ data }) => {
-                setAvg(data);
-              }
-            );
-          }
+          selectAvgChallengeByDate(date).then(({ data }) => {
+            setAvg(data);
+          });
         } else if (tabTime === ClassementChallengeTimeEnum.week) {
           selectAvgChallengeByWeek(date).then(({ data }) => {
             setAvg(data);
@@ -243,7 +240,7 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
       }
     };
     getAvg();
-  }, [tab, tabTime, date, language]);
+  }, [tab, tabTime, date]);
 
   useEffect(() => {
     const getRanking = () => {
@@ -252,7 +249,6 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
           if (language) {
             selectRankingChallengeByDatePaginate(
               date,
-              language.iso,
               search,
               page,
               rowsPerPage,

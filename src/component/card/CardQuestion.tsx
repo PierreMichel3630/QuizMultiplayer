@@ -26,23 +26,23 @@ import { useUser } from "src/context/UserProvider";
 import { Answer } from "src/models/Answer";
 import { Language } from "src/models/Language";
 import { Difficulty } from "src/models/enum/DifficultyEnum";
+import { StatusPropose } from "src/models/enum/Propose";
 import { MapPositionBlock } from "../MapPositionBlock";
 import { QcmBlockDuelResultBlock } from "../QcmBlock";
+import { ProposeAlert } from "../alert/ProposeAlert";
 import { LanguagesIcon } from "../language/LanguageBlock";
 import { TextLabelBlock } from "../language/TextLanguageBlock";
 import { ConfirmDialog } from "../modal/ConfirmModal";
 import { CreateEditAnswersDialog } from "../modal/CreateEditAnswersDialog";
 import { CreateEditQuestionDialog } from "../modal/CreateEditQuestionDialog";
+import { CreateEditThemeQuestionDialog } from "../modal/CreateEditThemeQuestionDialog";
 import { ValidationProposeQuestion } from "../modal/ValidateQuestionModal";
 import {
   CorrectAnswerBlock,
   ResponsesBlockAdmin,
 } from "../question/ResponseBlock";
-import { CardSignalQuestionV1 } from "./CardQuestionV1";
 import { ThemesList } from "../theme/ThemesList";
-import { CreateEditThemeQuestionDialog } from "../modal/CreateEditThemeQuestionDialog";
-import { ProposeAlert } from "../alert/ProposeAlert";
-import { StatusPropose } from "src/models/enum/Propose";
+import { CardSignalQuestionV1 } from "./CardQuestionV1";
 
 interface Props {
   question: QuestionAdmin;

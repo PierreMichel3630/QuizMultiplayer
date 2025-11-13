@@ -15,6 +15,7 @@
     "all": "Tous",
     "per": "par",
     "image": "Image",
+    "seeallproposequestion": "Voir mes propositions de questions",
     "seegame": "Voir la partie",
     "questionwithimage": "Questions avec image",
     "mygames": "Mes parties",
@@ -371,7 +372,11 @@
     "download": "Télécharger",
     "inprogress": "En cours de traitement",
     "myproposals": "Mes propositions (Thèmes / Questions)",
-    "propositionvalidate": "Vos propositions de questions on été prise en compte. Elles seront traités le plus rapidement possible par un administrateur."
+    "propositionvalidate": "Vos propositions de questions on été prise en compte. Elles seront traités le plus rapidement possible par un administrateur.",
+    "noquestionpropose": "Vous n'avez proposé aucune question. Veuillez réessayer.",
+    "seechallenge": "Voir le challenge",
+    "createmodifychallenge": "Créer/Modifier le challenge",
+    "addchallengegame": "Ajouter une partie"
   },
   "abrevation": {
     "average": "Moy."
