@@ -47,7 +47,7 @@ export const selectThemesByCategory = (
   id: number | string,
   search = "",
   page = 0,
-  itemperpage = 20
+  itemperpage = 25
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
@@ -66,14 +66,17 @@ export const selectThemesByCategory = (
 
 export const countThemesByCategory = (
   id: number | string,
-  language: Language
+  language: Language,
+  search = ""
 ) =>
   supabase
     .from(SUPABASE_VUETHEME_TABLE)
     .select("*", { count: "exact", head: true })
     .eq("category", id)
-    .eq("language", language.id)
-    .eq("enabled", true);
+    .eq("validate", true)
+    .eq("enabled", true)
+    .ilike(`namelower`, `%${search}%`)
+    .eq("language", language.id);
 
 export const selectThemeById = (id: number) =>
   supabase

@@ -25,8 +25,10 @@ import { SearchThemeScrollBlock } from "src/component/scroll/SearchThemeScrollBl
 import { ShopBlock } from "src/component/ShopBlock";
 import { UpdatedThemeBlock } from "src/component/theme/UpdatedThemeBlock";
 import { Colors } from "src/style/Colors";
+import { useIsMobileOrTablet } from "src/hook/useSize";
 
 export default function ThemesPage() {
+  const isMobileOrTablet = useIsMobileOrTablet();
   const { t } = useTranslation();
 
   const { profile } = useAuth();
@@ -79,9 +81,11 @@ export default function ThemesPage() {
           content="Testez vos connaissances. Jouez en Solo ou multijoueurs sur un quiz avec plus de 500 thèmes: Cinéma, Histoire, Géographie, Sports, ..."
         />
       </Helmet>
-      <Grid item xs={12}>
-        <HeaderApp />
-      </Grid>
+      {isMobileOrTablet && (
+        <Grid item xs={12}>
+          <HeaderApp />
+        </Grid>
+      )}
       <Grid item xs={12} ref={refHeadPage}>
         <Box
           sx={{
@@ -91,11 +95,6 @@ export default function ThemesPage() {
           }}
         >
           <Grid container spacing={1}>
-            {!hasPlayChallenge && (
-              <Grid item xs={12}>
-                <ChallengeButton />
-              </Grid>
-            )}
             <Grid
               item
               xs={12}
@@ -134,6 +133,11 @@ export default function ThemesPage() {
                 </Box>
               )}
             </Grid>
+            {!hasPlayChallenge && (
+              <Grid item xs={12}>
+                <ChallengeButton />
+              </Grid>
+            )}
             {displaySearch ? (
               <SearchThemeScrollBlock search={searchApi} />
             ) : (

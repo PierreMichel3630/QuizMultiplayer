@@ -165,7 +165,7 @@ export const selectInvitationDuelByUuid = (uuids: Array<string>) =>
   supabase
     .from(SUPABASE_DUELGAME_TABLE)
     .select(
-      "*, player1(*, avatar(*)), player2(*, avatar(*)), theme!public_duelgame_theme_fkey(*)"
+      "*, player1(*, avatar(*)), player2(*, avatar(*)), theme!public_duelgame_theme_fkey(*, themetranslation(*))"
     )
     .in("uuid", uuids)
     .eq("status", "WAIT");
@@ -174,7 +174,7 @@ export const selectInvitationDuelByUser = (uuid: string) =>
   supabase
     .from(SUPABASE_DUELGAME_TABLE)
     .select(
-      "*, player1(*, avatar(*)), player2(*, avatar(*)), theme!public_duelgame_theme_fkey(*)"
+      "*, player1(*, avatar(*)), player2(*, avatar(*)), theme!public_duelgame_theme_fkey(*, themetranslation(*))"
     )
     .eq("player2", uuid)
     .eq("status", "WAIT");

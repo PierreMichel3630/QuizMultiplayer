@@ -1,14 +1,20 @@
-import { Container, Grid } from "@mui/material";
+import { AppBar, Box, Container, CssBaseline, Toolbar } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { Header } from "src/component/header/Header";
 
 import { useEffect, useState } from "react";
 
 import { BottomNavigationBlock } from "src/component/BottomNavigation";
+import { DrawerMenus } from "src/component/drawer/DrawerMenus";
 import { OfflineBlock } from "src/component/OfflineBlock";
+import { DefaultToolbar } from "src/component/toolbar/Toolbar";
+import { useIsMobileOrTablet } from "src/hook/useSize";
 import { Colors } from "src/style/Colors";
+import { drawerWidth } from "src/utils/config";
 
 export default function OutletPage() {
+  const isMobileOrTablet = useIsMobileOrTablet();
+
   const [online, setOnline] = useState(navigator.onLine);
 
   useEffect(() => {
@@ -22,27 +28,36 @@ export default function OutletPage() {
 
   return (
     <>
-      <Grid container>
-        <Grid
-          item
-          xs={12}
+      <Box sx={{ display: "flex" }}>
+        <CssBaseline />
+        <AppBar
+          position="fixed"
+          sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        >
+          <Toolbar
+            sx={{
+              background: Colors.colorApp,
+            }}
+            disableGutters={isMobileOrTablet}
+          >
+            <Header />
+          </Toolbar>
+        </AppBar>
+        {!isMobileOrTablet && <DrawerMenus />}
+        <Box
+          component="main"
           sx={{
-            backgroundColor: "background.paper",
-            zIndex: 100,
-            position: "sticky",
-            borderBottom: `2px solid ${Colors.lightgrey}`,
-            top: 0,
+            flexGrow: 1,
+            width: isMobileOrTablet ? `100%` : `calc(100% - ${drawerWidth}px)`,
           }}
         >
-          <Header />
-        </Grid>
-        <Grid item xs={12} sx={{ marginBottom: 8 }}>
-          <Container maxWidth="md" sx={{ p: 0 }}>
+          <DefaultToolbar />
+          <Container maxWidth="lg">
             {online ? <Outlet /> : <OfflineBlock />}
           </Container>
-        </Grid>
-      </Grid>
-      <BottomNavigationBlock />
+        </Box>
+      </Box>
+      {isMobileOrTablet && <BottomNavigationBlock />}
     </>
   );
 }

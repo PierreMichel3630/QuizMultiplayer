@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Title, TitleProfile } from "src/models/Title";
 import { Colors } from "src/style/Colors";
 import { TextNameBlock } from "./language/TextLanguageBlock";
+import { TitleText } from "./title/Title";
 
 interface Props {
   value: string;
@@ -127,19 +128,7 @@ export const BadgeTitleProfile = ({
       }}
       onClick={onClick}
     >
-      <Box>
-        {title.multiplicator !== null && (
-          <Typography variant="h6" component="span" color="text.secondary">
-            {title.multiplicator} x{" "}
-          </Typography>
-        )}
-        <TextNameBlock
-          component="span"
-          variant="h6"
-          color="text.secondary"
-          values={title.title.titletranslation}
-        />
-      </Box>
+      <TitleText value={title} variant="h6" color="text.secondary" />
       {isSelect && (
         <CheckCircleTwoToneIcon
           sx={{

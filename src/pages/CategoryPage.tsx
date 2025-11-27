@@ -1,11 +1,12 @@
 import { Grid } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { selectCategoryById } from "src/api/category";
 import { deleteFavoriteById, insertFavorite } from "src/api/favorite";
-import { selectThemesByCategory } from "src/api/theme";
+import { countThemesByCategory, selectThemesByCategory } from "src/api/theme";
+import { ICardImage } from "src/component/card/CardImage";
 import { PageCategoryBlock } from "src/component/page/PageCategoryBlock";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
@@ -14,7 +15,6 @@ import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
 import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
 import { FavoriteInsert } from "src/models/Favorite";
-import { Theme } from "src/models/Theme";
 
 export default function CategoryPage() {
   const { t } = useTranslation();
@@ -27,8 +27,33 @@ export default function CategoryPage() {
   const { setMessage, setSeverity } = useMessage();
 
   const [category, setCategory] = useState<Category | null>(null);
-  const [themes, setThemes] = useState<Array<Theme>>([]);
+  const [themes, setThemes] = useState<Array<ICardImage>>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [count, setCount] = useState<undefined | number>(undefined);
+  const [, setPage] = useState(0);
+
+  const getTheme = useCallback(
+    (page: number) => {
+      setIsLoading(true);
+      if (language && category) {
+        selectThemesByCategory(language, category.id, "", page, 50).then(
+          ({ data }) => {
+            const res = (data ?? []).map((el) => ({
+              ...el,
+              type: TypeCardEnum.THEME,
+            }));
+            setThemes((prev) => (page === 0 ? [...res] : [...prev, ...res]));
+            setIsLoading(false);
+          }
+        );
+      }
+    },
+    [category, language]
+  );
+
+  useEffect(() => {
+    getTheme(0);
+  }, [category, language]);
 
   useEffect(() => {
     if (id) {
@@ -36,32 +61,8 @@ export default function CategoryPage() {
       selectCategoryById(id).then(({ data }) => {
         setCategory(data);
       });
-      if (language) {
-        selectThemesByCategory(language, id).then(({ data }) => {
-          setThemes(data ?? []);
-          setIsLoading(false);
-        });
-      }
     }
   }, [id, language]);
-
-  const themesDisplay = useMemo(
-    () =>
-      [...themes].map((el) => {
-        const translation = [...el.themetranslation].find(
-          (el) => el.language.id === language?.id
-        );
-        return {
-          id: el.id,
-          name: translation?.name ?? el.themetranslation[0].name,
-          image: el.image,
-          color: el.color,
-          link: `/theme/${el.id}`,
-          type: TypeCardEnum.THEME,
-        };
-      }),
-    [themes, language]
-  );
 
   const favorite = useMemo(
     () => favorites.find((el) => el.category === Number(id)),
@@ -113,6 +114,17 @@ export default function CategoryPage() {
     }
   }, [language, category]);
 
+  useEffect(() => {
+    const getCount = () => {
+      if (language && category) {
+        countThemesByCategory(category.id, language).then(({ count }) => {
+          setCount(count ?? 0);
+        });
+      }
+    };
+    getCount();
+  }, [category, language]);
+
   return (
     <Grid container>
       <Helmet>
@@ -127,10 +139,17 @@ export default function CategoryPage() {
       <Grid item xs={12}>
         <PageCategoryBlock
           title={title}
-          values={themesDisplay}
+          values={themes}
           addFavorite={addFavorite}
           favorite={favorite !== undefined}
           isLoading={isLoading}
+          count={count}
+          handleScroll={() =>
+            setPage((prev) => {
+              getTheme(prev + 1);
+              return prev + 1;
+            })
+          }
         />
       </Grid>
     </Grid>

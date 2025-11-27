@@ -35,6 +35,7 @@ export const UpdateNotificationBlock = () => {
           backgroundColor: Colors.black,
           border: "2px solid white",
           borderRadius: px(5),
+          zIndex: 1500,
         }}
       >
         <Box

@@ -9,7 +9,13 @@ export interface Answer {
   answertranslation: Array<AnswerTranslation>;
 }
 
+export interface AnswerUpdate {
+  id: number;
+  image?: string;
+}
+
 export interface AnswerInsert {
+  image?: string;
   answerset: number;
 }
 

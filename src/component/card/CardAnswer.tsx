@@ -1,11 +1,13 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Grid, IconButton, Paper, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Paper, Typography } from "@mui/material";
+import { px } from "csx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Answer } from "src/models/Answer";
 import { Language } from "src/models/Language";
 import { Colors } from "src/style/Colors";
+import { ImageQCMBlock } from "../ImageBlock";
 
 interface PropsCardAdminTitle {
   answer: Answer;
@@ -39,17 +41,29 @@ export const CardAdminAnswer = ({
     >
       <Grid container spacing={1} alignItems="center">
         <Grid item xs>
-          <Typography variant={translation ? "h2" : "caption"}>
-            {translation ? translation.label : t("commun.totranslation")}
-          </Typography>
+          {answer.image ? (
+            <Box sx={{ height: px(150) }}>
+              <ImageQCMBlock src={answer.image} />
+            </Box>
+          ) : (
+            <>
+              <Typography variant={translation ? "h4" : "caption"}>
+                {translation ? translation.label : t("commun.totranslation")}
+              </Typography>
+              {translation && translation.otherlabel.length > 0 && (
+                <Box>
+                  <Typography variant="body1" component="span">
+                    {t("commun.otherresponse")}
+                  </Typography>
+                  <Typography variant="body1" component="span">
+                    {translation.otherlabel.join(", ")}
+                  </Typography>
+                </Box>
+              )}
+            </>
+          )}
         </Grid>
-        {translation && translation.otherlabel.length > 0 && (
-          <Grid item xs>
-            <Typography variant="h2">
-              {translation.otherlabel.join(",")}
-            </Typography>
-          </Grid>
-        )}
+
         <Grid item>
           <IconButton aria-label="edit" onClick={onEdit}>
             <EditIcon />

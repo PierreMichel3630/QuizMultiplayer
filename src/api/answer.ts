@@ -3,6 +3,7 @@ import {
   AnswerSetInsert,
   AnswerTranslationInsert,
   AnswerTranslationUpdate,
+  AnswerUpdate,
 } from "src/models/Answer";
 import { Language } from "src/models/Language";
 import { QuestionAdmin } from "src/models/Question";
@@ -60,6 +61,9 @@ export const selectAnswerByAnswerset = (
 
 export const deleteAnswerById = (id: number) =>
   supabase.from(SUPABASE_ANSWER_TABLE).delete().eq("id", id);
+
+export const updateAnswer = (value: AnswerUpdate) =>
+  supabase.from(SUPABASE_ANSWER_TABLE).update(value).eq("id", value.id);
 
 export const insertAnswers = (values: Array<AnswerInsert>) =>
   supabase.from(SUPABASE_ANSWER_TABLE).insert(values).select();

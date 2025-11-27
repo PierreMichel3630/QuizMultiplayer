@@ -23,7 +23,7 @@ import * as Yup from "yup";
 
 import SaveIcon from "@mui/icons-material/Save";
 import { Moment } from "moment";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   insertChallengeGame,
   selectChallengeByDate,
@@ -47,6 +47,18 @@ export const ChallengeGameForm = ({ date, game, validate }: Props) => {
   const [openModalPlayer, setOpenModalPlayer] = useState(false);
   const [challenge, setChallenge] = useState<Challenge | null>(null);
 
+  const questions = useMemo(() => {
+    let result: Array<QuestionResult> = game ? [...game.questions] : [];
+    if (challenge && result.length < 10) {
+      const idsQuestions = [...result].map((el) => el.id);
+      const newQuestions = [...challenge.questionsv2].filter(
+        (el) => !idsQuestions.includes(el.id)
+      );
+      result = [...result, ...newQuestions];
+    }
+    return result;
+  }, [game, challenge]);
+
   const initialValue: {
     profile?: Profile;
     time: number;
@@ -56,11 +68,7 @@ export const ChallengeGameForm = ({ date, game, validate }: Props) => {
     profile: game?.profile,
     time: game ? game.time : 0,
     score: game ? game.score : 0,
-    questions: game
-      ? [...game.questions]
-      : challenge
-      ? [...challenge.questionsv2]
-      : [],
+    questions: questions,
   };
 
   const validationSchema = Yup.object().shape({

@@ -1,4 +1,4 @@
-import { Box, Container, Divider, Grid, Typography } from "@mui/material";
+import { Box, Divider, Grid, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "src/context/AuthProviderSupabase";
@@ -146,20 +146,20 @@ export default function PersonalizedPage() {
       <Helmet>
         <title>{`${t("pages.perzonalised.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid
-        item
-        xs={12}
-        sx={{
-          position: "sticky",
-          top: headerSize,
-          zIndex: 100,
-          pb: 1,
-        }}
-      >
-        <Container maxWidth="md">
-          {profile && <ProfilHeader profile={profile} />}
-        </Container>
-      </Grid>
+      {profile && (
+        <Grid
+          item
+          xs={12}
+          sx={{
+            position: "sticky",
+            top: headerSize,
+            zIndex: 100,
+            pb: 1,
+          }}
+        >
+          <ProfilHeader profile={profile} />
+        </Grid>
+      )}
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1} alignItems="center">

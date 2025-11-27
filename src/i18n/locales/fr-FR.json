@@ -376,7 +376,8 @@
     "noquestionpropose": "Vous n'avez proposé aucune question. Veuillez réessayer.",
     "seechallenge": "Voir le challenge",
     "createmodifychallenge": "Créer/Modifier le challenge",
-    "addchallengegame": "Ajouter une partie"
+    "addchallengegame": "Ajouter une partie",
+    "otherresponse": "Autres réponses : "
   },
   "abrevation": {
     "average": "Moy."
@@ -866,7 +867,7 @@
       },
       "rules5": {
         "title": "Contact",
-        "text": "Pour toutes plaintes, questions ou idées, vous pouvez utiliser l'adresse mail suivante: pierremichel804@gmail.com"
+        "text": "Pour toutes plaintes, questions ou idées, vous pouvez utiliser l'adresse mail suivante: support@quizbattle.fr"
       }
     }
   },

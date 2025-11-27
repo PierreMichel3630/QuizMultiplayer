@@ -30,7 +30,6 @@ import {
   selectRankingChallengeByMonthPaginate,
   selectRankingChallengeByWeekPaginate,
 } from "src/api/challenge";
-import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
@@ -46,6 +45,7 @@ import {
   ClassementChallengeGlobalTimeEnum,
   ClassementChallengeTimeEnum,
 } from "src/models/enum/ClassementEnum";
+import { DateFormat } from "src/models/enum/DateEnum";
 import { FRIENDSTATUS } from "src/models/Friend";
 import {
   GroupButtonChallenge,
@@ -54,6 +54,7 @@ import {
 } from "./button/ButtonGroup";
 import { WinBlock } from "./challenge/WinBlock";
 import {
+  CellRankingChallengeDay,
   ResultAllTimeChallengeBlock,
   ResultDayChallengeBlock,
   ResultMonthChallengeBlock,
@@ -66,7 +67,6 @@ import {
   DataRankingChallenge,
   RankingChallengeTable,
 } from "./table/RankingChallengeTable";
-import { DateFormat } from "src/models/enum/DateEnum";
 
 interface Props {
   hasPlayChallenge?: boolean;
@@ -260,7 +260,7 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
               const newdata = res.map((el) => {
                 return {
                   profile: el.profile,
-                  value: (
+                  value: hasPlayChallenge ? (
                     <TableCell
                       sx={{
                         p: px(4),
@@ -268,22 +268,10 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
                       }}
                       width={70}
                     >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          textAlign: "center",
-                          width: px(60),
-                        }}
-                      >
-                        <Typography variant="h6" noWrap>
-                          {el.score} / {NUMBER_QUESTIONS_CHALLENGE}
-                        </Typography>
-                        <Typography variant="h6" noWrap>
-                          {(el.time / 1000).toFixed(2)}s
-                        </Typography>
-                      </Box>
+                      <CellRankingChallengeDay value={el} />
                     </TableCell>
+                  ) : (
+                    <></>
                   ),
                   rank: el.ranking,
                   uuid: el.uuid,
@@ -442,7 +430,7 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
                       p: px(4),
                       color: "inherit",
                     }}
-                    width={95}
+                    width={100}
                   >
                     <Box
                       sx={{

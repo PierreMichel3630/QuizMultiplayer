@@ -81,7 +81,7 @@ export const CreateEditAnswersDialog = ({
 
   const onDelete = (answer: Answer) => {
     deleteAnswerById(answer.id).then(() => {
-      setMode(Mode.SEARCH);
+      refreshAnswer();
     });
   };
 

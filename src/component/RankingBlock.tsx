@@ -15,7 +15,6 @@ import {
 } from "src/api/challenge";
 import { selectSoloGameByDate } from "src/api/game";
 import { selectScore } from "src/api/score";
-import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import { useUser } from "src/context/UserProvider";
 import {
   ChallengeAvg,
@@ -38,7 +37,7 @@ import {
   GroupButtonTypeGame,
 } from "./button/ButtonGroup";
 import { ChallengeButton } from "./button/ChallengeButton";
-import { RecapAvgChallenge } from "./ChallengeBlock";
+import { CellRankingChallengeDay, RecapAvgChallenge } from "./ChallengeBlock";
 import { DataRanking, RankingTable } from "./table/RankingTable";
 
 interface Props {
@@ -133,22 +132,7 @@ export const RankingTop5Block = ({
               return {
                 profile: el.profile,
                 value: hasPlayChallenge ? (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                      justifyContent: "center",
-                      width: px(60),
-                    }}
-                  >
-                    <Typography variant="h6" noWrap>
-                      {el.score} / {NUMBER_QUESTIONS_CHALLENGE}
-                    </Typography>
-                    <Typography variant="h6" noWrap>
-                      {(el.time / 1000).toFixed(2)}s
-                    </Typography>
-                  </Box>
+                  <CellRankingChallengeDay value={el} />
                 ) : (
                   <></>
                 ),

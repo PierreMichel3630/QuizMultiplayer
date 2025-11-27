@@ -30,4 +30,5 @@ export interface ReportInsert {
   sologame: number | null;
   duelgame: number | null;
   questionjson: any;
+  version: number;
 }

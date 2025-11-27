@@ -24,8 +24,9 @@ import { Favorite } from "src/models/Favorite";
 import { FRIENDSTATUS, Friend } from "src/models/Friend";
 import { ReportMessage } from "src/models/Report";
 import { TitleProfile } from "src/models/Title";
-import { useAuth } from "./AuthProviderSupabase";
+import { headerSizeNoUser, headerSizeUser } from "src/utils/config";
 import { sortByName } from "src/utils/sort";
+import { useAuth } from "./AuthProviderSupabase";
 import { useUser } from "./UserProvider";
 
 type Props = {
@@ -72,7 +73,7 @@ const AppContext = createContext<{
   getMyTitles: () => {},
   nbThemes: undefined,
   nbPlayers: undefined,
-  headerSize: 70,
+  headerSize: headerSizeNoUser,
 });
 
 export const useApp = () => useContext(AppContext);
@@ -96,7 +97,10 @@ export const AppProvider = ({ children }: Props) => {
     Array<ProfileAccomplishment>
   >([]);
 
-  const headerSize = useMemo(() => (user ? 70 : 50), [user]);
+  const headerSize = useMemo(
+    () => (user ? headerSizeUser : headerSizeNoUser),
+    [user]
+  );
 
   const idsFriendAndMe = useMemo(
     () =>

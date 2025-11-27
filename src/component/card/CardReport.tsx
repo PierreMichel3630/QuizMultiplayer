@@ -23,6 +23,8 @@ export const CardReport = ({ report, onDelete }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  console.log(report);
+
   return (
     <Paper
       sx={{ p: 1, height: percent(100), position: "relative" }}

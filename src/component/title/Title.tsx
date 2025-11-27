@@ -1,12 +1,15 @@
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { px } from "csx";
 import { Colors } from "src/style/Colors";
 import { GoBackButtonIcon } from "../navigation/GoBackButton";
 
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
+import { Variant } from "@mui/material/styles/createTypography";
 import { useMemo } from "react";
 import { useUser } from "src/context/UserProvider";
+import { TitleProfile } from "src/models/Title";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   title: JSX.Element | string;
@@ -71,5 +74,32 @@ export const TitleBlock = ({
         </Grid>
       )}
     </Grid>
+  );
+};
+
+interface TitleTextProps {
+  value: TitleProfile;
+  variant?: Variant;
+  color?: string;
+}
+export const TitleText = ({
+  value,
+  variant = "caption",
+  color = "text.primary",
+}: TitleTextProps) => {
+  return (
+    <Box>
+      {value.title.ismultiple && value.multiplicator !== null && (
+        <Typography variant={variant} component="span" color={color}>
+          {value.multiplicator} x{" "}
+        </Typography>
+      )}
+      <TextNameBlock
+        color={color}
+        component="span"
+        variant={variant}
+        values={value.title.titletranslation}
+      />
+    </Box>
   );
 };

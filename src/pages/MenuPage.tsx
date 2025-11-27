@@ -1,18 +1,6 @@
-import {
-  Badge,
-  Box,
-  Button,
-  Divider,
-  Grid,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import { important, percent, px } from "csx";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -21,40 +9,18 @@ import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
 
-import BarChartIcon from "@mui/icons-material/BarChart";
-import PieChartIcon from "@mui/icons-material/PieChart";
-import BrushIcon from "@mui/icons-material/Brush";
-import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import HistoryIcon from "@mui/icons-material/History";
-import InstallMobileIcon from "@mui/icons-material/InstallMobile";
-import LiveHelpIcon from "@mui/icons-material/LiveHelp";
 import LogoutIcon from "@mui/icons-material/Logout";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import ReportProblemIcon from "@mui/icons-material/ReportProblem";
-import SecurityIcon from "@mui/icons-material/Security";
-import EditIcon from "@mui/icons-material/Edit";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { HeadTitle } from "src/component/HeadTitle";
 import { ShareApplicationBlock } from "src/component/ShareApplicationBlock";
+import { MenuBlock } from "src/component/menus/MenuBlock";
 import { ProfileTitleBlock } from "src/component/title/ProfileTitle";
-import { useApp } from "src/context/AppProvider";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { getLevel } from "src/utils/calcul";
-import SettingsIcon from "@mui/icons-material/Settings";
-
-interface Menu {
-  value: string;
-  label: string;
-  icon: JSX.Element;
-  to: string;
-  state?: unknown;
-}
 
 export default function MenuPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { myaccomplishments } = useApp();
   const { user, profile, logout } = useAuth();
 
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
@@ -69,154 +35,6 @@ export default function MenuPage() {
     };
     getMyStat();
   }, [user]);
-
-  const notificationsAccomplishment = useMemo(
-    () => myaccomplishments.filter((el) => !el.validate).length,
-    [myaccomplishments]
-  );
-
-  const menus: Array<Menu> = useMemo(
-    () => [
-      {
-        value: "ranking",
-        label: t("commun.ranking"),
-        icon: <BarChartIcon />,
-        to: "/ranking",
-      },
-      {
-        value: "accomplishments",
-        label: t("commun.accomplishments"),
-        icon: <EmojiEventsIcon />,
-        to: "/accomplishments",
-      },
-      {
-        value: "faq",
-        label: t("commun.faq"),
-        icon: <LiveHelpIcon />,
-        to: "/faq",
-      },
-      {
-        value: "installation",
-        label: t("commun.installation"),
-        icon: <InstallMobileIcon />,
-        to: "/installation",
-      },
-      {
-        value: "howtoplay",
-        label: t("commun.howtoplay"),
-        icon: <PlayCircleIcon />,
-        to: "/help",
-      },
-      {
-        value: "report",
-        label: t("commun.reportproblem"),
-        icon: <ReportProblemIcon />,
-        to: "/report",
-      },
-      {
-        value: "confidentiality",
-        label: t("confidentiality.title"),
-        icon: <SecurityIcon />,
-        to: "/confidentiality",
-      },
-    ],
-    [t]
-  );
-
-  const menusUser: Array<Menu> = useMemo(
-    () => [
-      {
-        value: "personalized",
-        label: t("commun.personalizedprofile"),
-        icon: <BrushIcon />,
-        to: "/personalized",
-      },
-      {
-        value: "statistical",
-        label: t("commun.mystatistics"),
-        icon: <PieChartIcon />,
-        to: profile ? `/profil/${profile.id}` : "/login",
-      },
-      {
-        value: "ranking",
-        label: t("commun.ranking"),
-        icon: <BarChartIcon />,
-        to: "/ranking",
-      },
-      {
-        value: "accomplishments",
-        label: t("commun.myaccomplishments"),
-        icon: (
-          <Badge badgeContent={notificationsAccomplishment} color="error">
-            <EmojiEventsIcon />
-          </Badge>
-        ),
-        to: `/accomplishments`,
-      },
-      {
-        value: "proposals",
-        label: t("commun.myproposals"),
-        icon: <EditIcon />,
-        to: profile ? `/myproposals` : "/login",
-      },
-      {
-        value: "history",
-        label: t("commun.mygames"),
-        icon: <HistoryIcon />,
-        to: profile ? `/games` : "/login",
-        state: profile ? { player: profile } : undefined,
-      },
-      {
-        label: t("commun.compare"),
-        icon: <CompareArrowsIcon />,
-        value: "compare",
-        to: "/compare",
-        state: { profile1: profile },
-      },
-      {
-        label: t("commun.parameters"),
-        icon: <SettingsIcon />,
-        value: "parameters",
-        to: "/parameters",
-      },
-      {
-        value: "faq",
-        label: t("commun.faq"),
-        icon: <LiveHelpIcon />,
-        to: "/faq",
-      },
-      {
-        value: "installation",
-        label: t("commun.installation"),
-        icon: <InstallMobileIcon />,
-        to: "/installation",
-      },
-      {
-        value: "howtoplay",
-        label: t("commun.howtoplay"),
-        icon: <PlayCircleIcon />,
-        to: "/help",
-      },
-      {
-        value: "report",
-        label: t("commun.reportproblem"),
-        icon: <ReportProblemIcon />,
-        to: "/report",
-      },
-      {
-        value: "confidentiality",
-        label: t("confidentiality.title"),
-        icon: <SecurityIcon />,
-        to: "/confidentiality",
-      },
-    ],
-    [profile, t, notificationsAccomplishment]
-  );
-
-  const allMenu = useMemo(
-    () => (user ? menusUser : menus),
-    [menus, menusUser, user]
-  );
 
   const disconnect = async () => {
     await logout();
@@ -302,27 +120,7 @@ export default function MenuPage() {
           <ShareApplicationBlock title={t("commun.shareapplication")} />
         </Grid>
         <Grid item xs={12}>
-          <List>
-            <Divider />
-            {allMenu.map((menu, index) => (
-              <Fragment key={index}>
-                <ListItem
-                  disablePadding
-                  onClick={() =>
-                    navigate(menu.to, {
-                      state: menu.state,
-                    })
-                  }
-                >
-                  <ListItemButton>
-                    <ListItemIcon>{menu.icon}</ListItemIcon>
-                    <ListItemText primary={menu.label} />
-                  </ListItemButton>
-                </ListItem>
-                <Divider />
-              </Fragment>
-            ))}
-          </List>
+          <MenuBlock />
         </Grid>
       </Grid>
     </Box>

@@ -777,3 +777,31 @@ export const RecapAvgChallenge = ({ avg }: PropsRecapAvgChallenge) => {
     </Box>
   );
 };
+
+// TABLE
+
+interface CellRankingChallengeDayProps {
+  value: { score: number; time: number };
+}
+export const CellRankingChallengeDay = ({
+  value,
+}: CellRankingChallengeDayProps) => {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        textAlign: "center",
+        justifyContent: "center",
+        width: px(60),
+      }}
+    >
+      <Typography variant="h6" noWrap>
+        {value.score} / {NUMBER_QUESTIONS_CHALLENGE}
+      </Typography>
+      <Typography variant="h6" noWrap>
+        {(value.time / 1000).toFixed(2)}s
+      </Typography>
+    </Box>
+  );
+};

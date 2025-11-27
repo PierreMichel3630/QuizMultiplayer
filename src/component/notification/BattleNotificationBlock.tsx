@@ -47,6 +47,7 @@ export const BattleNotificationBlock = ({ game, refuse }: Props) => {
   return (
     <Paper
       sx={{
+        zIndex: 1500,
         p: px(5),
         width: percent(100),
         backgroundColor: Colors.black,

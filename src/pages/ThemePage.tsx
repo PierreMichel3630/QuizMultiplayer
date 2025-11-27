@@ -174,7 +174,12 @@ export default function ThemePage() {
   };
 
   const languages = useMemo(
-    () => (theme ? theme.themetranslation.map((el) => el.language) : []),
+    () =>
+      theme
+        ? theme.themetranslation
+            .filter((el) => el.language.activate)
+            .map((el) => el.language)
+        : [],
     [theme]
   );
 

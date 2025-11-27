@@ -44,7 +44,7 @@ export const FriendNotificationBlock = ({ friend }: Props) => {
   return (
     <Paper
       sx={{
-        zIndex: 1,
+        zIndex: 1500,
         p: 1,
         width: percent(100),
       }}

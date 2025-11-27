@@ -5,6 +5,7 @@ export interface Title {
   price: number;
   isaccomplishment: boolean;
   titletranslation: Array<TitleTranslation>;
+  ismultiple: boolean;
 }
 
 export interface TitleTranslation {

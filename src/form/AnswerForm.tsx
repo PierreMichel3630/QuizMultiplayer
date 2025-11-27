@@ -1,6 +1,9 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
+  Box,
+  Chip,
+  Divider,
   FormControl,
   FormHelperText,
   Grid,
@@ -16,11 +19,12 @@ import {
   deleteAnswerTranslationByIds,
   insertAnswers,
   insertAnswerTranslation,
+  updateAnswer,
   updateAnswerTranslation,
 } from "src/api/answer";
 import { insertResponseImage, updateResponseImage } from "src/api/response";
 import { ButtonColor } from "src/component/Button";
-import { ImageQuestionBlock } from "src/component/ImageBlock";
+import { ImageQCMBlock, ImageQuestionBlock } from "src/component/ImageBlock";
 import { SelectLanguage } from "src/component/Select";
 import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
@@ -46,13 +50,16 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
   const { setMessage, setSeverity } = useMessage();
 
   const initialValue: {
+    image?: string;
     answertranslation: Array<{
       id?: number;
       label: string;
       otherlabel: Array<string>;
       language: Language;
+      tempOtherLabel?: string;
     }>;
   } = {
+    image: answer ? answer.image : undefined,
     answertranslation: answer
       ? [...answer.answertranslation]
       : [
@@ -75,11 +82,18 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
         if (idAnswer === undefined) {
           const resAnswers = await insertAnswers([
             {
+              image: values.image,
               answerset: answerset,
             },
           ]);
           if (resAnswers.error) throw resAnswers.error;
           idAnswer = resAnswers.data[0].id;
+        } else {
+          const resAnswers = await updateAnswer({
+            id: idAnswer,
+            image: values.image,
+          });
+          if (resAnswers.error) throw resAnswers.error;
         }
         if (idAnswer === undefined) throw "no answer";
 
@@ -146,6 +160,36 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12}>
+            <FormControl
+              fullWidth
+              error={Boolean(formik.touched.image && formik.errors.image)}
+            >
+              <InputLabel htmlFor="image-input">
+                {t("form.createquestion.image")}
+              </InputLabel>
+              <OutlinedInput
+                id="image-input"
+                type="text"
+                value={formik.values.image}
+                name="image"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                label={t("form.createquestion.image")}
+                inputProps={{}}
+              />
+              {formik.touched.image && formik.errors.image && (
+                <FormHelperText error id="error-image">
+                  {formik.errors.image}
+                </FormHelperText>
+              )}
+            </FormControl>
+          </Grid>
+          {formik.values.image && formik.values.image !== "" && (
+            <Grid item xs={12} sx={{ height: px(200) }}>
+              <ImageQCMBlock src={formik.values.image} />
+            </Grid>
+          )}
+          <Grid item xs={12}>
             <FieldArray name="answertranslation">
               {({ push, remove }) => {
                 const idLanguageUsed = [...formik.values.answertranslation].map(
@@ -155,47 +199,118 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
                   (lang) => !idLanguageUsed.includes(lang.id)
                 );
                 return (
-                  <>
+                  <Grid container spacing={2}>
                     {[...formik.values.answertranslation].map((_, index) => {
                       const value = formik.values.answertranslation[index];
                       return (
-                        <Grid
-                          item
-                          xs={12}
-                          key={index}
-                          sx={{
-                            display: "flex",
-                            gap: 1,
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                        >
-                          <SelectLanguage
-                            value={value.language}
-                            languages={languageNotUsed}
-                            onChange={(value) =>
-                              formik.setFieldValue(
-                                `themetranslation.${index}.language`,
-                                value
-                              )
-                            }
-                          />
-                          <TextField
-                            name={`answertranslation.${index}.label`}
-                            value={value.label}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            size="small"
-                            fullWidth
-                          />
-
-                          <IconButton
-                            aria-label="delete"
-                            onClick={() => remove(index)}
+                        <>
+                          <Grid
+                            item
+                            xs={12}
+                            key={index}
+                            sx={{
+                              display: "flex",
+                              gap: 1,
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                            }}
                           >
-                            <DeleteIcon fontSize="large" />
-                          </IconButton>
-                        </Grid>
+                            <SelectLanguage
+                              value={value.language}
+                              languages={languageNotUsed}
+                              onChange={(value) =>
+                                formik.setFieldValue(
+                                  `themetranslation.${index}.language`,
+                                  value
+                                )
+                              }
+                            />
+                            <Box
+                              sx={{
+                                flex: 1,
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: 1,
+                              }}
+                            >
+                              <TextField
+                                name={`answertranslation.${index}.label`}
+                                value={value.label}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                fullWidth
+                              />
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  gap: px(5),
+                                }}
+                              >
+                                <TextField
+                                  label={t("commun.otherresponse")}
+                                  size="small"
+                                  name="otherLabel"
+                                  value={value.tempOtherLabel ?? ""}
+                                  onChange={(
+                                    event: React.ChangeEvent<HTMLInputElement>
+                                  ) =>
+                                    formik.setFieldValue(
+                                      `answertranslation.${index}.tempOtherLabel`,
+                                      event.target.value
+                                    )
+                                  }
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      e.preventDefault();
+
+                                      const newValue =
+                                        value.tempOtherLabel?.trim();
+                                      if (newValue && newValue !== "") {
+                                        formik.setFieldValue(
+                                          `answertranslation.${index}.otherlabel`,
+                                          [...value.otherlabel, newValue]
+                                        );
+                                        formik.setFieldValue(
+                                          `answertranslation.${index}.tempOtherLabel`,
+                                          ""
+                                        );
+                                      }
+                                    }
+                                  }}
+                                  fullWidth
+                                />
+                                <Box sx={{ display: "flex", gap: px(5) }}>
+                                  {value.otherlabel.map((el, i) => (
+                                    <Chip
+                                      key={i}
+                                      label={el}
+                                      onDelete={() => {
+                                        const newList = value.otherlabel.filter(
+                                          (_, idx) => idx !== i
+                                        );
+                                        formik.setFieldValue(
+                                          `answertranslation.${index}.otherlabel`,
+                                          newList
+                                        );
+                                      }}
+                                    />
+                                  ))}
+                                </Box>
+                              </Box>
+                            </Box>
+
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => remove(index)}
+                            >
+                              <DeleteIcon fontSize="large" />
+                            </IconButton>
+                          </Grid>
+                          <Grid item xs={12}>
+                            <Divider />
+                          </Grid>
+                        </>
                       );
                     })}
                     {languageNotUsed.length > 0 && (
@@ -215,7 +330,7 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
                         />
                       </Grid>
                     )}
-                  </>
+                  </Grid>
                 );
               }}
             </FieldArray>

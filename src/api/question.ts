@@ -21,7 +21,9 @@ export const countQuestionByTheme = (theme: number) =>
   supabase
     .from(SUPABASE_COUNTQUESTION_TABLE)
     .select("*, language(*)")
-    .eq("theme", theme);
+    .eq("theme", theme)
+    .eq("language.activate", true)
+    .not("language", "is", null);
 
 export const selectQuestionWithImage = () =>
   supabase
