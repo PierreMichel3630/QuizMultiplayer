@@ -1,11 +1,11 @@
 import { Box, Typography } from "@mui/material";
 import { px } from "csx";
 import { t } from "i18next";
-import { deleteFriendById, insertFriend } from "src/api/friend";
+import { deleteFriendById } from "src/api/friend";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
-import { FRIENDSTATUS, FriendInsert } from "src/models/Friend";
+import { FRIENDSTATUS } from "src/models/Friend";
 import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "./Button";
@@ -15,6 +15,8 @@ import MailIcon from "@mui/icons-material/Mail";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { sendNotification } from "src/api/notification";
+import { NotificationType } from "src/models/enum/NotificationType";
 import { RoundButton } from "./button/RoundButton";
 
 interface Props {
@@ -64,20 +66,18 @@ export const FriendButton = ({ profile, small = false }: Props) => {
 
   const addToFriend = () => {
     if (user !== null) {
-      const invitation: FriendInsert = {
-        user1: user.id,
-        user2: profile.id,
-      };
-      insertFriend(invitation).then(({ error }) => {
-        if (error) {
-          setSeverity("error");
-          setMessage(t("commun.error"));
-        } else {
-          setSeverity("success");
-          setMessage(t("alert.sendfriendrequest"));
-          getFriends();
+      sendNotification(NotificationType.friend_request, { user: profile }).then(
+        ({ error }) => {
+          if (error) {
+            setSeverity("error");
+            setMessage(t("commun.error"));
+          } else {
+            setSeverity("success");
+            setMessage(t("alert.sendfriendrequest"));
+            getFriends();
+          }
         }
-      });
+      );
     } else {
       navigate(`/login`);
     }
@@ -204,20 +204,18 @@ export const FriendProfilButton = ({ profile }: PropsFriendProfilButton) => {
 
   const addToFriend = () => {
     if (user !== null) {
-      const invitation: FriendInsert = {
-        user1: user.id,
-        user2: profile.id,
-      };
-      insertFriend(invitation).then(({ error }) => {
-        if (error) {
-          setSeverity("error");
-          setMessage(t("commun.error"));
-        } else {
-          setSeverity("success");
-          setMessage(t("alert.sendfriendrequest"));
-          getFriends();
+      sendNotification(NotificationType.friend_request, { user: profile }).then(
+        ({ error }) => {
+          if (error) {
+            setSeverity("error");
+            setMessage(t("commun.error"));
+          } else {
+            setSeverity("success");
+            setMessage(t("alert.sendfriendrequest"));
+            getFriends();
+          }
         }
-      });
+      );
     } else {
       navigate(`/login`);
     }

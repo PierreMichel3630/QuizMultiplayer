@@ -7,12 +7,9 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import moment from "moment";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  countChallengeGameByDateAndProfileId,
-  launchChallenge,
-} from "src/api/challenge";
+import { launchChallenge } from "src/api/challenge";
 import { updateProfil } from "src/api/profile";
 import { ButtonColor } from "src/component/Button";
 import { WinnerChallengeBlock } from "src/component/challenge/WinnerChallengeBlock";
@@ -23,13 +20,9 @@ import { Colors } from "src/style/Colors";
 
 export default function ChallengePage() {
   const { t } = useTranslation();
-  const { profile } = useAuth();
+  const { profile, hasPlayChallenge } = useAuth();
   const { language } = useUser();
   const navigate = useNavigate();
-
-  const [hasPlayChallenge, setHasPlayChallenge] = useState<undefined | boolean>(
-    undefined
-  );
 
   const launch = useCallback(async () => {
     if (profile && language) {
@@ -46,20 +39,6 @@ export default function ChallengePage() {
       navigate("/login");
     }
   }, [navigate, profile, language]);
-
-  useEffect(() => {
-    const isChallengeAvailable = () => {
-      if (profile) {
-        const date = moment();
-        countChallengeGameByDateAndProfileId(date, profile.id).then(
-          ({ count }) => {
-            setHasPlayChallenge(count !== null && count > 0);
-          }
-        );
-      }
-    };
-    isChallengeAvailable();
-  }, [profile]);
 
   return (
     <Grid container>
@@ -78,11 +57,7 @@ export default function ChallengePage() {
                 {t("commun.challengeexplain2")}
               </Typography>
             </Grid>
-            {!profile ? (
-              <Grid item xs={12}>
-                <NeedConnectAlert />
-              </Grid>
-            ) : (
+            {profile ? (
               <>
                 {hasPlayChallenge !== undefined && (
                   <Grid item xs={12}>
@@ -105,6 +80,10 @@ export default function ChallengePage() {
                   </Grid>
                 )}
               </>
+            ) : (
+              <Grid item xs={12}>
+                <NeedConnectAlert />
+              </Grid>
             )}
 
             <Grid item xs={12}>
@@ -117,7 +96,7 @@ export default function ChallengePage() {
               <Divider sx={{ borderBottomWidth: 5 }} />
             </Grid>
             <Grid item xs={12}>
-              <RankingChallenge hasPlayChallenge={hasPlayChallenge} />
+              <RankingChallenge />
             </Grid>
           </Grid>
         </Box>

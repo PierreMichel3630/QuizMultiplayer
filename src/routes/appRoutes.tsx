@@ -51,6 +51,8 @@ import ShopPage from "src/pages/shop/ShopPage";
 import ShopThemePage from "src/pages/shop/ShopThemePage";
 import TitlesPage from "src/pages/shop/TitlesPage";
 import MyProposalsPage from "src/pages/MyProposalsPage";
+import NewsPage from "src/pages/NewsPage";
+import NotificationsPage from "src/pages/NotificationsPage";
 
 export const AppRoutes = [
   {
@@ -68,6 +70,10 @@ export const AppRoutes = [
       {
         path: "/previousgame",
         element: <PreviousThemePage />,
+      },
+      {
+        path: "/notifications",
+        element: <NotificationsPage />,
       },
       {
         path: "/new",
@@ -169,6 +175,10 @@ export const AppRoutes = [
       {
         path: "/myproposals",
         element: <MyProposalsPage />,
+      },
+      {
+        path: "/news",
+        element: <NewsPage />,
       },
       {
         path: "/share",

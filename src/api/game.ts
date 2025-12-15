@@ -39,7 +39,9 @@ export const insertBattleGame = (value: BattleGameInsert) =>
 export const selectBattleGameByUuid = (uuid: string) =>
   supabase
     .from(SUPABASE_BATTLEGAME_TABLE)
-    .select("*, player1(*, avatar(*)), player2(*, avatar(*))")
+    .select(
+      "*, player1(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))), badge(*), banner(*), country(*)), player2(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))))"
+    )
     .eq("uuid", uuid)
     .maybeSingle();
 

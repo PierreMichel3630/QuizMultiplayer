@@ -13,6 +13,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AppsIcon from "@mui/icons-material/Apps";
 import PeopleIcon from "@mui/icons-material/People";
+import NotesIcon from "@mui/icons-material/Notes";
 import {
   Badge,
   List,
@@ -96,6 +97,12 @@ export const MenuBlock = () => {
         label: t("confidentiality.title"),
         icon: <SecurityIcon />,
         to: "/confidentiality",
+      },
+      {
+        value: "news",
+        label: t("commun.patchnote"),
+        icon: <NotesIcon />,
+        to: "/news",
       },
     ],
     [t]

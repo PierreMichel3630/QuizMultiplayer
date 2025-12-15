@@ -16,22 +16,20 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { debounce } from "lodash";
-import moment from "moment";
-import { countChallengeGameByDateAndProfileId } from "src/api/challenge";
 import { ChallengeButton } from "src/component/button/ChallengeButton";
 import { HeaderApp } from "src/component/header/HeaderApp";
 import { CategoriesScrollBlock } from "src/component/scroll/CategoriesScrollBlock";
 import { SearchThemeScrollBlock } from "src/component/scroll/SearchThemeScrollBlock";
 import { ShopBlock } from "src/component/ShopBlock";
 import { UpdatedThemeBlock } from "src/component/theme/UpdatedThemeBlock";
-import { Colors } from "src/style/Colors";
 import { useIsMobileOrTablet } from "src/hook/useSize";
+import { Colors } from "src/style/Colors";
 
 export default function ThemesPage() {
   const isMobileOrTablet = useIsMobileOrTablet();
   const { t } = useTranslation();
 
-  const { profile } = useAuth();
+  const { hasPlayChallenge } = useAuth();
   const { headerSize } = useApp();
 
   const refHeadPage = useRef<HTMLDivElement | null>(null);
@@ -39,27 +37,10 @@ export default function ThemesPage() {
   const [search, setSearch] = useState("");
   const [searchApi, setSearchApi] = useState("");
   const [displaySearch, setDisplaySearch] = useState(false);
-  const [hasPlayChallenge, setHasPlayChallenge] = useState<undefined | boolean>(
-    undefined
-  );
 
   useEffect(() => {
     refHeadPage.current?.scrollIntoView();
   }, [search]);
-
-  useEffect(() => {
-    const isChallengeAvailable = () => {
-      if (profile) {
-        const date = moment();
-        countChallengeGameByDateAndProfileId(date, profile.id).then(
-          ({ count }) => {
-            setHasPlayChallenge(count !== null && count > 0);
-          }
-        );
-      }
-    };
-    isChallengeAvailable();
-  }, [profile]);
 
   const handleChange = (value: string) => {
     setSearch(value);
@@ -161,7 +142,7 @@ export default function ThemesPage() {
                   <ShopBlock />
                 </Grid>
                 <Grid item xs={12}>
-                  <RankingTop5Block hasPlayChallenge={hasPlayChallenge} />
+                  <RankingTop5Block />
                 </Grid>
                 <Grid item xs={12}>
                   <CategoriesScrollBlock />

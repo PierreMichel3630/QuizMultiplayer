@@ -19,7 +19,6 @@ export const AutocompleteInputTheme = ({
   const onFocus = () => setFocused(true);
   const unFocus = () => setFocused(false);
   const ref = useRef<HTMLDivElement | null>(null);
-  const refOptions = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
@@ -75,7 +74,6 @@ export const AutocompleteInputTheme = ({
           maxHeight: px(200),
           overflow: "scroll",
         }}
-        ref={refOptions}
       >
         <ThemeListScrollBlock
           search={search}

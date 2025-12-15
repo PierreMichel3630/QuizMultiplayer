@@ -17,7 +17,6 @@ import { ImageThemeBlock } from "../ImageThemeBlock";
 import { LabelRankBlock } from "../RankBlock";
 import { ProfileTitleBlock } from "../title/ProfileTitle";
 import { SearchPlayerBlock } from "./SearchPlayerBlock";
-import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   game: DuelGame;
@@ -167,12 +166,12 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           }}
         >
           <ImageThemeBlock theme={game.theme} size={90} />
-          <TextNameBlock
+          {/*<TextNameBlock
             variant="h4"
             sx={{ textAlign: "center" }}
             color="text.secondary"
             values={game.theme.themetranslation}
-          />
+          />*/}
         </Box>
       </Box>
       <Box

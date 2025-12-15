@@ -68,13 +68,9 @@ import {
   RankingChallengeTable,
 } from "./table/RankingChallengeTable";
 
-interface Props {
-  hasPlayChallenge?: boolean;
-}
-
-export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
+export const RankingChallenge = () => {
   const { t } = useTranslation();
-  const { profile } = useAuth();
+  const { profile, hasPlayChallenge } = useAuth();
   const { friends } = useApp();
   const { language } = useUser();
   const [searchParams] = useSearchParams();
@@ -522,6 +518,7 @@ export const RankingChallenge = ({ hasPlayChallenge = false }: Props) => {
     language,
     tab,
     tabChallengeMode,
+    hasPlayChallenge,
   ]);
 
   const dateDisplay = useMemo(() => {

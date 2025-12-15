@@ -1,47 +1,49 @@
-import { useState, useEffect, useCallback } from "react";
+import { Alert, Grid } from "@mui/material";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { countProfile, searchProfilePagination } from "src/api/profile";
 import { Profile } from "src/models/Profile";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { SkeletonPlayers } from "../skeleton/SkeletonPlayer";
-import { Alert, Grid } from "@mui/material";
 import { BasicCardProfile } from "../card/CardProfile";
+import { SkeletonPlayers } from "../skeleton/SkeletonPlayer";
 import { TitleCount } from "../title/TitleCount";
-import { useTranslation } from "react-i18next";
 
 interface Props {
   search: string;
 }
 export const PeopleScrollBlock = ({ search }: Props) => {
   const { t } = useTranslation();
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastItemRef = useRef<HTMLTableRowElement | null>(null);
+
   const ITEMPERPAGE = 25;
 
-  const [, setPage] = useState(0);
   const [players, setPlayers] = useState<Array<Profile>>([]);
   const [nbPlayers, setNbPlayers] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [, setPage] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
 
   const getPlayers = useCallback(
     (page: number) => {
-      if (!isEnd) {
+      if (isLoading) return;
+      if (page === 0 || !isEnd) {
+        setIsLoading(true);
         searchProfilePagination(search, [], page, ITEMPERPAGE).then(
           ({ data }) => {
             const result = data !== null ? (data as Array<Profile>) : [];
-            setPlayers((prev) => [...prev, ...result]);
+            setPlayers((prev) =>
+              page === 0 ? [...result] : [...prev, ...result]
+            );
             setIsEnd(result.length < ITEMPERPAGE);
+            setIsLoading(false);
           }
         );
       }
     },
-    [isEnd, search]
+    [isEnd, search, isLoading]
   );
 
-  const handleLoadMoreData = () => {
-    setPage((prevPage) => {
-      const nextPage = prevPage + 1;
-      getPlayers(nextPage);
-      return nextPage;
-    });
-  };
   useEffect(() => {
     const countPlayers = () => {
       countProfile(search).then(({ count }) => {
@@ -49,14 +51,35 @@ export const PeopleScrollBlock = ({ search }: Props) => {
       });
     };
     countPlayers();
-    getPlayers(0);
-  }, [getPlayers, search]);
+  }, [search]);
 
   useEffect(() => {
     setPage(0);
     setPlayers([]);
     setIsEnd(false);
+    getPlayers(0);
   }, [search]);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !isEnd) {
+        setPage((prev) => {
+          getPlayers(prev + 1);
+          return prev + 1;
+        });
+      }
+    });
+
+    if (lastItemRef.current) {
+      observer.current.observe(lastItemRef.current);
+    }
+
+    return () => observer.current?.disconnect();
+  }, [isLoading, isEnd, getPlayers]);
 
   return (
     <Grid container spacing={1}>
@@ -68,22 +91,19 @@ export const PeopleScrollBlock = ({ search }: Props) => {
           <Alert severity="warning">{t("commun.noresult")}</Alert>
         </Grid>
       ) : (
-        <Grid item xs={12}>
-          <InfiniteScroll
-            dataLength={players.length}
-            next={handleLoadMoreData}
-            hasMore={!isEnd}
-            loader={<SkeletonPlayers number={3} />}
-          >
-            <Grid container spacing={1} sx={{ mb: 1 }}>
-              {players.map((player, index) => (
-                <Grid item key={index} xs={12}>
-                  <BasicCardProfile profile={player} />
-                </Grid>
-              ))}
+        <>
+          {players.map((player, index) => (
+            <Grid
+              item
+              key={index}
+              xs={12}
+              ref={index === players.length - 1 ? lastItemRef : null}
+            >
+              <BasicCardProfile profile={player} />
             </Grid>
-          </InfiniteScroll>
-        </Grid>
+          ))}
+          {isLoading && <SkeletonPlayers number={3} />}
+        </>
       )}
     </Grid>
   );

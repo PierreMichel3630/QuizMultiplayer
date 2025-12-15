@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "src/context/AuthProviderSupabase";
 
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { padding, px } from "csx";
 import logo from "src/assets/logo.svg";
@@ -73,7 +72,6 @@ export const Header = () => {
               <ButtonColor
                 value={Colors.black}
                 label={t("commun.login")}
-                icon={AccountCircleIcon}
                 variant="contained"
                 onClick={() => navigate("/login")}
                 typography="h6"

@@ -1,22 +1,22 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { selectThemesById } from "src/api/theme";
-import { Theme } from "src/models/Theme";
+import { getThemesById } from "src/api/search";
+import { ICardImage } from "./card/CardImage";
 import { CardSelectAvatarTheme } from "./card/CardTheme";
 
 interface Props {
   avatars: Array<{ id: number; avatars: Array<string> }>;
-  select: (theme: Theme) => void;
+  select: (theme: ICardImage) => void;
 }
 export const SelectedTheme = ({ select, avatars }: Props) => {
   const { t } = useTranslation();
 
-  const [themes, setThemes] = useState<Array<Theme>>([]);
+  const [themes, setThemes] = useState<Array<ICardImage>>([]);
 
   useEffect(() => {
     const idThemes = [...avatars].map((el) => el.id);
-    selectThemesById(idThemes).then(({ data }) => {
+    getThemesById(idThemes).then(({ data }) => {
       const res = data ?? [];
       setThemes(res);
     });

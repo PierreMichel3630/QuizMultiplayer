@@ -39,6 +39,7 @@ import {
 import { ChallengeButton } from "./button/ChallengeButton";
 import { CellRankingChallengeDay, RecapAvgChallenge } from "./ChallengeBlock";
 import { DataRanking, RankingTable } from "./table/RankingTable";
+import { useAuth } from "src/context/AuthProviderSupabase";
 
 interface Props {
   themes?: Array<number>;
@@ -102,14 +103,10 @@ export const RankingBlock = ({ themes }: Props) => {
   );
 };
 
-interface PropsRankingTop5Block {
-  hasPlayChallenge?: boolean;
-}
-export const RankingTop5Block = ({
-  hasPlayChallenge = false,
-}: PropsRankingTop5Block) => {
+export const RankingTop5Block = () => {
   const { t } = useTranslation();
   const { language } = useUser();
+  const { hasPlayChallenge } = useAuth();
 
   const [tab, setTab] = useState(AllGameModeEnum.CHALLENGE);
   const [tabTimeSolo, setTabTimeSolo] = useState(ClassementSoloTimeEnum.week);

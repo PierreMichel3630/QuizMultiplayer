@@ -422,6 +422,8 @@ export const RankingTableSoloDuelPaginate = ({
   const observer = useRef<IntersectionObserver | null>(null);
   const lastItemRef = useRef<HTMLTableRowElement | null>(null);
 
+  const ITEMPERPAGE = 30;
+
   const [tab, setTab] = useState(mode === "DUEL" ? 1 : 0);
   const tabs = useMemo(
     () =>
@@ -439,10 +441,9 @@ export const RankingTableSoloDuelPaginate = ({
   const getRankingDuel = useCallback(
     (page: number) => {
       if (isLoading) return;
-      const itemperpage = 30;
       if (theme && (page === 0 || !isEnd)) {
         setIsLoading(true);
-        selectRankingDuelByThemePaginate(theme.id, page, itemperpage).then(
+        selectRankingDuelByThemePaginate(theme.id, page, ITEMPERPAGE).then(
           ({ data }) => {
             const result = data as Array<Ranking>;
             const newData = result.map((el) => ({
@@ -451,7 +452,7 @@ export const RankingTableSoloDuelPaginate = ({
               rank: el.ranking,
               size: 70,
             })) as Array<DataRanking>;
-            setIsEnd(result.length < itemperpage);
+            setIsEnd(result.length < ITEMPERPAGE);
             setData((prev) =>
               page === 0 ? [...newData] : [...prev, ...newData]
             );

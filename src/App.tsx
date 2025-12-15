@@ -10,6 +10,7 @@ import "./i18n/config";
 import { getTheme } from "./style/ThemeBlock";
 import ScrollToTop from "./component/navigation/ScrollToTop";
 import { Outlet } from "react-router-dom";
+import { NotificationProvider } from "./context/NotificationProvider";
 
 function App() {
   return (
@@ -32,23 +33,25 @@ const Body = () => {
   useViewportHeight();
   return (
     <AppProvider>
-      <ThemeProvider theme={theme}>
-        <MessageProvider>
-          <CssBaseline />
-          <ScrollToTop />
-          <Helmet
-            htmlAttributes={{
-              lang: language?.iso,
-            }}
-          >
-            <meta
-              name="description"
-              content="Testez vos connaissances. Jouez en Solo ou multijoueurs sur un quiz avec plus de 500 thèmes: Cinéma, Histoire, Géographie, Sports, ..."
-            />
-          </Helmet>
-          <Outlet />
-        </MessageProvider>
-      </ThemeProvider>
+      <NotificationProvider>
+        <ThemeProvider theme={theme}>
+          <MessageProvider>
+            <CssBaseline />
+            <ScrollToTop />
+            <Helmet
+              htmlAttributes={{
+                lang: language?.iso,
+              }}
+            >
+              <meta
+                name="description"
+                content="Testez vos connaissances. Jouez en Solo ou multijoueurs sur un quiz avec plus de 500 thèmes: Cinéma, Histoire, Géographie, Sports, ..."
+              />
+            </Helmet>
+            <Outlet />
+          </MessageProvider>
+        </ThemeProvider>
+      </NotificationProvider>
     </AppProvider>
   );
 };

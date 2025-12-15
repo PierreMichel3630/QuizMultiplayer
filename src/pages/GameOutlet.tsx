@@ -1,226 +1,38 @@
 import { Box } from "@mui/material";
-import { percent } from "csx";
 import { Outlet } from "react-router-dom";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  selectInvitationBattleByUser,
-  selectInvitationBattleByUuid,
-  selectInvitationDuelByUser,
-  selectInvitationDuelByUuid,
-} from "src/api/game";
-import { supabase } from "src/api/supabase";
-import { DuelGame, DuelGameChange } from "src/models/DuelGame";
+import { useEffect, useMemo } from "react";
 
-import { RealtimeChannel } from "@supabase/supabase-js";
 import { updateProfilByFunction } from "src/api/profile";
-import { BattleNotificationBlock } from "src/component/notification/BattleNotificationBlock";
-import { DuelNotificationBlock } from "src/component/notification/DuelNotificationBlock";
-import { useApp } from "src/context/AppProvider";
-import { useAuth } from "src/context/AuthProviderSupabase";
-import { BattleGame, BattleGameChange } from "src/models/BattleGame";
-import { StatusGameDuel } from "src/models/enum/StatusGame";
 import { UpdateNotificationBlock } from "src/component/notification/UpdateNotificationBlock";
+import { useAuth } from "src/context/AuthProviderSupabase";
+import { useNotification } from "src/context/NotificationProvider";
+import { NotificationType } from "src/models/enum/NotificationType";
+import { DuelNotificationBlock } from "src/component/notification/DuelNotificationBlock";
+import { BattleNotificationBlock } from "src/component/notification/BattleNotificationBlock";
+import { percent } from "csx";
 
 export default function GameOutlet() {
-  const { user, profile, setStreak } = useAuth();
-  const { getFriends } = useApp();
+  const { profile, setStreak } = useAuth();
+  const { notifications, getNotifications } = useNotification();
 
-  const channelRef = useRef<RealtimeChannel | null>(null);
-
-  const [gamesChange, setGamesChange] = useState<Array<DuelGameChange>>([]);
-  const [games, setGames] = useState<Array<DuelGame>>([]);
-  const [battlesChange, setBattlesChange] = useState<Array<BattleGameChange>>(
-    []
+  const duelGames = useMemo(
+    () =>
+      [...notifications].filter(
+        (el) => el.type === NotificationType.duel_request && !el.isread
+      ),
+    [notifications]
   );
-  const [battles, setBattles] = useState<Array<BattleGame>>([]);
-
-  useEffect(() => {
-    const getGamesUuid = () => {
-      const uuids = gamesChange.map((el) => el.uuid);
-      if (uuids.length > 0) {
-        selectInvitationDuelByUuid(uuids).then(({ data }) => {
-          const value = data !== null ? (data as Array<DuelGame>) : [];
-          setGames(value);
-        });
-      }
-    };
-    getGamesUuid();
-  }, [gamesChange]);
-
-  const getGames = useCallback(() => {
-    if (user) {
-      selectInvitationDuelByUser(user.id).then(({ data }) => {
-        const value = data !== null ? (data as Array<DuelGame>) : [];
-        setGames(value);
-      });
-    }
-  }, [user]);
-
-  useEffect(() => {
-    getGames();
-  }, [getGames]);
-
-  useEffect(() => {
-    const getBattleGamesUuid = () => {
-      const uuids = battlesChange.map((el) => el.uuid);
-      if (uuids.length > 0) {
-        selectInvitationBattleByUuid(uuids).then(({ data }) => {
-          const value = data !== null ? (data as Array<BattleGame>) : [];
-          setBattles(value);
-        });
-      }
-    };
-    getBattleGamesUuid();
-  }, [battlesChange]);
-
-  const getBattles = useCallback(() => {
-    if (user) {
-      selectInvitationBattleByUser(user.id).then(({ data }) => {
-        const value = data !== null ? (data as Array<BattleGame>) : [];
-        setBattles(value);
-      });
-    }
-  }, [user]);
-
-  useEffect(() => {
-    getBattles();
-  }, [getBattles]);
-
-  useEffect(() => {
-    return () => {};
-  }, [getFriends, profile?.id]);
-
-  const subscribeToEventRealtime = useCallback(
-    (profileId: string) => {
-      const newChannel = supabase.channel("duelgame");
-      newChannel
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table: "duelgame",
-            filter: `player2=eq.${profileId}`,
-          },
-          (payload) => {
-            setGamesChange((prev) => [...prev, payload.new as DuelGameChange]);
-          }
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "UPDATE",
-            schema: "public",
-            table: "duelgame",
-            filter: `player2=eq.${profileId}`,
-          },
-          (payload) => {
-            const game = payload.new as DuelGameChange;
-            if (game.status === StatusGameDuel.CANCEL) {
-              setGamesChange((prev) =>
-                [...prev].filter((el) => el.id !== game.id)
-              );
-            }
-          }
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "UPDATE",
-            schema: "public",
-            table: "battlegame",
-            filter: `player2=eq.${profileId}`,
-          },
-          (payload) => {
-            setBattlesChange((prev) => [
-              ...prev,
-              payload.new as BattleGameChange,
-            ]);
-          }
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "DELETE",
-            schema: "public",
-            table: "battlegame",
-            filter: `player2=eq.${profileId}`,
-          },
-          (payload) => {
-            setGamesChange((prev) =>
-              [...prev].filter(
-                (el) => el.id !== (payload.old as BattleGameChange).id
-              )
-            );
-          }
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "DELETE",
-            schema: "public",
-            table: "battlegame",
-            filter: `player1=eq.${profileId}`,
-          },
-          (payload) => {
-            setGamesChange((prev) =>
-              [...prev].filter(
-                (el) => el.id !== (payload.old as BattleGameChange).id
-              )
-            );
-          }
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table: "friend",
-            filter: `user2=eq.${profileId}`,
-          },
-          () => {
-            getFriends();
-          }
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "UPDATE",
-            schema: "public",
-            table: "friend",
-            filter: `user1=eq.${profileId}`,
-          },
-          () => {
-            getFriends();
-          }
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "UPDATE",
-            schema: "public",
-            table: "friend",
-            filter: `user2=eq.${profileId}`,
-          },
-          () => {
-            getFriends();
-          }
-        );
-      newChannel.subscribe();
-      channelRef.current = newChannel;
-    },
-    [getFriends]
+  const battles = useMemo(
+    () =>
+      [...notifications].filter(
+        (el) => el.type === NotificationType.battle_request && !el.isread
+      ),
+    [notifications]
   );
 
   useEffect(() => {
-    if (profile?.id) {
-      subscribeToEventRealtime(profile?.id);
-    }
     const handleVisibility = async () => {
-      if (document.hidden) {
-        channelRef.current?.unsubscribe();
-      }
       if (profile?.id && !document.hidden) {
         updateProfilByFunction().then(({ data }) => {
           if (data !== null) {
@@ -232,9 +44,8 @@ export default function GameOutlet() {
     document.addEventListener("visibilitychange", handleVisibility);
     return () => {
       document.removeEventListener("visibilitychange", handleVisibility);
-      channelRef.current?.unsubscribe();
     };
-  }, [profile?.id, setStreak, subscribeToEventRealtime]);
+  }, [profile?.id, setStreak]);
 
   return (
     <>
@@ -242,25 +53,28 @@ export default function GameOutlet() {
       <Box
         sx={{
           position: "fixed",
-          bottom: 75,
-          right: 0,
-          left: percent(1),
+          bottom: 5,
+          right: 5,
           display: "flex",
           gap: 2,
           alignItems: "end",
           flexDirection: "column",
-          width: percent(98),
           zIndex: 20,
+          maxWidth: percent(98),
         }}
       >
-        {games.map((game) => (
-          <DuelNotificationBlock key={game.id} game={game} refuse={getGames} />
+        {duelGames.map((game) => (
+          <DuelNotificationBlock
+            key={game.id}
+            notification={game}
+            onDelete={getNotifications}
+          />
         ))}
         {battles.map((battle) => (
           <BattleNotificationBlock
             key={battle.id}
-            game={battle}
-            refuse={getBattles}
+            notification={battle}
+            onDelete={getNotifications}
           />
         ))}
         <UpdateNotificationBlock />

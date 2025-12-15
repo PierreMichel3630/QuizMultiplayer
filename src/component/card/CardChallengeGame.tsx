@@ -10,14 +10,15 @@ import moment from "moment";
 import { px } from "csx";
 import { Link, useLocation } from "react-router-dom";
 import { useMemo } from "react";
+import { useAuth } from "src/context/AuthProviderSupabase";
 
 interface Props {
   game: ChallengeRanking;
-  hasPlayChallenge?: boolean;
 }
 
-export const CardChallengeGame = ({ game, hasPlayChallenge }: Props) => {
+export const CardChallengeGame = ({ game }: Props) => {
   const location = useLocation();
+  const { hasPlayChallenge } = useAuth();
 
   const showGame = useMemo(() => {
     const result =

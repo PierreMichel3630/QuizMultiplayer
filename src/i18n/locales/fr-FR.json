@@ -377,7 +377,14 @@
     "seechallenge": "Voir le challenge",
     "createmodifychallenge": "Créer/Modifier le challenge",
     "addchallengegame": "Ajouter une partie",
-    "otherresponse": "Autres réponses : "
+    "otherresponse": "Autres réponses : ",
+    "patchnote": "Notes de mise à jour",
+    "roadmap": "Évolutions futures",
+    "features": "Évolutions",
+    "bugs": "Correctifs",
+    "accept": "Accepter",
+    "thisweek": "Cette semaine",
+    "older": "Plus anciennes"
   },
   "abrevation": {
     "average": "Moy."
@@ -790,6 +797,7 @@
     "maintenance": "En maintenance",
     "pagenotfound": "Cette page n'est pas disponible.",
     "noresult": "Aucun résultat.",
+    "noresultnotification": "Aucune Notification.",
     "noresulttheme": "Aucun thème ne correspond à cette catégorie.",
     "updatequestion": "Votre modification de la question à été pris en compte.",
     "allresponseanswer": "Vous avez répondu à toutes les question du thème.",
@@ -956,5 +964,56 @@
       "examplewronganswer3" : "Vert",
       "uploadfile" : "Déposer le fichier"
     }
+  },
+  "notifications": {
+    "friend_request": "{{username}} vous demande en ami",
+    "friend_request_accept": "{{username}} a accepté ta demande"
+  },
+  "patchnote": {
+    "2.0.2": {
+      "version": "2.0.2",
+      "changes" : [
+        "Amélioration de l'affichage sur PC.",
+        "Ajout d'un Patch Note et d'une Roadmap."
+      ],
+      "bug": [
+      ]
+    },
+    "2.0.1": {
+      "version": "2.0.1",
+      "changes" : [
+        "Amélioration de l'affichage sur PC."
+      ],
+      "bug": [
+        "Correction de l'affichage d'une notification de demande d'un duel",
+        "Correction des récompenses de défis du jour / semaine / mois."
+      ]
+    },
+    "2.0.0": {
+      "version": "2.0.0",
+      "changes" : [
+        "Gestion de plusieurs langues (Français, Anglais, Espagnol, Allemand)",
+        "Suppression de l'affichage des temps et score du défis du jour avant de jouer le défis. Afin d'éviter de pénaliser le joueurs jouant en premier.",
+        "Ajout proposition des questions via formulaire ou excel.",
+        "Ajout d'un menu pour voir mes propositions de thèmes et questions."
+      ],
+      "bug": [
+        
+      ]
+    }
+  },
+  "roadmap": {
+    "feature": [
+      "Ajout de mode de jeu (Reflexe, Mémoire, ...).",
+      "Ajout de défis et succès par thèmes.",
+      "Ajout de défis quotidiens (exemples: jouer 5 parties, faire au moins 5 dans le thème géographie, ...)",
+      "Ajout d'un Mode Hors ligne pour certains thèmes.",
+      "Ajout d'un mode partie privée pour jouer avec plusieurs de ces amis."
+    ],
+    "bug": [
+      "Correction lors du lancement de duel avec un amis (Partie annulée, Partie lancée que pour un joueur, ...)",
+      "Correction les modes musicaux ne marchent plus",
+      "Correction le mode footballeur ne marche plus"
+    ]
   }
 }

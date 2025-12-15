@@ -1,17 +1,21 @@
 import { Box, Button, Paper, Typography } from "@mui/material";
 import { percent, px } from "csx";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { Colors } from "src/style/Colors";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
 export const UpdateNotificationBlock = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
   const {
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
   } = useRegisterSW({
     onRegisteredSW(swUrl) {
       console.log(`Service Worker at: ${swUrl}`);
+      navigate("/news");
     },
     onRegisterError(error) {
       console.log("SW registration error", error);
@@ -31,7 +35,7 @@ export const UpdateNotificationBlock = () => {
       <Paper
         sx={{
           p: px(5),
-          width: percent(100),
+          width: percent(99),
           backgroundColor: Colors.black,
           border: "2px solid white",
           borderRadius: px(5),

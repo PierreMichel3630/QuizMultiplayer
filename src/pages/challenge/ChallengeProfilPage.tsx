@@ -7,10 +7,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Colors } from "src/style/Colors";
 
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-import moment from "moment";
 import { useEffect, useState } from "react";
 import {
-  countChallengeGameByDateAndProfileId,
   selectChallengeGameByProfileId,
   selectRankingChallengeAllTimeByProfileId,
   selectRankingChallengeMonthByProfileId,
@@ -28,7 +26,6 @@ import { CardChallengeGame } from "src/component/card/CardChallengeGame";
 import { RatingChallenge } from "src/component/challenge/RatingChallenge";
 import { BarNavigation } from "src/component/navigation/BarNavigation";
 import { ProfileBlock } from "src/component/profile/ProfileBlock";
-import { useAuth } from "src/context/AuthProviderSupabase";
 import {
   ChallengeRanking,
   ChallengeRankingAllTime,
@@ -41,7 +38,6 @@ import { Profile } from "src/models/Profile";
 export default function ChallengeProfilPage() {
   const { t } = useTranslation();
   const { uuid } = useParams();
-  const { profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -54,10 +50,6 @@ export default function ChallengeProfilPage() {
   const [statWeek, setStatWeek] = useState<Array<ChallengeRankingWeek>>([]);
   const [statAllTime, setStatAllTime] =
     useState<null | ChallengeRankingAllTime>(null);
-
-  const [hasPlayChallenge, setHasPlayChallenge] = useState<undefined | boolean>(
-    undefined
-  );
 
   useEffect(() => {
     const getGames = () => {
@@ -112,20 +104,6 @@ export default function ChallengeProfilPage() {
     getProfile();
   }, [uuid]);
 
-  useEffect(() => {
-    const isChallengeAvailable = () => {
-      if (profile) {
-        const date = moment();
-        countChallengeGameByDateAndProfileId(date, profile.id).then(
-          ({ count }) => {
-            setHasPlayChallenge(count !== null && count > 0);
-          }
-        );
-      }
-    };
-    isChallengeAvailable();
-  }, [profile]);
-
   return (
     <Grid container className="page" alignContent="flex-start">
       <Helmet>
@@ -168,10 +146,7 @@ export default function ChallengeProfilPage() {
                         </Grid>
                         {games.map((game) => (
                           <Grid item xs={12} key={game.id}>
-                            <CardChallengeGame
-                              game={game}
-                              hasPlayChallenge={hasPlayChallenge}
-                            />
+                            <CardChallengeGame game={game} />
                           </Grid>
                         ))}
                       </>

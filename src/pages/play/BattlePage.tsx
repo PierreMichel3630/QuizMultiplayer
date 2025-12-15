@@ -13,7 +13,6 @@ import {
 } from "src/api/game";
 import { supabase } from "src/api/supabase";
 import { ButtonColor } from "src/component/Button";
-import { FavoriteSelectAvatarBlock } from "src/component/FavoriteBlock";
 import { SelectedTheme } from "src/component/SelectedTheme";
 import { SelectorProfileBattleBlock } from "src/component/SelectorProfileBlock";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
@@ -31,11 +30,12 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import HistoryIcon from "@mui/icons-material/History";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import { ICardImage } from "src/component/card/CardImage";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import { HistoryGameModal } from "src/component/modal/HistoryGameModal";
-import { SearchThemeSelectAvatarScrollBlock } from "src/component/scroll/SearchThemeScrollBlock";
-import { Theme } from "src/models/Theme";
+import { SearchThemeSelectScrollBlock } from "src/component/scroll/SearchThemeScrollBlock";
 import { weightedRandom } from "src/utils/random";
+import { FavoriteSelectAvatarBlock } from "src/component/FavoriteBlock";
 
 export default function BattlePage() {
   const { t } = useTranslation();
@@ -148,7 +148,7 @@ export default function BattlePage() {
   };
 
   const selectTheme = useCallback(
-    async (theme: Theme) => {
+    async (theme: ICardImage) => {
       if (game && isPlayer1 !== null) {
         const myThemes = isPlayer1
           ? [...game.themesplayer1]
@@ -338,7 +338,7 @@ export default function BattlePage() {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <SearchThemeSelectAvatarScrollBlock
+                  <SearchThemeSelectScrollBlock
                     onSelect={(v) => selectTheme(v)}
                     search={""}
                     avatars={avatars}

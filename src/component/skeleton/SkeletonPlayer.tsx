@@ -6,13 +6,13 @@ interface Props {
 }
 export const SkeletonPlayers = ({ number }: Props) => {
   return (
-    <Grid container spacing={1}>
+    <>
       {Array.from(new Array(number)).map((_, index) => (
         <Grid item key={index} xs={12}>
           <SkeletonPlayer key={index} />
         </Grid>
       ))}
-    </Grid>
+    </>
   );
 };
 

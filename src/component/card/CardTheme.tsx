@@ -29,7 +29,7 @@ import { TextNameBlock } from "../language/TextLanguageBlock";
 import { ICardImage } from "./CardImage";
 
 interface PropsCardSelectAvatarTheme {
-  theme: Theme;
+  theme: ICardImage;
   avatars: Array<{ id: number; avatars: Array<string> }>;
   onSelect: () => void;
   width?: number;
@@ -86,26 +86,45 @@ export const CardSelectAvatarTheme = ({
       >
         <ImageThemeBlock theme={theme} size={width} />
       </Badge>
-      <TextNameBlock
+      <Typography
         variant="h6"
-        sx={{ textAlign: "center" }}
-        values={theme.themetranslation}
-      />
+        sx={{
+          width: percent(100),
+          overflow: "hidden",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          textAlign: "center",
+        }}
+      >
+        {theme.name}
+      </Typography>
     </Box>
   );
 };
 
 interface PropsCardSelectTheme {
-  theme: { name: string; image?: string | JSX.Element; color?: string };
+  theme: {
+    id: number;
+    name: string;
+    image?: string | JSX.Element;
+    color?: string;
+  };
   onSelect: () => void;
   width?: number;
+  avatars?: Array<{ id: number; avatars: Array<string> }>;
 }
 
 export const CardSelectTheme = ({
   theme,
   onSelect,
   width = 80,
+  avatars,
 }: PropsCardSelectTheme) => {
+  const avatarsTheme = useMemo(
+    () => (avatars ? avatars.find((el) => el.id === theme.id) : undefined),
+    [avatars, theme.id]
+  );
   return (
     <Box
       onClick={() => onSelect()}
@@ -123,7 +142,38 @@ export const CardSelectTheme = ({
         height: percent(100),
       }}
     >
-      <ImageThemeBlock theme={theme} size={width} />
+      {avatarsTheme ? (
+        <Badge
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          badgeContent={
+            avatarsTheme && (
+              <AvatarGroup
+                max={2}
+                sx={{
+                  "& .MuiAvatar-root": { width: 30, height: 30, fontSize: 15 },
+                  mr: 3,
+                }}
+              >
+                {avatarsTheme.avatars.map((a, index) => (
+                  <Avatar
+                    key={index}
+                    src={a}
+                    sx={{
+                      width: 30,
+                      height: 30,
+                      backgroundColor: "background.paper",
+                    }}
+                  />
+                ))}
+              </AvatarGroup>
+            )
+          }
+        >
+          <ImageThemeBlock theme={theme} size={width} />
+        </Badge>
+      ) : (
+        <ImageThemeBlock theme={theme} size={width} />
+      )}
       <Typography
         variant="h6"
         sx={{

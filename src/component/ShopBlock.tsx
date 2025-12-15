@@ -1,12 +1,10 @@
 import { Box, Divider, Grid } from "@mui/material";
 import { percent, px } from "csx";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { RoundLinkButton } from "./button/RoundButton";
 
-import moment from "moment";
-import { countChallengeGameByDateAndProfileId } from "src/api/challenge";
 import addfriendsAnimate from "src/assets/animation/addfriends.json";
 import customizeprofileAnimate from "src/assets/animation/customizeprofile.json";
 import duelAnimate from "src/assets/animation/duel.json";
@@ -30,25 +28,9 @@ export const ShopBlock = () => {
 
 export const ShopItems = () => {
   const { t } = useTranslation();
-  const { profile } = useAuth();
-
-  const [hasPlayChallenge, setHasPlayChallenge] = useState(false);
+  const { profile, hasPlayChallenge } = useAuth();
 
   const wheelDate = useMemo(() => profile?.wheellaunch, [profile]);
-
-  useEffect(() => {
-    const isChallengeAvailable = () => {
-      if (profile) {
-        const date = moment();
-        countChallengeGameByDateAndProfileId(date, profile.id).then(
-          ({ count }) => {
-            setHasPlayChallenge(count !== null && count > 0);
-          }
-        );
-      }
-    };
-    isChallengeAvailable();
-  }, [profile]);
 
   const options = [
     {

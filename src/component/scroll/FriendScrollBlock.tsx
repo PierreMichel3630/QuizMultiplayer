@@ -1,28 +1,39 @@
 import { Grid } from "@mui/material";
 import { uniqBy } from "lodash";
 import { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useApp } from "src/context/AppProvider";
-import { useAuth } from "src/context/AuthProviderSupabase";
+import { NotificationType } from "src/models/enum/NotificationType";
 import { FRIENDSTATUS } from "src/models/Friend";
 import { sortByUsername } from "src/utils/sort";
 import { BasicCardFriendProfile } from "../card/CardProfile";
 import { FriendNotificationBlock } from "../notification/FriendNotificationBlock";
 import { TitleCount } from "../title/TitleCount";
-import { useTranslation } from "react-i18next";
+import { useAuth } from "src/context/AuthProviderSupabase";
+import { Notification } from "src/models/Notification";
+import { useNotification } from "src/context/NotificationProvider";
 
 interface Props {
   search: string;
 }
-
 export const FriendScrollBlock = ({ search }: Props) => {
   const { t } = useTranslation();
-
-  const { friends, getFriends } = useApp();
   const { profile } = useAuth();
+  const { friends, getFriends } = useApp();
+  const { notifications, getNotifications } = useNotification();
 
   useEffect(() => {
     getFriends();
   }, [getFriends]);
+
+  const invitationsfriends = useMemo(
+    () =>
+      [...notifications].filter(
+        (el) =>
+          el.isread === false && el.type === NotificationType.friend_request
+      ),
+    [notifications]
+  );
 
   const friendsProfile = useMemo(
     () =>
@@ -42,16 +53,9 @@ export const FriendScrollBlock = ({ search }: Props) => {
     return uniqBy(friends, (el) => el.id);
   }, [friendsProfile, search]);
 
-  const invitationsfriends = useMemo(
-    () =>
-      friends.filter(
-        (el) =>
-          profile !== null &&
-          profile.id === el.user2.id &&
-          el.status === FRIENDSTATUS.PROGRESS
-      ),
-    [friends, profile]
-  );
+  const onDelete = (_notification: Notification) => {
+    getNotifications();
+  };
 
   return (
     <Grid container spacing={1}>
@@ -65,7 +69,11 @@ export const FriendScrollBlock = ({ search }: Props) => {
           </Grid>
           {invitationsfriends.map((friend) => (
             <Grid item xs={12} key={friend.id}>
-              <FriendNotificationBlock key={friend.id} friend={friend} />
+              <FriendNotificationBlock
+                key={friend.id}
+                notification={friend}
+                onDelete={onDelete}
+              />
             </Grid>
           ))}
         </>

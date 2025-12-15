@@ -5,7 +5,6 @@ import { removeAccentsAndLowercase } from "src/utils/string";
 import { Language } from "src/models/Language";
 
 export const SUPABASE_VIEWSEARCH_TABLE = "viewsearchv2";
-export const SUPABASE_VIEWSEARCHADMIN_TABLE = "viewsearchadmin";
 
 export const searchThemesAndCategoriesPaginate = (
   language: Language,
@@ -39,7 +38,7 @@ export const searchThemesPaginate = (
   const searchLower = removeAccentsAndLowercase(search);
 
   return supabase
-    .from(SUPABASE_VIEWSEARCHADMIN_TABLE)
+    .from(SUPABASE_VIEWSEARCH_TABLE)
     .select("*")
     .ilike(`namelower`, `%${searchLower}%`)
     .eq("type", "THEME")

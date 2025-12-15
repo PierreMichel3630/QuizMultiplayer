@@ -6,10 +6,8 @@ import { useApp } from "src/context/AppProvider";
 import { CardSelectAvatarTheme } from "./card/CardTheme";
 import { CategoryBlock } from "./category/CategoryBlock";
 
-import { getThemesAndCategoriesById } from "src/api/search";
-import { selectThemesById } from "src/api/theme";
+import { getThemesAndCategoriesById, getThemesById } from "src/api/search";
 import { useUser } from "src/context/UserProvider";
-import { Theme } from "src/models/Theme";
 import { ICardImage } from "./card/CardImage";
 
 export const FavoriteBlock = () => {
@@ -49,7 +47,7 @@ export const FavoriteBlock = () => {
 
 interface PropsSelectAvatar {
   avatars: Array<{ id: number; avatars: Array<string> }>;
-  select: (theme: Theme) => void;
+  select: (theme: ICardImage) => void;
 }
 export const FavoriteSelectAvatarBlock = ({
   avatars,
@@ -58,14 +56,14 @@ export const FavoriteSelectAvatarBlock = ({
   const { t } = useTranslation();
 
   const { favorites } = useApp();
-  const [values, setValues] = useState<Array<Theme>>([]);
+  const [values, setValues] = useState<Array<ICardImage>>([]);
 
   useEffect(() => {
     const idThemes = [...favorites]
       .filter((el) => el.theme)
       .map((el) => Number(el.theme));
     if (idThemes.length > 0) {
-      selectThemesById(idThemes).then(({ data }) => {
+      getThemesById(idThemes).then(({ data }) => {
         setValues(data ?? []);
       });
     }

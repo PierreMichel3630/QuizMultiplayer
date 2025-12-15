@@ -11,6 +11,7 @@ import { DefaultToolbar } from "src/component/toolbar/Toolbar";
 import { useIsMobileOrTablet } from "src/hook/useSize";
 import { Colors } from "src/style/Colors";
 import { drawerWidth } from "src/utils/config";
+import { px } from "csx";
 
 export default function OutletPage() {
   const isMobileOrTablet = useIsMobileOrTablet();
@@ -49,6 +50,7 @@ export default function OutletPage() {
           sx={{
             flexGrow: 1,
             width: isMobileOrTablet ? `100%` : `calc(100% - ${drawerWidth}px)`,
+            mb: isMobileOrTablet ? px(60) : 0,
           }}
         >
           <DefaultToolbar />
