@@ -1,41 +1,30 @@
-import { Badge, Box, Grid, Skeleton, Typography } from "@mui/material";
-import { padding, percent, px, viewWidth } from "csx";
+import { Box, Skeleton, Typography } from "@mui/material";
+import { important, padding, percent, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
-import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { StatAccomplishment } from "src/models/Accomplishment";
-import { FRIENDSTATUS } from "src/models/Friend";
 import { getLevel } from "src/utils/calcul";
 import { AvatarAccountBadge } from "./avatar/AvatarAccount";
-import { CountryBlock } from "./CountryBlock";
-import { MoneyBlock } from "./MoneyBlock";
+import { CountryImageBlock } from "./CountryBlock";
+import { MoneyArrondieBlock } from "./MoneyBlock";
 
-import PeopleIcon from "@mui/icons-material/People";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";
 import { AdminButton } from "./button/AdminButton";
+import { NotificationBadge } from "./button/NotificationBadge";
 import { SkeletonCircular } from "./skeleton/SkeletonCircular";
+import { StreakBlock } from "./StreakBlock";
 
 export const ProfileBar = () => {
   const navigate = useNavigate();
-  const { logout, profile } = useAuth();
-  const { friends } = useApp();
+  const { logout, profile, streak } = useAuth();
+  const { language } = useUser();
 
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
-
-  const notificationsFriend = useMemo(
-    () =>
-      friends.filter(
-        (el) =>
-          el.status === FRIENDSTATUS.PROGRESS &&
-          profile &&
-          profile.id !== el.user1.id
-      ).length,
-    [friends, profile]
-  );
 
   useEffect(() => {
     const getMyStat = () => {
@@ -60,139 +49,133 @@ export const ProfileBar = () => {
       sx={{
         display: "flex",
         width: percent(100),
-        p: 1,
+        p: px(5),
+        gap: 1,
       }}
     >
-      <Grid container spacing={1}>
-        <Grid item>
-          {profile ? (
-            <AvatarAccountBadge
-              avatar={profile.avatar.icon}
-              size={60}
-              level={level}
-              profile={profile}
-            />
-          ) : (
-            <SkeletonCircular size={60} />
-          )}
-        </Grid>
-
-        <Grid item xs>
+      {profile ? (
+        <Link to={`/personalized`} style={{ textDecoration: "none" }}>
+          <AvatarAccountBadge
+            avatar={profile.avatar.icon}
+            size={60}
+            level={level}
+            profile={profile}
+            color={Colors.blue4}
+          />
+        </Link>
+      ) : (
+        <SkeletonCircular size={60} />
+      )}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: px(2),
+          minWidth: 0,
+          width: percent(100),
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+            {profile?.country && (
+              <Link to={`/personalized`} style={{ textDecoration: "none" }}>
+                <CountryImageBlock country={profile.country} size={30} />
+              </Link>
+            )}
+            <Link
+              to={profile ? `/profil/${profile.id}` : "/login"}
+              style={{ textDecoration: "none", maxWidth: "calc(100% -30px)" }}
+            >
+              {profile ? (
+                <Typography
+                  variant="h2"
+                  color="text.secondary"
+                  sx={{
+                    overflow: "hidden",
+                    display: "block",
+                    lineClamp: 1,
+                    boxOrient: "vertical",
+                    textOverflow: "ellipsis",
+                    fontSize: important(px(20)),
+                  }}
+                >
+                  {profile.username}
+                </Typography>
+              ) : (
+                <Skeleton animation="wave" width={200} height={20} />
+              )}
+            </Link>
+          </Box>
+          {streak !== undefined && <StreakBlock value={streak} />}
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <Box
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: px(2),
+              minWidth: 0,
             }}
           >
-            <Box sx={{ maxWidth: viewWidth(60) }}>
-              <Link to={`/myprofile`} style={{ textDecoration: "none" }}>
-                {profile ? (
-                  <Typography
+            {profile ? (
+              <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
+                <Link to={`/shop`} style={{ textDecoration: "none" }}>
+                  <MoneyArrondieBlock
+                    money={profile.money}
+                    language={language}
                     variant="h4"
-                    color="text.secondary"
-                    sx={{
-                      overflow: "hidden",
-                      display: "block",
-                      lineClamp: 1,
-                      boxOrient: "vertical",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {profile.username}
-                  </Typography>
-                ) : (
-                  <Skeleton animation="wave" width={200} height={20} />
-                )}
-              </Link>
-            </Box>
+                    width={22}
+                  />
+                </Link>
+              </Box>
+            ) : (
+              <Skeleton animation="wave" width={90} />
+            )}
+          </Box>
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <AdminButton />
+            <Link to={`/parameters`}>
+              <Box
+                sx={{
+                  p: padding(2, 8),
+                  border: "2px solid",
+                  borderColor: Colors.white,
+                  borderRadius: px(5),
+                  display: "flex",
+                }}
+              >
+                <SettingsIcon sx={{ color: Colors.white }} />
+              </Box>
+            </Link>
+            <Link to={`/notifications`}>
+              <NotificationBadge />
+            </Link>
             <Box
               sx={{
+                p: padding(2, 8),
+                border: "2px solid",
+                borderColor: Colors.white,
+                borderRadius: px(5),
                 display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                cursor: "pointer",
               }}
+              onClick={disconnect}
             >
-              <Box>
-                {profile ? (
-                  <>
-                    {profile.country && (
-                      <Link
-                        to={`/personalized`}
-                        style={{ textDecoration: "none" }}
-                      >
-                        <CountryBlock
-                          country={profile.country}
-                          color="text.secondary"
-                          size={18}
-                        />
-                      </Link>
-                    )}
-                  </>
-                ) : (
-                  <Skeleton animation="wave" width={90} />
-                )}
-                {profile ? (
-                  <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
-                    <Link
-                      to={`/personalized`}
-                      style={{ textDecoration: "none" }}
-                    >
-                      <MoneyBlock money={profile.money} variant="body1" />
-                    </Link>
-                  </Box>
-                ) : (
-                  <Skeleton animation="wave" width={90} />
-                )}
-              </Box>
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <AdminButton />
-                <Link to={`/people`}>
-                  <Badge badgeContent={notificationsFriend} color="error">
-                    <Box
-                      sx={{
-                        p: padding(2, 8),
-                        border: "2px solid",
-                        borderColor: Colors.white,
-                        borderRadius: px(5),
-                        display: "flex",
-                      }}
-                    >
-                      <PeopleIcon sx={{ color: Colors.white }} />
-                    </Box>
-                  </Badge>
-                </Link>
-                <Link to={`/parameter`}>
-                  <Box
-                    sx={{
-                      p: padding(2, 8),
-                      border: "2px solid",
-                      borderColor: Colors.white,
-                      borderRadius: px(5),
-                      display: "flex",
-                    }}
-                  >
-                    <SettingsIcon sx={{ color: Colors.white }} />
-                  </Box>
-                </Link>
-                <Box
-                  sx={{
-                    p: padding(2, 8),
-                    border: "2px solid",
-                    borderColor: Colors.white,
-                    borderRadius: px(5),
-                    display: "flex",
-                    cursor: "pointer",
-                  }}
-                  onClick={disconnect}
-                >
-                  <PowerSettingsNewIcon sx={{ color: Colors.white }} />
-                </Box>
-              </Box>
+              <PowerSettingsNewIcon sx={{ color: Colors.white }} />
             </Box>
           </Box>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </Box>
   );
 };

@@ -1,28 +1,46 @@
-import { Box, Paper, Typography } from "@mui/material";
-import { percent, px } from "csx";
+import { Box, Grid, Paper, Typography } from "@mui/material";
+import { percent } from "csx";
 import { useTranslation } from "react-i18next";
 import { useApp } from "src/context/AppProvider";
 import { Colors } from "src/style/Colors";
 
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import { useMemo } from "react";
 import { updateFriend } from "src/api/friend";
 import { useMessage } from "src/context/MessageProvider";
-import { FRIENDSTATUS, Friend, FriendUpdate } from "src/models/Friend";
+import { useNotification } from "src/context/NotificationProvider";
+import { FRIENDSTATUS, FriendUpdate } from "src/models/Friend";
+import { Notification } from "src/models/Notification";
+import { Profile } from "src/models/Profile";
 import { AvatarAccount } from "../avatar/AvatarAccount";
+import { ButtonColor } from "../Button";
+import { NotificationDuration } from "./NotificationDuration";
 
 interface Props {
-  friend: Friend;
+  notification: Notification;
+  onDelete?: (notification: Notification) => void;
 }
 
-export const FriendNotificationBlock = ({ friend }: Props) => {
+interface NotificationData {
+  id: string;
+  user: Profile;
+}
+
+export const FriendNotificationBlock = ({ notification, onDelete }: Props) => {
   const { t } = useTranslation();
   const { getFriends } = useApp();
+  const { getNotifications } = useNotification();
   const { setMessage, setSeverity } = useMessage();
+
+  const data = useMemo(
+    () => notification.data as NotificationData,
+    [notification]
+  );
 
   const confirmFriend = (status: FRIENDSTATUS) => {
     const value: FriendUpdate = {
-      id: friend.id,
+      id: data.id,
       status: status,
     };
     updateFriend(value).then(({ error }) => {
@@ -30,6 +48,9 @@ export const FriendNotificationBlock = ({ friend }: Props) => {
         setSeverity("error");
         setMessage(t("commun.error"));
       } else {
+        if (onDelete) {
+          onDelete(notification);
+        }
         setSeverity("success");
         setMessage(
           status === FRIENDSTATUS.VALID
@@ -37,6 +58,7 @@ export const FriendNotificationBlock = ({ friend }: Props) => {
             : t("alert.refusefriendrequest")
         );
         getFriends();
+        getNotifications();
       }
     });
   };
@@ -44,61 +66,58 @@ export const FriendNotificationBlock = ({ friend }: Props) => {
   return (
     <Paper
       sx={{
-        zIndex: 1,
+        zIndex: 1500,
         p: 1,
         width: percent(100),
       }}
+      elevation={8}
     >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          gap: 1,
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Box>
-          <AvatarAccount avatar={friend.user1.avatar.icon} size={50} />
-        </Box>
-        <Box>
-          <Typography variant="body1" component="span">
-            {t("commun.notificationfriend", {
-              username: friend.user1.username,
-            })}
-          </Typography>
-        </Box>
-        <Box sx={{ display: "flex", gap: 1 }}>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
           <Box
             sx={{
-              p: px(5),
-              backgroundColor: Colors.green2,
-              borderRadius: px(5),
-              cursor: "pointer",
               display: "flex",
+              flexDirection: "row",
+              gap: 1,
               alignItems: "center",
-              justifyContent: "center",
             }}
+          >
+            <Box>
+              <AvatarAccount avatar={data.user.avatar.icon} size={50} />
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="h6">
+                {t("commun.notificationfriend", {
+                  username: data.user.username,
+                })}
+              </Typography>
+              <NotificationDuration date={notification.created_at} />
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={6}>
+          <ButtonColor
+            typography="h6"
+            iconSize={20}
+            value={Colors.green}
+            label={t("commun.accept")}
+            icon={CheckIcon}
+            variant="contained"
             onClick={() => confirmFriend(FRIENDSTATUS.VALID)}
-          >
-            <CheckIcon sx={{ color: Colors.white }} />
-          </Box>
-          <Box
-            sx={{
-              p: px(5),
-              backgroundColor: Colors.red2,
-              borderRadius: px(5),
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <ButtonColor
+            typography="h6"
+            iconSize={20}
+            value={Colors.red}
+            label={t("commun.refuse")}
+            icon={CloseIcon}
+            variant="contained"
             onClick={() => confirmFriend(FRIENDSTATUS.REFUSE)}
-          >
-            <CloseIcon sx={{ color: Colors.white }} />
-          </Box>
-        </Box>
-      </Box>
+          />
+        </Grid>
+      </Grid>
     </Paper>
   );
 };

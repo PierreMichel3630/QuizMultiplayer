@@ -1,0 +1,6 @@
+export enum StatusPropose {
+  VALIDATE = "VALIDATE",
+  INPROGRESS = "INPROGRESS",
+  REFUSE = "REFUSE",
+  MAINTENANCE = "MAINTENANCE",
+}

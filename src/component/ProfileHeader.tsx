@@ -1,24 +1,23 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { CountryBlock } from "src/component/CountryBlock";
 import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
 import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
 
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
-
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { StatAccomplishment } from "src/models/Accomplishment";
+import { Title } from "src/models/Title";
 import { getLevel } from "src/utils/calcul";
-import { JsonLanguage } from "src/models/Language";
+import { TextNameBlock } from "./language/TextLanguageBlock";
+import { ProfileTitleBlock } from "./title/ProfileTitle";
 
 interface Props {
   profile: Profile;
   avatar?: string;
   banner?: string;
   badge?: string;
-  title?: JsonLanguage;
+  title?: Title;
 }
 
 export const ProfilHeader = ({
@@ -28,8 +27,6 @@ export const ProfilHeader = ({
   banner,
   title,
 }: Props) => {
-  const { t } = useTranslation();
-
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
 
   useEffect(() => {
@@ -44,18 +41,17 @@ export const ProfilHeader = ({
   const level = useMemo(() => (stat ? getLevel(stat.xp) : undefined), [stat]);
 
   const bannerImage = useMemo(() => {
-    const urlprofile =
-      profile && profile.banner
-        ? `url("/banner/${profile.banner.icon}")`
-        : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`;
-    return banner ? `url("/banner/${banner}")` : urlprofile;
+    const urlprofile = profile?.banner
+      ? `url("${profile.banner.src}")`
+      : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.colorApp} 46%, ${Colors.blue} 100%)`;
+    return banner ? `url("${banner}")` : urlprofile;
   }, [banner, profile]);
 
   return (
     <Box
       sx={{
         p: 1,
-        backgroundColor: Colors.blue3,
+        backgroundColor: Colors.colorApp,
         backgroundImage: bannerImage,
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -81,31 +77,21 @@ export const ProfilHeader = ({
             textAlign: "center",
           }}
         >
-          <Typography variant="h2" color="text.secondary">
+          <Typography
+            variant="h2"
+            color="text.secondary"
+            sx={{
+              textShadow: "1px 1px 2px black",
+            }}
+          >
             {profile.username}
           </Typography>
-          {(title || profile.title) && (
-            <JsonLanguageBlock
-              variant="caption"
-              color="text.secondary"
-              value={title ? title : profile.title!.name}
-            />
+          {title ? (
+            <TextNameBlock variant="h4" values={title.titletranslation} />
+          ) : (
+            <ProfileTitleBlock titleprofile={profile.titleprofile} />
           )}
         </Grid>
-        {stat && (
-          <Grid item>
-            <Typography variant="h4" component="span" color="text.secondary">
-              {stat.xp}
-            </Typography>
-            <Typography
-              variant="caption"
-              component="span"
-              color="text.secondary"
-            >
-              {t("commun.xpabbreviation")}
-            </Typography>
-          </Grid>
-        )}
         {profile.country && (
           <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
             <CountryBlock country={profile.country} color="text.secondary" />

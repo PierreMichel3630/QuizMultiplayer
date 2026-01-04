@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { RegisterForm } from "src/form/authentification/RegisterForm";
 
-import { px, viewHeight } from "csx";
+import { px } from "csx";
 import { Helmet } from "react-helmet-async";
 import logo from "src/assets/logo.svg";
 import { QuitHomeButton } from "src/component/navigation/GoBackButton";
@@ -18,9 +18,9 @@ export default function RegisterPage() {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: viewHeight(100),
         p: 0,
       }}
+      className="page"
     >
       <Helmet>
         <title>{`${t("pages.register.title")} - ${t("appname")}`}</title>
@@ -56,7 +56,7 @@ export default function RegisterPage() {
               gap: 1,
             }}
           >
-            <img src={logo} width={45} height={45} loading="lazy" />
+            <img alt="logo" src={logo} width={45} height={45} loading="lazy" />
             <Typography variant="h2">{t("appname")}</Typography>
           </Box>
           <Box>

@@ -23,7 +23,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
 import { DuelGame } from "src/models/DuelGame";
 import { SoloGame } from "src/models/Game";
-import { Question } from "src/models/Question";
+import { QuestionResult } from "src/models/Question";
 import { ReportInsert } from "src/models/Report";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
@@ -33,7 +33,7 @@ import { CardSignalQuestion } from "../card/CardQuestion";
 interface Props {
   open: boolean;
   close: () => void;
-  question?: Question;
+  question?: QuestionResult;
   sologame?: SoloGame;
   duelgame?: DuelGame;
 }
@@ -73,6 +73,7 @@ export const ReportModal = ({
         sologame: sologame ? sologame.id : null,
         duelgame: duelgame ? duelgame.id : null,
         questionjson: question,
+        version: 2,
       };
       insertReport(reportInsert).then(({ error }) => {
         if (error) {
@@ -107,7 +108,7 @@ export const ReportModal = ({
           </IconButton>
         </Toolbar>
       </AppBar>
-      <DialogContent sx={{ backgroundColor: Colors.black, p: 1 }}>
+      <DialogContent sx={{ p: 1 }}>
         <Grid container spacing={3}>
           {question && (
             <Grid item xs={12}>
@@ -121,25 +122,6 @@ export const ReportModal = ({
               label={t("commun.typeproblem")}
               placeholder={t("commun.typeproblem")}
               fullWidth
-              sx={{
-                color: important(Colors.white),
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: important(Colors.white),
-                },
-                "& .MuiInputBase-input": {
-                  color: Colors.white,
-                },
-                "& .Mui-focused": {
-                  color: Colors.white,
-                },
-                "& .MuiInputLabel-root": {
-                  color: important(Colors.white),
-                },
-                "& .MuiSelect-icon": {
-                  color: Colors.white,
-                },
-              }}
-              helperText={type === "" && t("commun.selecttypeerror")}
               onChange={changeType}
             >
               {reportmessages.map((message) => (
@@ -158,21 +140,6 @@ export const ReportModal = ({
               rows={4}
               value={description}
               onChange={changeDescription}
-              sx={{
-                color: important(Colors.white),
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: important(Colors.white),
-                },
-                "& .MuiOutlinedInput-root": {
-                  color: Colors.white,
-                },
-                "& .Mui-focused": {
-                  color: Colors.white,
-                },
-                "& .MuiInputLabel-root": {
-                  color: important(Colors.white),
-                },
-              }}
             />
           </Grid>
           <Grid item xs={12}>

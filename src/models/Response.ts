@@ -1,7 +1,21 @@
+import { TypeDataEnum } from "./enum/TypeDataEnum";
 import { ExtraSoloGame } from "./Game";
 
 export interface Response {
   response: ResponseLanguage;
+}
+
+export interface ResponseQCM {
+  label?: string;
+  image?: string;
+  extra?: ExtraResponse;
+}
+
+export interface ExtraResponse {
+  value: string;
+  type: TypeDataEnum;
+  format: string;
+  unit?: ResponseLanguageString;
 }
 
 export interface ResponseSolo {
@@ -20,13 +34,16 @@ export interface ResponseTraining {
 
 export interface ResponseDuel {
   uuid: string;
-  result: boolean;
-  time: number;
-  answer: string | number;
-  ptsplayer1: number;
-  ptsplayer2: number;
+  value?: string | number;
 }
 
+export interface ResponseDuelV2 {
+  question: number;
+  uuid: string;
+  result: boolean;
+  answer: string | number;
+  time: number;
+}
 export interface ResponseLanguage {
   [iso: string]: Array<string> | string;
 }

@@ -10,20 +10,23 @@ import {
   Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Link, useNavigate } from "react-router-dom";
+import { selectAvatarFree } from "src/api/avatar";
 import { signUpWithEmail } from "src/api/supabase";
 import { AvatarLoginSelector } from "src/component/avatar/AvatarSelector";
 import { RegisterCountryBlock } from "src/component/MyCountryBlock";
-import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
+import { Avatar } from "src/models/Avatar";
+import { Country } from "src/models/Country";
+import { countPlayersSameUsername } from "src/api/profile";
 
 export const RegisterForm = () => {
   const { t } = useTranslation();
@@ -31,13 +34,26 @@ export const RegisterForm = () => {
   const { login } = useAuth();
   const { setUuid } = useUser();
   const { setMessage, setSeverity } = useMessage();
-  const { avatars } = useApp();
 
-  const avatarsDisplay = useMemo(() => {
-    return [...avatars].filter((el) => el.price === 0 && !el.isaccomplishment);
-  }, [avatars]);
+  const [avatars, setAvatars] = useState<Array<Avatar>>([]);
 
-  const initialValue = {
+  useEffect(() => {
+    const getAvatars = () => {
+      selectAvatarFree().then(({ data }) => {
+        setAvatars(data ?? []);
+      });
+    };
+    getAvatars();
+  }, []);
+
+  const initialValue: {
+    email: string;
+    username: string;
+    password: string;
+    submit: null;
+    avatar: number;
+    country: null | Country;
+  } = {
     email: "",
     username: "",
     password: "",
@@ -51,7 +67,26 @@ export const RegisterForm = () => {
       .email(t("form.register.formatmail"))
       .max(255)
       .required(t("form.register.requiredmail")),
-    username: Yup.string().required(t("form.register.requiredusername")),
+    username: Yup.string()
+      .required(t("form.register.requiredusername"))
+      .min(3, t("form.register.minusername"))
+      .max(155, t("form.register.maxusername"))
+      .test(
+        "checkDuplicateUsername",
+        t("form.register.duplicateusername"),
+        (value) => {
+          return new Promise((resolve) => {
+            countPlayersSameUsername(value).then(({ count }) => {
+              resolve(count === 0);
+            });
+          });
+        }
+      )
+      .test("noSpace", t("form.register.nospaceusername"), (value) => {
+        const trimValue = value.replace(/\s+/g, "");
+        const isSpace = trimValue.length === value.length;
+        return isSpace;
+      }),
     password: Yup.string()
       .min(6, t("form.register.minpassword"))
       .required(t("form.register.requiredpassword")),
@@ -76,7 +111,7 @@ export const RegisterForm = () => {
           values.password,
           values.username,
           values.avatar,
-          values.country
+          values.country !== null ? values.country.id : null
         );
         if (error) {
           setSeverity("error");
@@ -220,7 +255,7 @@ export const RegisterForm = () => {
         </Grid>
         <Grid item xs={12}>
           <AvatarLoginSelector
-            avatars={avatarsDisplay}
+            avatars={avatars}
             avatar={formik.values.avatar}
             onSelect={(value) => formik.setFieldValue(`avatar`, value.id)}
           />

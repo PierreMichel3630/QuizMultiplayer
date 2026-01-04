@@ -1,5 +1,5 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { percent, px } from "csx";
@@ -11,13 +11,13 @@ interface Props {
 }
 export const BarNavigation = ({ title, quit }: Props) => {
   const navigate = useNavigate();
+  const location = useLocation();
   return (
     <Box
       sx={{
         position: "sticky",
         top: 0,
         width: percent(100),
-        backgroundColor: Colors.blue3,
         zIndex: 100,
         height: 62,
         display: "flex",
@@ -34,7 +34,9 @@ export const BarNavigation = ({ title, quit }: Props) => {
                 if (quit) {
                   quit();
                 } else {
-                  navigate("/");
+                  const path =
+                    location.state !== null && location.state.previousPath;
+                  navigate(path ? location.state.previousPath : -1);
                 }
               }}
             >

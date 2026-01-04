@@ -1,58 +1,57 @@
-import { useEffect } from "react";
+import { Box, CssBaseline, ThemeProvider } from "@mui/material";
+import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
-import { updateProfil } from "./api/profile";
 import { AppProvider } from "./context/AppProvider";
-import { AuthProviderSupabase, useAuth } from "./context/AuthProviderSupabase";
+import { AuthProviderSupabase } from "./context/AuthProviderSupabase";
+import { MessageProvider } from "./context/MessageProvider";
 import { UserProvider, useUser } from "./context/UserProvider";
+import { useViewportHeight } from "./hook/useViewportHeight";
 import "./i18n/config";
-import { ThemeBlock } from "./style/ThemeBlock";
+import { getTheme } from "./style/ThemeBlock";
+import ScrollToTop from "./component/navigation/ScrollToTop";
+import { Outlet } from "react-router-dom";
+import { NotificationProvider } from "./context/NotificationProvider";
 
 function App() {
-  const { language } = useUser();
-  const { user } = useAuth();
-
-  useEffect(() => {
-    const handleUnload = async () => {
-      if (user) {
-        await updateProfil({ id: user.id, isonline: false });
-      }
-    };
-    const handleVisibility = async () => {
-      if (document.hidden) {
-        if (user) {
-          await updateProfil({ id: user.id, isonline: false });
-        }
-      }
-    };
-    window.addEventListener("beforeunload", handleUnload);
-    window.addEventListener("pagehide", handleUnload);
-    document.addEventListener("visibilitychange", handleVisibility);
-    return () => {
-      window.removeEventListener("beforeunload", handleUnload);
-      window.removeEventListener("pagehide", handleUnload);
-      document.removeEventListener("visibilitychange", handleVisibility);
-    };
-  }, [user]);
-
   return (
-    <AuthProviderSupabase>
-      <UserProvider>
-        <AppProvider>
-          <Helmet
-            htmlAttributes={{
-              lang: language.iso,
-            }}
-          >
-            <meta
-              name="description"
-              content="Testez vos connaissances. Jouez en Solo ou multijoueurs sur un quiz avec plus de 500 thèmes: Cinéma, Histoire, Géographie, Sports, ..."
-            />
-          </Helmet>
-          <ThemeBlock />
-        </AppProvider>
-      </UserProvider>
-    </AuthProviderSupabase>
+    <Box className="fullscreen">
+      <AuthProviderSupabase>
+        <UserProvider>
+          <Body />
+        </UserProvider>
+      </AuthProviderSupabase>
+    </Box>
   );
 }
 
 export default App;
+
+const Body = () => {
+  const { language, mode } = useUser();
+  const theme = useMemo(() => getTheme(mode), [mode]);
+
+  useViewportHeight();
+  return (
+    <AppProvider>
+      <NotificationProvider>
+        <ThemeProvider theme={theme}>
+          <MessageProvider>
+            <CssBaseline />
+            <ScrollToTop />
+            <Helmet
+              htmlAttributes={{
+                lang: language?.iso,
+              }}
+            >
+              <meta
+                name="description"
+                content="Testez vos connaissances. Jouez en Solo ou multijoueurs sur un quiz avec plus de 500 thèmes: Cinéma, Histoire, Géographie, Sports, ..."
+              />
+            </Helmet>
+            <Outlet />
+          </MessageProvider>
+        </ThemeProvider>
+      </NotificationProvider>
+    </AppProvider>
+  );
+};

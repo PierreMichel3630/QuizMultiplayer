@@ -1,8 +1,9 @@
+import { Moment } from "moment";
 import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
 import { Banner } from "./Banner";
 import { Country } from "./Country";
-import { Title } from "./Title";
+import { TitleProfile } from "./Title";
 
 export interface Profile {
   id: string;
@@ -11,13 +12,19 @@ export interface Profile {
   country: null | Country;
   avatar: Avatar;
   badge: null | Badge;
-  title: null | Title;
+  titleprofile: null | TitleProfile;
   banner: null | Banner;
   money: number;
   created_at: Date;
   last_seen_friend: Date;
   isadmin: boolean;
   isonline: boolean;
+  wheellaunch: Date;
+  datevote: Date;
+  lastconnection: Date;
+  streak: number;
+  lastchallengeplay: Date;
+  lastplay: Date;
 }
 
 export interface ProfileUpdate {
@@ -27,4 +34,6 @@ export interface ProfileUpdate {
   avatar?: number | null;
   last_seen_friend?: Date;
   isonline?: boolean;
+  lastconnection?: Moment;
+  lastchallengeplay?: string;
 }

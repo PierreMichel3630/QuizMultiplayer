@@ -1,18 +1,17 @@
 import { Box, Button, Paper, Typography } from "@mui/material";
 import { px } from "csx";
-import { useApp } from "src/context/AppProvider";
 import { JsonLanguageBlock } from "./JsonLanguageBlock";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Country } from "src/models/Country";
 import { Colors } from "src/style/Colors";
 import { SelectCountryModal } from "./modal/SelectCountryModal";
-import { Country } from "src/models/Country";
 
 interface PropsRegisterCountryBlock {
-  country: number | null;
-  onChange: (value: number) => void;
+  country: Country | null;
+  onChange: (value: Country) => void;
   onDelete: () => void;
 }
 
@@ -22,18 +21,11 @@ export const RegisterCountryBlock = ({
   onDelete,
 }: PropsRegisterCountryBlock) => {
   const { t } = useTranslation();
-  const { countries } = useApp();
   const [open, setOpen] = useState(false);
-
-  const myCountry = useMemo(
-    () =>
-      country !== null ? countries.find((el) => el.id === country) : undefined,
-    [countries, country]
-  );
 
   return (
     <Box>
-      {myCountry ? (
+      {country ? (
         <Paper
           variant="outlined"
           sx={{
@@ -48,13 +40,14 @@ export const RegisterCountryBlock = ({
           onClick={() => setOpen(true)}
         >
           <img
-            src={myCountry.flag}
+            alt="flag"
+            src={country.flag}
             style={{
               maxHeight: 30,
               border: `1px solid ${Colors.grey}`,
             }}
           />
-          <JsonLanguageBlock variant="h4" value={myCountry.name} />
+          <JsonLanguageBlock variant="h4" value={country.name} />
           <DeleteIcon
             sx={{ cursor: "pointer" }}
             onClick={(event) => {
@@ -90,7 +83,7 @@ export const RegisterCountryBlock = ({
 
 interface Props {
   country: Country | null;
-  onChange: (value: number) => void;
+  onChange: (value: Country) => void;
   onDelete: () => void;
 }
 
@@ -115,6 +108,7 @@ export const MyCountryBlock = ({ country, onChange, onDelete }: Props) => {
           onClick={() => setOpen(true)}
         >
           <img
+            alt="flag"
             src={country.flag}
             style={{
               maxHeight: 30,

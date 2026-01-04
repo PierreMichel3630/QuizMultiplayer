@@ -1,57 +1,53 @@
-import BoltIcon from "@mui/icons-material/Bolt";
-import { Box } from "@mui/material";
-import { px } from "csx";
-import { useNavigate } from "react-router-dom";
+import { Box, Grid, IconButton, Paper, Typography } from "@mui/material";
 import { Category } from "src/models/Category";
-import { Colors } from "src/style/Colors";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
-interface Props {
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import { LanguageIcon } from "../language/LanguageBlock";
+
+interface PropsCardAdminCategory {
   category: Category;
-  link?: string;
-  width?: number;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
-export const CardCategory = ({ category, link, width = 90 }: Props) => {
-  const navigate = useNavigate();
-
-  const goCategory = () => {
-    navigate(link ? link : `/category/${category.id}`);
-  };
-
+export const CardAdminCategory = ({
+  category,
+  onEdit,
+  onDelete,
+}: PropsCardAdminCategory) => {
   return (
-    <Box
-      onClick={() => goCategory()}
-      sx={{
-        width: width,
-        display: "flex",
-        justifyContent: "flex-start",
-        flexDirection: "column",
-        cursor: "pointer",
-        borderRadius: px(10),
-        gap: px(2),
-      }}
-    >
-      <Box
-        sx={{
-          backgroundColor: Colors.blue3,
-          width: width,
-          aspectRatio: "1/1",
-          borderRadius: px(5),
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <BoltIcon
-          sx={{ width: px(width - 10), height: px(width - 10), color: "white" }}
-        />
-      </Box>
-      <JsonLanguageBlock
-        variant="h6"
-        sx={{ textAlign: "center" }}
-        value={category.name}
-      />
-    </Box>
+    <Paper sx={{ p: 1 }} elevation={12}>
+      <Grid container spacing={1} alignItems="center">
+        <Grid item xs={2} md={1}>
+          <Typography variant="h2">{category.id}</Typography>
+        </Grid>
+        <Grid item xs>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            {category.categorytranslation.map((el, index) => (
+              <Box
+                key={index}
+                sx={{ display: "flex", gap: 1, alignItems: "center" }}
+              >
+                <LanguageIcon language={el.language} />
+                <Typography variant="h4" component="span">
+                  {el.name}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        </Grid>
+        <Grid item>
+          <IconButton aria-label="edit" onClick={onEdit}>
+            <EditIcon />
+          </IconButton>
+        </Grid>
+        <Grid item>
+          <IconButton aria-label="edit" onClick={onDelete}>
+            <DeleteIcon />
+          </IconButton>
+        </Grid>
+      </Grid>
+    </Paper>
   );
 };

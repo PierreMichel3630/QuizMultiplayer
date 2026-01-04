@@ -1,34 +1,77 @@
-import { Category } from "./Category";
-import { JsonLanguage } from "./Language";
-import { Difficulty } from "./enum";
+import { CategoryTheme } from "./Category";
+import { Difficulty } from "./enum/DifficultyEnum";
+import { Language } from "./Language";
+
+export interface ProposeTheme {
+  id: number;
+  title: string;
+  language: string;
+  image?: string;
+  color: string;
+  enabled: boolean;
+  created_at: Date;
+  modify_at: Date;
+}
+
+export interface ThemeTranslation {
+  id: number;
+  name: string;
+  namelower: string;
+  language: Language;
+}
+
+export interface ThemeTranslationInsert {
+  name: string;
+  namelower: string;
+  language: number;
+  theme: number;
+}
+
+export interface ThemeTranslationUpdate {
+  id: number;
+  name: string;
+  namelower: string;
+  language: number;
+  theme: number;
+}
 
 export interface Theme {
   id: number;
-  name: JsonLanguage;
-  image: string;
-  questions: number;
+  image?: string;
   color: string;
-  category: Category;
-  background: null | string;
   isfirst: boolean;
   enabled: boolean;
+  validate: boolean;
   created_at: Date;
+  modify_at: Date;
+  themetranslation: Array<ThemeTranslation>;
+  categorytheme: Array<CategoryTheme>;
+  generatequestion: boolean;
+}
+
+export interface ThemeInsertAdmin {
+  title: string;
+  language: string;
+  image: null | string;
+  color: string;
+  enabled: boolean;
+  validate: boolean;
 }
 
 export interface ThemeInsert {
-  name: JsonLanguage;
-  image: null | string;
+  title: string;
+  language: string;
   color: string;
-  background: null | string;
 }
 
 export interface ThemeUpdate {
   id: number;
   enabled?: boolean;
-  name?: JsonLanguage;
+  validate?: boolean;
+  title?: string;
+  language?: string;
   image?: null | string;
   color?: string;
-  background?: null | string;
 }
 
 export interface ThemeDifficulty {

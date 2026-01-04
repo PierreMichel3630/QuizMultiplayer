@@ -6,7 +6,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
+import {
+  selectAccomplishmentByTitle,
+  selectStatAccomplishmentByProfile,
+} from "src/api/accomplishment";
 import { buyItem } from "src/api/buy";
 import { selectTitleById } from "src/api/title";
 import moneyIcon from "src/assets/money.svg";
@@ -19,7 +22,7 @@ import { ProfilHeader } from "src/component/ProfileHeader";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
-import { StatAccomplishment } from "src/models/Accomplishment";
+import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
 import { Title } from "src/models/Title";
 import { Colors } from "src/style/Colors";
 
@@ -28,10 +31,13 @@ export default function TitlePage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { profile, refreshProfil } = useAuth();
-  const { mytitles, getMyTitles, accomplishments } = useApp();
+  const { myTitles, getMyTitles } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
   const [title, setTitle] = useState<Title | undefined>(undefined);
+  const [accomplishment, setAccomplishment] = useState<
+    Accomplishment | undefined
+  >(undefined);
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
@@ -60,17 +66,32 @@ export default function TitlePage() {
     getMyStat();
   }, [profile]);
 
+  useEffect(() => {
+    const getAccomplishment = () => {
+      if (title) {
+        selectAccomplishmentByTitle(title.id).then(({ data }) => {
+          setAccomplishment(data);
+        });
+      }
+    };
+    getAccomplishment();
+  }, [title]);
+
   const verifyBuy = () => {
-    if (profile && title) {
-      if (profile.money < title.price) {
-        setSeverity("error");
-        setMessage(t("alert.noenoughtmoney"));
+    if (profile) {
+      if (title) {
+        if (profile.money < title.price) {
+          setSeverity("error");
+          setMessage(t("alert.noenoughtmoney"));
+        } else {
+          setOpenModal(true);
+        }
       } else {
-        setOpenModal(true);
+        setSeverity("error");
+        setMessage(t("commun.error"));
       }
     } else {
-      setSeverity("error");
-      setMessage(t("commun.error"));
+      navigate(`/login`);
     }
   };
 
@@ -80,7 +101,7 @@ export default function TitlePage() {
         setSeverity("error");
         setMessage(t("alert.noenoughtmoney"));
       } else {
-        buyItem("title", title.id).then((_res) => {
+        buyItem("title", title.id).then(() => {
           setSeverity("success");
           setMessage(t("alert.buyitem"));
           getMyTitles();
@@ -98,16 +119,8 @@ export default function TitlePage() {
     () =>
       !loading &&
       title &&
-      mytitles.find((el) => el.id === title.id) !== undefined,
-    [loading, mytitles, title]
-  );
-
-  const accomplishment = useMemo(
-    () =>
-      title
-        ? accomplishments.find((el) => el.title && el.title.id === title.id)
-        : undefined,
-    [accomplishments, title]
+      myTitles.find((el) => el.title.id === title.id) !== undefined,
+    [loading, myTitles, title]
   );
 
   return (
@@ -119,9 +132,7 @@ export default function TitlePage() {
 
       <Grid item xs={12}>
         <Container maxWidth="md">
-          {title && profile && (
-            <ProfilHeader profile={profile} title={title.name} />
-          )}
+          {title && profile && <ProfilHeader profile={profile} title={title} />}
         </Container>
       </Grid>
       <Grid item xs={12}>
@@ -130,7 +141,7 @@ export default function TitlePage() {
             <Box sx={{ p: 2 }}>
               <Grid container spacing={2} justifyContent="center">
                 <Grid item xs={12}>
-                  <BadgeTitle label={title.name} />
+                  <BadgeTitle title={title} />
                 </Grid>
 
                 {accomplishment && (
@@ -143,74 +154,71 @@ export default function TitlePage() {
                   </Grid>
                 )}
               </Grid>
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    p: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                  }}
+                >
+                  {!loading && title && !isBuy && !title.isaccomplishment && (
+                    <Box
+                      sx={{
+                        backgroundColor: Colors.yellow2,
+                        p: padding(2, 5),
+                        borderRadius: px(5),
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                      }}
+                      onClick={verifyBuy}
+                    >
+                      <Typography variant="caption" color="text.secondary">
+                        {t("commun.buy")}
+                      </Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: 1,
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Typography variant="h2" color="text.secondary">
+                          {title.price}
+                        </Typography>
+                        <img alt="money icon" src={moneyIcon} width={25} />
+                      </Box>
+                    </Box>
+                  )}
+                  {title && title.isaccomplishment && (
+                    <ButtonColor
+                      value={Colors.yellow}
+                      label={t("commun.goaccomplishments")}
+                      icon={EmojiEventsIcon}
+                      variant="contained"
+                      onClick={() => {
+                        navigate(`/accomplishments`);
+                      }}
+                    />
+                  )}
+                  <ButtonColor
+                    value={Colors.colorApp}
+                    label={t("commun.return")}
+                    icon={KeyboardReturnIcon}
+                    variant="contained"
+                    onClick={() => navigate(-1)}
+                  />
+                </Box>
+              </Grid>
             </Box>
           )}
         </Container>
       </Grid>
-      <Box
-        sx={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          backgroundColor: "background.paper",
-        }}
-      >
-        <Container maxWidth="md">
-          <Box sx={{ p: 1, display: "flex", flexDirection: "column", gap: 1 }}>
-            {!loading && title && !isBuy && !title.isaccomplishment && (
-              <Box
-                sx={{
-                  backgroundColor: Colors.yellow2,
-                  p: padding(2, 5),
-                  borderRadius: px(5),
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                }}
-                onClick={verifyBuy}
-              >
-                <Typography variant="caption" color="text.secondary">
-                  {t("commun.buy")}
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    gap: 1,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Typography variant="h2" color="text.secondary">
-                    {title.price}
-                  </Typography>
-                  <img src={moneyIcon} width={25} />
-                </Box>
-              </Box>
-            )}
-            {title && title.isaccomplishment && (
-              <ButtonColor
-                value={Colors.yellow}
-                label={t("commun.goaccomplishments")}
-                icon={EmojiEventsIcon}
-                variant="contained"
-                onClick={() => {
-                  navigate(`/accomplishments`);
-                }}
-              />
-            )}
-            <ButtonColor
-              value={Colors.blue3}
-              label={t("commun.return")}
-              icon={KeyboardReturnIcon}
-              variant="contained"
-              onClick={() => navigate(-1)}
-            />
-          </Box>
-        </Container>
-      </Box>
 
       <ConfirmDialog
         title={t("commun.confirmbuy")}

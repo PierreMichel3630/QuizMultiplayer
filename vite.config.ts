@@ -3,12 +3,13 @@ import react from "@vitejs/plugin-react";
 import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
 
 const manifestForPlugIn: Partial<VitePWAOptions> = {
-  registerType: "autoUpdate",
   includeAssets: ["**/*"],
   injectManifest: {
     globPatterns: ["**/*"],
   },
+  registerType: "prompt",
   workbox: {
+    sourcemap: true,
     globPatterns: ["**/*", ".well-known/assetlinks.json"],
     runtimeCaching: [
       {
@@ -33,18 +34,12 @@ const manifestForPlugIn: Partial<VitePWAOptions> = {
     description: "Multitheme quiz with solo mode and ranked",
     icons: [
       {
-        src: "/android-chrome-192x192.png",
-        sizes: "192x192",
-        type: "image/png",
-      },
-      {
-        src: "/maskable.png",
+        src: "/pwa/icon.png",
         sizes: "512x512",
         type: "image/png",
-        purpose: "maskable",
       },
     ],
-    theme_color: "#01b5da",
+    theme_color: "#01b5db",
     background_color: "#01b5da",
     display: "standalone",
     scope: "/",

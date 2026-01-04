@@ -55,3 +55,35 @@ a {
     background-position: 0% 50%, 50% 50%, 100% 100%;
   }
 }
+
+@keyframes scrolling {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.fullscreen {
+  height: calc(var(--vh, 1vh) * 100);
+  min-height: calc(var(--vh, 1vh) * 100);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+
+.page {
+  flex: 1 1 0
+}
+
+
+/** INFINITE SCROLL **/
+
+.infinite-scroll-component__outerdiv {
+  width: 100% !important;
+}

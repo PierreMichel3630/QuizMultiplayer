@@ -6,35 +6,41 @@ import {
   ImageListItemBar,
   Typography,
 } from "@mui/material";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { useDropzone } from "react-dropzone";
 
-import { percent, px } from "csx";
 import { useTranslation } from "react-i18next";
-import { style } from "typestyle";
 
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteIcon from "@mui/icons-material/Delete";
+import imageCompression from "browser-image-compression";
 
-const imageCss = style({
-  maxWidth: percent(100),
-  maxHeight: px(300),
-});
 interface Props {
   file: null | File | string;
   onDrop: (file: File | null) => void;
+  maxSize: number;
+  maxWidth: number;
 }
-export const DropDragFile = ({ file, onDrop }: Props) => {
+export const DropDragFile = ({ file, onDrop, maxSize, maxWidth }: Props) => {
   const { t } = useTranslation();
 
-  const filterFiles = useCallback(
-    (acceptedFiles: Array<File>) => {
-      const newFile = acceptedFiles[0];
-      onDrop(newFile);
-    },
-    [onDrop]
-  );
+  const filterFiles = (acceptedFiles: Array<File>) => {
+    const newFile = acceptedFiles[0];
+    const options = {
+      maxSizeMB: maxSize * 0.001,
+      maxWidthOrHeight: maxWidth,
+      useWebWorker: true,
+      maxIteration: 5,
+    };
 
+    if (newFile) {
+      imageCompression(newFile, options).then((res) => {
+        onDrop(res);
+      });
+    } else {
+      onDrop(null);
+    }
+  };
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: filterFiles,
     accept: {
@@ -57,10 +63,12 @@ export const DropDragFile = ({ file, onDrop }: Props) => {
 
   return (
     <Grid container spacing={1}>
-      {urlFile !== null && (
+      {urlFile && (
         <Grid item xs={12}>
           <ImageListItem>
-            <img className={imageCss} alt="preview image" src={urlFile} />
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <img alt="preview" src={urlFile} />
+            </Box>
             <ImageListItemBar
               title={nameFile}
               actionIcon={

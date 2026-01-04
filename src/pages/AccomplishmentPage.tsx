@@ -5,36 +5,35 @@ import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet-async";
 
 import { Dictionary, groupBy } from "lodash";
-import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
+import {
+  selectAccomplishment,
+  selectStatAccomplishmentByProfile,
+} from "src/api/accomplishment";
 import { CardAccomplishment } from "src/component/card/CardAccomplishment";
 import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
 
+import { px } from "csx";
 import award from "src/assets/award.png";
+import { NotificationBlock } from "src/component/notification/NotificationBlock";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { useNotification } from "src/context/NotificationProvider";
+import { NotificationType } from "src/models/enum/NotificationType";
 import { Colors } from "src/style/Colors";
-import { px } from "csx";
 
 export default function AccomplishmentPage() {
   const { t } = useTranslation();
-  const {
-    accomplishments,
-    myaccomplishments,
-    getMyAccomplishments,
-    headerSize,
-  } = useApp();
+  const { myaccomplishments, headerSize } = useApp();
   const { profile } = useAuth();
+  const { notifications } = useNotification();
+
+  const [accomplishments, setAccomplishments] = useState<Array<Accomplishment>>(
+    []
+  );
   const [accomplishmentsGroupBy, setAccomplishmentsGroupBy] = useState<
     Dictionary<Array<Accomplishment>>
   >({});
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
-
-  const accomplishmentsToUnlock = useMemo(() => {
-    const ids = myaccomplishments
-      .filter((el) => !el.validate)
-      .map((el) => el.accomplishment.id);
-    return accomplishments.filter((el) => ids.includes(el.id));
-  }, [accomplishments, myaccomplishments]);
 
   useEffect(() => {
     const getMyStat = () => {
@@ -52,8 +51,24 @@ export default function AccomplishmentPage() {
   }, [accomplishments]);
 
   useEffect(() => {
-    getMyAccomplishments();
+    const getAccomplishments = () => {
+      selectAccomplishment().then(({ data }) => {
+        const value = data !== null ? (data as Array<Accomplishment>) : [];
+        setAccomplishments(value);
+      });
+    };
+    getAccomplishments();
   }, []);
+
+  const accomplishmentsToUnlock = useMemo(
+    () =>
+      [...notifications].filter(
+        (el) =>
+          el.isread === false &&
+          el.type === NotificationType.accomplishment_unlock
+      ),
+    [notifications]
+  );
 
   return (
     <Grid container>
@@ -69,18 +84,11 @@ export default function AccomplishmentPage() {
           <Grid container spacing={1}>
             <Grid item xs={12}>
               <Grid container spacing={1} alignItems="center">
-                {accomplishmentsToUnlock.map((accomplishment) => {
-                  return (
-                    <Grid item xs={12} key={accomplishment.id}>
-                      <CardAccomplishment
-                        accomplishment={accomplishment}
-                        stat={stat}
-                        badge
-                        title
-                      />
-                    </Grid>
-                  );
-                })}
+                {accomplishmentsToUnlock.map((accomplishmentToUnlock) => (
+                  <Grid item xs={12} key={accomplishmentToUnlock.id}>
+                    <NotificationBlock notification={accomplishmentToUnlock} />
+                  </Grid>
+                ))}
               </Grid>
             </Grid>
             {Object.keys(accomplishmentsGroupBy).map((el, index) => {
@@ -121,7 +129,12 @@ export default function AccomplishmentPage() {
                     >
                       <Grid container spacing={1} alignItems="center">
                         <Grid item>
-                          <img src={award} width={40} loading="lazy" />
+                          <img
+                            alt="award icon"
+                            src={award}
+                            width={40}
+                            loading="lazy"
+                          />
                         </Grid>
                         <Grid item xs>
                           <Typography variant="h2" color="text.secondary">
@@ -162,7 +175,7 @@ export default function AccomplishmentPage() {
                   </Grid>
                   {accomplishments.map((accomplishment) => {
                     return (
-                      <Grid item xs={12} key={accomplishment.id}>
+                      <Grid item xs={12} md={6} key={accomplishment.id}>
                         <CardAccomplishment
                           accomplishment={accomplishment}
                           stat={stat}

@@ -1,18 +1,61 @@
-import { JsonLanguage } from "./Language";
+import { Language } from "./Language";
 import { Theme } from "./Theme";
 
 export interface Category {
   id: number;
-  name: JsonLanguage;
+  categorytranslation: Array<CategoryTranslation>;
+}
+
+export interface CategoryUpdate {
+  id: number;
+  title?: string;
+  language?: string;
+}
+
+export interface CategoryInsert {}
+
+export interface CategoryTranslationInsert {
+  name: string;
+  namelower: string;
+  language: number;
+  category: number;
+}
+
+export interface CategoryTranslationUpdate {
+  id: number;
+  name?: string;
+  language?: number;
+  namelower?: string;
 }
 
 export interface CategoryThemeInsert {
   category: number;
   theme: number;
+  isfirst?: boolean;
+}
+
+export interface CategoryThemeUpdate {
+  id: number;
+  category: number;
+  theme: number;
+  isfirst?: boolean;
 }
 
 export interface CategoryWithThemes {
   id: number;
-  name: JsonLanguage;
+  title: string;
+  language: string;
   themes: Array<Theme>;
+}
+
+export interface CategoryTranslation {
+  id: number;
+  name: string;
+  language: Language;
+}
+
+export interface CategoryTheme {
+  id?: number;
+  isfirst: boolean;
+  category: number;
 }

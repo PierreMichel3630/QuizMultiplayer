@@ -1,12 +1,7 @@
-import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import HomeIcon from "@mui/icons-material/Home";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import StarIcon from "@mui/icons-material/Star";
-import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import SupervisedUserCircleRoundedIcon from "@mui/icons-material/SupervisedUserCircleRounded";
-import YouTubeIcon from "@mui/icons-material/YouTube";
 import {
   Alert,
   Box,
@@ -16,7 +11,7 @@ import {
   Skeleton,
   Typography,
 } from "@mui/material";
-import { important, percent, px } from "csx";
+import { percent, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -27,21 +22,30 @@ import {
   launchSoloGame,
   matchmakingDuelGame,
 } from "src/api/game";
+import { countQuestionByTheme } from "src/api/question";
 import { countPlayersByTheme } from "src/api/score";
 import { selectThemeById } from "src/api/theme";
 import { ButtonColor } from "src/component/Button";
+import {
+  DuelButton,
+  SoloButton,
+  TrainingButton,
+} from "src/component/button/PlayButton";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
+import { InfoBlock } from "src/component/InfoBlock";
+import { AvatarLanguageGroup } from "src/component/language/AvatarLanguageGroup";
+import { TextNameBlock } from "src/component/language/TextLanguageBlock";
 import { ProposeQuestionModal } from "src/component/modal/ProposeQuestionModal";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
-import { GoBackButtonIcon } from "src/component/navigation/GoBackButton";
-import { RankingTableSoloDuel } from "src/component/table/RankingTable";
+import { RankingTableSoloDuelPaginate } from "src/component/table/RankingTable";
+import { TitleBlock } from "src/component/title/Title";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
 import { FavoriteInsert } from "src/models/Favorite";
 import { Profile } from "src/models/Profile";
+import { QuestionCount } from "src/models/Question";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 
@@ -52,14 +56,23 @@ export default function ThemePage() {
 
   const { uuid, language } = useUser();
   const { user, profile } = useAuth();
-  const { favorites, refreshFavorites } = useApp();
+  const { favorites, getFavorite } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
   const [openModalFriend, setOpenModalFriend] = useState(false);
   const [openProposeQuestion, setOpenProposeQuestion] = useState(false);
   const [players, setPlayers] = useState<number | undefined>(undefined);
+  const [questionsCount, setQuestionsCount] = useState<Array<QuestionCount>>(
+    []
+  );
   const [theme, setTheme] = useState<Theme | undefined>(undefined);
   const [loadingTheme, setLoadingTheme] = useState(true);
+  const [loadingQuestions, setLoadingQuestions] = useState(true);
+
+  const loading = useMemo(
+    () => loadingTheme || loadingQuestions,
+    [loadingQuestions, loadingTheme]
+  );
 
   const favorite = useMemo(
     () => favorites.find((el) => el.theme === Number(id)),
@@ -69,7 +82,7 @@ export default function ThemePage() {
   useEffect(() => {
     const getPlayers = () => {
       countPlayersByTheme(Number(id)).then(({ count }) => {
-        setPlayers(count ? count : undefined);
+        setPlayers(count ?? undefined);
       });
     };
     const getTheme = () => {
@@ -85,6 +98,16 @@ export default function ThemePage() {
     getPlayers();
   }, [id]);
 
+  useEffect(() => {
+    setLoadingQuestions(true);
+    if (theme && language) {
+      countQuestionByTheme(theme.id).then(({ data }) => {
+        setQuestionsCount(data ?? []);
+        setLoadingQuestions(false);
+      });
+    }
+  }, [language, theme]);
+
   const playFriend = async (profile: Profile) => {
     if (profile && id) {
       const { data } = await launchDuelGame(uuid, profile.id, Number(id));
@@ -94,8 +117,8 @@ export default function ThemePage() {
 
   const playDuel = async () => {
     if (user) {
-      if (uuid && id) {
-        const { data } = await matchmakingDuelGame(uuid, Number(id));
+      if (uuid && id && language) {
+        const { data } = await matchmakingDuelGame(uuid, Number(id), language);
         navigate(`/duel/${data.uuid}`);
       }
     } else {
@@ -104,17 +127,9 @@ export default function ThemePage() {
   };
 
   const playSolo = () => {
-    if (uuid && id) {
-      launchSoloGame(uuid, Number(id)).then(({ data }) => {
+    if (uuid && id && language) {
+      launchSoloGame(uuid, Number(id), language).then(({ data }) => {
         navigate(`/solo/${data.uuid}`);
-      });
-    }
-  };
-
-  const playYtShort = () => {
-    if (uuid && id) {
-      launchSoloGame(uuid, Number(id)).then(({ data }) => {
-        navigate(`/ytshort/${data.uuid}`);
       });
     }
   };
@@ -136,7 +151,7 @@ export default function ThemePage() {
             } else {
               setSeverity("success");
               setMessage(t("alert.deletefavorite"));
-              refreshFavorites();
+              getFavorite();
             }
           });
         } else {
@@ -150,7 +165,7 @@ export default function ThemePage() {
             } else {
               setSeverity("success");
               setMessage(t("alert.addfavorite"));
-              refreshFavorites();
+              getFavorite();
             }
           });
         }
@@ -160,23 +175,52 @@ export default function ThemePage() {
     }
   };
 
+  const languages = useMemo(
+    () =>
+      theme
+        ? theme.themetranslation
+            .filter((el) => el.language.activate)
+            .map((el) => el.language)
+        : [],
+    [theme]
+  );
+
+  const questions = useMemo(() => {
+    let res: string | number = "";
+    if (theme && questionsCount && language && !loadingQuestions) {
+      if (theme.generatequestion) {
+        res = "∞";
+      } else {
+        const questionsLanguage = [...questionsCount].find(
+          (el) => el.language.id === language.id
+        );
+        res = questionsLanguage ? questionsLanguage.questions : 0;
+      }
+    }
+    return res;
+  }, [language, loadingQuestions, questionsCount, theme]);
+
+  const title = useMemo(() => {
+    let result = undefined;
+    if (theme && language) {
+      const themetranslation = [...theme.themetranslation].find(
+        (el) => el.language.id === language.id
+      );
+      result = themetranslation?.name ?? undefined;
+    }
+    return result;
+  }, [theme, language]);
+
   return (
     <Box sx={{ width: percent(100) }}>
       <Helmet>
-        <title>
-          {theme
-            ? `${theme.name[language.iso]} - ${t("appname")}`
-            : t("appname")}
-        </title>
-        {theme && (
-          <meta
-            name="description"
-            content={`${t("appname")} Quiz ${theme.name[language.iso]}`}
-          />
+        <title>{title ? `${title} - ${t("appname")}` : t("appname")}</title>
+        {title && (
+          <meta name="description" content={`${t("appname")} Quiz ${title}`} />
         )}
       </Helmet>
       <Grid container>
-        {loadingTheme ? (
+        {loading ? (
           <Grid item xs={12}>
             <Box
               sx={{
@@ -254,7 +298,6 @@ export default function ThemePage() {
                   sx={{
                     display: "flex",
                     p: 1,
-                    backgroundColor: Colors.black,
                   }}
                 >
                   <Grid
@@ -263,127 +306,69 @@ export default function ThemePage() {
                     alignItems="center"
                     justifyContent="center"
                   >
-                    <Grid
-                      item
-                      xs={12}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        mb: 1,
-                        textAlign: "center",
-                      }}
-                    >
-                      <GoBackButtonIcon />
-                      <JsonLanguageBlock
-                        variant="h2"
-                        color="text.secondary"
-                        sx={{ fontSize: important(px(25)) }}
-                        value={theme.name}
+                    <Grid item xs={12}>
+                      <TitleBlock
+                        title={
+                          <TextNameBlock
+                            variant="h2"
+                            values={theme.themetranslation}
+                          />
+                        }
+                        addFavorite={addFavorite}
+                        favorite={favorite !== undefined}
+                        link="/"
                       />
-                      {favorite ? (
-                        <StarIcon
-                          sx={{
-                            fontSize: 45,
-                            color: Colors.yellow4,
-                            cursor: "pointer",
-                          }}
-                          onClick={() => addFavorite()}
-                        />
-                      ) : (
-                        <StarBorderOutlinedIcon
-                          sx={{
-                            fontSize: 45,
-                            color: Colors.yellow4,
-                            cursor: "pointer",
-                          }}
-                          onClick={() => addFavorite()}
-                        />
-                      )}
                     </Grid>
+                    {!theme.enabled && (
+                      <Grid item xs={12}>
+                        <Alert severity="error">
+                          {t("commun.thememaintenance")}
+                        </Alert>
+                      </Grid>
+                    )}
+                    {!theme.validate && (
+                      <Grid item xs={12}>
+                        <Alert severity="error">
+                          {t("commun.themenotvalidate")}
+                        </Alert>
+                      </Grid>
+                    )}
+                    {questions === 0 && (
+                      <Grid item xs={12}>
+                        <Alert severity="error">
+                          {t("commun.noquestions")}
+                        </Alert>
+                      </Grid>
+                    )}
                     <Grid item xs={5} sm={3} md={3} lg={3}>
                       <ImageThemeBlock theme={theme} />
                     </Grid>
-                    <Grid item xs={7} sm={6} md={6} lg={6}>
-                      <Grid container spacing={1}>
-                        {!theme.enabled && (
-                          <Grid item xs={12}>
-                            <Alert severity="error">
-                              {t("commun.thememaintenance")}
-                            </Alert>
-                          </Grid>
-                        )}
-                        {theme.enabled || (profile && profile.isadmin) ? (
-                          <>
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                size="small"
-                                value={Colors.red}
-                                label={t("commun.duel")}
-                                icon={OfflineBoltIcon}
-                                onClick={() => playDuel()}
-                                variant="contained"
-                              />
-                            </Grid>
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                size="small"
-                                value={Colors.blue2}
-                                label={t("commun.playsolo")}
-                                icon={PlayCircleIcon}
-                                onClick={() => playSolo()}
-                                variant="contained"
-                              />
-                            </Grid>
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                size="small"
-                                value={Colors.purple}
-                                label={t("commun.training")}
-                                icon={FitnessCenterIcon}
-                                onClick={() => playTraining()}
-                                variant="contained"
-                              />
-                            </Grid>
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                size="small"
-                                value={Colors.green}
-                                label={t("commun.friendduel")}
-                                icon={SupervisedUserCircleRoundedIcon}
-                                onClick={() => {
-                                  if (user) {
-                                    setOpenModalFriend(true);
-                                  } else {
-                                    navigate(`/login`);
-                                  }
-                                }}
-                                variant="contained"
-                              />
-                            </Grid>
-
-                            {profile && profile.isadmin && (
+                    {!loadingQuestions && (
+                      <Grid item xs={7} sm={6} md={6} lg={6}>
+                        <Grid container spacing={1}>
+                          {(theme.enabled &&
+                            theme.validate &&
+                            questions !== 0) ||
+                          profile?.isadmin ? (
+                            <>
                               <Grid item xs={12}>
-                                <ButtonColor
-                                  size="small"
-                                  value={Colors.orange}
-                                  label={t("commun.ytshort")}
-                                  icon={YouTubeIcon}
-                                  onClick={() => playYtShort()}
-                                  variant="contained"
-                                />
+                                <DuelButton play={() => playDuel()} />
                               </Grid>
-                            )}
-                            {/*user && (
+                              <Grid item xs={12}>
+                                <SoloButton play={() => playSolo()} />
+                              </Grid>
+                              <Grid item xs={12}>
+                                <TrainingButton play={() => playTraining()} />
+                              </Grid>
                               <Grid item xs={12}>
                                 <ButtonColor
                                   size="small"
-                                  value={Colors.pink2}
-                                  label={t("commun.proposequestion")}
-                                  icon={LightbulbIcon}
+                                  value={Colors.green}
+                                  label={t("commun.friendduel")}
+                                  icon={SupervisedUserCircleRoundedIcon}
                                   onClick={() => {
                                     if (user) {
-                                      setOpenProposeQuestion(true);
+                                      setOpenModalFriend(true);
                                     } else {
                                       navigate(`/login`);
                                     }
@@ -391,32 +376,48 @@ export default function ThemePage() {
                                   variant="contained"
                                 />
                               </Grid>
-                            )*/}
-                          </>
-                        ) : (
-                          <>
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                value={Colors.blue}
-                                label={t("commun.return")}
-                                icon={KeyboardReturnIcon}
-                                onClick={() => navigate(-1)}
-                                variant="contained"
-                              />
-                            </Grid>
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                value={Colors.green}
-                                label={t("commun.returnhome")}
-                                icon={HomeIcon}
-                                onClick={() => navigate("/")}
-                                variant="contained"
-                              />
-                            </Grid>
-                          </>
-                        )}
+                            </>
+                          ) : (
+                            <>
+                              <Grid item xs={12}>
+                                <ButtonColor
+                                  value={Colors.blue}
+                                  label={t("commun.return")}
+                                  icon={KeyboardReturnIcon}
+                                  onClick={() => navigate(-1)}
+                                  variant="contained"
+                                />
+                              </Grid>
+                              <Grid item xs={12}>
+                                <ButtonColor
+                                  value={Colors.green}
+                                  label={t("commun.returnhome")}
+                                  icon={HomeIcon}
+                                  onClick={() => navigate("/")}
+                                  variant="contained"
+                                />
+                              </Grid>
+                            </>
+                          )}
+                          <Grid item xs={12}>
+                            <ButtonColor
+                              size="small"
+                              value={Colors.pink}
+                              label={t("commun.proposequestion")}
+                              icon={QuestionMarkIcon}
+                              onClick={() => {
+                                if (profile) {
+                                  setOpenProposeQuestion(true);
+                                } else {
+                                  navigate(`/login`);
+                                }
+                              }}
+                              variant="contained"
+                            />
+                          </Grid>
+                        </Grid>
                       </Grid>
-                    </Grid>
+                    )}
                   </Grid>
                 </Box>
               </Grid>
@@ -425,13 +426,7 @@ export default function ThemePage() {
         )}
         {loadingTheme || theme ? (
           <>
-            <Grid
-              item
-              xs={12}
-              sx={{
-                backgroundColor: Colors.black,
-              }}
-            >
+            <Grid item xs={12}>
               <Grid
                 container
                 justifyContent="center"
@@ -440,21 +435,11 @@ export default function ThemePage() {
                   borderRadius: px(5),
                 }}
               >
-                <Grid item xs={6}>
-                  <Box sx={{ p: px(2), textAlign: "center" }}>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        color: Colors.lightgrey2,
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      {t("commun.players")}
-                    </Typography>
-                    <Typography variant="h2" color="text.secondary">
-                      {players ? players : "-"}
-                    </Typography>
-                  </Box>
+                <Grid item xs={3}>
+                  <InfoBlock
+                    title={t("commun.players")}
+                    value={players ?? "-"}
+                  />
                 </Grid>
                 <Grid
                   item
@@ -466,30 +451,42 @@ export default function ThemePage() {
                     variant="middle"
                     flexItem
                     sx={{
-                      borderColor: Colors.lightgrey2,
+                      borderColor: Colors.grey5,
                     }}
                   />
                 </Grid>
-                <Grid item xs={6}>
-                  <Box sx={{ p: px(2), textAlign: "center" }}>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        color: Colors.lightgrey2,
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      {t("commun.questions")}
-                    </Typography>
-                    <Typography variant="h2" color="text.secondary">
-                      {theme ? theme.questions : "-"}
-                    </Typography>
-                  </Box>
+                <Grid item xs={3}>
+                  <InfoBlock title={t("commun.questions")} value={questions} />
+                </Grid>
+                <Grid
+                  item
+                  xs={1}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <Divider
+                    orientation="vertical"
+                    variant="middle"
+                    flexItem
+                    sx={{
+                      borderColor: Colors.grey5,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <InfoBlock
+                    title={t("commun.languages")}
+                    content={
+                      <AvatarLanguageGroup
+                        languages={languages}
+                        questionsCount={questionsCount}
+                      />
+                    }
+                  />
                 </Grid>
               </Grid>
             </Grid>
             <Grid item xs={12}>
-              <RankingTableSoloDuel theme={theme} />
+              <RankingTableSoloDuelPaginate theme={theme} />
             </Grid>
           </>
         ) : (

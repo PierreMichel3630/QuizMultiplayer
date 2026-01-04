@@ -1,36 +1,42 @@
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import { Avatar, Box, Container, Grid, Typography } from "@mui/material";
+import { padding, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
+import {
+  selectAccomplishmentByBadge,
+  selectStatAccomplishmentByProfile,
+} from "src/api/accomplishment";
 import { selectBadgeById } from "src/api/badge";
+import { buyItem } from "src/api/buy";
+import moneyIcon from "src/assets/money.svg";
 import { ButtonColor } from "src/component/Button";
+import { ProfilHeader } from "src/component/ProfileHeader";
 import { CardAccomplishment } from "src/component/card/CardAccomplishment";
+import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import { BarNavigation } from "src/component/navigation/BarNavigation";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-import { StatAccomplishment } from "src/models/Accomplishment";
+import { useMessage } from "src/context/MessageProvider";
+import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
 import { Badge } from "src/models/Badge";
 import { Colors } from "src/style/Colors";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import { useMessage } from "src/context/MessageProvider";
-import { buyItem } from "src/api/buy";
-import { ProfilHeader } from "src/component/ProfileHeader";
-import { ConfirmDialog } from "src/component/modal/ConfirmModal";
-import moneyIcon from "src/assets/money.svg";
-import { padding, px } from "csx";
 
-export default function BannerPage() {
+export default function BadgePage() {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const { profile, refreshProfil } = useAuth();
-  const { mybadges, getMyBadges, accomplishments } = useApp();
+  const { myBadges, getMyBadges } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
   const [badge, setBadge] = useState<Badge | undefined>(undefined);
+  const [accomplishment, setAccomplishment] = useState<
+    Accomplishment | undefined
+  >(undefined);
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
@@ -59,17 +65,32 @@ export default function BannerPage() {
     getMyStat();
   }, [profile]);
 
+  useEffect(() => {
+    const getAccomplishment = () => {
+      if (badge) {
+        selectAccomplishmentByBadge(badge.id).then(({ data }) => {
+          setAccomplishment(data);
+        });
+      }
+    };
+    getAccomplishment();
+  }, [badge]);
+
   const verifyBuy = () => {
-    if (profile && badge) {
-      if (profile.money < badge.price) {
-        setSeverity("error");
-        setMessage(t("alert.noenoughtmoney"));
+    if (profile) {
+      if (badge) {
+        if (profile.money < badge.price) {
+          setSeverity("error");
+          setMessage(t("alert.noenoughtmoney"));
+        } else {
+          setOpenModal(true);
+        }
       } else {
-        setOpenModal(true);
+        setSeverity("error");
+        setMessage(t("commun.error"));
       }
     } else {
-      setSeverity("error");
-      setMessage(t("commun.error"));
+      navigate(`/login`);
     }
   };
 
@@ -97,16 +118,8 @@ export default function BannerPage() {
     () =>
       !loading &&
       badge &&
-      mybadges.find((el) => el.id === badge.id) !== undefined,
-    [loading, mybadges, badge]
-  );
-
-  const accomplishment = useMemo(
-    () =>
-      badge
-        ? accomplishments.find((el) => el.badge && el.badge.id === badge.id)
-        : undefined,
-    [accomplishments, badge]
+      myBadges.find((el) => el.id === badge.id) !== undefined,
+    [loading, myBadges, badge]
   );
 
   return (
@@ -151,73 +164,65 @@ export default function BannerPage() {
               )}
             </Grid>
           )}
-        </Container>
-      </Grid>
-      <Box
-        sx={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          backgroundColor: "background.paper",
-        }}
-      >
-        <Container maxWidth="md">
-          <Box sx={{ p: 1, display: "flex", flexDirection: "column", gap: 1 }}>
-            {!loading && badge && !isBuy && !badge.isaccomplishment && (
-              <Box
-                sx={{
-                  backgroundColor: Colors.yellow2,
-                  p: padding(2, 5),
-                  borderRadius: px(5),
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                }}
-                onClick={verifyBuy}
-              >
-                <Typography variant="caption" color="text.secondary">
-                  {t("commun.buy")}
-                </Typography>
+          <Grid item xs={12}>
+            <Box
+              sx={{ p: 1, display: "flex", flexDirection: "column", gap: 1 }}
+            >
+              {!loading && badge && !isBuy && !badge.isaccomplishment && (
                 <Box
                   sx={{
+                    backgroundColor: Colors.yellow2,
+                    p: padding(2, 5),
+                    borderRadius: px(5),
                     display: "flex",
-                    gap: 1,
+                    flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
+                    cursor: "pointer",
                   }}
+                  onClick={verifyBuy}
                 >
-                  <Typography variant="h2" color="text.secondary">
-                    {badge.price}
+                  <Typography variant="caption" color="text.secondary">
+                    {t("commun.buy")}
                   </Typography>
-                  <img src={moneyIcon} width={25} />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 1,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Typography variant="h2" color="text.secondary">
+                      {badge.price}
+                    </Typography>
+                    <img alt="money icon" src={moneyIcon} width={25} />
+                  </Box>
                 </Box>
-              </Box>
-            )}
+              )}
 
-            {badge && badge.isaccomplishment && (
+              {badge && badge.isaccomplishment && (
+                <ButtonColor
+                  value={Colors.yellow}
+                  label={t("commun.goaccomplishments")}
+                  icon={EmojiEventsIcon}
+                  variant="contained"
+                  onClick={() => {
+                    navigate(`/accomplishments`);
+                  }}
+                />
+              )}
               <ButtonColor
-                value={Colors.yellow}
-                label={t("commun.goaccomplishments")}
-                icon={EmojiEventsIcon}
+                value={Colors.colorApp}
+                label={t("commun.return")}
+                icon={KeyboardReturnIcon}
                 variant="contained"
-                onClick={() => {
-                  navigate(`/accomplishments`);
-                }}
+                onClick={() => navigate(-1)}
               />
-            )}
-            <ButtonColor
-              value={Colors.blue3}
-              label={t("commun.return")}
-              icon={KeyboardReturnIcon}
-              variant="contained"
-              onClick={() => navigate(-1)}
-            />
-          </Box>
+            </Box>
+          </Grid>
         </Container>
-      </Box>
+      </Grid>
 
       <ConfirmDialog
         title={t("commun.confirmbuy")}

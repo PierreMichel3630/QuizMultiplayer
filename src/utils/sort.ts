@@ -1,6 +1,5 @@
 import moment from "moment";
 import { Language } from "src/models/Language";
-import { Title } from "src/models/Title";
 
 export const sortByScore = (a: { score: number }, b: { score: number }) =>
   b.score - a.score;
@@ -98,11 +97,11 @@ export const sortByPointsDesc = (
   b: { points: number }
 ) => b.points - a.points;
 
-export const sortByRankDesc = (a: { rank: number }, b: { rank: number }) => {
-  const valueA = a.rank;
-  const valueB = b.rank;
-  return valueB - valueA;
-};
+export const sortByRankDesc = (a: { rank: number }, b: { rank: number }) =>
+  b.rank - a.rank;
+
+export const sortByRankAsc = (a: { rank: number }, b: { rank: number }) =>
+  a.rank - b.rank;
 
 export const sortByXP = (a: { xp: number }, b: { xp: number }) => {
   const valueA = a.xp;
@@ -110,10 +109,30 @@ export const sortByXP = (a: { xp: number }, b: { xp: number }) => {
   return valueB - valueA;
 };
 
+export const sortByPriceDesc = (a: { price: number }, b: { price: number }) => {
+  const valueA = a.price;
+  const valueB = b.price;
+  return valueA - valueB;
+};
+
+export const sortByIsaccomplishmentAndPriceDesc = (
+  a: { isaccomplishment: boolean; price: number },
+  b: { isaccomplishment: boolean; price: number }
+) => {
+  return (
+    Number(a.isaccomplishment) - Number(b.isaccomplishment) || a.price - b.price
+  );
+};
+
 export const sortByCreatedAt = (
   a: { created_at: Date },
   b: { created_at: Date }
 ) => moment(b.created_at).diff(moment(a.created_at));
+
+export const sortByModifyAt = (
+  a: { modify_at: Date },
+  b: { modify_at: Date }
+) => moment(b.modify_at).diff(moment(a.modify_at));
 
 export const sortByDuelGamesDesc = (
   a: { duelgames: number },
@@ -123,8 +142,10 @@ export const sortByDuelGamesDesc = (
 export const sortByName = (language: Language, a: any, b: any) =>
   a.name[language.iso].localeCompare(b.name[language.iso]);
 
-export const sortByTitle = (language: Language, a: Title, b: Title) =>
-  a.name[language.iso].localeCompare(b.name[language.iso]);
+export const sortByThemeTitle = (
+  a: { theme: { title: string } },
+  b: { theme: { title: string } }
+) => a.theme.title.localeCompare(b.theme.title);
 
 export const sortByUnlock = (
   a: { unlock: boolean; price: number },
@@ -136,3 +157,11 @@ export const sortByGamesDesc = (a: { games: number }, b: { games: number }) =>
 
 export const sortByUsValue = (a: { usvalue: string }, b: { usvalue: string }) =>
   a.usvalue.localeCompare(b.usvalue);
+
+export const sortByUsername = (
+  a: { username: string },
+  b: { username: string }
+) => a.username.localeCompare(b.username);
+
+export const sortByVoteDesc = (a: { vote: number }, b: { vote: number }) =>
+  b.vote - a.vote;

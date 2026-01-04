@@ -1,6 +1,7 @@
-import { StatusGameDuel } from "./enum";
+import { Elo } from "./Elo";
+import { StatusGameDuel } from "./enum/StatusGame";
 import { Profile } from "./Profile";
-import { Question } from "./Question";
+import { Question, QuestionResult } from "./Question";
 import { Theme } from "./Theme";
 
 export interface DuelGame {
@@ -9,12 +10,15 @@ export interface DuelGame {
   theme: Theme;
   themequestion: Theme;
   player1: Profile;
-  player2: Profile;
+  player2?: Profile;
   ptsplayer1: number;
   ptsplayer2: number;
   status: StatusGameDuel;
-  questions: Array<Question>;
+  questions: Array<QuestionResult>;
   battlegame: null | string;
+  created_at: Date;
+  version: number;
+  elo: Elo;
 }
 
 export interface DuelGameChange {

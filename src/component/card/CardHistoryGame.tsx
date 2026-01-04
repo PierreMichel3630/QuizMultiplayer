@@ -6,10 +6,10 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { HistoryGame, HistoryGameAdmin } from "src/models/Game";
+import { HistoryGame } from "src/models/Game";
 import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   game: HistoryGame;
@@ -51,10 +51,9 @@ export const CardHistoryGame = ({ game }: Props) => {
                 to={`/theme/${game.theme.id}`}
                 style={{ textDecoration: "none" }}
               >
-                <JsonLanguageBlock
-                  variant="h2"
-                  value={game.theme.name}
-                  noWrap
+                <TextNameBlock
+                  variant="h4"
+                  values={game.theme.themetranslation}
                 />
               </Link>
               <Typography variant="caption">
@@ -91,15 +90,14 @@ export const CardHistoryGame = ({ game }: Props) => {
           </>
         ) : (
           <>
-            <Grid item xs={5} md={6}>
+            <Grid item xs>
               <Link
                 to={`/theme/${game.theme.id}`}
                 style={{ textDecoration: "none" }}
               >
-                <JsonLanguageBlock
-                  variant="h2"
-                  value={game.theme.name}
-                  noWrap
+                <TextNameBlock
+                  variant="h4"
+                  values={game.theme.themetranslation}
                 />
               </Link>
               <Typography variant="caption">
@@ -121,39 +119,38 @@ export const CardHistoryGame = ({ game }: Props) => {
                 </Box>
               </Link>
             </Grid>
-            <Grid item xs={5}>
+            <Grid
+              item
+              sx={{
+                display: "flex",
+                gap: 2,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <Box
                 sx={{
                   display: "flex",
-                  gap: 2,
+                  flexDirection: "column",
                   alignItems: "center",
-                  justifyContent: "flex-end",
                 }}
               >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography variant="body1" sx={{ color: color }}>
-                    {win === 0.5
-                      ? t("commun.draw")
-                      : win === 1
-                      ? t("commun.victory")
-                      : t("commun.defeat")}
-                  </Typography>
-                  <Typography variant="h2" sx={{ color: color }}>
-                    {isPlayer1
-                      ? `${game.ptsplayer1} - ${game.ptsplayer2}`
-                      : `${game.ptsplayer2} - ${game.ptsplayer1}`}
-                  </Typography>
-                </Box>
-                <Link to={`/game/duel/${game.uuid}`} style={{ height: px(20) }}>
-                  <VisibilityIcon fontSize="small" />
-                </Link>
+                <Typography variant="h6" sx={{ color: color }}>
+                  {win === 0.5
+                    ? t("commun.draw")
+                    : win === 1
+                    ? t("commun.victory")
+                    : t("commun.defeat")}
+                </Typography>
+                <Typography variant="h4" sx={{ color: color }}>
+                  {isPlayer1
+                    ? `${game.ptsplayer1} - ${game.ptsplayer2}`
+                    : `${game.ptsplayer2} - ${game.ptsplayer1}`}
+                </Typography>
               </Box>
+              <Link to={`/game/duel/${game.uuid}`} style={{ height: px(20) }}>
+                <VisibilityIcon fontSize="small" />
+              </Link>
             </Grid>
           </>
         )}
@@ -163,7 +160,7 @@ export const CardHistoryGame = ({ game }: Props) => {
 };
 
 interface PropsAdmin {
-  game: HistoryGameAdmin;
+  game: HistoryGame;
 }
 
 export const CardHistoryGameAdmin = ({ game }: PropsAdmin) => {
@@ -182,10 +179,10 @@ export const CardHistoryGameAdmin = ({ game }: PropsAdmin) => {
             {isSolo ? (
               <>
                 <Grid item xs={10}>
-                  <JsonLanguageBlock
+                  <TextNameBlock
                     variant="h2"
-                    value={game.theme.name}
                     noWrap
+                    values={game.theme.themetranslation}
                   />
                   <Typography variant="caption">
                     {moment(game.created_at).format("DD/MM/YYYY HH:mm")}
@@ -224,10 +221,10 @@ export const CardHistoryGameAdmin = ({ game }: PropsAdmin) => {
             ) : (
               <>
                 <Grid item xs={10}>
-                  <JsonLanguageBlock
+                  <TextNameBlock
                     variant="h2"
-                    value={game.theme.name}
                     noWrap
+                    values={game.theme.themetranslation}
                   />
                   <Typography variant="caption">
                     {moment(game.created_at).format("DD/MM/YYYY HH:mm")}

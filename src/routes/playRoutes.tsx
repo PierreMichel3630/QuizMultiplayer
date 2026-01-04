@@ -1,3 +1,4 @@
+import PlayChallengePage from "src/pages/challenge/PlayChallengePage";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 import GameDuelPage from "src/pages/GameDuelPage";
@@ -6,7 +7,10 @@ import BattlePage from "src/pages/play/BattlePage";
 import DuelPage from "src/pages/play/DuelPage";
 import SoloPage from "src/pages/play/SoloPage";
 import TrainingPage from "src/pages/play/TrainingPage";
-import YtShortPage from "src/pages/play/YtShortPage";
+import ChallengeGamePage from "src/pages/challenge/ChallengeGamePage";
+import ChallengeProfilPage from "src/pages/challenge/ChallengeProfilPage";
+import RecapSoloPage from "src/pages/play/RecapSoloPage";
+import RecapDuelPage from "src/pages/play/RecapDuelPage";
 
 export const PlayRoutes = [
   {
@@ -18,8 +22,12 @@ export const PlayRoutes = [
     ),
   },
   {
-    path: "/ytshort/:uuidGame",
-    element: <YtShortPage />,
+    path: "/challenge/:uuidGame",
+    element: (
+      <ProtectedRoute>
+        <PlayChallengePage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/solo/:uuidGame",
@@ -38,7 +46,23 @@ export const PlayRoutes = [
     element: <GameSoloPage />,
   },
   {
+    path: "/challenge/game/:uuid",
+    element: <ChallengeGamePage />,
+  },
+  {
+    path: "/challenge/profil/:uuid",
+    element: <ChallengeProfilPage />,
+  },
+  {
     path: "/game/duel/:uuid",
     element: <GameDuelPage />,
+  },
+  {
+    path: "/recapsolo/:uuidGame",
+    element: <RecapSoloPage />,
+  },
+  {
+    path: "/recapduel/:uuidGame",
+    element: <RecapDuelPage />,
   },
 ];

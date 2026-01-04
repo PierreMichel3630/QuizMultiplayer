@@ -1,26 +1,26 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
-import { Trans, useTranslation } from "react-i18next";
-import { HeadTitle } from "src/component/HeadTitle";
 import { px } from "csx";
-import { StepBlock } from "src/component/StepBlock";
+import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { StepBlock } from "src/component/StepBlock";
 import { Colors } from "src/style/Colors";
 
 import googleplay from "src/assets/google-play.png";
+import apple1 from "src/assets/installation/apple1.png";
+import apple2 from "src/assets/installation/apple2.png";
+import apple3 from "src/assets/installation/apple3.png";
+import apple4 from "src/assets/installation/apple4.png";
 
 export const urlGooglePlay =
   "https://play.google.com/store/apps/details?id=app.web.quizup_v2.twa&hl=fr";
 export const urlPc = "https://quizbattle.fr";
-export const urlApple = "https://quizbattle.fr/installation";
+export const urlApple = "/installation";
 
 export default function InstallationPage() {
   const { t } = useTranslation();
 
   return (
     <Grid container>
-      <Grid item xs={12}>
-        <HeadTitle title={t("pages.installation.title")} />
-      </Grid>
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={2} justifyContent="center">
@@ -37,6 +37,13 @@ export default function InstallationPage() {
                 }
               />
             </Grid>
+            <Grid item>
+              <img
+                alt="explain installation"
+                src={apple3}
+                style={{ maxWidth: px(300) }}
+              />
+            </Grid>
             <Grid item xs={12}>
               <StepBlock
                 number={2}
@@ -47,6 +54,13 @@ export default function InstallationPage() {
                 }
               />
             </Grid>
+            <Grid item>
+              <img
+                alt="explain installation"
+                src={apple2}
+                style={{ maxWidth: px(300) }}
+              />
+            </Grid>
             <Grid item xs={12}>
               <StepBlock
                 number={3}
@@ -55,6 +69,20 @@ export default function InstallationPage() {
                     {t("installation.apple3")}
                   </Typography>
                 }
+              />
+            </Grid>
+            <Grid item>
+              <img
+                alt="explain installation"
+                src={apple1}
+                style={{ maxWidth: px(300) }}
+              />
+            </Grid>
+            <Grid item>
+              <img
+                alt="explain installation"
+                src={apple4}
+                style={{ maxWidth: px(300) }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -94,7 +122,11 @@ export default function InstallationPage() {
                     border: "1px solid white",
                   }}
                 >
-                  <img src={googleplay} style={{ width: px(25) }} />
+                  <img
+                    alt="explain installation"
+                    src={googleplay}
+                    style={{ width: px(25) }}
+                  />
                   <Typography variant="h6" color="text.secondary">
                     {t("installation.android1")}
                   </Typography>

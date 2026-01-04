@@ -1,10 +1,9 @@
 import HistoryIcon from "@mui/icons-material/History";
 import { Grid, Paper, Skeleton, Typography } from "@mui/material";
 import { px } from "csx";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "src/context/UserProvider";
 import { Profile } from "src/models/Profile";
 import { Score } from "src/models/Score";
 import { Colors } from "src/style/Colors";
@@ -13,6 +12,13 @@ import { ButtonColor } from "../Button";
 import { ToogleButtonCard } from "../ToogleButton";
 import { BarVictory } from "./BarVictory";
 import { DonutChart } from "./DonutChart";
+import { useUser } from "src/context/UserProvider";
+import { Theme } from "src/models/Theme";
+
+interface Menu {
+  label: string;
+  value: "solo" | "duel";
+}
 
 interface Props {
   scores: Array<Score>;
@@ -29,25 +35,30 @@ export const DonutGames = ({
   loading = true,
 }: Props) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { language } = useUser();
+  const navigate = useNavigate();
 
   const MAXVALUEDISPLAY = 7;
 
-  const [type, setType] = useState<"solo" | "duel">("solo");
-  const types = [
-    { label: t("commun.solo"), value: "solo" },
-    { label: t("commun.duel"), value: "duel" },
-  ];
+  const [type, setType] = useState<undefined | "solo" | "duel">(undefined);
+  const [types, setTypes] = useState<Array<Menu>>([]);
+
+  const getLabelTheme = useCallback(
+    (theme: Theme) => {
+      const themeLanguage = [...theme.themetranslation].find(
+        (el) => el.language.id === language?.id
+      );
+      return themeLanguage?.name ?? theme.themetranslation[0].name;
+    },
+    [language]
+  );
 
   const dataSolo = useMemo(
     () =>
-      scores.sort(sortByGamesDesc).reduce(
+      [...scores].sort(sortByGamesDesc).reduce(
         (acc, score, index) => {
           if (index + 1 <= MAXVALUEDISPLAY) {
-            const label = score.theme.name[language.iso]
-              ? score.theme.name[language.iso]
-              : score.theme.name["fr-FR"];
+            const label = getLabelTheme(score.theme);
             return [
               ...acc,
               {
@@ -69,17 +80,15 @@ export const DonutGames = ({
           },
         ]
       ),
-    [scores, t, language.iso]
+    [getLabelTheme, scores, t]
   );
 
   const dataDuel = useMemo(
     () =>
-      scores.sort(sortByDuelGamesDesc).reduce(
+      [...scores].sort(sortByDuelGamesDesc).reduce(
         (acc, score, index) => {
           if (index + 1 <= MAXVALUEDISPLAY) {
-            const label = score.theme.name[language.iso]
-              ? score.theme.name[language.iso]
-              : score.theme.name["fr-FR"];
+            const label = getLabelTheme(score.theme);
             return [
               ...acc,
               {
@@ -101,26 +110,42 @@ export const DonutGames = ({
           },
         ]
       ),
-    [scores, t, language.iso]
+    [scores, t]
   );
 
-  const data = useMemo(
-    () =>
-      type === "solo"
+  const data = useMemo(() => {
+    if (type) {
+      return type === "solo"
         ? dataSolo.filter((el) => el.value !== 0)
-        : dataDuel.filter((el) => el.value !== 0),
-    [dataSolo, dataDuel, type]
-  );
+        : dataDuel.filter((el) => el.value !== 0);
+    } else {
+      return [];
+    }
+  }, [dataSolo, dataDuel, type]);
+
+  useEffect(() => {
+    const newTypes: Array<Menu> = [];
+    const nbGamesSolo = [...scores].reduce((acc, v) => acc + v.games, 0);
+    if (nbGamesSolo) {
+      newTypes.push({ label: t("commun.solo"), value: "solo" });
+    }
+    const nbGamesDuel = [...scores].reduce((acc, v) => acc + v.duelgames, 0);
+    if (nbGamesDuel) {
+      newTypes.push({ label: t("commun.duel"), value: "duel" });
+    }
+    setTypes(newTypes);
+    setType(newTypes.length > 0 ? newTypes[0].value : undefined);
+  }, [scores, t]);
 
   return (
-    (loading || scores.length > 0) && (
+    (loading || types.length > 0) && (
       <Paper sx={{ overflow: "hidden" }}>
         <Grid container>
           <Grid
             item
             xs={12}
             sx={{
-              backgroundColor: Colors.blue3,
+              backgroundColor: Colors.colorApp,
               p: px(5),
             }}
           >
@@ -137,17 +162,19 @@ export const DonutGames = ({
                   {t("commun.gamesplay")}
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={4}
-                sx={{ display: "flex", justifyContent: "flex-end" }}
-              >
-                <ToogleButtonCard
-                  select={type}
-                  onChange={(value) => setType(value as "solo" | "duel")}
-                  values={types}
-                />
-              </Grid>
+              {type && (
+                <Grid
+                  item
+                  xs={4}
+                  sx={{ display: "flex", justifyContent: "flex-end" }}
+                >
+                  <ToogleButtonCard
+                    select={type}
+                    onChange={(value) => setType(value as "solo" | "duel")}
+                    values={types}
+                  />
+                </Grid>
+              )}
             </Grid>
           </Grid>
           <Grid
@@ -219,7 +246,7 @@ export const DonutGames = ({
                           navigate(`/games`, {
                             state: {
                               player: profile,
-                              type: type.toUpperCase(),
+                              type: type,
                             },
                           })
                         }

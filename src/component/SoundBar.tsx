@@ -24,7 +24,7 @@ export const SoundBar = () => {
     >
       <VolumeMuteIcon
         fontSize="large"
-        sx={{ color: "white", cursor: "pointer" }}
+        sx={{ cursor: "pointer" }}
         onClick={() => setSound(0)}
       />
       <Box sx={{ width: 120, display: "flex" }}>
@@ -35,12 +35,11 @@ export const SoundBar = () => {
           color="primary"
           min={0}
           max={100}
-          sx={{ color: "white" }}
         />
       </Box>
       <VolumeUpIcon
         fontSize="large"
-        sx={{ color: "white" }}
+        sx={{ cursor: "pointer" }}
         onClick={() => setSound(100)}
       />
     </Box>

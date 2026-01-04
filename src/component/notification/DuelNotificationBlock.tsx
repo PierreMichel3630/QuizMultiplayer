@@ -1,103 +1,130 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper } from "@mui/material";
 import { percent, px } from "csx";
 import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { cancelDuelByUuid } from "src/api/game";
-import { DuelGame } from "src/models/DuelGame";
 import { Colors } from "src/style/Colors";
-import { ImageThemeBlock } from "../ImageThemeBlock";
 
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import { useMemo } from "react";
+import { supabase } from "src/api/supabase";
 import { useUser } from "src/context/UserProvider";
+import { Notification } from "src/models/Notification";
+import { Profile } from "src/models/Profile";
+import { Theme } from "src/models/Theme";
+import { ButtonColor } from "../Button";
+import { ImageThemeBlock } from "../ImageThemeBlock";
+import { NotificationDuration } from "./NotificationDuration";
 
 interface Props {
-  game: DuelGame;
-  refuse?: () => void;
+  notification: Notification;
+  onDelete: (notification: Notification) => void;
 }
 
-export const DuelNotificationBlock = ({ game, refuse }: Props) => {
+interface NotificationData {
+  uuid: string;
+  user: Profile;
+  theme: Theme;
+}
+
+export const DuelNotificationBlock = ({ notification, onDelete }: Props) => {
   const navigate = useNavigate();
-  const { language } = useUser();
   const { t } = useTranslation();
+  const { language } = useUser();
+
+  const data = useMemo(
+    () => notification.data as NotificationData,
+    [notification]
+  );
 
   const playDuel = (uuid: string) => {
     navigate(`/duel/${uuid}`);
+    onDelete(notification);
   };
 
   const refuseDuel = async (uuid: string) => {
+    const channel = supabase.channel(uuid);
+    channel.subscribe((status) => {
+      if (status !== "SUBSCRIBED") {
+        return null;
+      }
+      channel.send({
+        type: "broadcast",
+        event: "cancel",
+      });
+    });
     await cancelDuelByUuid(uuid);
-    if (refuse) refuse();
+    onDelete(notification);
   };
+
+  const themeText = useMemo(() => {
+    const themeLanguage = [...data.theme.themetranslation].find(
+      (el) => el.language.id === language?.id
+    );
+    return themeLanguage?.name ?? data.theme.themetranslation[0].name;
+  }, [data, language]);
 
   return (
     <Paper
       sx={{
+        zIndex: 1500,
         p: px(5),
         width: percent(100),
-        backgroundColor: Colors.black,
-        border: "2px solid white",
-        borderRadius: px(5),
       }}
+      elevation={8}
     >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          gap: 1,
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Box>
-          <ImageThemeBlock theme={game.theme} size={70} />
-        </Box>
-        <Box>
-          <Typography
-            variant="body1"
-            component="span"
-            sx={{ fontSize: 15 }}
-            color="text.secondary"
-          >
-            <Trans
-              i18nKey={t("commun.challenge")}
-              values={{
-                username: game.player1
-                  ? game.player1.username
-                  : t("commun.unknown"),
-                theme: game
-                  ? game.theme.name[language.iso]
-                  : t("commun.unknown"),
-              }}
-              components={{ bold: <strong /> }}
-            />
-          </Typography>
-        </Box>
-        <Box sx={{ display: "flex", gap: 1 }}>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
           <Box
             sx={{
-              p: px(5),
-              backgroundColor: Colors.green2,
-              borderRadius: px(5),
-              cursor: "pointer",
+              display: "flex",
+              flexDirection: "row",
+              gap: 1,
+              alignItems: "center",
             }}
-            onClick={() => playDuel(game.uuid)}
           >
-            <CheckIcon sx={{ color: Colors.white }} />
+            <Box>
+              <ImageThemeBlock theme={data.theme} size={70} />
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <Trans
+                i18nKey={t("commun.confrontdueluser")}
+                values={{
+                  username: data.user.username,
+                  theme: themeText,
+                }}
+                components={{ bold: <strong /> }}
+              />
+              <Box>
+                <NotificationDuration date={notification.created_at} />
+              </Box>
+            </Box>
           </Box>
-          <Box
-            sx={{
-              p: px(5),
-              backgroundColor: Colors.red2,
-              borderRadius: px(5),
-              cursor: "pointer",
-            }}
-            onClick={() => refuseDuel(game.uuid)}
-          >
-            <CloseIcon sx={{ color: Colors.white }} />
-          </Box>
-        </Box>
-      </Box>
+        </Grid>
+        <Grid item xs={6}>
+          <ButtonColor
+            typography="h6"
+            iconSize={20}
+            value={Colors.green}
+            label={t("commun.accept")}
+            icon={CheckIcon}
+            variant="contained"
+            onClick={() => playDuel(data.uuid)}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <ButtonColor
+            typography="h6"
+            iconSize={20}
+            value={Colors.red}
+            label={t("commun.refuse")}
+            icon={CloseIcon}
+            variant="contained"
+            onClick={() => refuseDuel(data.uuid)}
+          />
+        </Grid>
+      </Grid>
     </Paper>
   );
 };

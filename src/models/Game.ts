@@ -1,8 +1,8 @@
+import { StatusGameSolo } from "./enum/StatusGame";
 import { JsonLanguage } from "./Language";
 import { Profile } from "./Profile";
-import { Question } from "./Question";
+import { Question, QuestionResult } from "./Question";
 import { Theme, ThemeDifficulty } from "./Theme";
-import { StatusGameSolo } from "./enum";
 
 export interface Game {
   id: number;
@@ -17,7 +17,7 @@ export interface Game {
 
 export interface TrainingGame {
   id: number;
-  questions: Array<Question>;
+  questions: Array<QuestionResult>;
   player: string;
   theme: Theme;
   uuid: string;
@@ -25,13 +25,20 @@ export interface TrainingGame {
 
 export interface SoloGame {
   id: number;
+  profile: Profile;
   points: number;
-  questions: Array<Question>;
+  questions: Array<QuestionResult>;
   player: string;
   theme: Theme;
   themequestion: Theme;
   uuid: string;
   status: StatusGameSolo;
+  created_at: Date;
+  version: number;
+}
+
+export interface SoloGameResult extends SoloGame {
+  questions: Array<QuestionResult>;
 }
 
 export interface AllQuestionSoloGame {
@@ -74,7 +81,7 @@ export interface HistoryGame {
   type: "SOLO" | "DUEL";
   theme: Theme;
   player1: Profile;
-  player2: Profile | null;
+  player2?: Profile;
   ptsplayer1: number;
   ptsplayer2: number | null;
   created_at: Date;

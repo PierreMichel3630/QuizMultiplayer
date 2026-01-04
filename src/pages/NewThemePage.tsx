@@ -1,28 +1,28 @@
-import { Box, Grid, Typography } from "@mui/material";
-import { uniqBy } from "lodash";
-import moment from "moment";
-import { useMemo } from "react";
+import { Grid } from "@mui/material";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { CardTheme } from "src/component/card/CardTheme";
-import { RankingBlock } from "src/component/RankingBlock";
-import { useApp } from "src/context/AppProvider";
-import { sortByCreatedAt } from "src/utils/sort";
+import { getThemesAndCategoriesByDate } from "src/api/search";
+import { ICardImage } from "src/component/card/CardImage";
+import { PageCategoryBlock } from "src/component/page/PageCategoryBlock";
+import { useUser } from "src/context/UserProvider";
 
 export default function NewThemePage() {
   const { t } = useTranslation();
-  const { themes } = useApp();
+  const { language } = useUser();
 
-  const themesNew = useMemo(() => {
-    return uniqBy(
-      themes
-        .filter((el) => moment().diff(el.created_at, "days") < 7)
-        .sort(sortByCreatedAt),
-      (el) => el.id
-    );
-  }, [themes]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
 
-  const idthemes = useMemo(() => themesNew.map((el) => el.id), [themesNew]);
+  useEffect(() => {
+    if (language) {
+      setIsLoading(true);
+      getThemesAndCategoriesByDate(language).then(({ data }) => {
+        setItemsSearch(data ?? []);
+        setIsLoading(false);
+      });
+    }
+  }, [language]);
 
   return (
     <Grid container>
@@ -30,23 +30,11 @@ export default function NewThemePage() {
         <title>{`${t("pages.new.title")} - ${t("appname")}`}</title>
       </Helmet>
       <Grid item xs={12}>
-        <Box sx={{ p: 1 }}>
-          <Grid container spacing={1} justifyContent="center">
-            {idthemes.length > 0 && (
-              <Grid item xs={12}>
-                <RankingBlock themes={idthemes} />
-              </Grid>
-            )}
-            <Grid item xs={12}>
-              <Typography variant="h2">{t("commun.themes")}</Typography>
-            </Grid>
-            {themesNew.map((theme) => (
-              <Grid item key={theme.id}>
-                <CardTheme theme={theme} />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
+        <PageCategoryBlock
+          title={t("pages.new.title")}
+          values={itemsSearch}
+          isLoading={isLoading}
+        />
       </Grid>
     </Grid>
   );

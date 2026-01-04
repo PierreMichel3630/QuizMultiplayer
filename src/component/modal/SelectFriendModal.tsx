@@ -26,6 +26,7 @@ import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
 import { BasicSearchInput } from "../Input";
 import { CardProfile } from "../card/CardProfile";
+import { sortByUsername } from "src/utils/sort";
 interface Props {
   title?: string;
   withMe?: boolean;
@@ -62,7 +63,7 @@ export const SelectFriendModal = ({
       );
     const res =
       withMe && profile !== null ? [profile, ...profileFriend] : profileFriend;
-    return uniqBy(res, (el) => el.id);
+    return uniqBy(res, (el) => el.id).sort(sortByUsername);
   }, [friends, search, uuid, withMe, profile]);
 
   return (
@@ -77,7 +78,7 @@ export const SelectFriendModal = ({
       <AppBar sx={{ position: "relative" }}>
         <Toolbar>
           <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {title ? title : t("commun.myfriends")}
+            {title ?? t("commun.myfriends")}
           </Typography>
           <IconButton color="inherit" onClick={close} aria-label="close">
             <CloseIcon />

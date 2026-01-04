@@ -7,7 +7,9 @@ import { Helmet } from "react-helmet-async";
 import { updateSelectProfil } from "src/api/profile";
 import { BadgeSelector } from "src/component/BadgeSelector";
 import { BannerSelector } from "src/component/BannerSelector";
+import { ButtonColor } from "src/component/Button";
 import { MyCountryBlock } from "src/component/MyCountryBlock";
+import { ProfilHeader } from "src/component/ProfileHeader";
 import { TitleSelector } from "src/component/TitleSelector";
 import { AvatarSelector } from "src/component/avatar/AvatarSelector";
 import { SkeletonRectangular } from "src/component/skeleton/SkeletonRectangular";
@@ -17,22 +19,32 @@ import { Avatar } from "src/models/Avatar";
 import { Badge } from "src/models/Badge";
 import { Banner } from "src/models/Banner";
 import { Profile } from "src/models/Profile";
-import { Title } from "src/models/Title";
+import { TitleProfile } from "src/models/Title";
+import { Colors } from "src/style/Colors";
+
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import { useNavigate } from "react-router-dom";
+import { DeleteAccountButton } from "src/component/button/DeleteAcccountButton";
+import { EmailInput } from "src/component/input/EmailInput";
+import { UsernameInput } from "src/component/input/UsernameInput";
+import { Country } from "src/models/Country";
 
 export default function PersonalizedPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
   const { setMessage, setSeverity } = useMessage();
   const { user, profile, setProfile } = useAuth();
-  const { getMyTitles, getMyBadges } = useApp();
+  const { getMyTitles, getMyBadges, headerSize } = useApp();
 
   useEffect(() => {
     getMyTitles();
     getMyBadges();
   }, [getMyBadges, getMyTitles]);
 
-  const changeTitle = async (value: Title) => {
+  const changeTitleProfile = async (value: TitleProfile) => {
     if (user) {
-      const newProfil = { id: user.id, title: value.id };
+      const newProfil = { id: user.id, titleprofile: value.id };
       const { data, error } = await updateSelectProfil(newProfil);
       if (error) {
         setSeverity("error");
@@ -108,9 +120,12 @@ export default function PersonalizedPage() {
     }
   };
 
-  const changeCountry = async (id: number | null) => {
+  const changeCountry = async (country: Country | null) => {
     if (user) {
-      const newProfil = { id: user.id, country: id };
+      const newProfil = {
+        id: user.id,
+        country: country !== null ? country.id : null,
+      };
       const { data, error } = await updateSelectProfil(newProfil);
       if (error) {
         setSeverity("error");
@@ -131,9 +146,29 @@ export default function PersonalizedPage() {
       <Helmet>
         <title>{`${t("pages.perzonalised.title")} - ${t("appname")}`}</title>
       </Helmet>
+      {profile && (
+        <Grid
+          item
+          xs={12}
+          sx={{
+            position: "sticky",
+            top: headerSize,
+            zIndex: 100,
+            pb: 1,
+          }}
+        >
+          <ProfilHeader profile={profile} />
+        </Grid>
+      )}
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
-          <Grid container spacing={1}>
+          <Grid container spacing={1} alignItems="center">
+            <Grid item xs={12}>
+              <UsernameInput />
+            </Grid>
+            <Grid item xs={12}>
+              <EmailInput />
+            </Grid>
             <Grid item xs={12} md={4}>
               <Typography variant="h4">
                 {t("commun.myorigincountry")}
@@ -162,6 +197,16 @@ export default function PersonalizedPage() {
               <AvatarSelector onSelect={changeAvatar} />
             </Grid>
             <Grid item xs={12}>
+              <ButtonColor
+                fullWidth
+                value={Colors.green}
+                label={t("commun.unlocknewavatars")}
+                icon={LockOpenIcon}
+                variant="contained"
+                onClick={() => navigate("/shop")}
+              />
+            </Grid>
+            <Grid item xs={12}>
               <Divider />
             </Grid>
             <Grid item xs={12}>
@@ -169,6 +214,16 @@ export default function PersonalizedPage() {
             </Grid>
             <Grid item xs={12}>
               <BadgeSelector onSelect={changeBadge} />
+            </Grid>
+            <Grid item xs={12}>
+              <ButtonColor
+                fullWidth
+                value={Colors.green}
+                label={t("commun.unlocknewbadges")}
+                icon={LockOpenIcon}
+                variant="contained"
+                onClick={() => navigate("/shop")}
+              />
             </Grid>
             <Grid item xs={12}>
               <Divider />
@@ -180,13 +235,39 @@ export default function PersonalizedPage() {
               <BannerSelector onSelect={changeBanner} />
             </Grid>
             <Grid item xs={12}>
+              <ButtonColor
+                fullWidth
+                value={Colors.green}
+                label={t("commun.unlocknewbanners")}
+                icon={LockOpenIcon}
+                variant="contained"
+                onClick={() => navigate("/shop")}
+              />
+            </Grid>
+            <Grid item xs={12}>
               <Divider />
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h4">{t("commun.titles")}</Typography>
             </Grid>
             <Grid item xs={12}>
-              <TitleSelector onSelect={changeTitle} />
+              <TitleSelector onSelect={changeTitleProfile} />
+            </Grid>
+            <Grid item xs={12}>
+              <ButtonColor
+                fullWidth
+                value={Colors.green}
+                label={t("commun.unlocknewtitles")}
+                icon={LockOpenIcon}
+                variant="contained"
+                onClick={() => navigate("/shop")}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>
+            <Grid item xs={12} sx={{ mt: 2 }}>
+              <DeleteAccountButton />
             </Grid>
           </Grid>
         </Box>

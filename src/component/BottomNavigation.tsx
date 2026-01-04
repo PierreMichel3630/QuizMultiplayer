@@ -3,27 +3,26 @@ import {
   BottomNavigation,
   BottomNavigationAction,
   Box,
-  Fab,
-  Paper,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AppsIcon from "@mui/icons-material/Apps";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import MenuIcon from "@mui/icons-material/Menu";
 import { padding, px } from "csx";
+import { useNotification } from "src/context/NotificationProvider";
 import { LogoIcon } from "src/icons/LogoIcon";
+import { NotificationType } from "src/models/enum/NotificationType";
 import { Colors } from "src/style/Colors";
-import { useApp } from "src/context/AppProvider";
 
 export const BottomNavigationBlock = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
-  const { myaccomplishments } = useApp();
+  const { notifications } = useNotification();
 
   const [menu, setMenu] = useState(location.pathname.split("/")[1]);
 
@@ -32,20 +31,27 @@ export const BottomNavigationBlock = () => {
   }, [location.pathname]);
 
   const notificationsAccomplishment = useMemo(
-    () => myaccomplishments.filter((el) => !el.validate).length,
-    [myaccomplishments]
+    () =>
+      [...notifications].filter(
+        (el) =>
+          el.isread === false &&
+          el.type === NotificationType.accomplishment_unlock
+      ).length,
+    [notifications]
   );
 
   return (
-    <Paper
+    <Box
       sx={{
         position: "fixed",
         bottom: 0,
         left: 0,
         right: 0,
         zIndex: 10,
+        borderTop: `2px solid ${Colors.lightgrey}`,
+        pb: "calc(env(safe-area-inset-bottom, 0px))",
+        backgroundColor: "background.paper",
       }}
-      elevation={24}
     >
       <BottomNavigation
         showLabels
@@ -88,31 +94,63 @@ export const BottomNavigationBlock = () => {
         />
         <BottomNavigationAction
           sx={{ p: padding(0, 5), minWidth: px(30) }}
-          value={"myprofile"}
-          label={t("commun.profile")}
-          icon={<AccountCircleIcon />}
+          value={"menus"}
+          label={t("commun.menus")}
+          icon={<MenuIcon />}
           component={Link}
-          to={"/myprofile"}
+          to={"/menus"}
         />
       </BottomNavigation>
       <Box
         sx={{
-          p: 1,
-          bgcolor: "background.paper",
-          borderRadius: "50%",
+          p: px(5),
           position: "absolute",
           left: "50%",
           transform: "translate(-40%, -100%)",
           cursor: "pointer",
+          bgcolor: "background.paper",
+          borderRadius: "50%",
         }}
         onClick={() => navigate("/play")}
       >
-        <Fab sx={{ backgroundColor: Colors.blue3 }}>
+        <Box
+          sx={{
+            backgroundColor: Colors.colorApp,
+            width: px(60),
+            height: px(60),
+            borderRadius: "50%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <LogoIcon
-            sx={{ color: Colors.white, ml: "2px", mt: "3px", fontSize: 30 }}
+            sx={{ color: Colors.white, ml: "2px", mt: "3px", fontSize: 40 }}
           />
-        </Fab>
+        </Box>
       </Box>
-    </Paper>
+      <Box
+        sx={{
+          p: px(5),
+          position: "absolute",
+          left: "50%",
+          transform: "translate(-40%, -100%)",
+          cursor: "pointer",
+          bgcolor: "background.paper",
+          borderRadius: "50%",
+          border: `2px solid ${Colors.lightgrey}`,
+          zIndex: -1,
+        }}
+        onClick={() => navigate("/play")}
+      >
+        <Box
+          sx={{
+            width: px(60),
+            height: px(60),
+            borderRadius: "50%",
+          }}
+        ></Box>
+      </Box>
+    </Box>
   );
 };

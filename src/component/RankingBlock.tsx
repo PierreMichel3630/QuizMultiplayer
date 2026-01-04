@@ -1,88 +1,78 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  Divider,
-  Grid,
-  Skeleton,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from "@mui/material";
-import { percent, px } from "csx";
+import { Box, Container, Divider, Grid, Typography } from "@mui/material";
+import { px } from "csx";
+import moment, { Moment } from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
-import { selectGamesByTime } from "src/api/game";
-import { selectScore } from "src/api/score";
-import rank1 from "src/assets/rank/rank1.png";
-import rank2 from "src/assets/rank/rank2.png";
-import rank3 from "src/assets/rank/rank3.png";
 import {
+  selectAvgChallengeByAllTime,
+  selectAvgChallengeByDate,
+  selectAvgChallengeByMonth,
+  selectAvgChallengeByWeek,
+  selectRankingChallengeAllTimePaginate,
+  selectRankingChallengeByDatePaginate,
+  selectRankingChallengeByMonthPaginate,
+  selectRankingChallengeByWeekPaginate,
+} from "src/api/challenge";
+import { selectSoloGameByDate } from "src/api/game";
+import { selectScore } from "src/api/score";
+import { useUser } from "src/context/UserProvider";
+import {
+  ChallengeAvg,
+  ChallengeRankingAllTime,
+  ChallengeRankingMonth,
+  ChallengeRankingWeek,
+} from "src/models/Challenge";
+import {
+  ClassementChallengeTimeEnum,
   ClassementScoreEnum,
-  ClassementTimeEnum,
+  ClassementSoloTimeEnum,
 } from "src/models/enum/ClassementEnum";
-import { HistorySoloGame } from "src/models/Game";
+import { AllGameModeEnum } from "src/models/enum/GameEnum";
+import { SoloGame } from "src/models/Game";
 import { Score } from "src/models/Score";
-import { Colors } from "src/style/Colors";
-import { AvatarAccount } from "./avatar/AvatarAccount";
-import { GroupButtonTime, GroupButtonTypeGame } from "./button/ButtonGroup";
-import { JsonLanguageBlock } from "./JsonLanguageBlock";
+import {
+  GroupButtonAllGameMode,
+  GroupButtonChallengeTime,
+  GroupButtonTime,
+  GroupButtonTypeGame,
+} from "./button/ButtonGroup";
+import { ChallengeButton } from "./button/ChallengeButton";
+import { CellRankingChallengeDay, RecapAvgChallenge } from "./ChallengeBlock";
 import { DataRanking, RankingTable } from "./table/RankingTable";
+import { useAuth } from "src/context/AuthProviderSupabase";
 
 interface Props {
   themes?: Array<number>;
 }
 
 export const RankingBlock = ({ themes }: Props) => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-
+  const { language } = useUser();
   const [isLoading, setIsLoading] = useState(true);
-  const [scores, setScores] = useState<Array<Score>>([]);
   const [tab, setTab] = useState(ClassementScoreEnum.points);
-
-  const options = useMemo(
-    () => [
-      {
-        label: t("commun.solo"),
-        value: ClassementScoreEnum.points,
-      },
-      {
-        label: t("commun.duel"),
-        value: ClassementScoreEnum.rank,
-      },
-    ],
-    [t]
-  );
+  const [data, setData] = useState<Array<DataRanking>>([]);
 
   useEffect(() => {
-    const getRank = () => {
-      setIsLoading(true);
-      const ids = themes ? themes : [];
-      selectScore(tab, 0, 3, ids).then(({ data }) => {
-        setScores(data as Array<Score>);
+    setIsLoading(true);
+    setData([]);
+    const ids = themes ?? [];
+    if (language) {
+      selectScore(language, tab, 0, 3, ids).then(({ data }) => {
+        const res = data as Array<Score>;
+        const newdata = res.map((el, index) => {
+          const champ = el[tab];
+          return {
+            profile: el.profile,
+            value: Array.isArray(champ) ? champ.length : champ,
+            theme: el.theme,
+            rank: index + 1,
+            size: 60,
+          };
+        });
+        setData(newdata);
         setIsLoading(false);
       });
-    };
-    getRank();
-  }, [themes, tab]);
-
-  const score0 = useMemo(
-    () => (scores.length > 0 ? scores[0] : undefined),
-    [scores]
-  );
-
-  const score1 = useMemo(
-    () => (scores.length > 1 ? scores[1] : undefined),
-    [scores]
-  );
-
-  const score2 = useMemo(
-    () => (scores.length > 2 ? scores[2] : undefined),
-    [scores]
-  );
+    }
+  }, [themes, tab, language]);
 
   return (
     <Grid container spacing={1}>
@@ -92,85 +82,19 @@ export const RankingBlock = ({ themes }: Props) => {
         sx={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          justifyContent: "center",
           gap: 1,
         }}
       >
-        <Typography variant="h2">{t("commun.ranking")}</Typography>
-        <Button
-          variant="outlined"
-          sx={{
-            minWidth: "auto",
-            textTransform: "uppercase",
-            "&:hover": {
-              border: "2px solid currentColor",
-            },
+        <GroupButtonTypeGame
+          selected={tab}
+          onChange={(value) => {
+            setTab(value);
           }}
-          color="secondary"
-          size="small"
-          onClick={() => navigate(`/ranking?sort=${tab}`)}
-        >
-          <Typography variant="h6" noWrap>
-            {t("commun.seeall")}
-          </Typography>
-        </Button>
-      </Grid>
-      <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-        <ToggleButtonGroup
-          color="primary"
-          value={tab}
-          exclusive
-          onChange={(
-            _event: React.MouseEvent<HTMLElement>,
-            newValue: string
-          ) => {
-            setTab(newValue as ClassementScoreEnum);
-          }}
-          aria-label="typegame"
-        >
-          {options.map((option) => (
-            <ToggleButton
-              key={option.value}
-              value={option.value}
-              sx={{ p: "2px 8px" }}
-            >
-              <Typography variant="h6" noWrap>
-                {option.label}
-              </Typography>
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
+        />
       </Grid>
       <Grid item xs={12}>
-        {isLoading ? (
-          <Box sx={{ display: "flex", gap: px(2), alignItems: "flex-end" }}>
-            <Skeleton width={"100%"} height={170} />
-            <Skeleton width={"100%"} height={180} />
-            <Skeleton width={"100%"} height={150} />
-          </Box>
-        ) : (
-          <Box>
-            <Container maxWidth="md">
-              <Grid container spacing={1}>
-                {score1 && (
-                  <Grid item xs={4} sx={{ display: "flex" }}>
-                    <RankingGame score={score1} rank={2} value={score1[tab]} />
-                  </Grid>
-                )}
-                {score0 && (
-                  <Grid item xs={4} sx={{ display: "flex" }}>
-                    <RankingGame score={score0} rank={1} value={score0[tab]} />
-                  </Grid>
-                )}
-                {score2 && (
-                  <Grid item xs={4} sx={{ display: "flex" }}>
-                    <RankingGame score={score2} rank={3} value={score2[tab]} />
-                  </Grid>
-                )}
-              </Grid>
-            </Container>
-          </Box>
-        )}
+        <RankingTable data={data} loading={isLoading} />
       </Grid>
       <Grid item xs={12}>
         <Divider sx={{ borderBottomWidth: 5 }} />
@@ -179,215 +103,331 @@ export const RankingBlock = ({ themes }: Props) => {
   );
 };
 
-interface PropsRankingGame {
-  score: Score;
-  rank: number;
-  value: number;
-}
-const RankingGame = ({ score, rank, value }: PropsRankingGame) => {
-  const rankCss = useMemo(() => {
-    let color = Colors.grey4;
-    let icon = (
-      <Avatar sx={{ bgcolor: Colors.grey, width: 25, height: 25 }}>
-        <Typography variant="h6" color="text.primary">
-          {rank}
-        </Typography>
-      </Avatar>
-    );
-    switch (rank) {
-      case 1:
-        color = Colors.gold;
-        icon = <Avatar sx={{ width: 50, height: 50, p: px(5) }} src={rank1} />;
-        break;
-      case 2:
-        color = Colors.silver;
-        icon = <Avatar sx={{ width: 45, height: 45, p: px(5) }} src={rank2} />;
-        break;
-      case 3:
-        color = Colors.bronze;
-        icon = <Avatar sx={{ width: 40, height: 40, p: px(5) }} src={rank3} />;
-        break;
-    }
-    return { color, icon };
-  }, [rank]);
-  return (
-    <Box
-      sx={{
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "end",
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          textAlign: "center",
-        }}
-      >
-        <Link
-          to={`/profil/${score.profile.id}`}
-          style={{
-            textDecoration: "inherit",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <AvatarAccount avatar={score.profile.avatar.icon} size={60} />
-          <Typography variant="h6">{score.profile.username}</Typography>
-        </Link>
-      </Box>
-      <Box
-        sx={{
-          width: percent(100),
-          height: px(170 - rank * 15),
-          backgroundColor: rankCss.color,
-          borderTopRightRadius: px(10),
-          borderTopLeftRadius: px(10),
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "space-between",
-          p: "10px 3px 3px 3px",
-        }}
-      >
-        {rankCss.icon}
-        <Box
-          sx={{
-            width: percent(100),
-            textAlign: "center",
-          }}
-        >
-          <Link
-            to={`/theme/${score.theme.id}`}
-            style={{
-              textDecoration: "inherit",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <JsonLanguageBlock
-              variant="body1"
-              color="text.secondary"
-              value={score.theme.name}
-              sx={{
-                width: percent(100),
-                overflow: "hidden",
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-              }}
-            />
-          </Link>
-          <Typography variant="h2" color="text.secondary" component="span">
-            {value}
-          </Typography>
-        </Box>
-      </Box>
-    </Box>
-  );
-};
-
 export const RankingTop5Block = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { language } = useUser();
+  const { hasPlayChallenge } = useAuth();
 
-  const [tab, setTab] = useState(ClassementScoreEnum.points);
-  const [tabTime, setTabTime] = useState(ClassementTimeEnum.week);
+  const [tab, setTab] = useState(AllGameModeEnum.CHALLENGE);
+  const [tabTimeSolo, setTabTimeSolo] = useState(ClassementSoloTimeEnum.week);
+  const [tabTimeChallenge, setTabTimeChallenge] = useState(
+    ClassementChallengeTimeEnum.day
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<Array<DataRanking>>([]);
+  const [avg, setAvg] = useState<null | ChallengeAvg>(null);
 
   useEffect(() => {
     setIsLoading(true);
     setData([]);
-    if (
-      tab === ClassementScoreEnum.rank ||
-      (tab === ClassementScoreEnum.points &&
-        tabTime === ClassementTimeEnum.alltime)
-    ) {
-      selectScore(tab, 0, 5).then(({ data }) => {
-        const res = data as Array<Score>;
-        const newdata = res.map((el, index) => {
-          const champ = el[tab];
-          return {
-            profile: el.profile,
-            value: Array.isArray(champ) ? champ.length : champ,
-            theme: el.theme,
-            rank: index + 1,
-          };
+    if (language) {
+      if (tab === AllGameModeEnum.CHALLENGE) {
+        if (tabTimeChallenge === ClassementChallengeTimeEnum.day) {
+          selectRankingChallengeByDatePaginate(moment()).then(({ data }) => {
+            const res: Array<any> = data ?? [];
+            const newdata = res.map((el) => {
+              return {
+                profile: el.profile,
+                value: hasPlayChallenge ? (
+                  <CellRankingChallengeDay value={el} />
+                ) : (
+                  <></>
+                ),
+                rank: el.ranking,
+                size: hasPlayChallenge ? 65 : 1,
+              };
+            });
+            setData(newdata);
+            setIsLoading(false);
+          });
+        } else if (tabTimeChallenge === ClassementChallengeTimeEnum.week) {
+          selectRankingChallengeByWeekPaginate(moment().format("WW/YYYY")).then(
+            ({ data }) => {
+              const res = (data ?? []) as Array<ChallengeRankingWeek>;
+              const newdata = res.map((el) => {
+                return {
+                  profile: el.profile,
+                  value: (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        textAlign: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Box sx={{ width: px(80) }}>
+                        <Typography variant="h6" noWrap>
+                          {el.score} {t("commun.pointsabbreviation")} (
+                          {el.scoreavg.toFixed(1)})
+                        </Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: px(4),
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Typography variant="h6" noWrap>
+                          {el.games}
+                        </Typography>
+                        <Typography variant="body1" noWrap>
+                          {t("commun.games")}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  ),
+                  size: 90,
+                  rank: el.ranking,
+                };
+              });
+              setData(newdata);
+              setIsLoading(false);
+            }
+          );
+        } else if (tabTimeChallenge === ClassementChallengeTimeEnum.month) {
+          selectRankingChallengeByMonthPaginate(
+            moment().format("MM/YYYY")
+          ).then(({ data }) => {
+            const res = (data ?? []) as Array<ChallengeRankingMonth>;
+            const newdata = res.map((el) => {
+              return {
+                profile: el.profile,
+                value: (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      textAlign: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Box sx={{ width: px(80) }}>
+                      <Typography variant="h6" noWrap>
+                        {el.score} {t("commun.pointsabbreviation")} (
+                        {el.scoreavg.toFixed(1)})
+                      </Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: px(4),
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Typography variant="h6" noWrap>
+                        {el.games}
+                      </Typography>
+                      <Typography variant="body1" noWrap>
+                        {t("commun.games")}
+                      </Typography>
+                    </Box>
+                  </Box>
+                ),
+                size: 90,
+                rank: el.ranking,
+              };
+            });
+            setData(newdata);
+            setIsLoading(false);
+          });
+        } else if (tabTimeChallenge === ClassementChallengeTimeEnum.alltime) {
+          selectRankingChallengeAllTimePaginate().then(({ data }) => {
+            const res = (data ?? []) as Array<ChallengeRankingAllTime>;
+            const newdata = res.map((el) => {
+              return {
+                profile: el.profile,
+                value: (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      textAlign: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Box sx={{ width: px(100) }}>
+                      <Typography variant="h6" noWrap>
+                        {el.score} {t("commun.pointsabbreviation")} (
+                        {el.scoreavg.toFixed(1)})
+                      </Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: px(4),
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Typography variant="h6" noWrap>
+                        {el.games}
+                      </Typography>
+                      <Typography variant="body1" noWrap>
+                        {t("commun.games")}
+                      </Typography>
+                    </Box>
+                  </Box>
+                ),
+                size: 100,
+                rank: el.ranking,
+              };
+            });
+            setData(newdata);
+            setIsLoading(false);
+          });
+        }
+      } else if (tab === AllGameModeEnum.DUEL) {
+        selectScore(language, "rank", 0, 5).then(({ data }) => {
+          const res = data as Array<Score>;
+          const newdata = res.map((el, index) => {
+            const champ = el.rank;
+            return {
+              profile: el.profile,
+              value: (
+                <Typography variant="h2" noWrap>
+                  {champ}
+                </Typography>
+              ),
+              theme: el.theme,
+              rank: index + 1,
+              size: 70,
+            };
+          });
+          setData(newdata);
+          setIsLoading(false);
         });
-        setData(newdata);
-        setIsLoading(false);
-      });
-    } else {
-      selectGamesByTime(tabTime, 5).then(({ data }) => {
-        const res = data as Array<HistorySoloGame>;
-        const newdata = res.map((el, index) => {
-          return {
-            profile: el.profile,
-            value: el.points,
-            theme: el.theme,
-            rank: index + 1,
-          };
+      } else if (tab === AllGameModeEnum.SOLO) {
+        let start: Moment | undefined = undefined;
+        if (tabTimeSolo === ClassementSoloTimeEnum.month) {
+          start = moment().subtract(1, "month");
+        } else if (tabTimeSolo === ClassementSoloTimeEnum.week) {
+          start = moment().subtract(1, "week");
+        } else {
+          start = undefined;
+        }
+        selectSoloGameByDate(language, 0, 5, start).then(({ data }) => {
+          const res = data as Array<SoloGame>;
+          const newdata = res.map((el, index) => {
+            return {
+              profile: el.profile,
+              value: (
+                <Typography variant="h2" noWrap>
+                  {el.points}
+                </Typography>
+              ),
+              theme: el.theme,
+              rank: index + 1,
+              size: 60,
+            };
+          });
+          setData(newdata);
+          setIsLoading(false);
         });
-        setData(newdata);
-        setIsLoading(false);
-      });
+      }
     }
-  }, [tab, tabTime]);
+  }, [tab, tabTimeSolo, tabTimeChallenge, t, language, hasPlayChallenge]);
+
+  const link = useMemo(() => {
+    let res = "";
+    if (tab === AllGameModeEnum.SOLO) {
+      res = `/ranking?sort=points&time=${tabTimeSolo}`;
+    } else if (tab === AllGameModeEnum.DUEL) {
+      res = `/ranking?sort=rank`;
+    } else if (tab === AllGameModeEnum.CHALLENGE) {
+      res = `/challenge?time=${tabTimeChallenge}`;
+    }
+    return res;
+  }, [tab, tabTimeSolo, tabTimeChallenge]);
+
+  useEffect(() => {
+    const getAvg = () => {
+      if (tab === AllGameModeEnum.CHALLENGE) {
+        const date = moment();
+        if (tabTimeChallenge === ClassementChallengeTimeEnum.day) {
+          selectAvgChallengeByDate(date).then(({ data }) => {
+            setAvg(data);
+          });
+        } else if (tabTimeChallenge === ClassementChallengeTimeEnum.week) {
+          selectAvgChallengeByWeek(date).then(({ data }) => {
+            setAvg(data);
+          });
+        } else if (tabTimeChallenge === ClassementChallengeTimeEnum.month) {
+          selectAvgChallengeByMonth(date).then(({ data }) => {
+            setAvg(data);
+          });
+        } else if (tabTimeChallenge === ClassementChallengeTimeEnum.alltime) {
+          selectAvgChallengeByAllTime().then(({ data }) => {
+            setAvg(data);
+          });
+        }
+      } else {
+        setAvg(null);
+      }
+    };
+    getAvg();
+  }, [tab, tabTimeChallenge]);
 
   return (
-    <Grid container spacing={1} alignItems="center">
-      <Grid item xs={6}>
-        <Typography variant="h2">{t("commun.ranking")}</Typography>
-      </Grid>
-      <Grid item xs={6} sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <GroupButtonTypeGame
-          selected={tab}
-          onChange={(value) => {
-            setTab(value);
-          }}
-        />
-      </Grid>
-      {tab === ClassementScoreEnum.points && (
-        <Grid item xs={12}>
-          <GroupButtonTime
-            selected={tabTime}
+    <Container maxWidth="sm">
+      <Grid container spacing={1} alignItems="center">
+        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <GroupButtonAllGameMode
+            selected={tab}
             onChange={(value) => {
-              setTabTime(value);
+              setTab(value);
             }}
           />
         </Grid>
-      )}
-      <Grid item xs={12}>
-        <RankingTable data={data} loading={isLoading} />
+        {tab === AllGameModeEnum.SOLO && (
+          <Grid item xs={12}>
+            <GroupButtonTime
+              selected={tabTimeSolo}
+              onChange={(value) => {
+                setTabTimeSolo(value);
+              }}
+            />
+          </Grid>
+        )}
+        {tab === AllGameModeEnum.CHALLENGE && (
+          <>
+            <Grid item xs={12}>
+              <GroupButtonChallengeTime
+                selected={tabTimeChallenge}
+                onChange={(value) => {
+                  setTabTimeChallenge(value);
+                }}
+              />
+            </Grid>
+            {avg && (
+              <Grid item xs={12}>
+                <RecapAvgChallenge avg={avg} />
+              </Grid>
+            )}
+            {!hasPlayChallenge && (
+              <Grid item xs={12}>
+                <ChallengeButton />
+              </Grid>
+            )}
+          </>
+        )}
+
+        <Grid item xs={12}>
+          <Box sx={{ p: 1 }}>
+            <RankingTable
+              data={data}
+              loading={isLoading}
+              navigation={{
+                link: link,
+                label: t("commun.seemore"),
+              }}
+            />
+          </Box>
+        </Grid>
       </Grid>
-      <Grid item xs={12}>
-        <Button
-          variant="outlined"
-          sx={{
-            minWidth: "auto",
-            textTransform: "uppercase",
-            "&:hover": {
-              border: "2px solid currentColor",
-            },
-          }}
-          color="secondary"
-          size="small"
-          fullWidth
-          onClick={() => navigate(`/ranking?sort=${tab}`)}
-        >
-          <Typography variant="h6" noWrap>
-            {t("commun.seeall")}
-          </Typography>
-        </Button>
-      </Grid>
-    </Grid>
+    </Container>
   );
 };

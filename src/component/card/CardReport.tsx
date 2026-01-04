@@ -12,6 +12,7 @@ import { ButtonColor } from "../Button";
 import { CardSignalQuestion } from "./CardQuestion";
 import moment from "moment";
 import { ImageThemeBlock } from "../ImageThemeBlock";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   report: Report;
@@ -81,14 +82,14 @@ export const CardReport = ({ report, onDelete }: Props) => {
                   }
                   size={60}
                 />
-                <JsonLanguageBlock
-                  value={
-                    report.duelgame
-                      ? report.duelgame.themequestion.name
-                      : report.sologame!.themequestion.name
-                  }
+                <TextNameBlock
                   color="text.secondary"
                   variant="h4"
+                  values={
+                    report.duelgame
+                      ? report.duelgame.themequestion.themetranslation
+                      : report.sologame!.themequestion.themetranslation
+                  }
                 />
               </Box>
             </Box>
@@ -99,7 +100,10 @@ export const CardReport = ({ report, onDelete }: Props) => {
                 backgroundColor: Colors.black,
               }}
             >
-              <CardSignalQuestion question={report.questionjson} />
+              <CardSignalQuestion
+                question={report.questionjson}
+                version={report.version}
+              />
             </Box>
           )}
         </Grid>
@@ -128,7 +132,9 @@ export const CardReport = ({ report, onDelete }: Props) => {
               icon={VisibilityIcon}
               variant="contained"
               onClick={() =>
-                navigate(`/administration/question/${report.question?.id}`)
+                navigate(
+                  `/administration/edit/questions?ids=${report.question?.id}`
+                )
               }
             />
           )}

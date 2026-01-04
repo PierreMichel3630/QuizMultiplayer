@@ -52,3 +52,9 @@ export const searchString = (search: string, value: string) => {
   const isInclude = valueNormalize.includes(searchNormalize);
   return isInclude || compare > 0.6;
 };
+
+export const removeAccentsAndLowercase = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();

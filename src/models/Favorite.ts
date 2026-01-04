@@ -1,9 +1,11 @@
 export interface Favorite {
   id: number;
   profile: string;
-  theme: number;
+  theme: number | null;
+  category: number | null;
 }
 
 export interface FavoriteInsert {
-  theme: number;
+  theme?: number;
+  category?: number;
 }

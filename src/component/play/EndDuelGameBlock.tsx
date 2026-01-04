@@ -1,7 +1,7 @@
 import { Box, Container, Divider, Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useUser } from "src/context/UserProvider";
-import { DuelGame, ExtraDuelGame } from "src/models/DuelGame";
+import { DuelGame } from "src/models/DuelGame";
 import { Colors } from "src/style/Colors";
 import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 
@@ -10,38 +10,39 @@ import HomeIcon from "@mui/icons-material/Home";
 import { px } from "csx";
 import { useNavigate } from "react-router-dom";
 import { launchDuelGame, matchmakingDuelGame } from "src/api/game";
-import { COLORDUEL1, COLORDUEL2 } from "src/pages/play/DuelPage";
 import { ButtonColor } from "../Button";
 import { ImageThemeBlock } from "../ImageThemeBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import ReplayIcon from "@mui/icons-material/Replay";
-import { Fragment, useEffect, useMemo, useState } from "react";
-import { useAuth } from "src/context/AuthProviderSupabase";
-import { Question } from "src/models/Question";
-import { CardSignalQuestion } from "../card/CardQuestion";
-import { ReportModal } from "../modal/ReportModal";
-import { ExperienceBlock } from "../ExperienceBlock";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useApp } from "src/context/AppProvider";
+import { useAuth } from "src/context/AuthProviderSupabase";
+import { QuestionResult } from "src/models/Question";
+import { CardSignalQuestion } from "../card/CardQuestion";
+import { ExperienceDuelBlock } from "../ExperienceBlock";
+import { ReportModal } from "../modal/ReportModal";
 import { AddMoneyBlock } from "../MoneyBlock";
 import { RankingTableSoloDuel } from "../table/RankingTable";
+import { ProfileTitleBlock } from "../title/ProfileTitle";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   game: DuelGame;
-  extra?: ExtraDuelGame;
 }
 
-export const EndDuelGameBlock = ({ game, extra }: Props) => {
+export const EndDuelGameBlock = ({ game }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { uuid } = useUser();
+  const { uuid, language } = useUser();
   const { user } = useAuth();
   const { refreshProfil } = useAuth();
   const { getMyAccomplishments } = useApp();
 
-  const [question, setQuestion] = useState<Question | undefined>(undefined);
+  const [question, setQuestion] = useState<QuestionResult | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     refreshProfil();
@@ -49,19 +50,17 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
 
   const gamebattle = useMemo(() => game.battlegame, [game]);
   const isPlayer1 = useMemo(() => game.player1.id === uuid, [uuid, game]);
-  const isPlayer2 = useMemo(() => game.player2.id === uuid, [uuid, game]);
+  const isPlayer2 = useMemo(() => game.player2?.id === uuid, [uuid, game]);
 
-  const xp = useMemo(
-    () =>
-      extra
-        ? isPlayer1
-          ? extra.xpplayer1
-          : isPlayer2
-          ? extra.xpplayer2
-          : undefined
-        : undefined,
-    [extra, isPlayer1, isPlayer2]
-  );
+  const resultPlayer1 = useMemo(() => {
+    const draw = game.ptsplayer1 === game.ptsplayer2;
+    return draw ? 0.5 : game.ptsplayer1 > game.ptsplayer2 ? 1 : 0;
+  }, [game]);
+
+  const resultPlayer2 = useMemo(() => {
+    const draw = game.ptsplayer1 === game.ptsplayer2;
+    return draw ? 0.5 : game.ptsplayer2 > game.ptsplayer1 ? 1 : 0;
+  }, [game]);
 
   const hasWin = useMemo(
     () =>
@@ -82,25 +81,65 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
   );
 
   const revenge = () => {
-    const player1 = isPlayer1 ? game.player1.id : game.player2.id;
-    const player2 = isPlayer1 ? game.player2.id : game.player1.id;
-    launchDuelGame(player1, player2, game.theme.id).then(({ data }) => {
-      if (data) {
-        navigate(`/duel/${data.uuid}`, {});
-      }
-    });
+    const player1 = isPlayer1 ? game.player1.id : game.player2?.id;
+    const player2 = isPlayer1 ? game.player2?.id : game.player1.id;
+    if (player1 && player2) {
+      launchDuelGame(player1, player2, game.theme.id).then(({ data }) => {
+        if (data) {
+          navigate(`/duel/${data.uuid}`, {});
+        }
+      });
+    }
   };
 
   const playDuel = async () => {
     if (user) {
-      if (uuid) {
-        const { data } = await matchmakingDuelGame(uuid, game.theme.id);
+      if (uuid && language) {
+        const { data } = await matchmakingDuelGame(
+          uuid,
+          game.theme.id,
+          language
+        );
         navigate(`/duel/${data.uuid}`);
       }
     } else {
       navigate(`/login`);
     }
   };
+
+  const deltaEloPlayer1 = useMemo(() => {
+    let elo = 0;
+    if (game.ptsplayer1 > game.ptsplayer2) {
+      elo = game.elo.deltaPlayer1.win;
+    } else if (game.ptsplayer2 > game.ptsplayer1) {
+      elo = game.elo.deltaPlayer1.lose;
+    } else {
+      elo = game.elo.deltaPlayer1.draw;
+    }
+    return elo;
+  }, [game]);
+
+  const deltaEloPlayer2 = useMemo(() => {
+    let elo = 0;
+    if (game.ptsplayer1 > game.ptsplayer2) {
+      elo = game.elo.deltaPlayer2.lose;
+    } else if (game.ptsplayer2 > game.ptsplayer1) {
+      elo = game.elo.deltaPlayer2.win;
+    } else {
+      elo = game.elo.deltaPlayer2.draw;
+    }
+    return elo;
+  }, [game]);
+
+  const getColorElo = useCallback((elo: number) => {
+    let color = Colors.white;
+    if (elo > 0) {
+      color = Colors.green;
+    } else if (elo < 0) {
+      color = Colors.red;
+    }
+    return color;
+  }, []);
 
   return (
     <Box sx={{ mb: gamebattle !== null ? px(50) : px(140) }}>
@@ -118,15 +157,14 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
           <Box sx={{ width: px(70) }}>
             <ImageThemeBlock theme={game.theme} />
           </Box>
-          <JsonLanguageBlock
+          <TextNameBlock
             variant="h2"
-            color="text.secondary"
             sx={{ wordBreak: "break-all" }}
-            value={game.theme.name}
+            values={game.theme.themetranslation}
           />
         </Grid>
         <Grid item xs={12} sx={{ textAlign: "center" }}>
-          <Typography variant="h1" color="text.secondary">
+          <Typography variant="h1">
             {equality
               ? t("commun.equality")
               : hasWin
@@ -145,52 +183,36 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
           }}
         >
           <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-            <Typography variant="h2" sx={{ color: COLORDUEL1, fontSize: 35 }}>
+            <Typography
+              variant="h2"
+              sx={{ color: Colors.colorDuel1, fontSize: 35 }}
+            >
               {game.ptsplayer1}
             </Typography>
             <AvatarAccountBadge
               profile={game.player1}
               size={60}
-              color={COLORDUEL1}
+              color={Colors.colorDuel1}
             />
           </Box>
           <Box sx={{ textAlign: "end" }}>
-            <Typography variant="h4" sx={{ color: COLORDUEL1 }}>
+            <Typography variant="h4" sx={{ color: Colors.colorDuel1 }}>
               {game.player1.username}
             </Typography>
-            {game.player1.title && (
-              <JsonLanguageBlock
-                variant="caption"
-                color="text.secondary"
-                value={game.player1.title.name}
-              />
-            )}
+            <ProfileTitleBlock titleprofile={game.player1.titleprofile} />
             <Box>
-              {extra && (
-                <>
-                  <Typography
-                    variant="h6"
-                    component="span"
-                    color="text.secondary"
-                  >
-                    {extra.eloPlayer1} {t("commun.points")}
-                  </Typography>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      color:
-                        extra.delta === 0
-                          ? Colors.white
-                          : extra.delta > 0
-                          ? Colors.green
-                          : Colors.red,
-                    }}
-                    component="span"
-                  >
-                    {` (${extra.delta > 0 ? "+" : ""}${extra.delta})`}
-                  </Typography>
-                </>
-              )}
+              <Typography variant="h6" component="span">
+                {game.elo.eloPlayer1 + deltaEloPlayer1} {t("commun.points")}
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  color: getColorElo(deltaEloPlayer1),
+                }}
+                component="span"
+              >
+                {` (${deltaEloPlayer1 > 0 ? "+" : ""}${deltaEloPlayer1})`}
+              </Typography>
             </Box>
           </Box>
         </Grid>
@@ -203,7 +225,7 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
             alignItems: "center",
           }}
         >
-          <BoltIcon sx={{ fontSize: 50, color: Colors.white }} />
+          <BoltIcon sx={{ fontSize: 50, color: "text.primary" }} />
         </Grid>
         <Grid
           item
@@ -215,64 +237,55 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
             gap: 1,
           }}
         >
-          <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-            <AvatarAccountBadge
-              profile={game.player2}
-              size={60}
-              color={COLORDUEL2}
-            />
-            <Typography variant="h2" sx={{ color: COLORDUEL2, fontSize: 35 }}>
-              {game.ptsplayer2}
-            </Typography>
-          </Box>
-          <Box>
-            <Typography variant="h4" sx={{ color: COLORDUEL2 }}>
-              {game.player2.username}
-            </Typography>
-            {game.player2.title && (
-              <JsonLanguageBlock
-                variant="caption"
-                color="text.secondary"
-                value={game.player2.title.name}
-              />
-            )}
-            <Box>
-              {extra && (
-                <>
-                  <Typography
-                    variant="h6"
-                    component="span"
-                    color="text.secondary"
-                  >
-                    {extra.eloPlayer2} {t("commun.points")}
+          {game.player2 && (
+            <>
+              <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                <AvatarAccountBadge
+                  profile={game.player2}
+                  size={60}
+                  color={Colors.colorDuel2}
+                />
+                <Typography
+                  variant="h2"
+                  sx={{ color: Colors.colorDuel2, fontSize: 35 }}
+                >
+                  {game.ptsplayer2}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="h4" sx={{ color: Colors.colorDuel2 }}>
+                  {game.player2.username}
+                </Typography>
+                <ProfileTitleBlock titleprofile={game.player2.titleprofile} />
+                <Box>
+                  <Typography variant="h6" component="span">
+                    {game.elo.eloPlayer2 + deltaEloPlayer2} {t("commun.points")}
                   </Typography>
                   <Typography
                     variant="h6"
                     sx={{
-                      color:
-                        extra.delta === 0
-                          ? Colors.white
-                          : -extra.delta > 0
-                          ? Colors.green
-                          : Colors.red,
+                      color: getColorElo(deltaEloPlayer2),
                     }}
                     component="span"
                   >
-                    {` (${-extra.delta > 0 ? "+" : ""}${-extra.delta})`}
+                    {` (${deltaEloPlayer2 > 0 ? "+" : ""}${deltaEloPlayer2})`}
                   </Typography>
-                </>
-              )}
-            </Box>
-          </Box>
+                </Box>
+              </Box>
+            </>
+          )}
         </Grid>
-        {xp && (
+        {(isPlayer1 || isPlayer2) && (
           <Grid item xs={12}>
-            <ExperienceBlock xp={xp} />
+            <ExperienceDuelBlock
+              score={isPlayer1 ? game.ptsplayer1 : game.ptsplayer2}
+              victory={isPlayer1 ? resultPlayer1 === 1 : resultPlayer2 === 1}
+            />
           </Grid>
         )}
         {money && (
           <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-            <AddMoneyBlock money={money} />
+            <AddMoneyBlock money={Math.round(money)} />
           </Grid>
         )}
         <Grid item xs={12}>
@@ -287,7 +300,7 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
             }}
           />
         </Grid>
-        {game.questions.map((el) => (
+        {[...game.questions].map((el) => (
           <Fragment key={el.id}>
             <Grid item xs={12}>
               <CardSignalQuestion
@@ -299,7 +312,6 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
               <Divider
                 sx={{
                   borderBottomWidth: 3,
-                  borderColor: Colors.white,
                   borderRadius: px(5),
                 }}
               />
@@ -318,7 +330,7 @@ export const EndDuelGameBlock = ({ game, extra }: Props) => {
         <Container
           maxWidth="md"
           sx={{
-            backgroundColor: Colors.black,
+            backgroundColor: "background.paper",
           }}
         >
           <Box

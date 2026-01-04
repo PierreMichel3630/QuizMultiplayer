@@ -1,9 +1,8 @@
-import { Alert, Box, Divider, Grid, Paper, Typography } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { Alert, Box, Grid, Paper, Typography } from "@mui/material";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getProfilById } from "src/api/profile";
-import { ButtonColor } from "src/component/Button";
 import { CountryBlock } from "src/component/CountryBlock";
 import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
 import { Profile } from "src/models/Profile";
@@ -14,76 +13,73 @@ import { Helmet } from "react-helmet-async";
 import { selectBadgeByProfile } from "src/api/badge";
 import {
   selectOppositionByOpponent,
-  selectScoresByProfile,
+  selectScoresByProfilePaginate,
 } from "src/api/score";
 import { selectTitleByProfile } from "src/api/title";
-import { FriendButton } from "src/component/FriendButton";
-import { ImageThemeBlock } from "src/component/ImageThemeBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
 import { BarVictory } from "src/component/chart/BarVictory";
-import { DonutGames } from "src/component/chart/DonutGames";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { Badge, BadgeProfile } from "src/models/Badge";
 import { Opposition, Score } from "src/models/Score";
-import { Title, TitleProfile } from "src/models/Title";
-import {
-  sortByDuelGamesDesc,
-  sortByGamesDesc,
-  sortByName,
-  sortByPointsDesc,
-  sortByRankDesc,
-  sortByTitle,
-  sortByXP,
-} from "src/utils/sort";
+import { TitleProfile } from "src/models/Title";
+import { sortByUsername } from "src/utils/sort";
 
-import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
-import EditIcon from "@mui/icons-material/Edit";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { selectFriendByProfileId } from "src/api/friend";
 import { BasicSearchInput } from "src/component/Input";
+import { ProfileAction } from "src/component/ProfileAction";
 import { SortButton } from "src/component/SortBlock";
 import { StatusProfileBlock } from "src/component/StatusProfileBlock";
 import { CardBadge } from "src/component/card/CardBadge";
+import { CardChallenge } from "src/component/card/CardChallenge";
+import { CardFinishTheme } from "src/component/card/CardFinishTheme";
 import { CardFriends } from "src/component/card/CardFriends";
 import { CardOpposition } from "src/component/card/CardOpposition";
 import { CardTitle } from "src/component/card/CardTitle";
 import { SkeletonAvatarPlayer } from "src/component/skeleton/SkeletonPlayer";
 import { SkeletonProfilTheme } from "src/component/skeleton/SkeletonTheme";
+import { ThemeTitleBlock } from "src/component/theme/ThemeBlock";
+import { ProfileTitleBlock } from "src/component/title/ProfileTitle";
 import { useApp } from "src/context/AppProvider";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { Friend, FRIENDSTATUS } from "src/models/Friend";
 import { getLevel } from "src/utils/calcul";
-import { searchString } from "src/utils/string";
+import HistoryIcon from "@mui/icons-material/History";
+import { ButtonColor } from "src/component/Button";
+import { ShopItems } from "src/component/ShopBlock";
 
 export default function ProfilPage() {
   const { t } = useTranslation();
   const { id } = useParams();
-  const { uuid, language } = useUser();
+  const { uuid } = useUser();
   const { user, profile } = useAuth();
-  const navigate = useNavigate();
   const { friends, headerSize } = useApp();
+  const navigate = useNavigate();
+
+  const ITEMPERPAGE = 25;
 
   const [profileUser, setProfileUser] = useState<Profile | undefined>(
     undefined
   );
   const [scores, setScores] = useState<Array<Score>>([]);
-  const [titles, setTitles] = useState<Array<Title>>([]);
+  const [titles, setTitles] = useState<Array<TitleProfile>>([]);
   const [badges, setBadges] = useState<Array<Badge>>([]);
   const [oppositions, setOppositions] = useState<Array<Opposition>>([]);
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("alphabetical");
+  const [sort, setSort] = useState("games");
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
   const [profileFriends, setProfileFriends] = useState<Array<Friend>>([]);
-  const [isLoadingScore, setIsLoadingScore] = useState(true);
+  const [isLoadingScore, setIsLoadingScore] = useState(false);
   const [isLoadingTitle, setIsLoadingTitle] = useState(true);
   const [isLoadingBadge, setIsLoadingBadge] = useState(true);
   const [isLoadingOppositions, setIsLoadingOppositions] = useState(true);
   const [isLoadingFriends, setIsLoadingFriends] = useState(true);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [, setPage] = useState(0);
 
-  const [isEnd, setIsEnd] = useState(true);
-  const [maxIndex, setMaxIndex] = useState(10);
+  const [isEnd, setIsEnd] = useState(false);
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastItemRef = useRef<HTMLDivElement | null>(null);
 
   const isMe = useMemo(() => id === uuid, [id, uuid]);
   const friend = useMemo(
@@ -113,12 +109,10 @@ export default function ProfilPage() {
   );
 
   const sorts = [
-    { value: "alphabetical", label: t("sort.alphabetical"), sort: setSort },
-    { value: "gamessolo", label: t("sort.gamessolo"), sort: setSort },
-    { value: "gamesduel", label: t("sort.gamesduel"), sort: setSort },
-    { value: "scoresolo", label: t("sort.scoresolo"), sort: setSort },
-    { value: "scoreduel", label: t("sort.scoreduel"), sort: setSort },
-    { value: "level", label: t("sort.level"), sort: setSort },
+    { value: "games", label: t("sort.gamessolo"), sort: setSort },
+    { value: "duelgames", label: t("sort.gamesduel"), sort: setSort },
+    { value: "points", label: t("sort.scoresolo"), sort: setSort },
+    { value: "rank", label: t("sort.scoreduel"), sort: setSort },
   ];
 
   useEffect(() => {
@@ -136,27 +130,58 @@ export default function ProfilPage() {
     getStats();
   }, [id]);
 
+  const getScore = useCallback(
+    (page: number) => {
+      if (isLoadingScore) return;
+      if (!isEnd && id) {
+        setIsLoadingScore(true);
+        selectScoresByProfilePaginate(id, sort, page, ITEMPERPAGE).then(
+          ({ data }) => {
+            const res = data as Array<Score>;
+            setScores((prev) => (page === 0 ? [...res] : [...prev, ...res]));
+            setIsEnd(res.length < ITEMPERPAGE);
+            setIsLoadingScore(false);
+          }
+        );
+      }
+    },
+    [id, isEnd, isLoadingScore, sort]
+  );
+
   useEffect(() => {
-    const getScore = () => {
-      setIsLoadingScore(true);
-      if (id) {
-        selectScoresByProfile(id).then(({ data }) => {
-          const res = data as Array<Score>;
-          setScores(res.sort(sortByDuelGamesDesc));
-          setIsLoadingScore(false);
+    setPage(0);
+    setScores([]);
+    setIsEnd(false);
+    getScore(0);
+  }, [sort, id]);
+
+  useEffect(() => {
+    if (isLoadingScore) return;
+
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !isEnd) {
+        setPage((prev) => {
+          getScore(prev + 1);
+          return prev + 1;
         });
       }
-    };
-    getScore();
-  }, [id]);
+    });
+
+    if (lastItemRef.current) {
+      observer.current.observe(lastItemRef.current);
+    }
+
+    return () => observer.current?.disconnect();
+  }, [scores, isLoadingScore, isEnd, getScore]);
 
   useEffect(() => {
     const getTitles = () => {
       setIsLoadingTitle(true);
       if (id) {
         selectTitleByProfile(id).then(({ data }) => {
-          const res = data as Array<TitleProfile>;
-          setTitles(res.map((el) => el.title));
+          setTitles(data ?? []);
           setIsLoadingTitle(false);
         });
       }
@@ -220,79 +245,7 @@ export default function ProfilPage() {
     getProfile();
   }, [id]);
 
-  const compare = () => {
-    if (user) {
-      navigate(`/compare`, {
-        state: { profile1: profile, profile2: profileUser },
-      });
-    } else {
-      navigate(`/login`);
-    }
-  };
-
-  const totalSolo = useMemo(
-    () => scores.reduce((acc, value) => acc + value.games, 0),
-    [scores]
-  );
-
-  const totalScore = useMemo(
-    () =>
-      scores.reduce(
-        (acc, value) => ({
-          victory: acc.victory + value.victory,
-          draw: acc.draw + value.draw,
-          defeat: acc.defeat + value.defeat,
-        }),
-        { victory: 0, draw: 0, defeat: 0 }
-      ),
-    [scores]
-  );
-
-  const titleOrder = useMemo(
-    () => titles.sort((a, b) => sortByTitle(language, a, b)),
-    [titles, language]
-  );
-
   const level = useMemo(() => (stat ? getLevel(stat.xp) : undefined), [stat]);
-
-  const scoresWithRankAndOpposition = useMemo(() => {
-    const result = scores.map((score) => {
-      const opposition = oppositions.find((el) => el.theme === score.theme.id);
-      return { ...score, opposition: opposition };
-    });
-    return result;
-  }, [scores, oppositions]);
-
-  const scoresDisplay = useMemo(() => {
-    let res = [...scoresWithRankAndOpposition].filter((el) =>
-      searchString(search, el.theme.name[language.iso])
-    );
-    switch (sort) {
-      case "alphabetical":
-        res = [...res].sort((a, b) => sortByName(language, a.theme, b.theme));
-        break;
-      case "gamessolo":
-        res = [...res].sort(sortByGamesDesc);
-        break;
-      case "gamesduel":
-        res = [...res].sort(sortByDuelGamesDesc);
-        break;
-      case "scoresolo":
-        res = [...res].sort(sortByPointsDesc);
-        break;
-      case "scoreduel":
-        res = [...res].sort(sortByRankDesc);
-        break;
-      case "level":
-        res = [...res].sort(sortByXP);
-        break;
-      default:
-        res = [...res].sort((a, b) => sortByName(language, a.theme, b.theme));
-        break;
-    }
-    setIsEnd(res.length <= maxIndex);
-    return [...res].splice(0, maxIndex);
-  }, [scoresWithRankAndOpposition, search, language, sort, maxIndex]);
 
   const friendsAvatar = useMemo(
     () =>
@@ -304,27 +257,16 @@ export default function ProfilPage() {
               ? [...acc, value.user1]
               : [...acc, value.user2],
           [] as Array<Profile>
-        ),
+        )
+        .sort(sortByUsername),
     [profileFriends, id]
   );
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop + 1000 <=
-        document.documentElement.offsetHeight
-      ) {
-        return;
-      }
-      setMaxIndex((prev) => prev + 10);
-    };
-    if (document) {
-      document.addEventListener("scroll", handleScroll);
+  const goPersonalized = () => {
+    if (profile) {
+      navigate(`/personalized`);
     }
-    return () => {
-      document.removeEventListener("scroll", handleScroll);
-    };
-  }, [scoresWithRankAndOpposition, maxIndex]);
+  };
 
   return (
     <Box>
@@ -336,15 +278,16 @@ export default function ProfilPage() {
       <Box
         sx={{
           p: 1,
-          backgroundColor: Colors.blue3,
-          backgroundImage:
-            profileUser && profileUser.banner
-              ? `url("/banner/${profileUser.banner.icon}")`
-              : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.blue3} 46%, ${Colors.blue} 100%)`,
+          backgroundColor: Colors.colorApp,
+          backgroundImage: profileUser?.banner
+            ? `url("${profileUser.banner.src}")`
+            : `linear-gradient(43deg, ${Colors.blue} 0%, ${Colors.colorApp} 46%, ${Colors.blue} 100%)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           position: "relative",
+          cursor: isMe ? "pointer" : "cursor",
         }}
+        onClick={goPersonalized}
       >
         <Grid container spacing={1} justifyContent="center">
           <Grid item sx={{ mb: 1 }}>
@@ -369,35 +312,22 @@ export default function ProfilPage() {
                   textAlign: "center",
                 }}
               >
-                <Typography variant="h2" color="text.secondary">
+                <Typography
+                  variant="h2"
+                  color="text.secondary"
+                  sx={{
+                    overflow: "hidden",
+                    display: "block",
+                    lineClamp: 1,
+                    boxOrient: "vertical",
+                    textOverflow: "ellipsis",
+                    textShadow: "1px 1px 2px black",
+                  }}
+                >
                   {profileUser.username}
                 </Typography>
-                {profileUser.title && (
-                  <JsonLanguageBlock
-                    variant="caption"
-                    color="text.secondary"
-                    value={profileUser.title.name}
-                  />
-                )}
+                <ProfileTitleBlock titleprofile={profileUser.titleprofile} />
               </Grid>
-              {stat && (
-                <Grid item>
-                  <Typography
-                    variant="h4"
-                    component="span"
-                    color="text.secondary"
-                  >
-                    {stat.xp}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    component="span"
-                    color="text.secondary"
-                  >
-                    {t("commun.xpabbreviation")}
-                  </Typography>
-                </Grid>
-              )}
               {!isMe && friend && (
                 <Grid
                   item
@@ -422,50 +352,33 @@ export default function ProfilPage() {
                   />
                 </Grid>
               )}
-              {!isMe && (
-                <>
-                  <Grid item xs={12}>
-                    <ButtonColor
-                      value={Colors.blue}
-                      label={t("commun.compare")}
-                      icon={CompareArrowsIcon}
-                      variant="contained"
-                      onClick={compare}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FriendButton profile={profileUser} />
-                  </Grid>
-                </>
-              )}
             </>
           )}
         </Grid>
-        {isMe && (
-          <Box sx={{ position: "absolute", top: 10, right: 10 }}>
-            <EditIcon
-              sx={{ cursor: "pointer", color: Colors.white }}
-              onClick={() => navigate("/personalized")}
-            />
-          </Box>
-        )}
       </Box>
       <Box sx={{ p: 1 }}>
         <Grid container spacing={1}>
-          {!isLoadingScore && scores.length === 0 && (
-            <Grid item xs={12}>
-              <Alert severity="warning">{t("commun.noresultgame")}</Alert>
-            </Grid>
-          )}
+          <Grid item xs={12}>
+            {isMe ? <ShopItems /> : <ProfileAction profileUser={profileUser} />}
+          </Grid>
+          <Grid item xs={12}>
+            <CardChallenge profileId={id} />
+          </Grid>
+
           <Grid item xs={12}>
             <CardBadge badges={badges} loading={isLoadingBadge} />
           </Grid>
           <Grid item xs={12}>
-            <CardTitle titles={titleOrder} loading={isLoadingTitle} />
+            <CardTitle titles={titles} loading={isLoadingTitle} />
           </Grid>
           <Grid item xs={12}>
             <CardFriends friends={friendsAvatar} loading={isLoadingFriends} />
           </Grid>
+          {profileUser && (
+            <Grid item xs={12}>
+              <CardFinishTheme profile={profileUser} />
+            </Grid>
+          )}
           {profileUser && totalOpposition.games > 0 && (
             <Grid item xs={12}>
               <CardOpposition
@@ -475,45 +388,69 @@ export default function ProfilPage() {
               />
             </Grid>
           )}
-          <Grid item xs={12}>
-            <DonutGames
-              scores={scores}
-              totalScore={totalScore}
-              totalSolo={totalSolo}
-              loading={isLoadingScore}
-            />
-          </Grid>
         </Grid>
       </Box>
       <Box>
-        {(isLoadingScore || scores.length > 0) && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: px(5),
+            p: 1,
+            position: "sticky",
+            top: headerSize,
+            bgcolor: "background.paper",
+            width: percent(100),
+            zIndex: 5,
+          }}
+        >
+          <BasicSearchInput
+            label={t("commun.searchtheme")}
+            onChange={(value) => setSearch(value)}
+            value={search}
+            clear={() => setSearch("")}
+          />
+          <SortButton menus={sorts} />
+        </Box>
+        {isMe && (
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
               gap: px(5),
               p: 1,
-              position: "sticky",
-              top: headerSize,
-              bgcolor: "background.paper",
-              width: percent(100),
               zIndex: 5,
             }}
           >
-            <BasicSearchInput
-              label={t("commun.searchtheme")}
-              onChange={(value) => setSearch(value)}
-              value={search}
-              clear={() => setSearch("")}
+            <ButtonColor
+              value={Colors.blue2}
+              label={t("commun.gamehistory")}
+              icon={HistoryIcon}
+              variant="contained"
+              onClick={() =>
+                navigate(`/games`, {
+                  state: {
+                    player: profile,
+                    type: "solo",
+                  },
+                })
+              }
             />
-            <SortButton menus={sorts} />
           </Box>
         )}
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
-            {scoresDisplay.map((score) => {
+            {scores.map((score, index) => {
               return (
-                <Grid item xs={12} sm={6} md={6} lg={4} key={score.id}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md={6}
+                  lg={4}
+                  key={score.id}
+                  ref={index === scores.length - 1 ? lastItemRef : null}
+                >
                   <Paper
                     sx={{
                       overflow: "hidden",
@@ -528,35 +465,12 @@ export default function ProfilPage() {
                           display: "flex",
                           alignItems: "center",
                           gap: 1,
-                          backgroundColor: Colors.blue3,
+                          backgroundColor: Colors.colorApp,
                           p: px(5),
                           justifyContent: "space-between",
                         }}
                       >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1,
-                          }}
-                        >
-                          <Link
-                            to={`/theme/${score.theme.id}`}
-                            style={{ textDecoration: "none" }}
-                          >
-                            <ImageThemeBlock theme={score.theme} size={50} />
-                          </Link>
-                          <Box>
-                            <JsonLanguageBlock
-                              variant="h2"
-                              sx={{
-                                wordWrap: "anywhere",
-                              }}
-                              color="text.secondary"
-                              value={score.theme.name}
-                            />
-                          </Box>
-                        </Box>
+                        <ThemeTitleBlock theme={score.theme} />
                       </Grid>
                       <Grid
                         item
@@ -604,33 +518,8 @@ export default function ProfilPage() {
                               </Grid>
                             </>
                           )}
-
-                          {score.opposition && (
-                            <>
-                              <Grid item xs={12}>
-                                <Divider sx={{ borderBottomWidth: 3 }} />
-                              </Grid>
-                              <Grid item xs={12}>
-                                <Typography variant="h4" component="span">
-                                  {t("commun.opposition")}
-                                </Typography>
-                              </Grid>
-                              <Grid item xs={12}>
-                                <BarVictory
-                                  victory={score.opposition.victory}
-                                  draw={score.opposition.draw}
-                                  defeat={score.opposition.defeat}
-                                />
-                              </Grid>
-                            </>
-                          )}
                           {score && score.games > 0 && (
                             <>
-                              {(score.opposition || score.duelgames > 0) && (
-                                <Grid item xs={12}>
-                                  <Divider sx={{ borderBottomWidth: 3 }} />
-                                </Grid>
-                              )}
                               <Grid item xs={12}>
                                 <Grid
                                   container
@@ -685,13 +574,21 @@ export default function ProfilPage() {
               );
             })}
 
-            {!isEnd && (
+            {!isEnd ? (
               <>
                 {Array.from(new Array(3)).map((_, index) => (
                   <Grid item xs={12} sm={6} md={6} lg={4} key={index}>
                     <SkeletonProfilTheme />
                   </Grid>
                 ))}
+              </>
+            ) : (
+              <>
+                {!isLoadingScore && scores.length === 0 && (
+                  <Grid item xs={12}>
+                    <Alert severity="warning">{t("commun.noresultgame")}</Alert>
+                  </Grid>
+                )}
               </>
             )}
           </Grid>

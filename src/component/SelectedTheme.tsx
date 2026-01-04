@@ -1,32 +1,33 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
-import { uniqBy } from "lodash";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useApp } from "src/context/AppProvider";
+import { getThemesById } from "src/api/search";
 import { useUser } from "src/context/UserProvider";
-import { Theme } from "src/models/Theme";
-import { sortByName } from "src/utils/sort";
+import { ICardImage } from "./card/CardImage";
 import { CardSelectAvatarTheme } from "./card/CardTheme";
 
 interface Props {
   avatars: Array<{ id: number; avatars: Array<string> }>;
-  select: (theme: Theme) => void;
+  select: (theme: ICardImage) => void;
 }
 export const SelectedTheme = ({ select, avatars }: Props) => {
   const { t } = useTranslation();
-
   const { language } = useUser();
-  const { themes } = useApp();
 
-  const themesDisplay = useMemo(() => {
-    const themesPlayers = [...avatars].map((el) => el.id);
-    const themesSelected = themes.filter((el) => themesPlayers.includes(el.id));
-    const themeUniq = uniqBy(themesSelected, (el) => el.id);
-    return themeUniq.sort((a, b) => sortByName(language, a, b));
-  }, [themes, language, avatars]);
+  const [themes, setThemes] = useState<Array<ICardImage>>([]);
+
+  useEffect(() => {
+    const idThemes = [...avatars].map((el) => el.id);
+    if (language && idThemes.length > 0) {
+      getThemesById(idThemes, language).then(({ data }) => {
+        const res = data ?? [];
+        setThemes(res);
+      });
+    }
+  }, [avatars, language]);
 
   return (
-    themesDisplay.length > 0 && (
+    themes.length > 0 && (
       <Grid container spacing={1}>
         <Grid
           item
@@ -48,7 +49,7 @@ export const SelectedTheme = ({ select, avatars }: Props) => {
               scrollbarWidth: "none",
             }}
           >
-            {themesDisplay.map((theme, index) => (
+            {themes.map((theme, index) => (
               <CardSelectAvatarTheme
                 key={index}
                 theme={theme}

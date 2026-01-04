@@ -1,18 +1,11 @@
-import { Box, Grid, Typography } from "@mui/material";
-import { useMemo } from "react";
+import { Box, Grid } from "@mui/material";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 
 import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
-import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import { percent, px } from "csx";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 import { Banner } from "src/models/Banner";
 import { Colors } from "src/style/Colors";
-import { sortByUnlock } from "src/utils/sort";
-import { MoneyBlock } from "./MoneyBlock";
-import { SkeletonRectangulars } from "./skeleton/SkeletonRectangular";
 
 interface Props {
   onSelect: (value: Banner | null) => void;
@@ -20,42 +13,18 @@ interface Props {
 
 export const BannerSelector = ({ onSelect }: Props) => {
   const { profile } = useAuth();
-  const { banners, mybanners } = useApp();
-  const { t } = useTranslation();
+  const { mybanners } = useApp();
 
-  const MAXHEIGHT = 150;
-
-  const bannersVerify = useMemo(() => {
-    const idUnlock = mybanners.map((el) => el.id);
-    return [...banners]
-      .map((banner) => ({
-        ...banner,
-        unlock:
-          banner.isaccomplishment || banner.price > 0
-            ? idUnlock.includes(banner.id)
-            : true,
-      }))
-      .sort(sortByUnlock);
-  }, [mybanners, banners]);
-
-  const bannersUnlock = useMemo(
-    () => [...bannersVerify].filter((el) => el.unlock),
-    [bannersVerify]
-  );
-
-  const bannersLock = useMemo(
-    () => [...bannersVerify].filter((el) => !el.unlock),
-    [bannersVerify]
-  );
+  const MAXHEIGHT = 80;
 
   return (
     <Grid container spacing={1}>
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={6} sm={4} md={3}>
         <Box
           sx={{
             width: percent(100),
             height: px(MAXHEIGHT + 30),
-            backgroundColor: Colors.blue3,
+            backgroundColor: Colors.colorApp,
             cursor: "pointer",
             position: "relative",
           }}
@@ -78,17 +47,12 @@ export const BannerSelector = ({ onSelect }: Props) => {
           )}
         </Box>
       </Grid>
-      {bannersUnlock.length === 0 && bannersLock.length === 0 && (
-        <SkeletonRectangulars number={2} height={MAXHEIGHT} />
-      )}
-      {bannersUnlock.map((banner) => {
-        const isSelect =
-          profile && profile.banner && profile.banner.id === banner.id;
-        const image = `/banner/${banner.icon}`;
+      {mybanners.map((banner) => {
+        const isSelect = profile?.banner && profile.banner.id === banner.id;
 
         return (
-          <Grid item xs={12} sm={6} key={banner.id}>
-            <Box sx={{ position: "relative" }}>
+          <Grid item xs={6} sm={4} md={3} key={banner.id}>
+            <Box sx={{ position: "relative" }} onClick={() => onSelect(banner)}>
               {isSelect && (
                 <CheckCircleTwoToneIcon
                   sx={{
@@ -105,94 +69,14 @@ export const BannerSelector = ({ onSelect }: Props) => {
                 />
               )}
               <img
-                src={image}
+                alt="banner"
+                src={banner.src}
                 style={{
                   width: percent(100),
                   objectFit: "cover",
                   height: px(MAXHEIGHT + 30),
                 }}
-                onClick={() => onSelect(banner)}
               />
-            </Box>
-          </Grid>
-        );
-      })}
-      {bannersLock.map((banner) => {
-        const image = `/banner/${banner.icon}`;
-
-        return (
-          <Grid item xs={12} sm={6} key={banner.id}>
-            <Box sx={{ position: "relative" }}>
-              <Link
-                to={`/banner/${banner.id}`}
-                style={{ textDecoration: "none" }}
-              >
-                <Box sx={{ display: "flex", flexDirection: "column" }}>
-                  <img
-                    src={image}
-                    style={{
-                      width: percent(100),
-                      objectFit: "cover",
-                      height: px(MAXHEIGHT),
-                    }}
-                  />
-                  {banner.price > 0 ? (
-                    <Box
-                      sx={{
-                        zIndex: 10,
-                        backgroundColor: Colors.black,
-                        p: "15px 5px 5px 5px",
-                        display: "flex",
-                        justifyContent: "center",
-                        position: "relative",
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          zIndex: 10,
-                          position: "absolute",
-                          top: 0,
-                          left: percent(50),
-                          transform: "translate(-50%, -50%)",
-                        }}
-                      >
-                        <Typography
-                          variant="h1"
-                          color="text.secondary"
-                          sx={{
-                            fontSize: "18px !important",
-                            WebkitTextStrokeWidth: "1px",
-                            WebkitTextStrokeColor: "black",
-                          }}
-                        >
-                          {t("commun.buy")}
-                        </Typography>
-                      </Box>
-                      <MoneyBlock money={banner.price} />
-                    </Box>
-                  ) : (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        backgroundColor: Colors.black,
-                        p: 1,
-                      }}
-                    >
-                      <LockTwoToneIcon
-                        sx={{
-                          fontSize: 20,
-                          color: Colors.grey4,
-                        }}
-                      />
-                      <Typography variant="caption" color="text.secondary">
-                        {t("commun.unlockaccomplishments")}
-                      </Typography>
-                    </Box>
-                  )}
-                </Box>
-              </Link>
             </Box>
           </Grid>
         );

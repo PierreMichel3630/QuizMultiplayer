@@ -153,7 +153,10 @@ const getNewQuestion = async (
         .eq("id", previousQuestion)
         .maybeSingle();
 
-      if (respreviousresponse.data !== null) {
+      if (
+        respreviousresponse.data !== null &&
+        respreviousresponse.data.response !== null
+      ) {
         const response = respreviousresponse.data.response["fr-FR"];
         if (Array.isArray(response)) {
           result = response[0];
@@ -170,28 +173,45 @@ const getNewQuestion = async (
     question.isqcm = question.isqcm === null ? true : question.isqcm;
     if (question.isqcm) {
       if (question.typequestion === "ORDER") {
+        const previousIdResponsesOrder = [...questions].reduce((acc, value) => {
+          const responses = [...value.responses]
+            .filter((el) => el.type === question.typeResponse)
+            .map((el) => el.id);
+          return [...acc, ...responses];
+        }, []);
         const res = await supabase
-          .from("order")
+          .from("randomresponseorder")
           .select("*")
           .eq("type", question.typeResponse)
-          .limit(4);
-        console.log(res);
+          .not("id", "in", `(${previousIdResponsesOrder})`)
+          .limit(2);
         responsesQcm = [...res.data]
-          .map((el) => ({ label: el.name }))
+          .map((el) => ({
+            label: el.name,
+            image: el.image,
+            extra: {
+              value: el.value,
+              type: el.typedata,
+              format: el.formatdata,
+              unit: el.unit,
+            },
+            id: el.id,
+            type: el.type,
+          }))
           .sort(() => Math.random() - 0.5);
         const responseOrder =
           question.order === "ASC"
             ? [...res.data].sort((a, b) =>
                 a.format === "DATE"
-                  ? moment(a.value, "DD/MM/YYYY").diff(
-                      moment(b.value, "DD/MM/YYYY")
+                  ? moment(a.value, a.formatdata).diff(
+                      moment(b.value, b.formatdata)
                     )
                   : a.value - b.value
               )[0]
             : [...res.data].sort((a, b) =>
                 a.format === "DATE"
-                  ? moment(b.value, "DD/MM/YYYY").diff(
-                      moment(a.value, "DD/MM/YYYY")
+                  ? moment(b.value, b.formatdata).diff(
+                      moment(a.value, a.formatdata)
                     )
                   : b.value - a.value
               )[0];
@@ -314,7 +334,9 @@ const getNewQuestion = async (
         2 + DELAYAFFICHAGEQUESTION,
         8 + DELAYAFFICHAGEQUESTION
       );
-      const wrongAnswerQCM = [0, 1, 2, 3];
+      const wrongAnswerQCM = Array.from(
+        Array(question.responses.length).keys()
+      );
       const responseBot = question.isqcm
         ? randomFromArray([...wrongAnswerQCM].filter((el) => el !== response))
         : "dontknow";
@@ -473,6 +495,7 @@ Deno.serve(async (req) => {
     )
     .eq("uuid", uuidgame)
     .maybeSingle();
+  console.log(data);
   const game = data;
   const battlegame = game.battlegame;
   const theme = game.theme;
@@ -512,7 +535,6 @@ Deno.serve(async (req) => {
       const uuid = payload.uuid;
       const value = payload.response;
       const language = payload.language;
-      console.log(payload);
 
       if (
         response !== undefined &&
@@ -537,14 +559,6 @@ Deno.serve(async (req) => {
           responsePlayer2[indexQuestion] = true;
           pointsPlayer2 = result ? pointsPlayer2 + delaypoints : pointsPlayer2;
         }
-        console.log({
-          result: result,
-          answer: payload.response,
-          uuid,
-          time: delayResponse,
-          ptsplayer1: pointsPlayer1,
-          ptsplayer2: pointsPlayer2,
-        });
         channel.send({
           type: "broadcast",
           event: "validate",
@@ -552,13 +566,13 @@ Deno.serve(async (req) => {
             result: result,
             answer: payload.response,
             uuid,
+            correctanswer: response,
             time: delayResponse,
             ptsplayer1: pointsPlayer1,
             ptsplayer2: pointsPlayer2,
           },
         });
         if (responsePlayer1[indexQuestion] && responsePlayer2[indexQuestion]) {
-          console.log("endquestion :", response);
           channel.send({
             type: "broadcast",
             event: "endquestion",
@@ -646,7 +660,6 @@ Deno.serve(async (req) => {
           questions,
           bot
         );
-        console.log(infosQuestion);
         time = moment().add(2, "seconds");
         answerPlayer1 = undefined;
         answerPlayer2 = undefined;

@@ -2,7 +2,7 @@ import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
 import { Box, Button, ButtonProps, SvgIcon, Typography } from "@mui/material";
 import { Variant } from "@mui/material/styles/createTypography";
 import { important, percent, px } from "csx";
-import { ElementType } from "react";
+import { ElementType, ReactNode } from "react";
 import { Colors } from "src/style/Colors";
 interface Props extends ButtonProps {
   value: string;
@@ -33,7 +33,7 @@ export const ButtonColor = ({
           borderColor: value,
           borderWidth: 2,
           padding: "3px 5px",
-          backgroundColor: Colors.blue3,
+          backgroundColor: Colors.colorApp,
           "&:hover": {
             opacity: 0.85,
           },
@@ -81,17 +81,13 @@ export const ButtonColor = ({
   );
 };
 
-interface PropsSelect extends Props {
-  select: boolean;
+interface PropsSelect {
+  select?: boolean;
+  children: ReactNode;
 }
 export const ButtonColorSelect = ({
-  icon,
-  value,
-  label,
   select = false,
-  typography = "h4",
-  variant = "outlined",
-  ...props
+  children,
 }: PropsSelect) => {
   return (
     <Box sx={{ position: "relative" }}>
@@ -109,14 +105,7 @@ export const ButtonColorSelect = ({
           }}
         />
       )}
-      <ButtonColor
-        value={value}
-        label={label}
-        icon={icon}
-        variant={variant}
-        typography={typography}
-        {...props}
-      />
+      {children}
     </Box>
   );
 };

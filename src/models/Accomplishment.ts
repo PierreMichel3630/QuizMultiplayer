@@ -1,22 +1,29 @@
 import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
 import { Banner } from "./Banner";
-import { JsonLanguage } from "./Language";
+import { Language } from "./Language";
 import { Profile } from "./Profile";
 import { Title } from "./Title";
 
 export interface Accomplishment {
   id: number;
-  label: JsonLanguage;
   title: Title | null;
   badge: Badge | null;
   avatar: Avatar | null;
   banner: Banner | null;
-  value: number;
+  value: number | null;
   champ: string;
   type: string;
   xp: number;
   gold: number;
+  nbplayers: number;
+  accomplishmenttranslation: Array<AccomplishmentTranslation>;
+}
+
+export interface AccomplishmentTranslation {
+  id: number;
+  name: string;
+  language: Language;
 }
 
 export interface StatAccomplishment {
@@ -27,12 +34,18 @@ export interface StatAccomplishment {
   gamesfiftypts: number;
   gameshundredpts: number;
   themetenpts: number;
+  nbthemetenpts: number;
   themetwentypts: number;
+  nbthemetwentypts: number;
   duelgames: number;
   victoryduel: number;
   drawduel: number;
   defeatduel: number;
   xp: number;
+  points: number;
+  windaychallenge: number;
+  winweekchallenge: number;
+  winmonthchallenge: number;
 }
 
 export enum StatAccomplishmentEnum {
@@ -54,4 +67,5 @@ export interface ProfileAccomplishment {
   profile: string;
   accomplishment: Accomplishment;
   validate: boolean;
+  extra: string | null;
 }

@@ -1,10 +1,11 @@
 import {
   Autocomplete,
-  Avatar,
   Box,
+  Divider,
   FormControl,
   Grid,
   InputLabel,
+  Menu,
   MenuItem,
   Paper,
   Select,
@@ -15,24 +16,23 @@ import {
 import { padding, percent, px } from "csx";
 import { SyntheticEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Difficulty, colorDifficulty } from "src/models/enum";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import LockIcon from "@mui/icons-material/Lock";
-import { uniqBy } from "lodash";
-import { useApp } from "src/context/AppProvider";
-import { useAuth } from "src/context/AuthProviderSupabase";
+import ClearIcon from "@mui/icons-material/Clear";
+import { getCategoryById, searchCategoriesPaginate } from "src/api/search";
 import { useUser } from "src/context/UserProvider";
-import { Category } from "src/models/Category";
-import { LANGUAGESQUESTION, Language } from "src/models/Language";
-import { Theme } from "src/models/Theme";
+import { colorDifficulty, Difficulty } from "src/models/enum/DifficultyEnum";
+import { Language } from "src/models/Language";
+import { ThemeShop } from "src/models/Shop";
 import { Colors } from "src/style/Colors";
 import { sortByName } from "src/utils/sort";
 import { AutocompleteInputTheme } from "./Autocomplete";
+import { ICardImage } from "./card/CardImage";
 import { ImageThemeBlock } from "./ImageThemeBlock";
-import { JsonLanguageBlock } from "./JsonLanguageBlock";
-import ClearIcon from "@mui/icons-material/Clear";
 import { BasicSearchInput } from "./Input";
+import { LanguageIcon } from "./language/LanguageBlock";
+import { TextNameBlock } from "./language/TextLanguageBlock";
+import { selectThemeShop } from "src/api/shop";
 
 interface Props {
   value: Difficulty;
@@ -95,33 +95,39 @@ export const SelectDifficulty = ({ value, onSelect }: Props) => {
             mt: 1,
             overflow: "scroll",
             overflowY: "inherit",
+            gap: 1,
+            p: padding(5, 10),
           }}
         >
           {Object.keys(Difficulty).map((el) => (
-            <Grid
-              container
-              sx={{
-                cursor: "pointer",
-                color: colorDifficulty[el],
-                p: 1,
-                "&:hover": {
-                  color: "white",
-                  backgroundColor: colorDifficulty[el],
-                },
-              }}
-              alignItems="center"
-              onClick={() => {
-                onSelect(el as Difficulty);
-                unFocus();
-              }}
-              key={el}
-            >
-              <Grid item xs={12}>
+            <>
+              <Box
+                onClick={() => {
+                  onSelect(el as Difficulty);
+                  unFocus();
+                }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  width: percent(100),
+                }}
+              >
+                <Box
+                  sx={{
+                    width: px(30),
+                    height: px(30),
+                    backgroundColor: colorDifficulty[el],
+                    borderRadius: px(10),
+                    border: `2px solid ${Colors.white}`,
+                  }}
+                />
                 <Typography variant="h4">
                   {t(`enum.difficulty.${el}`)}
                 </Typography>
-              </Grid>
-            </Grid>
+              </Box>
+              <Divider sx={{ width: percent(100) }} />
+            </>
           ))}
         </Paper>
       )}
@@ -129,79 +135,19 @@ export const SelectDifficulty = ({ value, onSelect }: Props) => {
   );
 };
 
-interface PropsAutocompleteThemeAdmin {
-  theme: Theme;
-  onChange: (value: Theme) => void;
-}
-
-export const AutocompleteThemeAdmin = ({
-  theme,
-  onChange,
-}: PropsAutocompleteThemeAdmin) => {
-  const { t } = useTranslation();
-  const { themesAdmin } = useApp();
-  const { language } = useUser();
-
-  const themesDisplay = useMemo(
-    () =>
-      uniqBy(themesAdmin, (el) => el.id).sort((a, b) =>
-        sortByName(language, a, b)
-      ),
-    [themesAdmin, language]
-  );
-
-  return (
-    <Autocomplete
-      disablePortal
-      id="themeinput"
-      value={theme}
-      onChange={(_event: SyntheticEvent, newValue: Theme | null) => {
-        if (newValue) onChange(newValue);
-      }}
-      options={themesDisplay}
-      getOptionLabel={(option) => option.name[language.iso]}
-      renderOption={(props, option) => (
-        <Box
-          component="li"
-          sx={{
-            "& > img": { mr: 2, flexShrink: 0 },
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          }}
-          {...props}
-        >
-          <ImageThemeBlock theme={option} size={50} />
-          <JsonLanguageBlock value={option.name} />
-        </Box>
-      )}
-      fullWidth
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label={t("commun.theme")}
-          placeholder={t("commun.selecttheme")}
-        />
-      )}
-    />
-  );
-};
-
 interface PropsAutocompleteTheme {
-  value: Array<Theme>;
-  onChange: (value: Array<Theme>) => void;
-  isAdmin?: boolean;
+  value: Array<ICardImage>;
+  onChange: (value: Array<ICardImage>) => void;
 }
 
 export const AutocompleteTheme = ({
   value,
   onChange,
-  isAdmin = false,
 }: PropsAutocompleteTheme) => {
   const { t } = useTranslation();
 
   const deleteTheme = (id: number) => {
-    let newValue: Array<Theme> = [...value];
+    let newValue: Array<ICardImage> = [...value];
     newValue = newValue.filter((el) => el.id !== id);
     onChange(newValue);
   };
@@ -212,7 +158,6 @@ export const AutocompleteTheme = ({
         <AutocompleteInputTheme
           placeholder={t("commun.selecttheme")}
           onSelect={(newvalue) => onChange([...value, newvalue])}
-          isAdmin={isAdmin}
         />
       </Grid>
 
@@ -229,7 +174,7 @@ export const AutocompleteTheme = ({
             }}
           >
             <ImageThemeBlock theme={v} size={30} />
-            <JsonLanguageBlock variant="h6" value={v.name} />
+            <Typography variant="h6">{v.name}</Typography>
             <ClearIcon
               sx={{ width: 15, height: 15, cursor: "pointer" }}
               onClick={() => deleteTheme(v.id)}
@@ -241,108 +186,100 @@ export const AutocompleteTheme = ({
   );
 };
 
-interface PropsSelectTheme {
-  onChange: (value: Theme) => void;
+interface PropsSelectThemeShop {
+  theme: ThemeShop | null;
+  onChange: (value: ThemeShop | null) => void;
 }
 
-export const SelectTheme = ({ onChange }: PropsSelectTheme) => {
+export const SelectThemeShop = ({ theme, onChange }: PropsSelectThemeShop) => {
   const { t } = useTranslation();
-
-  return (
-    <Grid container spacing={1}>
-      <Grid item xs={12}>
-        <AutocompleteInputTheme
-          placeholder={t("commun.selecttheme")}
-          onSelect={(newvalue) => onChange(newvalue)}
-        />
-      </Grid>
-    </Grid>
-  );
-};
-
-interface PropsSelectCategory {
-  category: Category | null;
-  onChange: (value: Category) => void;
-}
-
-export const SelectCategory = ({ category, onChange }: PropsSelectCategory) => {
-  const { t } = useTranslation();
-  const { categoriesAdmin } = useApp();
   const { language } = useUser();
 
+  const [themes, setThemes] = useState<Array<ThemeShop>>([]);
+
+  useEffect(() => {
+    selectThemeShop().then(({ data }) => {
+      setThemes(data ?? []);
+    });
+  }, []);
+
+  const options = useMemo(
+    () =>
+      language ? [...themes].sort((a, b) => sortByName(language, a, b)) : [],
+    [language, themes]
+  );
+
   return (
     <Autocomplete
-      disablePortal
       id="themeinput"
-      value={category}
-      onChange={(_event: SyntheticEvent, newValue: Category | null) => {
-        if (newValue) onChange(newValue);
+      value={theme}
+      onChange={(_event: SyntheticEvent, newValue: ThemeShop | null) => {
+        onChange(newValue);
       }}
-      options={categoriesAdmin.sort((a, b) => sortByName(language, a, b))}
-      getOptionLabel={(option) => option.name[language.iso]}
+      options={options}
       renderOption={(props, option) => (
         <Box component="li" {...props}>
-          <JsonLanguageBlock value={option.name} />
+          <TextNameBlock values={option.themeshoptranslation} />
         </Box>
       )}
       fullWidth
       renderInput={(params) => (
         <TextField
           {...params}
-          label={t("commun.category")}
-          placeholder={t("commun.selectcategory")}
+          label={t("commun.theme")}
+          placeholder={t("commun.selecttheme")}
         />
       )}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
     />
   );
 };
 
-interface PropsSelectIso {
-  value: string;
-  onChange: (value: string) => void;
+interface PropsSelectLanguage {
+  value: Language;
+  onChange: (value: Language) => void;
+  languages: Array<Language>;
 }
 
-export const SelectIso = ({ value, onChange }: PropsSelectIso) => {
-  const { t } = useTranslation();
-  const language = useMemo(
-    () => LANGUAGESQUESTION.find((el) => el.iso === value),
-    [value]
-  );
+export const SelectLanguage = ({
+  languages,
+  value,
+  onChange,
+}: PropsSelectLanguage) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
-    <Autocomplete
-      disablePortal
-      id="isoinput"
-      value={language}
-      onChange={(_event: SyntheticEvent, newValue: Language | null) => {
-        if (newValue) onChange(newValue.iso);
-      }}
-      options={LANGUAGESQUESTION}
-      getOptionLabel={(option) => option.name}
-      renderOption={(props, option) => (
-        <Box
-          component="li"
-          sx={{
-            "& > img": { mr: 2, flexShrink: 0 },
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          }}
-          {...props}
-        >
-          <Avatar src={option.icon} sx={{ width: 32, height: 32, mr: 1 }} />
-          <Typography variant="h6">{option.name}</Typography>
-        </Box>
-      )}
-      fullWidth
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label={t("commun.language")}
-          placeholder={t("commun.selectlanguage")}
-        />
-      )}
-    />
+    <>
+      <LanguageIcon language={value} size={40} onClick={handleClick} />
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+      >
+        {languages.map((el, index) => (
+          <MenuItem
+            key={index}
+            onClick={() => {
+              handleClose();
+              onChange(el);
+            }}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <LanguageIcon language={el} />
+              <Typography variant="h6">{el.name}</Typography>
+            </Box>
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
   );
 };
 
@@ -383,110 +320,6 @@ export const BasicSelect = ({
             {option.label}
           </MenuItem>
         ))}
-      </Select>
-    </FormControl>
-  );
-};
-
-interface PropsSelectTitle {
-  onChange: (value: number) => void;
-}
-
-export const SelectTitle = ({ onChange }: PropsSelectTitle) => {
-  const { t } = useTranslation();
-  const { titles, mytitles } = useApp();
-  const { profile } = useAuth();
-  const { language } = useUser();
-
-  const titlesUnlock = useMemo(() => mytitles.map((el) => el.id), [mytitles]);
-
-  const options = useMemo(() => {
-    return titles
-      .sort((a, b) => {
-        const isALock = titlesUnlock.includes(a.id);
-        const isBLock = titlesUnlock.includes(b.id);
-        return Number(isBLock) - Number(isALock) || sortByName(language, a, b);
-      })
-      .map((el) => ({ value: el.id.toString(), label: el.name }));
-  }, [titles, titlesUnlock, language]);
-
-  return (
-    <FormControl fullWidth>
-      <InputLabel id="label-title-select">{t("commun.selecttitle")}</InputLabel>
-      <Select
-        labelId="label-title-select"
-        id="title-select"
-        value={
-          profile && profile.title ? profile.title.id.toString() : undefined
-        }
-        label={t("commun.selecttitle")}
-        onChange={(event: SelectChangeEvent) =>
-          onChange(Number(event.target.value))
-        }
-      >
-        {options.map((option) => {
-          const isLock = !titlesUnlock.includes(Number(option.value));
-          return (
-            <MenuItem key={option.value} value={option.value} disabled={isLock}>
-              {isLock && <LockIcon sx={{ color: Colors.lightgrey2 }} />}
-              <JsonLanguageBlock variant="body1" value={option.label} />
-            </MenuItem>
-          );
-        })}
-      </Select>
-    </FormControl>
-  );
-};
-
-interface PropsSelectIdTheme {
-  theme: string;
-  onChange: (value: string) => void;
-}
-
-export const SelectIdTheme = ({ theme, onChange }: PropsSelectIdTheme) => {
-  const { t } = useTranslation();
-  const { themes } = useApp();
-  const { language } = useUser();
-
-  const options = useMemo(() => {
-    return uniqBy(themes, (el) => el.id)
-      .sort((a, b) => sortByName(language, a, b))
-      .map((el) => ({ value: el.id.toString(), label: el.name, theme: el }));
-  }, [themes, language]);
-
-  return (
-    <FormControl fullWidth>
-      <InputLabel id="label-theme-select">{t("commun.selecttheme")}</InputLabel>
-      <Select
-        labelId="label-theme-select"
-        id="theme-select"
-        value={theme}
-        label={t("commun.selecttitle")}
-        onChange={(event: SelectChangeEvent) => onChange(event.target.value)}
-        renderValue={(option) => {
-          const theme = themes.find((el) => el.id === Number(option));
-          return (
-            theme && (
-              <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                <ImageThemeBlock theme={theme} size={50} />
-                <JsonLanguageBlock variant="h6" value={theme.name} />
-              </Box>
-            )
-          );
-        }}
-      >
-        {options.map((option) => {
-          return (
-            <MenuItem
-              value={option.value}
-              key={option.value}
-              sx={{ display: "flex", gap: 1 }}
-            >
-              <ImageThemeBlock theme={option.theme} size={50} />
-              <JsonLanguageBlock variant="h6" value={option.label} />
-            </MenuItem>
-          );
-        })}
       </Select>
     </FormControl>
   );
@@ -551,5 +384,95 @@ export const AutocompleteNumber = ({
         </Grid>
       ))}
     </Grid>
+  );
+};
+
+interface PropsSelectCategory {
+  value: number | null;
+  onChange: (value: { id: number; name: string } | null) => void;
+}
+
+export const SelectCategory = ({ value, onChange }: PropsSelectCategory) => {
+  const { t } = useTranslation();
+  const { language } = useUser();
+
+  const listboxRef = useRef(null);
+
+  const [categories, setCategories] = useState<
+    Array<{ id: number; name: string }>
+  >([]);
+  const [category, setCategory] = useState<{ id: number; name: string } | null>(
+    null
+  );
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  useEffect(() => {
+    if (language) {
+      searchCategoriesPaginate(language, search, 0).then(({ data }) => {
+        setCategories(data ?? []);
+        setPage((prev) => prev + 1);
+      });
+    }
+  }, [language, search]);
+
+  useEffect(() => {
+    if (language && value) {
+      getCategoryById(value, language).then(({ data }) => {
+        setCategory(data);
+      });
+    }
+  }, [value, language]);
+
+  const handleScroll = (event: any) => {
+    if (loading || !hasMore) return;
+    const listboxNode = event.currentTarget;
+    const bottom =
+      listboxNode.scrollTop + listboxNode.clientHeight >=
+      listboxNode.scrollHeight - 5;
+    if (bottom && language) {
+      setLoading(true);
+      searchCategoriesPaginate(language, search, page).then(({ data }) => {
+        const res = data ?? [];
+        setHasMore(res.length > 0);
+        setCategories((prev) => [...prev, ...res]);
+        setPage((prev) => prev + 1);
+        setLoading(false);
+      });
+    }
+  };
+
+  return (
+    <Autocomplete
+      id="categoryinput"
+      value={category}
+      onChange={(_event: SyntheticEvent, newValue: any) => {
+        onChange(newValue.id);
+      }}
+      options={categories}
+      getOptionLabel={(option) => option.name}
+      renderOption={(props, option) => (
+        <Box component="li" {...props}>
+          <Typography>{option.name}</Typography>
+        </Box>
+      )}
+      ListboxProps={{
+        onScroll: handleScroll,
+        ref: listboxRef,
+      }}
+      fullWidth
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          label={t("commun.category")}
+          placeholder={t("commun.selectcategory")}
+        />
+      )}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
+    />
   );
 };

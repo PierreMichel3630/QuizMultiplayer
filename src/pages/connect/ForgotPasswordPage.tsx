@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
-import { px, viewHeight } from "csx";
+import { px } from "csx";
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
@@ -25,9 +25,9 @@ export default function ForgotPasswordPage() {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: viewHeight(100),
         p: 0,
       }}
+      className="page"
     >
       <Helmet>
         <title>{`${t("pages.forgotpassword.title")} - ${t("appname")}`}</title>
@@ -63,7 +63,7 @@ export default function ForgotPasswordPage() {
               gap: 1,
             }}
           >
-            <img src={logo} width={45} height={45} loading="lazy" />
+            <img alt="logo" src={logo} width={45} height={45} loading="lazy" />
             <Typography variant="h2">{t("appname")}</Typography>
           </Box>
           <Box>
@@ -77,7 +77,7 @@ export default function ForgotPasswordPage() {
                 <>
                   <Grid item>
                     <MarkEmailReadIcon
-                      sx={{ fontSize: 100, color: Colors.blue3 }}
+                      sx={{ fontSize: 100, color: Colors.colorApp }}
                     />
                   </Grid>
                   <Grid item xs={12}>

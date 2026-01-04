@@ -1,3 +1,4 @@
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import {
   AppBar,
   Box,
@@ -13,17 +14,16 @@ import {
   useTheme,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 
 import CloseIcon from "@mui/icons-material/Close";
+import { px } from "csx";
 import { useMemo } from "react";
 import { BattleGame } from "src/models/BattleGame";
 import { Colors } from "src/style/Colors";
-import { ImageThemeBlock } from "../ImageThemeBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 import { ButtonColor } from "../Button";
-import { px } from "csx";
+import { ImageThemeBlock } from "../ImageThemeBlock";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   game: BattleGame;
@@ -120,10 +120,10 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
                       }}
                     >
                       <ImageThemeBlock theme={el.theme} size={40} />
-                      <JsonLanguageBlock
+                      <TextNameBlock
                         variant="h4"
                         sx={{ textAlign: "center" }}
-                        value={el.theme.name}
+                        values={el.theme.themetranslation}
                       />
                     </Grid>
                     <Grid
@@ -212,7 +212,12 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
           <Grid
             item
             xs={12}
-            sx={{ backgroundColor: "white", pb: 2, position: "sticky", top: 0 }}
+            sx={{
+              backgroundColor: "background.paper",
+              pb: 2,
+              position: "sticky",
+              top: 0,
+            }}
           >
             <Grid
               container
@@ -302,7 +307,7 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
           <Container
             maxWidth="md"
             sx={{
-              backgroundColor: Colors.white,
+              backgroundColor: "background.paper",
             }}
           >
             <Box

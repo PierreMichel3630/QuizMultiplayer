@@ -91,3 +91,32 @@
 .MuiList-root {
   padding: 0px !important;
 }
+
+
+@keyframes border-angle-rotate {
+  from { --border-angle: 0deg; }
+  to { --border-angle: 360deg; }
+}
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+
+  .a {
+    background: linear-gradient(black, black) padding-box,
+      conic-gradient(
+          from var(--border-angle),
+          oklch(100% 100% 0deg),
+          oklch(100% 100% 45deg),
+          oklch(100% 100% 90deg),
+          oklch(100% 100% 135deg),
+          oklch(100% 100% 180deg),
+          oklch(100% 100% 225deg),
+          oklch(100% 100% 270deg),
+          oklch(100% 100% 315deg),
+          oklch(100% 100% 360deg)
+        )
+        border-box;
+  }

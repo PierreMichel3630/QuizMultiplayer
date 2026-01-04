@@ -47,7 +47,7 @@ export const AvatarAccountBadge = ({
   badge,
   backgroundColor = Colors.white,
   size = 30,
-  color,
+  color = Colors.black2,
   level,
 }: PropsAvatarAccountBadge) => {
   return badge || profile.badge ? (
@@ -57,19 +57,24 @@ export const AvatarAccountBadge = ({
       badgeContent={
         <Avatar
           sx={{ width: size / 2.5, height: size / 2.5 }}
-          src={badge ? badge : profile.badge!.icon}
+          src={badge ?? profile.badge!.icon}
         />
       }
     >
       <Box sx={{ position: "relative" }}>
         <Avatar
           alt="Avatar"
-          src={avatar ? avatar : profile.avatar.icon}
+          src={avatar ?? profile.avatar.icon}
           sx={{
             width: size,
             height: size,
-            border: color ? `${size / 15}px solid ${color}` : "none",
+            border: `${size / 20}px solid ${color}`,
             backgroundColor: backgroundColor,
+            "&>img": {
+              width: percent(90),
+              height: percent(90),
+              transform: "translate(0%, 3px)",
+            },
           }}
         />
         {level !== undefined && (
@@ -80,7 +85,7 @@ export const AvatarAccountBadge = ({
               transform: "translate(-50%, -50%)",
             }}
           >
-            <BadgeLevel level={level} size={size / 3} fontSize={size / 5} />
+            <BadgeLevel level={level} size={size / 3} fontSize={size / 6} />
           </Box>
         )}
       </Box>
@@ -89,12 +94,17 @@ export const AvatarAccountBadge = ({
     <Box sx={{ position: "relative" }}>
       <Avatar
         alt="Avatar"
-        src={avatar ? avatar : profile.avatar.icon}
+        src={avatar ?? profile.avatar.icon}
         sx={{
           width: size,
           height: size,
-          border: color ? `${size / 15}px solid ${color}` : "none",
-          backgroundColor: backgroundColor,
+          border: `${size / 20}px solid ${color}`,
+          backgroundColor: Colors.white,
+          "&>img": {
+            width: percent(90),
+            height: percent(90),
+            transform: "translate(0%, 3px)",
+          },
         }}
       />
       {level !== undefined && (
@@ -105,7 +115,7 @@ export const AvatarAccountBadge = ({
             transform: "translate(-50%, -50%)",
           }}
         >
-          <BadgeLevel level={level} size={size / 2.5} fontSize={size / 5} />
+          <BadgeLevel level={level} size={size / 3} fontSize={size / 6} />
         </Box>
       )}
     </Box>

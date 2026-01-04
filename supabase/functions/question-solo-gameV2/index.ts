@@ -75,7 +75,6 @@ async function getQuestion(supabase, game) {
       .eq("theme", themequestion.id)
       .in("difficulty", difficulties)
       .not("id", "in", `(${previousIdQuestion})`);
-
     let result = undefined;
     if (previousQuestion !== undefined) {
       const respreviousresponse = await supabase
@@ -84,7 +83,10 @@ async function getQuestion(supabase, game) {
         .eq("id", previousQuestion)
         .maybeSingle();
 
-      if (respreviousresponse.data !== null) {
+      if (
+        respreviousresponse.data !== null &&
+        respreviousresponse.data.response !== null
+      ) {
         const response = respreviousresponse.data.response["fr-FR"];
         if (Array.isArray(response)) {
           result = response[0];
@@ -127,28 +129,49 @@ async function getQuestion(supabase, game) {
       newQuestion = { ...newQuestion, time: qcm ? 10 : 15, isqcm: qcm };
       if (qcm) {
         if (newQuestion.typequestion === "ORDER") {
+          const previousIdResponsesOrder = [...game.questions].reduce(
+            (acc, value) => {
+              const responses = [...value.responses]
+                .filter((el) => el.type === newQuestion.typeResponse)
+                .map((el) => el.id);
+              return [...acc, ...responses];
+            },
+            []
+          );
           const res = await supabase
-            .from("order")
+            .from("randomresponseorder")
             .select("*")
             .eq("type", newQuestion.typeResponse)
-            .limit(4);
+            .not("id", "in", `(${previousIdResponsesOrder})`)
+            .limit(2);
           if (res.error) throw res.error;
           responsesQcm = [...res.data]
-            .map((el) => ({ label: el.name }))
+            .map((el) => ({
+              label: el.name,
+              image: el.image,
+              extra: {
+                value: el.value,
+                type: el.typedata,
+                format: el.formatdata,
+                unit: el.unit,
+              },
+              id: el.id,
+              type: el.type,
+            }))
             .sort(() => Math.random() - 0.5);
           const responseOrder =
             newQuestion.order === "ASC"
               ? [...res.data].sort((a, b) =>
                   a.format === "DATE"
-                    ? moment(a.value, "DD/MM/YYYY").diff(
-                        moment(b.value, "DD/MM/YYYY")
+                    ? moment(a.value, a.formatdata).diff(
+                        moment(b.value, b.formatdata)
                       )
                     : a.value - b.value
                 )[0]
               : [...res.data].sort((a, b) =>
                   a.format === "DATE"
-                    ? moment(b.value, "DD/MM/YYYY").diff(
-                        moment(a.value, "DD/MM/YYYY")
+                    ? moment(b.value, b.formatdata).diff(
+                        moment(a.value, a.formatdata)
                       )
                     : b.value - a.value
                 )[0];

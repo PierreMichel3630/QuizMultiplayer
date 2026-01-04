@@ -1,91 +1,156 @@
-import { Box, Grid, Typography } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { Grid } from "@mui/material";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
-import { FavoriteBlock } from "src/component/FavoriteBlock";
-import { RankingBlock } from "src/component/RankingBlock";
-import { CardTheme } from "src/component/card/CardTheme";
+import { useNavigate, useParams } from "react-router-dom";
+import { selectCategoryById } from "src/api/category";
+import { deleteFavoriteById, insertFavorite } from "src/api/favorite";
+import { countThemesByCategory, selectThemesByCategory } from "src/api/theme";
+import { ICardImage } from "src/component/card/CardImage";
+import { PageCategoryBlock } from "src/component/page/PageCategoryBlock";
 import { useApp } from "src/context/AppProvider";
+import { useAuth } from "src/context/AuthProviderSupabase";
+import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
-import { sortByName } from "src/utils/sort";
+import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { FavoriteInsert } from "src/models/Favorite";
 
 export default function CategoryPage() {
   const { t } = useTranslation();
   const { id } = useParams();
-  const { language } = useUser();
-  const { categories, themes } = useApp();
+  const navigate = useNavigate();
 
-  const [category, setCategory] = useState<Category | undefined>(undefined);
+  const { user } = useAuth();
+  const { language } = useUser();
+  const { favorites, getFavorite } = useApp();
+  const { setMessage, setSeverity } = useMessage();
+
+  const [category, setCategory] = useState<Category | null>(null);
+  const [themes, setThemes] = useState<Array<ICardImage>>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [count, setCount] = useState<undefined | number>(undefined);
+  const [, setPage] = useState(0);
+
+  const getTheme = useCallback(
+    (page: number) => {
+      setIsLoading(true);
+      if (language && category) {
+        selectThemesByCategory(language, category.id, "", page, 50).then(
+          ({ data }) => {
+            const res = (data ?? []).map((el) => ({
+              ...el,
+              type: TypeCardEnum.THEME,
+            }));
+            setThemes((prev) => (page === 0 ? [...res] : [...prev, ...res]));
+            setIsLoading(false);
+          }
+        );
+      }
+    },
+    [category, language]
+  );
 
   useEffect(() => {
-    setCategory(categories.find((el) => el.id === Number(id)));
-  }, [categories, id]);
+    getTheme(0);
+  }, [category, language]);
 
-  const themesCategory = useMemo(
-    () =>
-      category
-        ? themes
-            .filter((el) => el.category.id === category.id && !el.isfirst)
-            .sort((a, b) => sortByName(language, a, b))
-        : [],
-    [category, themes, language]
+  useEffect(() => {
+    if (id) {
+      setIsLoading(true);
+      selectCategoryById(id).then(({ data }) => {
+        setCategory(data);
+      });
+    }
+  }, [id, language]);
+
+  const favorite = useMemo(
+    () => favorites.find((el) => el.category === Number(id)),
+    [id, favorites]
   );
 
-  const idthemes = useMemo(
-    () =>
-      themes
-        .filter((el) => category && el.category.id === category.id)
-        .map((el) => el.id),
-    [themes, category]
-  );
+  const addFavorite = () => {
+    if (user) {
+      if (category) {
+        if (favorite) {
+          deleteFavoriteById(favorite.id).then(({ error }) => {
+            if (error) {
+              setSeverity("error");
+              setMessage(t("commun.error"));
+            } else {
+              setSeverity("success");
+              setMessage(t("alert.deletefavorite"));
+              getFavorite();
+            }
+          });
+        } else {
+          const newFavorite: FavoriteInsert = {
+            category: category.id,
+          };
+          insertFavorite(newFavorite).then(({ error }) => {
+            if (error) {
+              setSeverity("error");
+              setMessage(t("commun.error"));
+            } else {
+              setSeverity("success");
+              setMessage(t("alert.addfavorite"));
+              getFavorite();
+            }
+          });
+        }
+      }
+    } else {
+      navigate(`/login`);
+    }
+  };
 
-  const FirstThemesCategory = useMemo(
-    () =>
-      category
-        ? themes.filter((el) => el.category.id === category.id && el.isfirst)
-        : [],
-    [category, themes]
-  );
+  const title = useMemo(() => {
+    if (category && language) {
+      const translations = [...category.categorytranslation];
+      const trad = translations.find((el) => el.language.id === language.id);
+      return trad ? trad.name : translations[1].name;
+    } else {
+      return "";
+    }
+  }, [language, category]);
 
-  const themesDisplay = [...FirstThemesCategory, ...themesCategory];
+  useEffect(() => {
+    const getCount = () => {
+      if (language && category) {
+        countThemesByCategory(category.id, language).then(({ count }) => {
+          setCount(count ?? 0);
+        });
+      }
+    };
+    getCount();
+  }, [category, language]);
+
   return (
     <Grid container>
       <Helmet>
-        <title>
-          {category
-            ? `${category.name[language.iso]} - ${t("appname")}`
-            : t("appname")}
-        </title>
+        <title>{title ? `${title} - ${t("appname")}` : t("appname")}</title>
         {category && (
           <meta
             name="description"
-            content={`${t("appname")} Catégorie ${category.name[language.iso]}`}
+            content={`${t("appname")} - ${t("category")} ${title}`}
           />
         )}
       </Helmet>
       <Grid item xs={12}>
-        <Box sx={{ p: 1 }}>
-          <Grid container spacing={1} justifyContent="center">
-            {idthemes.length > 0 && (
-              <Grid item xs={12}>
-                <RankingBlock themes={idthemes} />
-              </Grid>
-            )}
-            <Grid item xs={12}>
-              <FavoriteBlock category={category} />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h2">{t("commun.themes")}</Typography>
-            </Grid>
-            {themesDisplay.map((theme) => (
-              <Grid item key={theme.id}>
-                <CardTheme theme={theme} />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
+        <PageCategoryBlock
+          title={title}
+          values={themes}
+          addFavorite={addFavorite}
+          favorite={favorite !== undefined}
+          isLoading={isLoading}
+          count={count}
+          handleScroll={() =>
+            setPage((prev) => {
+              getTheme(prev + 1);
+              return prev + 1;
+            })
+          }
+        />
       </Grid>
     </Grid>
   );

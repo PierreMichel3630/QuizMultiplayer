@@ -4,8 +4,21 @@ import {
   User,
   UserResponse,
 } from "@supabase/supabase-js";
-import { createContext, useContext, useEffect, useState } from "react";
-import { getProfilById, updateProfil } from "src/api/profile";
+import moment from "moment";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { countChallengeGameByDateAndProfileId } from "src/api/challenge";
+import {
+  getProfilById,
+  updateProfil,
+  updateProfilByFunction,
+} from "src/api/profile";
 import {
   passwordReset,
   signInWithEmail,
@@ -23,6 +36,10 @@ type Props = {
 const AuthContext = createContext<{
   user: User | null;
   profile: Profile | null;
+  streak: undefined | number;
+  hasPlayChallenge: boolean;
+  refreshHasPlayChallenge: () => void;
+  setStreak: (value: undefined | number) => void;
   setProfile: (value: Profile) => void;
   refreshProfil: () => void;
   login: (email: string, password: string) => Promise<AuthTokenResponse>;
@@ -39,6 +56,10 @@ const AuthContext = createContext<{
     localStorage.getItem("user") !== null
       ? (JSON.parse(localStorage.getItem("user")!) as User)
       : null,
+  streak: undefined,
+  hasPlayChallenge: false,
+  refreshHasPlayChallenge: () => {},
+  setStreak: () => {},
   deleteAccount: () => {},
   profile: null,
   setProfile: () => {},
@@ -52,7 +73,10 @@ const AuthContext = createContext<{
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProviderSupabase = ({ children }: Props) => {
+  const [hasPlayChallenge, setHasPlayChallenge] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [streak, setStreak] = useState<undefined | number>(undefined);
+
   const [user, setUser] = useState<User | null>(
     localStorage.getItem("user") !== null
       ? (JSON.parse(localStorage.getItem("user")!) as User)
@@ -65,24 +89,47 @@ export const AuthProviderSupabase = ({ children }: Props) => {
   useEffect(() => {
     const getProfilUser = async () => {
       if (user) {
-        await updateProfil({ id: user.id, isonline: true });
-      }
-      if (user !== null) {
-        const { data } = await getProfilById(user.id);
-        setProfile(data as Profile);
+        getProfilById(user.id).then(({ data }) => {
+          const res = data as Profile;
+          setProfile(res);
+          updateProfilByFunction().then(({ data }) => {
+            if (data !== null) {
+              setStreak(data.streak);
+            }
+          });
+        });
       }
     };
     localStorage.setItem("user", JSON.stringify(user));
     getProfilUser();
   }, [user]);
 
-  const logout = async () => {
+  const refreshHasPlayChallenge = useCallback(() => {
     if (user) {
-      await updateProfil({ id: user.id, isonline: false });
+      const date = moment();
+      countChallengeGameByDateAndProfileId(date, user.id).then(({ count }) => {
+        setHasPlayChallenge(count !== null && count > 0);
+      });
     }
+  }, [user]);
+
+  useEffect(() => {
+    refreshHasPlayChallenge();
+  }, [refreshHasPlayChallenge]);
+
+  const logout = useCallback(async () => {
+    if (user) {
+      await updateProfil({
+        id: user.id,
+        isonline: false,
+        lastconnection: moment(),
+      });
+    }
+    setUser(null);
+    setProfile(null);
     clearLocalStorage();
     return signOut();
-  };
+  }, [user]);
 
   const clearLocalStorage = () => {
     localStorage.removeItem("user");
@@ -92,10 +139,23 @@ export const AuthProviderSupabase = ({ children }: Props) => {
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN") {
-        setUser(session !== null ? session.user : null);
+        if (session !== null) {
+          updateProfil({
+            id: session.user.id,
+            isonline: true,
+            lastconnection: moment(),
+          }).then(() => {
+            setUser(session.user);
+          });
+        } else {
+          setProfile(null);
+          setUser(null);
+          setStreak(undefined);
+        }
       } else if (event === "SIGNED_OUT") {
         setUser(null);
         setProfile(null);
+        setStreak(undefined);
       }
     });
     return () => {
@@ -103,36 +163,48 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     };
   }, []);
 
-  const deleteAccount = async () => {
+  const deleteAccount = useCallback(async () => {
     await deleteAccountUser();
     clearLocalStorage();
     setUser(null);
     setProfile(null);
-  };
+  }, []);
 
-  const refreshProfil = () => {
+  const refreshProfil = useCallback(() => {
     if (profile) {
       getProfilById(profile.id).then(({ data }) => {
         setProfile(data as Profile);
       });
     }
-  };
+  }, [profile]);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        profile,
-        setProfile,
-        refreshProfil,
-        user,
-        login,
-        logout,
-        deleteAccount,
-        passwordReset,
-        updatePassword,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      streak,
+      setStreak,
+      profile,
+      setProfile,
+      refreshProfil,
+      user,
+      login,
+      logout,
+      deleteAccount,
+      passwordReset,
+      updatePassword,
+      hasPlayChallenge,
+      refreshHasPlayChallenge,
+    }),
+    [
+      deleteAccount,
+      hasPlayChallenge,
+      refreshHasPlayChallenge,
+      logout,
+      profile,
+      refreshProfil,
+      streak,
+      user,
+    ]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

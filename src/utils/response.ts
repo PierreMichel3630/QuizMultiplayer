@@ -1,7 +1,10 @@
+import { AnswerUser } from "src/component/question/ResponseBlock";
+import { Question, QuestionResult } from "src/models/Question";
 import { compareTwoStrings } from "string-similarity";
+import { decryptToNumber } from "./crypt";
+import { Language } from "src/models/Language";
 
 const LIMIT = 0.7;
-const LIMITEXACT = 1;
 const stopwords = [
   "the",
   "of",
@@ -37,22 +40,85 @@ const removeStopWord = (value: string) =>
 const compareString = (a: string, b: string) =>
   compareTwoStrings(normalizeString(a), normalizeString(b));
 
-export const verifyResponse = (
-  response: Array<string> | string | number,
-  value: string | number,
-  exact: boolean
+export const verifyResponseCrypt = (
+  question: Question,
+  language: Language,
+  answer: AnswerUser
 ) => {
-  const limit = exact ? LIMITEXACT : LIMIT;
   let result = false;
-  if (Array.isArray(response)) {
-    result = response.reduce((acc: boolean, b: string) => {
-      const val = compareString(b, value.toString()) >= limit;
-      return acc || val;
-    }, false);
-  } else if (typeof response === "string") {
-    result = compareString(response, value.toString()) >= limit;
-  } else {
-    result = Number(response) === Number(value);
+  const myResponseValue = answer.value;
+  const decryptResponse = decryptToNumber(question.answer);
+  if (decryptResponse !== undefined) {
+    if (question.isqcm) {
+      result = Number(myResponseValue) === Number(decryptResponse);
+    } else {
+      const answer = [...question.answers].find(
+        (el) => el.id === decryptResponse
+      );
+      if (answer) {
+        const answertranslation = [...answer.answertranslation].find(
+          (el) => el.language.id === language.id
+        );
+        if (answertranslation) {
+          const answers = [
+            answertranslation.label.toString(),
+            ...answertranslation.otherlabel.map((el) => el.toString()),
+          ];
+          result = checkResponse(answers, myResponseValue);
+        }
+      }
+    }
+  }
+  return result;
+};
+
+export const getResponse = (question: Question, language: Language) => {
+  let result: string | number = "";
+  const decryptResponse = decryptToNumber(question.answer);
+  if (result !== undefined) {
+    if (question.isqcm) {
+      result = decryptResponse;
+    } else {
+      const answer = [...question.answers].find(
+        (el) => el.id === decryptResponse
+      );
+      if (answer) {
+        const answertranslation = [...answer.answertranslation].find(
+          (el) => el.language.id === language.id
+        );
+        if (answertranslation) {
+          result = answertranslation.label;
+        }
+      }
+    }
+  }
+  return result;
+};
+
+export const verifyResponse = (
+  question: QuestionResult,
+  answer: AnswerUser
+) => {
+  const decryptanswer = decryptToNumber(question.answer);
+  const myResponseValue = answer.value;
+  return Number(myResponseValue) === Number(decryptanswer);
+};
+
+const checkResponse = (
+  response: Array<string> | number,
+  value?: string | number
+) => {
+  const limit = LIMIT;
+  let result = false;
+  if (value !== undefined) {
+    if (Array.isArray(response)) {
+      result = response.reduce((acc: boolean, b: string) => {
+        const val = compareString(b, value.toString()) >= limit;
+        return acc || val;
+      }, false);
+    } else {
+      result = Number(response) === Number(value);
+    }
   }
   return result;
 };

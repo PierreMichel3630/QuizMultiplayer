@@ -1,17 +1,32 @@
-import { useRoutes } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 
-import { appNoOutletRoutes } from "./appNoOutletRoutes";
-import { AppRoutes } from "./appRoutes";
 import { PlayRoutes } from "./playRoutes";
 
-import GameOutlet from "src/pages/GameOutlet";
+import App from "src/App";
+import NotificationOutlet from "src/pages/outlet/NotificationOutlet";
+import { AppNavigationAndAppBarRoutes } from "./AppNavigationAndAppBarRoutes";
+import { AppNavigationRoutes } from "./AppNavigationRoutes";
+import { ConnectRoutes } from "./connectRoutes";
+import NavigationOutletPage from "src/pages/outlet/NavigationOutletPage";
 
-export default function ThemeRoutes() {
-  const HomeRoute = {
+export const router = createBrowserRouter([
+  {
     path: "/",
-    element: <GameOutlet />,
-    children: [...AppRoutes, ...appNoOutletRoutes],
-  };
-
-  return useRoutes([HomeRoute, ...PlayRoutes]);
-}
+    element: <App />,
+    children: [
+      {
+        path: "/",
+        element: <NotificationOutlet />,
+        children: [
+          {
+            path: "/",
+            element: <NavigationOutletPage />,
+            children: [...AppNavigationRoutes, ...AppNavigationAndAppBarRoutes],
+          },
+        ],
+      },
+      ...PlayRoutes,
+      ...ConnectRoutes,
+    ],
+  },
+]);

@@ -1,4 +1,5 @@
 import { compareTwoStrings } from "https://deno.land/x/string_similarity/mod.ts";
+import CryptoJS from "https://esm.sh/crypto-js";
 
 const LIMIT = 0.7;
 const LIMITEXACT = 1;
@@ -55,4 +56,8 @@ export const verifyResponse = (
     result = Number(response) === Number(value);
   }
   return result;
+};
+
+export const encrypt = (text: string, key: string) => {
+  return CryptoJS.AES.encrypt(text, key).toString();
 };

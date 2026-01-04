@@ -1,6 +1,5 @@
 import {
   AppBar,
-  Avatar,
   Box,
   Dialog,
   DialogContent,
@@ -17,7 +16,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { px } from "csx";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BasicSearchInput } from "../Input";
@@ -25,17 +23,18 @@ import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
-import { useApp } from "src/context/AppProvider";
+import { selectCountries } from "src/api/country";
 import { useUser } from "src/context/UserProvider";
 import { Country } from "src/models/Country";
 import { Profile } from "src/models/Profile";
+import { Colors } from "src/style/Colors";
 import { sortByName } from "src/utils/sort";
 import { searchString } from "src/utils/string";
 
 interface Props {
   open: boolean;
   close: () => void;
-  onValid: (id: number) => void;
+  onValid: (id: Country) => void;
   profile?: Profile;
 }
 
@@ -49,7 +48,18 @@ export const SelectCountryModal = ({
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const { language } = useUser();
-  const { countries } = useApp();
+
+  const [countries, setCountries] = useState<Array<Country>>([]);
+
+  useEffect(() => {
+    const getCountries = () => {
+      selectCountries().then(({ data }) => {
+        const value = data !== null ? (data as Array<Country>) : [];
+        setCountries(value);
+      });
+    };
+    getCountries();
+  }, []);
 
   const ref = useRef<HTMLDivElement | null>(null);
   const [value, setValue] = useState("");
@@ -58,16 +68,18 @@ export const SelectCountryModal = ({
 
   useEffect(() => {
     const getResult = () => {
-      if (value !== "") {
-        const countriesFilter = countries
-          .sort((a, b) => sortByName(language, a, b))
-          .filter((el) => searchString(value, el.name[language.iso]));
+      if (language) {
+        if (value !== "") {
+          const countriesFilter = [...countries]
+            .sort((a, b) => sortByName(language, a, b))
+            .filter((el) => searchString(value, el.name[language.iso]));
 
-        setCountriesFilter(countriesFilter);
-      } else {
-        setCountriesFilter(
-          countries.sort((a, b) => sortByName(language, a, b))
-        );
+          setCountriesFilter(countriesFilter);
+        } else {
+          setCountriesFilter(
+            [...countries].sort((a, b) => sortByName(language, a, b))
+          );
+        }
       }
     };
     getResult();
@@ -85,7 +97,7 @@ export const SelectCountryModal = ({
       }
       setMaxIndex((prev) => prev + 25);
     };
-    if (ref && ref.current) {
+    if (ref?.current) {
       ref.current.addEventListener("scroll", handleScroll);
     }
     return () => {
@@ -138,7 +150,7 @@ export const SelectCountryModal = ({
               {[...countriesFilter].splice(0, maxIndex).map((el) => (
                 <Fragment key={el.id}>
                   <ListItem disablePadding>
-                    <ListItemButton onClick={() => onValid(el.id)}>
+                    <ListItemButton onClick={() => onValid(el)}>
                       <ListItemIcon>
                         {profile &&
                           profile.country !== null &&
@@ -147,10 +159,14 @@ export const SelectCountryModal = ({
                           )}
                       </ListItemIcon>
                       <ListItemIcon>
-                        <Avatar
+                        <img
                           alt="flag"
                           src={el.flag}
-                          sx={{ width: px(30), height: px(30) }}
+                          style={{
+                            maxHeight: 40,
+                            maxWidth: 40,
+                            border: `1px solid ${Colors.grey}`,
+                          }}
                         />
                       </ListItemIcon>
                       <ListItemText

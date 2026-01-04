@@ -6,8 +6,8 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Profile } from "src/models/Profile";
 import { AvatarAccount } from "../avatar/AvatarAccount";
-import { BadgeAccountActive } from "../Badge";
 import { FriendButton } from "../FriendButton";
+import { ProfileBlock } from "../profile/ProfileBlock";
 import { StatusProfileBlock } from "../StatusProfileBlock";
 interface Props {
   profile: Profile;
@@ -45,11 +45,11 @@ export const CardProfile = ({
       onClick={select}
       variant="outlined"
     >
-      <Grid container spacing={1} alignItems="center" justifyContent="center">
+      <Grid container spacing={2} alignItems="center" justifyContent="center">
         <Grid item>
           <AvatarAccount avatar={profile.avatar.icon} size={50} />
         </Grid>
-        <Grid item>
+        <Grid item xs>
           <Typography variant="h4" sx={{ wordWrap: "break-word" }}>
             {profile.username}
           </Typography>
@@ -98,20 +98,18 @@ export const BasicCardProfile = ({ profile }: PropsBasic) => {
   return (
     <Paper
       sx={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
         cursor: "pointer",
         p: px(5),
       }}
+      elevation={8}
       onClick={() => navigate(`/profil/${profile.id}`)}
     >
-      <AvatarAccount avatar={profile.avatar.icon} size={50} />
-      <Typography variant="h6" sx={{ wordWrap: "break-word" }}>
-        {profile.username}
-      </Typography>
-      <FriendButton profile={profile} small />
+      <ProfileBlock
+        variant="h6"
+        profile={profile}
+        extra={<FriendButton profile={profile} small />}
+        avatarSize={45}
+      />
     </Paper>
   );
 };
@@ -125,22 +123,18 @@ export const BasicCardFriendProfile = ({ profile }: PropsBasic) => {
   return (
     <Paper
       sx={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
         cursor: "pointer",
         p: px(5),
       }}
+      elevation={8}
       onClick={() => navigate(`/profil/${profile.id}`)}
     >
-      <BadgeAccountActive online={profile.isonline}>
-        <AvatarAccount avatar={profile.avatar.icon} size={50} />
-      </BadgeAccountActive>
-      <Typography variant="h6" sx={{ wordWrap: "break-word" }}>
-        {profile.username}
-      </Typography>
-      <FriendButton profile={profile} small />
+      <ProfileBlock
+        variant="h6"
+        profile={profile}
+        extra={<FriendButton profile={profile} small />}
+        avatarSize={45}
+      />
     </Paper>
   );
 };

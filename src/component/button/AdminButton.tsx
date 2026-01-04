@@ -1,15 +1,19 @@
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import ImageIcon from "@mui/icons-material/Image";
-import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
-import ReportIcon from "@mui/icons-material/Report";
-import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import { Box, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import { padding, px } from "csx";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Colors } from "src/style/Colors";
+
+import EditIcon from "@mui/icons-material/Edit";
+import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
+import ReportIcon from "@mui/icons-material/Report";
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 interface Setting {
   name: string;
@@ -25,36 +29,49 @@ export const AdminButton = () => {
 
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
-  const settingsAdmin: Array<Setting> =
-    profile && profile.isadmin
-      ? [
-          {
-            name: t("commun.report"),
-            icon: <ReportIcon />,
-            url: "/administration/report",
-          },
-          {
-            name: t("commun.adminquestions"),
-            icon: <QuestionMarkIcon />,
-            url: "/administration/question",
-          },
-          {
-            name: t("commun.themes"),
-            icon: <AdminPanelSettingsIcon />,
-            url: "/administration/themes",
-          },
-          {
-            name: t("commun.games"),
-            icon: <SportsEsportsIcon />,
-            url: "/administration/games",
-          },
-          {
-            name: t("commun.images"),
-            icon: <ImageIcon />,
-            url: "/administration/images",
-          },
-        ]
-      : [];
+  const settingsAdmin: Array<Setting> = useMemo(
+    () =>
+      profile?.isadmin
+        ? [
+            {
+              name: t("commun.propose"),
+              icon: <EmojiObjectsIcon />,
+              url: "/administration/propose",
+            },
+            {
+              name: t("commun.report"),
+              icon: <ReportIcon />,
+              url: "/administration/report",
+            },
+            {
+              name: t("commun.challenge"),
+              icon: <EmojiEventsIcon />,
+              url: "/administration/challenge",
+            },
+            {
+              name: t("commun.shop"),
+              icon: <ShoppingCartIcon />,
+              url: "/administration/shop",
+            },
+            {
+              name: t("commun.administration"),
+              icon: <EditIcon />,
+              url: "/administration/edit/categories",
+            },
+            {
+              name: t("commun.games"),
+              icon: <SportsEsportsIcon />,
+              url: "/administration/games",
+            },
+            {
+              name: t("commun.notifications"),
+              icon: <NotificationsIcon />,
+              url: "/administration/notifications",
+            },
+          ]
+        : [],
+    [profile, t]
+  );
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -77,15 +94,19 @@ export const AdminButton = () => {
       <>
         <Box
           sx={{
-            p: padding(2, 8),
+            p: padding(1, 5),
             border: "2px solid",
             borderColor: Colors.white,
             borderRadius: px(5),
             display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
           onClick={handleOpenUserMenu}
         >
-          <AdminPanelSettingsIcon sx={{ color: Colors.white }} />
+          <AdminPanelSettingsIcon
+            sx={{ color: Colors.white, fontSize: px(25) }}
+          />
         </Box>
         <Menu
           sx={{ mt: "35px", pt: 0, pb: 0 }}

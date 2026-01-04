@@ -10,7 +10,6 @@ import { percent, px } from "csx";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Colors } from "src/style/Colors";
-import { HealthBlock } from "./HealthBlock";
 import { isMobile } from "react-device-detect";
 import { searchResponseByTypeAndValue } from "src/api/response";
 import { MyResponse, ResponseUpdate } from "src/models/Response";
@@ -18,13 +17,11 @@ import { useUser } from "src/context/UserProvider";
 
 interface Props {
   onSubmit: (value: MyResponse) => void;
-  health?: number;
   typeResponse?: string;
   myresponse: string | number | undefined;
 }
 export const InputResponseBlock = ({
   onSubmit,
-  health,
   typeResponse,
   myresponse,
 }: Props) => {
@@ -37,7 +34,12 @@ export const InputResponseBlock = ({
   useEffect(() => {
     setResponses([]);
     const timer = setTimeout(() => {
-      if (typeResponse && value.length >= 3 && myresponse === undefined) {
+      if (
+        typeResponse &&
+        value.length >= 3 &&
+        myresponse === undefined &&
+        language
+      ) {
         searchResponseByTypeAndValue(value, typeResponse).then(({ data }) => {
           const res = data as Array<ResponseUpdate>;
           const arrayString = res.map((el) => el.value[language.iso]);
@@ -156,11 +158,6 @@ export const InputResponseBlock = ({
                 </FormControl>
               </form>
             </Grid>
-            {health !== undefined && (
-              <Grid item>
-                <HealthBlock health={health} />
-              </Grid>
-            )}
           </Grid>
         )}
       </Paper>
