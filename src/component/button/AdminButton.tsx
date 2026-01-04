@@ -11,6 +11,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
 import ReportIcon from "@mui/icons-material/Report";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 interface Setting {
   name: string;
@@ -41,7 +44,17 @@ export const AdminButton = () => {
               url: "/administration/report",
             },
             {
-              name: t("commun.addmodifydelete"),
+              name: t("commun.challenge"),
+              icon: <EmojiEventsIcon />,
+              url: "/administration/challenge",
+            },
+            {
+              name: t("commun.shop"),
+              icon: <ShoppingCartIcon />,
+              url: "/administration/shop",
+            },
+            {
+              name: t("commun.administration"),
               icon: <EditIcon />,
               url: "/administration/edit/categories",
             },
@@ -49,6 +62,11 @@ export const AdminButton = () => {
               name: t("commun.games"),
               icon: <SportsEsportsIcon />,
               url: "/administration/games",
+            },
+            {
+              name: t("commun.notifications"),
+              icon: <NotificationsIcon />,
+              url: "/administration/notifications",
             },
           ]
         : [],

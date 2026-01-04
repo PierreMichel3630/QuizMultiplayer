@@ -68,16 +68,18 @@ export const SelectCountryModal = ({
 
   useEffect(() => {
     const getResult = () => {
-      if (value !== "") {
-        const countriesFilter = [...countries]
-          .sort((a, b) => sortByName(language, a, b))
-          .filter((el) => searchString(value, el.name[language.iso]));
+      if (language) {
+        if (value !== "") {
+          const countriesFilter = [...countries]
+            .sort((a, b) => sortByName(language, a, b))
+            .filter((el) => searchString(value, el.name[language.iso]));
 
-        setCountriesFilter(countriesFilter);
-      } else {
-        setCountriesFilter(
-          [...countries].sort((a, b) => sortByName(language, a, b))
-        );
+          setCountriesFilter(countriesFilter);
+        } else {
+          setCountriesFilter(
+            [...countries].sort((a, b) => sortByName(language, a, b))
+          );
+        }
       }
     };
     getResult();
@@ -95,7 +97,7 @@ export const SelectCountryModal = ({
       }
       setMaxIndex((prev) => prev + 25);
     };
-    if (ref && ref.current) {
+    if (ref?.current) {
       ref.current.addEventListener("scroll", handleScroll);
     }
     return () => {

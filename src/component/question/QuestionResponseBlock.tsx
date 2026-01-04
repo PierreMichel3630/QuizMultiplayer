@@ -2,25 +2,22 @@ import { Question } from "src/models/Question";
 import { InputResponseBlock } from "./InputResponseBlock";
 import { QuestionBlock } from "./QuestionBlock";
 import {
-  Answer,
+  AnswerUser,
   Response,
   ResponseInputBlock,
   ResponsesQCMBlock,
+  ResponsesQCMEditBlock,
 } from "./ResponseBlock";
 
 interface Props {
   question?: Question;
-  responseplayer1?: string | number;
-  responseplayer2?: string | number;
   response?: Response;
   timer?: number;
-  onSubmit: (value: Answer) => void;
+  onSubmit: (value: AnswerUser) => void;
 }
 
 export const QuestionResponseBlock = ({
   question,
-  responseplayer1,
-  responseplayer2,
   response,
   timer,
   onSubmit,
@@ -29,9 +26,57 @@ export const QuestionResponseBlock = ({
     <>
       {question && (
         <>
-          <QuestionBlock question={question} timer={timer} />
-          {question?.isqcm ? (
+          <QuestionBlock
+            question={question}
+            timer={timer}
+            onSubmit={onSubmit}
+          />
+          {question.isqcm ? (
             <ResponsesQCMBlock
+              response={response}
+              question={question}
+              onSubmit={onSubmit}
+            />
+          ) : (
+            <>
+              {response ? (
+                <ResponseInputBlock question={question} response={response} />
+              ) : (
+                <InputResponseBlock
+                  onSubmit={onSubmit}
+                  answerset={question.answerset}
+                />
+              )}
+            </>
+          )}
+        </>
+      )}
+    </>
+  );
+};
+
+interface PropsQuestionResponseEditBlock {
+  question?: Question;
+  responseplayer1?: string | number;
+  responseplayer2?: string | number;
+  response?: Response;
+  onSubmit: (value: AnswerUser) => void;
+}
+
+export const QuestionResponseEditBlock = ({
+  question,
+  responseplayer1,
+  responseplayer2,
+  response,
+  onSubmit,
+}: PropsQuestionResponseEditBlock) => {
+  return (
+    <>
+      {question && (
+        <>
+          <QuestionBlock question={question} />
+          {question?.isqcm ? (
+            <ResponsesQCMEditBlock
               responseplayer1={responseplayer1}
               responseplayer2={responseplayer2}
               response={response}
@@ -41,15 +86,11 @@ export const QuestionResponseBlock = ({
           ) : (
             <>
               {response ? (
-                <ResponseInputBlock
-                  response={response}
-                  responseplayer1={responseplayer1}
-                  responseplayer2={responseplayer2}
-                />
+                <ResponseInputBlock response={response} question={question} />
               ) : (
                 <InputResponseBlock
                   onSubmit={onSubmit}
-                  typeResponse={question.typeResponse}
+                  answerset={question.answerset}
                 />
               )}
             </>

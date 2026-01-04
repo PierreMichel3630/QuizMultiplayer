@@ -1,5 +1,4 @@
 import CryptoJS from "crypto-js";
-import { JsonLanguage } from "src/models/Language";
 
 const key = import.meta.env.VITE_CRYPT_SECRET;
 
@@ -24,7 +23,6 @@ export const decrypt = (encryptedBase64: string) => {
   return undefined;
 };
 
-export const decryptToJsonLanguage = (encryptedBase64: string) => {
-  const decryptResponse = decrypt(encryptedBase64);
-  return decryptResponse ? (JSON.parse(decryptResponse) as JsonLanguage) : {};
+export const decryptToNumber = (encryptedBase64: string) => {
+  return Number(decrypt(encryptedBase64));
 };

@@ -14,6 +14,7 @@ import CheckIcon from "@mui/icons-material/Check";
 interface Props {
   title: string;
   text?: string;
+  extra?: JSX.Element;
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -23,6 +24,7 @@ export const ConfirmDialog = ({
   open,
   title,
   text,
+  extra,
   onClose,
   onConfirm,
 }: Props) => {
@@ -39,6 +41,11 @@ export const ConfirmDialog = ({
               <Alert severity="warning">
                 <Typography variant="h6">{text}</Typography>
               </Alert>
+            </Grid>
+          )}
+          {extra && (
+            <Grid item xs={12}>
+              {extra}
             </Grid>
           )}
           <Grid item xs={6}>

@@ -1,42 +1,30 @@
-import { Badge, Box, Skeleton, Typography } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 import { important, padding, percent, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
-import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { StatAccomplishment } from "src/models/Accomplishment";
-import { FRIENDSTATUS } from "src/models/Friend";
 import { getLevel } from "src/utils/calcul";
 import { AvatarAccountBadge } from "./avatar/AvatarAccount";
 import { CountryImageBlock } from "./CountryBlock";
-import { MoneyBlock } from "./MoneyBlock";
+import { MoneyArrondieBlock } from "./MoneyBlock";
 
-import PeopleIcon from "@mui/icons-material/People";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";
 import { AdminButton } from "./button/AdminButton";
+import { NotificationBadge } from "./button/NotificationBadge";
 import { SkeletonCircular } from "./skeleton/SkeletonCircular";
 import { StreakBlock } from "./StreakBlock";
 
 export const ProfileBar = () => {
   const navigate = useNavigate();
   const { logout, profile, streak } = useAuth();
-  const { friends } = useApp();
+  const { language } = useUser();
 
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
-
-  const notificationsFriend = useMemo(
-    () =>
-      friends.filter(
-        (el) =>
-          el.status === FRIENDSTATUS.PROGRESS &&
-          profile &&
-          profile.id !== el.user1.id
-      ).length,
-    [friends, profile]
-  );
 
   useEffect(() => {
     const getMyStat = () => {
@@ -102,7 +90,7 @@ export const ProfileBar = () => {
               </Link>
             )}
             <Link
-              to={`/myprofile`}
+              to={profile ? `/profil/${profile.id}` : "/login"}
               style={{ textDecoration: "none", maxWidth: "calc(100% -30px)" }}
             >
               {profile ? (
@@ -142,7 +130,12 @@ export const ProfileBar = () => {
             {profile ? (
               <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
                 <Link to={`/shop`} style={{ textDecoration: "none" }}>
-                  <MoneyBlock money={profile.money} variant="h4" width={22} />
+                  <MoneyArrondieBlock
+                    money={profile.money}
+                    language={language}
+                    variant="h4"
+                    width={22}
+                  />
                 </Link>
               </Box>
             ) : (
@@ -164,20 +157,8 @@ export const ProfileBar = () => {
                 <SettingsIcon sx={{ color: Colors.white }} />
               </Box>
             </Link>
-            <Link to={`/people`}>
-              <Badge badgeContent={notificationsFriend} color="error">
-                <Box
-                  sx={{
-                    p: padding(2, 8),
-                    border: "2px solid",
-                    borderColor: Colors.white,
-                    borderRadius: px(5),
-                    display: "flex",
-                  }}
-                >
-                  <PeopleIcon sx={{ color: Colors.white }} />
-                </Box>
-              </Badge>
+            <Link to={`/notifications`}>
+              <NotificationBadge />
             </Link>
             <Box
               sx={{

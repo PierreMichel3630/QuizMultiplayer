@@ -1,20 +1,14 @@
 import { Box, Container, Divider, Grid, Typography } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonColor, ButtonColorSelect } from "src/component/Button";
 import { SelectorProfileBlock } from "src/component/SelectorProfileBlock";
-import {
-  CardSelectTheme,
-  CardThemeHorizontal,
-} from "src/component/card/CardTheme";
+import { CardThemeHorizontal } from "src/component/card/CardTheme";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { BarNavigation } from "src/component/navigation/BarNavigation";
-import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
 import { Profile } from "src/models/Profile";
-import { sortByName } from "src/utils/sort";
 
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -24,89 +18,56 @@ import {
 } from "src/api/game";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
-import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import { uniqBy } from "lodash";
 import { BasicSearchInput } from "src/component/Input";
-import { SkeletonTheme } from "src/component/skeleton/SkeletonTheme";
+import { DuelButton, SoloButton } from "src/component/button/PlayButton";
+import { ICardImage } from "src/component/card/CardImage";
+import { SearchThemeSelectScrollBlock } from "src/component/scroll/SearchThemeScrollBlock";
 import { LogoIcon } from "src/icons/LogoIcon";
-import { searchString } from "src/utils/string";
 
 export default function PlayPage() {
   const { t } = useTranslation();
-  const { language } = useUser();
-  const { themes } = useApp();
   const navigate = useNavigate();
   const location = useLocation();
-  const { uuid } = useUser();
+  const { uuid, language } = useUser();
   const { user } = useAuth();
   const { setMessage, setSeverity } = useMessage();
 
-  const [theme, setTheme] = useState<Theme | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(true);
+  const [theme, setTheme] = useState<ICardImage | undefined>(undefined);
   const [search, setSearch] = useState("");
   const [mode, setMode] = useState<string | null>(null);
   const [openModalFriend, setOpenModalFriend] = useState(false);
   const [profileAdv, setProfileAdv] = useState<undefined | Profile>(
     location.state ? location.state.opponent : undefined
   );
-  const [maxIndex, setMaxIndex] = useState(20);
-
-  const themesFilter = useMemo(() => {
-    setIsLoading(false);
-    return uniqBy(
-      [...themes]
-        .filter((el) => searchString(search, el.name[language.iso]))
-        .sort((a, b) => sortByName(language, a, b)),
-      (el) => el.id
-    ).splice(0, maxIndex);
-  }, [themes, search, language, maxIndex]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsLoading(true);
-      if (
-        window.innerHeight + document.documentElement.scrollTop + 1000 <=
-        document.documentElement.offsetHeight
-      ) {
-        return;
-      }
-      setMaxIndex((prev) => prev + 20);
-    };
-    if (document) {
-      document.addEventListener("scroll", handleScroll);
-    }
-    return () => {
-      document.removeEventListener("scroll", handleScroll);
-    };
-  }, [themes, maxIndex]);
 
   const play = () => {
-    if (theme && mode === "solo") {
-      launchSoloGame(uuid, theme.id).then(({ data }) => {
-        navigate(`/solo/${data.uuid}`);
-      });
-    } else if (theme && mode === "duel" && profileAdv !== undefined) {
-      if (user) {
-        launchDuelGame(uuid, profileAdv.id, theme.id).then(({ data }) => {
-          if (data) navigate(`/duel/${data.uuid}`);
+    if (language) {
+      if (theme && mode === "solo" && language) {
+        launchSoloGame(uuid, theme.id, language).then(({ data }) => {
+          navigate(`/solo/${data.uuid}`);
         });
+      } else if (theme && mode === "duel" && profileAdv !== undefined) {
+        if (user) {
+          launchDuelGame(uuid, profileAdv.id, theme.id).then(({ data }) => {
+            if (data) navigate(`/duel/${data.uuid}`);
+          });
+        } else {
+          navigate(`/login`);
+        }
+      } else if (theme && mode === "duel" && profileAdv === undefined) {
+        if (user) {
+          matchmakingDuelGame(uuid, theme.id, language).then(({ data }) => {
+            if (data) navigate(`/duel/${data.uuid}`);
+          });
+        } else {
+          navigate(`/login`);
+        }
       } else {
-        navigate(`/login`);
+        setSeverity("error");
+        setMessage(t("error.selectatleast1theme"));
       }
-    } else if (theme && mode === "duel" && profileAdv === undefined) {
-      if (user) {
-        matchmakingDuelGame(uuid, theme.id).then(({ data }) => {
-          if (data) navigate(`/duel/${data.uuid}`);
-        });
-      } else {
-        navigate(`/login`);
-      }
-    } else {
-      setSeverity("error");
-      setMessage(t("error.selectatleast1theme"));
     }
   };
 
@@ -120,82 +81,54 @@ export default function PlayPage() {
         <Container maxWidth="md">
           <Box sx={{ p: 1 }}>
             <Grid container spacing={2} justifyContent="center">
+              <Grid item xs={12}>
+                <Divider sx={{ borderBottomWidth: 5 }} />
+              </Grid>
               <Grid item xs={12} sx={{ textAlign: "center" }}>
-                <Typography variant="h4">
-                  {t("commun.selectgamemode")}
-                </Typography>
+                <Typography variant="h4">{t("commun.selecttheme")}</Typography>
               </Grid>
-              <Grid item xs={6}>
-                <ButtonColorSelect
-                  select={mode === "duel"}
-                  value={Colors.red}
-                  label={t("commun.duel")}
-                  icon={OfflineBoltIcon}
-                  onClick={() => setMode("duel")}
-                  variant="contained"
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <ButtonColorSelect
-                  select={mode === "solo"}
-                  value={Colors.blue2}
-                  label={t("commun.solo")}
-                  icon={PlayCircleIcon}
-                  onClick={() => setMode("solo")}
-                  variant="contained"
-                />
-              </Grid>
-              {mode !== null && (
+              {theme ? (
+                <Grid item xs={12} sx={{ textAlign: "center" }}>
+                  <CardThemeHorizontal
+                    theme={theme}
+                    onChange={() => setTheme(undefined)}
+                  />
+                </Grid>
+              ) : (
                 <>
                   <Grid item xs={12}>
-                    <Divider sx={{ borderBottomWidth: 5 }} />
+                    <BasicSearchInput
+                      label={t("commun.search")}
+                      onChange={(value) => setSearch(value)}
+                      value={search}
+                      clear={() => setSearch("")}
+                    />
                   </Grid>
+                  <Grid item xs={12}>
+                    <SearchThemeSelectScrollBlock
+                      search={search}
+                      onSelect={(value) => setTheme(value)}
+                    />
+                  </Grid>
+                </>
+              )}
+              {theme && (
+                <>
                   <Grid item xs={12} sx={{ textAlign: "center" }}>
                     <Typography variant="h4">
-                      {t("commun.selecttheme")}
+                      {t("commun.selectgamemode")}
                     </Typography>
                   </Grid>
-                  {theme ? (
-                    <Grid item xs={12} sx={{ textAlign: "center" }}>
-                      <CardThemeHorizontal
-                        theme={theme}
-                        onChange={() => setTheme(undefined)}
-                      />
-                    </Grid>
-                  ) : (
-                    <>
-                      <Grid item xs={12}>
-                        <BasicSearchInput
-                          label={t("commun.search")}
-                          onChange={(value) => setSearch(value)}
-                          value={search}
-                          clear={() => setSearch("")}
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Grid container spacing={1} justifyContent="center">
-                          {themesFilter.map((t) => (
-                            <Grid item key={t.id}>
-                              <CardSelectTheme
-                                width={90}
-                                theme={t}
-                                onSelect={() => setTheme(t)}
-                              />
-                            </Grid>
-                          ))}
-                          {isLoading && (
-                            <>
-                              {Array.from(new Array(20)).map((_, index) => (
-                                <Grid item key={index}>
-                                  <SkeletonTheme />
-                                </Grid>
-                              ))}
-                            </>
-                          )}
-                        </Grid>
-                      </Grid>
-                    </>
-                  )}
+                  <Grid item xs={6}>
+                    <ButtonColorSelect select={mode === "duel"}>
+                      <DuelButton play={() => setMode("duel")} />
+                    </ButtonColorSelect>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <ButtonColorSelect select={mode === "solo"}>
+                      <SoloButton play={() => setMode("solo")} />
+                    </ButtonColorSelect>
+                  </Grid>
                 </>
               )}
               {theme && mode === "duel" && (
@@ -215,7 +148,7 @@ export default function PlayPage() {
                   </Grid>
                   <Grid item xs={12}>
                     <SelectorProfileBlock
-                      label={t("commun.selectadv")}
+                      label={t("commun.selectopponent")}
                       profile={profileAdv}
                       onDelete={() => setProfileAdv(undefined)}
                       onChange={() => setOpenModalFriend(true)}

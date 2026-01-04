@@ -1,11 +1,12 @@
+import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
 import { Badge, Box, Typography } from "@mui/material";
-import { padding, px } from "csx";
+import { padding, percent, px } from "csx";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { JsonLanguage } from "src/models/Language";
-import { Theme } from "src/models/Theme";
+import { Title, TitleProfile } from "src/models/Title";
 import { Colors } from "src/style/Colors";
-import { JsonLanguageBlock } from "./JsonLanguageBlock";
+import { TextNameBlock } from "./language/TextLanguageBlock";
+import { TitleText } from "./title/Title";
 
 interface Props {
   value: string;
@@ -43,28 +44,6 @@ export const BadgeDifficulty = ({ value }: Props) => {
   );
 };
 
-interface PropsTheme {
-  value: Theme;
-}
-export const BadgeTheme = ({ value }: PropsTheme) => {
-  return (
-    <Box
-      sx={{
-        p: padding(2, 8),
-        backgroundColor: Colors.purple,
-        borderRadius: px(10),
-        width: "fit-content",
-      }}
-    >
-      <JsonLanguageBlock
-        variant="h2"
-        sx={{ color: "white" }}
-        value={value.name}
-      />
-    </Box>
-  );
-};
-
 interface PropsBadgeAccountActive {
   online: boolean;
 
@@ -96,21 +75,16 @@ export const BadgeAccountActive = ({
 );
 
 interface PropsBadgeTitle {
-  label: JsonLanguage;
+  title: Title;
   onClick?: () => void;
-  color?: string;
 }
 
-export const BadgeTitle = ({
-  label,
-  onClick,
-  color = Colors.colorApp,
-}: PropsBadgeTitle) => {
+export const BadgeTitle = ({ title, onClick }: PropsBadgeTitle) => {
   return (
     <Box
       sx={{
         p: padding(3, 10),
-        backgroundColor: color,
+        backgroundColor: Colors.colorApp,
         cursor: onClick ? "pointer" : "default",
         userSelect: "none",
         textAlign: "center",
@@ -118,7 +92,53 @@ export const BadgeTitle = ({
       }}
       onClick={onClick}
     >
-      <JsonLanguageBlock variant="h6" color="text.secondary" value={label} />
+      <TextNameBlock
+        variant="h6"
+        color="text.secondary"
+        values={title.titletranslation}
+      />
+    </Box>
+  );
+};
+
+interface PropsBadgeTitleProfile {
+  onClick?: () => void;
+  isSelect?: boolean;
+  title: TitleProfile;
+}
+
+export const BadgeTitleProfile = ({
+  isSelect,
+  onClick,
+  title,
+}: PropsBadgeTitleProfile) => {
+  return (
+    <Box
+      sx={{
+        p: padding(3, 10),
+        backgroundColor: Colors.colorApp,
+        cursor: onClick ? "pointer" : "default",
+        userSelect: "none",
+        textAlign: "center",
+        borderRadius: px(5),
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+        justifyContent: "center",
+      }}
+      onClick={onClick}
+    >
+      <TitleText value={title} variant="h6" color="text.secondary" />
+      {isSelect && (
+        <CheckCircleTwoToneIcon
+          sx={{
+            color: Colors.green2,
+            backgroundColor: "white",
+            borderRadius: percent(50),
+            zIndex: 2,
+          }}
+        />
+      )}
     </Box>
   );
 };

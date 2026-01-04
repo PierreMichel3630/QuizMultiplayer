@@ -5,19 +5,19 @@ import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
 import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
 
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
-
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { StatAccomplishment } from "src/models/Accomplishment";
-import { JsonLanguage } from "src/models/Language";
+import { Title } from "src/models/Title";
 import { getLevel } from "src/utils/calcul";
+import { TextNameBlock } from "./language/TextLanguageBlock";
+import { ProfileTitleBlock } from "./title/ProfileTitle";
 
 interface Props {
   profile: Profile;
   avatar?: string;
   banner?: string;
   badge?: string;
-  title?: JsonLanguage;
+  title?: Title;
 }
 
 export const ProfilHeader = ({
@@ -86,15 +86,10 @@ export const ProfilHeader = ({
           >
             {profile.username}
           </Typography>
-          {(title || profile.title) && (
-            <JsonLanguageBlock
-              variant="caption"
-              color="text.secondary"
-              value={title ?? profile.title!.name}
-              sx={{
-                textShadow: "1px 1px 2px black",
-              }}
-            />
+          {title ? (
+            <TextNameBlock variant="h4" values={title.titletranslation} />
+          ) : (
+            <ProfileTitleBlock titleprofile={profile.titleprofile} />
           )}
         </Grid>
         {profile.country && (

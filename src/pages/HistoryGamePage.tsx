@@ -1,25 +1,24 @@
 import { Alert, Box, Grid } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
-import { selectGamesByPlayer } from "src/api/game";
+import { selectDuelGames, selectSoloGames } from "src/api/game";
 import { GroupButtonAllTypeGame } from "src/component/button/ButtonGroup";
 import { CardHistoryGame } from "src/component/card/CardHistoryGame";
+import { ICardImage } from "src/component/card/CardImage";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
-import { AutocompleteTheme } from "src/component/Select";
-import { SelectorProfileBlock } from "src/component/SelectorProfileBlock";
 import { SkeletonGames } from "src/component/skeleton/SkeletonGame";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { DuelGame } from "src/models/DuelGame";
 import { GameModeEnum } from "src/models/enum/GameEnum";
-import { HistoryGame } from "src/models/Game";
+import { HistoryGame, SoloGame } from "src/models/Game";
 import { Profile } from "src/models/Profile";
-import { Theme } from "src/models/Theme";
 
 export interface FilterGame {
   type: GameModeEnum;
-  themes: Array<Theme>;
+  themes: Array<ICardImage>;
   player: Profile | null;
   opponent?: Profile;
 }
@@ -31,13 +30,15 @@ export default function HistoryGamePage() {
   const { profile } = useAuth();
 
   const ITEMPERPAGE = 10;
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastItemRef = useRef<HTMLDivElement | null>(null);
 
   const [games, setGames] = useState<Array<HistoryGame>>([]);
-  const [page, setPage] = useState(0);
+  const [, setPage] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<FilterGame>({
-    type: GameModeEnum.all,
+    type: GameModeEnum.solo,
     themes: [],
     player: profile,
     opponent: undefined,
@@ -52,53 +53,97 @@ export default function HistoryGamePage() {
         opponent: location.state.opponent,
         type: location.state.type
           ? (location.state.type as GameModeEnum)
-          : GameModeEnum.all,
+          : GameModeEnum.solo,
       }));
     }
   }, [location.state, profile]);
 
-  const getGames = useCallback(() => {
-    setIsLoading(true);
-    if (filter.player !== undefined) {
-      selectGamesByPlayer(filter, page, ITEMPERPAGE).then(({ data }) => {
-        const result = data as Array<HistoryGame>;
-        setGames((prev) => (page === 0 ? [...result] : [...prev, ...result]));
-        setIsEnd(result.length === 0);
-        setIsLoading(false);
-      });
-    }
-  }, [page, filter]);
+  const getGames = useCallback(
+    (page: number) => {
+      if (page === 0) {
+        window.scrollTo(0, 0);
+      }
+      if (loading) return;
+      if (!isEnd && filter.player !== null) {
+        if (filter.type === GameModeEnum.solo) {
+          selectSoloGames(filter, page, ITEMPERPAGE).then(({ data }) => {
+            const result = data as unknown as Array<SoloGame>;
+
+            const historygames: Array<HistoryGame> = result.map((el) => {
+              return {
+                uuid: el.uuid,
+                type: "SOLO",
+                theme: el.theme,
+                player1: el.profile,
+                ptsplayer1: el.points,
+                player2: undefined,
+                ptsplayer2: null,
+                created_at: el.created_at,
+              };
+            });
+
+            setGames((prev) =>
+              page === 0 ? [...historygames] : [...prev, ...historygames]
+            );
+            setIsEnd(result.length === 0);
+            setLoading(false);
+          });
+        } else {
+          selectDuelGames(filter, page, ITEMPERPAGE).then(({ data }) => {
+            const result = data as unknown as Array<DuelGame>;
+
+            const historygames: Array<HistoryGame> = result.map((el) => {
+              return {
+                uuid: el.uuid,
+                type: "DUEL",
+                theme: el.theme,
+                player1: el.player1,
+                ptsplayer1: el.ptsplayer1,
+                player2: el.player2,
+                ptsplayer2: el.ptsplayer2,
+                created_at: el.created_at,
+              };
+            });
+
+            setGames((prev) =>
+              page === 0 ? [...historygames] : [...prev, ...historygames]
+            );
+            setIsEnd(result.length === 0);
+            setLoading(false);
+          });
+        }
+      }
+    },
+    [isEnd, loading, filter]
+  );
 
   useEffect(() => {
-    if (!isEnd) {
-      getGames();
-    }
-  }, [isEnd, page, getGames]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    setGames([]);
     setPage(0);
+    setGames([]);
     setIsEnd(false);
+    getGames(0);
   }, [filter]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop + 250 <=
-        document.documentElement.offsetHeight
-      ) {
-        return;
+    if (loading) return;
+
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !isEnd) {
+        setPage((prev) => {
+          getGames(prev + 1);
+          return prev + 1;
+        });
       }
-      if (!isEnd && !isLoading) setPage((prev) => prev + 1);
-    };
-    if (document) {
-      document.addEventListener("scroll", handleScroll);
+    });
+
+    if (lastItemRef.current) {
+      observer.current.observe(lastItemRef.current);
     }
-    return () => {
-      document.removeEventListener("scroll", handleScroll);
-    };
-  }, [isEnd, isLoading]);
+
+    return () => observer.current?.disconnect();
+  }, [games, loading, isEnd, getGames]);
 
   return (
     <Grid container>
@@ -130,38 +175,23 @@ export default function HistoryGamePage() {
               }}
             />
           </Grid>
-          {filter.type === GameModeEnum.duel && (
-            <Grid item xs={12}>
-              <SelectorProfileBlock
-                label={t("commun.selectopponent")}
-                profile={filter.opponent}
-                onChange={() => setOpenModalFriend(true)}
-                onDelete={() =>
-                  setFilter((prev) => ({ ...prev, opponent: undefined }))
-                }
-              />
-            </Grid>
-          )}
-          <Grid item xs={12}>
-            <AutocompleteTheme
-              value={filter.themes}
-              onChange={(value: Array<Theme>) => {
-                setFilter((prev) => ({ ...prev, themes: value }));
-              }}
-            />
-          </Grid>
         </Grid>
       </Grid>
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
-            {games.map((game) => (
-              <Grid item xs={12} key={game.uuid}>
+            {games.map((game, index) => (
+              <Grid
+                item
+                xs={12}
+                key={game.uuid}
+                ref={index === games.length - 1 ? lastItemRef : null}
+              >
                 <CardHistoryGame game={game} />
               </Grid>
             ))}
-            {isLoading && <SkeletonGames number={10} />}
-            {!isLoading && games.length === 0 && isEnd && (
+            {!isEnd && <SkeletonGames number={10} />}
+            {!loading && games.length === 0 && isEnd && (
               <Grid item xs={12}>
                 <Alert severity="warning">{t("commun.noresult")}</Alert>
               </Grid>

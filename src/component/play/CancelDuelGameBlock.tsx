@@ -5,17 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { DuelGame } from "src/models/DuelGame";
 import { Colors } from "src/style/Colors";
 import { ImageThemeBlock } from "../ImageThemeBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 
 import BoltIcon from "@mui/icons-material/Bolt";
 import HomeIcon from "@mui/icons-material/Home";
-import { ButtonColor } from "../Button";
-import { LabelRankBlock } from "../RankBlock";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import { useEffect, useMemo, useState } from "react";
 import { selectScoreByThemeAndPlayer } from "src/api/score";
 import { Score } from "src/models/Score";
+import { ButtonColor } from "../Button";
+import { LabelRankBlock } from "../RankBlock";
+import { ProfileTitleBlock } from "../title/ProfileTitle";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   game: DuelGame;
@@ -47,7 +48,7 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
 
   useEffect(() => {
     const getRank = () => {
-      if (game.player2 !== null) {
+      if (game.player2) {
         selectScoreByThemeAndPlayer(game.player2.id, game.theme.id).then(
           ({ data }) => {
             const res = data as Score;
@@ -76,10 +77,10 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
           <Box sx={{ width: px(70) }}>
             <ImageThemeBlock theme={game.theme} />
           </Box>
-          <JsonLanguageBlock
+          <TextNameBlock
             variant="h2"
             sx={{ wordBreak: "break-all" }}
-            value={game.theme.name}
+            values={game.theme.themetranslation}
           />
         </Grid>
         <Grid item xs={12} sx={{ textAlign: "center" }}>
@@ -108,12 +109,7 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
           <Typography variant="h4" sx={{ color: Colors.colorDuel1 }}>
             {game.player1.username}
           </Typography>
-          {game.player1.title && (
-            <JsonLanguageBlock
-              variant="caption"
-              value={game.player1.title.name}
-            />
-          )}
+          <ProfileTitleBlock titleprofile={game.player1.titleprofile} />
           <LabelRankBlock loading={loadingP1} score={scoreP1} />
         </Grid>
         <Grid
@@ -137,21 +133,20 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
             gap: 1,
           }}
         >
-          <AvatarAccountBadge
-            profile={game.player2}
-            size={80}
-            color={Colors.colorDuel2}
-          />
-          <Typography variant="h4" sx={{ color: Colors.colorDuel2 }}>
-            {game.player2.username}
-          </Typography>
-          {game.player2.title && (
-            <JsonLanguageBlock
-              variant="caption"
-              value={game.player2.title.name}
-            />
+          {game.player2 && (
+            <>
+              <AvatarAccountBadge
+                profile={game.player2}
+                size={80}
+                color={Colors.colorDuel2}
+              />
+              <Typography variant="h4" sx={{ color: Colors.colorDuel2 }}>
+                {game.player2.username}
+              </Typography>
+              <ProfileTitleBlock titleprofile={game.player2.titleprofile} />
+              <LabelRankBlock loading={loadingP2} score={scoreP2} />
+            </>
           )}
-          <LabelRankBlock loading={loadingP2} score={scoreP2} />
         </Grid>
         <Grid item xs={12}>
           <Box

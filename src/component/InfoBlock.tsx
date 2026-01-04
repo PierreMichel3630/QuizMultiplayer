@@ -6,10 +6,11 @@ import { Colors } from "src/style/Colors";
 
 interface Props {
   title: string;
-  value: number | string;
+  value?: number | string;
+  content?: JSX.Element;
 }
 
-export const InfoBlock = ({ title, value }: Props) => {
+export const InfoBlock = ({ title, value, content }: Props) => {
   const { mode } = useUser();
 
   const color = useMemo(
@@ -28,7 +29,10 @@ export const InfoBlock = ({ title, value }: Props) => {
       >
         {title}
       </Typography>
-      <Typography variant="h2">{value}</Typography>
+      {value !== undefined && <Typography variant="h2">{value}</Typography>}
+      {content !== undefined && (
+        <Box sx={{ display: "flex", justifyContent: "center" }}>{content}</Box>
+      )}
     </Box>
   );
 };

@@ -1,40 +1,44 @@
 import { Box, Divider, Grid } from "@mui/material";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { insertBattleGame } from "src/api/game";
-import { useApp } from "src/context/AppProvider";
+import { selectThemesById } from "src/api/theme";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { JsonLanguage } from "src/models/Language";
-import { CardImage } from "./card/CardImage";
-import { TitleCount } from "./title/TitleCount";
+import { useUser } from "src/context/UserProvider";
 import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { CardImage, ICardImage } from "./card/CardImage";
+import { TitleCount } from "./title/TitleCount";
 
 interface Mode {
   id: number;
   image: string;
   color: string;
-  name: JsonLanguage;
+  name: string;
   onClick: () => void;
 }
 
 export const GameModeBlock = () => {
   const { t } = useTranslation();
-  const { themes } = useApp();
-  const { user } = useAuth();
+  const { profile } = useAuth();
+  const { language } = useUser();
   const navigate = useNavigate();
 
+  const [themes, setThemes] = useState<Array<ICardImage>>([]);
+
   const launchBattleGame = useCallback(async () => {
-    if (user) {
+    if (profile) {
       const insertValue = {
-        player1: user.id,
+        player1: profile.id,
       };
       const { data } = await insertBattleGame(insertValue);
-      if (data) navigate(`/battle/${data.uuid}`);
+      if (data) {
+        navigate(`/battle/${data.uuid}`);
+      }
     } else {
       navigate(`/login`);
     }
-  }, [user, navigate]);
+  }, [profile, navigate]);
 
   const modes: Array<Mode> = useMemo(
     () => [
@@ -43,35 +47,33 @@ export const GameModeBlock = () => {
         image:
           "https://cperjgnbmoqyyqgkyqws.supabase.co/storage/v1/object/public/theme/mode/swords.png",
         color: "#a569bd",
-        name: {
-          "fr-FR": "Combat contre un ami",
-          "en-US": "Fight against a friend",
-        },
+        name: t("mode.fightfriend"),
         onClick: () => launchBattleGame(),
       },
     ],
-    [launchBattleGame]
+    [launchBattleGame, t]
   );
 
-  const themesDisplay = useMemo(() => {
+  useEffect(() => {
     const idThemes = [271, 272];
+    if (language) {
+      selectThemesById(idThemes, language.iso).then(({ data }) => {
+        const res = data ?? [];
+        setThemes(
+          [...res].map((el) => ({
+            id: el.id,
+            name: el.title,
+            image: el.image,
+            color: el.color,
+            link: `/theme/${el.id}`,
+            type: TypeCardEnum.THEME,
+          }))
+        );
+      });
+    }
+  }, [language]);
 
-    return themes
-      .filter((el) => idThemes.includes(el.id))
-      .map((el) => ({
-        id: el.id,
-        name: el.name,
-        image: el.image,
-        color: el.color,
-        link: `/theme/${el.id}`,
-        type: TypeCardEnum.THEME,
-      }));
-  }, [themes]);
-
-  const count = useMemo(
-    () => themesDisplay.length + modes.length,
-    [themesDisplay, modes]
-  );
+  const count = useMemo(() => themes.length + modes.length, [themes, modes]);
 
   return (
     <Grid container spacing={1}>
@@ -99,7 +101,7 @@ export const GameModeBlock = () => {
               <CardImage value={mode} />
             </Box>
           ))}
-          {themesDisplay.map((theme) => (
+          {themes.map((theme) => (
             <CardImage key={theme.id} value={theme} />
           ))}
         </Box>

@@ -1,7 +1,7 @@
 import { Box, Container, Divider, Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import { px, viewHeight } from "csx";
+import { px } from "csx";
 import { Fragment, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useParams } from "react-router-dom";
@@ -9,14 +9,16 @@ import { CardSignalQuestion } from "src/component/card/CardQuestion";
 import { Colors } from "src/style/Colors";
 
 import BoltIcon from "@mui/icons-material/Bolt";
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import { selectDuelGameById } from "src/api/game";
 import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
-import { ImageThemeBlock } from "src/component/ImageThemeBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
-import { BarNavigation } from "src/component/navigation/BarNavigation";
-import { DuelGame } from "src/models/DuelGame";
 import { ButtonColor } from "src/component/Button";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import { ImageThemeBlock } from "src/component/ImageThemeBlock";
+import { BarNavigation } from "src/component/navigation/BarNavigation";
+import { ProfileTitleBlock } from "src/component/title/ProfileTitle";
+import { DuelGame } from "src/models/DuelGame";
+import { QuestionResult, QuestionResultV1 } from "src/models/Question";
+import { TextNameBlock } from "src/component/language/TextLanguageBlock";
 
 export default function GameDuelPage() {
   const { t } = useTranslation();
@@ -24,12 +26,21 @@ export default function GameDuelPage() {
   const navigate = useNavigate();
 
   const [game, setGame] = useState<undefined | DuelGame>(undefined);
+  const [questions, setQuestions] = useState<
+    Array<QuestionResult | QuestionResultV1>
+  >([]);
 
   useEffect(() => {
     const getGame = () => {
       if (uuid) {
         selectDuelGameById(uuid).then(({ data }) => {
           setGame(data as DuelGame);
+          const questions =
+            data.version === 1
+              ? (data.questions as Array<QuestionResultV1>)
+              : (data.questions as Array<QuestionResult>);
+
+          setQuestions(questions);
         });
       }
     };
@@ -37,11 +48,7 @@ export default function GameDuelPage() {
   }, [uuid]);
 
   return (
-    <Grid
-      container
-      sx={{ minHeight: viewHeight(100) }}
-      alignContent="flex-start"
-    >
+    <Grid container className="page" alignContent="flex-start">
       <Helmet>
         <title>{`${t("commun.duelgame")} - ${t("appname")}`}</title>
       </Helmet>
@@ -69,10 +76,10 @@ export default function GameDuelPage() {
                   <Box sx={{ width: px(70) }}>
                     <ImageThemeBlock theme={game.theme} />
                   </Box>
-                  <JsonLanguageBlock
+                  <TextNameBlock
                     variant="h2"
                     sx={{ wordBreak: "break-all" }}
-                    value={game.theme.name}
+                    values={game.theme.themetranslation}
                   />
                 </Grid>
                 <Grid
@@ -102,12 +109,9 @@ export default function GameDuelPage() {
                     <Typography variant="h4" sx={{ color: Colors.colorDuel1 }}>
                       {game.player1.username}
                     </Typography>
-                    {game.player1.title && (
-                      <JsonLanguageBlock
-                        variant="caption"
-                        value={game.player1.title.name}
-                      />
-                    )}
+                    <ProfileTitleBlock
+                      titleprofile={game.player1.titleprofile}
+                    />
                   </Box>
                 </Grid>
                 <Grid
@@ -131,30 +135,36 @@ export default function GameDuelPage() {
                     gap: 1,
                   }}
                 >
-                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                    <AvatarAccountBadge
-                      profile={game.player2}
-                      size={60}
-                      color={Colors.colorDuel2}
-                    />
-                    <Typography
-                      variant="h2"
-                      sx={{ color: Colors.colorDuel2, fontSize: 35 }}
-                    >
-                      {game.ptsplayer2}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography variant="h4" sx={{ color: Colors.colorDuel2 }}>
-                      {game.player2.username}
-                    </Typography>
-                    {game.player2.title && (
-                      <JsonLanguageBlock
-                        variant="caption"
-                        value={game.player2.title.name}
-                      />
-                    )}
-                  </Box>
+                  {game.player2 && (
+                    <>
+                      <Box
+                        sx={{ display: "flex", gap: 2, alignItems: "center" }}
+                      >
+                        <AvatarAccountBadge
+                          profile={game.player2}
+                          size={60}
+                          color={Colors.colorDuel2}
+                        />
+                        <Typography
+                          variant="h2"
+                          sx={{ color: Colors.colorDuel2, fontSize: 35 }}
+                        >
+                          {game.ptsplayer2}
+                        </Typography>
+                      </Box>
+                      <Box>
+                        <Typography
+                          variant="h4"
+                          sx={{ color: Colors.colorDuel2 }}
+                        >
+                          {game.player2.username}
+                        </Typography>
+                        <ProfileTitleBlock
+                          titleprofile={game.player2.titleprofile}
+                        />
+                      </Box>
+                    </>
+                  )}
                 </Grid>
                 <Grid item xs={12}>
                   <Divider
@@ -165,10 +175,13 @@ export default function GameDuelPage() {
                     }}
                   />
                 </Grid>
-                {game.questions.map((el) => (
+                {[...questions].map((el) => (
                   <Fragment key={el.id}>
                     <Grid item xs={12}>
-                      <CardSignalQuestion question={el} />
+                      <CardSignalQuestion
+                        question={el}
+                        version={game.version}
+                      />
                     </Grid>
                     <Grid item xs={12}>
                       <Divider

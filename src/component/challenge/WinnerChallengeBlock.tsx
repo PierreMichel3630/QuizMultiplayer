@@ -1,8 +1,9 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { px } from "csx";
+import { percent, px } from "csx";
 import moment from "moment";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useChallenge } from "src/context/ChallengeProvider";
 import {
   ChallengeDateEnum,
   ChallengeTypeResultEnum,
@@ -10,8 +11,8 @@ import {
 import { Profile } from "src/models/Profile";
 import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 import { GroupButtonResultChallenge } from "../button/ButtonGroup";
-import { useChallenge } from "src/context/ChallengeProvider";
 
+import { Link } from "react-router-dom";
 import crownalltime from "src/assets/crown/crownalltime.png";
 import crownday from "src/assets/crown/crownday.png";
 import crownmonth from "src/assets/crown/crownmonth.png";
@@ -22,11 +23,11 @@ import {
   ResultChallengeMonth,
   ResultChallengeWeek,
 } from "./ChallengeBlock";
-import { Link } from "react-router-dom";
 
 export const WinnerChallengeBlock = () => {
   const { t } = useTranslation();
-  const { winDay, winWeek, winMonth, loseDay, loseWeek, loseMonth } =
+
+  const { winDay, winWeek, winMonth, allTimeDay, allTimeWeek, allTimeMonth } =
     useChallenge();
 
   const [select, setSelect] = useState(ChallengeTypeResultEnum.winner);
@@ -35,6 +36,23 @@ export const WinnerChallengeBlock = () => {
     () => select === ChallengeTypeResultEnum.winner,
     [select]
   );
+
+  const getDate = (format: string, dateString?: string | Date) => {
+    let result = "";
+    if (dateString) {
+      if (format === "day") {
+        result = moment(dateString).format("DD/MM/YYYY");
+      } else if (format === "month") {
+        result = moment(dateString, "MM/YYYY").format("MMMM YYYY");
+      } else if (format === "week") {
+        const date = moment(dateString, "WW/YYYY");
+        const start = date.clone().weekday(1);
+        const end = date.clone().weekday(7);
+        result = `${start.format("DD")} - ${end.format("DD MMM YYYY")}`;
+      }
+    }
+    return result;
+  };
 
   return (
     <Grid container spacing={1}>
@@ -51,22 +69,25 @@ export const WinnerChallengeBlock = () => {
         <GroupButtonResultChallenge selected={select} onChange={setSelect} />
       </Grid>
       <ResultChallengeBlock
-        profile={isWin ? winDay?.profile : loseDay?.profile}
+        profile={isWin ? winDay?.profile : allTimeDay?.profile}
         label={t("commun.day")}
-        image={isWin ? crownday : undefined}
-        extra={<ResultChallengeDay value={isWin ? winDay : loseDay} />}
+        date={getDate(
+          "day",
+          isWin ? winDay?.challenge.date : allTimeDay?.challenge.date
+        )}
+        extra={<ResultChallengeDay value={isWin ? winDay : allTimeDay} />}
       />
       <ResultChallengeBlock
-        profile={isWin ? winWeek?.profile : loseWeek?.profile}
+        profile={isWin ? winWeek?.profile : allTimeWeek?.profile}
         label={t("commun.week")}
-        image={isWin ? crownweek : undefined}
-        extra={<ResultChallengeWeek value={isWin ? winWeek : loseWeek} />}
+        date={getDate("week", isWin ? winWeek?.week : allTimeWeek?.week)}
+        extra={<ResultChallengeWeek value={isWin ? winWeek : allTimeWeek} />}
       />
       <ResultChallengeBlock
-        profile={isWin ? winMonth?.profile : loseMonth?.profile}
+        profile={isWin ? winMonth?.profile : allTimeMonth?.profile}
         label={t("commun.month")}
-        image={isWin ? crownmonth : undefined}
-        extra={<ResultChallengeMonth value={isWin ? winMonth : loseMonth} />}
+        date={getDate("month", isWin ? winMonth?.month : allTimeMonth?.month)}
+        extra={<ResultChallengeMonth value={isWin ? winMonth : allTimeMonth} />}
       />
     </Grid>
   );
@@ -75,6 +96,7 @@ export const WinnerChallengeBlock = () => {
 interface PropsWinnerBlock {
   profile?: Profile;
   label: string;
+  date: string;
   image?: string;
   extra?: JSX.Element;
 }
@@ -82,6 +104,7 @@ interface PropsWinnerBlock {
 const ResultChallengeBlock = ({
   profile,
   label,
+  date,
   image,
   extra,
 }: PropsWinnerBlock) => {
@@ -98,133 +121,30 @@ const ResultChallengeBlock = ({
         }}
       >
         <Typography variant="h4">{label}</Typography>
+        <Typography variant="caption">{date}</Typography>
         {image && <img src={image} width={50} alt="crown" />}
         {profile && (
           <>
             <AvatarAccountBadge profile={profile} size={60} />
-            <Typography variant="h6">{profile?.username}</Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                overflow: "hidden",
+                display: "block",
+                lineClamp: 1,
+                boxOrient: "vertical",
+                textOverflow: "ellipsis",
+                maxWidth: percent(100),
+                whiteSpace: "nowrap",
+              }}
+            >
+              {profile?.username}
+            </Typography>
           </>
         )}
         {extra}
       </Link>
     </Grid>
-  );
-};
-
-interface PropsWinnerTextRankingBlock {
-  profile: Profile;
-}
-export const WinnerTextRankingBlock = ({
-  profile,
-}: PropsWinnerTextRankingBlock) => {
-  const {
-    winDay,
-    winWeek,
-    winMonth,
-    winAllTime,
-    loseDay,
-    loseWeek,
-    loseMonth,
-    loseAllTime,
-  } = useChallenge();
-  const isWinnerDay = useMemo(
-    () => profile.id === winDay?.profile.id,
-    [profile, winDay]
-  );
-
-  const isWinnerWeek = useMemo(
-    () => profile.id === winWeek?.profile.id,
-    [profile, winWeek]
-  );
-
-  const isWinnerMonth = useMemo(
-    () => profile.id === winMonth?.profile.id,
-    [profile, winMonth]
-  );
-
-  const isWinnerAllTime = useMemo(
-    () => profile.id === winAllTime?.profile.id,
-    [profile, winAllTime]
-  );
-  const isLoserDay = useMemo(
-    () => profile.id === loseDay?.profile.id,
-    [profile, loseDay]
-  );
-
-  const isLoserWeek = useMemo(
-    () => profile.id === loseWeek?.profile.id,
-    [profile, loseWeek]
-  );
-
-  const isLoserMonth = useMemo(
-    () => profile.id === loseMonth?.profile.id,
-    [profile, loseMonth]
-  );
-
-  const isLoserAllTime = useMemo(
-    () => profile.id === loseAllTime?.profile.id,
-    [profile, loseAllTime]
-  );
-
-  return (
-    <>
-      {isWinnerAllTime && (
-        <ResultTextBlock
-          type={ChallengeTypeResultEnum.winner}
-          date={ChallengeDateEnum.alltime}
-          profile={profile}
-        />
-      )}
-      {isWinnerMonth && (
-        <ResultTextBlock
-          type={ChallengeTypeResultEnum.winner}
-          date={ChallengeDateEnum.month}
-          profile={profile}
-        />
-      )}
-      {isWinnerWeek && (
-        <ResultTextBlock
-          type={ChallengeTypeResultEnum.winner}
-          date={ChallengeDateEnum.week}
-          profile={profile}
-        />
-      )}
-      {isWinnerDay && (
-        <ResultTextBlock
-          type={ChallengeTypeResultEnum.winner}
-          date={ChallengeDateEnum.day}
-          profile={profile}
-        />
-      )}
-      {isLoserAllTime && (
-        <ResultTextBlock
-          type={ChallengeTypeResultEnum.loser}
-          date={ChallengeDateEnum.alltime}
-          profile={profile}
-        />
-      )}
-      {isLoserMonth && (
-        <ResultTextBlock
-          type={ChallengeTypeResultEnum.loser}
-          date={ChallengeDateEnum.month}
-          profile={profile}
-        />
-      )}
-      {isLoserWeek && (
-        <ResultTextBlock
-          type={ChallengeTypeResultEnum.loser}
-          date={ChallengeDateEnum.week}
-          profile={profile}
-        />
-      )}
-      {isLoserDay && (
-        <ResultTextBlock
-          type={ChallengeTypeResultEnum.loser}
-          date={ChallengeDateEnum.day}
-          profile={profile}
-        />
-      )}
-    </>
   );
 };
 

@@ -1,37 +1,33 @@
 import { Grid } from "@mui/material";
-import { uniqBy } from "lodash";
 import moment from "moment";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
+import { getThemesByModifiedAt } from "src/api/search";
+import { ICardImage } from "src/component/card/CardImage";
 import { PageCategoryBlock } from "src/component/page/PageCategoryBlock";
-import { useApp } from "src/context/AppProvider";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
-import { MAX_DAY_UPDATED_THEME } from "src/utils/config";
-import { sortByModifyAt } from "src/utils/sort";
+import { useUser } from "src/context/UserProvider";
 
 export default function UpdatedThemePage() {
   const { t } = useTranslation();
-  const { themes } = useApp();
+  const { language } = useUser();
 
-  const themesNew = useMemo(() => {
-    return uniqBy(
-      themes
-        .filter(
-          (el) => moment().diff(el.modify_at, "days") < MAX_DAY_UPDATED_THEME
-        )
-        .sort(sortByModifyAt)
-        .map((el) => ({
-          id: el.id,
-          name: el.name,
-          image: el.image,
-          color: el.color,
-          link: `/theme/${el.id}`,
-          type: TypeCardEnum.THEME,
-        })),
-      (el) => el.id
-    );
-  }, [themes]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [themes, setThemes] = useState<Array<ICardImage>>([]);
+
+  useEffect(() => {
+    const getThemes = () => {
+      if (language) {
+        setIsLoading(true);
+        const date = moment().subtract(7, "days");
+        getThemesByModifiedAt(language, date).then(({ data }) => {
+          setThemes(data ?? []);
+          setIsLoading(false);
+        });
+      }
+    };
+    getThemes();
+  }, [language]);
 
   return (
     <Grid container>
@@ -41,7 +37,8 @@ export default function UpdatedThemePage() {
       <Grid item xs={12}>
         <PageCategoryBlock
           title={t("pages.updated.title")}
-          values={themesNew}
+          values={themes}
+          isLoading={isLoading}
         />
       </Grid>
     </Grid>

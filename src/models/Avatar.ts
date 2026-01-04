@@ -1,4 +1,4 @@
-import { ThemeShop } from "./Theme";
+import { ThemeShop } from "./Shop";
 
 export interface Avatar {
   id: number;

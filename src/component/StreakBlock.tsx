@@ -29,6 +29,7 @@ export const StreakBlock = ({ value, logoSize = 25, textSize = 18 }: Props) => {
           backgroundColor: Colors.yellow4,
           border: `3px solid ${Colors.red4}`,
           padding: padding(0, 3),
+          width: "fit-content",
         }}
       >
         <LocalFireDepartmentIcon
@@ -121,68 +122,6 @@ export const StreakRecompense = ({
             </Typography>
           </Box>
         ))}
-      </Box>
-    </Box>
-  );
-};
-
-interface PropsStreakRecompenseFinal {
-  day: number;
-  valueGold: number;
-  valueXp: number;
-}
-export const StreakRecompenseFinal = ({
-  day,
-  valueGold,
-  valueXp,
-}: PropsStreakRecompenseFinal) => {
-  const { t } = useTranslation();
-  return (
-    <Box
-      sx={{
-        border: `1px solid ${Colors.grey2}`,
-        borderRadius: px(15),
-        textAlign: "center",
-        minHeight: px(110),
-        height: percent(100),
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-      }}
-    >
-      <Box
-        sx={{
-          backgroundColor: Colors.grey,
-          borderBottom: `1px solid ${Colors.grey2}`,
-        }}
-      >
-        <Typography variant="h6" component="p">
-          {t("commun.daysupvalue", {
-            value: day,
-          })}
-        </Typography>
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexGrow: 1,
-          gap: 2,
-        }}
-      >
-        <Box>
-          <img alt="money" src={moneyIcon} width={px(50)} />
-          <Typography variant="h2" component="p">
-            x{valueGold}
-          </Typography>
-        </Box>
-        <Box>
-          <img alt="xp" src={xpIcon} width={px(50)} />
-          <Typography variant="h2" component="p">
-            x{valueXp}
-          </Typography>
-        </Box>
       </Box>
     </Box>
   );

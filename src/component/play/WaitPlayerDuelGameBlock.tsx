@@ -14,8 +14,8 @@ import { StatusGameDuel } from "src/models/enum/StatusGame";
 import { getLevel } from "src/utils/calcul";
 import { CountryBlock } from "../CountryBlock";
 import { ImageThemeBlock } from "../ImageThemeBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { LabelRankBlock } from "../RankBlock";
+import { ProfileTitleBlock } from "../title/ProfileTitle";
 import { SearchPlayerBlock } from "./SearchPlayerBlock";
 
 interface Props {
@@ -55,7 +55,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
 
   useEffect(() => {
     const getRank = () => {
-      if (game.player2 !== null) {
+      if (game.player2) {
         selectScoreByThemeAndPlayer(game.player2.id, game.theme.id).then(
           ({ data }) => {
             const res = data as Score;
@@ -66,7 +66,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
       }
     };
     const getLevel = () => {
-      if (game.player2 !== null) {
+      if (game.player2) {
         selectStatAccomplishmentByProfile(game.player2.id).then(({ data }) => {
           setStatP2(data as StatAccomplishment);
         });
@@ -126,16 +126,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           >
             {game.player1.username}
           </Typography>
-          {game.player1.title && (
-            <JsonLanguageBlock
-              variant="caption"
-              color="text.secondary"
-              value={game.player1.title.name}
-              sx={{
-                textShadow: "1px 1px 2px black",
-              }}
-            />
-          )}
+          <ProfileTitleBlock titleprofile={game.player1.titleprofile} />
           <LabelRankBlock loading={loadingP1} score={scoreP1} />
           {game.player1.country && (
             <CountryBlock
@@ -175,12 +166,12 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           }}
         >
           <ImageThemeBlock theme={game.theme} size={90} />
-          <JsonLanguageBlock
+          {/*<TextNameBlock
             variant="h4"
             sx={{ textAlign: "center" }}
-            value={game.theme.name}
             color="text.secondary"
-          />
+            values={game.theme.themetranslation}
+          />*/}
         </Box>
       </Box>
       <Box
@@ -199,62 +190,55 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           borderTop: "5px solid white",
         }}
       >
-        {game.player2 !== null ? (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              p: 5,
-              gap: 2,
-              justifyContent: "flex-end",
-            }}
-          >
-            <Box sx={{ textAlign: "left" }}>
-              <Typography
-                variant="h2"
-                color="text.secondary"
-                sx={{
-                  textShadow: "1px 1px 2px black",
-                }}
-              >
-                {game.player2.username}
-              </Typography>
-              {game.player2.title && (
-                <JsonLanguageBlock
-                  variant="caption"
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            p: 5,
+            gap: 2,
+            justifyContent: "flex-end",
+          }}
+        >
+          {game.player2 ? (
+            <>
+              <Box sx={{ textAlign: "left" }}>
+                <Typography
+                  variant="h2"
                   color="text.secondary"
-                  value={game.player2.title.name}
                   sx={{
                     textShadow: "1px 1px 2px black",
                   }}
+                >
+                  {game.player2.username}
+                </Typography>
+                <ProfileTitleBlock titleprofile={game.player2.titleprofile} />
+                <LabelRankBlock loading={loadingP2} score={scoreP2} />
+                {game.player2.country && (
+                  <CountryBlock
+                    country={game.player2.country}
+                    color="text.secondary"
+                  />
+                )}
+                <StatusPlayerGame
+                  ready={
+                    game.status === StatusGameDuel.START ||
+                    players.includes(game.player2.id)
+                  }
                 />
-              )}
-              <LabelRankBlock loading={loadingP2} score={scoreP2} />
-              {game.player2.country && (
-                <CountryBlock
-                  country={game.player2.country}
-                  color="text.secondary"
-                />
-              )}
-              <StatusPlayerGame
-                ready={
-                  game.status === StatusGameDuel.START ||
-                  players.includes(game.player2.id)
-                }
+              </Box>
+              <AvatarAccountBadge
+                profile={game.player2}
+                size={100}
+                color={Colors.white}
+                level={lvlP2}
               />
+            </>
+          ) : (
+            <Box>
+              <SearchPlayerBlock />
             </Box>
-            <AvatarAccountBadge
-              profile={game.player2}
-              size={100}
-              color={Colors.white}
-              level={lvlP2}
-            />
-          </Box>
-        ) : (
-          <Box>
-            <SearchPlayerBlock />
-          </Box>
-        )}
+          )}
+        </Box>
       </Box>
     </Box>
   );

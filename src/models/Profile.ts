@@ -3,7 +3,7 @@ import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
 import { Banner } from "./Banner";
 import { Country } from "./Country";
-import { Title } from "./Title";
+import { TitleProfile } from "./Title";
 
 export interface Profile {
   id: string;
@@ -12,7 +12,7 @@ export interface Profile {
   country: null | Country;
   avatar: Avatar;
   badge: null | Badge;
-  title: null | Title;
+  titleprofile: null | TitleProfile;
   banner: null | Banner;
   money: number;
   created_at: Date;

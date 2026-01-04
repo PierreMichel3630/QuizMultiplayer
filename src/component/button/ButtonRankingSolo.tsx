@@ -118,7 +118,7 @@ export const ButtonRankingSolo = ({ value, onChange }: Props) => {
           <Box
             sx={{
               borderRadius: px(50),
-              p: padding(2, 12),
+              p: padding(2, 8),
               color: isSelectDate ? Colors.white : "text.primary",
               backgroundColor: isSelectDate ? Colors.blue : "initial",
               cursor: "pointer",
@@ -137,7 +137,7 @@ export const ButtonRankingSolo = ({ value, onChange }: Props) => {
           <Box
             sx={{
               borderRadius: px(50),
-              p: padding(2, 12),
+              p: padding(2, 8),
               color: isSelectOther ? Colors.white : "text.primary",
               backgroundColor: isSelectOther ? Colors.blue : "initial",
               cursor: "pointer",

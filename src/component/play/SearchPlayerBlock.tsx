@@ -1,6 +1,27 @@
-import { Avatar, Box } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
+import { Colors } from "src/style/Colors";
+import { LoadingDot } from "../Loading";
+import { useTranslation } from "react-i18next";
 
 export const SearchPlayerBlock = () => {
+  const { t } = useTranslation();
+  return (
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <LoadingDot color={Colors.white} width={40} />
+      <Typography
+        variant="h6"
+        color="text.secondary"
+        sx={{
+          textShadow: "1px 1px 2px black",
+        }}
+      >
+        {t("commun.searchinprogress")}
+      </Typography>
+    </Box>
+  );
+};
+
+export const SearchPlayerBlock2 = () => {
   return (
     <Box
       sx={{

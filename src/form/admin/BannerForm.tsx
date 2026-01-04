@@ -18,7 +18,7 @@ import { SelectThemeShop } from "src/component/Select";
 import { FileUploadInput } from "src/component/input/FileUploadInput";
 import { useMessage } from "src/context/MessageProvider";
 import { Banner } from "src/models/Banner";
-import { ThemeShop } from "src/models/Theme";
+import { ThemeShop } from "src/models/Shop";
 import { Colors } from "src/style/Colors";
 import * as Yup from "yup";
 
@@ -118,7 +118,7 @@ export const BannerForm = ({ validate, banner }: Props) => {
             fullWidth
             error={Boolean(formik.touched.price && formik.errors.price)}
           >
-            <InputLabel htmlFor="namefr-input">
+            <InputLabel htmlFor="price-input">
               {t("form.createbanner.price")}
             </InputLabel>
             <OutlinedInput
@@ -145,7 +145,12 @@ export const BannerForm = ({ validate, banner }: Props) => {
           <Typography variant="h6">{t("form.createbanner.icon")}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <FileUploadInput formik={formik} field="src" />
+          <FileUploadInput
+            formik={formik}
+            field="src"
+            maxWidth={900}
+            maxSize={300}
+          />
         </Grid>
         <Grid item xs={12}>
           <ButtonColor

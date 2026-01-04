@@ -1,3 +1,4 @@
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import {
   Avatar as AvatarMat,
@@ -29,7 +30,6 @@ import { useMessage } from "src/context/MessageProvider";
 import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
 import { Avatar } from "src/models/Avatar";
 import { Colors } from "src/style/Colors";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 
 export default function AvatarPage() {
   const { t } = useTranslation();
@@ -173,72 +173,64 @@ export default function AvatarPage() {
               )}
             </Grid>
           )}
-        </Container>
-      </Grid>
-      <Box
-        sx={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          backgroundColor: "background.paper",
-        }}
-      >
-        <Container maxWidth="md">
-          <Box sx={{ p: 1, display: "flex", flexDirection: "column", gap: 1 }}>
-            {!loading && avatar && !isBuy && !avatar.isaccomplishment && (
-              <Box
-                sx={{
-                  backgroundColor: Colors.yellow2,
-                  p: padding(2, 5),
-                  borderRadius: px(5),
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                }}
-                onClick={verifyBuy}
-              >
-                <Typography variant="caption" color="text.secondary">
-                  {t("commun.buy")}
-                </Typography>
+          <Grid item xs={12}>
+            <Box
+              sx={{ p: 1, display: "flex", flexDirection: "column", gap: 1 }}
+            >
+              {!loading && avatar && !isBuy && !avatar.isaccomplishment && (
                 <Box
                   sx={{
+                    backgroundColor: Colors.yellow2,
+                    p: padding(2, 5),
+                    borderRadius: px(5),
                     display: "flex",
-                    gap: 1,
+                    flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
+                    cursor: "pointer",
                   }}
+                  onClick={verifyBuy}
                 >
-                  <Typography variant="h2" color="text.secondary">
-                    {avatar.price}
+                  <Typography variant="caption" color="text.secondary">
+                    {t("commun.buy")}
                   </Typography>
-                  <img alt="money icon" src={moneyIcon} width={25} />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 1,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Typography variant="h2" color="text.secondary">
+                      {avatar.price}
+                    </Typography>
+                    <img alt="money icon" src={moneyIcon} width={25} />
+                  </Box>
                 </Box>
-              </Box>
-            )}
-            {avatar && avatar.isaccomplishment && (
+              )}
+              {avatar && avatar.isaccomplishment && (
+                <ButtonColor
+                  value={Colors.yellow}
+                  label={t("commun.goaccomplishments")}
+                  icon={EmojiEventsIcon}
+                  variant="contained"
+                  onClick={() => {
+                    navigate(`/accomplishments`);
+                  }}
+                />
+              )}
               <ButtonColor
-                value={Colors.yellow}
-                label={t("commun.goaccomplishments")}
-                icon={EmojiEventsIcon}
+                value={Colors.colorApp}
+                label={t("commun.return")}
+                icon={KeyboardReturnIcon}
                 variant="contained"
-                onClick={() => {
-                  navigate(`/accomplishments`);
-                }}
+                onClick={() => navigate(-1)}
               />
-            )}
-            <ButtonColor
-              value={Colors.colorApp}
-              label={t("commun.return")}
-              icon={KeyboardReturnIcon}
-              variant="contained"
-              onClick={() => navigate(-1)}
-            />
-          </Box>
+            </Box>
+          </Grid>
         </Container>
-      </Box>
+      </Grid>
 
       <ConfirmDialog
         title={t("commun.confirmbuy")}

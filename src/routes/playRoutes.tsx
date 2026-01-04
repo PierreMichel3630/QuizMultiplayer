@@ -7,9 +7,10 @@ import BattlePage from "src/pages/play/BattlePage";
 import DuelPage from "src/pages/play/DuelPage";
 import SoloPage from "src/pages/play/SoloPage";
 import TrainingPage from "src/pages/play/TrainingPage";
-import YtShortPage from "src/pages/play/YtShortPage";
 import ChallengeGamePage from "src/pages/challenge/ChallengeGamePage";
 import ChallengeProfilPage from "src/pages/challenge/ChallengeProfilPage";
+import RecapSoloPage from "src/pages/play/RecapSoloPage";
+import RecapDuelPage from "src/pages/play/RecapDuelPage";
 
 export const PlayRoutes = [
   {
@@ -27,10 +28,6 @@ export const PlayRoutes = [
         <PlayChallengePage />
       </ProtectedRoute>
     ),
-  },
-  {
-    path: "/ytshort/:uuidGame",
-    element: <YtShortPage />,
   },
   {
     path: "/solo/:uuidGame",
@@ -59,5 +56,13 @@ export const PlayRoutes = [
   {
     path: "/game/duel/:uuid",
     element: <GameDuelPage />,
+  },
+  {
+    path: "/recapsolo/:uuidGame",
+    element: <RecapSoloPage />,
+  },
+  {
+    path: "/recapduel/:uuidGame",
+    element: <RecapDuelPage />,
   },
 ];

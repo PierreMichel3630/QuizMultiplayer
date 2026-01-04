@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Colors } from "src/style/Colors";
 
 interface Props {
-  values: Array<{ label: string; icon?: JSX.Element }>;
+  values: Array<{ label: string; icon?: JSX.Element; width?: number }>;
   onChange: (index: number) => void;
   tab: number;
 }
@@ -37,6 +37,7 @@ export const DefaultTabs = ({ tab, onChange, values }: Props) => {
               "&.Mui-selected": {
                 color: Colors.colorApp,
               },
+              width: value.width ?? "initial",
             }}
             icon={value.icon}
             iconPosition="start"

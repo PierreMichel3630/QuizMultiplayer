@@ -193,6 +193,7 @@ export const CardChallengeWeek = ({ value }: CardChallengeWeekProps) => {
       sx={{
         p: 1,
       }}
+      elevation={8}
     >
       <Grid
         container
@@ -271,6 +272,7 @@ export const CardChallengeMonth = ({ value }: CardChallengeMonthProps) => {
       sx={{
         p: 1,
       }}
+      elevation={8}
     >
       <Grid
         container
@@ -291,6 +293,82 @@ export const CardChallengeMonth = ({ value }: CardChallengeMonthProps) => {
           <Typography variant="h6">
             {moment(value.month, "MM/YYYY").format("MMMM YYYY")}
           </Typography>
+          <PositionTypography position={value.ranking} />
+        </Grid>
+        <Grid item xs={12}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 1,
+              alignItems: "center",
+              alignContent: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Box sx={{ display: "flex", gap: px(2), alignItems: "center" }}>
+              <SportsEsportsIcon fontSize="small" />
+              <Typography variant="h6">
+                <Trans
+                  i18nKey={t("commun.game")}
+                  values={{
+                    count: value.games,
+                  }}
+                />
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", gap: px(2), alignItems: "center" }}>
+              <QuestionMarkIcon fontSize="small" />
+              <Typography variant="h6" noWrap>
+                {value.score} / {value.games * NUMBER_QUESTIONS_CHALLENGE}
+              </Typography>
+              <Typography variant="caption" noWrap>
+                ({t("abrevation.average")} {value.scoreavg.toFixed(2)})
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", gap: px(2), alignItems: "center" }}>
+              <AccessTimeIcon fontSize="small" />
+              <Typography variant="h6" noWrap>
+                {(value.time / 1000).toFixed(2)}s
+              </Typography>
+            </Box>
+          </Box>
+        </Grid>
+      </Grid>
+    </Paper>
+  );
+};
+
+interface CardChallengeAllTimeProps {
+  value: ChallengeRankingAllTime;
+}
+
+export const CardChallengeAllTime = ({ value }: CardChallengeAllTimeProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <Paper
+      sx={{
+        p: 1,
+      }}
+      elevation={8}
+    >
+      <Grid
+        container
+        spacing={1}
+        alignItems="center"
+        sx={{ textAlign: "center" }}
+      >
+        <Grid
+          item
+          xs={12}
+          sx={{
+            display: "flex",
+            gap: 3,
+            alignItems: "baseline",
+            justifyContent: "center",
+          }}
+        >
           <PositionTypography position={value.ranking} />
         </Grid>
         <Grid item xs={12}>

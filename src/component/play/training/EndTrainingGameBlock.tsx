@@ -14,22 +14,26 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 interface Props {
   isAllQuestion?: boolean;
-  questions: Array<QuestionResult>;
   game?: TrainingGame;
 }
 
 export const EndTrainingGameBlock = ({
-  questions,
   game,
   isAllQuestion = false,
 }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const localStorageId = useMemo(() => `game-training-${game?.uuid}`, [game]);
 
   const [maxIndex, setMaxIndex] = useState(5);
   const [questionReport, setQuestionReport] = useState<
     undefined | QuestionResult
   >(undefined);
+
+  const questions = useMemo(
+    () => JSON.parse(localStorage.getItem(localStorageId) ?? "[]"),
+    [localStorageId]
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -121,9 +125,14 @@ export const EndTrainingGameBlock = ({
                 value={Colors.red}
                 label={t("commun.leave")}
                 icon={ExitToAppIcon}
-                onClick={() =>
-                  game ? navigate(`/theme/${game.theme.id}`) : navigate(-1)
-                }
+                onClick={() => {
+                  localStorage.removeItem(localStorageId);
+                  if (game) {
+                    navigate(`/theme/${game.theme.id}`);
+                  } else {
+                    navigate("/");
+                  }
+                }}
                 variant="contained"
               />
             </Box>

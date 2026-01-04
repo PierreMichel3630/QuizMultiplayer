@@ -4,7 +4,7 @@ import { ThemeForm } from "src/form/ThemeForm";
 import { Theme } from "src/models/Theme";
 
 interface Props {
-  theme: Theme | undefined;
+  theme: Theme | null;
   open: boolean;
   close: () => void;
 }

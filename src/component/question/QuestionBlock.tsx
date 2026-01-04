@@ -1,21 +1,26 @@
 import { Box } from "@mui/material";
 import { important, percent, px } from "csx";
+import { useMemo } from "react";
+import { TypeQuestionEnum } from "src/models/enum/TypeQuestionEnum";
+import { Question } from "src/models/Question";
 import { ImageQuestionBlock } from "../ImageBlock";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
+import { TextLabelBlock } from "../language/TextLanguageBlock";
 import { CircularLoading } from "../Loading";
 import { MapPositionBlock } from "../MapPositionBlock";
 import { SoundBar } from "../SoundBar";
 import { Timer } from "../time/Timer";
-import { Question } from "src/models/Question";
-import { useMemo } from "react";
-import { TypeQuestionEnum } from "src/models/enum/TypeQuestionEnum";
+import { AnswerUser } from "./ResponseBlock";
+import { useUser } from "src/context/UserProvider";
 
 interface Props {
   question: Question;
   timer?: number;
+  onSubmit?: (value: AnswerUser) => void;
 }
 
-export const QuestionBlock = ({ question, timer }: Props) => {
+export const QuestionBlock = ({ question, timer, onSubmit }: Props) => {
+  const { uuid } = useUser();
   const isQuestionOrder = useMemo(
     () => question.typequestion === TypeQuestionEnum.ORDER,
     [question]
@@ -36,11 +41,12 @@ export const QuestionBlock = ({ question, timer }: Props) => {
     >
       {question ? (
         <>
-          <JsonLanguageBlock
+          <TextLabelBlock
             variant="h2"
             sx={{ fontSize: important(px(30)), wordBreak: "break-word" }}
-            value={question.question}
+            values={question.questiontranslation}
           />
+
           {question.image && (
             <Box
               sx={{
@@ -77,7 +83,12 @@ export const QuestionBlock = ({ question, timer }: Props) => {
                 pb: px(3),
               }}
             >
-              <Timer time={timer} />
+              <Timer
+                time={timer}
+                end={() => {
+                  if (onSubmit) onSubmit({ uuid: uuid, value: undefined });
+                }}
+              />
             </Box>
           )}
         </>

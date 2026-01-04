@@ -162,75 +162,75 @@ export default function BannerPage() {
                     />
                   </Grid>
                 )}
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      p: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 1,
+                    }}
+                  >
+                    {!loading &&
+                      banner &&
+                      !isBuy &&
+                      !banner.isaccomplishment && (
+                        <Box
+                          sx={{
+                            backgroundColor: Colors.yellow2,
+                            p: padding(2, 5),
+                            borderRadius: px(5),
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: "pointer",
+                          }}
+                          onClick={verifyBuy}
+                        >
+                          <Typography variant="caption" color="text.secondary">
+                            {t("commun.buy")}
+                          </Typography>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              gap: 1,
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Typography variant="h2" color="text.secondary">
+                              {banner.price}
+                            </Typography>
+                            <img alt="money icon" src={moneyIcon} width={25} />
+                          </Box>
+                        </Box>
+                      )}
+                    {banner && banner.isaccomplishment && (
+                      <ButtonColor
+                        value={Colors.yellow}
+                        label={t("commun.goaccomplishments")}
+                        icon={EmojiEventsIcon}
+                        variant="contained"
+                        onClick={() => {
+                          navigate(`/accomplishments`);
+                        }}
+                      />
+                    )}
+                    <ButtonColor
+                      value={Colors.colorApp}
+                      label={t("commun.return")}
+                      icon={KeyboardReturnIcon}
+                      variant="contained"
+                      onClick={() => navigate(-1)}
+                    />
+                  </Box>
+                </Grid>
               </Grid>
             </Box>
           )}
         </Container>
       </Grid>
-      <Box
-        sx={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          backgroundColor: "background.paper",
-        }}
-      >
-        <Container maxWidth="md">
-          <Box sx={{ p: 1, display: "flex", flexDirection: "column", gap: 1 }}>
-            {!loading && banner && !isBuy && !banner.isaccomplishment && (
-              <Box
-                sx={{
-                  backgroundColor: Colors.yellow2,
-                  p: padding(2, 5),
-                  borderRadius: px(5),
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                }}
-                onClick={verifyBuy}
-              >
-                <Typography variant="caption" color="text.secondary">
-                  {t("commun.buy")}
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    gap: 1,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Typography variant="h2" color="text.secondary">
-                    {banner.price}
-                  </Typography>
-                  <img alt="money icon" src={moneyIcon} width={25} />
-                </Box>
-              </Box>
-            )}
-            {banner && banner.isaccomplishment && (
-              <ButtonColor
-                value={Colors.yellow}
-                label={t("commun.goaccomplishments")}
-                icon={EmojiEventsIcon}
-                variant="contained"
-                onClick={() => {
-                  navigate(`/accomplishments`);
-                }}
-              />
-            )}
-            <ButtonColor
-              value={Colors.colorApp}
-              label={t("commun.return")}
-              icon={KeyboardReturnIcon}
-              variant="contained"
-              onClick={() => navigate(-1)}
-            />
-          </Box>
-        </Container>
-      </Box>
 
       <ConfirmDialog
         title={t("commun.confirmbuy")}

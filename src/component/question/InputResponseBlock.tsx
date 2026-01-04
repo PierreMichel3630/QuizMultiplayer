@@ -8,20 +8,21 @@ import {
 } from "@mui/material";
 import { percent, px } from "csx";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Colors } from "src/style/Colors";
 import { isMobile } from "react-device-detect";
-import { searchResponseByTypeAndValue } from "src/api/response";
-import { MyResponse, ResponseUpdate } from "src/models/Response";
+import { useTranslation } from "react-i18next";
+import { searchAnswerByLanguageAndSet } from "src/api/answer";
 import { useUser } from "src/context/UserProvider";
+import { AnswerTranslation } from "src/models/Answer";
+import { Colors } from "src/style/Colors";
+import { AnswerUser } from "./ResponseBlock";
 
 interface Props {
-  onSubmit: (value: MyResponse) => void;
-  typeResponse?: string;
+  onSubmit: (value: AnswerUser) => void;
+  answerset?: number;
 }
-export const InputResponseBlock = ({ onSubmit, typeResponse }: Props) => {
+export const InputResponseBlock = ({ onSubmit, answerset }: Props) => {
   const { t } = useTranslation();
-  const { language } = useUser();
+  const { uuid, language } = useUser();
 
   const [value, setValue] = useState("");
   const [responses, setResponses] = useState<Array<string>>([]);
@@ -29,18 +30,19 @@ export const InputResponseBlock = ({ onSubmit, typeResponse }: Props) => {
   useEffect(() => {
     setResponses([]);
     const timer = setTimeout(() => {
-      if (typeResponse && value.length >= 3) {
-        searchResponseByTypeAndValue(value, typeResponse).then(({ data }) => {
-          const res = data as Array<ResponseUpdate>;
-          const arrayString = res.map((el) => el.value[language.iso]);
-          setResponses(arrayString);
-        });
+      if (answerset && value.length >= 3 && language) {
+        searchAnswerByLanguageAndSet(answerset, language, value).then(
+          ({ data }) => {
+            const res: Array<AnswerTranslation> = data ?? [];
+            setResponses(res.map((el) => el.label));
+          }
+        );
       } else {
         setResponses([]);
       }
     }, 200);
     return () => clearTimeout(timer);
-  }, [value, typeResponse, language]);
+  }, [value, answerset, language]);
 
   return (
     <Box sx={{ width: percent(100), position: "relative" }}>
@@ -67,8 +69,8 @@ export const InputResponseBlock = ({ onSubmit, typeResponse }: Props) => {
               onClick={() => {
                 setValue(response);
                 onSubmit({
+                  uuid: uuid,
                   value: response,
-                  exact: true,
                 });
               }}
             >
@@ -96,8 +98,8 @@ export const InputResponseBlock = ({ onSubmit, typeResponse }: Props) => {
               onSubmit={(event) => {
                 event.preventDefault();
                 onSubmit({
+                  uuid: uuid,
                   value: value,
-                  exact: false,
                 });
                 setValue("");
               }}

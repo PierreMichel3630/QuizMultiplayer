@@ -1,16 +1,15 @@
 import { Box, Grid, Paper, Skeleton, Typography } from "@mui/material";
 import { percent, px, viewHeight } from "csx";
-import { useTranslation } from "react-i18next";
-import { Title } from "src/models/Title";
-import { Colors } from "src/style/Colors";
-import { BadgeTitle } from "../Badge";
 import { useMemo } from "react";
-import { sortByTitle } from "src/utils/sort";
-import { useUser } from "src/context/UserProvider";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { useUser } from "src/context/UserProvider";
+import { TitleProfile } from "src/models/Title";
+import { Colors } from "src/style/Colors";
+import { BadgeTitleProfile } from "../Badge";
 
 interface Props {
-  titles: Array<Title>;
+  titles: Array<TitleProfile>;
   loading?: boolean;
 }
 
@@ -19,7 +18,7 @@ export const CardTitle = ({ titles, loading }: Props) => {
   const { language } = useUser();
 
   const titleOrder = useMemo(
-    () => [...titles].sort((a, b) => sortByTitle(language, a, b)),
+    () => (language ? [...titles] : []),
     [titles, language]
   );
 
@@ -76,10 +75,10 @@ export const CardTitle = ({ titles, loading }: Props) => {
                   {titleOrder.map((title, index) => (
                     <Grid item key={index}>
                       <Link
-                        to={`/title/${title.id}`}
+                        to={`/title/${title.title.id}`}
                         style={{ textDecoration: "none" }}
                       >
-                        <BadgeTitle label={title.name} />
+                        <BadgeTitleProfile title={title} />
                       </Link>
                     </Grid>
                   ))}

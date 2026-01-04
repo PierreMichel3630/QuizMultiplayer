@@ -4,13 +4,13 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { useUser } from "src/context/UserProvider";
 import { StatAccomplishment } from "src/models/Accomplishment";
-import { ExtraDuelGameXP } from "src/models/DuelGame";
 import { ExtraSoloGameXP } from "src/models/Game";
 import { Colors } from "src/style/Colors";
 import { getExperienceByLevel, getLevel } from "src/utils/calcul";
+import { POINTGAME, POINTVICTORY } from "src/utils/config";
 import { AvatarAccountBadge } from "./avatar/AvatarAccount";
-import { useUser } from "src/context/UserProvider";
 
 interface Props {
   xp: number;
@@ -136,10 +136,14 @@ export const ExperienceBlock = ({ xp, xpgain }: Props) => {
 };
 
 interface PropsExperienceDuelBlock {
-  xp?: ExtraDuelGameXP;
+  victory: boolean;
+  score: number;
 }
 
-export const ExperienceDuelBlock = ({ xp }: PropsExperienceDuelBlock) => {
+export const ExperienceDuelBlock = ({
+  victory,
+  score,
+}: PropsExperienceDuelBlock) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const { mode } = useUser();
@@ -159,8 +163,11 @@ export const ExperienceDuelBlock = ({ xp }: PropsExperienceDuelBlock) => {
   }, [profile]);
 
   const xpTotal = useMemo(() => {
-    return xp ? xp.match + xp.matchscore + xp.victorybonus : 0;
-  }, [xp]);
+    const points = victory
+      ? POINTVICTORY + POINTGAME + score
+      : POINTGAME + score;
+    return points;
+  }, [victory, score]);
 
   const myLevel = useMemo(() => {
     return stat !== undefined ? getLevel(stat.xp) : undefined;
@@ -193,123 +200,118 @@ export const ExperienceDuelBlock = ({ xp }: PropsExperienceDuelBlock) => {
   }, [xpLevel, xpTotal]);
 
   const duelXp = useMemo(
-    () =>
-      xp
-        ? [
-            {
-              color: Colors.pink,
-              title: t("commun.match"),
-              value: xp.match,
-            },
-            {
-              color: Colors.yellow,
-              title: t("commun.matchscore"),
-              value: xp.matchscore,
-            },
-            {
-              color: Colors.green,
-              title: t("commun.victorybonus"),
-              value: xp.victorybonus,
-            },
-            {
-              color: Colors.purple2,
-              title: t("commun.totalxp"),
-              value: xpTotal,
-            },
-          ]
-        : [],
-    [t, xp, xpTotal]
+    () => [
+      {
+        color: Colors.pink,
+        title: t("commun.match"),
+        value: POINTGAME,
+      },
+      {
+        color: Colors.yellow,
+        title: t("commun.matchscore"),
+        value: score,
+      },
+      {
+        color: Colors.green,
+        title: t("commun.victorybonus"),
+        value: victory ? POINTVICTORY : 0,
+      },
+      {
+        color: Colors.purple2,
+        title: t("commun.totalxp"),
+        value: xpTotal,
+      },
+    ],
+    [t, victory, score, xpTotal]
   );
 
   return (
-    xp && (
-      <Grid container spacing={1} justifyContent="center" alignItems="end">
-        <Grid item>
-          <Typography variant="h4">
-            {t("commun.level")} {myLevel}
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              position: "relative",
-            }}
-          >
-            {xpLevel !== undefined && myXpLevel !== undefined && (
-              <Box
-                sx={{
-                  position: "absolute",
-                  right: 8,
-                  zIndex: 1,
-                  color: Colors.black,
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  component="span"
-                  color={isDarkMode ? Colors.black2 : Colors.white}
-                >
-                  {xpLevel - myXpLevel}
-                </Typography>
-                <Typography
-                  variant="caption"
-                  component="span"
-                  color={isDarkMode ? Colors.black2 : Colors.white}
-                >
-                  {t("commun.xpnextlevel")}
-                </Typography>
-              </Box>
-            )}
-            <Box
-              sx={{
-                height: px(20),
-                width: percent(100),
-                backgroundColor: isDarkMode ? Colors.white : Colors.black2,
-                borderRadius: px(25),
-              }}
-            />
+    <Grid container spacing={1} justifyContent="center" alignItems="end">
+      <Grid item>
+        <Typography variant="h4">
+          {t("commun.level")} {myLevel}
+        </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            position: "relative",
+          }}
+        >
+          {xpLevel !== undefined && myXpLevel !== undefined && (
             <Box
               sx={{
                 position: "absolute",
-                left: 0,
-                width: percent(100),
-                display: "flex",
+                right: 8,
+                zIndex: 1,
+                color: Colors.black,
               }}
             >
-              <Box
-                sx={{
-                  height: px(20),
-                  width: percent(pourcentage > 0 ? pourcentage : 0),
-                  backgroundColor: Colors.colorApp,
-                  borderTopLeftRadius: px(25),
-                  borderBottomLeftRadius: px(25),
-                }}
-              />
-              <Box
-                sx={{
-                  height: px(20),
-                  width: percent(pourcentageGain),
-                  backgroundColor: Colors.purple2,
-                  borderTopLeftRadius: pourcentage > 0 ? "none" : px(25),
-                  borderBottomLeftRadius: pourcentage > 0 ? "none" : px(25),
-                }}
-              />
+              <Typography
+                variant="h6"
+                component="span"
+                color={isDarkMode ? Colors.black2 : Colors.white}
+              >
+                {xpLevel - myXpLevel}
+              </Typography>
+              <Typography
+                variant="caption"
+                component="span"
+                color={isDarkMode ? Colors.black2 : Colors.white}
+              >
+                {t("commun.xpnextlevel")}
+              </Typography>
             </Box>
-          </Box>
-        </Grid>
-        {duelXp.map((el, index) => (
-          <Grid item xs={3} key={index}>
-            <ExperienceGainBlock
-              color={el.color}
-              title={el.title}
-              value={el.value}
+          )}
+          <Box
+            sx={{
+              height: px(20),
+              width: percent(100),
+              backgroundColor: isDarkMode ? Colors.white : Colors.black2,
+              borderRadius: px(25),
+            }}
+          />
+          <Box
+            sx={{
+              position: "absolute",
+              left: 0,
+              width: percent(100),
+              display: "flex",
+            }}
+          >
+            <Box
+              sx={{
+                height: px(20),
+                width: percent(pourcentage > 0 ? pourcentage : 0),
+                backgroundColor: Colors.colorApp,
+                borderTopLeftRadius: px(25),
+                borderBottomLeftRadius: px(25),
+              }}
             />
-          </Grid>
-        ))}
+            <Box
+              sx={{
+                height: px(20),
+                width: percent(pourcentageGain),
+                backgroundColor: Colors.purple2,
+                borderTopLeftRadius: pourcentage > 0 ? "none" : px(25),
+                borderBottomLeftRadius: pourcentage > 0 ? "none" : px(25),
+              }}
+            />
+          </Box>
+        </Box>
       </Grid>
-    )
+      {duelXp.map((el, index) => (
+        <Grid item xs={3} key={index}>
+          <ExperienceGainBlock
+            color={el.color}
+            title={el.title}
+            value={el.value}
+          />
+        </Grid>
+      ))}
+    </Grid>
   );
 };
 

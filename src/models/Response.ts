@@ -6,7 +6,7 @@ export interface Response {
 }
 
 export interface ResponseQCM {
-  label?: ResponseLanguageString;
+  label?: string;
   image?: string;
   extra?: ExtraResponse;
 }
@@ -34,14 +34,16 @@ export interface ResponseTraining {
 
 export interface ResponseDuel {
   uuid: string;
-  result: boolean;
-  time: number;
-  answer: string | number;
-  correctanswer: ResponseLanguage | number;
-  ptsplayer1: number;
-  ptsplayer2: number;
+  value?: string | number;
 }
 
+export interface ResponseDuelV2 {
+  question: number;
+  uuid: string;
+  result: boolean;
+  answer: string | number;
+  time: number;
+}
 export interface ResponseLanguage {
   [iso: string]: Array<string> | string;
 }

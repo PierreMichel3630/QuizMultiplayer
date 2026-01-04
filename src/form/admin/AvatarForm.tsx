@@ -18,7 +18,7 @@ import { SelectThemeShop } from "src/component/Select";
 import { FileUploadInput } from "src/component/input/FileUploadInput";
 import { useMessage } from "src/context/MessageProvider";
 import { Avatar } from "src/models/Avatar";
-import { ThemeShop } from "src/models/Theme";
+import { ThemeShop } from "src/models/Shop";
 import { Colors } from "src/style/Colors";
 import * as Yup from "yup";
 
@@ -145,7 +145,12 @@ export const AvatarForm = ({ validate, avatar }: Props) => {
           <Typography variant="h6">{t("form.createavatar.icon")}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <FileUploadInput formik={formik} field="icon" />
+          <FileUploadInput
+            formik={formik}
+            field="icon"
+            maxWidth={100}
+            maxSize={25}
+          />
         </Grid>
         <Grid item xs={12}>
           <ButtonColor

@@ -1,37 +1,28 @@
 import { Grid } from "@mui/material";
-import { uniqBy } from "lodash";
-import moment from "moment";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
+import { getThemesAndCategoriesByDate } from "src/api/search";
+import { ICardImage } from "src/component/card/CardImage";
 import { PageCategoryBlock } from "src/component/page/PageCategoryBlock";
-import { useApp } from "src/context/AppProvider";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
-import { MAX_DAY_NEW_THEME } from "src/utils/config";
-import { sortByCreatedAt } from "src/utils/sort";
+import { useUser } from "src/context/UserProvider";
 
 export default function NewThemePage() {
   const { t } = useTranslation();
-  const { themes } = useApp();
+  const { language } = useUser();
 
-  const themesNew = useMemo(() => {
-    return uniqBy(
-      themes
-        .filter(
-          (el) => moment().diff(el.created_at, "days") < MAX_DAY_NEW_THEME
-        )
-        .sort(sortByCreatedAt)
-        .map((el) => ({
-          id: el.id,
-          name: el.name,
-          image: el.image,
-          color: el.color,
-          link: `/theme/${el.id}`,
-          type: TypeCardEnum.THEME,
-        })),
-      (el) => el.id
-    );
-  }, [themes]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
+
+  useEffect(() => {
+    if (language) {
+      setIsLoading(true);
+      getThemesAndCategoriesByDate(language).then(({ data }) => {
+        setItemsSearch(data ?? []);
+        setIsLoading(false);
+      });
+    }
+  }, [language]);
 
   return (
     <Grid container>
@@ -39,7 +30,11 @@ export default function NewThemePage() {
         <title>{`${t("pages.new.title")} - ${t("appname")}`}</title>
       </Helmet>
       <Grid item xs={12}>
-        <PageCategoryBlock title={t("pages.new.title")} values={themesNew} />
+        <PageCategoryBlock
+          title={t("pages.new.title")}
+          values={itemsSearch}
+          isLoading={isLoading}
+        />
       </Grid>
     </Grid>
   );

@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper } from "@mui/material";
 import { percent, px } from "csx";
 import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -7,33 +7,45 @@ import { ImageThemeBlock } from "../ImageThemeBlock";
 
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
-import { useUser } from "src/context/UserProvider";
-import { BattleGame } from "src/models/BattleGame";
+import { useMemo } from "react";
 import { deleteBattleByUuid } from "src/api/game";
-import { useAuth } from "src/context/AuthProviderSupabase";
+import { useUser } from "src/context/UserProvider";
 import { ModeGame } from "src/models/ModeGame";
+import { Notification } from "src/models/Notification";
+import { Profile } from "src/models/Profile";
+import { ButtonColor } from "../Button";
+import { NotificationDuration } from "./NotificationDuration";
 
 interface Props {
-  game: BattleGame;
-  refuse?: () => void;
+  notification: Notification;
+  onDelete: (notification: Notification) => void;
 }
 
-export const BattleNotificationBlock = ({ game, refuse }: Props) => {
+interface NotificationData {
+  uuid: string;
+  user: Profile;
+}
+
+export const BattleNotificationBlock = ({ notification, onDelete }: Props) => {
   const navigate = useNavigate();
   const { language } = useUser();
-  const { user } = useAuth();
   const { t } = useTranslation();
+
+  const data = useMemo(
+    () => notification.data as NotificationData,
+    [notification]
+  );
 
   const playBattle = (uuid: string) => {
     navigate(`/battle/${uuid}`);
+    onDelete(notification);
   };
 
   const refuseBattle = async (uuid: string) => {
     await deleteBattleByUuid(uuid);
-    if (refuse) {
-      refuse();
-    }
+    onDelete(notification);
   };
+
   const mode: ModeGame = {
     image:
       "https://cperjgnbmoqyyqgkyqws.supabase.co/storage/v1/object/public/theme/mode/swords.png",
@@ -47,72 +59,63 @@ export const BattleNotificationBlock = ({ game, refuse }: Props) => {
   return (
     <Paper
       sx={{
+        zIndex: 1500,
         p: px(5),
         width: percent(100),
-        backgroundColor: Colors.black,
-        border: "2px solid white",
-        borderRadius: px(5),
       }}
+      elevation={8}
     >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          gap: 1,
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Box>
-          <ImageThemeBlock theme={mode} size={70} />
-        </Box>
-        <Box>
-          <Typography
-            variant="body1"
-            component="span"
-            sx={{ fontSize: 15 }}
-            color="text.secondary"
-          >
-            <Trans
-              i18nKey={t("commun.challengeuser")}
-              values={{
-                username:
-                  user && user.id === game.player1.id
-                    ? game.player2
-                      ? game.player2.username
-                      : t("commun.unknown")
-                    : game.player1.username,
-                theme: mode.name[language.iso],
-              }}
-              components={{ bold: <strong /> }}
-            />
-          </Typography>
-        </Box>
-        <Box sx={{ display: "flex", gap: 1 }}>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
           <Box
             sx={{
-              p: px(5),
-              backgroundColor: Colors.green2,
-              borderRadius: px(5),
-              cursor: "pointer",
+              display: "flex",
+              flexDirection: "row",
+              gap: 1,
+              alignItems: "center",
             }}
-            onClick={() => playBattle(game.uuid)}
           >
-            <CheckIcon sx={{ color: Colors.white }} />
+            <Box>
+              <ImageThemeBlock theme={mode} size={70} />
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <Trans
+                i18nKey={t("commun.confrontmodeuser")}
+                values={{
+                  username: data.user.username,
+                  theme: language ? mode.name[language.iso] : "",
+                }}
+                components={{ bold: <strong /> }}
+              />
+              <Box>
+                <NotificationDuration date={notification.created_at} />
+              </Box>
+            </Box>
           </Box>
-          <Box
-            sx={{
-              p: px(5),
-              backgroundColor: Colors.red2,
-              borderRadius: px(5),
-              cursor: "pointer",
-            }}
-            onClick={() => refuseBattle(game.uuid)}
-          >
-            <CloseIcon sx={{ color: Colors.white }} />
-          </Box>
-        </Box>
-      </Box>
+        </Grid>
+        <Grid item xs={6}>
+          <ButtonColor
+            typography="h6"
+            iconSize={20}
+            value={Colors.green}
+            label={t("commun.accept")}
+            icon={CheckIcon}
+            variant="contained"
+            onClick={() => playBattle(data.uuid)}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <ButtonColor
+            typography="h6"
+            iconSize={20}
+            value={Colors.red}
+            label={t("commun.refuse")}
+            icon={CloseIcon}
+            variant="contained"
+            onClick={() => refuseBattle(data.uuid)}
+          />
+        </Grid>
+      </Grid>
     </Paper>
   );
 };

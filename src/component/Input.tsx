@@ -74,7 +74,9 @@ export const BasicSearchInput = ({
       placeholder={label ?? ""}
       inputProps={{ "aria-label": label ?? "" }}
       value={value}
-      onChange={(event) => onChange(event.target.value)}
+      onChange={(event) => {
+        onChange(event.target.value);
+      }}
       onFocus={onFocus}
     />
     <SearchIcon fontSize="large" sx={{ color: Colors.grey4 }} />

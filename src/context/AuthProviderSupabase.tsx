@@ -13,6 +13,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { countChallengeGameByDateAndProfileId } from "src/api/challenge";
 import {
   getProfilById,
   updateProfil,
@@ -36,6 +37,8 @@ const AuthContext = createContext<{
   user: User | null;
   profile: Profile | null;
   streak: undefined | number;
+  hasPlayChallenge: boolean;
+  refreshHasPlayChallenge: () => void;
   setStreak: (value: undefined | number) => void;
   setProfile: (value: Profile) => void;
   refreshProfil: () => void;
@@ -54,6 +57,8 @@ const AuthContext = createContext<{
       ? (JSON.parse(localStorage.getItem("user")!) as User)
       : null,
   streak: undefined,
+  hasPlayChallenge: false,
+  refreshHasPlayChallenge: () => {},
   setStreak: () => {},
   deleteAccount: () => {},
   profile: null,
@@ -68,6 +73,7 @@ const AuthContext = createContext<{
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProviderSupabase = ({ children }: Props) => {
+  const [hasPlayChallenge, setHasPlayChallenge] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [streak, setStreak] = useState<undefined | number>(undefined);
 
@@ -97,6 +103,19 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     localStorage.setItem("user", JSON.stringify(user));
     getProfilUser();
   }, [user]);
+
+  const refreshHasPlayChallenge = useCallback(() => {
+    if (user) {
+      const date = moment();
+      countChallengeGameByDateAndProfileId(date, user.id).then(({ count }) => {
+        setHasPlayChallenge(count !== null && count > 0);
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    refreshHasPlayChallenge();
+  }, [refreshHasPlayChallenge]);
 
   const logout = useCallback(async () => {
     if (user) {
@@ -172,8 +191,19 @@ export const AuthProviderSupabase = ({ children }: Props) => {
       deleteAccount,
       passwordReset,
       updatePassword,
+      hasPlayChallenge,
+      refreshHasPlayChallenge,
     }),
-    [deleteAccount, logout, profile, refreshProfil, streak, user]
+    [
+      deleteAccount,
+      hasPlayChallenge,
+      refreshHasPlayChallenge,
+      logout,
+      profile,
+      refreshProfil,
+      streak,
+      user,
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

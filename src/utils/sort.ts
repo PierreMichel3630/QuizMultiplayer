@@ -1,6 +1,5 @@
 import moment from "moment";
 import { Language } from "src/models/Language";
-import { Title } from "src/models/Title";
 
 export const sortByScore = (a: { score: number }, b: { score: number }) =>
   b.score - a.score;
@@ -116,6 +115,15 @@ export const sortByPriceDesc = (a: { price: number }, b: { price: number }) => {
   return valueA - valueB;
 };
 
+export const sortByIsaccomplishmentAndPriceDesc = (
+  a: { isaccomplishment: boolean; price: number },
+  b: { isaccomplishment: boolean; price: number }
+) => {
+  return (
+    Number(a.isaccomplishment) - Number(b.isaccomplishment) || a.price - b.price
+  );
+};
+
 export const sortByCreatedAt = (
   a: { created_at: Date },
   b: { created_at: Date }
@@ -134,8 +142,10 @@ export const sortByDuelGamesDesc = (
 export const sortByName = (language: Language, a: any, b: any) =>
   a.name[language.iso].localeCompare(b.name[language.iso]);
 
-export const sortByTitle = (language: Language, a: Title, b: Title) =>
-  a.name[language.iso].localeCompare(b.name[language.iso]);
+export const sortByThemeTitle = (
+  a: { theme: { title: string } },
+  b: { theme: { title: string } }
+) => a.theme.title.localeCompare(b.theme.title);
 
 export const sortByUnlock = (
   a: { unlock: boolean; price: number },

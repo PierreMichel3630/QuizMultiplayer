@@ -1,11 +1,10 @@
 import { Box, Button, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { JsonLanguage } from "src/models/Language";
 import { TitleCount } from "../title/TitleCount";
 
 interface Props {
-  title: string | JsonLanguage;
-  count: number;
+  title: string | JSX.Element;
+  count?: number;
   link?: string;
 }
 

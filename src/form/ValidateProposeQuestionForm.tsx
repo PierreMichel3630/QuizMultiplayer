@@ -1,3 +1,4 @@
+import DeleteIcon from "@mui/icons-material/Delete";
 import DoneIcon from "@mui/icons-material/Done";
 import {
   Divider,
@@ -11,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   deleteQuestionById,
@@ -19,22 +21,20 @@ import {
   selectQuestionThemeByQuestion,
   updateQuestion,
 } from "src/api/question";
+import { AutocompleteInputTheme } from "src/component/Autocomplete";
 import { ButtonColor } from "src/component/Button";
+import { ImageThemeBlock } from "src/component/ImageThemeBlock";
+import { TextNameBlock } from "src/component/language/TextLanguageBlock";
 import { SelectDifficulty } from "src/component/Select";
 import { useMessage } from "src/context/MessageProvider";
 import { Difficulty } from "src/models/enum/DifficultyEnum";
-import { QuestionPropose, QuestionUpdate } from "src/models/Question";
+import { QuestionAdmin, QuestionUpdate } from "src/models/Question";
+import { QuestionTheme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import * as Yup from "yup";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { useState, useCallback, useEffect } from "react";
-import { AutocompleteInputTheme } from "src/component/Autocomplete";
-import { ImageThemeBlock } from "src/component/ImageThemeBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
-import { QuestionTheme, Theme } from "src/models/Theme";
 
 interface Props {
-  question: QuestionPropose;
+  question: QuestionAdmin;
   validate: () => void;
 }
 
@@ -54,11 +54,11 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
     wrongresponse2: string;
     wrongresponse3: string;
   } = {
-    question: question.question["fr-FR"],
-    response: question.response["fr-FR"],
-    wrongresponse1: question.responses[0]["fr-FR"],
-    wrongresponse2: question.responses[1]["fr-FR"],
-    wrongresponse3: question.responses[2]["fr-FR"],
+    question: "",
+    response: "",
+    wrongresponse1: "",
+    wrongresponse2: "",
+    wrongresponse3: "",
     difficulty: question.difficulty,
   };
 
@@ -128,7 +128,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
     });
   };
 
-  const insertTheme = (theme: Theme) => {
+  const insertTheme = (theme: { id: number }) => {
     if (question) {
       const value = { theme: theme.id, question: question.id };
       insertQuestionTheme(value).then(() => {
@@ -324,7 +324,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
                       <ImageThemeBlock theme={el.theme} size={50} />
                     </Grid>
                     <Grid item xs>
-                      <JsonLanguageBlock value={el.theme.name} />
+                      <TextNameBlock values={el.theme.themetranslation} />
                     </Grid>
                     <Grid item>
                       <IconButton onClick={() => deleteTheme(el.id)}>

@@ -1,9 +1,8 @@
 import { Alert, Box, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { Theme } from "src/models/Theme";
 
 import { useCallback, useEffect, useState } from "react";
-import { selectGames } from "src/api/game";
+import { selectDuelGames, selectSoloGames } from "src/api/game";
 import { GroupButtonAllTypeGame } from "src/component/button/ButtonGroup";
 import { CardHistoryGameAdmin } from "src/component/card/CardHistoryGame";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
@@ -11,22 +10,22 @@ import { AutocompleteTheme } from "src/component/Select";
 import { SelectorProfileBlock } from "src/component/SelectorProfileBlock";
 import { SkeletonGames } from "src/component/skeleton/SkeletonGame";
 import { useApp } from "src/context/AppProvider";
+import { DuelGame } from "src/models/DuelGame";
 import { GameModeEnum } from "src/models/enum/GameEnum";
-import { HistoryGameAdmin } from "src/models/Game";
+import { HistoryGame, SoloGame } from "src/models/Game";
 import { FilterGame } from "../HistoryGamePage";
 
 export default function AdminGamesPage() {
   const { t } = useTranslation();
   const { headerSize } = useApp();
+  const ITEMPERPAGE = 20;
 
-  const ITEMPERPAGE = 25;
-
-  const [games, setGames] = useState<Array<HistoryGameAdmin>>([]);
+  const [games, setGames] = useState<Array<HistoryGame>>([]);
   const [page, setPage] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<FilterGame>({
-    type: GameModeEnum.all,
+    type: GameModeEnum.solo,
     themes: [],
     player: null,
     opponent: undefined,
@@ -36,12 +35,53 @@ export default function AdminGamesPage() {
 
   const getGames = useCallback(() => {
     setIsLoading(true);
-    selectGames(filter, page, ITEMPERPAGE).then(({ data }) => {
-      const result = data as Array<HistoryGameAdmin>;
-      setGames((prev) => (page === 0 ? [...result] : [...prev, ...result]));
-      setIsEnd(result.length === 0);
-      setIsLoading(false);
-    });
+    if (filter.type === GameModeEnum.solo) {
+      selectSoloGames(filter, page, ITEMPERPAGE).then(({ data }) => {
+        const result = data as unknown as Array<SoloGame>;
+
+        const historygames: Array<HistoryGame> = result.map((el) => {
+          return {
+            uuid: el.uuid,
+            type: "SOLO",
+            theme: el.theme,
+            player1: el.profile,
+            ptsplayer1: el.points,
+            player2: undefined,
+            ptsplayer2: null,
+            created_at: el.created_at,
+          };
+        });
+
+        setGames((prev) =>
+          page === 0 ? [...historygames] : [...prev, ...historygames]
+        );
+        setIsEnd(result.length === 0);
+        setIsLoading(false);
+      });
+    } else {
+      selectDuelGames(filter, page, ITEMPERPAGE).then(({ data }) => {
+        const result = data as unknown as Array<DuelGame>;
+
+        const historygames: Array<HistoryGame> = result.map((el) => {
+          return {
+            uuid: el.uuid,
+            type: "DUEL",
+            theme: el.theme,
+            player1: el.player1,
+            ptsplayer1: el.ptsplayer1,
+            player2: el.player2,
+            ptsplayer2: el.ptsplayer2,
+            created_at: el.created_at,
+          };
+        });
+
+        setGames((prev) =>
+          page === 0 ? [...historygames] : [...prev, ...historygames]
+        );
+        setIsEnd(result.length === 0);
+        setIsLoading(false);
+      });
+    }
   }, [page, filter]);
 
   useEffect(() => {
@@ -125,7 +165,7 @@ export default function AdminGamesPage() {
           <Grid item xs={12}>
             <AutocompleteTheme
               value={filter.themes}
-              onChange={(value: Array<Theme>) => {
+              onChange={(value) => {
                 setFilter((prev) => ({ ...prev, themes: value }));
               }}
             />

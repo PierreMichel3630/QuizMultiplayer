@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { selectShopItemByTheme } from "src/api/shop";
-import { ShopItem } from "src/models/Shop";
-import { ThemeShop } from "src/models/Theme";
+import { ShopItem, ThemeShop } from "src/models/Shop";
 import { CountBlock } from "../CountBlock";
 import { ItemsShopBlock } from "../shop/ItemShop";
 import { useApp } from "src/context/AppProvider";
 import { ShopType } from "src/models/enum/ShopType";
 import { sortByPriceDesc } from "src/utils/sort";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   theme: ThemeShop;
@@ -37,7 +37,8 @@ export const ThemeShopBlock = ({ theme }: Props) => {
         const isBanner =
           el.type === ShopType.BANNER && mybanners.find((a) => a.id === el.id);
         const isTitle =
-          el.type === ShopType.TITLE && myTitles.find((a) => a.id === el.id);
+          el.type === ShopType.TITLE &&
+          myTitles.find((a) => a.title.id === el.id);
 
         return !(isAvatar || isBadge || isBanner || isTitle);
       })
@@ -47,7 +48,13 @@ export const ThemeShopBlock = ({ theme }: Props) => {
   return (
     itemsDisplay.length > 0 && (
       <CountBlock
-        title={theme.name}
+        title={
+          <TextNameBlock
+            variant="h2"
+            noWrap
+            values={theme.themeshoptranslation}
+          />
+        }
         count={itemsDisplay.length}
         link={`/theme/${theme.id}/shop`}
       >

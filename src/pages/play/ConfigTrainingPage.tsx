@@ -8,7 +8,7 @@ import { launchTrainingGame } from "src/api/game";
 import { selectThemeById } from "src/api/theme";
 import { ButtonColor } from "src/component/Button";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
-import { JsonLanguageBlock } from "src/component/JsonLanguageBlock";
+import { TextNameBlock } from "src/component/language/TextLanguageBlock";
 import { CustomSwitch } from "src/component/Switch";
 import { useUser } from "src/context/UserProvider";
 import { Theme } from "src/models/Theme";
@@ -20,9 +20,9 @@ export interface ConfigTraining {
 }
 export default function ConfigTrainingPage() {
   const { themeid } = useParams();
-  const { uuid } = useUser();
-  const navigate = useNavigate();
+  const { uuid, language } = useUser();
   const { mode } = useUser();
+  const navigate = useNavigate();
 
   const isDarkMode = useMemo(() => mode === "dark", [mode]);
   const color = useMemo(
@@ -38,10 +38,12 @@ export default function ConfigTrainingPage() {
   });
 
   const play = () => {
-    if (uuid && themeid) {
-      launchTrainingGame(uuid, Number(themeid), configGame).then(({ data }) => {
-        navigate(`/training/${data.uuid}`);
-      });
+    if (uuid && themeid && language) {
+      launchTrainingGame(uuid, Number(themeid), configGame, language).then(
+        ({ data }) => {
+          navigate(`/training/${data.uuid}`);
+        }
+      );
     }
   };
 
@@ -57,155 +59,141 @@ export default function ConfigTrainingPage() {
   }, [themeid]);
 
   return (
-    <Box>
-      <Container maxWidth="md" sx={{ minHeight: "calc(100vh - 120px)" }}>
-        <Helmet>
-          <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
-        </Helmet>
-        <Box
-          sx={{
-            display: "flex",
-            p: 1,
-          }}
-        >
-          <Grid container spacing={3}>
-            {theme && (
-              <>
-                <Grid item xs={12} sx={{ textAlign: "center", mt: 1 }}>
-                  <Typography variant="h1">
-                    {t("commun.modetraining")}
-                  </Typography>
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sx={{
-                    display: "flex",
-                    gap: 2,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <ImageThemeBlock theme={theme} size={40} />
-                  <JsonLanguageBlock
-                    variant="h1"
-                    sx={{ fontSize: "20px !important" }}
-                    value={theme.name}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Divider
-                    sx={{
-                      "&::before": {
-                        borderTop: `2px solid ${color}`,
-                      },
-                      "&::after": {
-                        borderTop: `2px solid ${color}`,
-                      },
-                    }}
-                  >
-                    <Typography
-                      variant="h4"
-                      sx={{
-                        border: `2px solid ${color}`,
-                        padding: "5px 10px",
-                        borderRadius: "25px",
-                      }}
-                    >
-                      {t("commun.goal")}
-                    </Typography>
-                  </Divider>
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="body1">
-                    {t("modes.mode4.explain")}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Divider
-                    sx={{
-                      "&::before": {
-                        borderTop: `2px solid ${color}`,
-                      },
-                      "&::after": {
-                        borderTop: `2px solid ${color}`,
-                      },
-                    }}
-                  >
-                    <Typography
-                      variant="h4"
-                      sx={{
-                        border: `2px solid ${color}`,
-                        padding: "5px 10px",
-                        borderRadius: "25px",
-                      }}
-                    >
-                      {t("commun.configuration")}
-                    </Typography>
-                  </Divider>
-                </Grid>
-                <Grid item xs={12}>
-                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                    <CustomSwitch
-                      checked={configGame.qcmquestion}
-                      onChange={() =>
-                        setConfigGame((prev) => {
-                          const newValue = !prev.qcmquestion;
-                          return {
-                            ...prev,
-                            qcmquestion: newValue,
-                            inputquestion:
-                              newValue === false ? true : prev.inputquestion,
-                          };
-                        })
-                      }
-                      color="default"
-                    />
-                    <Typography variant="h4">{t("commun.qcm")}</Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12}>
-                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                    <CustomSwitch
-                      checked={configGame.inputquestion}
-                      onChange={() =>
-                        setConfigGame((prev) => {
-                          const newValue = !prev.inputquestion;
-                          return {
-                            ...prev,
-                            inputquestion: newValue,
-                            qcmquestion:
-                              newValue === false ? true : prev.qcmquestion,
-                          };
-                        })
-                      }
-                      color="default"
-                    />
-                    <Typography variant="h4">
-                      {t("commun.inputquestion")}
-                    </Typography>
-                  </Box>
-                </Grid>
-              </>
-            )}
-          </Grid>
-          <Box
-            sx={{
-              position: "fixed",
-              bottom: 80,
-              left: 0,
-              right: 0,
-            }}
-          >
-            <Container maxWidth="md">
-              <Box
+    <Container
+      maxWidth="md"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        p: 0,
+      }}
+      className="page"
+    >
+      <Helmet>
+        <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
+      </Helmet>
+      <Box
+        sx={{
+          display: "flex",
+          p: 1,
+        }}
+      >
+        <Grid container spacing={3}>
+          {theme && (
+            <>
+              <Grid item xs={12} sx={{ textAlign: "center", mt: 1 }}>
+                <Typography variant="h1">{t("commun.modetraining")}</Typography>
+              </Grid>
+              <Grid
+                item
+                xs={12}
                 sx={{
                   display: "flex",
-                  gap: 1,
-                  p: 1,
-                  flexDirection: "column",
+                  gap: 2,
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
+                <ImageThemeBlock theme={theme} size={40} />
+                <TextNameBlock
+                  variant="h1"
+                  sx={{ fontSize: "20px !important" }}
+                  values={theme.themetranslation}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Divider
+                  sx={{
+                    "&::before": {
+                      borderTop: `2px solid ${color}`,
+                    },
+                    "&::after": {
+                      borderTop: `2px solid ${color}`,
+                    },
+                  }}
+                >
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      border: `2px solid ${color}`,
+                      padding: "5px 10px",
+                      borderRadius: "25px",
+                    }}
+                  >
+                    {t("commun.goal")}
+                  </Typography>
+                </Divider>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="body1">
+                  {t("modes.mode4.explain")}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider
+                  sx={{
+                    "&::before": {
+                      borderTop: `2px solid ${color}`,
+                    },
+                    "&::after": {
+                      borderTop: `2px solid ${color}`,
+                    },
+                  }}
+                >
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      border: `2px solid ${color}`,
+                      padding: "5px 10px",
+                      borderRadius: "25px",
+                    }}
+                  >
+                    {t("commun.configuration")}
+                  </Typography>
+                </Divider>
+              </Grid>
+              <Grid item xs={12}>
+                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                  <CustomSwitch
+                    checked={configGame.qcmquestion}
+                    onChange={() =>
+                      setConfigGame((prev) => {
+                        const newValue = !prev.qcmquestion;
+                        return {
+                          ...prev,
+                          qcmquestion: newValue,
+                          inputquestion:
+                            newValue === false ? true : prev.inputquestion,
+                        };
+                      })
+                    }
+                    color="default"
+                  />
+                  <Typography variant="h4">{t("commun.qcm")}</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                  <CustomSwitch
+                    checked={configGame.inputquestion}
+                    onChange={() =>
+                      setConfigGame((prev) => {
+                        const newValue = !prev.inputquestion;
+                        return {
+                          ...prev,
+                          inputquestion: newValue,
+                          qcmquestion:
+                            newValue === false ? true : prev.qcmquestion,
+                        };
+                      })
+                    }
+                    color="default"
+                  />
+                  <Typography variant="h4">
+                    {t("commun.inputquestion")}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
                 <ButtonColor
                   value={Colors.blue2}
                   label={t("commun.play")}
@@ -213,11 +201,11 @@ export default function ConfigTrainingPage() {
                   onClick={() => play()}
                   variant="contained"
                 />
-              </Box>
-            </Container>
-          </Box>
-        </Box>
-      </Container>
-    </Box>
+              </Grid>
+            </>
+          )}
+        </Grid>
+      </Box>
+    </Container>
   );
 }

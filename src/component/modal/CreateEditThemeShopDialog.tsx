@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ThemeShopForm } from "src/form/ThemeShopForm";
-import { ThemeShop } from "src/models/Theme";
+import { ThemeShop } from "src/models/Shop";
 
 interface Props {
   theme: ThemeShop | undefined;

@@ -69,7 +69,13 @@ export default function HelpPage() {
               </Divider>
             </Grid>
             <Grid item xs={12}>
-              <RuleBlock />
+              <RuleBlock
+                rules={[
+                  { label: t("rules.step1") },
+                  { label: t("rules.step2") },
+                  { label: t("rules.step3") },
+                ]}
+              />
             </Grid>
             <Grid item xs={12}>
               <Divider>

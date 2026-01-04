@@ -1,11 +1,9 @@
 import { Box, Typography } from "@mui/material";
 import { px } from "csx";
-import { JsonLanguage } from "src/models/Language";
 import { BadgeCount } from "../badge/BadgeCount";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 interface Props {
-  title: string | JsonLanguage;
+  title: string | JSX.Element;
   count?: number;
 }
 
@@ -17,19 +15,9 @@ export const TitleCount = ({ title, count }: Props) => {
           {title}
         </Typography>
       ) : (
-        <JsonLanguageBlock
-          variant="h2"
-          value={title}
-          sx={{
-            overflow: "hidden",
-            display: "block",
-            lineClamp: 1,
-            boxOrient: "vertical",
-          }}
-          noWrap
-        />
+        title
       )}
-      {count && <BadgeCount count={count} />}
+      {count !== undefined && <BadgeCount count={count} />}
     </Box>
   );
 };

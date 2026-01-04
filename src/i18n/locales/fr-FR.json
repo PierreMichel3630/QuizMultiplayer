@@ -8,12 +8,14 @@
     "difficulties": "Difficultés",
     "thememaintenance": "Actuellement en maintenance, le thème reviendra le plus rapidement possible.",
     "themenotvalidate": "Thème en attente de validation par un administrateur.",
+    "noquestions": "Thème sans question, proposer une question pour nous aider.",
     "images": "Images",
     "validatequestion": "Question Validé",
     "deniedquestion": "Question Non Valide",
     "all": "Tous",
     "per": "par",
     "image": "Image",
+    "seeallproposequestion": "Voir mes propositions de questions",
     "seegame": "Voir la partie",
     "questionwithimage": "Questions avec image",
     "mygames": "Mes parties",
@@ -29,7 +31,6 @@
     "game_one": "{{count}} Partie",
     "game_other": "{{count}} Parties",
     "devine": "Devine la réponse !",
-    "question": "Question",
     "startgame": "La partie va bientôt commencer",
     "start": "Commencer",
     "keyboardmessage": "À vos claviers !",
@@ -38,7 +39,10 @@
     "player_other": "{{count}} joueurs",
     "position_one": "{{count}}<sup>er</sup>",
     "position_other": "{{count}}<sup>ème</sup>",
-    "questions": "questions",
+    "questions": "Questions",
+    "question_one": "{{count}} question",
+    "question_other": "{{count}} questions",
+    "questionid": "Question {{id}}",
     "wait": "En attente",
     "createprivategame": "Créer une partie privée",
     "launchgame": "Lancer la partie",
@@ -73,15 +77,16 @@
     "username": "Pseudonyme",
     "add": "Ajouter",
     "addfriend": "Ajouter un amis",
-    "waitinvitation": "Invitation envoyée",
+    "waitinvitation": "Invitée",
     "searchid": "Rechercher l'id d'une question",
     "searchfriend": "Rechercher un ami via son nom d'utilisateur",
     "searchtheme": "Rechercher un theme",
     "searchplayer": "Rechercher un joueur",
+    "searchinprogress": "Recherche en cours",
     "noresult": "Aucun résultat ne correspond à votre recherche.",
     "addtofriend": "Ajouter en ami",
     "deletefriend": "Supprimer ami",
-    "waitvalidation": "En attente de validation",
+    "waitvalidation": "En attente",
     "notificationfriend": "{{username}} vous demande en ami",
     "myrequests": "Mes demandes",
     "myinvitation": "Mes invitations",
@@ -109,8 +114,10 @@
     "refuse": "Refuser",
     "delete": "Supprimer",
     "deleteaccount": "Supprimer mon compte",
-    "challengeuser": "<bold>{{username}}</bold> vous défie au thème : <bold>{{theme}}</bold>",
+    "confrontdueluser": "<bold>{{username}}</bold> vous défie au thème : <bold>{{theme}}</bold>",
+    "confrontmodeuser": "<bold>{{username}}</bold> vous défie au mode : <bold>{{theme}}</bold>",
     "unknown": "inconnu",
+    "notconnect": "Joueur Non connecté",
     "waitplayer": "En attente du deuxième joueur",
     "gamebegin": "La partie va commencer",
     "ready": "Prêt",
@@ -140,7 +147,6 @@
     "draw_other": "nuls",
     "defeat_one": "défaite",
     "defeat_other": "défaites",
-    "selectadv": "Sélectionner un adversaire",
     "friend": "Ami",
     "friends": "Amis",
     "total": "Total",
@@ -169,6 +175,7 @@
     "possibleresponses": "Réponses possibles",
     "addresponse": "Ajouter une réponse",
     "editresponse": "Modifier une réponse",
+    "editresponses": "Modifier les réponses",
     "report": "Signaler",
     "reportquestion": "Signaler la question",
     "typeproblem": "Type de problème *",
@@ -183,11 +190,17 @@
     "addlanguage": "Ajouter une langue",
     "addavatar": "Ajouter un avatar",
     "addbanner": "Ajouter une photo de couverture",
+    "addtitle" : "Ajouter un titre",
+    "addtranslation" : "Ajouter une traduction",
     "removelanguage": "Supprimer la langue",
     "editquestion": "Modifier une question",
+    "editthequestion": "Modifier la question",
+    "editthethemes": "Modifier les thèmes",
     "editcategory": "Modifier une catégorie",
     "editavatar": "Modifier un avatar",
     "editbanner": "Modifier une photo de couverture",
+    "edittitle": "Modifier un titre",
+    "editgame": "Modifier une partie",
     "selecttheme": "Sélectionner un thème",
     "selectlanguage": "Sélectionner une langue",
     "selectcategory": "Sélectionner une catégorie",
@@ -220,6 +233,7 @@
     "personalizedprofile": "Personnaliser votre profil",
     "selecttitle": "Sélectionner un titre",
     "launchpartie": "La partie va commencer",
+    "loadimage": "Chargement des images en cours (veuillez patienter quelques secondes)",
     "menus": "Menus",
     "reportpropose": "Signaler un problème/ Proposer amélioration",
     "improvetext": "Vous pouvez proposer des questions en allant sur la page d'un thème et en cliquant sur le bouton 'Proposer une question' ou alors rejoignez le Discord avec le bouton ci-dessous.",
@@ -237,10 +251,11 @@
     "select2player": "Sélectionner 2 joueurs à comparer",
     "compare": "Comparer",
     "howtoplay": "Comment jouer ?",
-    "faq": "FAQ",
+    "faq": "Foire aux questions",
     "installation": "Installer",
     "modes": "Les Modes de Jeu",
     "rules": "Étapes",
+    "step": "Étape {{count}} - ",
     "warnings": "Avertissements",
     "link": "Lien",
     "reportproblem": "Signaler un problème",
@@ -338,11 +353,46 @@
     "summaryabreviation": "Récap.",
     "onlyfriend" : "Afficher uniquement mes amis",
     "titleholder": "Tenant du titre",
-    "newversionavailable": "Une nouvelle version de l'application est disponible !",
     "install": "Installer",
     "version": "Version",
     "grades": "Notes",
-    "result" : "Résultat"
+    "result" : "Résultat",
+    "average": "Moyenne",
+    "time": "Temps",
+    "save": "Enregistrer",
+    "streak": "Série",
+    "money": "Argent",
+    "translations": "Traductions",
+    "totranslation": "À traduire",
+    "or": "Ou",
+    "viaexcel" : "Via Excel",
+    "viaform" : "Via Formulaire",
+    "template" : "Template",
+    "download": "Télécharger",
+    "inprogress": "En cours de traitement",
+    "myproposals": "Mes propositions (Thèmes / Questions)",
+    "propositionvalidate": "Vos propositions de questions on été prise en compte. Elles seront traités le plus rapidement possible par un administrateur.",
+    "noquestionpropose": "Vous n'avez proposé aucune question. Veuillez réessayer.",
+    "seechallenge": "Voir le challenge",
+    "createmodifychallenge": "Créer/Modifier le challenge",
+    "addchallengegame": "Ajouter une partie",
+    "otherresponse": "Autres réponses : ",
+    "patchnote": "Notes de mise à jour",
+    "roadmap": "Évolutions futures",
+    "features": "Évolutions",
+    "bugs": "Correctifs",
+    "accept": "Accepter",
+    "thisweek": "Cette semaine",
+    "older": "Plus anciennes",
+    "seenews": "Voir les nouveautés",
+    "installupdate": "Installer la mise à jour",
+    "newversionavailable": "La version {{version}} de l'application est disponible. Mettez vous à jour.",
+    "appversion": "Version de l'application",
+    "installupdatetitle": "Mettre à jour l'application",
+    "installupdatetext": "Votre version de l'application n'est pas assez récente pour jouer à ce mode. Veuillez vous mettre à jour.",
+    "requiredversion" : "Version minimal",
+    "myversion": "Votre version",
+    "send": "Envoyé"
   },
   "abrevation": {
     "average": "Moy."
@@ -354,7 +404,8 @@
   "accomplishment": {
     "SOLO": "Succès Mode Solo",
     "DUEL": "Succès Mode Duel",
-    "SOCIAL": "Succès Social"
+    "SOCIAL": "Succès Social",
+    "CHALLENGE": "Succès Defis du jour"
   },
   "ranking": {
     "games": "Nombre de parties Solo",
@@ -370,7 +421,7 @@
     "defeatduel": "Nombre de défaites en Duel",
     "xp": "XP Total",
     "bestgame": "Meilleur partie solo",
-    "bestrank": "Meilleur ranking duel",
+    "bestrank": "Global",
     "finishtheme": "Thèmes terminés",
     "pointssolo": "Nombre de point total"
   },
@@ -524,6 +575,9 @@
     "title": {
       "title": "Titre"
     },
+    "titles": {
+      "title": "Titres"
+    },
     "new": {
       "title": "Nouveautés"
     },
@@ -642,8 +696,7 @@
       "requiredvalue": "Veuillez saisir une réponse"
     },
     "createtheme": {
-      "namefr": "Nom en Français *",
-      "nameen": "Nom en Anglais *",
+      "title": "Nom *",
       "color": "Couleur",
       "logo": "Logo",
       "background": "Image de fond",
@@ -670,6 +723,13 @@
       "requiredtheme": "Veuillez sélectionner un thème",
       "icon": "Icone"
     },
+    "createtitle": {
+      "price": "Prix *",
+      "isaccomplishment": "Est succès ?",
+      "requiredprice": "Veuillez saisir un prix",
+      "requiredname": "Veuillez saisir un nom",
+      "name": "Nom*"
+    },
     "createbanner": {
       "price": "Prix *",
       "isaccomplishment": "Est succès ?",
@@ -677,15 +737,13 @@
       "requiredtheme": "Veuillez sélectionner un thème",
       "icon": "Icone"
     },
-    "createtitle": {
-      "price": "Prix *",
-      "isaccomplishment": "Est succès ?",
-      "requiredprice": "Veuillez saisir un prix",
-      "requiredtheme": "Veuillez sélectionner un thème",
-      "icon": "Icone"
+    "createchallengegame": {
+      "time": "Temps en ms",
+      "score": "Score",
+      "requiredtime": "Veuillez saisir un temps"
     },
     "proposetheme": {
-      "name": "Nom du thème *",
+      "title": "Nom du thème *",
       "requiredname": "Veuillez saisir un nom de thème",
       "color": "Couleur du thème *",
       "requiredcolor": "Veuillez sélectionner une couleur"
@@ -710,7 +768,7 @@
     "proposequestion": {
       "question": "Question *",
       "placehoderquestion": "Exemple : De quelle couleur est le cheval blanc d'Henri IV ?",
-      "response": "Réponse *",
+      "response": "Bonne réponse *",
       "placehoderresponse": "Exemple : Blanc",
       "wrongresponse1": "Mauvaise réponse 1",
       "placeholderwrongresponse1": "Exemple : Rouge",
@@ -721,6 +779,16 @@
       "requiredquestion": "Veuillez saisir une question",
       "requiredresponse": "Veuillez saisir une réponse",
       "requiredwrongresponses": "Veuillez saisir une mauvaise réponse"
+    },
+    "createnotification": {
+      "type": "Type de notification",
+      "title": "Titre de la notification",
+      "text": "Texte de la notification",
+      "version": "Version de l'application",
+      "versionrequired": "Veuillez saisir une version de l'application",
+      "titlerequired": "Veuillez saisir un titre",
+      "textrequired": "Veuillez saisir un texte",
+      "profilerequired": "Veuillez sélectionner un utilisateur"
     }
   },
   "input": {
@@ -730,16 +798,24 @@
     }
   },
   "modal": {
+    "quitchallenge": "Êtes-vous sûr de vouloir quitter la partie ?",
+    "quitchallengetext": "Votre partie sera enregistrée avec votre score actuelle et sans possibilité de la reprendre plus tard",
     "delete": "Êtes-vous sûr de vouloir supprimer ?",
+    "deletequestion": "Êtes-vous sûr de vouloir supprimer la question ?",
     "resetgame": "Êtes-vous sûr de vouloir réinitialiser la partie (score et historique des parties) ?"
   },
   "error": {
     "selectatleast1theme": "Sélectionner au moins un thème",
-    "selectadv": "Sélectionner un adversaire"
+    "sizetoolarge": "Taille du fichier trop grande"
   },
   "alert": {
+    "inprogress": "En attente de validation",
+    "validate": "Demande validée" ,
+    "maintenance": "En maintenance",
     "pagenotfound": "Cette page n'est pas disponible.",
     "noresult": "Aucun résultat.",
+    "noresultnotification": "Aucune Notification.",
+    "noresulttheme": "Aucun thème ne correspond à cette catégorie.",
     "updatequestion": "Votre modification de la question à été pris en compte.",
     "allresponseanswer": "Vous avez répondu à toutes les question du thème.",
     "nofriend": "Aucune demande d'ami.",
@@ -767,7 +843,9 @@
     "notconnect2": "Pour jouer à ce mode de jeu vous devez <anchor1>{{link}}</anchor1> ou <anchor2>{{link2}}</anchor2>",
     "duplicateusername": "Le pseudonyme est déjà utilisé.",
     "vote": "Votre vote a été pris en compte.",
-    "addquestionpropose": "Votre proposition de question a été prise en compte."
+    "addquestionpropose": "Votre proposition de question a été prise en compte.",
+    "nochallengegame": "Cette langue ne dispose pas de Défis du Jour",
+    "sendemailtoallusers": "Attention cette email sera envoyé à tous les utilisateurs de l'application ayant un compte."
   },
   "confidentiality": {
     "title": "Politique de confidentialité",
@@ -815,7 +893,7 @@
       },
       "rules5": {
         "title": "Contact",
-        "text": "Pour toutes plaintes, questions ou idées, vous pouvez utiliser l'adresse mail suivante: pierremichel804@gmail.com"
+        "text": "Pour toutes plaintes, questions ou idées, vous pouvez utiliser l'adresse mail suivante: support@quizbattle.fr"
       }
     }
   },
@@ -857,20 +935,18 @@
   },
   "challenge": {
     "winner" :{
-      "day": "Champion du {{value}}",
-      "week": "Champion semaine {{value}}",
-      "month": "Champion mois {{value}}",
-      "alltime": "Champion All Time"
+      "day": "Jour",
+      "week": "Semaine",
+      "month": "Mois"
     },
-    "loser" :{
-      "day": "Perdant jour {{value}}",
-      "week": "Perdant semaine {{value}}",
-      "month": "Perdant mois {{value}}",
-      "alltime": "Perdant All Time"
+    "alltime" :{
+      "day": "Jour",
+      "week": "Semaine",
+      "month": "Mois"
     },
     "result": {
-      "winner": "Gagnant",
-      "loser": "Perdant"
+      "winner": "Actuel",
+      "alltime": "All Time"
     }
   },
   "chart": {
@@ -883,6 +959,80 @@
     "top10": "Top 10",
     "top100": "Top 100",
     "other": "Autre"
-
+  },
+  "mode": {
+    "fightfriend":"Combat contre un ami",
+    "randomquestion": "Question Aléatoire",
+    "randomtheme": "Thème Aléatoire"
+  },
+  "proposequestion": {
+    "excel": {
+      "step1": "Télécharger le template",
+      "step2": "Remplir le template (exemple: sur la 1ère ligne du template)",
+      "step3": "Une fois vos questions rajoutées dans le template, sauvegarder, puis déposer le ci-dessous.",
+      "question": "Question",
+      "reponse": "Bonne reponse",
+      "wronganswer1": "Mauvaise reponse 1",
+      "wronganswer2": "Mauvaise reponse 2",
+      "wronganswer3": "Mauvaise reponse 3",
+      "examplequestion" : "De quelle couleur est le cheval blanc d'Henri IV ?",
+      "examplereponse" : "Blanc",
+      "examplewronganswer1" : "Rouge",
+      "examplewronganswer2" : "Bleu",
+      "examplewronganswer3" : "Vert",
+      "uploadfile" : "Déposer le fichier"
+    }
+  },
+  "notifications": {
+    "friend_request": "{{username}} vous demande en ami",
+    "friend_request_accept": "{{username}} a accepté ta demande"
+  },
+  "patchnote": {
+    "2.0.2": {
+      "version": "2.0.2",
+      "changes" : [
+        "Amélioration de l'affichage sur PC.",
+        "Ajout d'un Patch Note et d'une Roadmap."
+      ],
+      "bug": [
+        "Problème d'affichage des scores du défis du jour. (visible que pour les joueurs ayant déjà joués)"
+      ]
+    },
+    "2.0.1": {
+      "version": "2.0.1",
+      "changes" : [
+        "Amélioration de l'affichage sur PC."
+      ],
+      "bug": [
+        "Correction de l'affichage d'une notification de demande d'un duel",
+        "Correction des récompenses de défis du jour / semaine / mois."
+      ]
+    },
+    "2.0.0": {
+      "version": "2.0.0",
+      "changes" : [
+        "Gestion de plusieurs langues (Français, Anglais, Espagnol, Allemand)",
+        "Suppression de l'affichage des temps et score du défis du jour avant de jouer le défis. Afin d'éviter de pénaliser le joueurs jouant en premier.",
+        "Ajout proposition des questions via formulaire ou excel.",
+        "Ajout d'un menu pour voir mes propositions de thèmes et questions."
+      ],
+      "bug": [
+        
+      ]
+    }
+  },
+  "roadmap": {
+    "feature": [
+      "Ajout de mode de jeu (Reflexe, Mémoire, ...).",
+      "Ajout de défis et succès par thèmes.",
+      "Ajout de défis quotidiens (exemples: jouer 5 parties, faire au moins 5 dans le thème géographie, ...)",
+      "Ajout d'un Mode Hors ligne pour certains thèmes.",
+      "Ajout d'un mode partie privée pour jouer avec plusieurs de ces amis."
+    ],
+    "bug": [
+      "Correction lors du lancement de duel avec un amis (Partie annulée, Partie lancée que pour un joueur, ...)",
+      "Correction les modes musicaux ne marchent plus",
+      "Correction le mode footballeur ne marche plus"
+    ]
   }
 }

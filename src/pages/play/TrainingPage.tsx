@@ -1,31 +1,26 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  deleteTrainingGame,
-  getQuestionTrainingGame,
-  selectTrainingGameById,
-} from "src/api/game";
+import { getQuestionTrainingGame, selectTrainingGameById } from "src/api/game";
 import { useUser } from "src/context/UserProvider";
-import { QuestionResult, QuestionTraining } from "src/models/Question";
+import { QuestionTraining } from "src/models/Question";
 
-import { percent, viewHeight } from "csx";
+import { percent } from "csx";
 import { ButtonColor } from "src/component/Button";
 import { LoadingDot } from "src/component/Loading";
 import { EndTrainingGameBlock } from "src/component/play/training/EndTrainingGameBlock";
 import { HeaderTrainingGame } from "src/component/play/training/HeaderTrainingGame";
 import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
-import { Answer, Response } from "src/component/question/ResponseBlock";
+import { AnswerUser, Response } from "src/component/question/ResponseBlock";
 import { SoloGame, TrainingGame } from "src/models/Game";
 import { Colors } from "src/style/Colors";
 import { PreloadImages } from "src/utils/preload";
-import { verifyResponse } from "src/utils/response";
+import { getResponse, verifyResponseCrypt } from "src/utils/response";
 
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import LastPageIcon from "@mui/icons-material/LastPage";
-import { decryptToJsonLanguage } from "src/utils/crypt";
 
 export default function TrainingPage() {
   const { t } = useTranslation();
@@ -40,7 +35,6 @@ export default function TrainingPage() {
   const [nextQuestion, setNextQuestion] = useState<
     undefined | QuestionTraining
   >(undefined);
-  const [questions, setQuestions] = useState<Array<QuestionResult>>([]);
   const [response, setResponse] = useState<undefined | Response>(undefined);
   const [audio, setAudio] = useState<undefined | HTMLAudioElement>(undefined);
   const [isLoading, setIsLoading] = useState(true);
@@ -51,10 +45,9 @@ export default function TrainingPage() {
   const [isNextAllQuestion, setIsNextAllQuestion] = useState(false);
   const [goodAnswer, setGoodAnswer] = useState(0);
   const [badAnswer, setBadAnswer] = useState(0);
-  const [myresponse, setMyresponse] = useState<string | number | undefined>(
-    undefined
-  );
   const [images, setImages] = useState<Array<string>>([]);
+
+  const localStorageId = useMemo(() => `game-training-${uuidGame}`, [uuidGame]);
 
   useEffect(() => {
     if (audio) {
@@ -63,18 +56,20 @@ export default function TrainingPage() {
     }
   }, [audio, sound]);
 
-  const getQuestion = (uuid: string, isfirstquestion = false) => {
-    setMyresponse(undefined);
+  const getQuestion = useCallback((uuid: string, isfirstquestion = false) => {
+    const questionsgame: Array<unknown> = JSON.parse(
+      localStorage.getItem(`game-training-${uuid}`) ?? "[]"
+    );
     setIsLoadingQuestion(true);
-    getQuestionTrainingGame(uuid).then(({ data }) => {
-      if (data) {
+    getQuestionTrainingGame(uuid, questionsgame).then(({ data }) => {
+      if (data !== null) {
         const questionSolo = data as QuestionTraining;
         let urls: Array<string> = [];
         if (questionSolo.image) {
           urls = [...urls, questionSolo.image];
         }
         if (questionSolo.typequestion === "IMAGE") {
-          const images = questionSolo.responses.reduce(
+          const images = questionSolo.answers.reduce(
             (acc, v) => (v.image ? [...acc, v.image] : acc),
             [] as Array<string>
           );
@@ -97,36 +92,38 @@ export default function TrainingPage() {
         }
       } else {
         setIsEnd(true);
+        setIsAllQuestion(true);
         setIsNextAllQuestion(true);
+        setIsLoading(false);
       }
       setIsLoadingQuestion(false);
     });
-  };
+  }, []);
 
-  const validateResponse = async (value: Answer) => {
+  const validateResponse = async (value: AnswerUser) => {
     const myResponseValue = value.value;
     setNextQuestion(undefined);
-    setMyresponse(myResponseValue);
-    if (question) {
-      const result = verifyResponse(language, question, value);
-      const response = decryptToJsonLanguage(question.response);
-      setQuestions((prev) => [
-        {
-          ...question,
-          response: response,
-          resultPlayer1: result,
-          responsePlayer1: myResponseValue,
-        },
-        ...prev,
-      ]);
+    if (question && language) {
+      const result = verifyResponseCrypt(question, language, value);
+      const response = getResponse(question, language);
+      const questionsgame: Array<unknown> = JSON.parse(
+        localStorage.getItem(localStorageId) ?? "[]"
+      );
+      questionsgame.push({
+        ...question,
+        response: response,
+        resultPlayer1: result,
+        responsePlayer1: myResponseValue,
+      });
+      localStorage.setItem(localStorageId, JSON.stringify(questionsgame));
       setGoodAnswer((prev) => (result ? prev + 1 : prev));
       setBadAnswer((prev) => (result ? prev : prev + 1));
       setResponse({
-        response: response,
+        answer: response,
         result: result,
         responsePlayer1: myResponseValue,
+        resultPlayer1: result,
       });
-      setMyresponse(undefined);
       if (game) getQuestion(game.uuid);
     }
     if (audio) {
@@ -171,7 +168,7 @@ export default function TrainingPage() {
       }
     };
     getGame();
-  }, [navigate, uuidGame]);
+  }, [getQuestion, navigate, uuidGame]);
 
   useEffect(() => {
     return () => {
@@ -181,132 +178,116 @@ export default function TrainingPage() {
     };
   }, [audio]);
 
-  useEffect(() => {
-    return () => {
-      if (uuidGame) deleteTrainingGame(uuidGame);
-    };
-  }, [uuidGame]);
-
-  const responseP1 = useMemo(
-    () => myresponse ?? (response ? response.responsePlayer1 : undefined),
-    [myresponse, response]
-  );
-
   return (
-    <Box>
-      <Container
-        maxWidth="md"
+    <Container
+      maxWidth="md"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        p: 0,
+      }}
+      className="page"
+    >
+      <Helmet>
+        <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
+      </Helmet>
+      <PreloadImages urls={images} />
+
+      <Box
         sx={{
           display: "flex",
+          flex: isEnd ? "auto" : "1 1 0",
+          p: 1,
           flexDirection: "column",
-          height: isEnd ? "auto" : viewHeight(100),
-          minHeight: isEnd ? viewHeight(100) : "auto",
-          p: 0,
+          gap: 1,
         }}
       >
-        <Helmet>
-          <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
-        </Helmet>
-        <PreloadImages urls={images} />
-
+        <HeaderTrainingGame
+          theme={game?.theme}
+          goodAnswer={goodAnswer}
+          badAnswer={badAnswer}
+        />
         <Box
           sx={{
+            flexGrow: 1,
             display: "flex",
-            flex: isEnd ? "auto" : "1 1 0",
-            p: 1,
             flexDirection: "column",
+            alignItems: "flex-end",
+            flex: isEnd ? "auto" : "1 1 0",
             gap: 1,
+            minHeight: 0,
           }}
         >
-          <HeaderTrainingGame
-            theme={game?.theme}
-            goodAnswer={goodAnswer}
-            badAnswer={badAnswer}
-          />
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-              flex: isEnd ? "auto" : "1 1 0",
-              gap: 1,
-              minHeight: 0,
-            }}
-          >
-            {isLoading ? (
-              <Box
-                sx={{
-                  flexGrow: 1,
-                  flex: "1 1 0",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  textAlign: "center",
-                  gap: 1,
-                  width: percent(100),
-                }}
-              >
-                <Typography variant="h4">{t("commun.launchpartie")}</Typography>
-                <LoadingDot />
-              </Box>
-            ) : (
-              <>
-                {isEnd ? (
-                  <EndTrainingGameBlock
-                    questions={questions}
-                    game={game}
-                    isAllQuestion={isAllQuestion}
+          {isLoading ? (
+            <Box
+              sx={{
+                flexGrow: 1,
+                flex: "1 1 0",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                gap: 1,
+                width: percent(100),
+              }}
+            >
+              <Typography variant="h4">{t("commun.launchpartie")}</Typography>
+              <LoadingDot />
+            </Box>
+          ) : (
+            <>
+              {isEnd ? (
+                <EndTrainingGameBlock
+                  game={game}
+                  isAllQuestion={isAllQuestion}
+                />
+              ) : (
+                <>
+                  <QuestionResponseBlock
+                    response={response}
+                    question={question}
+                    onSubmit={validateResponse}
                   />
-                ) : (
-                  <>
-                    <QuestionResponseBlock
-                      responseplayer1={responseP1}
-                      response={response}
-                      question={question}
-                      onSubmit={validateResponse}
-                    />
-                    {(question === undefined ||
-                      (question && response) ||
-                      isEnd) && (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          width: percent(100),
-                        }}
-                      >
-                        <Grid container spacing={1}>
-                          {!isEnd && (
-                            <Grid item xs={12}>
-                              <ButtonColor
-                                value={Colors.blue2}
-                                label={t("commun.nextquestion")}
-                                icon={LastPageIcon}
-                                onClick={() => changeQuestion()}
-                                variant="contained"
-                              />
-                            </Grid>
-                          )}
+                  {(question === undefined ||
+                    (question && response) ||
+                    isEnd) && (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        width: percent(100),
+                      }}
+                    >
+                      <Grid container spacing={1}>
+                        {!isEnd && (
                           <Grid item xs={12}>
                             <ButtonColor
-                              value={Colors.red}
-                              label={t("commun.leave")}
-                              icon={ExitToAppIcon}
-                              onClick={() => quit()}
+                              value={Colors.blue2}
+                              label={t("commun.nextquestion")}
+                              icon={LastPageIcon}
+                              onClick={() => changeQuestion()}
                               variant="contained"
                             />
                           </Grid>
+                        )}
+                        <Grid item xs={12}>
+                          <ButtonColor
+                            value={Colors.red}
+                            label={t("commun.leave")}
+                            icon={ExitToAppIcon}
+                            onClick={() => quit()}
+                            variant="contained"
+                          />
                         </Grid>
-                      </Box>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-          </Box>
+                      </Grid>
+                    </Box>
+                  )}
+                </>
+              )}
+            </>
+          )}
         </Box>
-      </Container>
-    </Box>
+      </Box>
+    </Container>
   );
 }

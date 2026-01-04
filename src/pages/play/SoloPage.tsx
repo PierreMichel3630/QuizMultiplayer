@@ -1,5 +1,5 @@
 import { Box, Container, Typography } from "@mui/material";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -8,16 +8,16 @@ import { supabase } from "src/api/supabase";
 import { useUser } from "src/context/UserProvider";
 import { QuestionSolo } from "src/models/Question";
 
-import { percent, viewHeight } from "csx";
+import { percent } from "csx";
 import { LoadingDot } from "src/component/Loading";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
-import { Answer, Response } from "src/component/question/ResponseBlock";
+import { AnswerUser, Response } from "src/component/question/ResponseBlock";
 import { SoloGame } from "src/models/Game";
 import { StatusGameSolo } from "src/models/enum/StatusGame";
-import { decryptToJsonLanguage } from "src/utils/crypt";
+import { decryptToNumber } from "src/utils/crypt";
 import { PreloadImages } from "src/utils/preload";
-import { verifyResponse } from "src/utils/response";
+import { verifyResponseCrypt } from "src/utils/response";
 
 export default function SoloPage() {
   const { t } = useTranslation();
@@ -32,14 +32,9 @@ export default function SoloPage() {
   const [score, setScore] = useState<number>(0);
   const [timer, setTimer] = useState<undefined | number>(undefined);
   const [audio, setAudio] = useState<undefined | HTMLAudioElement>(undefined);
-  const [timeoutQuestion, setTimeoutQuestion] = useState<
-    string | number | NodeJS.Timeout | undefined
-  >(undefined);
   const [images, setImages] = useState<Array<string>>([]);
-  const [myresponse, setMyresponse] = useState<string | number | undefined>(
-    undefined
-  );
 
+  const timeoutQuestion = useRef<NodeJS.Timeout | null>(null);
   const localStorageId = useMemo(() => `game-solo-${uuidGame}`, [uuidGame]);
 
   const generateQuestion = useCallback(
@@ -49,35 +44,15 @@ export default function SoloPage() {
           localStorage.getItem(localStorageId) ?? "[]"
         );
         supabase.functions
-          .invoke("question-solo-gameV3", {
+          .invoke("question-solo-gameV4", {
             body: {
               game: game.uuid,
               questions: questionsgame,
             },
           })
           .then(({ data }) => {
-            const questionSolo = data as QuestionSolo;
-            let urls: Array<string> = [];
-            if (questionSolo.image) {
-              urls = [...urls, questionSolo.image];
-            }
-            if (questionSolo.typequestion === "IMAGE") {
-              const images = questionSolo.responses.reduce(
-                (acc, v) => (v.image ? [...acc, v.image] : acc),
-                [] as Array<string>
-              );
-              urls = [...urls, ...images];
-            }
-            setImages(urls);
-
-            let audio: HTMLAudioElement | undefined = undefined;
-            if (questionSolo.audio) {
-              audio = new Audio(questionSolo.audio);
-              audio.load();
-            }
-
-            setTimeout(async () => {
-              if (questionSolo.allresponse === true) {
+            if (data.allresponse === true) {
+              setTimeout(async () => {
                 const questionsgame: Array<unknown> = JSON.parse(
                   localStorage.getItem(localStorageId) ?? "[]"
                 );
@@ -89,7 +64,29 @@ export default function SoloPage() {
                   });
                 });
                 localStorage.removeItem(localStorageId);
-              } else {
+              }, delay);
+            } else {
+              const questionSolo = data as QuestionSolo;
+              let urls: Array<string> = [];
+              if (questionSolo.image) {
+                urls = [...urls, questionSolo.image];
+              }
+              if (questionSolo.typequestion === "IMAGE") {
+                const images = questionSolo.answers.reduce(
+                  (acc, v) => (v.image ? [...acc, v.image] : acc),
+                  [] as Array<string>
+                );
+                urls = [...urls, ...images];
+              }
+              setImages(urls);
+
+              let audio: HTMLAudioElement | undefined = undefined;
+              if (questionSolo.audio) {
+                audio = new Audio(questionSolo.audio);
+                audio.load();
+              }
+
+              setTimeout(async () => {
                 if (audio) {
                   setAudio(audio);
                 }
@@ -97,8 +94,8 @@ export default function SoloPage() {
                 setTimer(questionSolo.time - 1);
                 setResponse(undefined);
                 scrollTop();
-                const newtimeoutQuestion = setTimeout(async () => {
-                  const response = decryptToJsonLanguage(questionSolo.response);
+                timeoutQuestion.current = setTimeout(async () => {
+                  const response = decryptToNumber(questionSolo.answer);
                   const questionsgame: Array<unknown> = JSON.parse(
                     localStorage.getItem(localStorageId) ?? "[]"
                   );
@@ -113,29 +110,15 @@ export default function SoloPage() {
                     JSON.stringify(questionsgame)
                   );
                   setResponse({
-                    response: response,
+                    answer: response,
                     result: false,
                     responsePlayer1: undefined,
                   });
                   setTimer(undefined);
                   scrollTop();
-                  setTimeout(async () => {
-                    const questionsgame: Array<unknown> = JSON.parse(
-                      localStorage.getItem(localStorageId) ?? "[]"
-                    );
-                    endSoloGame(questionsgame, game.uuid).then(() => {
-                      navigate(`/recapsolo/${game.uuid}`, {
-                        state: {
-                          allquestion: false,
-                        },
-                      });
-                    });
-                    localStorage.removeItem(localStorageId);
-                  }, 1500);
                 }, questionSolo.time * 1000);
-                setTimeoutQuestion(newtimeoutQuestion);
-              }
-            }, delay);
+              }, delay);
+            }
           });
       }
     },
@@ -143,14 +126,13 @@ export default function SoloPage() {
   );
 
   const validateResponse = useCallback(
-    async (value: Answer) => {
-      clearTimeout(timeoutQuestion);
+    async (value: AnswerUser) => {
+      clearInterval(timeoutQuestion.current!);
       setTimer(undefined);
       const myResponseValue = value?.value ?? undefined;
-      setMyresponse(myResponseValue);
       if (question && game && language) {
-        const result = verifyResponse(language, question, value);
-        const response = decryptToJsonLanguage(question.response);
+        const decryptResponse = decryptToNumber(question.answer);
+        const result = verifyResponseCrypt(question, language, value);
         const questionsgame: Array<unknown> = JSON.parse(
           localStorage.getItem(localStorageId) ?? "[]"
         );
@@ -162,11 +144,11 @@ export default function SoloPage() {
         });
         localStorage.setItem(localStorageId, JSON.stringify(questionsgame));
         setResponse({
-          response: response,
+          answer: decryptResponse,
           result: result,
           responsePlayer1: myResponseValue,
+          resultPlayer1: result,
         });
-        setMyresponse(undefined);
         if (result) {
           setScore((prev) => prev + 1);
           generateQuestion(game, 1500);
@@ -195,7 +177,6 @@ export default function SoloPage() {
       localStorageId,
       navigate,
       question,
-      timeoutQuestion,
     ]
   );
 
@@ -236,80 +217,72 @@ export default function SoloPage() {
     window.scrollTo(0, 0);
   };
 
-  const responseP1 = useMemo(
-    () => myresponse ?? (response ? response.responsePlayer1 : undefined),
-    [myresponse, response]
-  );
-
   return (
-    <Box>
-      <Container
-        maxWidth="md"
+    <Container
+      maxWidth="md"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        p: 0,
+      }}
+      className="page"
+    >
+      <Helmet>
+        <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
+      </Helmet>
+      <PreloadImages urls={images} />
+      <Box
         sx={{
           display: "flex",
+          flex: "1 1 0",
+          p: 1,
           flexDirection: "column",
-          height: viewHeight(100),
-          p: 0,
+          gap: 1,
         }}
       >
-        <Helmet>
-          <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
-        </Helmet>
-        <PreloadImages urls={images} />
+        {game && (
+          <Box>
+            <ScoreThemeBlock theme={game.theme} score={score} />
+          </Box>
+        )}
         <Box
           sx={{
+            flexGrow: 1,
             display: "flex",
-            flex: "1 1 0",
-            p: 1,
             flexDirection: "column",
+            alignItems: "flex-end",
+            flex: "1 1 0",
             gap: 1,
+            minHeight: 0,
           }}
         >
-          {game && (
-            <Box>
-              <ScoreThemeBlock theme={game.theme} score={score} />
+          {question ? (
+            <QuestionResponseBlock
+              response={response}
+              question={question}
+              onSubmit={validateResponse}
+              timer={timer}
+            />
+          ) : (
+            <Box
+              sx={{
+                flexGrow: 1,
+                flex: "1 1 0",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                gap: 1,
+                width: percent(100),
+              }}
+            >
+              <Typography variant="h4">{t("commun.launchpartie")}</Typography>
+              <LoadingDot />
             </Box>
           )}
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-              flex: "1 1 0",
-              gap: 1,
-              minHeight: 0,
-            }}
-          >
-            {question ? (
-              <QuestionResponseBlock
-                responseplayer1={responseP1}
-                response={response}
-                question={question}
-                onSubmit={validateResponse}
-                timer={timer}
-              />
-            ) : (
-              <Box
-                sx={{
-                  flexGrow: 1,
-                  flex: "1 1 0",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  textAlign: "center",
-                  gap: 1,
-                  width: percent(100),
-                }}
-              >
-                <Typography variant="h4">{t("commun.launchpartie")}</Typography>
-                <LoadingDot />
-              </Box>
-            )}
-          </Box>
         </Box>
-      </Container>
-    </Box>
+      </Box>
+    </Container>
   );
 }

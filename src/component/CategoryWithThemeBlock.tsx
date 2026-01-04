@@ -1,48 +1,72 @@
-import { useMemo } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { countThemesByCategory, selectThemesByCategory } from "src/api/theme";
 import { useUser } from "src/context/UserProvider";
-import { CategoryWithThemes } from "src/models/Category";
-import { sortByName } from "src/utils/sort";
-import { CategoryBlock } from "./category/CategoryBlock";
 import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { ICardImage } from "./card/CardImage";
+import { CategoryBlock } from "./category/CategoryBlock";
 
 interface Props {
-  category: CategoryWithThemes;
+  category: {
+    id: number;
+    name: string;
+  };
 }
 export const CategoryWithThemeBlock = ({ category }: Props) => {
   const { language } = useUser();
+  const [themes, setThemes] = useState<Array<ICardImage>>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [count, setCount] = useState<undefined | number>(undefined);
+  const [, setPage] = useState(0);
 
-  const themesCategory = useMemo(
-    () => [...category.themes].sort((a, b) => sortByName(language, a, b)),
-    [category, language]
+  const getTheme = useCallback(
+    (page: number) => {
+      setIsLoading(true);
+      if (language) {
+        selectThemesByCategory(language, category.id, "", page, 15).then(
+          ({ data }) => {
+            const res = (data ?? []).map((el) => ({
+              ...el,
+              type: TypeCardEnum.THEME,
+            }));
+            setThemes((prev) => (page === 0 ? [...res] : [...prev, ...res]));
+            setIsLoading(false);
+          }
+        );
+      }
+    },
+    [category.id, language]
   );
 
-  const themes = useMemo(
-    () => [
-      ...themesCategory.filter((el) => el.isfirst),
-      ...themesCategory.filter((el) => !el.isfirst),
-    ],
-    [themesCategory]
-  );
+  useEffect(() => {
+    const getCount = () => {
+      if (language) {
+        countThemesByCategory(category.id, language).then(({ count }) => {
+          setCount(count ?? 0);
+        });
+      }
+    };
+    getCount();
+  }, [category, language]);
 
-  const values = useMemo(
-    () =>
-      themes.map((el) => ({
-        id: el.id,
-        name: el.name,
-        image: el.image,
-        color: el.color,
-        link: `/theme/${el.id}`,
-        type: TypeCardEnum.THEME,
-      })),
-    [themes]
-  );
+  useEffect(() => {
+    getTheme(0);
+  }, []);
 
   return (
-    <CategoryBlock
-      title={category.name}
-      count={themes.length}
-      link={`/category/${category.id}`}
-      values={values}
-    />
+    themes.length > 0 && (
+      <CategoryBlock
+        title={category.name}
+        count={count}
+        link={`/category/${category.id}`}
+        values={themes}
+        isLoading={isLoading}
+        handleScroll={() =>
+          setPage((prev) => {
+            getTheme(prev + 1);
+            return prev + 1;
+          })
+        }
+      />
+    )
   );
 };

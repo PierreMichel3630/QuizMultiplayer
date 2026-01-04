@@ -1,17 +1,18 @@
-import { Grid, Typography } from "@mui/material";
-import { important, px } from "csx";
-import { JsonLanguage } from "src/models/Language";
+import { Box, Grid, Typography } from "@mui/material";
+import { px } from "csx";
 import { Colors } from "src/style/Colors";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { GoBackButtonIcon } from "../navigation/GoBackButton";
 
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
-import { useUser } from "src/context/UserProvider";
+import { Variant } from "@mui/material/styles/createTypography";
 import { useMemo } from "react";
+import { useUser } from "src/context/UserProvider";
+import { TitleProfile } from "src/models/Title";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
-  title: JsonLanguage | string;
+  title: JSX.Element | string;
   favorite?: boolean;
   addFavorite?: () => void;
   link?: string;
@@ -43,15 +44,9 @@ export const TitleBlock = ({
       </Grid>
       <Grid item xs sx={{ textAlign: "center" }}>
         {typeof title === "string" ? (
-          <Typography variant="h2" sx={{ fontSize: important(px(25)) }}>
-            {title}
-          </Typography>
+          <Typography variant="h2">{title}</Typography>
         ) : (
-          <JsonLanguageBlock
-            variant="h2"
-            sx={{ fontSize: important(px(25)) }}
-            value={title}
-          />
+          title
         )}
       </Grid>
       {addFavorite && (
@@ -59,7 +54,7 @@ export const TitleBlock = ({
           {favorite ? (
             <StarIcon
               sx={{
-                fontSize: 50,
+                fontSize: 45,
                 color: Colors.yellow4,
                 cursor: "pointer",
                 stroke: colorBorderFavorite,
@@ -69,7 +64,7 @@ export const TitleBlock = ({
           ) : (
             <StarBorderOutlinedIcon
               sx={{
-                fontSize: 50,
+                fontSize: 45,
                 color: Colors.yellow4,
                 cursor: "pointer",
               }}
@@ -79,5 +74,32 @@ export const TitleBlock = ({
         </Grid>
       )}
     </Grid>
+  );
+};
+
+interface TitleTextProps {
+  value: TitleProfile;
+  variant?: Variant;
+  color?: string;
+}
+export const TitleText = ({
+  value,
+  variant = "caption",
+  color = "text.primary",
+}: TitleTextProps) => {
+  return (
+    <Box>
+      {value.title.ismultiple && value.multiplicator !== null && (
+        <Typography variant={variant} component="span" color={color}>
+          {value.multiplicator} x{" "}
+        </Typography>
+      )}
+      <TextNameBlock
+        color={color}
+        component="span"
+        variant={variant}
+        values={value.title.titletranslation}
+      />
+    </Box>
   );
 };

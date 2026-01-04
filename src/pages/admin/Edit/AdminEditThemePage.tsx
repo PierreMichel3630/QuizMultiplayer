@@ -1,60 +1,79 @@
-import { Grid } from "@mui/material";
+import { Box, Grid, Pagination } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ButtonColor } from "src/component/Button";
-import { CardAdminTheme } from "src/component/card/CardTheme";
-import { useApp } from "src/context/AppProvider";
-import { useUser } from "src/context/UserProvider";
 import { Theme } from "src/models/Theme";
-import { sortByName } from "src/utils/sort";
 
 import AddIcon from "@mui/icons-material/Add";
-import { uniqBy } from "lodash";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import {
+  countThemes,
+  deleteThemeById,
+  searchThemes,
+  selectThemeById,
+} from "src/api/theme";
+import { CardAdminTheme } from "src/component/card/CardTheme";
 import { BasicSearchInput } from "src/component/Input";
+import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import { CreateEditThemeDialog } from "src/component/modal/CreateEditThemeDialog";
-import { SkeletonCardTheme } from "src/component/skeleton/SkeletonTheme";
+import { useMessage } from "src/context/MessageProvider";
+import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";
-import { searchString } from "src/utils/string";
 
 export default function AdminEditThemePage() {
   const { t } = useTranslation();
-  const { themesAdmin, getThemes } = useApp();
   const { language } = useUser();
+  const { setMessage, setSeverity } = useMessage();
 
-  const [theme, setTheme] = useState<Theme | undefined>(undefined);
+  const ITEMPERPAGE = 20;
+
+  const [count, setCount] = useState<number>(1);
+  const [page, setPage] = useState<number | null>(1);
+  const [themes, setThemes] = useState<Array<Theme>>([]);
+  const [theme, setTheme] = useState<Theme | null>(null);
   const [openModal, setOpenModal] = useState(false);
-  const [maxIndex, setMaxIndex] = useState(20);
-  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
 
-  const themesDisplay = useMemo(() => {
-    setIsLoading(false);
-    return uniqBy(
-      [...themesAdmin]
-        .filter((el) => searchString(search, el.name[language.iso]))
-        .sort((a, b) => sortByName(language, a, b)),
-      (el) => el.id
-    ).splice(0, maxIndex);
-  }, [themesAdmin, language, maxIndex, search]);
+  const deleteTheme = () => {
+    if (theme) {
+      deleteThemeById(theme.id).then((res) => {
+        if (res.error) {
+          setSeverity("error");
+          setMessage(t("commun.error"));
+        } else {
+          getPage();
+        }
+        setOpenConfirmModal(false);
+      });
+    }
+  };
+
+  const getCount = useCallback(() => {
+    if (language) {
+      countThemes(language, search).then(({ count }) => {
+        setCount(count ?? 0);
+      });
+    }
+  }, [language, search]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsLoading(true);
-      if (
-        window.innerHeight + document.documentElement.scrollTop + 1200 <=
-        document.documentElement.offsetHeight
-      ) {
-        return;
-      }
-      setMaxIndex((prev) => prev + 20);
-    };
-    if (document) {
-      document.addEventListener("scroll", handleScroll);
+    getCount();
+  }, [getCount]);
+
+  const getPage = useCallback(() => {
+    setThemes([]);
+    setTheme(null);
+    if (page !== null && language) {
+      searchThemes(language, search, page - 1, ITEMPERPAGE).then(({ data }) => {
+        const result = (data ?? []) as unknown as Array<Theme>;
+        setThemes(result);
+      });
     }
-    return () => {
-      document.removeEventListener("scroll", handleScroll);
-    };
-  }, [themesAdmin, maxIndex]);
+  }, [page, search, language]);
+
+  useEffect(() => {
+    getPage();
+  }, [getPage]);
 
   return (
     <Grid container spacing={1} justifyContent="center">
@@ -70,38 +89,79 @@ export default function AdminEditThemePage() {
       <Grid item xs={12}>
         <BasicSearchInput
           label={t("commun.search")}
-          onChange={(value) => setSearch(value)}
+          onChange={(value) => {
+            setSearch(value);
+            setPage(1);
+          }}
           value={search}
-          clear={() => setSearch("")}
+          clear={() => {
+            setSearch("");
+            setPage(1);
+          }}
         />
       </Grid>
-      {themesDisplay.map((theme) => (
-        <Grid item xs={12} key={theme.id}>
-          <CardAdminTheme
-            theme={theme}
-            onChange={() => {
-              getThemes();
-            }}
-          />
-        </Grid>
-      ))}
-      {isLoading && (
-        <>
-          {Array.from(new Array(10)).map((_, index) => (
-            <Grid item xs={12} key={index}>
-              <SkeletonCardTheme />
+      <Grid item xs={12}>
+        <Grid container spacing={1} justifyContent="center">
+          {themes.map((item) => (
+            <Grid item xs={12} key={item.id} onClick={() => {}}>
+              <CardAdminTheme
+                theme={item}
+                onEdit={() => {
+                  selectThemeById(item.id).then((res) => {
+                    const data = res.data ?? (null as unknown as Theme | null);
+                    setTheme(data);
+                    setOpenModal(true);
+                  });
+                }}
+                onDelete={() => setOpenConfirmModal(true)}
+                onChange={() => getPage()}
+              />
             </Grid>
           ))}
-        </>
-      )}
+        </Grid>
+      </Grid>
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 80,
+          left: 5,
+          right: 5,
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        {page !== null && (
+          <Pagination
+            count={count ? Math.ceil(count / ITEMPERPAGE) : 1}
+            page={page}
+            onChange={(_event: React.ChangeEvent<unknown>, value: number) =>
+              setPage(value)
+            }
+            variant="outlined"
+            shape="rounded"
+            sx={{
+              backgroundColor: "background.paper",
+            }}
+          />
+        )}
+      </Box>
       <CreateEditThemeDialog
         theme={theme}
         open={openModal}
         close={() => {
-          setTheme(undefined);
-          getThemes();
+          setTheme(null);
           setOpenModal(false);
+          getPage();
         }}
+      />
+      <ConfirmDialog
+        title={t("modal.delete")}
+        open={openConfirmModal}
+        onClose={() => {
+          setOpenConfirmModal(false);
+          getPage();
+        }}
+        onConfirm={deleteTheme}
       />
     </Grid>
   );

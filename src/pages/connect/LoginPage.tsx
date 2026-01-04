@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { LoginForm } from "src/form/authentification/LoginForm";
 
-import { px, viewHeight } from "csx";
+import { px } from "csx";
 import { Helmet } from "react-helmet-async";
 import logo from "src/assets/logo.svg";
 import { QuitHomeButton } from "src/component/navigation/GoBackButton";
@@ -18,9 +18,9 @@ export default function LoginPage() {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: viewHeight(100),
         p: 0,
       }}
+      className="page"
     >
       <Helmet>
         <title>{`${t("pages.login.title")} - ${t("appname")}`}</title>

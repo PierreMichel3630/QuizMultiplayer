@@ -10,21 +10,20 @@ import {
 } from "@mui/material";
 import { Fragment, useMemo } from "react";
 import { useUser } from "src/context/UserProvider";
-import { LANGUAGES } from "src/models/Language";
 import { Colors } from "src/style/Colors";
 
 export const LanguageSelect = () => {
-  const { language, setLanguage } = useUser();
+  const { languages, language, setLanguage } = useUser();
   const { mode } = useUser();
   const isDarkMode = useMemo(() => mode === "dark", [mode]);
   return (
     <List>
-      {LANGUAGES.map((lang) => (
+      {languages.map((lang) => (
         <Fragment key={lang.iso}>
           <ListItem sx={{ p: 0 }}>
             <ListItemButton onClick={() => setLanguage(lang)}>
               <ListItemIcon>
-                {language.iso === lang.iso && (
+                {language?.iso === lang.iso && (
                   <CheckCircleIcon sx={{ color: Colors.green, fontSize: 25 }} />
                 )}
               </ListItemIcon>

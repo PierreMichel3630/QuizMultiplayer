@@ -2,7 +2,6 @@ import { Box, Divider, Grid, Typography } from "@mui/material";
 import { px } from "csx";
 import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { HeadTitle } from "src/component/HeadTitle";
 import { StepBlock } from "src/component/StepBlock";
 import { Colors } from "src/style/Colors";
 
@@ -22,9 +21,6 @@ export default function InstallationPage() {
 
   return (
     <Grid container>
-      <Grid item xs={12}>
-        <HeadTitle title={t("pages.installation.title")} />
-      </Grid>
       <Grid item xs={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={2} justifyContent="center">

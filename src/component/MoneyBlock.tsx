@@ -55,3 +55,34 @@ export const AddMoneyBlock = ({
     </Box>
   );
 };
+
+interface PropsMoneyArrondieBlock {
+  money: number | string;
+  language?: { iso: string };
+  variant?: Variant;
+  color?: string;
+  width?: number;
+  fontSize?: number;
+}
+
+export const MoneyArrondieBlock = ({
+  money,
+  language = { iso: "fr-FR" },
+  variant = "h4",
+  color = "text.secondary",
+  width = 18,
+}: PropsMoneyArrondieBlock) => {
+  const value = new Intl.NumberFormat(language.iso, {
+    notation: "compact",
+    compactDisplay: "short",
+    maximumFractionDigits: 1,
+  }).format(Number(money));
+  return (
+    <Box sx={{ display: "flex", gap: px(5), alignItems: "center" }}>
+      <Typography variant={variant} color={color}>
+        {value}
+      </Typography>
+      <img alt="money logo" src={moneyIcon} width={width} />
+    </Box>
+  );
+};

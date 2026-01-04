@@ -73,6 +73,7 @@ export const ReportModal = ({
         sologame: sologame ? sologame.id : null,
         duelgame: duelgame ? duelgame.id : null,
         questionjson: question,
+        version: 2,
       };
       insertReport(reportInsert).then(({ error }) => {
         if (error) {
@@ -107,7 +108,7 @@ export const ReportModal = ({
           </IconButton>
         </Toolbar>
       </AppBar>
-      <DialogContent sx={{  p: 1 }}>
+      <DialogContent sx={{ p: 1 }}>
         <Grid container spacing={3}>
           {question && (
             <Grid item xs={12}>

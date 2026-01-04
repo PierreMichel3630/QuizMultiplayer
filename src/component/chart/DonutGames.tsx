@@ -1,10 +1,9 @@
 import HistoryIcon from "@mui/icons-material/History";
 import { Grid, Paper, Skeleton, Typography } from "@mui/material";
 import { px } from "csx";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "src/context/UserProvider";
 import { Profile } from "src/models/Profile";
 import { Score } from "src/models/Score";
 import { Colors } from "src/style/Colors";
@@ -13,6 +12,8 @@ import { ButtonColor } from "../Button";
 import { ToogleButtonCard } from "../ToogleButton";
 import { BarVictory } from "./BarVictory";
 import { DonutChart } from "./DonutChart";
+import { useUser } from "src/context/UserProvider";
+import { Theme } from "src/models/Theme";
 
 interface Menu {
   label: string;
@@ -34,22 +35,30 @@ export const DonutGames = ({
   loading = true,
 }: Props) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { language } = useUser();
+  const navigate = useNavigate();
 
   const MAXVALUEDISPLAY = 7;
 
   const [type, setType] = useState<undefined | "solo" | "duel">(undefined);
   const [types, setTypes] = useState<Array<Menu>>([]);
 
+  const getLabelTheme = useCallback(
+    (theme: Theme) => {
+      const themeLanguage = [...theme.themetranslation].find(
+        (el) => el.language.id === language?.id
+      );
+      return themeLanguage?.name ?? theme.themetranslation[0].name;
+    },
+    [language]
+  );
+
   const dataSolo = useMemo(
     () =>
       [...scores].sort(sortByGamesDesc).reduce(
         (acc, score, index) => {
           if (index + 1 <= MAXVALUEDISPLAY) {
-            const label = score.theme.name[language.iso]
-              ? score.theme.name[language.iso]
-              : score.theme.name["fr-FR"];
+            const label = getLabelTheme(score.theme);
             return [
               ...acc,
               {
@@ -71,7 +80,7 @@ export const DonutGames = ({
           },
         ]
       ),
-    [scores, t, language.iso]
+    [getLabelTheme, scores, t]
   );
 
   const dataDuel = useMemo(
@@ -79,9 +88,7 @@ export const DonutGames = ({
       [...scores].sort(sortByDuelGamesDesc).reduce(
         (acc, score, index) => {
           if (index + 1 <= MAXVALUEDISPLAY) {
-            const label = score.theme.name[language.iso]
-              ? score.theme.name[language.iso]
-              : score.theme.name["fr-FR"];
+            const label = getLabelTheme(score.theme);
             return [
               ...acc,
               {
@@ -103,7 +110,7 @@ export const DonutGames = ({
           },
         ]
       ),
-    [scores, t, language.iso]
+    [scores, t]
   );
 
   const data = useMemo(() => {
