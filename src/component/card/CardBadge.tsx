@@ -23,8 +23,6 @@ export const CardBadge = ({ badges, loading }: Props) => {
     >
       <Grid container>
         <Grid
-          item
-          xs={12}
           sx={{
             backgroundColor: Colors.colorApp,
             p: px(10),
@@ -32,7 +30,7 @@ export const CardBadge = ({ badges, loading }: Props) => {
             gap: 1,
             alignItems: "center",
           }}
-        >
+          size={12}>
           <Typography variant="h2" color="text.secondary">
             {t("commun.badges")}
           </Typography>
@@ -43,20 +41,18 @@ export const CardBadge = ({ badges, loading }: Props) => {
           )}
         </Grid>
         <Grid
-          item
-          xs={12}
           sx={{
             display: "flex",
             p: 1,
             maxHeight: viewHeight(15),
             overflowX: "scroll",
           }}
-        >
+          size={12}>
           <Grid container spacing={1} justifyContent="center">
             {loading ? (
               <>
                 {Array.from(new Array(6)).map((_, index) => (
-                  <Grid item key={index}>
+                  <Grid key={index}>
                     <Skeleton variant="circular" width={45} height={45} />
                   </Grid>
                 ))}
@@ -64,7 +60,7 @@ export const CardBadge = ({ badges, loading }: Props) => {
             ) : (
               <>
                 {badges.map((badge) => (
-                  <Grid item key={badge.id}>
+                  <Grid key={badge.id}>
                     <Link to={`/badge/${badge.id}`}>
                       <Avatar
                         sx={{

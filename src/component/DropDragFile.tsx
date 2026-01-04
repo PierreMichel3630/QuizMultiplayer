@@ -64,7 +64,7 @@ export const DropDragFile = ({ file, onDrop, maxSize, maxWidth }: Props) => {
   return (
     <Grid container spacing={1}>
       {urlFile && (
-        <Grid item xs={12}>
+        <Grid size={12}>
           <ImageListItem>
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <img alt="preview" src={urlFile} />
@@ -80,7 +80,7 @@ export const DropDragFile = ({ file, onDrop, maxSize, maxWidth }: Props) => {
           </ImageListItem>
         </Grid>
       )}
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box
           sx={{
             p: 2,

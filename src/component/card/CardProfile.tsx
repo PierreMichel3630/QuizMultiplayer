@@ -46,10 +46,10 @@ export const CardProfile = ({
       variant="outlined"
     >
       <Grid container spacing={2} alignItems="center" justifyContent="center">
-        <Grid item>
+        <Grid>
           <AvatarAccount avatar={profile.avatar.icon} size={50} />
         </Grid>
-        <Grid item xs>
+        <Grid size="grow">
           <Typography variant="h4" sx={{ wordWrap: "break-word" }}>
             {profile.username}
           </Typography>
@@ -57,7 +57,7 @@ export const CardProfile = ({
         </Grid>
 
         {addToFriend && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Button
               variant="contained"
               size="small"
@@ -71,7 +71,7 @@ export const CardProfile = ({
           </Grid>
         )}
         {deleteToFriend && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Button
               variant="contained"
               size="small"

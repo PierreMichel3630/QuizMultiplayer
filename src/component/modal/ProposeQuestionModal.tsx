@@ -250,7 +250,7 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
               {
                 FORM: (
                   <>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <ButtonColor
                         value={Colors.blue}
                         label={t("commun.viaexcel")}
@@ -259,7 +259,7 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
                         onClick={() => setMode(Mode.FILE)}
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Divider>
                         <Typography
                           variant="h4"
@@ -269,7 +269,7 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
                         </Typography>
                       </Divider>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <ProposeQuestionForm
                         validate={() => {
                           setNumberQuestions(1);
@@ -282,7 +282,7 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
                 ),
                 FILE: (
                   <>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <ButtonColor
                         value={Colors.blue}
                         label={t("commun.viaform")}
@@ -291,7 +291,7 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
                         onClick={() => setMode(Mode.FORM)}
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Divider sx={{ borderBottomWidth: 5 }}>
                         <Typography
                           variant="h4"
@@ -301,7 +301,7 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
                         </Typography>
                       </Divider>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <RuleBlock
                         rules={[
                           {
@@ -338,20 +338,20 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
                 ),
                 LOADING: (
                   <>
-                    <Grid item xs={12} sx={{ textAlign: "center" }}>
+                    <Grid sx={{ textAlign: "center" }} size={12}>
                       <Typography variant="h4">
                         {t("commun.inprogress")}
                       </Typography>
                     </Grid>
                     {numberQuestions > 1 && (
-                      <Grid item xs={12} sx={{ textAlign: "center" }}>
+                      <Grid sx={{ textAlign: "center" }} size={12}>
                         <Typography variant="h6">
                           {numberQuestionsSave} / {numberQuestions}{" "}
                           {t("commun.questions")}
                         </Typography>
                       </Grid>
                     )}
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Box sx={{ width: percent(100) }}>
                         <LinearProgress
                           variant="determinate"
@@ -363,7 +363,7 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
                 ),
                 FINISH: (
                   <>
-                    <Grid item xs={12} sx={{ textAlign: "center" }}>
+                    <Grid sx={{ textAlign: "center" }} size={12}>
                       {numberQuestions > 0 ? (
                         <Alert severity="success">
                           <Typography variant="h4">
@@ -378,7 +378,7 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
                         </Alert>
                       )}
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <ButtonColor
                         value={Colors.purple}
                         label={t("commun.seeallproposequestion")}
@@ -390,7 +390,7 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
                         }}
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <ButtonColor
                         value={Colors.blue}
                         label={t("commun.return")}
@@ -399,7 +399,7 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
                         onClick={() => setMode(Mode.FORM)}
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <ButtonColor
                         value={Colors.red}
                         label={t("commun.leave")}

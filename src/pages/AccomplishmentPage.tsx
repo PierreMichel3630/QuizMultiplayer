@@ -79,13 +79,13 @@ export default function AccomplishmentPage() {
           content="Collectionner tous les succès à travers des défis amusants"
         />
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Grid container spacing={1} alignItems="center">
                 {accomplishmentsToUnlock.map((accomplishmentToUnlock) => (
-                  <Grid item xs={12} key={accomplishmentToUnlock.id}>
+                  <Grid key={accomplishmentToUnlock.id} size={12}>
                     <NotificationBlock notification={accomplishmentToUnlock} />
                   </Grid>
                 ))}
@@ -106,14 +106,13 @@ export default function AccomplishmentPage() {
               return (
                 <Fragment key={index}>
                   <Grid
-                    item
-                    xs={12}
                     sx={{
                       position: "sticky",
                       top: headerSize,
                       backgroundColor: "background.paper",
                       pb: px(10),
                     }}
+                    size={12}
                   >
                     <Box
                       sx={{
@@ -127,8 +126,13 @@ export default function AccomplishmentPage() {
                         border: "2px solid white",
                       }}
                     >
-                      <Grid container spacing={1} alignItems="center">
-                        <Grid item>
+                      <Grid
+                        container
+                        spacing={1}
+                        alignItems="center"
+                        sx={{ flex: 1 }}
+                      >
+                        <Grid>
                           <img
                             alt="award icon"
                             src={award}
@@ -136,7 +140,7 @@ export default function AccomplishmentPage() {
                             loading="lazy"
                           />
                         </Grid>
-                        <Grid item xs>
+                        <Grid size="grow">
                           <Typography variant="h2" color="text.secondary">
                             {t(`accomplishment.${el}`)}
                           </Typography>
@@ -175,7 +179,13 @@ export default function AccomplishmentPage() {
                   </Grid>
                   {accomplishments.map((accomplishment) => {
                     return (
-                      <Grid item xs={12} md={6} key={accomplishment.id}>
+                      <Grid
+                        key={accomplishment.id}
+                        size={{
+                          xs: 12,
+                          md: 6,
+                        }}
+                      >
                         <CardAccomplishment
                           accomplishment={accomplishment}
                           stat={stat}
@@ -185,7 +195,7 @@ export default function AccomplishmentPage() {
                       </Grid>
                     );
                   })}
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <Divider />
                   </Grid>
                 </Fragment>

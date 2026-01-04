@@ -34,7 +34,7 @@ export default function UpdatedThemePage() {
       <Helmet>
         <title>{`${t("pages.updated.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <PageCategoryBlock
           title={t("pages.updated.title")}
           values={themes}

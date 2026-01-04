@@ -192,7 +192,6 @@ export default function TrainingPage() {
         <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
       </Helmet>
       <PreloadImages urls={images} />
-
       <Box
         sx={{
           display: "flex",
@@ -260,7 +259,7 @@ export default function TrainingPage() {
                     >
                       <Grid container spacing={1}>
                         {!isEnd && (
-                          <Grid item xs={12}>
+                          <Grid size={12}>
                             <ButtonColor
                               value={Colors.blue2}
                               label={t("commun.nextquestion")}
@@ -270,7 +269,7 @@ export default function TrainingPage() {
                             />
                           </Grid>
                         )}
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                           <ButtonColor
                             value={Colors.red}
                             label={t("commun.leave")}

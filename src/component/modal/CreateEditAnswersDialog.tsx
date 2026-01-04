@@ -102,7 +102,7 @@ export const CreateEditAnswersDialog = ({
           {mode === Mode.SEARCH ? (
             <>
               {languageResponse && (
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <LanguagesIcon
                     languages={languages}
                     language={languageResponse}
@@ -111,7 +111,7 @@ export const CreateEditAnswersDialog = ({
                   />
                 </Grid>
               )}
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <ButtonColor
                   value={Colors.green}
                   label={t("commun.addresponse")}
@@ -121,7 +121,7 @@ export const CreateEditAnswersDialog = ({
                 />
               </Grid>
               {correctAnswers && (
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <CardAdminAnswer
                     answer={correctAnswers}
                     language={languageResponse}
@@ -136,7 +136,7 @@ export const CreateEditAnswersDialog = ({
                 </Grid>
               )}
               {answers.map((answer) => (
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <CardAdminAnswer
                     answer={answer}
                     language={languageResponse}
@@ -152,7 +152,7 @@ export const CreateEditAnswersDialog = ({
               ))}
             </>
           ) : (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <AnswerForm
                 answerset={answerset}
                 answer={answer}
@@ -198,7 +198,7 @@ export const CreateEditResponseImageDialog = ({
       </AppBar>
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ResponseImageForm
               type={type}
               response={response}

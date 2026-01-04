@@ -80,19 +80,17 @@ export default function ConfigTrainingPage() {
         <Grid container spacing={3}>
           {theme && (
             <>
-              <Grid item xs={12} sx={{ textAlign: "center", mt: 1 }}>
+              <Grid sx={{ textAlign: "center", mt: 1 }} size={12}>
                 <Typography variant="h1">{t("commun.modetraining")}</Typography>
               </Grid>
               <Grid
-                item
-                xs={12}
                 sx={{
                   display: "flex",
                   gap: 2,
                   alignItems: "center",
                   justifyContent: "center",
                 }}
-              >
+                size={12}>
                 <ImageThemeBlock theme={theme} size={40} />
                 <TextNameBlock
                   variant="h1"
@@ -100,7 +98,7 @@ export default function ConfigTrainingPage() {
                   values={theme.themetranslation}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Divider
                   sx={{
                     "&::before": {
@@ -123,12 +121,12 @@ export default function ConfigTrainingPage() {
                   </Typography>
                 </Divider>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Typography variant="body1">
                   {t("modes.mode4.explain")}
                 </Typography>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Divider
                   sx={{
                     "&::before": {
@@ -151,7 +149,7 @@ export default function ConfigTrainingPage() {
                   </Typography>
                 </Divider>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                   <CustomSwitch
                     checked={configGame.qcmquestion}
@@ -171,7 +169,7 @@ export default function ConfigTrainingPage() {
                   <Typography variant="h4">{t("commun.qcm")}</Typography>
                 </Box>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                   <CustomSwitch
                     checked={configGame.inputquestion}
@@ -193,7 +191,7 @@ export default function ConfigTrainingPage() {
                   </Typography>
                 </Box>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <ButtonColor
                   value={Colors.blue2}
                   label={t("commun.play")}

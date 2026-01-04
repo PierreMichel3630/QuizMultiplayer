@@ -38,11 +38,17 @@ export default function BannersPage() {
         <Helmet>
           <title>{`${t("pages.banners.title")} - ${t("appname")}`}</title>
         </Helmet>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <TitleBlock title={t("commun.banners")} />
         </Grid>
         {bannersDisplay.map((banner) => (
-          <Grid item xs={6} sm={4} md={3} key={banner.id}>
+          <Grid
+            key={banner.id}
+            size={{
+              xs: 6,
+              sm: 4,
+              md: 3
+            }}>
             <BannerShop banner={banner} height={100} />
           </Grid>
         ))}

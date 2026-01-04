@@ -17,13 +17,13 @@ export const BadgeSelector = ({ onSelect }: Props) => {
 
   return (
     <Grid container spacing={1}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Grid container spacing={1} alignItems="center" justifyContent="center">
           {myBadges.map((badge) => {
             const isSelect = profile?.badge && profile.badge.id === badge.id;
 
             return (
-              <Grid item key={badge.id}>
+              <Grid key={badge.id}>
                 <Box sx={{ position: "relative" }}>
                   {isSelect && (
                     <CheckCircleTwoToneIcon

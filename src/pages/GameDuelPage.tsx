@@ -53,7 +53,7 @@ export default function GameDuelPage() {
         <title>{`${t("commun.duelgame")} - ${t("appname")}`}</title>
       </Helmet>
       <BarNavigation title={t("commun.duelgame")} quit={() => navigate(-1)} />
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Container maxWidth="md">
           <Box
             sx={{
@@ -64,15 +64,13 @@ export default function GameDuelPage() {
             {game && (
               <Grid container spacing={1}>
                 <Grid
-                  item
-                  xs={12}
                   sx={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     gap: 1,
                   }}
-                >
+                  size={12}>
                   <Box sx={{ width: px(70) }}>
                     <ImageThemeBlock theme={game.theme} />
                   </Box>
@@ -83,15 +81,13 @@ export default function GameDuelPage() {
                   />
                 </Grid>
                 <Grid
-                  item
-                  xs={5}
                   sx={{
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "flex-end",
                     gap: 1,
                   }}
-                >
+                  size={5}>
                   <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                     <Typography
                       variant="h2"
@@ -115,26 +111,22 @@ export default function GameDuelPage() {
                   </Box>
                 </Grid>
                 <Grid
-                  item
-                  xs={2}
                   sx={{
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                >
+                  size={2}>
                   <BoltIcon sx={{ fontSize: 50, color: Colors.white }} />
                 </Grid>
                 <Grid
-                  item
-                  xs={5}
                   sx={{
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "flex-start",
                     gap: 1,
                   }}
-                >
+                  size={5}>
                   {game.player2 && (
                     <>
                       <Box
@@ -166,7 +158,7 @@ export default function GameDuelPage() {
                     </>
                   )}
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Divider
                     sx={{
                       borderBottomWidth: 5,
@@ -177,13 +169,13 @@ export default function GameDuelPage() {
                 </Grid>
                 {[...questions].map((el) => (
                   <Fragment key={el.id}>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <CardSignalQuestion
                         question={el}
                         version={game.version}
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Divider
                         sx={{
                           borderBottomWidth: 3,

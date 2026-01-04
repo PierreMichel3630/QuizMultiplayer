@@ -151,8 +151,6 @@ export default function HistoryGamePage() {
         <title>{`${t("pages.history.title")} - ${t("appname")}`}</title>
       </Helmet>
       <Grid
-        item
-        xs={12}
         sx={{
           position: "sticky",
           top: headerSize,
@@ -162,9 +160,9 @@ export default function HistoryGamePage() {
           justifyContent: "center",
           zIndex: 10,
         }}
-      >
+        size={12}>
         <Grid container spacing={1} justifyContent="center" alignItems="center">
-          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
             <GroupButtonAllTypeGame
               selected={filter.type}
               onChange={(value) => {
@@ -177,22 +175,20 @@ export default function HistoryGamePage() {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
             {games.map((game, index) => (
               <Grid
-                item
-                xs={12}
                 key={game.uuid}
                 ref={index === games.length - 1 ? lastItemRef : null}
-              >
+                size={12}>
                 <CardHistoryGame game={game} />
               </Grid>
             ))}
             {!isEnd && <SkeletonGames number={10} />}
             {!loading && games.length === 0 && isEnd && (
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Alert severity="warning">{t("commun.noresult")}</Alert>
               </Grid>
             )}

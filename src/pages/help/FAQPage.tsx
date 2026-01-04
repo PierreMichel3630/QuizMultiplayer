@@ -7,10 +7,10 @@ export default function FAQPage() {
   const { t } = useTranslation();
   return (
     <Grid container>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <HeadTitle title={t("pages.faq.title")} />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 1 }}>
           <FAQBlock />
         </Box>

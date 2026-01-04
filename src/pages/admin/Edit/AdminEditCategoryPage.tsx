@@ -79,7 +79,7 @@ export default function AdminEditCategoryPage() {
 
   return (
     <Grid container spacing={1} justifyContent="center">
-      <Grid item xs={12}>
+      <Grid size={12}>
         <ButtonColor
           icon={AddIcon}
           label={t("commun.addcategory")}
@@ -88,7 +88,7 @@ export default function AdminEditCategoryPage() {
           variant="contained"
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <BasicSearchInput
           label={t("commun.search")}
           onChange={(value) => {
@@ -102,10 +102,10 @@ export default function AdminEditCategoryPage() {
           }}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Grid container spacing={1} justifyContent="center">
           {categories.map((item) => (
-            <Grid item xs={12} key={item.id} onClick={() => {}}>
+            <Grid key={item.id} onClick={() => {}} size={12}>
               <CardAdminCategory
                 category={item}
                 onEdit={() => {

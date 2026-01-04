@@ -33,15 +33,13 @@ export const BestScoreBlock = ({ theme, points }: Props) => {
   return (
     <Grid container spacing={1} justifyContent="center">
       <Grid
-        item
-        xs={6}
         sx={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           gap: 1,
         }}
-      >
+        size={6}>
         <Typography variant="h6">{t("commun.score")} : </Typography>
         <Typography variant="h2" sx={{ fontSize: important(px(35)) }}>
           {points}
@@ -50,15 +48,13 @@ export const BestScoreBlock = ({ theme, points }: Props) => {
       </Grid>
       {myScore && (
         <Grid
-          item
-          xs={6}
           sx={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             gap: 1,
           }}
-        >
+          size={6}>
           <Typography variant="h6">{t("commun.bestscore")} : </Typography>
           <Typography variant="h2" sx={{ fontSize: important(px(35)) }}>
             {myScore.points}

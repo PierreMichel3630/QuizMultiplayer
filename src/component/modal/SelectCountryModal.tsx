@@ -126,15 +126,13 @@ export const SelectCountryModal = ({
       <DialogContent sx={{ p: 0, m: 0 }} ref={ref}>
         <Grid container spacing={1}>
           <Grid
-            item
-            xs={12}
             sx={{
               position: "sticky",
               top: 0,
               zIndex: 3,
               backgroundColor: "background.paper",
             }}
-          >
+            size={12}>
             <Box sx={{ p: 1 }}>
               <BasicSearchInput
                 label={t("commun.search")}
@@ -144,7 +142,7 @@ export const SelectCountryModal = ({
               />
             </Box>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <List sx={{ border: "none" }}>
               <Divider />
               {[...countriesFilter].splice(0, maxIndex).map((el) => (

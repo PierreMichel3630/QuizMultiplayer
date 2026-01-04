@@ -104,14 +104,14 @@ export const CardAccomplishment = ({
         alignItems="center"
         sx={{ height: percent(100) }}
       >
-        <Grid item xs={12}>
+        <Grid size={12}>
           <TextNameBlock
             variant="h4"
             values={accomplishment.accomplishmenttranslation}
           />
         </Grid>
         {badge && accomplishment.badge && (
-          <Grid item>
+          <Grid>
             <Link to={`/personalized#badges`}>
               <img
                 alt="badge"
@@ -122,10 +122,10 @@ export const CardAccomplishment = ({
             </Link>
           </Grid>
         )}
-        <Grid item xs={accomplishment.value ? 7 : 12}>
+        <Grid size={accomplishment.value ? 7 : 12}>
           <Grid container spacing={1} alignItems="center">
             {title && accomplishment.title && (
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Typography variant="body1" component="span">
                   {`${t("commun.title")} "`}
                 </Typography>
@@ -146,7 +146,7 @@ export const CardAccomplishment = ({
                 </Typography>
               </Grid>
             )}
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Box
                 sx={{
                   display: "flex",
@@ -175,7 +175,7 @@ export const CardAccomplishment = ({
           </Grid>
         </Grid>
         {accomplishment.value && (
-          <Grid item xs sx={{ textAlign: "end" }}>
+          <Grid sx={{ textAlign: "end" }} size="grow">
             <Typography variant="h2" component="span">
               {value > accomplishment.value ? accomplishment.value : value}
             </Typography>
@@ -185,10 +185,10 @@ export const CardAccomplishment = ({
           </Grid>
         )}
         {themesAccomplishment.length > 0 && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Grid container spacing={1}>
               {themesAccomplishment.map((theme) => (
-                <Grid item key={theme.id}>
+                <Grid key={theme.id}>
                   <Link to={`/theme/${theme.id}`}>
                     <ImageThemeBlock theme={theme} size={35} />
                   </Link>
@@ -197,7 +197,7 @@ export const CardAccomplishment = ({
             </Grid>
           </Grid>
         )}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <BarAccomplishment value={accomplishment.nbplayers} />
         </Grid>
       </Grid>
@@ -286,7 +286,7 @@ export const CardUnlockAccomplishment = ({
         alignItems="center"
         sx={{ height: percent(100) }}
       >
-        <Grid item xs={12}>
+        <Grid size={12}>
           <TextNameBlock
             variant="h4"
             color="text.secondary"
@@ -296,14 +296,14 @@ export const CardUnlockAccomplishment = ({
           />
         </Grid>
         {profileaccomplishment.extra && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Typography variant="caption">
               {profileaccomplishment.extra}
             </Typography>
           </Grid>
         )}
         {badge && profileaccomplishment.accomplishment.badge && (
-          <Grid item>
+          <Grid>
             <Link to={`/personalized#badges`}>
               <img
                 alt="badge"
@@ -314,10 +314,10 @@ export const CardUnlockAccomplishment = ({
             </Link>
           </Grid>
         )}
-        <Grid item xs={profileaccomplishment.accomplishment.value ? 7 : 12}>
+        <Grid size={profileaccomplishment.accomplishment.value ? 7 : 12}>
           <Grid container spacing={1} alignItems="center">
             {title && profileaccomplishment.accomplishment.title && (
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Typography variant="body1" component="span">
                   {`${t("commun.title")} "`}
                 </Typography>
@@ -341,7 +341,7 @@ export const CardUnlockAccomplishment = ({
                 </Typography>
               </Grid>
             )}
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Box
                 sx={{
                   display: "flex",
@@ -370,7 +370,7 @@ export const CardUnlockAccomplishment = ({
           </Grid>
         </Grid>
         {profileaccomplishment.accomplishment.value && (
-          <Grid item xs sx={{ textAlign: "end" }}>
+          <Grid sx={{ textAlign: "end" }} size="grow">
             <Typography variant="h2" component="span">
               {value > profileaccomplishment.accomplishment.value
                 ? profileaccomplishment.accomplishment.value
@@ -382,10 +382,10 @@ export const CardUnlockAccomplishment = ({
           </Grid>
         )}
         {themesAccomplishment.length > 0 && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Grid container spacing={1}>
               {themesAccomplishment.map((theme) => (
-                <Grid item key={theme.id}>
+                <Grid key={theme.id}>
                   <Link to={`/theme/${theme.id}`}>
                     <ImageThemeBlock theme={theme} size={35} />
                   </Link>
@@ -394,7 +394,7 @@ export const CardUnlockAccomplishment = ({
             </Grid>
           </Grid>
         )}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <ButtonColor
             typography="h6"
             iconSize={20}

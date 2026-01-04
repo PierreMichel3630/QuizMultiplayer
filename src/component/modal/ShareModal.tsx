@@ -77,11 +77,11 @@ export const ShareModal = ({ open, close }: Props) => {
       </AppBar>
       <DialogContent sx={{ p: 2, pt: 3 }}>
         <Grid container spacing={1} alignItems="center">
-          <Grid item xs={12} sx={{ mb: 2 }}>
+          <Grid sx={{ mb: 2 }} size={12}>
             <Typography variant="body1">{t("commun.sharetext")}</Typography>
           </Grid>
           {canBrowserShareData && (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <ButtonColor
                 typography="h6"
                 iconSize={20}
@@ -94,14 +94,12 @@ export const ShareModal = ({ open, close }: Props) => {
             </Grid>
           )}
           <Grid
-            item
-            xs={2}
             sx={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
-          >
+            size={2}>
             <img
               alt="google play icon"
               src={googleplay}
@@ -109,19 +107,17 @@ export const ShareModal = ({ open, close }: Props) => {
               style={{ maxWidth: px(50) }}
             />
           </Grid>
-          <Grid item xs={10}>
+          <Grid size={10}>
             <Typography variant="h4">{t("commun.googleplay")}</Typography>
             <CopyTextBlock text={urlGooglePlay} />
           </Grid>
           <Grid
-            item
-            xs={2}
             sx={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
-          >
+            size={2}>
             <img
               alt="share icon"
               src={logo}
@@ -129,7 +125,7 @@ export const ShareModal = ({ open, close }: Props) => {
               style={{ maxWidth: px(50) }}
             />
           </Grid>
-          <Grid item xs={10}>
+          <Grid size={10}>
             <Typography variant="h4">{t("commun.computer")}</Typography>
             <CopyTextBlock text={urlPc} />
           </Grid>

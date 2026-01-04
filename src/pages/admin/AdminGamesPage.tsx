@@ -118,8 +118,6 @@ export default function AdminGamesPage() {
   return (
     <Grid container>
       <Grid
-        item
-        xs={12}
         sx={{
           position: "sticky",
           top: headerSize,
@@ -129,9 +127,9 @@ export default function AdminGamesPage() {
           justifyContent: "center",
           zIndex: 10,
         }}
-      >
+        size={12}>
         <Grid container spacing={1} justifyContent="center" alignItems="center">
-          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
             <GroupButtonAllTypeGame
               selected={filter.type}
               onChange={(value) => {
@@ -142,7 +140,7 @@ export default function AdminGamesPage() {
               }}
             />
           </Grid>
-          <Grid item xs={filter.type === GameModeEnum.duel ? 6 : 12}>
+          <Grid size={filter.type === GameModeEnum.duel ? 6 : 12}>
             <SelectorProfileBlock
               label={t("commun.selectplayer")}
               profile={filter.player !== null ? filter.player : undefined}
@@ -151,7 +149,7 @@ export default function AdminGamesPage() {
             />
           </Grid>
           {filter.type === GameModeEnum.duel && (
-            <Grid item xs={6}>
+            <Grid size={6}>
               <SelectorProfileBlock
                 label={t("commun.selectopponent")}
                 profile={filter.opponent}
@@ -162,7 +160,7 @@ export default function AdminGamesPage() {
               />
             </Grid>
           )}
-          <Grid item xs={12}>
+          <Grid size={12}>
             <AutocompleteTheme
               value={filter.themes}
               onChange={(value) => {
@@ -172,17 +170,17 @@ export default function AdminGamesPage() {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
             {games.map((game) => (
-              <Grid item xs={12} key={game.uuid}>
+              <Grid key={game.uuid} size={12}>
                 <CardHistoryGameAdmin game={game} />
               </Grid>
             ))}
             {isLoading && <SkeletonGames number={10} />}
             {!isLoading && games.length === 0 && isEnd && (
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Alert severity="warning">{t("commun.noresult")}</Alert>
               </Grid>
             )}

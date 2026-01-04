@@ -1,10 +1,9 @@
-import { Typography } from "@mui/material";
-import { Variant } from "@mui/material/styles/createTypography";
+import { Typography, TypographyVariant } from "@mui/material";
 import { Trans, useTranslation } from "react-i18next";
 
 interface Props {
   position: number;
-  variant?: Variant;
+  variant?: TypographyVariant;
 }
 
 export const PositionTypography = ({ position, variant = "h2" }: Props) => {

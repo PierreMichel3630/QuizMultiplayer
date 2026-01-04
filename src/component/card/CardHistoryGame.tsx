@@ -41,12 +41,20 @@ export const CardHistoryGame = ({ game }: Props) => {
   return (
     <Paper sx={{ p: px(5) }}>
       <Grid container spacing={1} alignItems="center">
-        <Grid item xs={2} md={1}>
+        <Grid
+          size={{
+            xs: 2,
+            md: 1
+          }}>
           <ImageThemeBlock theme={game.theme} />
         </Grid>
         {isSolo ? (
           <>
-            <Grid item xs={7} md={8}>
+            <Grid
+              size={{
+                xs: 7,
+                md: 8
+              }}>
               <Link
                 to={`/theme/${game.theme.id}`}
                 style={{ textDecoration: "none" }}
@@ -60,7 +68,7 @@ export const CardHistoryGame = ({ game }: Props) => {
                 {moment(game.created_at).format("DD/MM/YYYY HH:mm")}
               </Typography>
             </Grid>
-            <Grid item xs={3}>
+            <Grid size={3}>
               <Box
                 sx={{
                   display: "flex",
@@ -90,7 +98,7 @@ export const CardHistoryGame = ({ game }: Props) => {
           </>
         ) : (
           <>
-            <Grid item xs>
+            <Grid size="grow">
               <Link
                 to={`/theme/${game.theme.id}`}
                 style={{ textDecoration: "none" }}
@@ -120,14 +128,12 @@ export const CardHistoryGame = ({ game }: Props) => {
               </Link>
             </Grid>
             <Grid
-              item
               sx={{
                 display: "flex",
                 gap: 2,
                 alignItems: "center",
                 justifyContent: "center",
-              }}
-            >
+              }}>
               <Box
                 sx={{
                   display: "flex",
@@ -171,14 +177,22 @@ export const CardHistoryGameAdmin = ({ game }: PropsAdmin) => {
   return (
     <Paper sx={{ p: px(5) }}>
       <Grid container spacing={1} alignItems="center">
-        <Grid item xs={2} md={1}>
+        <Grid
+          size={{
+            xs: 2,
+            md: 1
+          }}>
           <ImageThemeBlock theme={game.theme} />
         </Grid>
-        <Grid item xs={10} md={11}>
+        <Grid
+          size={{
+            xs: 10,
+            md: 11
+          }}>
           <Grid container spacing={1} alignItems="center">
             {isSolo ? (
               <>
-                <Grid item xs={10}>
+                <Grid size={10}>
                   <TextNameBlock
                     variant="h2"
                     noWrap
@@ -205,11 +219,7 @@ export const CardHistoryGameAdmin = ({ game }: PropsAdmin) => {
                     </Typography>
                   </Box>
                 </Grid>
-                <Grid
-                  item
-                  xs={2}
-                  sx={{ display: "flex", justifyContent: "center" }}
-                >
+                <Grid sx={{ display: "flex", justifyContent: "center" }} size={2}>
                   <Link
                     to={`/game/solo/${game.uuid}`}
                     style={{ height: px(20) }}
@@ -220,7 +230,7 @@ export const CardHistoryGameAdmin = ({ game }: PropsAdmin) => {
               </>
             ) : (
               <>
-                <Grid item xs={10}>
+                <Grid size={10}>
                   <TextNameBlock
                     variant="h2"
                     noWrap
@@ -250,11 +260,7 @@ export const CardHistoryGameAdmin = ({ game }: PropsAdmin) => {
                     </Typography>
                   </Box>
                 </Grid>
-                <Grid
-                  item
-                  xs={2}
-                  sx={{ display: "flex", justifyContent: "center" }}
-                >
+                <Grid sx={{ display: "flex", justifyContent: "center" }} size={2}>
                   <Link
                     to={`/game/duel/${game.uuid}`}
                     style={{ height: px(20) }}

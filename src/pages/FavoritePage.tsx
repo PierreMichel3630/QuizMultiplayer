@@ -39,7 +39,7 @@ export default function FavoritePage() {
       <Helmet>
         <title>{`${t("pages.favorite.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <PageCategoryBlock
           title={t("pages.favorite.title")}
           values={itemsSearch}

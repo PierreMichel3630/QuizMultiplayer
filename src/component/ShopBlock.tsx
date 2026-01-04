@@ -16,10 +16,10 @@ import { TimeLeftLabel, TimeLeftToNextDayHoverLabel } from "./TimeLeftBlock";
 export const ShopBlock = () => {
   return (
     <Grid container spacing={1}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <ShopItems />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Divider sx={{ borderBottomWidth: 5 }} />
       </Grid>
     </Grid>

@@ -150,17 +150,17 @@ export default function ComparePage() {
       <Helmet>
         <title>{`${t("pages.compare.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <SelectorProfileBlock
                 label={t("commun.selectplayer")}
                 profile={profile1}
                 onChange={() => setOpenModalFriend1(true)}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <SelectorProfileBlock
                 label={t("commun.selectplayer")}
                 profile={profile2}
@@ -169,16 +169,16 @@ export default function ComparePage() {
             </Grid>
             {profile1 && profile2 && (
               <>
-                <Grid item xs={6}>
+                <Grid size={6}>
                   <CardBadge badges={badges1} />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid size={6}>
                   <CardBadge badges={badges2} />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid size={6}>
                   <CardTitle titles={titles1} />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid size={6}>
                   <CardTitle titles={titles2} />
                 </Grid>
               </>
@@ -212,11 +212,9 @@ export default function ComparePage() {
                 <Grid container spacing={1}>
                   {values.map((value, index) => (
                     <Grid
-                      item
-                      xs={12}
                       key={index}
                       ref={index === values.length - 1 ? lastItemRef : null}
-                    >
+                      size={12}>
                       <CardCompare value={value} />
                     </Grid>
                   ))}

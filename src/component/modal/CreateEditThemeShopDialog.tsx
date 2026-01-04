@@ -16,12 +16,12 @@ export const CreateEditThemeShopDialog = ({ theme, open, close }: Props) => {
     <Dialog onClose={close} open={open}>
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <Grid sx={{ textAlign: "center" }} size={12}>
             <Typography variant="h2">
               {theme ? t("commun.edittheme") : t("commun.addtheme")}
             </Typography>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ThemeShopForm theme={theme} validate={close} />
           </Grid>
         </Grid>

@@ -50,7 +50,7 @@ export const ValidationProposeQuestion = ({
       </AppBar>
       <DialogContent>
         <Grid container spacing={1}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ValidateProposeQuestionForm validate={close} question={question} />
           </Grid>
         </Grid>

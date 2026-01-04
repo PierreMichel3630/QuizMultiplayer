@@ -77,10 +77,10 @@ export const GameModeBlock = () => {
 
   return (
     <Grid container spacing={1}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <TitleCount title={t("commun.gamemode")} count={count} />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box
           sx={{
             display: "flex",
@@ -106,7 +106,7 @@ export const GameModeBlock = () => {
           ))}
         </Box>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Divider sx={{ borderBottomWidth: 5 }} />
       </Grid>
     </Grid>

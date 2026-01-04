@@ -96,22 +96,20 @@ export default function NotificationsPage() {
       <Helmet>
         <title>{`${t("pages.parameters.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <BarNavigation
           title={t("commun.notifications")}
           quit={() => navigate(-1)}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 2 }}>
           <Grid container spacing={2} justifyContent="center">
             {notifications.map((notification, index) => (
               <Grid
-                item
-                xs={12}
                 key={notification.id}
                 ref={index === notifications.length - 1 ? lastItemRef : null}
-              >
+                size={12}>
                 <NotificationBlock
                   notification={notification}
                   onDelete={onDelete}
@@ -119,7 +117,7 @@ export default function NotificationsPage() {
               </Grid>
             ))}
             {!isLoading && notifications.length === 0 && (
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Alert severity="warning">
                   <Typography>{t("alert.noresultnotification")}</Typography>
                 </Alert>

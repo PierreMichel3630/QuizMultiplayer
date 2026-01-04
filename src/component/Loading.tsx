@@ -7,10 +7,8 @@ import { Colors } from "src/style/Colors";
 export const CircularLoading = () => (
   <Grid container>
     <Grid
-      item
-      xs={12}
       sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-    >
+      size={12}>
       <CircularProgress size={100} color="secondary" />
     </Grid>
   </Grid>

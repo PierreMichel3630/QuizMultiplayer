@@ -55,7 +55,7 @@ export const ChangeDateBlock = ({
   }, [date, format, onChange]);
 
   return (
-    <Grid item xs={12}>
+    <Grid size={12}>
       <Box
         sx={{
           display: "flex",

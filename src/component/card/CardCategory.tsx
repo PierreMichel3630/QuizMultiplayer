@@ -19,10 +19,14 @@ export const CardAdminCategory = ({
   return (
     <Paper sx={{ p: 1 }} elevation={12}>
       <Grid container spacing={1} alignItems="center">
-        <Grid item xs={2} md={1}>
+        <Grid
+          size={{
+            xs: 2,
+            md: 1
+          }}>
           <Typography variant="h2">{category.id}</Typography>
         </Grid>
-        <Grid item xs>
+        <Grid size="grow">
           <Box sx={{ display: "flex", gap: 2 }}>
             {category.categorytranslation.map((el, index) => (
               <Box
@@ -37,12 +41,12 @@ export const CardAdminCategory = ({
             ))}
           </Box>
         </Grid>
-        <Grid item>
+        <Grid>
           <IconButton aria-label="edit" onClick={onEdit}>
             <EditIcon />
           </IconButton>
         </Grid>
-        <Grid item>
+        <Grid>
           <IconButton aria-label="edit" onClick={onDelete}>
             <DeleteIcon />
           </IconButton>

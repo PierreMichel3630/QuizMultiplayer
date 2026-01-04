@@ -79,12 +79,10 @@ export const ThemeListScrollBlock = ({
     <Grid container spacing={1} justifyContent="center">
       {itemsSearch.map((item, index) => (
         <Grid
-          item
-          xs={12}
           key={index}
           ref={index === itemsSearch.length - 1 ? lastItemRef : null}
           onClick={() => onSelect(item)}
-        >
+          size={12}>
           <Box
             sx={{
               display: "flex",

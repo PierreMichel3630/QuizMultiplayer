@@ -53,7 +53,7 @@ export const FAQBlock = () => {
 
   return (
     <Grid container spacing={1}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         {faqs.map((el, i) => (
           <Accordion defaultExpanded={el.expand} key={i}>
             <AccordionSummary

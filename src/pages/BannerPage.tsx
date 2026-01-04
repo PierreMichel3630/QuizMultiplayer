@@ -131,19 +131,19 @@ export default function BannerPage() {
         title={t("pages.banner.title")}
         quit={() => navigate(-1)}
       />
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Container maxWidth="md">
           {banner && profile && (
             <ProfilHeader profile={profile} banner={banner.src} />
           )}
         </Container>
       </Grid>
-      <Grid item xs={12}>
-        <Container maxWidth="md" sx={{ mb: 12 }}>
+      <Grid size={12}>
+        <Container maxWidth="md">
           {banner && (
             <Box sx={{ p: 2 }}>
               <Grid container spacing={2} justifyContent="center">
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <img
                     alt="banner"
                     src={banner.src}
@@ -154,7 +154,7 @@ export default function BannerPage() {
                 </Grid>
 
                 {accomplishment && (
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <CardAccomplishment
                       accomplishment={accomplishment}
                       stat={stat}
@@ -162,7 +162,7 @@ export default function BannerPage() {
                     />
                   </Grid>
                 )}
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Box
                     sx={{
                       p: 1,
@@ -231,7 +231,6 @@ export default function BannerPage() {
           )}
         </Container>
       </Grid>
-
       <ConfirmDialog
         title={t("commun.confirmbuy")}
         open={openModal}

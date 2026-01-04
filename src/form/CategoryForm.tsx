@@ -121,8 +121,6 @@ export const CategoryForm = ({ validate, category }: Props) => {
                       const value = values.traductions[index];
                       return (
                         <Grid
-                          item
-                          xs={12}
                           key={index}
                           sx={{
                             display: "flex",
@@ -130,7 +128,7 @@ export const CategoryForm = ({ validate, category }: Props) => {
                             justifyContent: "space-between",
                             alignItems: "center",
                           }}
-                        >
+                          size={12}>
                           <SelectLanguage
                             value={value.language}
                             languages={languageNotUsed}
@@ -149,7 +147,6 @@ export const CategoryForm = ({ validate, category }: Props) => {
                             onBlur={handleBlur}
                             fullWidth
                           />
-
                           <IconButton
                             aria-label="delete"
                             onClick={() => remove(index)}
@@ -160,7 +157,7 @@ export const CategoryForm = ({ validate, category }: Props) => {
                       );
                     })}
                     {languageNotUsed.length > 0 && (
-                      <Grid item xs={12}>
+                      <Grid size={12}>
                         <ButtonColor
                           value={Colors.blue}
                           label={t("commun.addtranslation")}
@@ -176,7 +173,7 @@ export const CategoryForm = ({ validate, category }: Props) => {
                 );
               }}
             </FieldArray>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <ButtonColor
                 value={Colors.green}
                 label={t("commun.validate")}

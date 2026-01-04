@@ -21,13 +21,13 @@ export default function InstallationPage() {
 
   return (
     <Grid container>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Typography variant="h4">{t("installation.apple")}</Typography>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <StepBlock
                 number={1}
                 label={
@@ -37,14 +37,14 @@ export default function InstallationPage() {
                 }
               />
             </Grid>
-            <Grid item>
+            <Grid>
               <img
                 alt="explain installation"
                 src={apple3}
                 style={{ maxWidth: px(300) }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <StepBlock
                 number={2}
                 label={
@@ -54,14 +54,14 @@ export default function InstallationPage() {
                 }
               />
             </Grid>
-            <Grid item>
+            <Grid>
               <img
                 alt="explain installation"
                 src={apple2}
                 style={{ maxWidth: px(300) }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <StepBlock
                 number={3}
                 label={
@@ -71,39 +71,37 @@ export default function InstallationPage() {
                 }
               />
             </Grid>
-            <Grid item>
+            <Grid>
               <img
                 alt="explain installation"
                 src={apple1}
                 style={{ maxWidth: px(300) }}
               />
             </Grid>
-            <Grid item>
+            <Grid>
               <img
                 alt="explain installation"
                 src={apple4}
                 style={{ maxWidth: px(300) }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Divider sx={{ borderBottomWidth: 5 }} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Typography variant="h4">{t("installation.android")}</Typography>
             </Grid>
-            <Grid item xs={12} sx={{ textAlign: "center" }}>
+            <Grid sx={{ textAlign: "center" }} size={12}>
               <Typography variant="body1">
                 {t("installation.android2")}
               </Typography>
             </Grid>
             <Grid
-              item
-              xs={12}
               sx={{
                 display: "flex",
                 justifyContent: "center",
               }}
-            >
+              size={12}>
               <Link
                 to={urlGooglePlay}
                 style={{
@@ -133,13 +131,13 @@ export default function InstallationPage() {
                 </Box>
               </Link>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Divider sx={{ borderBottomWidth: 5 }} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Typography variant="h4">{t("installation.computer")}</Typography>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <StepBlock
                 number={1}
                 label={

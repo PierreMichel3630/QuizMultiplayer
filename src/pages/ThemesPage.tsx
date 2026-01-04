@@ -63,11 +63,11 @@ export default function ThemesPage() {
         />
       </Helmet>
       {isMobileOrTablet && (
-        <Grid item xs={12}>
+        <Grid size={12}>
           <HeaderApp />
         </Grid>
       )}
-      <Grid item xs={12} ref={refHeadPage}>
+      <Grid ref={refHeadPage} size={12}>
         <Box
           sx={{
             width: percent(100),
@@ -77,8 +77,6 @@ export default function ThemesPage() {
         >
           <Grid container spacing={1}>
             <Grid
-              item
-              xs={12}
               sx={{
                 position: "sticky",
                 top: headerSize,
@@ -88,7 +86,7 @@ export default function ThemesPage() {
                 display: "flex",
                 gap: 1,
               }}
-            >
+              size={12}>
               <BasicSearchInput
                 label={t("commun.search")}
                 onChange={handleChange}
@@ -115,7 +113,7 @@ export default function ThemesPage() {
               )}
             </Grid>
             {!hasPlayChallenge && (
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <ChallengeButton />
               </Grid>
             )}
@@ -123,28 +121,28 @@ export default function ThemesPage() {
               <SearchThemeScrollBlock search={searchApi} />
             ) : (
               <>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <FavoriteBlock />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <NewBlock />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <UpdatedThemeBlock />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <CategoriesBlock />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <GameModeBlock />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <ShopBlock />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <RankingTop5Block />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <CategoriesScrollBlock />
                 </Grid>
               </>

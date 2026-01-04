@@ -444,15 +444,13 @@ export default function DuelPage() {
                 <Box>
                   <Grid container spacing={1} alignItems="center">
                     <Grid
-                      item
-                      xs={5}
                       sx={{
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "flex-start",
                         gap: 1,
                       }}
-                    >
+                      size={5}>
                       <AvatarAccount
                         avatar={game.player1.avatar.icon}
                         size={50}
@@ -477,7 +475,7 @@ export default function DuelPage() {
                         </Typography>
                       </Box>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid size={2}>
                       {timer && (
                         <Box sx={{ display: "flex", justifyContent: "center" }}>
                           <RoundTimer
@@ -491,15 +489,13 @@ export default function DuelPage() {
                       )}
                     </Grid>
                     <Grid
-                      item
-                      xs={5}
                       sx={{
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "flex-end",
                         gap: 1,
                       }}
-                    >
+                      size={5}>
                       <Box>
                         <Typography
                           variant="h6"

@@ -14,7 +14,7 @@ export const RuleBlock = ({ rules }: Props) => {
   return (
     <Grid container spacing={1}>
       {rules.map((rule, index) => (
-        <Grid item xs={12} key={index}>
+        <Grid key={index} size={12}>
           <Box
             sx={{
               p: 1,

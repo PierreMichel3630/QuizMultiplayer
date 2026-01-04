@@ -104,10 +104,10 @@ export default function ShopPage() {
         <Helmet>
           <title>{`${t("pages.shop.title")} - ${t("appname")}`}</title>
         </Helmet>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <TitleBlock title={t("commun.shop")} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <CountBlock
             title={t("commun.avatars")}
             count={avatarsDisplay.length}
@@ -116,7 +116,7 @@ export default function ShopPage() {
             <AvatarShopBlock avatars={avatarsDisplay} />
           </CountBlock>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <CountBlock
             title={t("commun.badges")}
             count={badgesDisplay.length}
@@ -125,7 +125,7 @@ export default function ShopPage() {
             <BadgeShopBlock badges={badgesDisplay} />
           </CountBlock>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <CountBlock
             title={t("commun.banners")}
             count={bannersDisplay.length}
@@ -134,7 +134,7 @@ export default function ShopPage() {
             <BannerShopBlock banners={bannersDisplay} />
           </CountBlock>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <CountBlock
             title={t("commun.titles")}
             count={titlesDisplay.length}
@@ -144,7 +144,7 @@ export default function ShopPage() {
           </CountBlock>
         </Grid>
         {themesShop.map((theme) => (
-          <Grid item xs={12} key={theme.id}>
+          <Grid key={theme.id} size={12}>
             <ThemeShopBlock theme={theme} />
           </Grid>
         ))}

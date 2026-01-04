@@ -61,7 +61,7 @@ export default function PreviousThemePage() {
       <Helmet>
         <title>{`${t("pages.previousgame.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <PageCategoryBlock
           title={t("pages.previousgame.title")}
           values={values}

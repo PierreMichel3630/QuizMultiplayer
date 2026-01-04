@@ -23,7 +23,7 @@ export const BarVictory = ({ victory, draw, defeat, color }: Props) => {
   return (
     <Grid container spacing={1} sx={{ textAlign: "center" }}>
       {games > 0 && (
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box
             sx={{
               width: percent(100),
@@ -58,7 +58,7 @@ export const BarVictory = ({ victory, draw, defeat, color }: Props) => {
           </Box>
         </Grid>
       )}
-      <Grid item xs={4}>
+      <Grid size={4}>
         <Typography
           variant="h4"
           component="span"
@@ -74,7 +74,7 @@ export const BarVictory = ({ victory, draw, defeat, color }: Props) => {
           {t("commun.victory", { count: victory })}
         </Typography>
       </Grid>
-      <Grid item xs={4}>
+      <Grid size={4}>
         <Typography
           variant="h4"
           component="span"
@@ -90,7 +90,7 @@ export const BarVictory = ({ victory, draw, defeat, color }: Props) => {
           {t("commun.draw", { count: draw })}
         </Typography>
       </Grid>
-      <Grid item xs={4}>
+      <Grid size={4}>
         <Typography
           variant="h4"
           component="span"

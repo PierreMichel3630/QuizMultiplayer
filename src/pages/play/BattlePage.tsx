@@ -342,21 +342,21 @@ export default function BattlePage() {
           sx={{ marginBottom: px(125) }}
         >
           {game && (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Grid container spacing={1} justifyContent="center">
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <SelectedTheme
                     avatars={avatars}
                     select={(t) => selectTheme(t)}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <FavoriteSelectAvatarBlock
                     select={(t) => selectTheme(t)}
                     avatars={avatars}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <SearchThemeSelectScrollBlock
                     onSelect={(v) => selectTheme(v)}
                     search={""}

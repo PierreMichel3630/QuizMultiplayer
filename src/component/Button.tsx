@@ -1,6 +1,12 @@
 import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
-import { Box, Button, ButtonProps, SvgIcon, Typography } from "@mui/material";
-import { Variant } from "@mui/material/styles/createTypography";
+import {
+  Box,
+  Button,
+  ButtonProps,
+  SvgIcon,
+  Typography,
+  TypographyVariant,
+} from "@mui/material";
 import { important, percent, px } from "csx";
 import { ElementType, ReactNode } from "react";
 import { Colors } from "src/style/Colors";
@@ -10,7 +16,7 @@ interface Props extends ButtonProps {
   icon?: ElementType;
   fullWidth?: boolean;
   iconSize?: number;
-  typography?: Variant | "inherit";
+  typography?: TypographyVariant | "inherit";
   variant?: "text" | "outlined" | "contained";
   noWrap?: boolean;
 }

@@ -43,7 +43,7 @@ export const UpdateAppNotificationBlock = ({ notification }: Props) => {
       elevation={8}
     >
       <Grid container spacing={1}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box
             sx={{
               display: "flex",
@@ -67,7 +67,7 @@ export const UpdateAppNotificationBlock = ({ notification }: Props) => {
             </Box>
           </Box>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <ButtonColor
             typography="h6"
             iconSize={20}
@@ -78,7 +78,7 @@ export const UpdateAppNotificationBlock = ({ notification }: Props) => {
             onClick={seeNews}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <UpdateAppButton />
         </Grid>
       </Grid>

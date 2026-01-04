@@ -23,8 +23,6 @@ export const CardCompare = ({ value }: Props) => {
     >
       <Grid container>
         <Grid
-          item
-          xs={12}
           sx={{
             display: "flex",
             alignItems: "center",
@@ -33,7 +31,7 @@ export const CardCompare = ({ value }: Props) => {
             backgroundColor: Colors.colorApp,
             p: px(5),
           }}
-        >
+          size={12}>
           <ImageThemeBlock theme={value.theme} size={40} />
           <Typography
             variant="h2"
@@ -46,7 +44,7 @@ export const CardCompare = ({ value }: Props) => {
             {value.theme.name}
           </Typography>
         </Grid>
-        <Grid item xs={12} sx={{ p: 1 }}>
+        <Grid sx={{ p: 1 }} size={12}>
           <Grid
             container
             spacing={1}
@@ -55,17 +53,17 @@ export const CardCompare = ({ value }: Props) => {
           >
             {value.opposition && (
               <>
-                <Grid item xs={12} sx={{ textAlign: "center" }}>
+                <Grid sx={{ textAlign: "center" }} size={12}>
                   <Typography variant="h4">{t("commun.opposition")}</Typography>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <BarVictory
                     victory={value.opposition.victory}
                     draw={value.opposition.draw}
                     defeat={value.opposition.defeat}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Divider sx={{ borderBottomWidth: 3 }} />
                 </Grid>
               </>
@@ -115,11 +113,11 @@ const CompareSolo = ({ score1, score2 }: PropsCompare) => {
   ];
   return (
     <>
-      <Grid item xs={12} sx={{ textAlign: "center" }}>
+      <Grid sx={{ textAlign: "center" }} size={12}>
         <Typography variant="h4">{t("commun.solo")}</Typography>
       </Grid>
       {datasSolo.map((el, index) => (
-        <Grid item xs={12} key={index}>
+        <Grid key={index} size={12}>
           <LineCompareTable value={el} />
         </Grid>
       ))}
@@ -173,15 +171,15 @@ const CompareDuel = ({ score1, score2 }: PropsCompare) => {
   ];
   return (
     <>
-      <Grid item xs={12} sx={{ textAlign: "center" }}>
+      <Grid sx={{ textAlign: "center" }} size={12}>
         <Typography variant="h4">{t("commun.duel")}</Typography>
       </Grid>
       {datasDuel.map((el, index) => (
-        <Grid item xs={12} key={index}>
+        <Grid key={index} size={12}>
           <LineCompareTable value={el} />
         </Grid>
       ))}
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Divider sx={{ borderBottomWidth: 3 }} />
       </Grid>
     </>

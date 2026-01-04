@@ -12,13 +12,13 @@ export const OfflineBlock = () => {
       justifyContent="center"
       alignContent="center"
     >
-      <Grid item>
+      <Grid>
         <WifiOffIcon sx={{ fontSize: 180 }} />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Typography variant="h4">{t("offline.title")}</Typography>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Typography variant="body1">{t("offline.text")}</Typography>
       </Grid>
     </Grid>

@@ -4,7 +4,7 @@ import { NotificationForm } from "src/form/admin/NotificationForm";
 export default function AdminNotificationPage() {
   return (
     <Grid container spacing={1} justifyContent="center">
-      <Grid item xs={12}>
+      <Grid size={12}>
         <NotificationForm />
       </Grid>
     </Grid>

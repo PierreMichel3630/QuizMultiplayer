@@ -65,15 +65,13 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
     <Box sx={{ pt: 3, pr: 1, pl: 1 }}>
       <Grid container spacing={2}>
         <Grid
-          item
-          xs={12}
           sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             gap: 1,
           }}
-        >
+          size={12}>
           <Box sx={{ width: px(70) }}>
             <ImageThemeBlock theme={game.theme} />
           </Box>
@@ -83,24 +81,22 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
             values={game.theme.themetranslation}
           />
         </Grid>
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
+        <Grid sx={{ textAlign: "center" }} size={12}>
           <Typography variant="h1">{t("commun.cancelgame")}</Typography>
         </Grid>
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
+        <Grid sx={{ textAlign: "center" }} size={12}>
           <Typography variant="body1">
             {t("commun.opponentdontjoin")}
           </Typography>
         </Grid>
         <Grid
-          item
-          xs={5}
           sx={{
             display: "flex",
             flexDirection: "column",
             alignItems: "flex-end",
             gap: 1,
           }}
-        >
+          size={5}>
           <AvatarAccountBadge
             profile={game.player1}
             size={80}
@@ -113,26 +109,22 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
           <LabelRankBlock loading={loadingP1} score={scoreP1} />
         </Grid>
         <Grid
-          item
-          xs={2}
           sx={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
           }}
-        >
+          size={2}>
           <BoltIcon sx={{ fontSize: 50, color: Colors.white }} />
         </Grid>
         <Grid
-          item
-          xs={5}
           sx={{
             display: "flex",
             flexDirection: "column",
             alignItems: "flex-start",
             gap: 1,
           }}
-        >
+          size={5}>
           {game.player2 && (
             <>
               <AvatarAccountBadge
@@ -148,7 +140,7 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
             </>
           )}
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box
             sx={{
               display: "flex",

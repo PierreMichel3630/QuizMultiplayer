@@ -137,128 +137,112 @@ export const DonutGames = ({
     setType(newTypes.length > 0 ? newTypes[0].value : undefined);
   }, [scores, t]);
 
-  return (
-    (loading || types.length > 0) && (
-      <Paper sx={{ overflow: "hidden" }}>
-        <Grid container>
-          <Grid
-            item
-            xs={12}
-            sx={{
-              backgroundColor: Colors.colorApp,
-              p: px(5),
-            }}
-          >
-            <Grid container spacing={1} alignItems="center">
-              <Grid item xs={8}>
-                <Typography
-                  variant="h2"
-                  sx={{
-                    wordWrap: "break-word",
-                    fontSize: 18,
-                  }}
-                  color="text.secondary"
-                >
-                  {t("commun.gamesplay")}
-                </Typography>
-              </Grid>
-              {type && (
-                <Grid
-                  item
-                  xs={4}
-                  sx={{ display: "flex", justifyContent: "flex-end" }}
-                >
-                  <ToogleButtonCard
-                    select={type}
-                    onChange={(value) => setType(value as "solo" | "duel")}
-                    values={types}
-                  />
-                </Grid>
-              )}
-            </Grid>
+  return ((loading || types.length > 0) && (<Paper sx={{ overflow: "hidden" }}>
+    <Grid container>
+      <Grid
+        sx={{
+          backgroundColor: Colors.colorApp,
+          p: px(5),
+        }}
+        size={12}>
+        <Grid container spacing={1} alignItems="center">
+          <Grid size={8}>
+            <Typography
+              variant="h2"
+              sx={{
+                wordWrap: "break-word",
+                fontSize: 18,
+              }}
+              color="text.secondary"
+            >
+              {t("commun.gamesplay")}
+            </Typography>
           </Grid>
-          <Grid
-            item
-            xs={12}
-            sx={{
-              backgroundColor: Colors.grey,
-              display: "flex",
-              p: 1,
-            }}
-          >
-            <Grid container spacing={1} justifyContent="center">
-              {loading ? (
+          {type && (
+            <Grid sx={{ display: "flex", justifyContent: "flex-end" }} size={4}>
+              <ToogleButtonCard
+                select={type}
+                onChange={(value) => setType(value as "solo" | "duel")}
+                values={types}
+              />
+            </Grid>
+          )}
+        </Grid>
+      </Grid>
+      <Grid
+        sx={{
+          backgroundColor: Colors.grey,
+          display: "flex",
+          p: 1,
+        }}
+        size={12}>
+        <Grid container spacing={1} justifyContent="center">
+          {loading ? (
+            <>
+              <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
+                <Skeleton variant="rectangular" width={120} height={15} />
+              </Grid>
+              <Grid>
+                <Skeleton variant="circular" width={250} height={250} />
+              </Grid>
+            </>
+          ) : (
+            <>
+              {type === "duel" ? (
                 <>
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{ display: "flex", justifyContent: "center" }}
-                  >
-                    <Skeleton variant="rectangular" width={120} height={15} />
+                  <Grid sx={{ textAlign: "center" }} size={12}>
+                    <Typography variant="body1" component="span">
+                      {t("commun.games")} {" : "}
+                    </Typography>
+                    <Typography variant="h4" component="span">
+                      {totalScore.victory +
+                        totalScore.draw +
+                        totalScore.defeat}
+                    </Typography>
                   </Grid>
-                  <Grid item>
-                    <Skeleton variant="circular" width={250} height={250} />
+                  <Grid size={12}>
+                    <BarVictory
+                      victory={totalScore.victory}
+                      draw={totalScore.draw}
+                      defeat={totalScore.defeat}
+                    />
                   </Grid>
                 </>
               ) : (
-                <>
-                  {type === "duel" ? (
-                    <>
-                      <Grid item xs={12} sx={{ textAlign: "center" }}>
-                        <Typography variant="body1" component="span">
-                          {t("commun.games")} {" : "}
-                        </Typography>
-                        <Typography variant="h4" component="span">
-                          {totalScore.victory +
-                            totalScore.draw +
-                            totalScore.defeat}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={12}>
-                        <BarVictory
-                          victory={totalScore.victory}
-                          draw={totalScore.draw}
-                          defeat={totalScore.defeat}
-                        />
-                      </Grid>
-                    </>
-                  ) : (
-                    <Grid item xs={12} sx={{ textAlign: "center" }}>
-                      <Typography variant="body1" component="span">
-                        {t("commun.games")} {" : "}
-                      </Typography>
-                      <Typography variant="h4" component="span">
-                        {totalSolo}
-                      </Typography>
-                    </Grid>
-                  )}
-                  <Grid item xs={12}>
-                    <DonutChart data={data} />
-                  </Grid>
-                  {profile && (
-                    <Grid item xs={12}>
-                      <ButtonColor
-                        value={Colors.blue2}
-                        label={t("commun.gamehistory")}
-                        icon={HistoryIcon}
-                        variant="contained"
-                        onClick={() =>
-                          navigate(`/games`, {
-                            state: {
-                              player: profile,
-                              type: type,
-                            },
-                          })
-                        }
-                      />
-                    </Grid>
-                  )}
-                </>
+                <Grid sx={{ textAlign: "center" }} size={12}>
+                  <Typography variant="body1" component="span">
+                    {t("commun.games")} {" : "}
+                  </Typography>
+                  <Typography variant="h4" component="span">
+                    {totalSolo}
+                  </Typography>
+                </Grid>
               )}
-            </Grid>
-          </Grid>
+              <Grid size={12}>
+                <DonutChart data={data} />
+              </Grid>
+              {profile && (
+                <Grid size={12}>
+                  <ButtonColor
+                    value={Colors.blue2}
+                    label={t("commun.gamehistory")}
+                    icon={HistoryIcon}
+                    variant="contained"
+                    onClick={() =>
+                      navigate(`/games`, {
+                        state: {
+                          player: profile,
+                          type: type,
+                        },
+                      })
+                    }
+                  />
+                </Grid>
+              )}
+            </>
+          )}
         </Grid>
-      </Paper>
-    )
-  );
+      </Grid>
+    </Grid>
+  </Paper>));
 };

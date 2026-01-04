@@ -51,10 +51,10 @@ export const VersionModal = ({
       </AppBar>
       <DialogContent>
         <Grid container spacing={1}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Typography>{t("commun.installupdatetext")}</Typography>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Box sx={{ display: "flex", gap: 1, alignItems: "baseline" }}>
               <Typography variant="h6">
                 {t("commun.requiredversion")} :
@@ -64,7 +64,7 @@ export const VersionModal = ({
               </Typography>
             </Box>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Box sx={{ display: "flex", gap: 1, alignItems: "baseline" }}>
               <Typography variant="h6">{t("commun.myversion")} :</Typography>
               <Typography variant="body1" fontSize={15}>
@@ -72,7 +72,7 @@ export const VersionModal = ({
               </Typography>
             </Box>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <UpdateAppButton onUpdate={() => close()} />
           </Grid>
         </Grid>

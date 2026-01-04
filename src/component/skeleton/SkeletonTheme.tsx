@@ -13,7 +13,7 @@ export const SkeletonThemes = ({ number }: Props) => {
 
 export const SkeletonThemesGrid = ({ number }: Props) => {
   return Array.from(new Array(number)).map((_, index) => (
-    <Grid item key={index}>
+    <Grid key={index}>
       <SkeletonTheme />
     </Grid>
   ));
@@ -32,7 +32,7 @@ export const SkeletonCardTheme = () => {
   return (
     <Paper sx={{ p: 1 }}>
       <Grid container spacing={1} alignItems="center">
-        <Grid item>
+        <Grid>
           <Skeleton
             variant="rectangular"
             animation="wave"
@@ -41,15 +41,13 @@ export const SkeletonCardTheme = () => {
           />
         </Grid>
         <Grid
-          item
-          xs
           sx={{
             display: "flex",
             gap: 2,
             alignItems: "center",
             justifyContent: "flex-start",
           }}
-        >
+          size="grow">
           <Skeleton
             variant="rectangular"
             animation="wave"
@@ -85,15 +83,13 @@ export const SkeletonProfilTheme = () => {
     >
       <Grid container>
         <Grid
-          item
-          xs={12}
           sx={{
             display: "flex",
             gap: 1,
             backgroundColor: Colors.colorApp,
             p: px(5),
           }}
-        >
+          size={12}>
           <Skeleton
             variant="rectangular"
             animation="wave"
@@ -105,7 +101,7 @@ export const SkeletonProfilTheme = () => {
             <Skeleton width={120} height={20} />
           </Box>
         </Grid>
-        <Grid item xs={12} sx={{ p: 1 }}>
+        <Grid sx={{ p: 1 }} size={12}>
           <Skeleton width={80} height={35} />
           <Skeleton width="100%" height={20} />
           <Skeleton width={80} height={35} />

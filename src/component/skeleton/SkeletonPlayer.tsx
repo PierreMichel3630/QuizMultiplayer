@@ -8,7 +8,7 @@ export const SkeletonPlayers = ({ number }: Props) => {
   return (
     <>
       {Array.from(new Array(number)).map((_, index) => (
-        <Grid item key={index} xs={12}>
+        <Grid key={index} size={12}>
           <SkeletonPlayer key={index} />
         </Grid>
       ))}
@@ -35,7 +35,7 @@ export const SkeletonPlayer = () => (
 
 export const SkeletonAvatarPlayers = ({ number }: Props) => {
   return Array.from(new Array(number)).map((_, index) => (
-    <Grid item key={index}>
+    <Grid key={index}>
       <SkeletonAvatarPlayer key={index} />
     </Grid>
   ));

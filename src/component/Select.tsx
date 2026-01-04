@@ -2,14 +2,10 @@ import {
   Autocomplete,
   Box,
   Divider,
-  FormControl,
   Grid,
-  InputLabel,
   Menu,
   MenuItem,
   Paper,
-  Select,
-  SelectChangeEvent,
   TextField,
   Typography,
 } from "@mui/material";
@@ -20,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ClearIcon from "@mui/icons-material/Clear";
 import { getCategoryById, searchCategoriesPaginate } from "src/api/search";
+import { selectThemeShop } from "src/api/shop";
 import { useUser } from "src/context/UserProvider";
 import { colorDifficulty, Difficulty } from "src/models/enum/DifficultyEnum";
 import { Language } from "src/models/Language";
@@ -32,7 +29,6 @@ import { ImageThemeBlock } from "./ImageThemeBlock";
 import { BasicSearchInput } from "./Input";
 import { LanguageIcon } from "./language/LanguageBlock";
 import { TextNameBlock } from "./language/TextLanguageBlock";
-import { selectThemeShop } from "src/api/shop";
 
 interface Props {
   value: Difficulty;
@@ -154,15 +150,14 @@ export const AutocompleteTheme = ({
 
   return (
     <Grid container spacing={1} alignItems="center">
-      <Grid item xs={12}>
+      <Grid size={12}>
         <AutocompleteInputTheme
           placeholder={t("commun.selecttheme")}
           onSelect={(newvalue) => onChange([...value, newvalue])}
         />
       </Grid>
-
       {value.map((v) => (
-        <Grid item key={v.id}>
+        <Grid key={v.id}>
           <Paper
             variant="outlined"
             sx={{
@@ -283,48 +278,6 @@ export const SelectLanguage = ({
   );
 };
 
-interface ValueSelect {
-  label: string;
-  value: string;
-}
-interface PropsBasicSelect {
-  label: string;
-  placeholder: string;
-  options: Array<ValueSelect>;
-  value: string;
-  onChange: (value: string) => void;
-}
-
-export const BasicSelect = ({
-  label,
-  options,
-  placeholder,
-  value,
-  onChange,
-}: PropsBasicSelect) => {
-  return (
-    <FormControl fullWidth>
-      <InputLabel id="label-basic-select">{label}</InputLabel>
-      <Select
-        labelId="label-basic-select"
-        id="basic-select"
-        value={value}
-        label={label}
-        placeholder={placeholder}
-        onChange={(event: SelectChangeEvent) =>
-          onChange(event.target.value as string)
-        }
-      >
-        {options.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  );
-};
-
 interface PropsAutocompleteNumber {
   label: string;
   value: Array<number>;
@@ -346,7 +299,7 @@ export const AutocompleteNumber = ({
 
   return (
     <Grid container spacing={1} alignItems="center">
-      <Grid item xs={12}>
+      <Grid size={12}>
         <form
           onSubmit={(event) => {
             event.preventDefault();
@@ -362,9 +315,8 @@ export const AutocompleteNumber = ({
           />
         </form>
       </Grid>
-
       {value.map((v, index) => (
-        <Grid item key={index}>
+        <Grid key={index}>
           <Paper
             variant="outlined"
             sx={{
