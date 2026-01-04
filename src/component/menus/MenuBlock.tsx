@@ -1,33 +1,34 @@
+import AppsIcon from "@mui/icons-material/Apps";
 import BarChartIcon from "@mui/icons-material/BarChart";
-import PieChartIcon from "@mui/icons-material/PieChart";
 import BrushIcon from "@mui/icons-material/Brush";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+import EditIcon from "@mui/icons-material/Edit";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import HistoryIcon from "@mui/icons-material/History";
 import InstallMobileIcon from "@mui/icons-material/InstallMobile";
 import LiveHelpIcon from "@mui/icons-material/LiveHelp";
+import NotesIcon from "@mui/icons-material/Notes";
+import PeopleIcon from "@mui/icons-material/People";
+import PieChartIcon from "@mui/icons-material/PieChart";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import SecurityIcon from "@mui/icons-material/Security";
-import EditIcon from "@mui/icons-material/Edit";
 import SettingsIcon from "@mui/icons-material/Settings";
-import AppsIcon from "@mui/icons-material/Apps";
-import PeopleIcon from "@mui/icons-material/People";
-import NotesIcon from "@mui/icons-material/Notes";
 import {
   Badge,
-  List,
   Divider,
+  List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { useMemo, Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { useNotification } from "src/context/NotificationProvider";
+import { NotificationType } from "src/models/enum/NotificationType";
 
 interface Menu {
   value: string;
@@ -40,14 +41,18 @@ interface Menu {
 export const MenuBlock = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { myaccomplishments } = useApp();
+  const { notifications } = useNotification();
   const { user, profile } = useAuth();
 
   const notificationsAccomplishment = useMemo(
-    () => myaccomplishments.filter((el) => !el.validate).length,
-    [myaccomplishments]
+    () =>
+      [...notifications].filter(
+        (el) =>
+          el.isread === false &&
+          el.type === NotificationType.accomplishment_unlock
+      ).length,
+    [notifications]
   );
-
   const menus: Array<Menu> = useMemo(
     () => [
       {
