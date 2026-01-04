@@ -31,20 +31,20 @@ export default function ConfidentialityPage() {
   return (
     <Box sx={{ p: 1 }}>
       <Grid container spacing={2} sx={{ mt: 0, mb: 2 }}>
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
+        <Grid sx={{ textAlign: "center" }} size={12}>
           <Typography variant="h1">{t("confidentiality.title")}</Typography>
         </Grid>
         {chartes.map((el, index) => (
           <Fragment key={index}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Typography variant="h2">{el.title}</Typography>
             </Grid>
             {el.rules.map((rule, i) => (
               <Fragment key={i}>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Typography variant="h4">{t(`${rule}.title`)}</Typography>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Typography variant="body1">{t(`${rule}.text`)}</Typography>
                 </Grid>
               </Fragment>

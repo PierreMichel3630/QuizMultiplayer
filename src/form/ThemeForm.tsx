@@ -227,7 +227,7 @@ export const ThemeForm = ({ validate, theme }: Props) => {
     <FormikProvider value={formik}>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2} alignItems="center" justifyContent="center">
-          <Grid item xs={12}>
+          <Grid size={12}>
             <FormControl
               fullWidth
               error={Boolean(formik.touched.color && formik.errors.color)}
@@ -252,13 +252,13 @@ export const ThemeForm = ({ validate, theme }: Props) => {
               )}
             </FormControl>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Divider />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Typography variant="h6">{t("form.createtheme.logo")}</Typography>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <FileUploadInput
               formik={formik}
               field="image"
@@ -266,7 +266,7 @@ export const ThemeForm = ({ validate, theme }: Props) => {
               maxSize={50}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Divider>
               <Typography variant="h4">{t("commun.translations")}</Typography>
             </Divider>
@@ -285,8 +285,6 @@ export const ThemeForm = ({ validate, theme }: Props) => {
                     const value = formik.values.themetranslation[index];
                     return (
                       <Grid
-                        item
-                        xs={12}
                         key={index}
                         sx={{
                           display: "flex",
@@ -294,7 +292,7 @@ export const ThemeForm = ({ validate, theme }: Props) => {
                           justifyContent: "space-between",
                           alignItems: "center",
                         }}
-                      >
+                        size={12}>
                         <SelectLanguage
                           value={value.language}
                           languages={languageNotUsed}
@@ -314,7 +312,6 @@ export const ThemeForm = ({ validate, theme }: Props) => {
                           size="small"
                           fullWidth
                         />
-
                         <IconButton
                           aria-label="delete"
                           onClick={() => remove(index)}
@@ -325,7 +322,7 @@ export const ThemeForm = ({ validate, theme }: Props) => {
                     );
                   })}
                   {languageNotUsed.length > 0 && (
-                    <Grid item xs={6}>
+                    <Grid size={6}>
                       <ButtonColor
                         value={Colors.blue}
                         label={t("commun.addtranslation")}
@@ -341,7 +338,7 @@ export const ThemeForm = ({ validate, theme }: Props) => {
               );
             }}
           </FieldArray>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Divider>
               <Typography variant="h4">{t("commun.categories")}</Typography>
             </Divider>
@@ -354,8 +351,6 @@ export const ThemeForm = ({ validate, theme }: Props) => {
                     const value = formik.values.categorytheme[index];
                     return (
                       <Grid
-                        item
-                        xs={12}
                         key={index}
                         sx={{
                           display: "flex",
@@ -363,7 +358,7 @@ export const ThemeForm = ({ validate, theme }: Props) => {
                           justifyContent: "space-between",
                           alignItems: "center",
                         }}
-                      >
+                        size={12}>
                         <SelectCategory
                           value={value.category}
                           onChange={(value) =>
@@ -373,7 +368,6 @@ export const ThemeForm = ({ validate, theme }: Props) => {
                             )
                           }
                         />
-
                         <IconButton
                           aria-label="delete"
                           onClick={() => remove(index)}
@@ -383,7 +377,7 @@ export const ThemeForm = ({ validate, theme }: Props) => {
                       </Grid>
                     );
                   })}
-                  <Grid item xs={6}>
+                  <Grid size={6}>
                     <ButtonColor
                       value={Colors.blue}
                       label={t("commun.addcategory")}
@@ -396,7 +390,7 @@ export const ThemeForm = ({ validate, theme }: Props) => {
               );
             }}
           </FieldArray>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ButtonColor
               value={Colors.green}
               label={t("commun.validate")}

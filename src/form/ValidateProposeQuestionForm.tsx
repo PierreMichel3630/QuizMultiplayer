@@ -151,7 +151,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={2} alignItems="center">
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(
@@ -167,7 +167,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
             </FormHelperText>
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.question && formik.errors.question)}
@@ -194,7 +194,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.response && formik.errors.response)}
@@ -219,7 +219,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(
@@ -246,7 +246,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(
@@ -273,7 +273,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(
@@ -300,33 +300,33 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12} sx={{ mt: 1 }}>
+        <Grid sx={{ mt: 1 }} size={12}>
           <Divider sx={{ borderBottomWidth: 5 }} />
         </Grid>
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
+        <Grid sx={{ textAlign: "center" }} size={12}>
           <Typography variant="h4" sx={{ textTransform: "uppercase" }}>
             {t("commun.themes")}
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <AutocompleteInputTheme
             placeholder={t("commun.selecttheme")}
             onSelect={(newvalue) => insertTheme(newvalue)}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Grid container spacing={1}>
             {questionThemes.map((el) => (
-              <Grid item xs={12} key={el.id}>
+              <Grid key={el.id} size={12}>
                 <Paper sx={{ p: 1 }}>
                   <Grid container spacing={1} alignItems="center">
-                    <Grid item>
+                    <Grid>
                       <ImageThemeBlock theme={el.theme} size={50} />
                     </Grid>
-                    <Grid item xs>
+                    <Grid size="grow">
                       <TextNameBlock values={el.theme.themetranslation} />
                     </Grid>
-                    <Grid item>
+                    <Grid>
                       <IconButton onClick={() => deleteTheme(el.id)}>
                         <DeleteIcon />
                       </IconButton>
@@ -337,7 +337,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
             ))}
           </Grid>
         </Grid>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <ButtonColor
             value={Colors.red}
             label={t("commun.delete")}
@@ -346,7 +346,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
             onClick={() => deleteProposition()}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <ButtonColor
             value={Colors.green}
             label={t("commun.validate")}

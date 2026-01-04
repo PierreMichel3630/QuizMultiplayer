@@ -18,7 +18,7 @@ export default function AdminThemesPage() {
 
   return (
     <Grid container spacing={1} justifyContent="center">
-      <Grid item xs={12}>
+      <Grid size={12}>
         <ButtonColor
           icon={AddIcon}
           label={t("commun.addtheme")}
@@ -27,7 +27,7 @@ export default function AdminThemesPage() {
           variant="contained"
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <BasicSearchInput
           label={t("commun.search")}
           onChange={(value) => setSearch(value)}

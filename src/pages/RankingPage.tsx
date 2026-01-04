@@ -342,8 +342,6 @@ export default function RankingPage() {
         content="Comparez vos scores aux autres joueurs et voyez qui a le plus de connaissances"
       />
       <Grid
-        item
-        xs={12}
         sx={{
           position: "sticky",
           top: headerSize,
@@ -354,7 +352,7 @@ export default function RankingPage() {
           gap: 1,
           flexDirection: "column",
         }}
-      >
+        size={12}>
         <GroupButtonClassement
           selected={type}
           onChange={(value) => {
@@ -410,7 +408,7 @@ export default function RankingPage() {
         )}
       </Grid>
       {profile && (
-        <Grid item xs={12} sx={{ pl: 1, pr: 1 }}>
+        <Grid sx={{ pl: 1, pr: 1 }} size={12}>
           <Box
             sx={{
               display: "flex",
@@ -432,8 +430,7 @@ export default function RankingPage() {
           </Box>
         </Grid>
       )}
-
-      <Grid item xs={12} sx={{ p: 1 }}>
+      <Grid sx={{ p: 1 }} size={12}>
         <RankingTable data={data} loading={!isEnd} lastItemRef={lastItemRef} />
       </Grid>
     </Grid>

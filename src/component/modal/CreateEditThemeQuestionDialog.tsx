@@ -79,14 +79,14 @@ export const CreateEditThemeQuestionDialog = ({
       </AppBar>
       <DialogContent>
         <Grid container spacing={1}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <AutocompleteInputTheme
               placeholder={t("commun.selecttheme")}
               onSelect={(newvalue) => onInsert(newvalue)}
             />
           </Grid>
           {themes.map((theme) => (
-            <Grid item key={theme.id}>
+            <Grid key={theme.id}>
               <ChipThemeEdit theme={theme} onDelete={() => onDelete(theme)} />
             </Grid>
           ))}

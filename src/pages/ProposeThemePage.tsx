@@ -70,21 +70,21 @@ export default function ProposeThemePage() {
         <Helmet>
           <title>{`${t("pages.proposetheme.title")} - ${t("appname")}`}</title>
         </Helmet>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box sx={{ p: 1 }}>
             <Grid container spacing={1} justifyContent="center">
-              <Grid item>
+              <Grid>
                 <GoBackButtonIcon />
               </Grid>
-              <Grid item xs sx={{ textAlign: "center" }}>
+              <Grid sx={{ textAlign: "center" }} size="grow">
                 <Typography variant="h2">{t("commun.proposetheme")}</Typography>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Typography variant="caption">
                   {t("commun.proposethemetext")}
                 </Typography>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Button
                   fullWidth
                   variant="contained"
@@ -98,22 +98,22 @@ export default function ProposeThemePage() {
                   </Typography>
                 </Button>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Divider />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Typography variant="h4">
                   {t("commun.proposethemes")}
                 </Typography>
               </Grid>
               {themes.map((value, index) => (
-                <Grid item key={index}>
+                <Grid key={index}>
                   <CardImage value={value} />
                 </Grid>
               ))}
               {isLoading && <SkeletonThemesGrid number={10} />}
               {!isLoading && themes.length === 0 && (
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Alert severity="warning">{t("commun.noresult")}</Alert>
                 </Grid>
               )}

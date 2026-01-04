@@ -28,7 +28,7 @@ export const CategoriesBlock = () => {
 
   return (
     <Grid container spacing={1}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         {itemsSearch.length > 0 && (
           <CategoryBlock
             title={t("commun.categories")}

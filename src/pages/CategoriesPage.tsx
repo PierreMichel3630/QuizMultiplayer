@@ -29,7 +29,7 @@ export default function CategoriesPage() {
       <Helmet>
         <title>{`${t("pages.categories.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <PageCategoryBlock
           title={t("pages.categories.title")}
           values={itemsSearch}

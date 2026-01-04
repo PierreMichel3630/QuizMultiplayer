@@ -82,18 +82,14 @@ export const SearchThemeScrollBlock = ({ search }: Props) => {
   return (
     <>
       {itemsSearch.length === 0 && isEnd ? (
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Alert severity="warning">{t("commun.noresult")}</Alert>
         </Grid>
       ) : (
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Grid container spacing={1} justifyContent="center" sx={{ mb: 1 }}>
             {itemsSearch.map((item, index) => (
-              <Grid
-                item
-                key={index}
-                ref={index === itemsSearch.length - 1 ? lastItemRef : null}
-              >
+              <Grid key={index} ref={index === itemsSearch.length - 1 ? lastItemRef : null}>
                 <CardImage value={item} />
               </Grid>
             ))}
@@ -181,18 +177,14 @@ export const SearchThemeSelectScrollBlock = ({
   return (
     <>
       {itemsSearch.length === 0 && isEnd ? (
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Alert severity="warning">{t("commun.noresult")}</Alert>
         </Grid>
       ) : (
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Grid container spacing={1} justifyContent="center" sx={{ mb: 1 }}>
             {itemsSearch.map((item, index) => (
-              <Grid
-                item
-                key={index}
-                ref={index === itemsSearch.length - 1 ? lastItemRef : null}
-              >
+              <Grid key={index} ref={index === itemsSearch.length - 1 ? lastItemRef : null}>
                 <CardSelectTheme
                   theme={item}
                   onSelect={() => onSelect(item)}

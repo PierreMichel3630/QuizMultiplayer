@@ -19,25 +19,23 @@ export default function HelpPage() {
 
   return (
     <Grid container>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <HeadTitle title={t("pages.help.title")} />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Divider>
                 <Typography variant="h4">{t("commun.explainvideo")}</Typography>
               </Divider>
             </Grid>
             <Grid
-              item
-              xs={12}
               sx={{
                 display: "flex",
                 justifyContent: "center",
               }}
-            >
+              size={12}>
               <Link
                 to={urlYoutube}
                 style={{
@@ -63,12 +61,12 @@ export default function HelpPage() {
                 </Box>
               </Link>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Divider>
                 <Typography variant="h4">{t("commun.rules")}</Typography>
               </Divider>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <RuleBlock
                 rules={[
                   { label: t("rules.step1") },
@@ -77,24 +75,24 @@ export default function HelpPage() {
                 ]}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Divider>
                 <Typography variant="h4">{t("commun.modes")}</Typography>
               </Divider>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <ModesBlock />
             </Grid>
 
             {user === null && (
               <>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Divider>
                     <Typography variant="h4">{t("commun.warnings")}</Typography>
                   </Divider>
                 </Grid>
                 {warnings.map((warning, index) => (
-                  <Grid item xs={12} key={index}>
+                  <Grid key={index} size={12}>
                     <Box
                       sx={{
                         p: 1,

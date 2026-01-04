@@ -77,7 +77,7 @@ export default function ChallengeGamePage() {
         <title>{`${t("commun.daychallenge")} - ${t("appname")}`}</title>
       </Helmet>
       <BarNavigation title={t("commun.daychallenge")} />
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Container maxWidth="md">
           <Box
             sx={{
@@ -88,8 +88,6 @@ export default function ChallengeGamePage() {
             {game && (
               <Grid container spacing={1}>
                 <Grid
-                  item
-                  xs={12}
                   sx={{
                     display: "flex",
                     justifyContent: streakChallenge
@@ -98,7 +96,7 @@ export default function ChallengeGamePage() {
                     alignItems: "center",
                     gap: 1,
                   }}
-                >
+                  size={12}>
                   <HeaderProfile profile={game.profile} />
                   {streakChallenge && (
                     <StreakBlock
@@ -110,39 +108,35 @@ export default function ChallengeGamePage() {
                 </Grid>
                 {extra && (
                   <>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <ExtraBlock value={extra} />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Divider sx={{ borderBottomWidth: 5 }} />
                     </Grid>
                   </>
                 )}
                 <Grid
-                  item
-                  xs={6}
                   sx={{
                     display: "flex",
                     gap: 1,
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                >
+                  size={6}>
                   <QuestionMarkIcon />
                   <Typography variant="h4" noWrap>
                     {game.score} / {NUMBER_QUESTIONS_CHALLENGE}
                   </Typography>
                 </Grid>
                 <Grid
-                  item
-                  xs={6}
                   sx={{
                     display: "flex",
                     gap: 1,
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                >
+                  size={6}>
                   <AccessTimeIcon />
                   <Typography variant="h4" noWrap>
                     {(game.time / 1000).toFixed(2)}s
@@ -150,13 +144,13 @@ export default function ChallengeGamePage() {
                 </Grid>
                 {questions.map((el, index) => (
                   <Fragment key={index}>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <CardSignalQuestion
                         question={el}
                         version={game.version}
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Divider
                         sx={{
                           borderBottomWidth: 5,

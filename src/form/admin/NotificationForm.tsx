@@ -105,7 +105,7 @@ export const NotificationForm = () => {
     <FormikProvider value={formik}>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2} alignItems="center" justifyContent="center">
-          <Grid item xs={12}>
+          <Grid size={12}>
             <FormControl
               fullWidth
               error={Boolean(formik.touched.type && formik.errors.type)}
@@ -131,7 +131,7 @@ export const NotificationForm = () => {
           </Grid>
           {formik.values.type === NotificationType.other ? (
             <>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <SelectorProfileBlock
                   label={t("commun.selectplayer")}
                   profile={formik.values.profile}
@@ -144,7 +144,7 @@ export const NotificationForm = () => {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <FormControl
                   fullWidth
                   error={Boolean(formik.touched.title && formik.errors.title)}
@@ -168,7 +168,7 @@ export const NotificationForm = () => {
                   )}
                 </FormControl>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <FormControl
                   fullWidth
                   error={Boolean(formik.touched.text && formik.errors.text)}
@@ -195,7 +195,7 @@ export const NotificationForm = () => {
             </>
           ) : (
             <>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <FormControl
                   fullWidth
                   error={Boolean(
@@ -223,7 +223,11 @@ export const NotificationForm = () => {
               </Grid>
             </>
           )}
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6
+            }}>
             <NotificationBlock
               notification={{
                 id: 0,
@@ -240,11 +244,11 @@ export const NotificationForm = () => {
             />
           </Grid>
           {formik.values.type === NotificationType.update_app && (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Alert severity="warning">{t("alert.sendemailtoallusers")}</Alert>
             </Grid>
           )}
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ButtonColor
               value={Colors.green}
               label={t("commun.send")}

@@ -117,7 +117,7 @@ export const InputResponseBlock = ({
           </Box>
         ) : (
           <Grid container spacing={1} alignItems="center">
-            <Grid item xs>
+            <Grid size="grow">
               <form
                 noValidate
                 autoComplete="off"

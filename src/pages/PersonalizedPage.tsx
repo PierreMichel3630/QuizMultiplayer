@@ -148,34 +148,40 @@ export default function PersonalizedPage() {
       </Helmet>
       {profile && (
         <Grid
-          item
-          xs={12}
           sx={{
             position: "sticky",
             top: headerSize,
             zIndex: 100,
             pb: 1,
           }}
-        >
+          size={12}>
           <ProfilHeader profile={profile} />
         </Grid>
       )}
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1} alignItems="center">
-            <Grid item xs={12}>
+            <Grid size={12}>
               <UsernameInput />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <EmailInput />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 4
+              }}>
               <Typography variant="h4">
                 {t("commun.myorigincountry")}
               </Typography>
             </Grid>
             {profile ? (
-              <Grid item xs={12} md={8}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 8
+                }}>
                 <MyCountryBlock
                   country={profile.country}
                   onChange={(value) => changeCountry(value)}
@@ -183,20 +189,24 @@ export default function PersonalizedPage() {
                 />
               </Grid>
             ) : (
-              <Grid item xs={12} md={8}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 8
+                }}>
                 <SkeletonRectangular height={40} />
               </Grid>
             )}
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Divider />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Typography variant="h4">{t("commun.avatars")}</Typography>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <AvatarSelector onSelect={changeAvatar} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <ButtonColor
                 fullWidth
                 value={Colors.green}
@@ -206,16 +216,16 @@ export default function PersonalizedPage() {
                 onClick={() => navigate("/shop")}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Divider />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Typography variant="h4">{t("commun.badges")}</Typography>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <BadgeSelector onSelect={changeBadge} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <ButtonColor
                 fullWidth
                 value={Colors.green}
@@ -225,16 +235,16 @@ export default function PersonalizedPage() {
                 onClick={() => navigate("/shop")}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Divider />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Typography variant="h4">{t("commun.banners")}</Typography>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <BannerSelector onSelect={changeBanner} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <ButtonColor
                 fullWidth
                 value={Colors.green}
@@ -244,16 +254,16 @@ export default function PersonalizedPage() {
                 onClick={() => navigate("/shop")}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Divider />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Typography variant="h4">{t("commun.titles")}</Typography>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <TitleSelector onSelect={changeTitleProfile} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <ButtonColor
                 fullWidth
                 value={Colors.green}
@@ -263,10 +273,10 @@ export default function PersonalizedPage() {
                 onClick={() => navigate("/shop")}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Divider />
             </Grid>
-            <Grid item xs={12} sx={{ mt: 2 }}>
+            <Grid sx={{ mt: 2 }} size={12}>
               <DeleteAccountButton />
             </Grid>
           </Grid>

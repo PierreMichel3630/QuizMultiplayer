@@ -101,7 +101,7 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
                 ? Colors.red
                 : Colors.black;
             return (
-              <Grid item xs={12} key={index}>
+              <Grid key={index} size={12}>
                 <Paper variant="outlined" sx={{ p: 1 }}>
                   <Grid
                     container
@@ -110,15 +110,13 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
                     justifyContent="center"
                   >
                     <Grid
-                      item
-                      xs={12}
                       sx={{
                         display: "flex",
                         gap: 1,
                         alignItems: "center",
                         justifyContent: "center",
                       }}
-                    >
+                      size={12}>
                       <ImageThemeBlock theme={el.theme} size={40} />
                       <TextNameBlock
                         variant="h4"
@@ -127,15 +125,13 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
                       />
                     </Grid>
                     <Grid
-                      item
-                      xs={4}
                       sx={{
                         display: "flex",
                         gap: 1,
                         alignItems: "center",
                         justifyContent: "flex-start",
                       }}
-                    >
+                      size={4}>
                       <AvatarAccount
                         avatar={game.player1.avatar.icon}
                         size={30}
@@ -155,15 +151,13 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
                       </Typography>
                     </Grid>
                     <Grid
-                      item
-                      xs={4}
                       sx={{
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         gap: 1,
                       }}
-                    >
+                      size={4}>
                       <Typography variant="h2" sx={{ color: colorPlayer1 }}>
                         {el.pointsPlayer1}
                       </Typography>
@@ -173,15 +167,13 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
                       </Typography>
                     </Grid>
                     <Grid
-                      item
-                      xs={4}
                       sx={{
                         display: "flex",
                         gap: 1,
                         alignItems: "center",
                         justifyContent: "flex-end",
                       }}
-                    >
+                      size={4}>
                       {game.player2 && (
                         <>
                           <Typography
@@ -210,15 +202,13 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
             );
           })}
           <Grid
-            item
-            xs={12}
             sx={{
               backgroundColor: "background.paper",
               pb: 2,
               position: "sticky",
               top: 0,
             }}
-          >
+            size={12}>
             <Grid
               container
               spacing={1}
@@ -226,26 +216,22 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
               justifyContent="center"
             >
               <Grid
-                item
-                xs={2}
                 sx={{
                   display: "flex",
                   gap: 1,
                   alignItems: "center",
                   justifyContent: "flex-start",
                 }}
-              >
+                size={2}>
                 <AvatarAccount avatar={game.player1.avatar.icon} size={50} />
               </Grid>
               <Grid
-                item
-                xs={8}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
                   gap: 1,
                 }}
-              >
+                size={8}>
                 <Box
                   sx={{
                     display: "flex",
@@ -280,15 +266,13 @@ export const HistoryGameModal = ({ game, open, close }: Props) => {
                 </Box>
               </Grid>
               <Grid
-                item
-                xs={2}
                 sx={{
                   display: "flex",
                   gap: 1,
                   alignItems: "center",
                   justifyContent: "flex-end",
                 }}
-              >
+                size={2}>
                 {game.player2 && (
                   <AvatarAccount avatar={game.player2.avatar.icon} size={50} />
                 )}

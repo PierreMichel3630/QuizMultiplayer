@@ -21,7 +21,7 @@ export const CopyTextBlock = ({ text }: Props) => {
   return (
     <Box>
       <Grid container alignItems="center">
-        <Grid item xs={9}>
+        <Grid size={9}>
           <Box
             sx={{
               overflow: "hidden",
@@ -34,7 +34,7 @@ export const CopyTextBlock = ({ text }: Props) => {
             </Typography>
           </Box>
         </Grid>
-        <Grid item xs={3}>
+        <Grid size={3}>
           <Button
             sx={{
               backgroundColor: Colors.colorApp,

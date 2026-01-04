@@ -46,20 +46,20 @@ export default function SharePage() {
         <Helmet>
           <title>{`${t("pages.sharefriend.title")} - ${t("appname")}`}</title>
         </Helmet>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box sx={{ p: 2 }}>
             <Grid container spacing={1} alignItems="center">
-              <Grid item>
+              <Grid>
                 <GoBackButtonIcon />
               </Grid>
-              <Grid item xs sx={{ textAlign: "center" }}>
+              <Grid sx={{ textAlign: "center" }} size="grow">
                 <Typography variant="h2">{t("commun.sharefriend")}</Typography>
               </Grid>
-              <Grid item xs={12} sx={{ mb: 2 }}>
+              <Grid sx={{ mb: 2 }} size={12}>
                 <Typography variant="body1">{t("commun.sharetext")}</Typography>
               </Grid>
               {canBrowserShareData && (
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <ButtonColor
                     typography="h6"
                     iconSize={20}
@@ -72,14 +72,12 @@ export default function SharePage() {
                 </Grid>
               )}
               <Grid
-                item
-                xs={2}
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
-              >
+                size={2}>
                 <img
                   alt="googleplay"
                   src={googleplay}
@@ -87,19 +85,17 @@ export default function SharePage() {
                   style={{ maxWidth: px(50) }}
                 />
               </Grid>
-              <Grid item xs={10}>
+              <Grid size={10}>
                 <Typography variant="h4">{t("commun.googleplay")}</Typography>
                 <CopyTextBlock text={urlGooglePlay} />
               </Grid>
               <Grid
-                item
-                xs={2}
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
-              >
+                size={2}>
                 <img
                   alt="logo"
                   src={logo}
@@ -107,7 +103,7 @@ export default function SharePage() {
                   style={{ maxWidth: px(50) }}
                 />
               </Grid>
-              <Grid item xs={10}>
+              <Grid size={10}>
                 <Typography variant="h4">{t("commun.computer")}</Typography>
                 <CopyTextBlock text={urlPc} />
               </Grid>

@@ -1,15 +1,14 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, TypographyVariant } from "@mui/material";
 import { Profile } from "src/models/Profile";
 import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 import { CountryImageBlock } from "../CountryBlock";
 import { ProfileTitleBlock } from "../title/ProfileTitle";
-import { Variant } from "@mui/material/styles/createTypography";
 
 interface Props {
   profile: Profile;
   extra?: JSX.Element;
   avatarSize?: number;
-  variant?: Variant;
+  variant?: TypographyVariant;
 }
 
 export const ProfileBlock = ({

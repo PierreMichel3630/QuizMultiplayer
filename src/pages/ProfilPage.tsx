@@ -290,7 +290,7 @@ export default function ProfilPage() {
         onClick={goPersonalized}
       >
         <Grid container spacing={1} justifyContent="center">
-          <Grid item sx={{ mb: 1 }}>
+          <Grid sx={{ mb: 1 }}>
             {profileUser && !isLoadingProfile ? (
               <AvatarAccountBadge
                 profile={profileUser}
@@ -306,12 +306,10 @@ export default function ProfilPage() {
           {profileUser && !isLoadingProfile && (
             <>
               <Grid
-                item
-                xs={12}
                 sx={{
                   textAlign: "center",
                 }}
-              >
+                size={12}>
                 <Typography
                   variant="h2"
                   color="text.secondary"
@@ -329,11 +327,7 @@ export default function ProfilPage() {
                 <ProfileTitleBlock titleprofile={profileUser.titleprofile} />
               </Grid>
               {!isMe && friend && (
-                <Grid
-                  item
-                  xs={12}
-                  sx={{ display: "flex", justifyContent: "center" }}
-                >
+                <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
                   <StatusProfileBlock
                     online={profileUser.isonline}
                     color="text.secondary"
@@ -341,11 +335,7 @@ export default function ProfilPage() {
                 </Grid>
               )}
               {profileUser.country && (
-                <Grid
-                  item
-                  xs={12}
-                  sx={{ display: "flex", justifyContent: "center" }}
-                >
+                <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
                   <CountryBlock
                     country={profileUser.country}
                     color="text.secondary"
@@ -358,29 +348,29 @@ export default function ProfilPage() {
       </Box>
       <Box sx={{ p: 1 }}>
         <Grid container spacing={1}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             {isMe ? <ShopItems /> : <ProfileAction profileUser={profileUser} />}
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <CardChallenge profileId={id} />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={12}>
             <CardBadge badges={badges} loading={isLoadingBadge} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <CardTitle titles={titles} loading={isLoadingTitle} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <CardFriends friends={friendsAvatar} loading={isLoadingFriends} />
           </Grid>
           {profileUser && (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <CardFinishTheme profile={profileUser} />
             </Grid>
           )}
           {profileUser && totalOpposition.games > 0 && (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <CardOpposition
                 opposition={totalOpposition}
                 opponent={profileUser}
@@ -443,14 +433,14 @@ export default function ProfilPage() {
             {scores.map((score, index) => {
               return (
                 <Grid
-                  item
-                  xs={12}
-                  sm={6}
-                  md={6}
-                  lg={4}
                   key={score.id}
                   ref={index === scores.length - 1 ? lastItemRef : null}
-                >
+                  size={{
+                    xs: 12,
+                    sm: 6,
+                    md: 6,
+                    lg: 4
+                  }}>
                   <Paper
                     sx={{
                       overflow: "hidden",
@@ -459,8 +449,6 @@ export default function ProfilPage() {
                   >
                     <Grid container>
                       <Grid
-                        item
-                        xs={12}
                         sx={{
                           display: "flex",
                           alignItems: "center",
@@ -469,17 +457,15 @@ export default function ProfilPage() {
                           p: px(5),
                           justifyContent: "space-between",
                         }}
-                      >
+                        size={12}>
                         <ThemeTitleBlock theme={score.theme} />
                       </Grid>
                       <Grid
-                        item
-                        xs={12}
                         sx={{
                           backgroundColor: Colors.grey,
                           p: 1,
                         }}
-                      >
+                        size={12}>
                         <Grid
                           container
                           spacing={1}
@@ -488,12 +474,12 @@ export default function ProfilPage() {
                         >
                           {score && score.duelgames > 0 && (
                             <>
-                              <Grid item xs={12}>
+                              <Grid size={12}>
                                 <Typography variant="h4" component="span">
                                   {t("commun.duel")}
                                 </Typography>
                               </Grid>
-                              <Grid item xs={6} sx={{ textAlign: "center" }}>
+                              <Grid sx={{ textAlign: "center" }} size={6}>
                                 <Typography variant="body1" component="span">
                                   {t("commun.games")} {" : "}
                                 </Typography>
@@ -501,7 +487,7 @@ export default function ProfilPage() {
                                   {score ? score.duelgames : "0"}
                                 </Typography>
                               </Grid>
-                              <Grid item xs={6} sx={{ textAlign: "center" }}>
+                              <Grid sx={{ textAlign: "center" }} size={6}>
                                 <Typography variant="body1" component="span">
                                   {t("commun.points")} {" : "}
                                 </Typography>
@@ -509,7 +495,7 @@ export default function ProfilPage() {
                                   {score.rank}
                                 </Typography>
                               </Grid>
-                              <Grid item xs={12}>
+                              <Grid size={12}>
                                 <BarVictory
                                   victory={score.victory}
                                   draw={score.draw}
@@ -520,23 +506,19 @@ export default function ProfilPage() {
                           )}
                           {score && score.games > 0 && (
                             <>
-                              <Grid item xs={12}>
+                              <Grid size={12}>
                                 <Grid
                                   container
                                   spacing={1}
                                   alignItems="center"
                                   justifyContent="center"
                                 >
-                                  <Grid item xs={12}>
+                                  <Grid size={12}>
                                     <Typography variant="h4" component="span">
                                       {t("commun.solo")}
                                     </Typography>
                                   </Grid>
-                                  <Grid
-                                    item
-                                    xs={6}
-                                    sx={{ textAlign: "center" }}
-                                  >
+                                  <Grid sx={{ textAlign: "center" }} size={6}>
                                     <Typography
                                       variant="body1"
                                       component="span"
@@ -547,11 +529,7 @@ export default function ProfilPage() {
                                       {score ? score.games : "0"}
                                     </Typography>
                                   </Grid>
-                                  <Grid
-                                    item
-                                    xs={6}
-                                    sx={{ textAlign: "center" }}
-                                  >
+                                  <Grid sx={{ textAlign: "center" }} size={6}>
                                     <Typography
                                       variant="body1"
                                       component="span"
@@ -577,7 +555,14 @@ export default function ProfilPage() {
             {!isEnd ? (
               <>
                 {Array.from(new Array(3)).map((_, index) => (
-                  <Grid item xs={12} sm={6} md={6} lg={4} key={index}>
+                  <Grid
+                    key={index}
+                    size={{
+                      xs: 12,
+                      sm: 6,
+                      md: 6,
+                      lg: 4
+                    }}>
                     <SkeletonProfilTheme />
                   </Grid>
                 ))}
@@ -585,7 +570,7 @@ export default function ProfilPage() {
             ) : (
               <>
                 {!isLoadingScore && scores.length === 0 && (
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <Alert severity="warning">{t("commun.noresultgame")}</Alert>
                   </Grid>
                 )}

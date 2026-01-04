@@ -90,7 +90,7 @@ export default function GameSoloPage() {
         <title>{`${t("commun.sologame")} - ${t("appname")}`}</title>
       </Helmet>
       <BarNavigation title={t("commun.sologame")} quit={() => navigate(-1)} />
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Container maxWidth="md">
           <Box
             sx={{
@@ -100,18 +100,18 @@ export default function GameSoloPage() {
           >
             {game && (
               <Grid container spacing={1}>
-                <Grid item xs={12} sx={{ mb: 1 }}>
+                <Grid sx={{ mb: 1 }} size={12}>
                   <ScoreThemeBlock theme={game.theme} score={game.points} />
                 </Grid>
                 {questionsDisplay.map((el, index) => (
                   <Fragment key={index}>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <CardSignalQuestion
                         question={el}
                         version={game.version}
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Divider
                         sx={{
                           borderBottomWidth: 5,
@@ -126,10 +126,10 @@ export default function GameSoloPage() {
                   <>
                     {Array.from(new Array(1)).map((_, index) => (
                       <Fragment key={index}>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                           <SkeletonQuestion />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                           <Divider
                             sx={{
                               borderBottomWidth: 5,

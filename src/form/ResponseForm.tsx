@@ -79,7 +79,7 @@ export const ResponseForm = ({ validate, response, type }: Props) => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={2} alignItems="center">
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.value && formik.errors.value)}
@@ -105,7 +105,7 @@ export const ResponseForm = ({ validate, response, type }: Props) => {
           </FormControl>
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={12}>
           <ButtonColor
             value={Colors.green}
             label={t("commun.validate")}
@@ -175,7 +175,7 @@ export const ResponseImageForm = ({ validate, response, type }: PropsImage) => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={2} alignItems="center" justifyContent="center">
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.response && formik.errors.response)}
@@ -200,7 +200,7 @@ export const ResponseImageForm = ({ validate, response, type }: PropsImage) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.image && formik.errors.image)}
@@ -226,11 +226,11 @@ export const ResponseImageForm = ({ validate, response, type }: PropsImage) => {
           </FormControl>
         </Grid>
         {formik.values.image !== "" && (
-          <Grid item sx={{ height: px(200) }}>
+          <Grid sx={{ height: px(200) }}>
             <ImageQuestionBlock src={formik.values.image} />
           </Grid>
         )}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <ButtonColor
             value={Colors.green}
             label={t("commun.validate")}

@@ -33,22 +33,22 @@ export const ConfirmDialog = ({
     <Dialog open={open} onClose={onClose}>
       <DialogContent sx={{ p: 2 }}>
         <Grid container spacing={1}>
-          <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <Grid sx={{ textAlign: "center" }} size={12}>
             <Typography variant="h2">{title}</Typography>
           </Grid>
           {text && (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Alert severity="warning">
                 <Typography variant="h6">{text}</Typography>
               </Alert>
             </Grid>
           )}
           {extra && (
-            <Grid item xs={12}>
+            <Grid size={12}>
               {extra}
             </Grid>
           )}
-          <Grid item xs={6}>
+          <Grid size={6}>
             <Button
               fullWidth
               variant="contained"
@@ -59,7 +59,7 @@ export const ConfirmDialog = ({
               {t("commun.no")}
             </Button>
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <Button
               fullWidth
               variant="contained"

@@ -72,11 +72,9 @@ export const CategoriesScrollBlock = () => {
       <Grid container sx={{ mb: 1 }}>
         {categories.map((category, index) => (
           <Grid
-            item
-            xs={12}
             key={category.id}
             ref={index === categories.length - 1 ? lastItemRef : null}
-          >
+            size={12}>
             <CategoryWithThemeBlock category={category} />
           </Grid>
         ))}

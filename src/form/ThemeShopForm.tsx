@@ -137,8 +137,6 @@ export const ThemeShopForm = ({ validate, theme }: Props) => {
                     const value = formik.values.themeshoptranslation[index];
                     return (
                       <Grid
-                        item
-                        xs={12}
                         key={index}
                         sx={{
                           display: "flex",
@@ -146,7 +144,7 @@ export const ThemeShopForm = ({ validate, theme }: Props) => {
                           justifyContent: "space-between",
                           alignItems: "center",
                         }}
-                      >
+                        size={12}>
                         <SelectLanguage
                           value={value.language}
                           languages={languageNotUsed}
@@ -166,7 +164,6 @@ export const ThemeShopForm = ({ validate, theme }: Props) => {
                           size="small"
                           fullWidth
                         />
-
                         <IconButton
                           aria-label="delete"
                           onClick={() => remove(index)}
@@ -177,7 +174,7 @@ export const ThemeShopForm = ({ validate, theme }: Props) => {
                     );
                   })}
                   {languageNotUsed.length > 0 && (
-                    <Grid item xs={6}>
+                    <Grid size={6}>
                       <ButtonColor
                         value={Colors.blue}
                         label={t("commun.addtranslation")}
@@ -193,7 +190,7 @@ export const ThemeShopForm = ({ validate, theme }: Props) => {
               );
             }}
           </FieldArray>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ButtonColor
               value={Colors.green}
               label={t("commun.add")}

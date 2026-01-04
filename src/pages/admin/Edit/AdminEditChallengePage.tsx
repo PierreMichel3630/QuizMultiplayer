@@ -148,7 +148,7 @@ export default function AdminEditChallengePage() {
 
   return (
     <Grid container spacing={1} justifyContent="center">
-      <Grid item xs={12}>
+      <Grid size={12}>
         <ChangeDateBlock
           date={date}
           format={DateFormat.DAY}
@@ -160,7 +160,7 @@ export default function AdminEditChallengePage() {
         />
       </Grid>
       {challenge !== null && (
-        <Grid item xs={6}>
+        <Grid size={6}>
           <ButtonColor
             typography="h6"
             iconSize={20}
@@ -173,7 +173,7 @@ export default function AdminEditChallengePage() {
         </Grid>
       )}
       {date.isAfter(new Date(), "day") && (
-        <Grid item xs={6}>
+        <Grid size={6}>
           <ButtonColor
             typography="h6"
             iconSize={20}
@@ -185,7 +185,7 @@ export default function AdminEditChallengePage() {
           />
         </Grid>
       )}
-      <Grid item xs={12}>
+      <Grid size={12}>
         <BasicSearchInput
           label={t("commun.searchplayer")}
           onChange={(value) => {
@@ -196,7 +196,7 @@ export default function AdminEditChallengePage() {
           clear={() => setSearch("")}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <ButtonColor
           typography="h6"
           iconSize={20}
@@ -207,7 +207,7 @@ export default function AdminEditChallengePage() {
           onClick={() => setOpenGame(true)}
         />
       </Grid>
-      <Grid item xs={12} sx={{ mb: 6 }}>
+      <Grid sx={{ mb: 6 }} size={12}>
         <BasicTable columns={columns} data={data} />
       </Grid>
       <Box

@@ -22,13 +22,13 @@ export const BarNavigation = ({ title, quit }: Props) => {
         height: 62,
         display: "flex",
         alignItems: "center",
+        backgroundColor: Colors.colorApp,
       }}
     >
       <Container maxWidth="md">
         <Box sx={{ p: px(5) }}>
           <Grid container alignItems="center" spacing={1}>
             <Grid
-              item
               sx={{ cursor: "pointer" }}
               onClick={() => {
                 if (quit) {
@@ -40,12 +40,10 @@ export const BarNavigation = ({ title, quit }: Props) => {
                 }
               }}
             >
-              <KeyboardBackspaceIcon sx={{ color: Colors.white }} />
+              <KeyboardBackspaceIcon />
             </Grid>
-            <Grid item xs sx={{ textAlign: "center" }}>
-              <Typography variant="h2" sx={{ color: Colors.white }}>
-                {title}
-              </Typography>
+            <Grid sx={{ textAlign: "center" }} size="grow">
+              <Typography variant="h2">{title}</Typography>
             </Grid>
           </Grid>
         </Box>

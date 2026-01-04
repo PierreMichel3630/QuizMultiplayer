@@ -63,7 +63,7 @@ export const PageCategoryBlock = ({
   return (
     <Box sx={{ p: 1 }}>
       <Grid container spacing={1} justifyContent="center">
-        <Grid item xs={12}>
+        <Grid size={12}>
           {title && (
             <TitleBlock
               title={title}
@@ -73,16 +73,12 @@ export const PageCategoryBlock = ({
           )}
         </Grid>
         {idThemes.length > 0 && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <RankingBlock themes={idThemes} />
           </Grid>
         )}
         {values.map((value, index) => (
-          <Grid
-            item
-            key={index}
-            ref={index === values.length - 1 ? lastItemRef : null}
-          >
+          <Grid key={index} ref={index === values.length - 1 ? lastItemRef : null}>
             <CardImage value={value} />
           </Grid>
         ))}

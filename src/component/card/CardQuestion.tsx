@@ -137,7 +137,7 @@ export const CardAdminQuestion = ({ question, refresh }: Props) => {
         variant="outlined"
       >
         <Grid container spacing={1} justifyContent="center">
-          <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <Grid sx={{ textAlign: "center" }} size={12}>
             <Typography variant="h4">
               <Trans
                 i18nKey={t("commun.questionid")}
@@ -147,17 +147,17 @@ export const CardAdminQuestion = ({ question, refresh }: Props) => {
               />
             </Typography>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ThemesList themes={themes} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <SelectDifficulty
               value={question.difficulty as Difficulty}
               onSelect={onChangeDifficulty}
             />
           </Grid>
           {languageQuestion && (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <LanguagesIcon
                 languages={languages}
                 language={languageQuestion}
@@ -167,19 +167,19 @@ export const CardAdminQuestion = ({ question, refresh }: Props) => {
             </Grid>
           )}
           {question.image && (
-            <Grid item xs={12} sx={{ height: px(200) }}>
+            <Grid sx={{ height: px(200) }} size={12}>
               <ImageQuestionBlock src={question.image} />
             </Grid>
           )}
           {questionTranslation && (
-            <Grid item xs={12} sx={{ textAlign: "center" }}>
+            <Grid sx={{ textAlign: "center" }} size={12}>
               <Typography variant="h2" component="span">
                 {questionTranslation.label}
               </Typography>
             </Grid>
           )}
           {languageQuestion && (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <ResponsesBlockAdmin
                 answer={answer}
                 language={languageQuestion}
@@ -187,7 +187,7 @@ export const CardAdminQuestion = ({ question, refresh }: Props) => {
               />
             </Grid>
           )}
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ButtonColor
               value={Colors.purple}
               label={t("commun.editresponses")}
@@ -196,7 +196,7 @@ export const CardAdminQuestion = ({ question, refresh }: Props) => {
               onClick={() => setOpenModalResponses(true)}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ButtonColor
               value={Colors.pink}
               label={t("commun.editthethemes")}
@@ -205,7 +205,7 @@ export const CardAdminQuestion = ({ question, refresh }: Props) => {
               onClick={() => setOpenModalTheme(true)}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ButtonColor
               value={Colors.blue}
               label={t("commun.editthequestion")}
@@ -214,7 +214,7 @@ export const CardAdminQuestion = ({ question, refresh }: Props) => {
               onClick={() => setOpenModalQuestion(true)}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ButtonColor
               value={Colors.red}
               label={t("commun.delete")}
@@ -223,7 +223,7 @@ export const CardAdminQuestion = ({ question, refresh }: Props) => {
               onClick={() => setOpenModalConfirmDelete(true)}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ButtonColor
               value={Colors.green}
               label={t("commun.validate")}
@@ -338,7 +338,7 @@ export const CardSignalQuestionV2 = ({
       }}
     >
       <Grid container spacing={1} justifyContent="center">
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
+        <Grid sx={{ textAlign: "center" }} size={12}>
           <TextLabelBlock
             variant="h2"
             color={color}
@@ -346,7 +346,7 @@ export const CardSignalQuestionV2 = ({
           />
         </Grid>
         {question.extra && (
-          <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <Grid sx={{ textAlign: "center" }} size={12}>
             <JsonLanguageBlock
               variant="caption"
               color={color}
@@ -359,16 +359,16 @@ export const CardSignalQuestionV2 = ({
           </Grid>
         )}
         {question.typequestion === "MAPPOSITION" && question.data !== null && (
-          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
             <MapPositionBlock data={question.data} height={300} />
           </Grid>
         )}
         {question.image && (
-          <Grid item xs={12} sx={{ maxWidth: percent(80), maxHeight: px(300) }}>
+          <Grid sx={{ maxWidth: percent(80), maxHeight: px(300) }} size={12}>
             <ImageQuestionBlock src={question.image} />
           </Grid>
         )}
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
+        <Grid sx={{ textAlign: "center" }} size={12}>
           {question.isqcm ? (
             <QcmBlockDuelResultBlock question={question} />
           ) : (
@@ -429,7 +429,7 @@ export const CardSignalQuestionV2 = ({
           )}
         </Grid>
         {report && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ButtonColor
               value={Colors.yellow}
               label={t("commun.report")}
@@ -480,23 +480,23 @@ export const CardProposeQuestion = ({ question }: CardProposeQuestionProps) => {
       elevation={24}
     >
       <Grid container spacing={1} justifyContent="center">
-        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+        <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
           <ProposeAlert value={status} />
         </Grid>
         {question.image && (
-          <Grid item xs={12} sx={{ height: px(200) }}>
+          <Grid sx={{ height: px(200) }} size={12}>
             <ImageQuestionBlock src={question.image} />
           </Grid>
         )}
         {question.questiontranslation[0] && (
-          <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <Grid sx={{ textAlign: "center" }} size={12}>
             <Typography variant="h2" component="span">
               {question.questiontranslation[0].label}
             </Typography>
           </Grid>
         )}
         {language && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ResponsesBlockAdmin
               answer={question.questionanswer[0].answer}
               language={language}

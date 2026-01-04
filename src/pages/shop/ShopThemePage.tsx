@@ -55,11 +55,11 @@ export default function ShopThemePage() {
         <Helmet>
           <title>{`${t("pages.titles.title")} - ${t("appname")}`}</title>
         </Helmet>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <TitleBlock title={t("commun.titles")} />
         </Grid>
         {itemsDisplay.map((item, index) => (
-          <Grid item key={index}>
+          <Grid key={index}>
             <ItemShop item={item} />
           </Grid>
         ))}

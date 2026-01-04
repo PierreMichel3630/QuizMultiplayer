@@ -17,18 +17,18 @@ export default function ReportPage() {
       <Helmet>
         <title>{`${t("pages.report.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <HeadTitle title={t("pages.report.title")} />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ width: percent(100), p: 1, mt: 2 }}>
           <Grid container spacing={1}>
-            <Grid item xs={12} sx={{ textAlign: "center" }}>
+            <Grid sx={{ textAlign: "center" }} size={12}>
               <Typography variant="body1">
                 {t("commun.signalproblemtext")}
               </Typography>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Button
                 variant="contained"
                 fullWidth

@@ -10,7 +10,7 @@ interface Props {
 export const Timer = ({ time }: Props) => {
   const DELAY = 100;
   const [intervalTimer, setIntervalTimer] = useState<
-    NodeJS.Timeout | undefined
+    ReturnType<typeof setTimeout> | undefined
   >(undefined);
   const [totalTime, setTotalTime] = useState(1);
   const [timer, setTimer] = useState(0);

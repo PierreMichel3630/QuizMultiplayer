@@ -136,7 +136,7 @@ export default function CategoryPage() {
           />
         )}
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <PageCategoryBlock
           title={title}
           values={themes}

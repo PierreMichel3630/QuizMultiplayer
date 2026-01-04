@@ -27,10 +27,8 @@ export const CardOpposition = ({ opposition, opponent }: Props) => {
         backgroundColor: Colors.grey,
       }}
     >
-      <Grid container>
+      <Grid container sx={{ flex: 1 }}>
         <Grid
-          item
-          xs={12}
           sx={{
             backgroundColor: Colors.colorApp,
             p: px(5),
@@ -39,6 +37,7 @@ export const CardOpposition = ({ opposition, opponent }: Props) => {
             alignItems: "center",
             justifyContent: "space-between",
           }}
+          size={12}
         >
           <Typography variant="h2" color="text.secondary">
             {t("commun.opposition")}
@@ -58,7 +57,7 @@ export const CardOpposition = ({ opposition, opponent }: Props) => {
             <VisibilityIcon fontSize="large" sx={{ color: "white" }} />
           </Link>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box
             sx={{
               display: "flex",
@@ -66,7 +65,7 @@ export const CardOpposition = ({ opposition, opponent }: Props) => {
             }}
           >
             <Grid container spacing={1}>
-              <Grid item xs={12} sx={{ textAlign: "center" }}>
+              <Grid sx={{ textAlign: "center" }} size={12}>
                 <Typography variant="body1" component="span">
                   {t("commun.games")} {" : "}
                 </Typography>
@@ -74,7 +73,7 @@ export const CardOpposition = ({ opposition, opponent }: Props) => {
                   {opposition.games}
                 </Typography>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <BarVictory
                   victory={opposition.victory}
                   draw={opposition.draw}

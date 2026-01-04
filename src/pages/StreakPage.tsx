@@ -15,18 +15,18 @@ export default function StreakPage() {
       <Helmet>
         <title>{`${t("pages.streak.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 2 }}>
           <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <StreakBlock value={streak ?? 0} logoSize={50} textSize={45} />
               </Box>
             </Grid>
-            <Grid item xs={12} sx={{ textAlign: "center" }}>
+            <Grid sx={{ textAlign: "center" }} size={12}>
               <Typography variant="h6">{t("commun.streakexplain")}</Typography>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <ChallengeButton />
             </Grid>
             {RECOMPENSES_STREAK.map((recompense, index, { length }) => {
@@ -34,12 +34,12 @@ export default function StreakPage() {
               const isLast = index + 1 === length;
               return (
                 <Grid
-                  item
-                  xs={4 * nbRecompenses}
-                  sm={3 * nbRecompenses}
-                  md={2 * nbRecompenses}
                   key={index}
-                >
+                  size={{
+                    xs: 4 * nbRecompenses,
+                    sm: 3 * nbRecompenses,
+                    md: 2 * nbRecompenses
+                  }}>
                   <StreakRecompense
                     recompense={recompense}
                     streak={streak}

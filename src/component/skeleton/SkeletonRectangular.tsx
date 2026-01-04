@@ -11,7 +11,7 @@ export const SkeletonRectangulars = ({
   height = 200,
 }: Props) => {
   return Array.from(new Array(number)).map((_, index) => (
-    <Grid item xs={12} key={index}>
+    <Grid key={index} size={12}>
       <SkeletonRectangular height={height} width={width} />
     </Grid>
   ));

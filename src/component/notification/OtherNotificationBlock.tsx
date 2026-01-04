@@ -32,14 +32,14 @@ export const OtherNotificationBlock = ({ notification }: Props) => {
       elevation={8}
     >
       <Grid container spacing={1}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
             <IsReadNotificationBlock isRead={notification.isread} />
             <Typography variant="h6">{data.title}</Typography>
           </Box>
           <NotificationDuration date={notification.created_at} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography>{data.text}</Typography>
         </Grid>
       </Grid>

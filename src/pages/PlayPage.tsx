@@ -77,18 +77,18 @@ export default function PlayPage() {
         <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
       </Helmet>
       <BarNavigation title={t("pages.play.title")} />
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Container maxWidth="md">
           <Box sx={{ p: 1 }}>
             <Grid container spacing={2} justifyContent="center">
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Divider sx={{ borderBottomWidth: 5 }} />
               </Grid>
-              <Grid item xs={12} sx={{ textAlign: "center" }}>
+              <Grid sx={{ textAlign: "center" }} size={12}>
                 <Typography variant="h4">{t("commun.selecttheme")}</Typography>
               </Grid>
               {theme ? (
-                <Grid item xs={12} sx={{ textAlign: "center" }}>
+                <Grid sx={{ textAlign: "center" }} size={12}>
                   <CardThemeHorizontal
                     theme={theme}
                     onChange={() => setTheme(undefined)}
@@ -96,7 +96,7 @@ export default function PlayPage() {
                 </Grid>
               ) : (
                 <>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <BasicSearchInput
                       label={t("commun.search")}
                       onChange={(value) => setSearch(value)}
@@ -104,7 +104,7 @@ export default function PlayPage() {
                       clear={() => setSearch("")}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <SearchThemeSelectScrollBlock
                       search={search}
                       onSelect={(value) => setTheme(value)}
@@ -114,17 +114,17 @@ export default function PlayPage() {
               )}
               {theme && (
                 <>
-                  <Grid item xs={12} sx={{ textAlign: "center" }}>
+                  <Grid sx={{ textAlign: "center" }} size={12}>
                     <Typography variant="h4">
                       {t("commun.selectgamemode")}
                     </Typography>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid size={6}>
                     <ButtonColorSelect select={mode === "duel"}>
                       <DuelButton play={() => setMode("duel")} />
                     </ButtonColorSelect>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid size={6}>
                     <ButtonColorSelect select={mode === "solo"}>
                       <SoloButton play={() => setMode("solo")} />
                     </ButtonColorSelect>
@@ -133,10 +133,10 @@ export default function PlayPage() {
               )}
               {theme && mode === "duel" && (
                 <>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <Divider sx={{ borderBottomWidth: 5 }} />
                   </Grid>
-                  <Grid item xs={12} sx={{ textAlign: "center" }}>
+                  <Grid sx={{ textAlign: "center" }} size={12}>
                     <Typography variant="h4">
                       {t("commun.selectopponent")}
                     </Typography>
@@ -146,7 +146,7 @@ export default function PlayPage() {
                       </Typography>
                     )}
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <SelectorProfileBlock
                       label={t("commun.selectopponent")}
                       profile={profileAdv}

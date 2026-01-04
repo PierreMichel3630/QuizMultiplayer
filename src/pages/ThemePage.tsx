@@ -221,7 +221,7 @@ export default function ThemePage() {
       </Helmet>
       <Grid container>
         {loading ? (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Box
               sx={{
                 display: "flex",
@@ -235,7 +235,7 @@ export default function ThemePage() {
                 alignItems="center"
                 sx={{ zIndex: 10 }}
               >
-                <Grid item xs={12} sx={{ mb: 1 }}>
+                <Grid sx={{ mb: 1 }} size={12}>
                   <Skeleton
                     variant="rectangular"
                     width="100%"
@@ -243,7 +243,7 @@ export default function ThemePage() {
                     sx={{ bgcolor: "grey.800" }}
                   />
                 </Grid>
-                <Grid item xs={5}>
+                <Grid size={5}>
                   <Skeleton
                     variant="rectangular"
                     width={"100%"}
@@ -251,9 +251,9 @@ export default function ThemePage() {
                     sx={{ bgcolor: "grey.800" }}
                   />
                 </Grid>
-                <Grid item xs={7}>
+                <Grid size={7}>
                   <Grid container spacing={1}>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Skeleton
                         variant="rectangular"
                         width={"100%"}
@@ -261,7 +261,7 @@ export default function ThemePage() {
                         sx={{ bgcolor: "grey.800" }}
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Skeleton
                         variant="rectangular"
                         width={"100%"}
@@ -269,7 +269,7 @@ export default function ThemePage() {
                         sx={{ bgcolor: "grey.800" }}
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Skeleton
                         variant="rectangular"
                         width={"100%"}
@@ -277,7 +277,7 @@ export default function ThemePage() {
                         sx={{ bgcolor: "grey.800" }}
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Skeleton
                         variant="rectangular"
                         width={"100%"}
@@ -293,7 +293,7 @@ export default function ThemePage() {
         ) : (
           <>
             {theme && (
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Box
                   sx={{
                     display: "flex",
@@ -306,7 +306,7 @@ export default function ThemePage() {
                     alignItems="center"
                     justifyContent="center"
                   >
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <TitleBlock
                         title={
                           <TextNameBlock
@@ -320,47 +320,59 @@ export default function ThemePage() {
                       />
                     </Grid>
                     {!theme.enabled && (
-                      <Grid item xs={12}>
+                      <Grid size={12}>
                         <Alert severity="error">
                           {t("commun.thememaintenance")}
                         </Alert>
                       </Grid>
                     )}
                     {!theme.validate && (
-                      <Grid item xs={12}>
+                      <Grid size={12}>
                         <Alert severity="error">
                           {t("commun.themenotvalidate")}
                         </Alert>
                       </Grid>
                     )}
                     {questions === 0 && (
-                      <Grid item xs={12}>
+                      <Grid size={12}>
                         <Alert severity="error">
                           {t("commun.noquestions")}
                         </Alert>
                       </Grid>
                     )}
-                    <Grid item xs={5} sm={3} md={3} lg={3}>
+                    <Grid
+                      size={{
+                        xs: 5,
+                        sm: 3,
+                        md: 3,
+                        lg: 3
+                      }}>
                       <ImageThemeBlock theme={theme} />
                     </Grid>
                     {!loadingQuestions && (
-                      <Grid item xs={7} sm={6} md={6} lg={6}>
+                      <Grid
+                        size={{
+                          xs: 7,
+                          sm: 6,
+                          md: 6,
+                          lg: 6
+                        }}>
                         <Grid container spacing={1}>
                           {(theme.enabled &&
                             theme.validate &&
                             questions !== 0) ||
                           profile?.isadmin ? (
                             <>
-                              <Grid item xs={12}>
+                              <Grid size={12}>
                                 <DuelButton play={() => playDuel()} />
                               </Grid>
-                              <Grid item xs={12}>
+                              <Grid size={12}>
                                 <SoloButton play={() => playSolo()} />
                               </Grid>
-                              <Grid item xs={12}>
+                              <Grid size={12}>
                                 <TrainingButton play={() => playTraining()} />
                               </Grid>
-                              <Grid item xs={12}>
+                              <Grid size={12}>
                                 <ButtonColor
                                   size="small"
                                   value={Colors.green}
@@ -379,7 +391,7 @@ export default function ThemePage() {
                             </>
                           ) : (
                             <>
-                              <Grid item xs={12}>
+                              <Grid size={12}>
                                 <ButtonColor
                                   value={Colors.blue}
                                   label={t("commun.return")}
@@ -388,7 +400,7 @@ export default function ThemePage() {
                                   variant="contained"
                                 />
                               </Grid>
-                              <Grid item xs={12}>
+                              <Grid size={12}>
                                 <ButtonColor
                                   value={Colors.green}
                                   label={t("commun.returnhome")}
@@ -399,7 +411,7 @@ export default function ThemePage() {
                               </Grid>
                             </>
                           )}
-                          <Grid item xs={12}>
+                          <Grid size={12}>
                             <ButtonColor
                               size="small"
                               value={Colors.pink}
@@ -426,7 +438,7 @@ export default function ThemePage() {
         )}
         {loadingTheme || theme ? (
           <>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Grid
                 container
                 justifyContent="center"
@@ -435,17 +447,13 @@ export default function ThemePage() {
                   borderRadius: px(5),
                 }}
               >
-                <Grid item xs={3}>
+                <Grid size={3}>
                   <InfoBlock
                     title={t("commun.players")}
                     value={players ?? "-"}
                   />
                 </Grid>
-                <Grid
-                  item
-                  xs={1}
-                  sx={{ display: "flex", justifyContent: "center" }}
-                >
+                <Grid sx={{ display: "flex", justifyContent: "center" }} size={1}>
                   <Divider
                     orientation="vertical"
                     variant="middle"
@@ -455,14 +463,10 @@ export default function ThemePage() {
                     }}
                   />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid size={3}>
                   <InfoBlock title={t("commun.questions")} value={questions} />
                 </Grid>
-                <Grid
-                  item
-                  xs={1}
-                  sx={{ display: "flex", justifyContent: "center" }}
-                >
+                <Grid sx={{ display: "flex", justifyContent: "center" }} size={1}>
                   <Divider
                     orientation="vertical"
                     variant="middle"
@@ -472,7 +476,7 @@ export default function ThemePage() {
                     }}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid size={4}>
                   <InfoBlock
                     title={t("commun.languages")}
                     content={
@@ -485,7 +489,7 @@ export default function ThemePage() {
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <RankingTableSoloDuelPaginate theme={theme} />
             </Grid>
           </>
@@ -502,7 +506,7 @@ export default function ThemePage() {
           >
             <Container maxWidth="md">
               <Grid container spacing={1}>
-                <Grid item xs={12} sx={{ textAlign: "center" }}>
+                <Grid sx={{ textAlign: "center" }} size={12}>
                   <Typography
                     variant="h4"
                     sx={{
@@ -513,7 +517,7 @@ export default function ThemePage() {
                     {t("alert.pagenotfound")}
                   </Typography>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <ButtonColor
                     value={Colors.blue}
                     label={t("commun.return")}
@@ -522,7 +526,7 @@ export default function ThemePage() {
                     variant="contained"
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <ButtonColor
                     value={Colors.green}
                     label={t("commun.returnhome")}

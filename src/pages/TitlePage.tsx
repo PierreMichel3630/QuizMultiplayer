@@ -129,23 +129,22 @@ export default function TitlePage() {
         <title>{`${t("pages.title.title")} - ${t("appname")}`}</title>
       </Helmet>
       <BarNavigation title={t("pages.title.title")} quit={() => navigate(-1)} />
-
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Container maxWidth="md">
           {title && profile && <ProfilHeader profile={profile} title={title} />}
         </Container>
       </Grid>
-      <Grid item xs={12}>
-        <Container maxWidth="md" sx={{ mb: 12 }}>
+      <Grid size={12}>
+        <Container maxWidth="md">
           {title && (
             <Box sx={{ p: 2 }}>
               <Grid container spacing={2} justifyContent="center">
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <BadgeTitle title={title} />
                 </Grid>
 
                 {accomplishment && (
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <CardAccomplishment
                       accomplishment={accomplishment}
                       stat={stat}
@@ -154,7 +153,7 @@ export default function TitlePage() {
                   </Grid>
                 )}
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Box
                   sx={{
                     p: 1,
@@ -219,7 +218,6 @@ export default function TitlePage() {
           )}
         </Container>
       </Grid>
-
       <ConfirmDialog
         title={t("commun.confirmbuy")}
         open={openModal}

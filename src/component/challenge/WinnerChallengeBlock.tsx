@@ -57,14 +57,12 @@ export const WinnerChallengeBlock = () => {
   return (
     <Grid container spacing={1}>
       <Grid
-        item
-        xs={12}
         sx={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
         }}
-      >
+        size={12}>
         <Typography variant="h4">{t("commun.titleholder")}</Typography>
         <GroupButtonResultChallenge selected={select} onChange={setSelect} />
       </Grid>
@@ -109,7 +107,7 @@ const ResultChallengeBlock = ({
   extra,
 }: PropsWinnerBlock) => {
   return (
-    <Grid item xs={4}>
+    <Grid size={4}>
       <Link
         to={`/challenge/profil/${profile?.id}`}
         style={{

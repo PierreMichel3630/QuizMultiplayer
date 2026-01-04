@@ -32,8 +32,6 @@ export const CardTitle = ({ titles, loading }: Props) => {
     >
       <Grid container>
         <Grid
-          item
-          xs={12}
           sx={{
             backgroundColor: Colors.colorApp,
             p: px(10),
@@ -41,7 +39,7 @@ export const CardTitle = ({ titles, loading }: Props) => {
             gap: 1,
             alignItems: "center",
           }}
-        >
+          size={12}>
           <Typography variant="h2" color="text.secondary">
             {t("commun.titles")}
           </Typography>
@@ -51,7 +49,7 @@ export const CardTitle = ({ titles, loading }: Props) => {
             </Typography>
           )}
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box
             sx={{
               display: "flex",
@@ -65,7 +63,7 @@ export const CardTitle = ({ titles, loading }: Props) => {
               {loading ? (
                 <>
                   {Array.from(new Array(6)).map((_, index) => (
-                    <Grid item key={index}>
+                    <Grid key={index}>
                       <Skeleton variant="rectangular" width={85} height={20} />
                     </Grid>
                   ))}
@@ -73,7 +71,7 @@ export const CardTitle = ({ titles, loading }: Props) => {
               ) : (
                 <>
                   {titleOrder.map((title, index) => (
-                    <Grid item key={index}>
+                    <Grid key={index}>
                       <Link
                         to={`/title/${title.title.id}`}
                         style={{ textDecoration: "none" }}

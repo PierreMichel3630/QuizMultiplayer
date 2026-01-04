@@ -63,7 +63,7 @@ export default function MenuPage() {
             }}
           >
             <Grid container spacing={1} justifyContent="center">
-              <Grid item sx={{ mb: 1 }}>
+              <Grid sx={{ mb: 1 }}>
                 <AvatarAccountBadge
                   profile={profile}
                   size={120}
@@ -73,30 +73,24 @@ export default function MenuPage() {
                 />
               </Grid>
               <Grid
-                item
-                xs={12}
                 sx={{
                   textAlign: "center",
                 }}
-              >
+                size={12}>
                 <Typography variant="h2" color="text.secondary">
                   {profile.username}
                 </Typography>
                 <ProfileTitleBlock titleprofile={profile.titleprofile} />
               </Grid>
               {profile.country && (
-                <Grid
-                  item
-                  xs={12}
-                  sx={{ display: "flex", justifyContent: "center" }}
-                >
+                <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
                   <CountryBlock
                     country={profile.country}
                     color="text.secondary"
                   />
                 </Grid>
               )}
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Button
                   variant="outlined"
                   startIcon={<LogoutIcon />}
@@ -116,10 +110,10 @@ export default function MenuPage() {
         ) : (
           <HeadTitle title={t("commun.menus")} />
         )}
-        <Grid item xs={12} sx={{ p: 1 }}>
+        <Grid sx={{ p: 1 }} size={12}>
           <ShareApplicationBlock title={t("commun.shareapplication")} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <MenuBlock />
         </Grid>
       </Grid>

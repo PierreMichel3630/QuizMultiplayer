@@ -30,23 +30,22 @@ export default function NewsPage() {
       <Helmet>
         <title>{`${t("pages.parameters.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <BarNavigation
           title={t("commun.patchnote")}
           quit={() => navigate(-1)}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 2 }}>
           <Grid container spacing={2} justifyContent="center">
             <Grid
-              item
-              xs={12}
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
               }}
+              size={12}
             >
               <Box
                 sx={{
@@ -63,33 +62,32 @@ export default function NewsPage() {
               <InfoOutlinedIcon />
             </Grid>
             {notificationUpdate && (
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <UpdateAppButton />
               </Grid>
             )}
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Divider />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <PatchNoteBlock />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Divider />
             </Grid>
             <Grid
-              item
-              xs={12}
               sx={{
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 gap: 1,
               }}
+              size={12}
             >
               <DirectionsIcon fontSize="large" />
               <Typography variant="h2">{t("commun.roadmap")}</Typography>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <RoadmapBlock />
             </Grid>
           </Grid>
@@ -117,7 +115,7 @@ const PatchNoteBlock = () => {
         const data: PatchNote = patchnotes[version];
 
         return (
-          <Grid item xs={12} key={version}>
+          <Grid key={version} size={12}>
             <Card elevation={5}>
               <CardContent>
                 <Typography variant="h5" gutterBottom>
@@ -163,11 +161,15 @@ const PatchNoteBlock = () => {
 const RoadmapBlock = () => {
   const { t } = useTranslation();
 
-  const features: Array<string> = t("roadmap.feature", { returnObjects: true });
-  const bugs: Array<string> = t("roadmap.bug", { returnObjects: true });
+  const features: Array<string> = t("roadmap.feature", {
+    returnObjects: true,
+  }) as string[];
+  const bugs: Array<string> = t("roadmap.bug", {
+    returnObjects: true,
+  }) as string[];
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Card elevation={5}>
           <CardContent>
             <Typography variant="h5" gutterBottom>
@@ -183,7 +185,7 @@ const RoadmapBlock = () => {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Card elevation={5}>
           <CardContent>
             <Typography variant="h5" gutterBottom>

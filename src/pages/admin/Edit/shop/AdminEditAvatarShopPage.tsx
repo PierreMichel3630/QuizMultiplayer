@@ -32,7 +32,7 @@ export default function AdminEditAvatarShopPage() {
 
   return (
     <Grid container spacing={1} justifyContent="center">
-      <Grid item xs={12}>
+      <Grid size={12}>
         <ButtonColor
           icon={AddIcon}
           label={t("commun.addavatar")}
@@ -42,7 +42,7 @@ export default function AdminEditAvatarShopPage() {
         />
       </Grid>
       {avatars.map((avatar) => (
-        <Grid item xs={12} key={avatar.id}>
+        <Grid key={avatar.id} size={12}>
           <CardAdminAvatar
             avatar={avatar}
             onEdit={() => {
@@ -55,7 +55,7 @@ export default function AdminEditAvatarShopPage() {
       {isLoading && (
         <>
           {Array.from(new Array(10)).map((_, index) => (
-            <Grid item xs={12} key={index}>
+            <Grid key={index} size={12}>
               <SkeletonCardTheme />
             </Grid>
           ))}

@@ -31,19 +31,19 @@ export default function ParameterPage() {
         <Helmet>
           <title>{`${t("pages.parameters.title")} - ${t("appname")}`}</title>
         </Helmet>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <BarNavigation
             title={t("commun.parameters")}
             quit={() => navigate(-1)}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box sx={{ p: 2 }}>
             <Grid container spacing={2} justifyContent="center">
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Typography variant="h4">{t("commun.displaymode")}</Typography>
               </Grid>
-              <Grid item>
+              <Grid>
                 <Box
                   onClick={() => onChangeMode("dark")}
                   sx={{
@@ -74,7 +74,7 @@ export default function ParameterPage() {
                   </Box>
                 </Box>
               </Grid>
-              <Grid item>
+              <Grid>
                 <Box
                   onClick={() => onChangeMode("light")}
                   sx={{
@@ -116,13 +116,13 @@ export default function ParameterPage() {
                   </Box>
                 </Box>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Typography variant="h4">{t("commun.languages")}</Typography>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <LanguageSelect />
               </Grid>
-              <Grid item xs={12} sx={{ textAlign: "center" }}>
+              <Grid sx={{ textAlign: "center" }} size={12}>
                 <Typography variant="caption">
                   {t("commun.version")} : {VERSION_APP}
                 </Typography>

@@ -6,7 +6,7 @@ interface Props {
 }
 export const SkeletonCirculars = ({ number, size = 50 }: Props) => {
   return Array.from(new Array(number)).map((_, index) => (
-    <Grid item key={index}>
+    <Grid key={index}>
       <SkeletonCircular size={size} />
     </Grid>
   ));

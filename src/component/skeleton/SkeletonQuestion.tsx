@@ -9,7 +9,7 @@ export const SkeletonProposeQuestions = ({
   number,
 }: SkeletonProposeQuestionsProps) => {
   return Array.from(new Array(number)).map((_, index) => (
-    <Grid item xs={12} key={index}>
+    <Grid key={index} size={12}>
       <Paper
         sx={{
           p: 1,
@@ -39,7 +39,7 @@ export const SkeletonQuestion = ({ image = true }: SkeletonQuestionProps) => {
       }}
     >
       <Grid container spacing={1} justifyContent="center">
-        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+        <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
           <Skeleton
             variant="rectangular"
             width="100%"
@@ -48,7 +48,7 @@ export const SkeletonQuestion = ({ image = true }: SkeletonQuestionProps) => {
           />
         </Grid>
         {image && (
-          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
             <Skeleton
               variant="rectangular"
               width="80%"
@@ -57,7 +57,7 @@ export const SkeletonQuestion = ({ image = true }: SkeletonQuestionProps) => {
             />
           </Grid>
         )}
-        <Grid item xs={6}>
+        <Grid size={6}>
           <Skeleton
             variant="rectangular"
             width="100%"
@@ -65,7 +65,7 @@ export const SkeletonQuestion = ({ image = true }: SkeletonQuestionProps) => {
             sx={{ bgcolor: "grey.800" }}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <Skeleton
             variant="rectangular"
             width="100%"
@@ -73,7 +73,7 @@ export const SkeletonQuestion = ({ image = true }: SkeletonQuestionProps) => {
             sx={{ bgcolor: "grey.800" }}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <Skeleton
             variant="rectangular"
             width="100%"
@@ -81,7 +81,7 @@ export const SkeletonQuestion = ({ image = true }: SkeletonQuestionProps) => {
             sx={{ bgcolor: "grey.800" }}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <Skeleton
             variant="rectangular"
             width="100%"

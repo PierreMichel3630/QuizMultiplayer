@@ -4,7 +4,7 @@ export const SkeletonCardReport = () => {
   return (
     <Paper sx={{ p: 1 }}>
       <Grid container spacing={1} alignItems="center">
-        <Grid item>
+        <Grid>
           <Skeleton
             variant="rectangular"
             animation="wave"
@@ -13,15 +13,13 @@ export const SkeletonCardReport = () => {
           />
         </Grid>
         <Grid
-          item
-          xs
           sx={{
             display: "flex",
             gap: 2,
             alignItems: "center",
             justifyContent: "flex-start",
           }}
-        >
+          size="grow">
           <Skeleton
             variant="rectangular"
             animation="wave"

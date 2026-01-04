@@ -137,7 +137,7 @@ export const QuestionForm = ({ question, validate }: Props) => {
     <FormikProvider value={formik}>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12}>
+          <Grid size={12}>
             <FormControl
               fullWidth
               error={Boolean(formik.touched.image && formik.errors.image)}
@@ -163,15 +163,15 @@ export const QuestionForm = ({ question, validate }: Props) => {
             </FormControl>
           </Grid>
           {formik.values.image && formik.values.image !== "" && (
-            <Grid item xs={12} sx={{ height: px(200) }}>
+            <Grid sx={{ height: px(200) }} size={12}>
               <ImageQuestionBlock src={formik.values.image} />
             </Grid>
           )}
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Divider sx={{ borderBottomWidth: 5 }} />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={12}>
             <FieldArray name="questiontranslation">
               {({ push, remove }) => {
                 const idLanguageUsed = [
@@ -186,8 +186,6 @@ export const QuestionForm = ({ question, validate }: Props) => {
                       const value = formik.values.questiontranslation[index];
                       return (
                         <Grid
-                          item
-                          xs={12}
                           key={index}
                           sx={{
                             display: "flex",
@@ -195,7 +193,7 @@ export const QuestionForm = ({ question, validate }: Props) => {
                             justifyContent: "space-between",
                             alignItems: "center",
                           }}
-                        >
+                          size={12}>
                           <SelectLanguage
                             value={value.language}
                             languages={languageNotUsed}
@@ -214,7 +212,6 @@ export const QuestionForm = ({ question, validate }: Props) => {
                             size="small"
                             fullWidth
                           />
-
                           <IconButton
                             aria-label="delete"
                             onClick={() => remove(index)}
@@ -225,7 +222,7 @@ export const QuestionForm = ({ question, validate }: Props) => {
                       );
                     })}
                     {languageNotUsed.length > 0 && (
-                      <Grid item xs={12}>
+                      <Grid size={12}>
                         <ButtonColor
                           value={Colors.blue}
                           label={t("commun.addtranslation")}
@@ -247,7 +244,7 @@ export const QuestionForm = ({ question, validate }: Props) => {
             </FieldArray>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ButtonColor
               value={Colors.green}
               label={t("commun.validate")}

@@ -66,7 +66,7 @@ export const BattleNotificationBlock = ({ notification, onDelete }: Props) => {
       elevation={8}
     >
       <Grid container spacing={1}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box
             sx={{
               display: "flex",
@@ -93,7 +93,7 @@ export const BattleNotificationBlock = ({ notification, onDelete }: Props) => {
             </Box>
           </Box>
         </Grid>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <ButtonColor
             typography="h6"
             iconSize={20}
@@ -104,7 +104,7 @@ export const BattleNotificationBlock = ({ notification, onDelete }: Props) => {
             onClick={() => playBattle(data.uuid)}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <ButtonColor
             typography="h6"
             iconSize={20}

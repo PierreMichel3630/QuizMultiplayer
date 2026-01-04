@@ -45,16 +45,16 @@ export default function PeoplePage() {
       </Box>
       <Box sx={{ width: percent(100), p: 1 }}>
         <Grid container spacing={1} sx={{ position: "relative" }}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ShareApplicationBlock title={t("commun.sharefriend")} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <FriendScrollBlock search={search} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Divider sx={{ borderBottomWidth: 3 }} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <PeopleScrollBlock search={search} />
           </Grid>
         </Grid>

@@ -34,7 +34,7 @@ export const ProposeThemeModal = ({ open, close }: Props) => {
       </AppBar>
       <DialogContent>
         <Grid container spacing={1}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ProposeThemeForm validate={close} />
           </Grid>
         </Grid>
