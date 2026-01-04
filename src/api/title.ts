@@ -43,7 +43,11 @@ export const selectTitleByProfile = (profile: string) =>
     .eq("profile", profile);
 
 export const selectTitleById = (id: number) =>
-  supabase.from(SUPABASE_TITLE_TABLE).select("*").eq("id", id).maybeSingle();
+  supabase
+    .from(SUPABASE_TITLE_TABLE)
+    .select("*, titletranslation(*, language(*))")
+    .eq("id", id)
+    .maybeSingle();
 
 export const insertTitle = (value: TitleInsert) =>
   supabase.from(SUPABASE_TITLE_TABLE).insert(value).select().single();

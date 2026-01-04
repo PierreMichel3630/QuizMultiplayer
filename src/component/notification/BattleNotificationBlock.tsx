@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper } from "@mui/material";
 import { percent, px } from "csx";
 import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -11,9 +11,10 @@ import { useMemo } from "react";
 import { deleteBattleByUuid } from "src/api/game";
 import { useUser } from "src/context/UserProvider";
 import { ModeGame } from "src/models/ModeGame";
+import { Notification } from "src/models/Notification";
 import { Profile } from "src/models/Profile";
 import { ButtonColor } from "../Button";
-import { Notification } from "src/models/Notification";
+import { NotificationDuration } from "./NotificationDuration";
 
 interface Props {
   notification: Notification;
@@ -37,6 +38,7 @@ export const BattleNotificationBlock = ({ notification, onDelete }: Props) => {
 
   const playBattle = (uuid: string) => {
     navigate(`/battle/${uuid}`);
+    onDelete(notification);
   };
 
   const refuseBattle = async (uuid: string) => {
@@ -76,22 +78,18 @@ export const BattleNotificationBlock = ({ notification, onDelete }: Props) => {
             <Box>
               <ImageThemeBlock theme={mode} size={70} />
             </Box>
-            <Box>
-              <Typography
-                variant="body1"
-                component="span"
-                sx={{ fontSize: 15 }}
-                color="text.secondary"
-              >
-                <Trans
-                  i18nKey={t("commun.challengeuser")}
-                  values={{
-                    username: data.user.username,
-                    theme: language ? mode.name[language.iso] : "",
-                  }}
-                  components={{ bold: <strong /> }}
-                />
-              </Typography>
+            <Box sx={{ flex: 1 }}>
+              <Trans
+                i18nKey={t("commun.confrontmodeuser")}
+                values={{
+                  username: data.user.username,
+                  theme: language ? mode.name[language.iso] : "",
+                }}
+                components={{ bold: <strong /> }}
+              />
+              <Box>
+                <NotificationDuration date={notification.created_at} />
+              </Box>
             </Box>
           </Box>
         </Grid>

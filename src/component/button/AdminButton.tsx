@@ -13,6 +13,7 @@ import ReportIcon from "@mui/icons-material/Report";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 interface Setting {
   name: string;
@@ -61,6 +62,11 @@ export const AdminButton = () => {
               name: t("commun.games"),
               icon: <SportsEsportsIcon />,
               url: "/administration/games",
+            },
+            {
+              name: t("commun.notifications"),
+              icon: <NotificationsIcon />,
+              url: "/administration/notifications",
             },
           ]
         : [],

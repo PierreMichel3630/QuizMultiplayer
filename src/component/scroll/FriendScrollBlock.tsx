@@ -3,15 +3,14 @@ import { uniqBy } from "lodash";
 import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useApp } from "src/context/AppProvider";
+import { useAuth } from "src/context/AuthProviderSupabase";
+import { useNotification } from "src/context/NotificationProvider";
 import { NotificationType } from "src/models/enum/NotificationType";
 import { FRIENDSTATUS } from "src/models/Friend";
 import { sortByUsername } from "src/utils/sort";
 import { BasicCardFriendProfile } from "../card/CardProfile";
-import { FriendNotificationBlock } from "../notification/FriendNotificationBlock";
+import { NotificationBlock } from "../notification/NotificationBlock";
 import { TitleCount } from "../title/TitleCount";
-import { useAuth } from "src/context/AuthProviderSupabase";
-import { Notification } from "src/models/Notification";
-import { useNotification } from "src/context/NotificationProvider";
 
 interface Props {
   search: string;
@@ -20,7 +19,7 @@ export const FriendScrollBlock = ({ search }: Props) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const { friends, getFriends } = useApp();
-  const { notifications, getNotifications } = useNotification();
+  const { notifications } = useNotification();
 
   useEffect(() => {
     getFriends();
@@ -53,10 +52,6 @@ export const FriendScrollBlock = ({ search }: Props) => {
     return uniqBy(friends, (el) => el.id);
   }, [friendsProfile, search]);
 
-  const onDelete = (_notification: Notification) => {
-    getNotifications();
-  };
-
   return (
     <Grid container spacing={1}>
       {invitationsfriends.length > 0 && (
@@ -69,11 +64,7 @@ export const FriendScrollBlock = ({ search }: Props) => {
           </Grid>
           {invitationsfriends.map((friend) => (
             <Grid item xs={12} key={friend.id}>
-              <FriendNotificationBlock
-                key={friend.id}
-                notification={friend}
-                onDelete={onDelete}
-              />
+              <NotificationBlock notification={friend} />
             </Grid>
           ))}
         </>

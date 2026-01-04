@@ -114,7 +114,8 @@
     "refuse": "Refuser",
     "delete": "Supprimer",
     "deleteaccount": "Supprimer mon compte",
-    "challengeuser": "<bold>{{username}}</bold> vous défie au thème : <bold>{{theme}}</bold>",
+    "confrontdueluser": "<bold>{{username}}</bold> vous défie au thème : <bold>{{theme}}</bold>",
+    "confrontmodeuser": "<bold>{{username}}</bold> vous défie au mode : <bold>{{theme}}</bold>",
     "unknown": "inconnu",
     "notconnect": "Joueur Non connecté",
     "waitplayer": "En attente du deuxième joueur",
@@ -146,7 +147,6 @@
     "draw_other": "nuls",
     "defeat_one": "défaite",
     "defeat_other": "défaites",
-    "selectadv": "Sélectionner un adversaire",
     "friend": "Ami",
     "friends": "Amis",
     "total": "Total",
@@ -353,7 +353,6 @@
     "summaryabreviation": "Récap.",
     "onlyfriend" : "Afficher uniquement mes amis",
     "titleholder": "Tenant du titre",
-    "newversionavailable": "Une nouvelle version de l'application est disponible !",
     "install": "Installer",
     "version": "Version",
     "grades": "Notes",
@@ -384,7 +383,16 @@
     "bugs": "Correctifs",
     "accept": "Accepter",
     "thisweek": "Cette semaine",
-    "older": "Plus anciennes"
+    "older": "Plus anciennes",
+    "seenews": "Voir les nouveautés",
+    "installupdate": "Installer la mise à jour",
+    "newversionavailable": "La version {{version}} de l'application est disponible. Mettez vous à jour.",
+    "appversion": "Version de l'application",
+    "installupdatetitle": "Mettre à jour l'application",
+    "installupdatetext": "Votre version de l'application n'est pas assez récente pour jouer à ce mode. Veuillez vous mettre à jour.",
+    "requiredversion" : "Version minimal",
+    "myversion": "Votre version",
+    "send": "Envoyé"
   },
   "abrevation": {
     "average": "Moy."
@@ -771,6 +779,16 @@
       "requiredquestion": "Veuillez saisir une question",
       "requiredresponse": "Veuillez saisir une réponse",
       "requiredwrongresponses": "Veuillez saisir une mauvaise réponse"
+    },
+    "createnotification": {
+      "type": "Type de notification",
+      "title": "Titre de la notification",
+      "text": "Texte de la notification",
+      "version": "Version de l'application",
+      "versionrequired": "Veuillez saisir une version de l'application",
+      "titlerequired": "Veuillez saisir un titre",
+      "textrequired": "Veuillez saisir un texte",
+      "profilerequired": "Veuillez sélectionner un utilisateur"
     }
   },
   "input": {
@@ -788,7 +806,6 @@
   },
   "error": {
     "selectatleast1theme": "Sélectionner au moins un thème",
-    "selectadv": "Sélectionner un adversaire",
     "sizetoolarge": "Taille du fichier trop grande"
   },
   "alert": {
@@ -827,7 +844,8 @@
     "duplicateusername": "Le pseudonyme est déjà utilisé.",
     "vote": "Votre vote a été pris en compte.",
     "addquestionpropose": "Votre proposition de question a été prise en compte.",
-    "nochallengegame": "Cette langue ne dispose pas de Défis du Jour"
+    "nochallengegame": "Cette langue ne dispose pas de Défis du Jour",
+    "sendemailtoallusers": "Attention cette email sera envoyé à tous les utilisateurs de l'application ayant un compte."
   },
   "confidentiality": {
     "title": "Politique de confidentialité",
@@ -977,6 +995,7 @@
         "Ajout d'un Patch Note et d'une Roadmap."
       ],
       "bug": [
+        "Problème d'affichage des scores du défis du jour. (visible que pour les joueurs ayant déjà joués)"
       ]
     },
     "2.0.1": {

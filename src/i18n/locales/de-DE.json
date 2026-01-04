@@ -102,7 +102,7 @@
     "refuse": "Verweigern",
     "delete": "LÖSCHEN",
     "deleteaccount": "Mein Konto löschen",
-    "challengeuser": "<bold>{{username}}</bold> fordert Sie zum Thema heraus: <bold>{{theme}}</bold>",
+    "confrontdueluser": "<bold>{{username}}</bold> fordert Sie zum Thema heraus: <bold>{{theme}}</bold>",
     "unknown": "unbekannt",
     "notconnect": "Spieler nicht verbunden",
     "waitplayer": "Warten auf den zweiten Spieler",
@@ -128,7 +128,6 @@
     "home": "Willkommen",
     "notifications": "Benachrichtigungen",
     "opposition": "Opposition",
-    "selectadv": "Wählen Sie einen Gegner aus",
     "friend": "Freund",
     "friends": "Freunde",
     "total": "Gesamt",
@@ -780,7 +779,6 @@
   },
   "error": {
     "selectatleast1theme": "Wählen Sie mindestens ein Thema aus",
-    "selectadv": "Wählen Sie einen Gegner aus",
     "sizetoolarge": "Dateigröße zu groß"
   },
   "alert": {

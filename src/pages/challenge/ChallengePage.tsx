@@ -7,7 +7,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import moment from "moment";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { launchChallenge } from "src/api/challenge";
 import { updateProfil } from "src/api/profile";
@@ -20,7 +20,7 @@ import { Colors } from "src/style/Colors";
 
 export default function ChallengePage() {
   const { t } = useTranslation();
-  const { profile, hasPlayChallenge } = useAuth();
+  const { profile, hasPlayChallenge, refreshHasPlayChallenge } = useAuth();
   const { language } = useUser();
   const navigate = useNavigate();
 
@@ -39,6 +39,10 @@ export default function ChallengePage() {
       navigate("/login");
     }
   }, [navigate, profile, language]);
+
+  useEffect(() => {
+    refreshHasPlayChallenge();
+  }, [refreshHasPlayChallenge]);
 
   return (
     <Grid container>

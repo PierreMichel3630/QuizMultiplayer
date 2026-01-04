@@ -95,13 +95,14 @@ export const getThemesAndCategoriesById = (
 
 export const getThemesById = (
   idsTheme: Array<string | number>,
-  language = "fr-FR"
+  language: Language
 ) => {
   return supabase
     .from(SUPABASE_VIEWSEARCH_TABLE)
     .select("*")
-    .or(`idtheme.in.(${idsTheme.join()})`)
-    .order(`name->>${language}`, { ascending: true });
+    .eq("language", language.id)
+    .or(`id.in.(${idsTheme.join()})`)
+    .order(`namelower`, { ascending: true });
 };
 
 export const getThemesAndCategoriesByDate = (

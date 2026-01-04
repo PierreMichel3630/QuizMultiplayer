@@ -38,6 +38,7 @@ const AuthContext = createContext<{
   profile: Profile | null;
   streak: undefined | number;
   hasPlayChallenge: boolean;
+  refreshHasPlayChallenge: () => void;
   setStreak: (value: undefined | number) => void;
   setProfile: (value: Profile) => void;
   refreshProfil: () => void;
@@ -57,6 +58,7 @@ const AuthContext = createContext<{
       : null,
   streak: undefined,
   hasPlayChallenge: false,
+  refreshHasPlayChallenge: () => {},
   setStreak: () => {},
   deleteAccount: () => {},
   profile: null,
@@ -102,19 +104,18 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     getProfilUser();
   }, [user]);
 
-  useEffect(() => {
-    const isChallengeAvailable = () => {
-      if (user) {
-        const date = moment();
-        countChallengeGameByDateAndProfileId(date, user.id).then(
-          ({ count }) => {
-            setHasPlayChallenge(count !== null && count > 0);
-          }
-        );
-      }
-    };
-    isChallengeAvailable();
+  const refreshHasPlayChallenge = useCallback(() => {
+    if (user) {
+      const date = moment();
+      countChallengeGameByDateAndProfileId(date, user.id).then(({ count }) => {
+        setHasPlayChallenge(count !== null && count > 0);
+      });
+    }
   }, [user]);
+
+  useEffect(() => {
+    refreshHasPlayChallenge();
+  }, [refreshHasPlayChallenge]);
 
   const logout = useCallback(async () => {
     if (user) {
@@ -191,10 +192,12 @@ export const AuthProviderSupabase = ({ children }: Props) => {
       passwordReset,
       updatePassword,
       hasPlayChallenge,
+      refreshHasPlayChallenge,
     }),
     [
       deleteAccount,
       hasPlayChallenge,
+      refreshHasPlayChallenge,
       logout,
       profile,
       refreshProfil,

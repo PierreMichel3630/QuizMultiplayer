@@ -28,15 +28,24 @@ export const selectAccomplishment = () =>
   supabase
     .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
     .select(
-      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*)"
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))"
     )
     .order("id", { ascending: true });
+
+export const selectAccomplishmentById = (id: number) =>
+  supabase
+    .from(SUPABASE_ACCOMPLISHMENT_TABLE)
+    .select(
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))"
+    )
+    .eq("id", id)
+    .maybeSingle();
 
 export const selectAccomplishmentByAvatar = (avatar: number) =>
   supabase
     .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
     .select(
-      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*)"
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))"
     )
     .eq("avatar.id", avatar)
     .not("avatar", "is", null)
@@ -46,7 +55,7 @@ export const selectAccomplishmentByBadge = (id: number) =>
   supabase
     .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
     .select(
-      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*)"
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))"
     )
     .eq("badge.id", id)
     .not("badge", "is", null)
@@ -56,7 +65,7 @@ export const selectAccomplishmentByTitle = (id: number) =>
   supabase
     .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
     .select(
-      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*)"
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))"
     )
     .eq("title.id", id)
     .not("title", "is", null)
@@ -66,7 +75,7 @@ export const selectAccomplishmentByBanner = (id: number) =>
   supabase
     .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
     .select(
-      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*)"
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))"
     )
     .eq("banner.id", id)
     .not("banner", "is", null)

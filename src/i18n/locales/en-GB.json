@@ -102,7 +102,7 @@
     "refuse": "Refuse",
     "delete": "DELETE",
     "deleteaccount": "Delete my account",
-    "challengeuser": "<bold>{{username}}</bold> challenges you to the theme: <bold>{{theme}}</bold>",
+    "confrontdueluser": "<bold>{{username}}</bold> challenges you to the theme: <bold>{{theme}}</bold>",
     "unknown": "unknown",
     "notconnect": "Player Not Connected",
     "waitplayer": "Waiting for second player",
@@ -128,7 +128,6 @@
     "home": "Welcome",
     "notifications": "Notifications",
     "opposition": "Opposition",
-    "selectadv": "Select an opponent",
     "friend": "Friend",
     "friends": "Friends",
     "total": "Total",
@@ -780,7 +779,6 @@
   },
   "error": {
     "selectatleast1theme": "Select at least one theme",
-    "selectadv": "Select an opponent",
     "sizetoolarge": "File size too large"
   },
   "alert": {

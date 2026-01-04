@@ -45,11 +45,11 @@ export const CardProfile = ({
       onClick={select}
       variant="outlined"
     >
-      <Grid container spacing={1} alignItems="center" justifyContent="center">
+      <Grid container spacing={2} alignItems="center" justifyContent="center">
         <Grid item>
           <AvatarAccount avatar={profile.avatar.icon} size={50} />
         </Grid>
-        <Grid item>
+        <Grid item xs>
           <Typography variant="h4" sx={{ wordWrap: "break-word" }}>
             {profile.username}
           </Typography>

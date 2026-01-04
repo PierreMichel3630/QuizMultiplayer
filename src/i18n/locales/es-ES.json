@@ -114,7 +114,7 @@
     "refuse": "Rechazar",
     "delete": "BORRAR",
     "deleteaccount": "eliminar mi cuenta",
-    "challengeuser": "<bold>{{username}}</bold> te reta al tema: <bold>{{theme}}</bold>",
+    "confrontdueluser": "<bold>{{username}}</bold> te reta al tema: <bold>{{theme}}</bold>",
     "unknown": "desconocido",
     "notconnect": "Jugador no conectado",
     "waitplayer": "Esperando al segundo jugador",
@@ -146,7 +146,6 @@
     "draw_other": "nulo",
     "defeat_one": "fracaso",
     "defeat_other": "derrotas",
-    "selectadv": "Selecciona un oponente",
     "friend": "amigo",
     "friends": "Amigos",
     "total": "Total",
@@ -780,7 +779,6 @@
   },
   "error": {
     "selectatleast1theme": "Seleccione al menos un tema",
-    "selectadv": "Selecciona un oponente",
     "sizetoolarge": "Tamaño de archivo demasiado grande"
   },
   "alert": {

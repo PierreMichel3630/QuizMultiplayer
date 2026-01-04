@@ -9,7 +9,6 @@ import { BarNavigation } from "src/component/navigation/BarNavigation";
 import { useUser } from "src/context/UserProvider";
 import { Profile } from "src/models/Profile";
 
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -21,8 +20,8 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
 import { Colors } from "src/style/Colors";
 
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import { BasicSearchInput } from "src/component/Input";
+import { DuelButton, SoloButton } from "src/component/button/PlayButton";
 import { ICardImage } from "src/component/card/CardImage";
 import { SearchThemeSelectScrollBlock } from "src/component/scroll/SearchThemeScrollBlock";
 import { LogoIcon } from "src/icons/LogoIcon";
@@ -121,24 +120,14 @@ export default function PlayPage() {
                     </Typography>
                   </Grid>
                   <Grid item xs={6}>
-                    <ButtonColorSelect
-                      select={mode === "duel"}
-                      value={Colors.red}
-                      label={t("commun.duel")}
-                      icon={OfflineBoltIcon}
-                      onClick={() => setMode("duel")}
-                      variant="contained"
-                    />
+                    <ButtonColorSelect select={mode === "duel"}>
+                      <DuelButton play={() => setMode("duel")} />
+                    </ButtonColorSelect>
                   </Grid>
                   <Grid item xs={6}>
-                    <ButtonColorSelect
-                      select={mode === "solo"}
-                      value={Colors.blue2}
-                      label={t("commun.solo")}
-                      icon={PlayCircleIcon}
-                      onClick={() => setMode("solo")}
-                      variant="contained"
-                    />
+                    <ButtonColorSelect select={mode === "solo"}>
+                      <SoloButton play={() => setMode("solo")} />
+                    </ButtonColorSelect>
                   </Grid>
                 </>
               )}
@@ -159,7 +148,7 @@ export default function PlayPage() {
                   </Grid>
                   <Grid item xs={12}>
                     <SelectorProfileBlock
-                      label={t("commun.selectadv")}
+                      label={t("commun.selectopponent")}
                       profile={profileAdv}
                       onDelete={() => setProfileAdv(undefined)}
                       onChange={() => setOpenModalFriend(true)}

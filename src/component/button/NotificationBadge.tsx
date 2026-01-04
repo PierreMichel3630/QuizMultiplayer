@@ -9,7 +9,10 @@ import { Colors } from "src/style/Colors";
 export const NotificationBadge = () => {
   const { notifications } = useNotification();
 
-  const number = useMemo(() => notifications.length, [notifications]);
+  const number = useMemo(
+    () => [...notifications].filter((el) => !el.isread).length,
+    [notifications]
+  );
   return (
     <Badge badgeContent={number} color="error">
       <Box

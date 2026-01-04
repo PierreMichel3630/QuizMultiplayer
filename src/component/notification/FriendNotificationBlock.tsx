@@ -9,18 +9,17 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useMemo } from "react";
 import { updateFriend } from "src/api/friend";
 import { useMessage } from "src/context/MessageProvider";
+import { useNotification } from "src/context/NotificationProvider";
 import { FRIENDSTATUS, FriendUpdate } from "src/models/Friend";
 import { Notification } from "src/models/Notification";
 import { Profile } from "src/models/Profile";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 import { ButtonColor } from "../Button";
 import { NotificationDuration } from "./NotificationDuration";
-import { deleteNotificationsById } from "src/api/notification";
-import { useNotification } from "src/context/NotificationProvider";
 
 interface Props {
   notification: Notification;
-  onDelete: (notification: Notification) => void;
+  onDelete?: (notification: Notification) => void;
 }
 
 interface NotificationData {
@@ -44,15 +43,14 @@ export const FriendNotificationBlock = ({ notification, onDelete }: Props) => {
       id: data.id,
       status: status,
     };
-    Promise.all([
-      updateFriend(value),
-      deleteNotificationsById(notification.id),
-    ]).then((res) => {
-      const error = res[0].error;
+    updateFriend(value).then(({ error }) => {
       if (error) {
         setSeverity("error");
         setMessage(t("commun.error"));
       } else {
+        if (onDelete) {
+          onDelete(notification);
+        }
         setSeverity("success");
         setMessage(
           status === FRIENDSTATUS.VALID
@@ -61,7 +59,6 @@ export const FriendNotificationBlock = ({ notification, onDelete }: Props) => {
         );
         getFriends();
         getNotifications();
-        onDelete(notification);
       }
     });
   };

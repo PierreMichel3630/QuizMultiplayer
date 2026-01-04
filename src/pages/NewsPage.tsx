@@ -1,5 +1,4 @@
 import DirectionsIcon from "@mui/icons-material/Directions";
-import NotesIcon from "@mui/icons-material/Notes";
 import {
   Box,
   Card,
@@ -13,15 +12,30 @@ import {
 } from "@mui/material";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
+import { useNotification } from "src/context/NotificationProvider";
+import { VERSION_APP } from "src/utils/config";
+
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useNavigate } from "react-router-dom";
+import { UpdateAppButton } from "src/component/button/UpdateAppButton";
+import { BarNavigation } from "src/component/navigation/BarNavigation";
 
 export default function NewsPage() {
   const { t } = useTranslation();
+  const { notificationUpdate } = useNotification();
+  const navigate = useNavigate();
 
   return (
     <Grid container>
       <Helmet>
         <title>{`${t("pages.parameters.title")} - ${t("appname")}`}</title>
       </Helmet>
+      <Grid item xs={12}>
+        <BarNavigation
+          title={t("commun.patchnote")}
+          quit={() => navigate(-1)}
+        />
+      </Grid>
       <Grid item xs={12}>
         <Box sx={{ p: 2 }}>
           <Grid container spacing={2} justifyContent="center">
@@ -30,13 +44,31 @@ export default function NewsPage() {
               xs={12}
               sx={{
                 display: "flex",
-                justifyContent: "center",
+                justifyContent: "space-between",
                 alignItems: "center",
-                gap: 1,
               }}
             >
-              <NotesIcon fontSize="large" />
-              <Typography variant="h2">{t("commun.patchnote")}</Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-start",
+                }}
+              >
+                <Typography variant="h4">{t("commun.appversion")}</Typography>
+                <Typography variant="body1" sx={{ fontSize: 15 }}>
+                  {VERSION_APP}
+                </Typography>
+              </Box>
+              <InfoOutlinedIcon />
+            </Grid>
+            {notificationUpdate && (
+              <Grid item xs={12}>
+                <UpdateAppButton />
+              </Grid>
+            )}
+            <Grid item xs={12}>
+              <Divider />
             </Grid>
             <Grid item xs={12}>
               <PatchNoteBlock />

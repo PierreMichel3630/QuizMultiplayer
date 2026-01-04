@@ -36,6 +36,9 @@ import { HistoryGameModal } from "src/component/modal/HistoryGameModal";
 import { SearchThemeSelectScrollBlock } from "src/component/scroll/SearchThemeScrollBlock";
 import { weightedRandom } from "src/utils/random";
 import { FavoriteSelectAvatarBlock } from "src/component/FavoriteBlock";
+import { sendNotification } from "src/api/notification";
+import { NotificationType } from "src/models/enum/NotificationType";
+import { Profile } from "src/models/Profile";
 
 export default function BattlePage() {
   const { t } = useTranslation();
@@ -122,10 +125,12 @@ export default function BattlePage() {
             event: "DELETE",
             schema: "public",
             table: "battlegame",
-            filter: `uuid=eq.${game.uuid}`,
           },
-          () => {
-            navigate(`/`);
+          (payload) => {
+            const id = payload.old.id;
+            if (game.id === id) {
+              navigate(`/`);
+            }
           }
         )
         .subscribe();
@@ -251,6 +256,20 @@ export default function BattlePage() {
     }
   }, [game]);
 
+  const onValidOpponent = (profileOpponent: Profile) => {
+    setOpenModalFriend(false);
+    if (uuidGame) {
+      updateGame({
+        uuid: uuidGame,
+        player2: profileOpponent.id,
+      });
+      sendNotification(NotificationType.battle_request, {
+        uuid: uuidGame,
+        user: profileOpponent,
+      });
+    }
+  };
+
   return (
     <Container
       maxWidth="md"
@@ -302,7 +321,7 @@ export default function BattlePage() {
               />
               <RestartAltIcon onClick={() => setOpenConfirmModal(true)} />
               <SelectorProfileBattleBlock
-                label={t("commun.selectadv")}
+                label={t("commun.selectopponent")}
                 profile={game.player2 ?? undefined}
                 onChange={() => setOpenModalFriend(true)}
                 score={game.scoreplayer2}
@@ -390,21 +409,13 @@ export default function BattlePage() {
           </Container>
         </Box>
         <SelectFriendModal
-          title={t("commun.selectadv")}
+          title={t("commun.selectopponent")}
           open={openModalFriend}
           close={() => {
             deleteGame();
             navigate(-1);
           }}
-          onValid={(profile) => {
-            setOpenModalFriend(false);
-            if (uuidGame) {
-              updateGame({
-                uuid: uuidGame,
-                player2: profile.id,
-              });
-            }
-          }}
+          onValid={onValidOpponent}
         />
         {game?.player2 && (
           <HistoryGameModal

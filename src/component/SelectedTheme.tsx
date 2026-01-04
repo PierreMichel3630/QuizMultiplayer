@@ -2,6 +2,7 @@ import { Box, Divider, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getThemesById } from "src/api/search";
+import { useUser } from "src/context/UserProvider";
 import { ICardImage } from "./card/CardImage";
 import { CardSelectAvatarTheme } from "./card/CardTheme";
 
@@ -11,16 +12,19 @@ interface Props {
 }
 export const SelectedTheme = ({ select, avatars }: Props) => {
   const { t } = useTranslation();
+  const { language } = useUser();
 
   const [themes, setThemes] = useState<Array<ICardImage>>([]);
 
   useEffect(() => {
     const idThemes = [...avatars].map((el) => el.id);
-    getThemesById(idThemes).then(({ data }) => {
-      const res = data ?? [];
-      setThemes(res);
-    });
-  }, [avatars]);
+    if (language && idThemes.length > 0) {
+      getThemesById(idThemes, language).then(({ data }) => {
+        const res = data ?? [];
+        setThemes(res);
+      });
+    }
+  }, [avatars, language]);
 
   return (
     themes.length > 0 && (

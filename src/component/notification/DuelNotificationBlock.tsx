@@ -40,6 +40,7 @@ export const DuelNotificationBlock = ({ notification, onDelete }: Props) => {
 
   const playDuel = (uuid: string) => {
     navigate(`/duel/${uuid}`);
+    onDelete(notification);
   };
 
   const refuseDuel = async (uuid: string) => {
@@ -88,7 +89,7 @@ export const DuelNotificationBlock = ({ notification, onDelete }: Props) => {
             </Box>
             <Box sx={{ flex: 1 }}>
               <Trans
-                i18nKey={t("commun.challengeuser")}
+                i18nKey={t("commun.confrontdueluser")}
                 values={{
                   username: data.user.username,
                   theme: themeText,

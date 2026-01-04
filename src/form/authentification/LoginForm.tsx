@@ -59,6 +59,7 @@ export const LoginForm = () => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
+        (document.activeElement as HTMLElement)?.blur();
         const {
           data: { user, session },
           error,

@@ -13,15 +13,16 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import MenuIcon from "@mui/icons-material/Menu";
 import { padding, px } from "csx";
-import { useApp } from "src/context/AppProvider";
+import { useNotification } from "src/context/NotificationProvider";
 import { LogoIcon } from "src/icons/LogoIcon";
+import { NotificationType } from "src/models/enum/NotificationType";
 import { Colors } from "src/style/Colors";
 
 export const BottomNavigationBlock = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
-  const { myaccomplishments } = useApp();
+  const { notifications } = useNotification();
 
   const [menu, setMenu] = useState(location.pathname.split("/")[1]);
 
@@ -30,8 +31,13 @@ export const BottomNavigationBlock = () => {
   }, [location.pathname]);
 
   const notificationsAccomplishment = useMemo(
-    () => myaccomplishments.filter((el) => !el.validate).length,
-    [myaccomplishments]
+    () =>
+      [...notifications].filter(
+        (el) =>
+          el.isread === false &&
+          el.type === NotificationType.accomplishment_unlock
+      ).length,
+    [notifications]
   );
 
   return (

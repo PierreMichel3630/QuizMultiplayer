@@ -28,12 +28,15 @@ import { headerSizeNoUser, headerSizeUser } from "src/utils/config";
 import { sortByName } from "src/utils/sort";
 import { useAuth } from "./AuthProviderSupabase";
 import { useUser } from "./UserProvider";
+import { Config } from "src/models/Config";
+import { selectConfig } from "src/api/config";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[];
 };
 
 const AppContext = createContext<{
+  config?: Config;
   friends: Array<Friend>;
   idsFriend: Array<string>;
   getFriends: () => void;
@@ -55,6 +58,7 @@ const AppContext = createContext<{
   nbPlayers?: number;
   headerSize: number;
 }>({
+  config: undefined,
   friends: [],
   idsFriend: [],
   getFriends: () => {},
@@ -82,6 +86,7 @@ export const AppProvider = ({ children }: Props) => {
   const { user } = useAuth();
   const { language } = useUser();
 
+  const [config, setConfig] = useState<undefined | Config>(undefined);
   const [nbThemes, setNbThemes] = useState<undefined | number>(undefined);
   const [nbPlayers, setNbPlayers] = useState<undefined | number>(undefined);
   const [myAvatars, setMyAvatars] = useState<Array<Avatar>>([]);
@@ -120,6 +125,15 @@ export const AppProvider = ({ children }: Props) => {
         : [],
     [friends, user]
   );
+
+  useEffect(() => {
+    const getConfig = () => {
+      selectConfig().then(({ data }) => {
+        setConfig(data ?? undefined);
+      });
+    };
+    getConfig();
+  }, []);
 
   useEffect(() => {
     const getCountPlayer = () => {
@@ -257,6 +271,7 @@ export const AppProvider = ({ children }: Props) => {
 
   const value = useMemo(
     () => ({
+      config,
       nbThemes,
       friends,
       idsFriend: idsFriendAndMe,
@@ -278,6 +293,7 @@ export const AppProvider = ({ children }: Props) => {
       nbPlayers,
     }),
     [
+      config,
       favorites,
       friends,
       idsFriendAndMe,

@@ -2,7 +2,12 @@ import { Alert, Box, Grid, Typography } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { selectNotificationsByProfilePaginate } from "src/api/notification";
+import { useNavigate } from "react-router-dom";
+import {
+  selectNotificationsByProfilePaginate,
+  updateReadNotifications,
+} from "src/api/notification";
+import { BarNavigation } from "src/component/navigation/BarNavigation";
 import { NotificationBlock } from "src/component/notification/NotificationBlock";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Notification } from "src/models/Notification";
@@ -10,6 +15,7 @@ import { Notification } from "src/models/Notification";
 export default function NotificationsPage() {
   const { t } = useTranslation();
   const { profile } = useAuth();
+  const navigate = useNavigate();
 
   const observer = useRef<IntersectionObserver | null>(null);
   const lastItemRef = useRef<HTMLTableRowElement | null>(null);
@@ -76,17 +82,29 @@ export default function NotificationsPage() {
     );
   };
 
+  useEffect(() => {
+    const onReadNotification = () => {
+      setTimeout(async () => {
+        await updateReadNotifications();
+      }, 2000);
+    };
+    onReadNotification();
+  }, []);
+
   return (
     <Grid container>
       <Helmet>
         <title>{`${t("pages.parameters.title")} - ${t("appname")}`}</title>
       </Helmet>
       <Grid item xs={12}>
+        <BarNavigation
+          title={t("commun.notifications")}
+          quit={() => navigate(-1)}
+        />
+      </Grid>
+      <Grid item xs={12}>
         <Box sx={{ p: 2 }}>
           <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12} sx={{ textAlign: "center" }}>
-              <Typography variant="h2">{t("commun.notifications")}</Typography>
-            </Grid>
             {notifications.map((notification, index) => (
               <Grid
                 item

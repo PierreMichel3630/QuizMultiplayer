@@ -14,7 +14,6 @@ import {
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
 import { ImageThemeBlock } from "../ImageThemeBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { percent, px } from "csx";
@@ -22,9 +21,9 @@ import { unlockAccomplishment } from "src/api/accomplishment";
 import { selectThemesById } from "src/api/theme";
 import { Theme } from "src/models/Theme";
 import { BarAccomplishment } from "../bar/Bar";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 import { AddMoneyBlock } from "../MoneyBlock";
 import { AddXpBlock } from "../XpBlock";
-import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   accomplishment: Accomplishment;
@@ -106,7 +105,10 @@ export const CardAccomplishment = ({
         sx={{ height: percent(100) }}
       >
         <Grid item xs={12}>
-          <JsonLanguageBlock variant="h4" value={accomplishment.label} />
+          <TextNameBlock
+            variant="h4"
+            values={accomplishment.accomplishmenttranslation}
+          />
         </Grid>
         {badge && accomplishment.badge && (
           <Grid item>
@@ -285,9 +287,12 @@ export const CardUnlockAccomplishment = ({
         sx={{ height: percent(100) }}
       >
         <Grid item xs={12}>
-          <JsonLanguageBlock
+          <TextNameBlock
             variant="h4"
-            value={profileaccomplishment.accomplishment.label}
+            color="text.secondary"
+            values={
+              profileaccomplishment.accomplishment.accomplishmenttranslation
+            }
           />
         </Grid>
         {profileaccomplishment.extra && (

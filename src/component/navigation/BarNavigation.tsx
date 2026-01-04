@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { percent, px } from "csx";
 import { Colors } from "src/style/Colors";
-import { useApp } from "src/context/AppProvider";
 
 interface Props {
   title: string;
@@ -13,19 +12,16 @@ interface Props {
 export const BarNavigation = ({ title, quit }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { headerSize } = useApp();
   return (
     <Box
       sx={{
         position: "sticky",
         top: 0,
         width: percent(100),
-        backgroundColor: Colors.colorApp,
         zIndex: 100,
         height: 62,
         display: "flex",
         alignItems: "center",
-        minHeight: headerSize,
       }}
     >
       <Container maxWidth="md">

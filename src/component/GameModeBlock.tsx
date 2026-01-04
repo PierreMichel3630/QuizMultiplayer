@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { insertBattleGame } from "src/api/game";
 import { selectThemesById } from "src/api/theme";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { useUser } from "src/context/UserProvider";
 import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
 import { CardImage, ICardImage } from "./card/CardImage";
 import { TitleCount } from "./title/TitleCount";
-import { useUser } from "src/context/UserProvider";
 
 interface Mode {
   id: number;
@@ -20,23 +20,25 @@ interface Mode {
 
 export const GameModeBlock = () => {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { profile } = useAuth();
   const { language } = useUser();
   const navigate = useNavigate();
 
   const [themes, setThemes] = useState<Array<ICardImage>>([]);
 
   const launchBattleGame = useCallback(async () => {
-    if (user) {
+    if (profile) {
       const insertValue = {
-        player1: user.id,
+        player1: profile.id,
       };
       const { data } = await insertBattleGame(insertValue);
-      if (data) navigate(`/battle/${data.uuid}`);
+      if (data) {
+        navigate(`/battle/${data.uuid}`);
+      }
     } else {
       navigate(`/login`);
     }
-  }, [user, navigate]);
+  }, [profile, navigate]);
 
   const modes: Array<Mode> = useMemo(
     () => [

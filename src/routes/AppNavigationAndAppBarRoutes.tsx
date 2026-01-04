@@ -1,5 +1,5 @@
+import { AdminRoutes } from "./AdminRoutes";
 import { ProtectedRoute } from "./ProtectedRoute";
-import { AdminRoutes } from "./adminPage";
 
 import AccomplishmentPage from "src/pages/AccomplishmentPage";
 import CategoriesPage from "src/pages/CategoriesPage";
@@ -18,46 +18,33 @@ import RankingPage from "src/pages/RankingPage";
 import ReportPage from "src/pages/ReportPage";
 import ThemePage from "src/pages/ThemePage";
 import ThemesPage from "src/pages/ThemesPage";
-import AdminPage from "src/pages/admin/AdminPage";
-import ForgotPasswordPage from "src/pages/connect/ForgotPasswordPage";
-import LoginPage from "src/pages/connect/LoginPage";
-import RegisterPage from "src/pages/connect/RegisterPage";
+import AdminPage from "src/pages/admin/AdminOutletPage";
 import ResetPasswordPage from "src/pages/connect/ResetPasswordPage";
 import FAQPage from "src/pages/help/FAQPage";
 import HelpPage from "src/pages/help/HelpPage";
 import InstallationPage from "src/pages/help/InstallationPage";
 import ConfigTrainingPage from "src/pages/play/ConfigTrainingPage";
 
-import AvatarPage from "src/pages/AvatarPage";
-import BadgePage from "src/pages/BadgePage";
-import BannerPage from "src/pages/BannerPage";
-import TitlePage from "src/pages/TitlePage";
-
-import OutletPage from "src/pages/OutletPage";
-import ParameterPage from "src/pages/ParameterPage";
-import PlayPage from "src/pages/PlayPage";
+import MyProposalsPage from "src/pages/MyProposalsPage";
 import PreviousThemePage from "src/pages/PreviousThemePage";
 import ProposeThemePage from "src/pages/ProposeThemePage";
 import StreakPage from "src/pages/StreakPage";
 import UpdatedThemePage from "src/pages/UpdatedThemePage";
-import WheelPage from "src/pages/WheelPage";
 import ChallengeOutletPage from "src/pages/challenge/ChallengeOutletPage";
 import ChallengePage from "src/pages/challenge/ChallengePage";
 import SharePage from "src/pages/help/SharePage";
+import AppBarOutletPage from "src/pages/outlet/AppBarOutletPage";
 import AvatarsPage from "src/pages/shop/AvatarsPage";
 import BadgesPage from "src/pages/shop/BadgesPages";
 import BannersPage from "src/pages/shop/BannersPage";
 import ShopPage from "src/pages/shop/ShopPage";
 import ShopThemePage from "src/pages/shop/ShopThemePage";
 import TitlesPage from "src/pages/shop/TitlesPage";
-import MyProposalsPage from "src/pages/MyProposalsPage";
-import NewsPage from "src/pages/NewsPage";
-import NotificationsPage from "src/pages/NotificationsPage";
 
-export const AppRoutes = [
+export const AppNavigationAndAppBarRoutes = [
   {
     path: "/",
-    element: <OutletPage />,
+    element: <AppBarOutletPage />,
     children: [
       {
         path: "/",
@@ -70,10 +57,6 @@ export const AppRoutes = [
       {
         path: "/previousgame",
         element: <PreviousThemePage />,
-      },
-      {
-        path: "/notifications",
-        element: <NotificationsPage />,
       },
       {
         path: "/new",
@@ -169,16 +152,8 @@ export const AppRoutes = [
         element: <ImprovePage />,
       },
       {
-        path: "/parameters",
-        element: <ParameterPage />,
-      },
-      {
         path: "/myproposals",
         element: <MyProposalsPage />,
-      },
-      {
-        path: "/news",
-        element: <NewsPage />,
       },
       {
         path: "/share",
@@ -236,42 +211,5 @@ export const AppRoutes = [
         ],
       },
     ],
-  },
-  /*NO HEADER*/
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/forgotpassword",
-    element: <ForgotPasswordPage />,
-  },
-  {
-    path: "/register",
-    element: <RegisterPage />,
-  },
-  {
-    path: "/badge/:id",
-    element: <BadgePage />,
-  },
-  {
-    path: "/title/:id",
-    element: <TitlePage />,
-  },
-  {
-    path: "/banner/:id",
-    element: <BannerPage />,
-  },
-  {
-    path: "/avatar/:id",
-    element: <AvatarPage />,
-  },
-  {
-    path: "/play",
-    element: <PlayPage />,
-  },
-  {
-    path: "/wheel",
-    element: <WheelPage />,
   },
 ];

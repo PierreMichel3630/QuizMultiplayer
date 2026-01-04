@@ -1,13 +1,12 @@
 import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
 import { Banner } from "./Banner";
-import { JsonLanguage } from "./Language";
+import { Language } from "./Language";
 import { Profile } from "./Profile";
 import { Title } from "./Title";
 
 export interface Accomplishment {
   id: number;
-  label: JsonLanguage;
   title: Title | null;
   badge: Badge | null;
   avatar: Avatar | null;
@@ -18,6 +17,13 @@ export interface Accomplishment {
   xp: number;
   gold: number;
   nbplayers: number;
+  accomplishmenttranslation: Array<AccomplishmentTranslation>;
+}
+
+export interface AccomplishmentTranslation {
+  id: number;
+  name: string;
+  language: Language;
 }
 
 export interface StatAccomplishment {

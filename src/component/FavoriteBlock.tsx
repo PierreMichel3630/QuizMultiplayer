@@ -54,6 +54,7 @@ export const FavoriteSelectAvatarBlock = ({
   select,
 }: PropsSelectAvatar) => {
   const { t } = useTranslation();
+  const { language } = useUser();
 
   const { favorites } = useApp();
   const [values, setValues] = useState<Array<ICardImage>>([]);
@@ -62,12 +63,12 @@ export const FavoriteSelectAvatarBlock = ({
     const idThemes = [...favorites]
       .filter((el) => el.theme)
       .map((el) => Number(el.theme));
-    if (idThemes.length > 0) {
-      getThemesById(idThemes).then(({ data }) => {
+    if (language && idThemes.length > 0) {
+      getThemesById(idThemes, language).then(({ data }) => {
         setValues(data ?? []);
       });
     }
-  }, [favorites]);
+  }, [favorites, language]);
 
   return (
     values.length > 0 && (

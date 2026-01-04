@@ -11,10 +11,13 @@ import { LanguageSelect } from "src/component/select/LanguageSelect";
 import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";
 import { VERSION_APP } from "src/utils/config";
+import { BarNavigation } from "src/component/navigation/BarNavigation";
+import { useNavigate } from "react-router-dom";
 
 export default function ParameterPage() {
   const { t } = useTranslation();
   const { mode, setMode } = useUser();
+  const navigate = useNavigate();
 
   const isDarkMode = useMemo(() => mode === "dark", [mode]);
 
@@ -28,6 +31,12 @@ export default function ParameterPage() {
         <Helmet>
           <title>{`${t("pages.parameters.title")} - ${t("appname")}`}</title>
         </Helmet>
+        <Grid item xs={12}>
+          <BarNavigation
+            title={t("commun.parameters")}
+            quit={() => navigate(-1)}
+          />
+        </Grid>
         <Grid item xs={12}>
           <Box sx={{ p: 2 }}>
             <Grid container spacing={2} justifyContent="center">

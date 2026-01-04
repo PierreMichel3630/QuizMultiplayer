@@ -1,5 +1,5 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Helmet } from "react-helmet-async";
@@ -8,28 +8,25 @@ import { Dictionary, groupBy } from "lodash";
 import {
   selectAccomplishment,
   selectStatAccomplishmentByProfile,
-  selectUnlockAccomplishmentByProfile,
 } from "src/api/accomplishment";
-import {
-  CardAccomplishment,
-  CardUnlockAccomplishment,
-} from "src/component/card/CardAccomplishment";
-import {
-  Accomplishment,
-  ProfileAccomplishment,
-  StatAccomplishment,
-} from "src/models/Accomplishment";
+import { CardAccomplishment } from "src/component/card/CardAccomplishment";
+import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
 
 import { px } from "csx";
 import award from "src/assets/award.png";
+import { NotificationBlock } from "src/component/notification/NotificationBlock";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { useNotification } from "src/context/NotificationProvider";
+import { NotificationType } from "src/models/enum/NotificationType";
 import { Colors } from "src/style/Colors";
 
 export default function AccomplishmentPage() {
   const { t } = useTranslation();
   const { myaccomplishments, headerSize } = useApp();
   const { profile } = useAuth();
+  const { notifications } = useNotification();
+
   const [accomplishments, setAccomplishments] = useState<Array<Accomplishment>>(
     []
   );
@@ -37,18 +34,12 @@ export default function AccomplishmentPage() {
     Dictionary<Array<Accomplishment>>
   >({});
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
-  const [accomplishmentsToUnlock, setAccomplishmentsToUnlock] = useState<
-    Array<ProfileAccomplishment>
-  >([]);
 
   useEffect(() => {
     const getMyStat = () => {
       if (profile) {
         selectStatAccomplishmentByProfile(profile.id).then(({ data }) => {
           setStat(data as StatAccomplishment);
-        });
-        selectUnlockAccomplishmentByProfile(profile.id).then(({ data }) => {
-          setAccomplishmentsToUnlock(data ?? []);
         });
       }
     };
@@ -69,6 +60,16 @@ export default function AccomplishmentPage() {
     getAccomplishments();
   }, []);
 
+  const accomplishmentsToUnlock = useMemo(
+    () =>
+      [...notifications].filter(
+        (el) =>
+          el.isread === false &&
+          el.type === NotificationType.accomplishment_unlock
+      ),
+    [notifications]
+  );
+
   return (
     <Grid container>
       <Helmet>
@@ -83,14 +84,9 @@ export default function AccomplishmentPage() {
           <Grid container spacing={1}>
             <Grid item xs={12}>
               <Grid container spacing={1} alignItems="center">
-                {accomplishmentsToUnlock.map((profileaccomplishment) => (
-                  <Grid item xs={12} lg={6} key={profileaccomplishment.id}>
-                    <CardUnlockAccomplishment
-                      profileaccomplishment={profileaccomplishment}
-                      stat={stat}
-                      badge
-                      title
-                    />
+                {accomplishmentsToUnlock.map((accomplishmentToUnlock) => (
+                  <Grid item xs={12} key={accomplishmentToUnlock.id}>
+                    <NotificationBlock notification={accomplishmentToUnlock} />
                   </Grid>
                 ))}
               </Grid>

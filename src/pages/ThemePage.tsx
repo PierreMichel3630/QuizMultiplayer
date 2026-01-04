@@ -1,8 +1,6 @@
-import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import HomeIcon from "@mui/icons-material/Home";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import SupervisedUserCircleRoundedIcon from "@mui/icons-material/SupervisedUserCircleRounded";
 import {
   Alert,
@@ -27,10 +25,16 @@ import {
 import { countQuestionByTheme } from "src/api/question";
 import { countPlayersByTheme } from "src/api/score";
 import { selectThemeById } from "src/api/theme";
-import { AvatarLanguageGroup } from "src/component/language/AvatarLanguageGroup";
 import { ButtonColor } from "src/component/Button";
+import {
+  DuelButton,
+  SoloButton,
+  TrainingButton,
+} from "src/component/button/PlayButton";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { InfoBlock } from "src/component/InfoBlock";
+import { AvatarLanguageGroup } from "src/component/language/AvatarLanguageGroup";
+import { TextNameBlock } from "src/component/language/TextLanguageBlock";
 import { ProposeQuestionModal } from "src/component/modal/ProposeQuestionModal";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { RankingTableSoloDuelPaginate } from "src/component/table/RankingTable";
@@ -44,8 +48,6 @@ import { Profile } from "src/models/Profile";
 import { QuestionCount } from "src/models/Question";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
-import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
-import { TextNameBlock } from "src/component/language/TextLanguageBlock";
 
 export default function ThemePage() {
   const { t } = useTranslation();
@@ -350,34 +352,13 @@ export default function ThemePage() {
                           profile?.isadmin ? (
                             <>
                               <Grid item xs={12}>
-                                <ButtonColor
-                                  size="small"
-                                  value={Colors.red}
-                                  label={t("commun.duel")}
-                                  icon={OfflineBoltIcon}
-                                  onClick={() => playDuel()}
-                                  variant="contained"
-                                />
+                                <DuelButton play={() => playDuel()} />
                               </Grid>
                               <Grid item xs={12}>
-                                <ButtonColor
-                                  size="small"
-                                  value={Colors.blue2}
-                                  label={t("commun.playsolo")}
-                                  icon={PlayCircleIcon}
-                                  onClick={() => playSolo()}
-                                  variant="contained"
-                                />
+                                <SoloButton play={() => playSolo()} />
                               </Grid>
                               <Grid item xs={12}>
-                                <ButtonColor
-                                  size="small"
-                                  value={Colors.purple}
-                                  label={t("commun.training")}
-                                  icon={FitnessCenterIcon}
-                                  onClick={() => playTraining()}
-                                  variant="contained"
-                                />
+                                <TrainingButton play={() => playTraining()} />
                               </Grid>
                               <Grid item xs={12}>
                                 <ButtonColor
