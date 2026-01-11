@@ -13,7 +13,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { SearchType } from "src/models/enum/TypeCardEnum";
 import { FavoriteInsert } from "src/models/Favorite";
 
 export default function CategoryPage() {
@@ -40,7 +40,7 @@ export default function CategoryPage() {
           ({ data }) => {
             const res = (data ?? []).map((el) => ({
               ...el,
-              type: TypeCardEnum.THEME,
+              type: SearchType.THEME,
             }));
             setThemes((prev) => (page === 0 ? [...res] : [...prev, ...res]));
             setIsLoading(false);

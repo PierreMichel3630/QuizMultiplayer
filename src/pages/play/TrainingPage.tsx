@@ -257,7 +257,13 @@ export default function TrainingPage() {
                         width: percent(100),
                       }}
                     >
-                      <Grid container spacing={1}>
+                      <Grid
+                        container
+                        spacing={1}
+                        sx={{
+                          width: percent(100),
+                        }}
+                      >
                         {!isEnd && (
                           <Grid size={12}>
                             <ButtonColor

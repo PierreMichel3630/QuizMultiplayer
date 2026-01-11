@@ -53,7 +53,7 @@ export const TextLabelBlock = ({
 
 interface TextName {
   name: string;
-  language: Language;
+  language: number | Language;
 }
 
 interface PropsTextNameBlock extends TypographyProps {
@@ -66,9 +66,9 @@ export const TextNameBlock = ({
 }: PropsTextNameBlock) => {
   const { language } = useUser();
   const name = useMemo(() => {
-    const translations = [...values];
+    const translations = values ? [...values] : [];
     if (language && translations.length > 0) {
-      const trad = translations.find((el) => el.language.id === language?.id);
+      const trad = translations.find((el) => typeof(el.language) === "number" ? el.language === language?.id :  el.language.id === language?.id);
       return trad ? trad.name : translations[0].name;
     }
     return "";

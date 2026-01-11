@@ -156,7 +156,7 @@ export default function PlayPage() {
                   </Grid>
                 </>
               )}
-              {theme && mode && (
+              {theme !== undefined && mode !== null && (
                 <Box
                   sx={{
                     position: "fixed",

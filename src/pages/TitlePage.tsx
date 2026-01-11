@@ -1,4 +1,4 @@
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { padding, px } from "csx";
@@ -198,7 +198,7 @@ export default function TitlePage() {
                     <ButtonColor
                       value={Colors.yellow}
                       label={t("commun.goaccomplishments")}
-                      icon={EmojiEventsIcon}
+                      icon={MilitaryTechIcon}
                       variant="contained"
                       onClick={() => {
                         navigate(`/accomplishments`);

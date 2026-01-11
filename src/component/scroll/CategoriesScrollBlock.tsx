@@ -74,7 +74,8 @@ export const CategoriesScrollBlock = () => {
           <Grid
             key={category.id}
             ref={index === categories.length - 1 ? lastItemRef : null}
-            size={12}>
+            size={12}
+          >
             <CategoryWithThemeBlock category={category} />
           </Grid>
         ))}

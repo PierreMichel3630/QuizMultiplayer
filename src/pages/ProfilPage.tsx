@@ -47,13 +47,15 @@ import { getLevel } from "src/utils/calcul";
 import HistoryIcon from "@mui/icons-material/History";
 import { ButtonColor } from "src/component/Button";
 import { ShopItems } from "src/component/ShopBlock";
+import { useAppBar } from "src/context/AppBarProvider";
 
 export default function ProfilPage() {
   const { t } = useTranslation();
   const { id } = useParams();
   const { uuid } = useUser();
   const { user, profile } = useAuth();
-  const { friends, headerSize } = useApp();
+  const { friends } = useApp();
+  const { top } = useAppBar();
   const navigate = useNavigate();
 
   const ITEMPERPAGE = 25;
@@ -309,7 +311,8 @@ export default function ProfilPage() {
                 sx={{
                   textAlign: "center",
                 }}
-                size={12}>
+                size={12}
+              >
                 <Typography
                   variant="h2"
                   color="text.secondary"
@@ -327,7 +330,10 @@ export default function ProfilPage() {
                 <ProfileTitleBlock titleprofile={profileUser.titleprofile} />
               </Grid>
               {!isMe && friend && (
-                <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
+                <Grid
+                  sx={{ display: "flex", justifyContent: "center" }}
+                  size={12}
+                >
                   <StatusProfileBlock
                     online={profileUser.isonline}
                     color="text.secondary"
@@ -335,7 +341,10 @@ export default function ProfilPage() {
                 </Grid>
               )}
               {profileUser.country && (
-                <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
+                <Grid
+                  sx={{ display: "flex", justifyContent: "center" }}
+                  size={12}
+                >
                   <CountryBlock
                     country={profileUser.country}
                     color="text.secondary"
@@ -388,7 +397,8 @@ export default function ProfilPage() {
             gap: px(5),
             p: 1,
             position: "sticky",
-            top: headerSize,
+            top: top,
+            transition: "top 350ms ease-in-out",
             bgcolor: "background.paper",
             width: percent(100),
             zIndex: 5,
@@ -439,8 +449,9 @@ export default function ProfilPage() {
                     xs: 12,
                     sm: 6,
                     md: 6,
-                    lg: 4
-                  }}>
+                    lg: 4,
+                  }}
+                >
                   <Paper
                     sx={{
                       overflow: "hidden",
@@ -457,7 +468,8 @@ export default function ProfilPage() {
                           p: px(5),
                           justifyContent: "space-between",
                         }}
-                        size={12}>
+                        size={12}
+                      >
                         <ThemeTitleBlock theme={score.theme} />
                       </Grid>
                       <Grid
@@ -465,7 +477,8 @@ export default function ProfilPage() {
                           backgroundColor: Colors.grey,
                           p: 1,
                         }}
-                        size={12}>
+                        size={12}
+                      >
                         <Grid
                           container
                           spacing={1}
@@ -561,8 +574,9 @@ export default function ProfilPage() {
                       xs: 12,
                       sm: 6,
                       md: 6,
-                      lg: 4
-                    }}>
+                      lg: 4,
+                    }}
+                  >
                     <SkeletonProfilTheme />
                   </Grid>
                 ))}

@@ -17,10 +17,10 @@ import { important, px } from "csx";
 import { useMemo } from "react";
 import googleplay from "src/assets/google-play.png";
 import logo from "src/assets/logo.svg";
-import { urlGooglePlay, urlPc } from "src/pages/help/InstallationPage";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
 import { CopyTextBlock } from "../CopyTextBlock";
+import { urlGooglePlay, urlPc } from "src/utils/config";
 
 interface Props {
   open: boolean;
@@ -99,7 +99,8 @@ export const ShareModal = ({ open, close }: Props) => {
               alignItems: "center",
               justifyContent: "center",
             }}
-            size={2}>
+            size={2}
+          >
             <img
               alt="google play icon"
               src={googleplay}
@@ -117,7 +118,8 @@ export const ShareModal = ({ open, close }: Props) => {
               alignItems: "center",
               justifyContent: "center",
             }}
-            size={2}>
+            size={2}
+          >
             <img
               alt="share icon"
               src={logo}

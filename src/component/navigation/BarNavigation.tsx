@@ -1,15 +1,16 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { percent, px } from "csx";
-import { Colors } from "src/style/Colors";
+import { BarNavigationSize } from "src/utils/config";
 
 interface Props {
-  title: string;
+  title?: string;
+  content?: JSX.Element;
   quit?: () => void;
 }
-export const BarNavigation = ({ title, quit }: Props) => {
+export const BarNavigation = ({ title, content, quit }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
   return (
@@ -19,17 +20,17 @@ export const BarNavigation = ({ title, quit }: Props) => {
         top: 0,
         width: percent(100),
         zIndex: 100,
-        height: 62,
         display: "flex",
         alignItems: "center",
-        backgroundColor: Colors.colorApp,
+        height: px(BarNavigationSize),
+        backgroundColor: (theme) => theme.palette.background.paper,
       }}
     >
-      <Container maxWidth="md">
+      <Container maxWidth="xl">
         <Box sx={{ p: px(5) }}>
-          <Grid container alignItems="center" spacing={1}>
+          <Grid container alignItems="center" spacing={3}>
             <Grid
-              sx={{ cursor: "pointer" }}
+              sx={{ cursor: "pointer", display: "flex" }}
               onClick={() => {
                 if (quit) {
                   quit();
@@ -40,10 +41,10 @@ export const BarNavigation = ({ title, quit }: Props) => {
                 }
               }}
             >
-              <KeyboardBackspaceIcon />
+              <ArrowBackIcon />
             </Grid>
-            <Grid sx={{ textAlign: "center" }} size="grow">
-              <Typography variant="h2">{title}</Typography>
+            <Grid size="grow" sx={{ textAlign: "center" }}>
+              {content ?? <Typography variant="h2">{title}</Typography>}
             </Grid>
           </Grid>
         </Box>
@@ -51,3 +52,7 @@ export const BarNavigation = ({ title, quit }: Props) => {
     </Box>
   );
 };
+
+export const ToolbarBarNavigation = () => (
+  <Box sx={{ height: px(BarNavigationSize) }} />
+);

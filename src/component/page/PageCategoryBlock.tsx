@@ -1,7 +1,7 @@
 import { Alert, Box, Grid } from "@mui/material";
 import { useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { SearchType } from "src/models/enum/TypeCardEnum";
 import { CardImage, ICardImage } from "../card/CardImage";
 import { RankingBlock } from "../RankingBlock";
 import { SkeletonThemesGrid } from "../skeleton/SkeletonTheme";
@@ -33,7 +33,7 @@ export const PageCategoryBlock = ({
 
   const idThemes = useMemo(
     () =>
-      values.filter((el) => el.type === TypeCardEnum.THEME).map((el) => el.id),
+      values.filter((el) => el.type === SearchType.THEME).map((el) => el.id),
     [values]
   );
 
@@ -78,7 +78,10 @@ export const PageCategoryBlock = ({
           </Grid>
         )}
         {values.map((value, index) => (
-          <Grid key={index} ref={index === values.length - 1 ? lastItemRef : null}>
+          <Grid
+            key={index}
+            ref={index === values.length - 1 ? lastItemRef : null}
+          >
             <CardImage value={value} />
           </Grid>
         ))}

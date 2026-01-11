@@ -139,7 +139,8 @@ export const sortByDuelGamesDesc = (
   b: { duelgames: number }
 ) => b.duelgames - a.duelgames;
 
-export const sortByName = (language: Language, a: any, b: any) =>
+export const sortByName = (a: any, b: any) => a.name.localeCompare(b.name);
+export const sortByLanguageName = (language: Language, a: any, b: any) =>
   a.name[language.iso].localeCompare(b.name[language.iso]);
 
 export const sortByThemeTitle = (

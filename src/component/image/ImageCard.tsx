@@ -23,6 +23,7 @@ export const ImageCard = ({ value, size = percent(100) }: Props) => {
       sx={{
         backgroundColor: value.color ?? Colors.colorApp,
         width: size,
+        height: size,
         aspectRatio: "1/1",
         borderRadius: px(10),
         display: "flex",
@@ -47,8 +48,8 @@ export const ImageCard = ({ value, size = percent(100) }: Props) => {
         value.image ?? (
           <BoltIcon
             sx={{
-              width: 80,
-              height: 80,
+              width: percent(80),
+              height: percent(80),
               color: "white",
             }}
           />

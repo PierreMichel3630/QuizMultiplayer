@@ -188,7 +188,6 @@ interface PropsSelectThemeShop {
 
 export const SelectThemeShop = ({ theme, onChange }: PropsSelectThemeShop) => {
   const { t } = useTranslation();
-  const { language } = useUser();
 
   const [themes, setThemes] = useState<Array<ThemeShop>>([]);
 
@@ -199,9 +198,8 @@ export const SelectThemeShop = ({ theme, onChange }: PropsSelectThemeShop) => {
   }, []);
 
   const options = useMemo(
-    () =>
-      language ? [...themes].sort((a, b) => sortByName(language, a, b)) : [],
-    [language, themes]
+    () => [...themes].sort((a, b) => sortByName(a, b)),
+    [themes]
   );
 
   return (

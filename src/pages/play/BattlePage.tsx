@@ -13,11 +13,10 @@ import {
 } from "src/api/game";
 import { supabase } from "src/api/supabase";
 import { ButtonColor } from "src/component/Button";
-import { SelectedTheme } from "src/component/SelectedTheme";
-import { SelectorProfileBattleBlock } from "src/component/SelectorProfileBlock";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { BarNavigation } from "src/component/navigation/BarNavigation";
-import { useApp } from "src/context/AppProvider";
+import { SelectedTheme } from "src/component/SelectedTheme";
+import { SelectorProfileBattleBlock } from "src/component/SelectorProfileBlock";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import {
   BattleGame,
@@ -30,21 +29,22 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import HistoryIcon from "@mui/icons-material/History";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import { sendNotification } from "src/api/notification";
 import { ICardImage } from "src/component/card/CardImage";
+import { FavoriteSelectAvatarBlock } from "src/component/FavoriteBlock";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import { HistoryGameModal } from "src/component/modal/HistoryGameModal";
 import { SearchThemeSelectScrollBlock } from "src/component/scroll/SearchThemeScrollBlock";
-import { weightedRandom } from "src/utils/random";
-import { FavoriteSelectAvatarBlock } from "src/component/FavoriteBlock";
-import { sendNotification } from "src/api/notification";
+import { useAppBar } from "src/context/AppBarProvider";
 import { NotificationType } from "src/models/enum/NotificationType";
 import { Profile } from "src/models/Profile";
+import { weightedRandom } from "src/utils/random";
 
 export default function BattlePage() {
   const { t } = useTranslation();
   const { uuidGame } = useParams();
   const { user } = useAuth();
-  const { headerSize } = useApp();
+  const { top } = useAppBar();
   const navigate = useNavigate();
 
   const [game, setGame] = useState<BattleGame | null>(null);
@@ -298,7 +298,7 @@ export default function BattlePage() {
             gap: 1,
             backgroundColor: "background.paper",
             position: "sticky",
-            top: headerSize,
+            top: top,
             left: 0,
             right: 0,
             zIndex: 2,

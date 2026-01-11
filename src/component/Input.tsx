@@ -1,20 +1,20 @@
 import {
-  Divider,
   IconButton,
   InputAdornment,
   InputBase,
   InputBaseProps,
   OutlinedInput,
-  Paper,
   TextField,
 } from "@mui/material";
-import { percent } from "csx";
+import { padding, percent, px } from "csx";
 
 import ClearIcon from "@mui/icons-material/Clear";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import SearchIcon from "@mui/icons-material/Search";
+import { Box, BoxProps } from "@mui/system";
 import { Colors } from "src/style/Colors";
+import { useUser } from "src/context/UserProvider";
 
 interface PropsBaseInput extends InputBaseProps {
   value: string;
@@ -45,12 +45,14 @@ export const BaseInput = ({ value, clear, ...props }: PropsBaseInput) => {
   );
 };
 
-interface PropsBasicSearchInput {
+interface PropsBasicSearchInput extends Omit<BoxProps, "onChange" | "onFocus"> {
   label?: string;
   value: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
+  handleSubmit?: () => void;
   clear?: () => void;
   onFocus?: () => void;
+  autoFocus?: boolean;
 }
 
 export const BasicSearchInput = ({
@@ -58,43 +60,82 @@ export const BasicSearchInput = ({
   value,
   clear,
   onChange,
+  handleSubmit,
   onFocus,
-}: PropsBasicSearchInput) => (
-  <Paper
-    variant="outlined"
-    sx={{
-      p: "2px 4px",
-      display: "flex",
-      alignItems: "center",
-      width: percent(100),
-    }}
-  >
-    <InputBase
-      sx={{ ml: 1, flex: 1 }}
-      placeholder={label ?? ""}
-      inputProps={{ "aria-label": label ?? "" }}
-      value={value}
-      onChange={(event) => {
-        onChange(event.target.value);
+  autoFocus = false,
+  ...props
+}: PropsBasicSearchInput) => {
+  const { mode } = useUser();
+
+  const isDarkMode = useMemo(() => mode === "dark", [mode]);
+
+  return (
+    <form
+      style={{ width: percent(100) }}
+      onSubmit={(event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        if (handleSubmit) handleSubmit();
       }}
-      onFocus={onFocus}
-    />
-    <SearchIcon fontSize="large" sx={{ color: Colors.grey4 }} />
-    {value !== "" && clear && (
-      <>
-        <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-        <IconButton
-          type="button"
-          size="small"
-          aria-label="clear"
-          onClick={() => clear()}
+    >
+      <Box
+        sx={{
+          ...props.sx,
+          display: "flex",
+          width: percent(100),
+          border: "1px solid",
+          borderRadius: px(40),
+          borderColor: isDarkMode ? "#303030" : "#d3d3d3",
+        }}
+      >
+        <Box
+          sx={{
+            borderRadius: "40px 0px 0px 40px",
+            p: padding(5, 10, 5, 20),
+            width: percent(100),
+            display: "flex",
+            alignItems: "center",
+            backgroundColor: isDarkMode ? "initial" : Colors.white,
+          }}
         >
-          <ClearIcon sx={{ width: 15, height: 15 }} />
-        </IconButton>
-      </>
-    )}
-  </Paper>
-);
+          <InputBase
+            sx={{ flex: 1 }}
+            placeholder={label ?? ""}
+            inputProps={{ "aria-label": label ?? "" }}
+            value={value}
+            onChange={(event) => {
+              if (onChange) {
+                onChange(event.target.value);
+              }
+            }}
+            onFocus={onFocus}
+            autoFocus={autoFocus}
+          />
+          {value !== "" && clear && <ClearIcon onClick={() => clear()} />}
+        </Box>
+        <Box
+          sx={{
+            backgroundColor: isDarkMode ? "#FFFFFF14" : Colors.grey7,
+            width: px(64),
+            flexShrink: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "0 40px 40px 0",
+            cursor: "pointer",
+            borderLeft: "1px solid",
+            borderColor: isDarkMode ? "#303030" : "#d3d3d3",
+          }}
+          onClick={() => {
+            if (handleSubmit) handleSubmit();
+          }}
+        >
+          <SearchIcon sx={{ fontSize: px(30), color: "text.primary" }} />
+        </Box>
+      </Box>
+    </form>
+  );
+};
 
 interface PropsInputEnter {
   label: string;

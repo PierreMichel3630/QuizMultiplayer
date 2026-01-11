@@ -9,7 +9,7 @@ import { CardHistoryGame } from "src/component/card/CardHistoryGame";
 import { ICardImage } from "src/component/card/CardImage";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { SkeletonGames } from "src/component/skeleton/SkeletonGame";
-import { useApp } from "src/context/AppProvider";
+import { useAppBar } from "src/context/AppBarProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { DuelGame } from "src/models/DuelGame";
 import { GameModeEnum } from "src/models/enum/GameEnum";
@@ -26,7 +26,7 @@ export default function HistoryGamePage() {
   const { t } = useTranslation();
   const location = useLocation();
 
-  const { headerSize } = useApp();
+  const { top } = useAppBar();
   const { profile } = useAuth();
 
   const ITEMPERPAGE = 10;
@@ -153,14 +153,16 @@ export default function HistoryGamePage() {
       <Grid
         sx={{
           position: "sticky",
-          top: headerSize,
+          top: top,
+          transition: "top 350ms ease-in-out",
           p: 1,
           backgroundColor: "background.paper",
           display: "flex",
           justifyContent: "center",
           zIndex: 10,
         }}
-        size={12}>
+        size={12}
+      >
         <Grid container spacing={1} justifyContent="center" alignItems="center">
           <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
             <GroupButtonAllTypeGame
@@ -182,7 +184,8 @@ export default function HistoryGamePage() {
               <Grid
                 key={game.uuid}
                 ref={index === games.length - 1 ? lastItemRef : null}
-                size={12}>
+                size={12}
+              >
                 <CardHistoryGame game={game} />
               </Grid>
             ))}

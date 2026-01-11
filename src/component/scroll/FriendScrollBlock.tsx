@@ -4,7 +4,7 @@ import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { useNotification } from "src/context/NotificationProvider";
+import { useRealtime } from "src/context/NotificationProvider";
 import { NotificationType } from "src/models/enum/NotificationType";
 import { FRIENDSTATUS } from "src/models/Friend";
 import { sortByUsername } from "src/utils/sort";
@@ -19,7 +19,7 @@ export const FriendScrollBlock = ({ search }: Props) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const { friends, getFriends } = useApp();
-  const { notifications } = useNotification();
+  const { notifications } = useRealtime();
 
   useEffect(() => {
     getFriends();

@@ -1,5 +1,6 @@
 import { ShopType } from "./enum/ShopType";
 import { JsonLanguage, Language } from "./Language";
+import { Translation } from "./Translation";
 
 export interface ShopItem {
   id: number;
@@ -10,6 +11,7 @@ export interface ShopItem {
   isaccomplishment: boolean;
   theme: number;
   themeshoptranslation: Array<ThemeShopTranslation>;
+  translation: Array<Translation>;
 }
 
 /* THEME */

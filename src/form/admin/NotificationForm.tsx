@@ -1,6 +1,5 @@
 import SendIcon from "@mui/icons-material/Send";
 import {
-  Alert,
   FormControl,
   FormHelperText,
   Grid,
@@ -12,10 +11,7 @@ import {
 import { FormikProvider, useFormik } from "formik";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  insertNotification,
-  sendUpdateNoficationForAll,
-} from "src/api/notification";
+import { insertNotification } from "src/api/notification";
 import { ButtonColor } from "src/component/Button";
 import { SelectProfileModal } from "src/component/modal/SelectProfileModal";
 import { NotificationBlock } from "src/component/notification/NotificationBlock";
@@ -40,7 +36,7 @@ export const NotificationForm = () => {
     title: string;
     text: string;
   } = {
-    type: NotificationType.update_app,
+    type: NotificationType.other,
     version: "",
     title: "",
     text: "",
@@ -48,12 +44,6 @@ export const NotificationForm = () => {
 
   const validationSchema = Yup.object().shape({
     type: Yup.mixed<NotificationType>().required(),
-    version: Yup.string().when("type", {
-      is: NotificationType.update_app,
-      then: (schema) =>
-        schema.required(t("form.createnotification.versionrequired")),
-      otherwise: (schema) => schema.notRequired(),
-    }),
     profile: Yup.object().when("type", {
       is: NotificationType.other,
       then: (schema) =>
@@ -79,10 +69,7 @@ export const NotificationForm = () => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
-        if (values.type === NotificationType.update_app) {
-          const { error } = await sendUpdateNoficationForAll(values.version);
-          if (error) throw error;
-        } else if (values.type === NotificationType.other) {
+        if (values.type === NotificationType.other) {
           const notification: NotificationInsert = {
             type: values.type,
             profile: values.profile!.id,
@@ -122,14 +109,11 @@ export const NotificationForm = () => {
                   formik.setFieldValue("type", event.target.value)
                 }
               >
-                <MenuItem value={NotificationType.update_app}>
-                  Mise à jour
-                </MenuItem>
                 <MenuItem value={NotificationType.other}>Autre</MenuItem>
               </Select>
             </FormControl>
           </Grid>
-          {formik.values.type === NotificationType.other ? (
+          {formik.values.type === NotificationType.other && (
             <>
               <Grid size={12}>
                 <SelectorProfileBlock
@@ -193,41 +177,13 @@ export const NotificationForm = () => {
                 </FormControl>
               </Grid>
             </>
-          ) : (
-            <>
-              <Grid size={12}>
-                <FormControl
-                  fullWidth
-                  error={Boolean(
-                    formik.touched.version && formik.errors.version
-                  )}
-                >
-                  <InputLabel htmlFor="version-input">
-                    {t("form.createnotification.version")}
-                  </InputLabel>
-                  <OutlinedInput
-                    id="version-input"
-                    value={formik.values.version}
-                    name="version"
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
-                    label={t("form.createnotification.version")}
-                    inputProps={{}}
-                  />
-                  {formik.touched.version && formik.errors.version && (
-                    <FormHelperText error id="error-version">
-                      {formik.errors.version}
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-            </>
           )}
           <Grid
             size={{
               xs: 12,
-              md: 6
-            }}>
+              md: 6,
+            }}
+          >
             <NotificationBlock
               notification={{
                 id: 0,
@@ -243,11 +199,6 @@ export const NotificationForm = () => {
               }}
             />
           </Grid>
-          {formik.values.type === NotificationType.update_app && (
-            <Grid size={12}>
-              <Alert severity="warning">{t("alert.sendemailtoallusers")}</Alert>
-            </Grid>
-          )}
           <Grid size={12}>
             <ButtonColor
               value={Colors.green}

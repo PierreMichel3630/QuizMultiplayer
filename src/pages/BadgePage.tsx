@@ -1,5 +1,5 @@
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import { Avatar, Box, Container, Grid, Typography } from "@mui/material";
 import { padding, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
@@ -203,7 +203,7 @@ export default function BadgePage() {
                 <ButtonColor
                   value={Colors.yellow}
                   label={t("commun.goaccomplishments")}
-                  icon={EmojiEventsIcon}
+                  icon={MilitaryTechIcon}
                   variant="contained"
                   onClick={() => {
                     navigate(`/accomplishments`);

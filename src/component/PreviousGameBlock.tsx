@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { selectLastXThemeByPlayer } from "src/api/game";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { SearchType } from "src/models/enum/TypeCardEnum";
 import { PreviousGame } from "src/models/PreviousGame";
 import { ICardImage } from "./card/CardImage";
 import { CategoryBlock } from "./category/CategoryBlock";
@@ -39,7 +39,7 @@ export const PreviousGameBlock = () => {
           image: el.image,
           color: el.color,
           link: `/theme/${el.id}`,
-          type: TypeCardEnum.THEME,
+          type: SearchType.THEME,
         };
       });
     }

@@ -15,7 +15,7 @@ import { CardCompare } from "src/component/card/CardCompare";
 import { CardTitle } from "src/component/card/CardTitle";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { SkeletonRectangulars } from "src/component/skeleton/SkeletonRectangular";
-import { useApp } from "src/context/AppProvider";
+import { useAppBar } from "src/context/AppBarProvider";
 import { useUser } from "src/context/UserProvider";
 import { Badge, BadgeProfile } from "src/models/Badge";
 import { ComparePlayers } from "src/models/Compare";
@@ -25,7 +25,7 @@ import { TitleProfile } from "src/models/Title";
 export default function ComparePage() {
   const { t } = useTranslation();
   const location = useLocation();
-  const { headerSize } = useApp();
+  const { top } = useAppBar();
   const { language } = useUser();
 
   const [profile1, setProfile1] = useState<Profile | undefined>(
@@ -195,7 +195,8 @@ export default function ComparePage() {
                   gap: px(5),
                   p: 1,
                   position: "sticky",
-                  top: headerSize,
+                  top: top,
+                  transition: "top 350ms ease-in-out",
                   backgroundColor: "background.paper",
                   width: percent(100),
                 }}
@@ -214,7 +215,8 @@ export default function ComparePage() {
                     <Grid
                       key={index}
                       ref={index === values.length - 1 ? lastItemRef : null}
-                      size={12}>
+                      size={12}
+                    >
                       <CardCompare value={value} />
                     </Grid>
                   ))}

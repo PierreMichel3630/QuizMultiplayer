@@ -233,7 +233,7 @@ export default function ThemePage() {
                 container
                 spacing={1}
                 alignItems="center"
-                sx={{ zIndex: 10 }}
+                sx={{ zIndex: 10, width: percent(100) }}
               >
                 <Grid sx={{ mb: 1 }} size={12}>
                   <Skeleton
@@ -345,8 +345,10 @@ export default function ThemePage() {
                         xs: 5,
                         sm: 3,
                         md: 3,
-                        lg: 3
-                      }}>
+                        lg: 2,
+                        xl: 2,
+                      }}
+                    >
                       <ImageThemeBlock theme={theme} />
                     </Grid>
                     {!loadingQuestions && (
@@ -355,8 +357,10 @@ export default function ThemePage() {
                           xs: 7,
                           sm: 6,
                           md: 6,
-                          lg: 6
-                        }}>
+                          lg: 5,
+                          xl: 4,
+                        }}
+                      >
                         <Grid container spacing={1}>
                           {(theme.enabled &&
                             theme.validate &&
@@ -453,7 +457,10 @@ export default function ThemePage() {
                     value={players ?? "-"}
                   />
                 </Grid>
-                <Grid sx={{ display: "flex", justifyContent: "center" }} size={1}>
+                <Grid
+                  sx={{ display: "flex", justifyContent: "center" }}
+                  size={1}
+                >
                   <Divider
                     orientation="vertical"
                     variant="middle"
@@ -466,7 +473,10 @@ export default function ThemePage() {
                 <Grid size={3}>
                   <InfoBlock title={t("commun.questions")} value={questions} />
                 </Grid>
-                <Grid sx={{ display: "flex", justifyContent: "center" }} size={1}>
+                <Grid
+                  sx={{ display: "flex", justifyContent: "center" }}
+                  size={1}
+                >
                   <Divider
                     orientation="vertical"
                     variant="middle"

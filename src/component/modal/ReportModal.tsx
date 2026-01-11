@@ -101,7 +101,7 @@ export const ReportModal = ({
       <AppBar sx={{ position: "relative" }}>
         <Toolbar sx={{ minHeight: important("auto") }}>
           <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.reportquestion")}
+            {question ? t("commun.reportquestion") : t("commun.report")}
           </Typography>
           <IconButton color="inherit" onClick={close} aria-label="close">
             <CloseIcon />

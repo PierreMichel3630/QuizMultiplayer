@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { countThemesByCategory, selectThemesByCategory } from "src/api/theme";
 import { useUser } from "src/context/UserProvider";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { SearchType } from "src/models/enum/TypeCardEnum";
 import { ICardImage } from "./card/CardImage";
 import { CategoryBlock } from "./category/CategoryBlock";
 
@@ -26,7 +26,7 @@ export const CategoryWithThemeBlock = ({ category }: Props) => {
           ({ data }) => {
             const res = (data ?? []).map((el) => ({
               ...el,
-              type: TypeCardEnum.THEME,
+              type: SearchType.THEME,
             }));
             setThemes((prev) => (page === 0 ? [...res] : [...prev, ...res]));
             setIsLoading(false);

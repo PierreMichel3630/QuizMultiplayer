@@ -17,26 +17,21 @@ import { selectReportMessage } from "src/api/report";
 import { countThemes } from "src/api/theme";
 import { selectTitleByProfile } from "src/api/title";
 import { ProfileAccomplishment } from "src/models/Accomplishment";
-import { Avatar, AvatarProfile } from "src/models/Avatar";
-import { Badge, BadgeProfile } from "src/models/Badge";
-import { Banner, BannerProfile } from "src/models/Banner";
+import { Avatar } from "src/models/Avatar";
+import { Badge } from "src/models/Badge";
+import { Banner } from "src/models/Banner";
 import { Favorite } from "src/models/Favorite";
 import { FRIENDSTATUS, Friend } from "src/models/Friend";
 import { ReportMessage } from "src/models/Report";
 import { TitleProfile } from "src/models/Title";
-import { headerSizeNoUser, headerSizeUser } from "src/utils/config";
-import { sortByName } from "src/utils/sort";
 import { useAuth } from "./AuthProviderSupabase";
 import { useUser } from "./UserProvider";
-import { Config } from "src/models/Config";
-import { selectConfig } from "src/api/config";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[];
 };
 
 const AppContext = createContext<{
-  config?: Config;
   friends: Array<Friend>;
   idsFriend: Array<string>;
   getFriends: () => void;
@@ -56,9 +51,7 @@ const AppContext = createContext<{
   nbQuestions?: number;
   nbThemes?: number;
   nbPlayers?: number;
-  headerSize: number;
 }>({
-  config: undefined,
   friends: [],
   idsFriend: [],
   getFriends: () => {},
@@ -77,7 +70,6 @@ const AppContext = createContext<{
   getMyTitles: () => {},
   nbThemes: undefined,
   nbPlayers: undefined,
-  headerSize: headerSizeNoUser,
 });
 
 export const useApp = () => useContext(AppContext);
@@ -86,7 +78,6 @@ export const AppProvider = ({ children }: Props) => {
   const { user } = useAuth();
   const { language } = useUser();
 
-  const [config, setConfig] = useState<undefined | Config>(undefined);
   const [nbThemes, setNbThemes] = useState<undefined | number>(undefined);
   const [nbPlayers, setNbPlayers] = useState<undefined | number>(undefined);
   const [myAvatars, setMyAvatars] = useState<Array<Avatar>>([]);
@@ -101,11 +92,6 @@ export const AppProvider = ({ children }: Props) => {
   const [myaccomplishments, setMyaccomplishments] = useState<
     Array<ProfileAccomplishment>
   >([]);
-
-  const headerSize = useMemo(
-    () => (user ? headerSizeUser : headerSizeNoUser),
-    [user]
-  );
 
   const idsFriendAndMe = useMemo(
     () =>
@@ -127,15 +113,6 @@ export const AppProvider = ({ children }: Props) => {
   );
 
   useEffect(() => {
-    const getConfig = () => {
-      selectConfig().then(({ data }) => {
-        setConfig(data ?? undefined);
-      });
-    };
-    getConfig();
-  }, []);
-
-  useEffect(() => {
     const getCountPlayer = () => {
       countPlayers().then(({ count }) => {
         setNbPlayers(count ?? undefined);
@@ -145,13 +122,13 @@ export const AppProvider = ({ children }: Props) => {
   }, []);
 
   const getFavorite = useCallback(() => {
-    if (user !== null) {
+    if (user === null) {
+      setFavorites([]);
+    } else {
       selectMyFavorite(user.id).then(({ data }) => {
-        const value = data !== null ? (data as Array<Favorite>) : [];
+        const value = data ?? [];
         setFavorites(value);
       });
-    } else {
-      setFavorites([]);
     }
   }, [user]);
 
@@ -160,13 +137,13 @@ export const AppProvider = ({ children }: Props) => {
   }, [getFavorite, user]);
 
   const getFriends = useCallback(() => {
-    if (user !== null) {
+    if (user === null) {
+      setFriends([]);
+    } else {
       selectFriendByProfileId(user.id).then(({ data }) => {
-        const value = data !== null ? (data as Array<Friend>) : [];
+        const value = data ?? [];
         setFriends(value.filter((el) => el.status !== FRIENDSTATUS.REFUSE));
       });
-    } else {
-      setFriends([]);
     }
   }, [user]);
 
@@ -180,7 +157,7 @@ export const AppProvider = ({ children }: Props) => {
 
   const getMessage = () => {
     selectReportMessage().then(({ data }) => {
-      const value = data !== null ? (data as Array<ReportMessage>) : [];
+      const value = data ?? [];
       setReportmessages(value);
     });
   };
@@ -188,7 +165,7 @@ export const AppProvider = ({ children }: Props) => {
   const getMyBadges = useCallback(() => {
     if (user) {
       selectBadgeByProfile(user.id).then(({ data }) => {
-        const res = data !== null ? (data as Array<BadgeProfile>) : [];
+        const res = data ?? [];
         setMyBadges(res.map((el) => el.badge));
       });
     } else {
@@ -203,7 +180,7 @@ export const AppProvider = ({ children }: Props) => {
   const getMyAvatars = useCallback(() => {
     if (user) {
       selectAvatarByProfile(user.id).then(({ data }) => {
-        const res = data !== null ? (data as Array<AvatarProfile>) : [];
+        const res = data ?? [];
         setMyAvatars(res.map((el) => el.avatar));
       });
     } else {
@@ -218,7 +195,7 @@ export const AppProvider = ({ children }: Props) => {
   const getMyBanners = useCallback(() => {
     if (user) {
       selectBannerByProfile(user.id).then(({ data }) => {
-        const res = data !== null ? (data as Array<BannerProfile>) : [];
+        const res = data ?? [];
         setMybanners(res.map((el) => el.banner));
       });
     } else {
@@ -234,16 +211,12 @@ export const AppProvider = ({ children }: Props) => {
     if (user) {
       selectTitleByProfile(user.id).then(({ data }) => {
         const res = data ?? [];
-        setMyTitles(
-          language
-            ? [...res].sort((a, b) => sortByName(language, a.title, b.title))
-            : [...res]
-        );
+        setMyTitles([...res]);
       });
     } else {
       setMyTitles([]);
     }
-  }, [user, language]);
+  }, [user]);
 
   useEffect(() => {
     getMyTitles();
@@ -252,7 +225,7 @@ export const AppProvider = ({ children }: Props) => {
   const getMyAccomplishments = useCallback(() => {
     if (user) {
       selectAccomplishmentByProfile(user.id).then(({ data }) => {
-        const res = data !== null ? (data as Array<ProfileAccomplishment>) : [];
+        const res = data ?? [];
         setMyaccomplishments(res);
       });
     } else {
@@ -271,7 +244,6 @@ export const AppProvider = ({ children }: Props) => {
 
   const value = useMemo(
     () => ({
-      config,
       nbThemes,
       friends,
       idsFriend: idsFriendAndMe,
@@ -289,11 +261,9 @@ export const AppProvider = ({ children }: Props) => {
       getMyBanners,
       myTitles,
       getMyTitles,
-      headerSize,
       nbPlayers,
     }),
     [
-      config,
       favorites,
       friends,
       idsFriendAndMe,
@@ -303,7 +273,6 @@ export const AppProvider = ({ children }: Props) => {
       getMyBadges,
       getMyBanners,
       getMyTitles,
-      headerSize,
       myAvatars,
       myBadges,
       myTitles,

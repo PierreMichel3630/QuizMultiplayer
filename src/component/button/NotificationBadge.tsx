@@ -3,11 +3,11 @@ import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import { Badge, Box } from "@mui/material";
 import { padding, px } from "csx";
 import { useMemo } from "react";
-import { useNotification } from "src/context/NotificationProvider";
+import { useRealtime } from "src/context/NotificationProvider";
 import { Colors } from "src/style/Colors";
 
 export const NotificationBadge = () => {
-  const { notifications } = useNotification();
+  const { notifications } = useRealtime();
 
   const number = useMemo(
     () => [...notifications].filter((el) => !el.isread).length,
@@ -30,6 +30,24 @@ export const NotificationBadge = () => {
           <NotificationsIcon sx={{ color: Colors.white }} />
         )}
       </Box>
+    </Badge>
+  );
+};
+
+export const NotificationBadgeIcon = () => {
+  const { notifications } = useRealtime();
+
+  const number = useMemo(
+    () => [...notifications].filter((el) => !el.isread).length,
+    [notifications]
+  );
+  return (
+    <Badge badgeContent={number} color="error">
+      {number > 0 ? (
+        <NotificationsActiveIcon fontSize="large" />
+      ) : (
+        <NotificationsIcon fontSize="large" />
+      )}
     </Badge>
   );
 };

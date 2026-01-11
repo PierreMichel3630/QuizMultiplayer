@@ -3,7 +3,6 @@ import { px } from "csx";
 import { ButtonColor } from "src/component/Button";
 import { CopyTextBlock } from "src/component/CopyTextBlock";
 import { Colors } from "src/style/Colors";
-import { urlGooglePlay, urlPc } from "./InstallationPage";
 
 import googleplay from "src/assets/google-play.png";
 import logo from "src/assets/logo.svg";
@@ -12,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import ShareIcon from "@mui/icons-material/Share";
 import { Helmet } from "react-helmet-async";
 import { GoBackButtonIcon } from "src/component/navigation/GoBackButton";
+import { urlGooglePlay, urlPc } from "src/utils/config";
 
 export default function SharePage() {
   const { t } = useTranslation();
@@ -77,7 +77,8 @@ export default function SharePage() {
                   alignItems: "center",
                   justifyContent: "center",
                 }}
-                size={2}>
+                size={2}
+              >
                 <img
                   alt="googleplay"
                   src={googleplay}
@@ -95,7 +96,8 @@ export default function SharePage() {
                   alignItems: "center",
                   justifyContent: "center",
                 }}
-                size={2}>
+                size={2}
+              >
                 <img
                   alt="logo"
                   src={logo}

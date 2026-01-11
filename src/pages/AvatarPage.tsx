@@ -1,5 +1,5 @@
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import {
   Avatar as AvatarMat,
   Box,
@@ -213,7 +213,7 @@ export default function AvatarPage() {
                 <ButtonColor
                   value={Colors.yellow}
                   label={t("commun.goaccomplishments")}
-                  icon={EmojiEventsIcon}
+                  icon={MilitaryTechIcon}
                   variant="contained"
                   onClick={() => {
                     navigate(`/accomplishments`);

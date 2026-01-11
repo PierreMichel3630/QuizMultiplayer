@@ -10,11 +10,11 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import AppsIcon from "@mui/icons-material/Apps";
 import BarChartIcon from "@mui/icons-material/BarChart";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import MenuIcon from "@mui/icons-material/Menu";
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import { padding, px } from "csx";
-import { useNotification } from "src/context/NotificationProvider";
-import { LogoIcon } from "src/icons/LogoIcon";
+import { useRealtime } from "src/context/NotificationProvider";
+import { LogoIconRound } from "src/icons/LogoIcon";
 import { NotificationType } from "src/models/enum/NotificationType";
 import { Colors } from "src/style/Colors";
 
@@ -22,7 +22,7 @@ export const BottomNavigationBlock = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
-  const { notifications } = useNotification();
+  const { notifications } = useRealtime();
 
   const [menu, setMenu] = useState(location.pathname.split("/")[1]);
 
@@ -77,7 +77,7 @@ export const BottomNavigationBlock = () => {
           label={t("commun.accomplishments")}
           icon={
             <Badge badgeContent={notificationsAccomplishment} color="error">
-              <EmojiEventsIcon />
+              <MilitaryTechIcon />
             </Badge>
           }
           component={Link}
@@ -113,21 +113,7 @@ export const BottomNavigationBlock = () => {
         }}
         onClick={() => navigate("/play")}
       >
-        <Box
-          sx={{
-            backgroundColor: Colors.colorApp,
-            width: px(60),
-            height: px(60),
-            borderRadius: "50%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <LogoIcon
-            sx={{ color: Colors.white, ml: "2px", mt: "3px", fontSize: 40 }}
-          />
-        </Box>
+        <LogoIconRound />
       </Box>
       <Box
         sx={{

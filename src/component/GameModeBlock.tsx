@@ -1,4 +1,4 @@
-import { Box, Divider, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -6,17 +6,11 @@ import { insertBattleGame } from "src/api/game";
 import { selectThemesById } from "src/api/theme";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
-import { CardImage, ICardImage } from "./card/CardImage";
-import { TitleCount } from "./title/TitleCount";
-
-interface Mode {
-  id: number;
-  image: string;
-  color: string;
-  name: string;
-  onClick: () => void;
-}
+import { SearchType } from "src/models/enum/TypeCardEnum";
+import { sortByName } from "src/utils/sort";
+import { ICardImage } from "./card/CardImage";
+import { CategoryBlock } from "./category/CategoryBlock";
+import { GameMode } from "src/models/GameMode";
 
 export const GameModeBlock = () => {
   const { t } = useTranslation();
@@ -40,7 +34,7 @@ export const GameModeBlock = () => {
     }
   }, [profile, navigate]);
 
-  const modes: Array<Mode> = useMemo(
+  const modes: Array<GameMode> = useMemo(
     () => [
       {
         id: 0,
@@ -49,6 +43,7 @@ export const GameModeBlock = () => {
         color: "#a569bd",
         name: t("mode.fightfriend"),
         onClick: () => launchBattleGame(),
+        type: SearchType.GAMEMODE,
       },
     ],
     [launchBattleGame, t]
@@ -66,7 +61,7 @@ export const GameModeBlock = () => {
             image: el.image,
             color: el.color,
             link: `/theme/${el.id}`,
-            type: TypeCardEnum.THEME,
+            type: SearchType.THEME,
           }))
         );
       });
@@ -75,39 +70,22 @@ export const GameModeBlock = () => {
 
   const count = useMemo(() => themes.length + modes.length, [themes, modes]);
 
+  const allValues = useMemo(
+    () => [...themes, ...modes].sort(sortByName),
+    [themes, modes]
+  );
+
   return (
     <Grid container spacing={1}>
       <Grid size={12}>
-        <TitleCount title={t("commun.gamemode")} count={count} />
-      </Grid>
-      <Grid size={12}>
-        <Box
-          sx={{
-            display: "flex",
-            gap: 1,
-            overflowX: "auto",
-            scrollbarWidth: "none",
-          }}
-        >
-          {modes.map((mode, index) => (
-            <Box
-              onClick={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                mode.onClick();
-              }}
-              key={index}
-            >
-              <CardImage value={mode} />
-            </Box>
-          ))}
-          {themes.map((theme) => (
-            <CardImage key={theme.id} value={theme} />
-          ))}
-        </Box>
-      </Grid>
-      <Grid size={12}>
-        <Divider sx={{ borderBottomWidth: 5 }} />
+        {allValues.length > 0 && (
+          <CategoryBlock
+            title={t("commun.gamemode")}
+            count={count}
+            link={`/gamemode`}
+            values={allValues}
+          />
+        )}
       </Grid>
     </Grid>
   );

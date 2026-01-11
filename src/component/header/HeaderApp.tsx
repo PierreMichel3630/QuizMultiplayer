@@ -2,13 +2,13 @@ import { Box, Typography } from "@mui/material";
 import { px } from "csx";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
-import { urlApple, urlGooglePlay } from "src/pages/help/InstallationPage";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
 import { HeadTitle } from "../HeadTitle";
 
 import AppleIcon from "@mui/icons-material/Apple";
 import googleplay from "src/assets/google-play.png";
+import { urlApple, urlGooglePlay } from "src/utils/config";
 
 export const HeaderApp = () => {
   const { t } = useTranslation();
@@ -41,14 +41,6 @@ export const HeaderApp = () => {
               variant="outlined"
               typography="h6"
               onClick={() => navigate("/help")}
-              noWrap
-            />
-            <ButtonColor
-              value={Colors.white}
-              label={t("commun.faq")}
-              variant="outlined"
-              typography="h6"
-              onClick={() => navigate("/faq")}
               noWrap
             />
           </Box>

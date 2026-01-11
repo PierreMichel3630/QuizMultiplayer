@@ -392,7 +392,10 @@
     "installupdatetext": "Votre version de l'application n'est pas assez récente pour jouer à ce mode. Veuillez vous mettre à jour.",
     "requiredversion" : "Version minimal",
     "myversion": "Votre version",
-    "send": "Envoyé"
+    "send": "Envoyé",
+    "help": "Aide",
+    "account": "Compte",
+    "helpregulations" : "Aide et règlement"
   },
   "abrevation": {
     "average": "Moy."
@@ -616,6 +619,9 @@
     },
     "notification": {
       "title": "Notification"
+    },
+    "gamemode": {
+      "title": "Mode de jeu"
     }
   },
   "enum": {
@@ -624,6 +630,11 @@
       "MOYEN": "Moyen",
       "DIFFICILE": "Difficile",
       "IMPOSSIBLE": "Impossible"
+    },
+    "searchtype": {
+      "THEME": "Thème",
+      "CATEGORY": "Catégorie",
+      "GAMEMODE": "Mode de jeu"
     }
   },
   "form": {
@@ -988,6 +999,17 @@
     "friend_request_accept": "{{username}} a accepté ta demande"
   },
   "patchnote": {
+    "2.0.3": {
+      "version": "2.0.3",
+      "changes" : [
+        "Amélioration de l'affichage sur PC/ Mobile.",
+        "Contrôle de la version de l'application pour jouer aux différents modes (Duel, Solo, Entraînement).",
+        "Mise à jour des librairies utilisées. (TECHNIQUE)"
+      ],
+      "bug": [
+        "Problème d'affichage des titres dans la boutique."
+      ]
+    },
     "2.0.2": {
       "version": "2.0.2",
       "changes" : [

@@ -28,7 +28,7 @@ import { useUser } from "src/context/UserProvider";
 import { Country } from "src/models/Country";
 import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
-import { sortByName } from "src/utils/sort";
+import { sortByLanguageName } from "src/utils/sort";
 import { searchString } from "src/utils/string";
 
 interface Props {
@@ -69,16 +69,16 @@ export const SelectCountryModal = ({
   useEffect(() => {
     const getResult = () => {
       if (language) {
-        if (value !== "") {
+        if (value === "") {
+          setCountriesFilter(
+            [...countries].sort((a, b) => sortByLanguageName(language, a, b))
+          );
+        } else {
           const countriesFilter = [...countries]
-            .sort((a, b) => sortByName(language, a, b))
+            .sort((a, b) => sortByLanguageName(language, a, b))
             .filter((el) => searchString(value, el.name[language.iso]));
 
           setCountriesFilter(countriesFilter);
-        } else {
-          setCountriesFilter(
-            [...countries].sort((a, b) => sortByName(language, a, b))
-          );
         }
       }
     };
@@ -132,7 +132,8 @@ export const SelectCountryModal = ({
               zIndex: 3,
               backgroundColor: "background.paper",
             }}
-            size={12}>
+            size={12}
+          >
             <Box sx={{ p: 1 }}>
               <BasicSearchInput
                 label={t("commun.search")}

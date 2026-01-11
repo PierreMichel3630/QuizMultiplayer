@@ -6,20 +6,20 @@ import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { getLevel } from "src/utils/calcul";
-import { AvatarAccountBadge } from "./avatar/AvatarAccount";
-import { CountryImageBlock } from "./CountryBlock";
-import { MoneyArrondieBlock } from "./MoneyBlock";
+import { AvatarAccountBadge } from "../avatar/AvatarAccount";
+import { CountryImageBlock } from "../CountryBlock";
+import { MoneyArrondieBlock } from "../MoneyBlock";
 
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";
-import { AdminButton } from "./button/AdminButton";
-import { NotificationBadge } from "./button/NotificationBadge";
-import { SkeletonCircular } from "./skeleton/SkeletonCircular";
-import { StreakBlock } from "./StreakBlock";
+import { AdminButton } from "../button/AdminButton";
+import { NotificationBadge } from "../button/NotificationBadge";
+import { SkeletonCircular } from "../skeleton/SkeletonCircular";
+import { StreakBlock } from "../StreakBlock";
 
-export const ProfileBar = () => {
+export const HeaderProfileBarMobile = () => {
   const navigate = useNavigate();
   const { logout, profile, streak } = useAuth();
   const { language } = useUser();

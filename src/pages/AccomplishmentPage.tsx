@@ -12,20 +12,21 @@ import {
 import { CardAccomplishment } from "src/component/card/CardAccomplishment";
 import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
 
-import { px } from "csx";
 import award from "src/assets/award.png";
 import { NotificationBlock } from "src/component/notification/NotificationBlock";
+import { useAppBar } from "src/context/AppBarProvider";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { useNotification } from "src/context/NotificationProvider";
+import { useRealtime } from "src/context/NotificationProvider";
 import { NotificationType } from "src/models/enum/NotificationType";
 import { Colors } from "src/style/Colors";
 
 export default function AccomplishmentPage() {
   const { t } = useTranslation();
-  const { myaccomplishments, headerSize } = useApp();
+  const { myaccomplishments } = useApp();
   const { profile } = useAuth();
-  const { notifications } = useNotification();
+  const { notifications } = useRealtime();
+  const { top } = useAppBar();
 
   const [accomplishments, setAccomplishments] = useState<Array<Accomplishment>>(
     []
@@ -108,9 +109,10 @@ export default function AccomplishmentPage() {
                   <Grid
                     sx={{
                       position: "sticky",
-                      top: headerSize,
+                      top: top,
+                      transition: "top 350ms ease-in-out",
                       backgroundColor: "background.paper",
-                      pb: px(10),
+                      p: 1,
                     }}
                     size={12}
                   >

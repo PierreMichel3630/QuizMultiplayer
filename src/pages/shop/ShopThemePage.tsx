@@ -3,12 +3,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
-import { selectShopItemByTheme } from "src/api/shop";
+import { selectShopItemByTheme, selectThemeShopById } from "src/api/shop";
+import { TextNameBlock } from "src/component/language/TextLanguageBlock";
 import { ItemShop } from "src/component/shop/ItemShop";
 import { TitleBlock } from "src/component/title/Title";
 import { useApp } from "src/context/AppProvider";
 import { ShopType } from "src/models/enum/ShopType";
-import { ShopItem } from "src/models/Shop";
+import { ShopItem, ThemeShop } from "src/models/Shop";
 import { sortByPriceDesc } from "src/utils/sort";
 
 export default function ShopThemePage() {
@@ -17,11 +18,15 @@ export default function ShopThemePage() {
 
   const { myTitles, myAvatars, myBadges, mybanners } = useApp();
 
+  const [themeShop, setThemeShop] = useState<undefined | ThemeShop>(undefined);
   const [items, setItems] = useState<Array<ShopItem>>([]);
 
   useEffect(() => {
     const getItems = () => {
       if (id) {
+        selectThemeShopById(Number(id)).then(({ data }) => {
+          setThemeShop(data ?? undefined);
+        });
         selectShopItemByTheme(Number(id)).then(({ data }) => {
           setItems(data ?? []);
         });
@@ -55,9 +60,18 @@ export default function ShopThemePage() {
         <Helmet>
           <title>{`${t("pages.titles.title")} - ${t("appname")}`}</title>
         </Helmet>
-        <Grid size={12}>
-          <TitleBlock title={t("commun.titles")} />
-        </Grid>
+        {themeShop && (
+          <Grid size={12}>
+            <TitleBlock
+              title={
+                <TextNameBlock
+                  variant="h2"
+                  values={themeShop.themeshoptranslation}
+                />
+              }
+            />
+          </Grid>
+        )}
         {itemsDisplay.map((item, index) => (
           <Grid key={index}>
             <ItemShop item={item} />

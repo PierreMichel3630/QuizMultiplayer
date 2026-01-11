@@ -28,6 +28,7 @@ import { DeleteAccountButton } from "src/component/button/DeleteAcccountButton";
 import { EmailInput } from "src/component/input/EmailInput";
 import { UsernameInput } from "src/component/input/UsernameInput";
 import { Country } from "src/models/Country";
+import { useAppBar } from "src/context/AppBarProvider";
 
 export default function PersonalizedPage() {
   const { t } = useTranslation();
@@ -35,7 +36,8 @@ export default function PersonalizedPage() {
 
   const { setMessage, setSeverity } = useMessage();
   const { user, profile, setProfile } = useAuth();
-  const { getMyTitles, getMyBadges, headerSize } = useApp();
+  const { getMyTitles, getMyBadges } = useApp();
+  const { top } = useAppBar();
 
   useEffect(() => {
     getMyTitles();
@@ -150,11 +152,13 @@ export default function PersonalizedPage() {
         <Grid
           sx={{
             position: "sticky",
-            top: headerSize,
+            top: top,
+            transition: "top 350ms ease-in-out",
             zIndex: 100,
             pb: 1,
           }}
-          size={12}>
+          size={12}
+        >
           <ProfilHeader profile={profile} />
         </Grid>
       )}
@@ -170,8 +174,9 @@ export default function PersonalizedPage() {
             <Grid
               size={{
                 xs: 12,
-                md: 4
-              }}>
+                md: 4,
+              }}
+            >
               <Typography variant="h4">
                 {t("commun.myorigincountry")}
               </Typography>
@@ -180,8 +185,9 @@ export default function PersonalizedPage() {
               <Grid
                 size={{
                   xs: 12,
-                  md: 8
-                }}>
+                  md: 8,
+                }}
+              >
                 <MyCountryBlock
                   country={profile.country}
                   onChange={(value) => changeCountry(value)}
@@ -192,8 +198,9 @@ export default function PersonalizedPage() {
               <Grid
                 size={{
                   xs: 12,
-                  md: 8
-                }}>
+                  md: 8,
+                }}
+              >
                 <SkeletonRectangular height={40} />
               </Grid>
             )}

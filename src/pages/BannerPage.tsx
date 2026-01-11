@@ -23,7 +23,7 @@ import { useMessage } from "src/context/MessageProvider";
 import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
 import { Banner } from "src/models/Banner";
 import { Colors } from "src/style/Colors";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 
 export default function BannerPage() {
   const { t } = useTranslation();
@@ -210,7 +210,7 @@ export default function BannerPage() {
                       <ButtonColor
                         value={Colors.yellow}
                         label={t("commun.goaccomplishments")}
-                        icon={EmojiEventsIcon}
+                        icon={MilitaryTechIcon}
                         variant="contained"
                         onClick={() => {
                           navigate(`/accomplishments`);

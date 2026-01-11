@@ -12,17 +12,13 @@ import {
 } from "@mui/material";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { useNotification } from "src/context/NotificationProvider";
-import { VERSION_APP } from "src/utils/config";
 
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useNavigate } from "react-router-dom";
-import { UpdateAppButton } from "src/component/button/UpdateAppButton";
 import { BarNavigation } from "src/component/navigation/BarNavigation";
+import { UpdateAppVersionBlock } from "src/component/UpdateAppVersionBlock";
 
 export default function NewsPage() {
   const { t } = useTranslation();
-  const { notificationUpdate } = useNotification();
   const navigate = useNavigate();
 
   return (
@@ -39,33 +35,9 @@ export default function NewsPage() {
       <Grid size={12}>
         <Box sx={{ p: 2 }}>
           <Grid container spacing={2} justifyContent="center">
-            <Grid
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-              size={12}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "flex-start",
-                }}
-              >
-                <Typography variant="h4">{t("commun.appversion")}</Typography>
-                <Typography variant="body1" sx={{ fontSize: 15 }}>
-                  {VERSION_APP}
-                </Typography>
-              </Box>
-              <InfoOutlinedIcon />
+            <Grid size={12}>
+              <UpdateAppVersionBlock />
             </Grid>
-            {notificationUpdate && (
-              <Grid size={12}>
-                <UpdateAppButton />
-              </Grid>
-            )}
             <Grid size={12}>
               <Divider />
             </Grid>

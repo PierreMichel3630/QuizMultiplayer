@@ -104,7 +104,7 @@ export const getTheme = (mode: "light" | "dark") =>
       MuiToolbar: {
         styleOverrides: {
           root: {
-            minHeight: important(px(62)),
+            minHeight: important(px(50)),
           },
         },
       },

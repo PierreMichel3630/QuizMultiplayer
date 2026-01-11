@@ -18,7 +18,7 @@ import { ProposeThemeModal } from "src/component/modal/ProposeThemeModal";
 import { GoBackButtonIcon } from "src/component/navigation/GoBackButton";
 import { SkeletonThemesGrid } from "src/component/skeleton/SkeletonTheme";
 import { useUser } from "src/context/UserProvider";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { SearchType } from "src/models/enum/TypeCardEnum";
 
 export default function ProposeThemePage() {
   const { t } = useTranslation();
@@ -43,7 +43,7 @@ export default function ProposeThemePage() {
               }}
             />
           ),
-          type: TypeCardEnum.THEME,
+          type: SearchType.THEME,
         }));
         setThemes([...res]);
         setIsLoading(false);

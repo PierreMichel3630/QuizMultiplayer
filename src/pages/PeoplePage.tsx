@@ -7,11 +7,11 @@ import { BasicSearchInput } from "src/component/Input";
 import { ShareApplicationBlock } from "src/component/ShareApplicationBlock";
 import { FriendScrollBlock } from "src/component/scroll/FriendScrollBlock";
 import { PeopleScrollBlock } from "src/component/scroll/PeopleScrollBlock";
-import { useApp } from "src/context/AppProvider";
+import { useAppBar } from "src/context/AppBarProvider";
 
 export default function PeoplePage() {
   const { t } = useTranslation();
-  const { headerSize } = useApp();
+  const { top } = useAppBar();
 
   const [search, setSearch] = useState("");
 
@@ -19,15 +19,12 @@ export default function PeoplePage() {
     <Box sx={{ width: percent(100) }}>
       <Helmet>
         <title>{`${t("pages.people.title")} - ${t("appname")}`}</title>
-        <meta
-          name="description"
-          content="Faites-vous des amis et défiez-les à travers des quiz sur une multitude de thèmes."
-        />
       </Helmet>
       <Box
         sx={{
           position: "sticky",
-          top: headerSize,
+          top: top,
+          transition: "top 350ms ease-in-out",
           zIndex: 3,
           p: 1,
           width: percent(100),
@@ -36,7 +33,7 @@ export default function PeoplePage() {
       >
         <Container maxWidth="md">
           <BasicSearchInput
-            label={t("commun.search")}
+            label={t("commun.searchfriend")}
             value={search}
             onChange={setSearch}
             clear={() => setSearch("")}

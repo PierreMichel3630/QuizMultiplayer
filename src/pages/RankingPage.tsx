@@ -21,6 +21,7 @@ import { ButtonRankingDuel } from "src/component/button/ButtonRankingDuel";
 import { ButtonRankingSolo } from "src/component/button/ButtonRankingSolo";
 import { WinBlock } from "src/component/challenge/WinBlock";
 import { DataRanking, RankingTable } from "src/component/table/RankingTable";
+import { useAppBar } from "src/context/AppBarProvider";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
@@ -43,7 +44,8 @@ import { getLevel } from "src/utils/calcul";
 
 export default function RankingPage() {
   const { t } = useTranslation();
-  const { headerSize, idsFriend } = useApp();
+  const { idsFriend } = useApp();
+  const { top } = useAppBar();
   const { profile } = useAuth();
   const { language } = useUser();
   const [searchParams] = useSearchParams();
@@ -344,7 +346,8 @@ export default function RankingPage() {
       <Grid
         sx={{
           position: "sticky",
-          top: headerSize,
+          top: top,
+          transition: "top 350ms ease-in-out",
           backgroundColor: "background.paper",
           p: 1,
           zIndex: 10,
@@ -352,7 +355,8 @@ export default function RankingPage() {
           gap: 1,
           flexDirection: "column",
         }}
-        size={12}>
+        size={12}
+      >
         <GroupButtonClassement
           selected={type}
           onChange={(value) => {

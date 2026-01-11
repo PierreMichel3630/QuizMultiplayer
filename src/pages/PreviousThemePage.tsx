@@ -8,7 +8,7 @@ import { ICardImage } from "src/component/card/CardImage";
 import { PageCategoryBlock } from "src/component/page/PageCategoryBlock";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { SearchType } from "src/models/enum/TypeCardEnum";
 import { PreviousGame } from "src/models/PreviousGame";
 import { Theme } from "src/models/Theme";
 
@@ -49,7 +49,7 @@ export default function PreviousThemePage() {
           image: el.image,
           color: el.color,
           link: `/theme/${el.id}`,
-          type: TypeCardEnum.THEME,
+          type: SearchType.THEME,
         };
       });
     }

@@ -1,4 +1,6 @@
-import { createSvgIcon } from "@mui/material";
+import { Box, createSvgIcon } from "@mui/material";
+import { px } from "csx";
+import { Colors } from "src/style/Colors";
 
 export const LogoIcon = createSvgIcon(
   <svg
@@ -18,3 +20,43 @@ export const LogoIcon = createSvgIcon(
   </svg>,
   "Logo"
 );
+
+export const LogoIconRound = () => {
+  return (
+    <Box
+      sx={{
+        backgroundColor: Colors.colorApp,
+        width: px(60),
+        height: px(60),
+        borderRadius: "50%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <LogoIcon
+        sx={{ color: Colors.white, ml: "2px", mt: "3px", fontSize: 40 }}
+      />
+    </Box>
+  );
+};
+
+export const LogoIconSquare = () => {
+  return (
+    <Box
+      sx={{
+        backgroundColor: Colors.colorApp,
+        width: px(30),
+        height: px(25),
+        borderRadius: px(5),
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <LogoIcon
+        sx={{ color: Colors.white, ml: "2px", mt: "3px", fontSize: 20 }}
+      />
+    </Box>
+  );
+};

@@ -36,7 +36,7 @@ export default function NavigationOutletPage() {
             mb: isMobileOrTablet ? px(60) : 0,
           }}
         >
-          <Container maxWidth="lg">
+          <Container maxWidth="xl">
             {online ? <Outlet /> : <OfflineBlock />}
           </Container>
         </Box>

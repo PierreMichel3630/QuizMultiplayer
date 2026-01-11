@@ -9,7 +9,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useMemo } from "react";
 import { updateFriend } from "src/api/friend";
 import { useMessage } from "src/context/MessageProvider";
-import { useNotification } from "src/context/NotificationProvider";
+import { useRealtime } from "src/context/NotificationProvider";
 import { FRIENDSTATUS, FriendUpdate } from "src/models/Friend";
 import { Notification } from "src/models/Notification";
 import { Profile } from "src/models/Profile";
@@ -30,7 +30,7 @@ interface NotificationData {
 export const FriendNotificationBlock = ({ notification, onDelete }: Props) => {
   const { t } = useTranslation();
   const { getFriends } = useApp();
-  const { getNotifications } = useNotification();
+  const { getNotifications } = useRealtime();
   const { setMessage, setSeverity } = useMessage();
 
   const data = useMemo(

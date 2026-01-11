@@ -9,7 +9,7 @@ import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { AutocompleteTheme } from "src/component/Select";
 import { SelectorProfileBlock } from "src/component/SelectorProfileBlock";
 import { SkeletonGames } from "src/component/skeleton/SkeletonGame";
-import { useApp } from "src/context/AppProvider";
+import { useAppBar } from "src/context/AppBarProvider";
 import { DuelGame } from "src/models/DuelGame";
 import { GameModeEnum } from "src/models/enum/GameEnum";
 import { HistoryGame, SoloGame } from "src/models/Game";
@@ -17,7 +17,7 @@ import { FilterGame } from "../HistoryGamePage";
 
 export default function AdminGamesPage() {
   const { t } = useTranslation();
-  const { headerSize } = useApp();
+  const { top } = useAppBar();
   const ITEMPERPAGE = 20;
 
   const [games, setGames] = useState<Array<HistoryGame>>([]);
@@ -120,14 +120,15 @@ export default function AdminGamesPage() {
       <Grid
         sx={{
           position: "sticky",
-          top: headerSize,
+          top: top,
           p: 1,
           backgroundColor: "background.paper",
           display: "flex",
           justifyContent: "center",
           zIndex: 10,
         }}
-        size={12}>
+        size={12}
+      >
         <Grid container spacing={1} justifyContent="center" alignItems="center">
           <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
             <GroupButtonAllTypeGame
