@@ -17,22 +17,6 @@ export const selectRankingSoloByThemeAndProfile = (
     .eq("theme", theme)
     .or(`ranking.lte.${maxRank},profile.in.(${idFriends.join(",")})`);
 
-export const selectRankingSoloByThemePaginate = (
-  theme: number,
-  page: number,
-  itemperpage: number
-) => {
-  const from = page * itemperpage;
-  const to = from + itemperpage - 1;
-  return supabase
-    .from(SUPABASE_RANKINGSOLO_TABLE)
-    .select(
-      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))), uuidgame(uuid)"
-    )
-    .eq("theme", theme)
-    .range(from, to);
-};
-
 export const selectRankingDuelByThemeAndProfile = (
   theme: number,
   idFriends: Array<string>,
@@ -45,22 +29,6 @@ export const selectRankingDuelByThemeAndProfile = (
     )
     .eq("theme", theme)
     .or(`ranking.lte.${maxRank},profile.in.(${idFriends.join(",")})`);
-
-export const selectRankingDuelByThemePaginate = (
-  theme: number,
-  page: number,
-  itemperpage: number
-) => {
-  const from = page * itemperpage;
-  const to = from + itemperpage - 1;
-  return supabase
-    .from(SUPABASE_RANKINGDUEL_TABLE)
-    .select(
-      "*,profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))))"
-    )
-    .eq("theme", theme)
-    .range(from, to);
-};
 
 export const getRankingFinishTheme = (
   page: number,

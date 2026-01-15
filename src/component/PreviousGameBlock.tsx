@@ -1,58 +1,58 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { selectLastXThemeByPlayer } from "src/api/game";
+import { selectLastPlayedThemeByProfile } from "src/api/game";
+import { selectThemeByIds } from "src/api/theme";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { SearchType } from "src/models/enum/TypeCardEnum";
-import { PreviousGame } from "src/models/PreviousGame";
+import { Theme } from "src/models/Theme";
+import { MAX_LAST_PLAYED_THEME } from "src/utils/config";
 import { ICardImage } from "./card/CardImage";
 import { CategoryBlock } from "./category/CategoryBlock";
-import { Theme } from "src/models/Theme";
-import { useUser } from "src/context/UserProvider";
+import { sortByIds } from "src/utils/sort";
 
 export const PreviousGameBlock = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const { language } = useUser();
 
-  const [themesPrevious, setThemesPrevious] = useState<Array<Theme>>([]);
+  const [idsTheme, setIdsTheme] = useState<Array<number>>([]);
+  const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
 
   useEffect(() => {
     if (user) {
-      selectLastXThemeByPlayer(user.id, 10).then(({ data }) => {
-        const res = data as Array<PreviousGame>;
-        const previousTheme = res.map((el) => el.theme);
-        setThemesPrevious(previousTheme);
-      });
+      selectLastPlayedThemeByProfile(user.id, MAX_LAST_PLAYED_THEME).then(
+        ({ data }) => {
+          const res: Array<{ id: number }> = data ?? [];
+          setIdsTheme([...res].map((el) => el.id));
+        }
+      );
     }
   }, [user]);
 
-  const values = useMemo(() => {
-    let result: Array<ICardImage> = [];
-    if (language) {
-      result = [...themesPrevious].map((el) => {
-        const translation = [...el.themetranslation].find(
-          (el) => el.language.id === language.id
-        );
-        return {
-          id: el.id,
-          name: translation?.name ?? el.themetranslation[0].name,
-          image: el.image,
-          color: el.color,
-          link: `/theme/${el.id}`,
-          type: SearchType.THEME,
-        };
+  useEffect(() => {
+    if (idsTheme.length > 0) {
+      selectThemeByIds(idsTheme).then(({ data }) => {
+        const res: Array<Theme> = data ?? [];
+        const values: Array<ICardImage> = [...res]
+          .map((el) => ({
+            id: el.id,
+            name: el.themetranslation[0].name ?? "",
+            color: el.color,
+            image: el.image,
+            type: SearchType.THEME,
+          }))
+          .sort((a, b) => sortByIds(idsTheme, a, b));
+        setItemsSearch(values);
       });
     }
-    return result;
-  }, [themesPrevious, language]);
+  }, [idsTheme]);
 
   return (
-    themesPrevious.length > 0 && (
+    itemsSearch.length > 0 && (
       <CategoryBlock
         title={t("commun.previousgame")}
-        count={themesPrevious.length}
+        count={itemsSearch.length}
         link={`/previousgame`}
-        values={values}
+        values={itemsSearch}
       />
     )
   );

@@ -1,19 +1,20 @@
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import { Box, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
-import { padding, px } from "csx";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { Colors } from "src/style/Colors";
 
 import EditIcon from "@mui/icons-material/Edit";
-import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
-import ReportIcon from "@mui/icons-material/Report";
-import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import ReportIcon from "@mui/icons-material/Report";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import { padding, px } from "csx";
+import { Colors } from "src/style/Colors";
+import { useIsMobileOrTablet } from "src/hook/useSize";
 
 interface Setting {
   name: string;
@@ -25,6 +26,7 @@ interface Setting {
 export const AdminButton = () => {
   const { t } = useTranslation();
   const { profile } = useAuth();
+  const isMobileOrTablet = useIsMobileOrTablet();
   const navigate = useNavigate();
 
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -93,19 +95,21 @@ export const AdminButton = () => {
     profile.isadmin && (
       <>
         <Box
-          sx={{
-            p: padding(1, 5),
-            border: "2px solid",
-            borderColor: Colors.white,
-            borderRadius: px(5),
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
           onClick={handleOpenUserMenu}
+          sx={
+            isMobileOrTablet
+              ? {
+                  p: padding(2, 8),
+                  border: "2px solid",
+                  borderColor: Colors.white,
+                  borderRadius: px(5),
+                  display: "flex",
+                }
+              : {}
+          }
         >
           <AdminPanelSettingsIcon
-            sx={{ color: Colors.white, fontSize: px(25) }}
+            fontSize={isMobileOrTablet ? "medium" : "large"}
           />
         </Box>
         <Menu

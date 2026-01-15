@@ -57,6 +57,7 @@ export interface QuestionTranslation {
   id: number;
   label: string;
   language: Language;
+  extra: string;
 }
 
 export interface QuestionInsertAdmin {
@@ -134,28 +135,6 @@ export interface QuestionUpdate {
   exact?: boolean;
   isqcm?: boolean | null;
   responses?: Array<JsonLanguage>;
-}
-
-export interface Question {
-  id: number;
-  typequestion: TypeQuestionEnum;
-  image?: string;
-  extra?: JsonLanguage;
-  audio?: string;
-  isqcm: boolean;
-  time: number;
-  theme: Theme;
-  difficulty: string;
-  answerset?: number;
-  data: null | {
-    code: string;
-    property: string;
-    zoom: number;
-    coordinates: Point;
-  };
-  answer: string;
-  answers: Array<Answer>;
-  questiontranslation: Array<QuestionTranslation>;
 }
 
 export interface QuestionResult extends Question {

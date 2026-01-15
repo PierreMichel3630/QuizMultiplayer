@@ -1,17 +1,16 @@
 import { Box } from "@mui/material";
 import { important, percent, px } from "csx";
 import { useMemo } from "react";
+import { useUser } from "src/context/UserProvider";
 import { TypeQuestionEnum } from "src/models/enum/TypeQuestionEnum";
 import { Question } from "src/models/Question";
 import { ImageQuestionBlock } from "../ImageBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { TextLabelBlock } from "../language/TextLanguageBlock";
 import { CircularLoading } from "../Loading";
 import { MapPositionBlock } from "../MapPositionBlock";
 import { SoundBar } from "../SoundBar";
 import { Timer } from "../time/Timer";
 import { AnswerUser } from "./ResponseBlock";
-import { useUser } from "src/context/UserProvider";
 
 interface Props {
   question: Question;
@@ -66,16 +65,13 @@ export const QuestionBlock = ({ question, timer, onSubmit }: Props) => {
           {question.typequestion === "MAPPOSITION" &&
             question.data !== null && <MapPositionBlock data={question.data} />}
           {question.audio && <SoundBar />}
-          {question.extra && (
-            <JsonLanguageBlock
-              variant="caption"
-              sx={{
-                fontSize: 18,
-                fontStyle: "italic",
-              }}
-              value={question.extra}
-            />
-          )}
+          <TextLabelBlock
+            variant="caption"
+            sx={{ fontSize: important(px(18)) }}
+            values={question.questiontranslation}
+            labelKey="extra"
+            noTranslation
+          />
           {timer && (
             <Box
               sx={{

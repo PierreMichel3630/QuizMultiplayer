@@ -120,7 +120,7 @@ export default function RankingPage() {
           (type === ClassementEnum.rank &&
             tabDuelMode === ClassementDuelModeEnum.bestrank)
         ) {
-          selectScore(language, type, page, ITEMPERPAGE, [], ids).then(
+          selectScore(type, page, ITEMPERPAGE, language, [], ids).then(
             ({ data }) => {
               const res = data as Array<Score>;
               const newdata = res.map((el, index) => {

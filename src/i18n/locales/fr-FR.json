@@ -395,7 +395,10 @@
     "send": "Envoyé",
     "help": "Aide",
     "account": "Compte",
-    "helpregulations" : "Aide et règlement"
+    "helpregulations" : "Aide et règlement",
+    "mostplayed": "Les + joués",
+    "mostplayedthemes": "Thèmes les plus joués",
+    "lastplayedthemes": "Dernier thèmes joués"
   },
   "abrevation": {
     "average": "Moy."
@@ -622,6 +625,9 @@
     },
     "gamemode": {
       "title": "Mode de jeu"
+    }, 
+    "mostplayedthemes": {
+      "title": "Thèmes les plus joués"
     }
   },
   "enum": {

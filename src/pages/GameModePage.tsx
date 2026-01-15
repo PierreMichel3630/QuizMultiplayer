@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { insertBattleGame } from "src/api/game";
-import { selectThemesById } from "src/api/theme";
+import { selectThemesByIdAndLanguage } from "src/api/theme";
 import { CardImage, ICardImage } from "src/component/card/CardImage";
 import { TitleBlock } from "src/component/title/Title";
 import { useAuth } from "src/context/AuthProviderSupabase";
@@ -53,7 +53,7 @@ export default function GameModePage() {
   useEffect(() => {
     const idThemes = [271, 272];
     if (language) {
-      selectThemesById(idThemes, language.iso).then(({ data }) => {
+      selectThemesByIdAndLanguage(idThemes, language.iso).then(({ data }) => {
         const res = data ?? [];
         setThemes(
           [...res].map((el) => ({

@@ -1,5 +1,5 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import { percent, px } from "csx";
+import { important, percent, px } from "csx";
 import {
   QuestionAdmin,
   QuestionPropose,
@@ -8,7 +8,6 @@ import {
   QuestionUpdate,
 } from "src/models/Question";
 import { ImageQuestionBlock } from "../ImageBlock";
-import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { SelectDifficulty } from "../Select";
 
 import BugReportIcon from "@mui/icons-material/BugReport";
@@ -345,19 +344,15 @@ export const CardSignalQuestionV2 = ({
             values={question.questiontranslation}
           />
         </Grid>
-        {question.extra && (
-          <Grid sx={{ textAlign: "center" }} size={12}>
-            <JsonLanguageBlock
-              variant="caption"
-              color={color}
-              sx={{
-                fontSize: 18,
-                fontStyle: "italic",
-              }}
-              value={question.extra}
-            />
-          </Grid>
-        )}
+        <Grid sx={{ textAlign: "center" }} size={12}>
+          <TextLabelBlock
+            variant="caption"
+            sx={{ fontSize: important(px(18)) }}
+            values={question.questiontranslation}
+            labelKey="extra"
+            noTranslation
+          />
+        </Grid>
         {question.typequestion === "MAPPOSITION" && question.data !== null && (
           <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
             <MapPositionBlock data={question.data} height={300} />

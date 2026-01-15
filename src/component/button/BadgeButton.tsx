@@ -2,6 +2,7 @@ import { Button, Grid, Typography, useTheme } from "@mui/material";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { useAuth } from "src/context/AuthProviderSupabase";
 
 interface ButtonValue {
   label: string;
@@ -66,12 +67,25 @@ export const BadgeButtonGroup = ({ values }: PropsBadgeButtonGroup) => (
 
 export const BadgeButtonRedirection = () => {
   const { t } = useTranslation();
-  const buttons = [
-    { label: t("commun.daychallenge"), link: "/challenge" },
-    { label: t("commun.favorite"), link: "/favorite" },
-    { label: t("commun.gamemode"), link: "/gamemode" },
-    { label: t("commun.categories"), link: "/categories" },
-  ];
+  const { profile } = useAuth();
+  const buttons = useMemo(
+    () => [
+      { label: t("commun.daychallenge"), link: "/challenge" },
+      { label: t("commun.favorite"), link: "/favorite" },
+      { label: t("commun.gamemode"), link: "/gamemode" },
+      { label: t("commun.mostplayedthemes"), link: "/mostplayedthemes" },
+      { label: t("commun.categories"), link: "/categories" },
+      { label: t("commun.people"), link: "/people" },
+      ...(profile
+        ? [
+            { label: t("commun.myprofile"), link: `/profil/${profile.id}` },
+            { label: t("commun.mygames"), link: "/games" },
+            { label: t("commun.lastplayedthemes"), link: "/lastplayedthemes" },
+          ]
+        : []),
+    ],
+    [profile, t]
+  );
 
   return <BadgeButtonGroup values={buttons} />;
 };

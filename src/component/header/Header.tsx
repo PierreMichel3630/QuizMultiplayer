@@ -16,6 +16,7 @@ import { SearchBar } from "../search/SearchBar";
 import { HeaderProfileBarMobile } from "./HeaderProfileBarMobile";
 import { StreakBlock } from "../StreakBlock";
 import { NotificationBadgeIcon } from "../button/NotificationBadge";
+import { AdminButton } from "../button/AdminButton";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -123,6 +124,7 @@ export const Header = () => {
             </Box>
           ) : (
             <>
+              <AdminButton />
               <Link to={`/notifications`}>
                 <NotificationBadgeIcon />
               </Link>

@@ -19,6 +19,8 @@ import { UpdatedThemeBlock } from "src/component/theme/UpdatedThemeBlock";
 import { useAppBar } from "src/context/AppBarProvider";
 import { useIsMobileOrTablet } from "src/hook/useSize";
 import { useNavigate } from "react-router-dom";
+import { MostPlayedThemeBlock } from "src/component/MostPlayedThemeBlock";
+import { PreviousGameBlock } from "src/component/PreviousGameBlock";
 
 export default function ThemesPage() {
   const isMobileOrTablet = useIsMobileOrTablet();
@@ -81,10 +83,16 @@ export default function ThemesPage() {
               </Grid>
             )}
             <Grid size={12}>
+              <NewBlock />
+            </Grid>
+            <Grid size={12}>
               <FavoriteBlock />
             </Grid>
             <Grid size={12}>
-              <NewBlock />
+              <PreviousGameBlock />
+            </Grid>
+            <Grid size={12}>
+              <MostPlayedThemeBlock />
             </Grid>
             <Grid size={12}>
               <UpdatedThemeBlock />
