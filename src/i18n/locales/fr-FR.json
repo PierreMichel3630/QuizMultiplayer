@@ -1011,12 +1011,12 @@
     "2.0.4": {
       "version": "2.0.4",
       "changes" : [
-        "Amélioration de l'affichage sur PC/ Mobile.",
-        "Contrôle de la version de l'application pour jouer aux différents modes (Duel, Solo, Entraînement).",
+        "Affichage du menu via un scroll de gauche à droite sur mobile",
+        "Ajout des modules 'Joué récemment' et 'Les + joué' ",
         "Mise à jour des librairies utilisées. (TECHNIQUE)"
       ],
       "bug": [
-        "Problème d'affichage des titres dans la boutique."
+        "Correction de la barre de recherche qui clignote lors du scroll"
       ]
     },
     "2.0.3": {
