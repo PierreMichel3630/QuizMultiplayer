@@ -28,7 +28,7 @@ export default function ThemesPage() {
   const navigate = useNavigate();
 
   const { hasPlayChallenge } = useAuth();
-  const { top } = useAppBar();
+  const { appBarVisible, top } = useAppBar();
 
   const goSearch = () => {
     navigate(`/searchmobile`, {
@@ -52,6 +52,22 @@ export default function ThemesPage() {
           <HeaderApp />
         </Grid>
       )}
+      <Grid
+        sx={{
+          position: "sticky",
+          top: appBarVisible ? top : 0,
+          zIndex: (theme) => theme.zIndex.appBar + 1,
+          bgcolor: "background.paper",
+          gap: 1,
+          transition: "top 350ms ease-in-out",
+          display: "flex",
+          flexDirection: "column",
+          p: 1,
+        }}
+        size={12}
+      >
+        <SearchBlock search={""} onFocus={() => goSearch()} />
+      </Grid>
       <Grid size={12}>
         <Box
           sx={{
@@ -61,22 +77,6 @@ export default function ThemesPage() {
           }}
         >
           <Grid container spacing={1}>
-            <Grid
-              sx={{
-                position: "sticky",
-                top: top,
-                zIndex: 3,
-                bgcolor: "background.paper",
-                gap: 1,
-                transition: "top 350ms ease-in-out",
-                display: "flex",
-                flexDirection: "column",
-                pt: 1,
-              }}
-              size={12}
-            >
-              <SearchBlock search={""} onFocus={() => goSearch()} />
-            </Grid>
             {!hasPlayChallenge && (
               <Grid size={12}>
                 <ChallengeButton />

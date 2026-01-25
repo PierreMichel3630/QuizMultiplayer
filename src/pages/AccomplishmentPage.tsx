@@ -26,10 +26,10 @@ export default function AccomplishmentPage() {
   const { myaccomplishments } = useApp();
   const { profile } = useAuth();
   const { notifications } = useRealtime();
-  const { top } = useAppBar();
+  const { top, appBarVisible } = useAppBar();
 
   const [accomplishments, setAccomplishments] = useState<Array<Accomplishment>>(
-    []
+    [],
   );
   const [accomplishmentsGroupBy, setAccomplishmentsGroupBy] = useState<
     Dictionary<Array<Accomplishment>>
@@ -66,9 +66,9 @@ export default function AccomplishmentPage() {
       [...notifications].filter(
         (el) =>
           el.isread === false &&
-          el.type === NotificationType.accomplishment_unlock
+          el.type === NotificationType.accomplishment_unlock,
       ),
-    [notifications]
+    [notifications],
   );
 
   return (
@@ -97,7 +97,7 @@ export default function AccomplishmentPage() {
               const myaccomplishmentsMode = accomplishments.filter((el) =>
                 myaccomplishments
                   .map((r) => r.accomplishment.id)
-                  .includes(el.id)
+                  .includes(el.id),
               );
               const percent =
                 accomplishments.length > 0
@@ -109,7 +109,8 @@ export default function AccomplishmentPage() {
                   <Grid
                     sx={{
                       position: "sticky",
-                      top: top,
+                      top: appBarVisible ? top : 0,
+                      zIndex: (theme) => theme.zIndex.appBar + 1,
                       transition: "top 350ms ease-in-out",
                       backgroundColor: "background.paper",
                       p: 1,
@@ -171,7 +172,7 @@ export default function AccomplishmentPage() {
                             </Box>
                             <Typography variant="body1" color="text.secondary">
                               {`${percent.toFixed(2)} ${t(
-                                "commun.percentsuccess"
+                                "commun.percentsuccess",
                               )}`}
                             </Typography>
                           </Box>

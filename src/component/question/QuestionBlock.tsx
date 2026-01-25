@@ -11,6 +11,7 @@ import { MapPositionBlock } from "../MapPositionBlock";
 import { SoundBar } from "../SoundBar";
 import { Timer } from "../time/Timer";
 import { AnswerUser } from "./ResponseBlock";
+import { ExtraQuestionBlock } from "./ExtraQuestionBlock";
 
 interface Props {
   question: Question;
@@ -65,12 +66,8 @@ export const QuestionBlock = ({ question, timer, onSubmit }: Props) => {
           {question.typequestion === "MAPPOSITION" &&
             question.data !== null && <MapPositionBlock data={question.data} />}
           {question.audio && <SoundBar />}
-          <TextLabelBlock
-            variant="caption"
-            sx={{ fontSize: important(px(18)) }}
-            values={question.questiontranslation}
-            labelKey="extra"
-            noTranslation
+          <ExtraQuestionBlock
+            questiontranslation={question.questiontranslation}
           />
           {timer && (
             <Box

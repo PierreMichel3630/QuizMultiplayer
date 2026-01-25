@@ -17,7 +17,7 @@ import { FilterGame } from "../HistoryGamePage";
 
 export default function AdminGamesPage() {
   const { t } = useTranslation();
-  const { top } = useAppBar();
+  const { top, appBarVisible } = useAppBar();
   const ITEMPERPAGE = 20;
 
   const [games, setGames] = useState<Array<HistoryGame>>([]);
@@ -53,7 +53,7 @@ export default function AdminGamesPage() {
         });
 
         setGames((prev) =>
-          page === 0 ? [...historygames] : [...prev, ...historygames]
+          page === 0 ? [...historygames] : [...prev, ...historygames],
         );
         setIsEnd(result.length === 0);
         setIsLoading(false);
@@ -76,7 +76,7 @@ export default function AdminGamesPage() {
         });
 
         setGames((prev) =>
-          page === 0 ? [...historygames] : [...prev, ...historygames]
+          page === 0 ? [...historygames] : [...prev, ...historygames],
         );
         setIsEnd(result.length === 0);
         setIsLoading(false);
@@ -120,12 +120,12 @@ export default function AdminGamesPage() {
       <Grid
         sx={{
           position: "sticky",
-          top: top,
+          top: appBarVisible ? top : 0,
+          zIndex: (theme) => theme.zIndex.appBar + 1,
           p: 1,
           backgroundColor: "background.paper",
           display: "flex",
           justifyContent: "center",
-          zIndex: 10,
         }}
         size={12}
       >

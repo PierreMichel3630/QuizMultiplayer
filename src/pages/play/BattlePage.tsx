@@ -44,7 +44,7 @@ export default function BattlePage() {
   const { t } = useTranslation();
   const { uuidGame } = useParams();
   const { user } = useAuth();
-  const { top } = useAppBar();
+  const { top, appBarVisible } = useAppBar();
   const navigate = useNavigate();
 
   const [game, setGame] = useState<BattleGame | null>(null);
@@ -55,14 +55,14 @@ export default function BattlePage() {
 
   const isPlayer1 = useMemo(
     () => (user && game ? user.id === game.player1.id : null),
-    [game, user]
+    [game, user],
   );
 
   const isReady = useMemo(
     () =>
       game &&
       ((isPlayer1 && game.readyplayer1) || (!isPlayer1 && game.readyplayer2)),
-    [game, isPlayer1]
+    [game, isPlayer1],
   );
 
   const getHistory = () => {
@@ -115,9 +115,9 @@ export default function BattlePage() {
                     game: change.game,
                     games: change.games,
                   }
-                : prev
+                : prev,
             );
-          }
+          },
         )
         .on(
           "postgres_changes",
@@ -131,7 +131,7 @@ export default function BattlePage() {
             if (game.id === id) {
               navigate(`/`);
             }
-          }
+          },
         )
         .subscribe();
       return () => {
@@ -171,7 +171,7 @@ export default function BattlePage() {
         await updateBattleGameByUuid(value);
       }
     },
-    [game, isPlayer1]
+    [game, isPlayer1],
   );
 
   const ready = useCallback(() => {
@@ -190,7 +190,7 @@ export default function BattlePage() {
       const themesplayer2 = [...game.themesplayer2];
       const distinctTheme = uniqBy(
         [...themesplayer1, ...themesplayer2],
-        (el) => el
+        (el) => el,
       );
       res = distinctTheme.map((el) => {
         const avatars = [];
@@ -231,7 +231,7 @@ export default function BattlePage() {
         game.player1.id,
         game.player2.id,
         themeRandom,
-        game.uuid
+        game.uuid,
       ).then(({ data }) => {
         updateGame({ uuid: game.uuid, game: data.uuid });
       });
@@ -298,10 +298,10 @@ export default function BattlePage() {
             gap: 1,
             backgroundColor: "background.paper",
             position: "sticky",
-            top: top,
+            top: appBarVisible ? top : 0,
+            zIndex: (theme) => theme.zIndex.appBar + 1,
             left: 0,
             right: 0,
-            zIndex: 2,
             p: 1,
           }}
         >

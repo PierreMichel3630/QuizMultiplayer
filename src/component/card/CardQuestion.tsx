@@ -1,5 +1,5 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import { important, percent, px } from "csx";
+import { percent, px } from "csx";
 import {
   QuestionAdmin,
   QuestionPropose,
@@ -42,6 +42,7 @@ import {
 } from "../question/ResponseBlock";
 import { ThemesList } from "../theme/ThemesList";
 import { CardSignalQuestionV1 } from "./CardQuestionV1";
+import { ExtraQuestionBlock } from "../question/ExtraQuestionBlock";
 
 interface Props {
   question: QuestionAdmin;
@@ -345,12 +346,8 @@ export const CardSignalQuestionV2 = ({
           />
         </Grid>
         <Grid sx={{ textAlign: "center" }} size={12}>
-          <TextLabelBlock
-            variant="caption"
-            sx={{ fontSize: important(px(18)) }}
-            values={question.questiontranslation}
-            labelKey="extra"
-            noTranslation
+          <ExtraQuestionBlock
+            questiontranslation={question.questiontranslation}
           />
         </Grid>
         {question.typequestion === "MAPPOSITION" && question.data !== null && (

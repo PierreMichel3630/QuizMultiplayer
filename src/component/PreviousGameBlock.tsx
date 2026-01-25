@@ -23,8 +23,10 @@ export const PreviousGameBlock = () => {
         ({ data }) => {
           const res: Array<{ id: number }> = data ?? [];
           setIdsTheme([...res].map((el) => el.id));
-        }
+        },
       );
+    } else {
+      setIdsTheme([]);
     }
   }, [user]);
 
@@ -43,6 +45,8 @@ export const PreviousGameBlock = () => {
           .sort((a, b) => sortByIds(idsTheme, a, b));
         setItemsSearch(values);
       });
+    } else {
+      setItemsSearch([]);
     }
   }, [idsTheme]);
 

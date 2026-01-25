@@ -26,7 +26,7 @@ export default function HistoryGamePage() {
   const { t } = useTranslation();
   const location = useLocation();
 
-  const { top } = useAppBar();
+  const { top, appBarVisible } = useAppBar();
   const { profile } = useAuth();
 
   const ITEMPERPAGE = 10;
@@ -83,7 +83,7 @@ export default function HistoryGamePage() {
             });
 
             setGames((prev) =>
-              page === 0 ? [...historygames] : [...prev, ...historygames]
+              page === 0 ? [...historygames] : [...prev, ...historygames],
             );
             setIsEnd(result.length === 0);
             setLoading(false);
@@ -106,7 +106,7 @@ export default function HistoryGamePage() {
             });
 
             setGames((prev) =>
-              page === 0 ? [...historygames] : [...prev, ...historygames]
+              page === 0 ? [...historygames] : [...prev, ...historygames],
             );
             setIsEnd(result.length === 0);
             setLoading(false);
@@ -114,7 +114,7 @@ export default function HistoryGamePage() {
         }
       }
     },
-    [isEnd, loading, filter]
+    [isEnd, loading, filter],
   );
 
   useEffect(() => {
@@ -153,13 +153,13 @@ export default function HistoryGamePage() {
       <Grid
         sx={{
           position: "sticky",
-          top: top,
+          top: appBarVisible ? top : 0,
+          zIndex: (theme) => theme.zIndex.appBar + 1,
           transition: "top 350ms ease-in-out",
           p: 1,
           backgroundColor: "background.paper",
           display: "flex",
           justifyContent: "center",
-          zIndex: 10,
         }}
         size={12}
       >

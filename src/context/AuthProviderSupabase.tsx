@@ -46,16 +46,16 @@ const AuthContext = createContext<{
   logout: () => Promise<{ error: AuthError | null }>;
   deleteAccount: () => void;
   passwordReset: (
-    email: string
+    email: string,
   ) => Promise<
     { data: object; error: null } | { data: null; error: AuthError }
   >;
   updatePassword: (password: string) => Promise<UserResponse>;
 }>({
   user:
-    localStorage.getItem("user") !== null
-      ? (JSON.parse(localStorage.getItem("user")!) as User)
-      : null,
+    localStorage.getItem("user") === null
+      ? null
+      : (JSON.parse(localStorage.getItem("user")!) as User),
   streak: undefined,
   hasPlayChallenge: false,
   refreshHasPlayChallenge: () => {},
@@ -78,9 +78,9 @@ export const AuthProviderSupabase = ({ children }: Props) => {
   const [streak, setStreak] = useState<undefined | number>(undefined);
 
   const [user, setUser] = useState<User | null>(
-    localStorage.getItem("user") !== null
-      ? (JSON.parse(localStorage.getItem("user")!) as User)
-      : null
+    localStorage.getItem("user") === null
+      ? null
+      : (JSON.parse(localStorage.getItem("user")!) as User),
   );
 
   const login = (email: string, password: string) =>
@@ -139,7 +139,11 @@ export const AuthProviderSupabase = ({ children }: Props) => {
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN") {
-        if (session !== null) {
+        if (session === null) {
+          setProfile(null);
+          setUser(null);
+          setStreak(undefined);
+        } else {
           updateProfil({
             id: session.user.id,
             isonline: true,
@@ -147,10 +151,6 @@ export const AuthProviderSupabase = ({ children }: Props) => {
           }).then(() => {
             setUser(session.user);
           });
-        } else {
-          setProfile(null);
-          setUser(null);
-          setStreak(undefined);
         }
       } else if (event === "SIGNED_OUT") {
         setUser(null);
@@ -203,7 +203,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
       refreshProfil,
       streak,
       user,
-    ]
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

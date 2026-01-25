@@ -161,6 +161,8 @@
     "no": "Non",
     "seeall": "Voir tous",
     "seemore": "Voir la suite",
+    "more": "Plus",
+    "less": "Moins",
     "seeallaccomplishment": "Voir tous les succès",
     "favorite": "Favoris",
     "addfavorite": "Ajouter aux favoris",
@@ -398,7 +400,8 @@
     "helpregulations" : "Aide et règlement",
     "mostplayed": "Les + joués",
     "mostplayedthemes": "Thèmes les plus joués",
-    "lastplayedthemes": "Dernier thèmes joués"
+    "lastplayedthemes": "Dernier thèmes joués",
+    "you": "Vous"
   },
   "abrevation": {
     "average": "Moy."
@@ -1005,6 +1008,17 @@
     "friend_request_accept": "{{username}} a accepté ta demande"
   },
   "patchnote": {
+    "2.0.4": {
+      "version": "2.0.4",
+      "changes" : [
+        "Amélioration de l'affichage sur PC/ Mobile.",
+        "Contrôle de la version de l'application pour jouer aux différents modes (Duel, Solo, Entraînement).",
+        "Mise à jour des librairies utilisées. (TECHNIQUE)"
+      ],
+      "bug": [
+        "Problème d'affichage des titres dans la boutique."
+      ]
+    },
     "2.0.3": {
       "version": "2.0.3",
       "changes" : [

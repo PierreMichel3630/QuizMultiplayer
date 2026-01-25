@@ -7,11 +7,13 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import HelpIcon from "@mui/icons-material/Help";
 import HistoryIcon from "@mui/icons-material/History";
 import InstallMobileIcon from "@mui/icons-material/InstallMobile";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
+import NoteIcon from "@mui/icons-material/Note";
 import PeopleIcon from "@mui/icons-material/People";
 import PieChartIcon from "@mui/icons-material/PieChart";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import SettingsIcon from "@mui/icons-material/Settings";
-import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import {
   Badge,
   Box,
@@ -24,15 +26,23 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
+import { getThemesAndCategoriesById } from "src/api/search";
 import { useAppBar } from "src/context/AppBarProvider";
+import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useRealtime } from "src/context/NotificationProvider";
+import { useUser } from "src/context/UserProvider";
+import { DrawerSize } from "src/models/enum/DrawerSize";
 import { NotificationType } from "src/models/enum/NotificationType";
+import { SearchType } from "src/models/enum/TypeCardEnum";
 import { NotificationBadgeIcon } from "../button/NotificationBadge";
-import NoteIcon from "@mui/icons-material/Note";
+import { ICardImage } from "../card/CardImage";
+import { ImageCard } from "../image/ImageCard";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
 interface MenuTitle {
   title: string;
@@ -48,62 +58,51 @@ interface Menu {
 }
 
 interface Props {
-  open?: boolean;
+  sizeDrawer?: DrawerSize;
 }
 
-export const MenuBlock = ({ open = true }: Props) => {
+export const MenuBlock = ({ sizeDrawer = DrawerSize.MEDIUM }: Props) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { notifications } = useRealtime();
   const { profile } = useAuth();
+  const { toogleOpenDrawer } = useAppBar();
+  const { language } = useUser();
+  const { favorites } = useApp();
+
+  const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
+  const [maxFavoriteDisplay, setMaxFavoriteDisplay] = useState(3);
+
+  useEffect(() => {
+    if (favorites.length > 0 && language) {
+      const idCategories = [...favorites]
+        .filter((el) => el.category)
+        .map((el) => Number(el.category));
+      const idThemes = [...favorites]
+        .filter((el) => el.theme)
+        .map((el) => Number(el.theme));
+      getThemesAndCategoriesById(language, idCategories, idThemes).then(
+        ({ data }) => {
+          setItemsSearch(data ?? []);
+        },
+      );
+    } else {
+      setItemsSearch([]);
+    }
+  }, [favorites, language]);
 
   const notificationsAccomplishment = useMemo(
     () =>
       [...notifications].filter(
         (el) =>
           el.isread === false &&
-          el.type === NotificationType.accomplishment_unlock
+          el.type === NotificationType.accomplishment_unlock,
       ).length,
-    [notifications]
+    [notifications],
   );
 
-  const menuTree: Array<MenuTitle> = useMemo(() => {
-    const menuGlobal = {
-      title: t("commun.global"),
-      menus: [
-        {
-          value: "themes",
-          label: t("commun.themes"),
-          icon: <AppsIcon fontSize="large" />,
-          to: "/",
-        },
-        {
-          value: "challenge",
-          label: t("commun.daychallenge"),
-          icon: <EmojiEventsIcon fontSize="large" />,
-          to: "/challenge",
-        },
-        {
-          value: "ranking",
-          label: t("commun.ranking"),
-          icon: <BarChartIcon fontSize="large" />,
-          to: "/ranking",
-        },
-        {
-          value: "accomplishments",
-          label: t("commun.accomplishments"),
-          icon: <MilitaryTechIcon fontSize="large" />,
-          to: "/accomplishments",
-        },
-        {
-          value: "parameters",
-          label: t("commun.parameters"),
-          icon: <SettingsIcon fontSize="large" />,
-          to: "/parameters",
-        },
-      ],
-    };
-
-    const menuAccount = {
+  const menuAccount = useMemo(
+    () => ({
       title: t("commun.account"),
       menus: [
         {
@@ -161,9 +160,51 @@ export const MenuBlock = ({ open = true }: Props) => {
           state: { profile1: profile },
         },
       ],
-    };
+    }),
+    [notificationsAccomplishment, profile, t],
+  );
 
-    const menuHelp = {
+  const menuGlobal = useMemo(
+    () => ({
+      title: t("commun.global"),
+      menus: [
+        {
+          value: "themes",
+          label: t("commun.themes"),
+          icon: <AppsIcon fontSize="large" />,
+          to: "/",
+        },
+        {
+          value: "challenge",
+          label: t("commun.daychallenge"),
+          icon: <EmojiEventsIcon fontSize="large" />,
+          to: "/challenge",
+        },
+        {
+          value: "ranking",
+          label: t("commun.ranking"),
+          icon: <BarChartIcon fontSize="large" />,
+          to: "/ranking",
+        },
+        {
+          value: "accomplishments",
+          label: t("commun.accomplishments"),
+          icon: <MilitaryTechIcon fontSize="large" />,
+          to: "/accomplishments",
+        },
+        {
+          value: "parameters",
+          label: t("commun.parameters"),
+          icon: <SettingsIcon fontSize="large" />,
+          to: "/parameters",
+        },
+      ],
+    }),
+    [t],
+  );
+
+  const menuHelp = useMemo(
+    () => ({
       title: t("commun.helpregulations"),
       menus: [
         {
@@ -191,66 +232,143 @@ export const MenuBlock = ({ open = true }: Props) => {
           to: "/news",
         },
       ],
-    };
-    return profile
-      ? [menuGlobal, menuAccount, menuHelp]
-      : [menuGlobal, menuHelp];
-  }, [notificationsAccomplishment, profile, t]);
+    }),
+    [t],
+  );
+
+  const goTo = (value?: string) => {
+    if (value) {
+      navigate(value);
+      toogleOpenDrawer();
+    }
+  };
+
+  const favoritesDisplay = useMemo(() => {
+    return [...itemsSearch].slice(0, maxFavoriteDisplay).map((el) => {
+      const link =
+        el.type === SearchType.THEME ? `theme/${el.id}` : `category/${el.id}`;
+      return {
+        label: el.name,
+        icon: <ImageCard value={el} size={40} />,
+        to: link,
+        value: el.id.toString(),
+      };
+    });
+  }, [maxFavoriteDisplay, itemsSearch]);
+
+  const isEndFavorite = useMemo(
+    () => favorites.length <= maxFavoriteDisplay,
+    [favorites, maxFavoriteDisplay],
+  );
 
   return (
-    <Box sx={{ mt: 3 }}>
-      {open ? (
+    <Box>
+      <Grid size={12} sx={{ pt: 1, pl: 1, pr: 1 }}>
+        <MenuCard value={menuGlobal} sizeDrawer={sizeDrawer} />
+      </Grid>
+      <Grid size={12}>
+        <Divider />
+      </Grid>
+      {profile && (
         <>
-          {menuTree.map((el, index) => (
-            <Grid container spacing={1} key={index}>
-              {index > 0 && (
-                <Grid size={12}>
-                  <Divider />
-                </Grid>
+          <Grid size={12} sx={{ pt: 1, pl: 1, pr: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+              onClick={() => goTo("/favorite")}
+            >
+              <Typography variant="h4">{t("commun.favorite")}</Typography>
+              <KeyboardArrowRightIcon fontSize="large" />
+            </Box>
+            <List>
+              {[...favoritesDisplay].map((value, i) => (
+                <MenuItem key={i} menu={value} size={sizeDrawer} />
+              ))}
+            </List>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+                pl: 1,
+                cursor: "pointer",
+              }}
+              onClick={() =>
+                setMaxFavoriteDisplay((prev) => (isEndFavorite ? 3 : prev + 3))
+              }
+            >
+              {isEndFavorite ? (
+                <ExpandLessIcon fontSize="large" />
+              ) : (
+                <ExpandMoreIcon fontSize="large" />
               )}
-              <Grid size={12} sx={{ pt: 1, pl: 1, pr: 1 }}>
-                <Typography variant="h4">{el.title}</Typography>
-                <List>
-                  {[...el.menus].map((menu, i) => (
-                    <MenuItem key={i} menu={menu} />
-                  ))}
-                </List>
-              </Grid>
-            </Grid>
-          ))}
-        </>
-      ) : (
-        <>
-          {menuTree.map((el, index) => (
-            <Grid container spacing={1} key={index}>
-              <Grid size={12}>
-                <List>
-                  {[...el.menus].map((menu, i) => (
-                    <MenuItem key={i} menu={menu} />
-                  ))}
-                </List>
-              </Grid>
-            </Grid>
-          ))}
+              <Typography variant="h6">
+                {isEndFavorite ? t("commun.less") : t("commun.more")}
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid size={12}>
+            <Divider />
+          </Grid>
+          <Grid size={12} sx={{ pt: 1, pl: 1, pr: 1 }}>
+            <MenuCard value={menuAccount} sizeDrawer={sizeDrawer} />
+          </Grid>
+          <Grid size={12}>
+            <Divider />
+          </Grid>
         </>
       )}
+      <Grid size={12} sx={{ pt: 1, pl: 1, pr: 1 }}>
+        <MenuCard value={menuHelp} sizeDrawer={sizeDrawer} />
+      </Grid>
     </Box>
   );
 };
 
+interface PropsMenuCard {
+  value: MenuTitle;
+  sizeDrawer: DrawerSize;
+}
+
+const MenuCard = ({ value, sizeDrawer }: PropsMenuCard) => {
+  return (
+    <>
+      <MenuTitle title={value.title} />
+      <List>
+        {[...value.menus].map((menu, i) => (
+          <MenuItem key={i} menu={menu} size={sizeDrawer} />
+        ))}
+      </List>
+    </>
+  );
+};
+
+interface PropsMenuTitle {
+  title: string;
+}
+const MenuTitle = ({ title }: PropsMenuTitle) => {
+  return <Typography variant="h4">{title}</Typography>;
+};
+
 interface PropsMenuItem {
   menu: Menu;
+  size?: DrawerSize;
 }
-const MenuItem = ({ menu }: PropsMenuItem) => {
+const MenuItem = ({ menu, size = DrawerSize.MEDIUM }: PropsMenuItem) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { openDrawer } = useAppBar();
+
+  const isMedium = useMemo(() => size === DrawerSize.MEDIUM, [size]);
 
   const isSelected = useMemo(
     () =>
       location.pathname === menu.to ||
       location.pathname.startsWith(menu.to + "/"),
-    [menu, location]
+    [menu, location],
   );
 
   return (
@@ -258,7 +376,7 @@ const MenuItem = ({ menu }: PropsMenuItem) => {
       <ListItemButton
         selected={isSelected}
         sx={
-          openDrawer
+          isMedium
             ? {}
             : {
                 display: "flex",
@@ -273,13 +391,13 @@ const MenuItem = ({ menu }: PropsMenuItem) => {
           })
         }
       >
-        <ListItemIcon sx={openDrawer ? {} : { minWidth: "inherit" }}>
+        <ListItemIcon sx={isMedium ? {} : { minWidth: "inherit" }}>
           {menu.icon}
         </ListItemIcon>
         <ListItemText
-          sx={openDrawer ? {} : { textAlign: "center" }}
+          sx={isMedium ? {} : { textAlign: "center" }}
           primary={
-            <Typography variant={openDrawer ? "body1" : "caption"}>
+            <Typography variant={isMedium ? "body1" : "caption"}>
               {menu.label}
             </Typography>
           }

@@ -55,13 +55,13 @@ export default function ProfilPage() {
   const { uuid } = useUser();
   const { user, profile } = useAuth();
   const { friends } = useApp();
-  const { top } = useAppBar();
+  const { top, appBarVisible } = useAppBar();
   const navigate = useNavigate();
 
   const ITEMPERPAGE = 25;
 
   const [profileUser, setProfileUser] = useState<Profile | undefined>(
-    undefined
+    undefined,
   );
   const [scores, setScores] = useState<Array<Score>>([]);
   const [titles, setTitles] = useState<Array<TitleProfile>>([]);
@@ -91,9 +91,9 @@ export default function ProfilPage() {
           user &&
           profileUser &&
           ((el.user1.id === user.id && el.user2.id === profileUser.id) ||
-            (el.user2.id === user.id && el.user1.id === profileUser.id))
+            (el.user2.id === user.id && el.user1.id === profileUser.id)),
       ),
-    [friends, user, profileUser]
+    [friends, user, profileUser],
   );
 
   const totalOpposition = useMemo(
@@ -105,9 +105,9 @@ export default function ProfilPage() {
           draw: acc.draw + value.draw,
           defeat: acc.defeat + value.defeat,
         }),
-        { games: 0, victory: 0, draw: 0, defeat: 0 }
+        { games: 0, victory: 0, draw: 0, defeat: 0 },
       ),
-    [oppositions]
+    [oppositions],
   );
 
   const sorts = [
@@ -143,11 +143,11 @@ export default function ProfilPage() {
             setScores((prev) => (page === 0 ? [...res] : [...prev, ...res]));
             setIsEnd(res.length < ITEMPERPAGE);
             setIsLoadingScore(false);
-          }
+          },
         );
       }
     },
-    [id, isEnd, isLoadingScore, sort]
+    [id, isEnd, isLoadingScore, sort],
   );
 
   useEffect(() => {
@@ -212,7 +212,7 @@ export default function ProfilPage() {
         selectFriendByProfileId(id).then(({ data }) => {
           const friends = data as Array<Friend>;
           setProfileFriends(
-            friends.filter((el) => el.status !== FRIENDSTATUS.REFUSE)
+            friends.filter((el) => el.status !== FRIENDSTATUS.REFUSE),
           );
           setIsLoadingFriends(false);
         });
@@ -224,15 +224,17 @@ export default function ProfilPage() {
   useEffect(() => {
     const getOpposition = () => {
       setIsLoadingOppositions(true);
-      if (id) {
+      if (id && profile?.id !== id) {
         selectOppositionByOpponent(uuid, id).then(({ data }) => {
           setOppositions(data as Array<Opposition>);
           setIsLoadingOppositions(false);
         });
+      } else {
+        setOppositions([]);
       }
     };
     getOpposition();
-  }, [id, uuid]);
+  }, [id, profile, uuid]);
 
   useEffect(() => {
     const getProfile = () => {
@@ -258,10 +260,10 @@ export default function ProfilPage() {
             value.user2.id === id
               ? [...acc, value.user1]
               : [...acc, value.user2],
-          [] as Array<Profile>
+          [] as Array<Profile>,
         )
         .sort(sortByUsername),
-    [profileFriends, id]
+    [profileFriends, id],
   );
 
   const goPersonalized = () => {
@@ -274,7 +276,7 @@ export default function ProfilPage() {
     <Box>
       <Helmet>
         <title>{`${profileUser ? profileUser.username : ""} - ${t(
-          "appname"
+          "appname",
         )}`}</title>
       </Helmet>
       <Box
@@ -397,11 +399,11 @@ export default function ProfilPage() {
             gap: px(5),
             p: 1,
             position: "sticky",
-            top: top,
+            top: appBarVisible ? top : 0,
+            zIndex: (theme) => theme.zIndex.appBar + 1,
             transition: "top 350ms ease-in-out",
             bgcolor: "background.paper",
             width: percent(100),
-            zIndex: 5,
           }}
         >
           <BasicSearchInput

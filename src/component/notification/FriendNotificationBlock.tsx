@@ -35,7 +35,7 @@ export const FriendNotificationBlock = ({ notification, onDelete }: Props) => {
 
   const data = useMemo(
     () => notification.data as NotificationData,
-    [notification]
+    [notification],
   );
 
   const confirmFriend = (status: FRIENDSTATUS) => {
@@ -55,7 +55,7 @@ export const FriendNotificationBlock = ({ notification, onDelete }: Props) => {
         setMessage(
           status === FRIENDSTATUS.VALID
             ? t("alert.validatefriendrequest")
-            : t("alert.refusefriendrequest")
+            : t("alert.refusefriendrequest"),
         );
         getFriends();
         getNotifications();
@@ -66,7 +66,7 @@ export const FriendNotificationBlock = ({ notification, onDelete }: Props) => {
   return (
     <Paper
       sx={{
-        zIndex: 1500,
+        zIndex: (theme) => theme.zIndex.appBar + 1,
         p: 1,
         width: percent(100),
       }}
