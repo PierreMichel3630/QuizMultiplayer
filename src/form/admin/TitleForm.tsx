@@ -151,8 +151,6 @@ export const TitleForm = ({ title, validate }: Props) => {
                     const value = formik.values.titletranslation[index];
                     return (
                       <Grid
-                        item
-                        xs={12}
                         key={index}
                         sx={{
                           display: "flex",
@@ -160,7 +158,7 @@ export const TitleForm = ({ title, validate }: Props) => {
                           justifyContent: "space-between",
                           alignItems: "center",
                         }}
-                      >
+                        size={12}>
                         <SelectLanguage
                           value={value.language}
                           languages={languageNotUsed}
@@ -180,7 +178,6 @@ export const TitleForm = ({ title, validate }: Props) => {
                           size="small"
                           fullWidth
                         />
-
                         <IconButton
                           aria-label="delete"
                           onClick={() => remove(index)}
@@ -191,7 +188,7 @@ export const TitleForm = ({ title, validate }: Props) => {
                     );
                   })}
                   {languageNotUsed.length > 0 && (
-                    <Grid item xs={6}>
+                    <Grid size={6}>
                       <ButtonColor
                         value={Colors.blue}
                         label={t("commun.addtranslation")}
@@ -207,10 +204,10 @@ export const TitleForm = ({ title, validate }: Props) => {
               );
             }}
           </FieldArray>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Divider />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <FormControl
               fullWidth
               error={Boolean(formik.touched.price && formik.errors.price)}
@@ -235,7 +232,7 @@ export const TitleForm = ({ title, validate }: Props) => {
               )}
             </FormControl>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ButtonColor
               value={Colors.green}
               label={t("commun.add")}

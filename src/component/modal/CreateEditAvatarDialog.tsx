@@ -16,12 +16,12 @@ export const CreateEditAvatarDialog = ({ avatar, open, close }: Props) => {
     <Dialog onClose={close} open={open}>
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <Grid sx={{ textAlign: "center" }} size={12}>
             <Typography variant="h2">
               {avatar ? t("commun.editavatar") : t("commun.addavatar")}
             </Typography>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <AvatarForm avatar={avatar} validate={close} />
           </Grid>
         </Grid>

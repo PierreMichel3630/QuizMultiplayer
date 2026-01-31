@@ -1,18 +1,17 @@
+import ChallengeGamePage from "src/pages/challenge/ChallengeGamePage";
+import ChallengeProfilPage from "src/pages/challenge/ChallengeProfilPage";
 import PlayChallengePage from "src/pages/challenge/PlayChallengePage";
-import { ProtectedRoute } from "./ProtectedRoute";
-
 import GameDuelPage from "src/pages/GameDuelPage";
 import GameSoloPage from "src/pages/GameSoloPage";
 import BattlePage from "src/pages/play/BattlePage";
 import DuelPage from "src/pages/play/DuelPage";
+import RecapDuelPage from "src/pages/play/RecapDuelPage";
+import RecapSoloPage from "src/pages/play/RecapSoloPage";
 import SoloPage from "src/pages/play/SoloPage";
 import TrainingPage from "src/pages/play/TrainingPage";
-import ChallengeGamePage from "src/pages/challenge/ChallengeGamePage";
-import ChallengeProfilPage from "src/pages/challenge/ChallengeProfilPage";
-import RecapSoloPage from "src/pages/play/RecapSoloPage";
-import RecapDuelPage from "src/pages/play/RecapDuelPage";
+import { ProtectedRoute } from "./ProtectedRoute";
 
-export const PlayRoutes = [
+export const PlayModeRoutes = [
   {
     path: "/duel/:uuidGame",
     element: (

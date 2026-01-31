@@ -93,8 +93,6 @@ export const RatingChallenge = () => {
     >
       <Grid container>
         <Grid
-          item
-          xs={12}
           sx={{
             backgroundColor: Colors.colorApp,
             p: px(5),
@@ -103,7 +101,7 @@ export const RatingChallenge = () => {
             alignItems: "center",
             justifyContent: "space-between",
           }}
-        >
+          size={12}>
           <Typography variant="h2">{t("chart.distribution")}</Typography>
           <ToogleButtonCard
             select={type}
@@ -111,7 +109,7 @@ export const RatingChallenge = () => {
             values={types}
           />
         </Grid>
-        <Grid item xs={12} sx={{ p: px(5) }}>
+        <Grid sx={{ p: px(5) }} size={12}>
           <RatingChart data={data} />
         </Grid>
       </Grid>

@@ -12,23 +12,24 @@ import {
 import { CardAccomplishment } from "src/component/card/CardAccomplishment";
 import { Accomplishment, StatAccomplishment } from "src/models/Accomplishment";
 
-import { px } from "csx";
 import award from "src/assets/award.png";
 import { NotificationBlock } from "src/component/notification/NotificationBlock";
+import { useAppBar } from "src/context/AppBarProvider";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { useNotification } from "src/context/NotificationProvider";
+import { useRealtime } from "src/context/NotificationProvider";
 import { NotificationType } from "src/models/enum/NotificationType";
 import { Colors } from "src/style/Colors";
 
 export default function AccomplishmentPage() {
   const { t } = useTranslation();
-  const { myaccomplishments, headerSize } = useApp();
+  const { myaccomplishments } = useApp();
   const { profile } = useAuth();
-  const { notifications } = useNotification();
+  const { notifications } = useRealtime();
+  const { top, appBarVisible } = useAppBar();
 
   const [accomplishments, setAccomplishments] = useState<Array<Accomplishment>>(
-    []
+    [],
   );
   const [accomplishmentsGroupBy, setAccomplishmentsGroupBy] = useState<
     Dictionary<Array<Accomplishment>>
@@ -65,9 +66,9 @@ export default function AccomplishmentPage() {
       [...notifications].filter(
         (el) =>
           el.isread === false &&
-          el.type === NotificationType.accomplishment_unlock
+          el.type === NotificationType.accomplishment_unlock,
       ),
-    [notifications]
+    [notifications],
   );
 
   return (
@@ -79,13 +80,13 @@ export default function AccomplishmentPage() {
           content="Collectionner tous les succès à travers des défis amusants"
         />
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Grid container spacing={1} alignItems="center">
                 {accomplishmentsToUnlock.map((accomplishmentToUnlock) => (
-                  <Grid item xs={12} key={accomplishmentToUnlock.id}>
+                  <Grid key={accomplishmentToUnlock.id} size={12}>
                     <NotificationBlock notification={accomplishmentToUnlock} />
                   </Grid>
                 ))}
@@ -96,7 +97,7 @@ export default function AccomplishmentPage() {
               const myaccomplishmentsMode = accomplishments.filter((el) =>
                 myaccomplishments
                   .map((r) => r.accomplishment.id)
-                  .includes(el.id)
+                  .includes(el.id),
               );
               const percent =
                 accomplishments.length > 0
@@ -106,14 +107,15 @@ export default function AccomplishmentPage() {
               return (
                 <Fragment key={index}>
                   <Grid
-                    item
-                    xs={12}
                     sx={{
                       position: "sticky",
-                      top: headerSize,
+                      top: appBarVisible ? top : 0,
+                      zIndex: (theme) => theme.zIndex.appBar + 1,
+                      transition: "top 350ms ease-in-out",
                       backgroundColor: "background.paper",
-                      pb: px(10),
+                      p: 1,
                     }}
+                    size={12}
                   >
                     <Box
                       sx={{
@@ -127,8 +129,13 @@ export default function AccomplishmentPage() {
                         border: "2px solid white",
                       }}
                     >
-                      <Grid container spacing={1} alignItems="center">
-                        <Grid item>
+                      <Grid
+                        container
+                        spacing={1}
+                        alignItems="center"
+                        sx={{ flex: 1 }}
+                      >
+                        <Grid>
                           <img
                             alt="award icon"
                             src={award}
@@ -136,7 +143,7 @@ export default function AccomplishmentPage() {
                             loading="lazy"
                           />
                         </Grid>
-                        <Grid item xs>
+                        <Grid size="grow">
                           <Typography variant="h2" color="text.secondary">
                             {t(`accomplishment.${el}`)}
                           </Typography>
@@ -165,7 +172,7 @@ export default function AccomplishmentPage() {
                             </Box>
                             <Typography variant="body1" color="text.secondary">
                               {`${percent.toFixed(2)} ${t(
-                                "commun.percentsuccess"
+                                "commun.percentsuccess",
                               )}`}
                             </Typography>
                           </Box>
@@ -175,7 +182,13 @@ export default function AccomplishmentPage() {
                   </Grid>
                   {accomplishments.map((accomplishment) => {
                     return (
-                      <Grid item xs={12} md={6} key={accomplishment.id}>
+                      <Grid
+                        key={accomplishment.id}
+                        size={{
+                          xs: 12,
+                          md: 6,
+                        }}
+                      >
                         <CardAccomplishment
                           accomplishment={accomplishment}
                           stat={stat}
@@ -185,7 +198,7 @@ export default function AccomplishmentPage() {
                       </Grid>
                     );
                   })}
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <Divider />
                   </Grid>
                 </Fragment>

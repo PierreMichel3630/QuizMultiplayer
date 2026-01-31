@@ -9,7 +9,7 @@ import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { AutocompleteTheme } from "src/component/Select";
 import { SelectorProfileBlock } from "src/component/SelectorProfileBlock";
 import { SkeletonGames } from "src/component/skeleton/SkeletonGame";
-import { useApp } from "src/context/AppProvider";
+import { useAppBar } from "src/context/AppBarProvider";
 import { DuelGame } from "src/models/DuelGame";
 import { GameModeEnum } from "src/models/enum/GameEnum";
 import { HistoryGame, SoloGame } from "src/models/Game";
@@ -17,7 +17,7 @@ import { FilterGame } from "../HistoryGamePage";
 
 export default function AdminGamesPage() {
   const { t } = useTranslation();
-  const { headerSize } = useApp();
+  const { top, appBarVisible } = useAppBar();
   const ITEMPERPAGE = 20;
 
   const [games, setGames] = useState<Array<HistoryGame>>([]);
@@ -53,7 +53,7 @@ export default function AdminGamesPage() {
         });
 
         setGames((prev) =>
-          page === 0 ? [...historygames] : [...prev, ...historygames]
+          page === 0 ? [...historygames] : [...prev, ...historygames],
         );
         setIsEnd(result.length === 0);
         setIsLoading(false);
@@ -76,7 +76,7 @@ export default function AdminGamesPage() {
         });
 
         setGames((prev) =>
-          page === 0 ? [...historygames] : [...prev, ...historygames]
+          page === 0 ? [...historygames] : [...prev, ...historygames],
         );
         setIsEnd(result.length === 0);
         setIsLoading(false);
@@ -118,20 +118,19 @@ export default function AdminGamesPage() {
   return (
     <Grid container>
       <Grid
-        item
-        xs={12}
         sx={{
           position: "sticky",
-          top: headerSize,
+          top: appBarVisible ? top : 0,
+          zIndex: (theme) => theme.zIndex.appBar + 1,
           p: 1,
           backgroundColor: "background.paper",
           display: "flex",
           justifyContent: "center",
-          zIndex: 10,
         }}
+        size={12}
       >
         <Grid container spacing={1} justifyContent="center" alignItems="center">
-          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
             <GroupButtonAllTypeGame
               selected={filter.type}
               onChange={(value) => {
@@ -142,7 +141,7 @@ export default function AdminGamesPage() {
               }}
             />
           </Grid>
-          <Grid item xs={filter.type === GameModeEnum.duel ? 6 : 12}>
+          <Grid size={filter.type === GameModeEnum.duel ? 6 : 12}>
             <SelectorProfileBlock
               label={t("commun.selectplayer")}
               profile={filter.player !== null ? filter.player : undefined}
@@ -151,7 +150,7 @@ export default function AdminGamesPage() {
             />
           </Grid>
           {filter.type === GameModeEnum.duel && (
-            <Grid item xs={6}>
+            <Grid size={6}>
               <SelectorProfileBlock
                 label={t("commun.selectopponent")}
                 profile={filter.opponent}
@@ -162,7 +161,7 @@ export default function AdminGamesPage() {
               />
             </Grid>
           )}
-          <Grid item xs={12}>
+          <Grid size={12}>
             <AutocompleteTheme
               value={filter.themes}
               onChange={(value) => {
@@ -172,17 +171,17 @@ export default function AdminGamesPage() {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
             {games.map((game) => (
-              <Grid item xs={12} key={game.uuid}>
+              <Grid key={game.uuid} size={12}>
                 <CardHistoryGameAdmin game={game} />
               </Grid>
             ))}
             {isLoading && <SkeletonGames number={10} />}
             {!isLoading && games.length === 0 && isEnd && (
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Alert severity="warning">{t("commun.noresult")}</Alert>
               </Grid>
             )}

@@ -32,15 +32,15 @@ export default function ResetPasswordPage() {
       <Helmet>
         <title>{`${t("pages.resetpassword.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
             {isError ? (
               <>
-                <Grid item xs={12} sx={{ mt: 2 }}>
+                <Grid sx={{ mt: 2 }} size={12}>
                   <Alert severity="error">{t("commun.error")}</Alert>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <ButtonColor
                     value={Colors.blue}
                     label={t("commun.return")}
@@ -54,19 +54,15 @@ export default function ResetPasswordPage() {
               </>
             ) : (
               <>
-                <Grid item xs={12} sx={{ mt: 2 }}>
+                <Grid sx={{ mt: 2 }} size={12}>
                   <Typography variant="body1">
                     {t("form.resetpassword.resetpasswordexplain")}
                   </Typography>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <ResetPasswordForm />
                 </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sx={{ display: "flex", gap: 1, justifyContent: "center" }}
-                >
+                <Grid sx={{ display: "flex", gap: 1, justifyContent: "center" }} size={12}>
                   <Typography variant="body1">
                     {t("form.register.alreadyaccount")}
                   </Typography>

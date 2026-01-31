@@ -53,14 +53,14 @@ export default function AdminEditPage() {
 
   return (
     <Grid container spacing={1} justifyContent="center">
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Tabs value={value} onChange={handleChange} centered>
           {menus.map((menu, index) => (
             <Tab key={index} label={menu.label} value={menu.value} />
           ))}
         </Tabs>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Outlet />
       </Grid>
     </Grid>

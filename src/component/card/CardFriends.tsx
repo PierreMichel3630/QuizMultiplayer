@@ -26,8 +26,6 @@ export const CardFriends = ({ friends, loading }: Props) => {
       >
         <Grid container>
           <Grid
-            item
-            xs={12}
             sx={{
               backgroundColor: Colors.colorApp,
               p: px(10),
@@ -35,6 +33,7 @@ export const CardFriends = ({ friends, loading }: Props) => {
               gap: 1,
               alignItems: "center",
             }}
+            size={12}
           >
             <Typography variant="h2" color="text.secondary">
               {t("commun.friends")}
@@ -46,14 +45,13 @@ export const CardFriends = ({ friends, loading }: Props) => {
             )}
           </Grid>
           <Grid
-            item
-            xs={12}
             sx={{
               display: "flex",
               p: 1,
               maxHeight: viewHeight(18),
               overflowX: "scroll",
             }}
+            size={12}
           >
             <Grid container spacing={1} justifyContent="center">
               {loading ? (
@@ -61,7 +59,7 @@ export const CardFriends = ({ friends, loading }: Props) => {
               ) : (
                 <>
                   {friends.map((friend, index) => (
-                    <Grid item xs={4} sm={3} md={3} lg={2} key={index}>
+                    <Grid key={index}>
                       <Link
                         to={`/profil/${friend.id}`}
                         style={{ textDecoration: "none" }}

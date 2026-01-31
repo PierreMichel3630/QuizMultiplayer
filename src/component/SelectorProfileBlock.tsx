@@ -101,10 +101,10 @@ export const SelectorProfileBattleBlock = ({
       alignContent="center"
       justifyContent="center"
     >
-      <Grid item>
+      <Grid>
         <AvatarAccount avatar={profile.avatar.icon} size={50} />
       </Grid>
-      <Grid item xs={6} sx={{ textAlign: left ? "left" : "right" }}>
+      <Grid sx={{ textAlign: left ? "left" : "right" }} size={6}>
         <Typography
           variant="h6"
           sx={{
@@ -120,15 +120,13 @@ export const SelectorProfileBattleBlock = ({
         <Typography variant="h2">{score}</Typography>
       </Grid>
       <Grid
-        item
-        xs={12}
         sx={{
           display: "flex",
           alignItems: "center",
           gap: 1,
           justifyContent: "center",
         }}
-      >
+        size={12}>
         <Typography
           variant="h6"
           sx={{ color: ready ? Colors.green : Colors.red }}

@@ -113,7 +113,7 @@ export default function ChallengeProfilPage() {
         title={t("commun.daychallenge")}
         quit={() => navigate("/challenge")}
       />
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Container maxWidth="md">
           <Box
             sx={{
@@ -123,10 +123,10 @@ export default function ChallengeProfilPage() {
           >
             {profileUser && (
               <Grid container spacing={1}>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <ProfileBlock profile={profileUser} />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <GroupButtonChallengeTime
                     selected={tabTime}
                     onChange={(value) => {
@@ -138,14 +138,14 @@ export default function ChallengeProfilPage() {
                   {
                     day: (
                       <>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                           <RatingChallenge />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                           <Divider sx={{ borderBottomWidth: 5 }} />
                         </Grid>
                         {games.map((game) => (
-                          <Grid item xs={12} key={game.id}>
+                          <Grid key={game.id} size={12}>
                             <CardChallengeGame game={game} />
                           </Grid>
                         ))}
@@ -154,7 +154,7 @@ export default function ChallengeProfilPage() {
                     week: (
                       <>
                         {statWeek.map((stat, index) => (
-                          <Grid item xs={12} key={index}>
+                          <Grid key={index} size={12}>
                             <CardChallengeWeek value={stat} />
                           </Grid>
                         ))}
@@ -163,7 +163,7 @@ export default function ChallengeProfilPage() {
                     month: (
                       <>
                         {statMonth.map((stat, index) => (
-                          <Grid item xs={12} key={index}>
+                          <Grid key={index} size={12}>
                             <CardChallengeMonth value={stat} />
                           </Grid>
                         ))}
@@ -172,7 +172,7 @@ export default function ChallengeProfilPage() {
                     alltime: (
                       <>
                         {statAllTime && (
-                          <Grid item xs={12}>
+                          <Grid size={12}>
                             <CardChallengeAllTime value={statAllTime} />
                           </Grid>
                         )}

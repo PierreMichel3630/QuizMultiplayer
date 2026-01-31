@@ -38,11 +38,16 @@ export default function TitlesPage() {
         <Helmet>
           <title>{`${t("pages.titles.title")} - ${t("appname")}`}</title>
         </Helmet>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <TitleBlock title={t("commun.titles")} />
         </Grid>
         {titlesDisplay.map((title) => (
-          <Grid item xs={12} sm={6} key={title.id}>
+          <Grid
+            key={title.id}
+            size={{
+              xs: 12,
+              sm: 6
+            }}>
             <TitleShop title={title} noWrap={false} />
           </Grid>
         ))}

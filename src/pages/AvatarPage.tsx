@@ -1,5 +1,5 @@
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import {
   Avatar as AvatarMat,
   Box,
@@ -137,18 +137,18 @@ export default function AvatarPage() {
         title={t("pages.avatar.title")}
         quit={() => navigate(-1)}
       />
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Container maxWidth="md">
           {avatar && profile && (
             <ProfilHeader profile={profile} avatar={avatar.icon} />
           )}
         </Container>
       </Grid>
-      <Grid item xs={12}>
-        <Container maxWidth="md" sx={{ mt: 2, mb: 12 }}>
+      <Grid size={12}>
+        <Container maxWidth="md">
           {avatar && (
             <Grid container spacing={2} justifyContent="center">
-              <Grid item>
+              <Grid>
                 <AvatarMat
                   alt="Avatar"
                   src={avatar.icon}
@@ -161,7 +161,7 @@ export default function AvatarPage() {
               </Grid>
 
               {accomplishment && (
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Box sx={{ p: 2 }}>
                     <CardAccomplishment
                       accomplishment={accomplishment}
@@ -173,7 +173,7 @@ export default function AvatarPage() {
               )}
             </Grid>
           )}
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Box
               sx={{ p: 1, display: "flex", flexDirection: "column", gap: 1 }}
             >
@@ -213,7 +213,7 @@ export default function AvatarPage() {
                 <ButtonColor
                   value={Colors.yellow}
                   label={t("commun.goaccomplishments")}
-                  icon={EmojiEventsIcon}
+                  icon={MilitaryTechIcon}
                   variant="contained"
                   onClick={() => {
                     navigate(`/accomplishments`);
@@ -231,7 +231,6 @@ export default function AvatarPage() {
           </Grid>
         </Container>
       </Grid>
-
       <ConfirmDialog
         title={t("commun.confirmbuy")}
         open={openModal}

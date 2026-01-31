@@ -21,10 +21,20 @@ export const ScoreThemeBlock = ({
 
   return (
     <Grid container spacing={3} alignItems="center">
-      <Grid item xs={3} sm={3} md={2}>
+      <Grid
+        size={{
+          xs: 3,
+          sm: 3,
+          md: 2
+        }}>
         <ImageThemeBlock theme={theme} />
       </Grid>
-      <Grid item xs={9} sm={9} md={10}>
+      <Grid
+        size={{
+          xs: 9,
+          sm: 9,
+          md: 10
+        }}>
         <TextNameBlock
           variant="h1"
           color={color}

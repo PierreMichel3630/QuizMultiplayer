@@ -49,13 +49,13 @@ export default function ChallengePage() {
       <Helmet>
         <title>{`${t("pages.challenge.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 2 }}>
           <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12}>
+            <Grid size={12}>
               <TitleBlock title={t("commun.daychallenge")} link="/" />
             </Grid>
-            <Grid item xs={12} sx={{ textAlign: "center" }}>
+            <Grid sx={{ textAlign: "center" }} size={12}>
               <Typography>{t("commun.challengeexplain")}</Typography>
               <Typography variant="caption">
                 {t("commun.challengeexplain2")}
@@ -64,7 +64,7 @@ export default function ChallengePage() {
             {profile ? (
               <>
                 {hasPlayChallenge !== undefined && (
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     {hasPlayChallenge ? (
                       <TimeLeftToNextDayLabel
                         label={t("commun.nextdaychallenge")}
@@ -85,21 +85,21 @@ export default function ChallengePage() {
                 )}
               </>
             ) : (
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <NeedConnectAlert />
               </Grid>
             )}
 
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Divider sx={{ borderBottomWidth: 5 }} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <WinnerChallengeBlock />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Divider sx={{ borderBottomWidth: 5 }} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <RankingChallenge />
             </Grid>
           </Grid>

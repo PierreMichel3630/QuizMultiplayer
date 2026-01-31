@@ -28,8 +28,10 @@ export const FavoriteBlock = () => {
       getThemesAndCategoriesById(language, idCategories, idThemes).then(
         ({ data }) => {
           setItemsSearch(data ?? []);
-        }
+        },
       );
+    } else {
+      setItemsSearch([]);
     }
   }, [favorites, language]);
 
@@ -74,17 +76,16 @@ export const FavoriteSelectAvatarBlock = ({
     values.length > 0 && (
       <Grid container spacing={1}>
         <Grid
-          item
-          xs={12}
           sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
           }}
+          size={12}
         >
           <Typography variant="h2">{t("commun.favorite")}</Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box
             sx={{
               display: "flex",
@@ -103,7 +104,7 @@ export const FavoriteSelectAvatarBlock = ({
             ))}
           </Box>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Divider sx={{ borderBottomWidth: 5 }} />
         </Grid>
       </Grid>

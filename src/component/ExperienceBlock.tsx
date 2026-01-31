@@ -56,12 +56,12 @@ export const ExperienceBlock = ({ xp, xpgain }: Props) => {
 
   return (
     <Grid container spacing={1} justifyContent="center" alignItems="end">
-      <Grid item>
+      <Grid>
         <Typography variant="h4">
           {t("commun.level")} {myLevel}
         </Typography>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box
           sx={{
             display: "flex",
@@ -227,12 +227,12 @@ export const ExperienceDuelBlock = ({
 
   return (
     <Grid container spacing={1} justifyContent="center" alignItems="end">
-      <Grid item>
+      <Grid>
         <Typography variant="h4">
           {t("commun.level")} {myLevel}
         </Typography>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box
           sx={{
             display: "flex",
@@ -303,7 +303,7 @@ export const ExperienceDuelBlock = ({
         </Box>
       </Grid>
       {duelXp.map((el, index) => (
-        <Grid item xs={3} key={index}>
+        <Grid key={index} size={3}>
           <ExperienceGainBlock
             color={el.color}
             title={el.title}
@@ -396,105 +396,101 @@ export const MyExperienceSoloBlock = ({ xp }: PropsSolo) => {
     [t, xp, xpTotal]
   );
 
-  return (
-    xp &&
-    profile !== null && (
-      <Grid container spacing={1} justifyContent="center" alignItems="end">
-        {profile && (
-          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-            <AvatarAccountBadge
-              profile={profile}
-              size={100}
-              color={Colors.pink}
-            />
-          </Grid>
-        )}
-        <Grid item>
-          <Typography variant="h4">
-            {t("commun.level")} {myLevel}
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
+  return (xp &&
+  profile !== null && (<Grid container spacing={1} justifyContent="center" alignItems="end">
+    {profile && (
+      <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
+        <AvatarAccountBadge
+          profile={profile}
+          size={100}
+          color={Colors.pink}
+        />
+      </Grid>
+    )}
+    <Grid>
+      <Typography variant="h4">
+        {t("commun.level")} {myLevel}
+      </Typography>
+    </Grid>
+    <Grid size={12}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          position: "relative",
+        }}
+      >
+        {xpLevel !== undefined && myXpLevel !== undefined && (
           <Box
             sx={{
-              display: "flex",
-              justifyContent: "center",
-              position: "relative",
+              position: "absolute",
+              right: 8,
+              zIndex: 1,
             }}
           >
-            {xpLevel !== undefined && myXpLevel !== undefined && (
-              <Box
-                sx={{
-                  position: "absolute",
-                  right: 8,
-                  zIndex: 1,
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  component="span"
-                  color={isDarkMode ? Colors.black2 : Colors.white}
-                >
-                  {xpLevel - myXpLevel}
-                </Typography>
-                <Typography
-                  variant="caption"
-                  component="span"
-                  color={isDarkMode ? Colors.black2 : Colors.white}
-                >
-                  {t("commun.xpnextlevel")}
-                </Typography>
-              </Box>
-            )}
-            <Box
-              sx={{
-                height: px(20),
-                width: percent(100),
-                backgroundColor: isDarkMode ? Colors.white : Colors.black2,
-                borderRadius: px(25),
-              }}
-            />
-            <Box
-              sx={{
-                position: "absolute",
-                left: 0,
-                width: percent(100),
-                display: "flex",
-              }}
+            <Typography
+              variant="h6"
+              component="span"
+              color={isDarkMode ? Colors.black2 : Colors.white}
             >
-              <Box
-                sx={{
-                  height: px(20),
-                  width: percent(pourcentage > 0 ? pourcentage : 0),
-                  backgroundColor: Colors.colorApp,
-                  borderTopLeftRadius: px(25),
-                  borderBottomLeftRadius: px(25),
-                }}
-              />
-              <Box
-                sx={{
-                  height: px(20),
-                  width: percent(pourcentageGain),
-                  backgroundColor: Colors.purple2,
-                  borderTopLeftRadius: pourcentage > 0 ? "none" : px(25),
-                  borderBottomLeftRadius: pourcentage > 0 ? "none" : px(25),
-                }}
-              />
-            </Box>
+              {xpLevel - myXpLevel}
+            </Typography>
+            <Typography
+              variant="caption"
+              component="span"
+              color={isDarkMode ? Colors.black2 : Colors.white}
+            >
+              {t("commun.xpnextlevel")}
+            </Typography>
           </Box>
-        </Grid>
-        {duelXp.map((el, index) => (
-          <Grid item xs={4} key={index}>
-            <ExperienceGainBlock
-              color={el.color}
-              title={el.title}
-              value={el.value}
-            />
-          </Grid>
-        ))}
+        )}
+        <Box
+          sx={{
+            height: px(20),
+            width: percent(100),
+            backgroundColor: isDarkMode ? Colors.white : Colors.black2,
+            borderRadius: px(25),
+          }}
+        />
+        <Box
+          sx={{
+            position: "absolute",
+            left: 0,
+            width: percent(100),
+            display: "flex",
+          }}
+        >
+          <Box
+            sx={{
+              height: px(20),
+              width: percent(pourcentage > 0 ? pourcentage : 0),
+              backgroundColor: Colors.colorApp,
+              borderTopLeftRadius: px(25),
+              borderBottomLeftRadius: px(25),
+            }}
+          />
+          <Box
+            sx={{
+              height: px(20),
+              width: percent(pourcentageGain),
+              backgroundColor: Colors.purple2,
+              borderTopLeftRadius: pourcentage > 0 ? "none" : px(25),
+              borderBottomLeftRadius: pourcentage > 0 ? "none" : px(25),
+            }}
+          />
+        </Box>
+      </Box>
+    </Grid>
+    {duelXp.map((el, index) => (
+      <Grid key={index} size={4}>
+        <ExperienceGainBlock
+          color={el.color}
+          title={el.title}
+          value={el.value}
+        />
       </Grid>
-    )
-  );
+    ))}
+  </Grid>));
 };
 
 interface PropsExperienceGainBlock {

@@ -144,12 +144,10 @@ export const ChallengeGameForm = ({ date, game, validate }: Props) => {
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={2} alignItems="center" justifyContent="center">
         <Grid
-          item
           sx={{
             pointerEvents: game ? "none" : "initial",
             opacity: game ? 0.5 : 1,
-          }}
-        >
+          }}>
           <SelectorProfileBlock
             label={t("commun.selectplayer")}
             profile={formik.values.profile}
@@ -157,7 +155,7 @@ export const ChallengeGameForm = ({ date, game, validate }: Props) => {
             onChange={() => setOpenModalPlayer(true)}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.score && formik.errors.score)}
@@ -183,7 +181,7 @@ export const ChallengeGameForm = ({ date, game, validate }: Props) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.time && formik.errors.time)}
@@ -215,7 +213,7 @@ export const ChallengeGameForm = ({ date, game, validate }: Props) => {
             responsePlayer1: question.responsePlayer1,
           };
           return (
-            <Grid item xs={12} key={question.id}>
+            <Grid key={question.id} size={12}>
               <QuestionResponseEditBlock
                 responseplayer1={question.responsePlayer1}
                 response={response}
@@ -225,7 +223,7 @@ export const ChallengeGameForm = ({ date, game, validate }: Props) => {
             </Grid>
           );
         })}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <ButtonColor
             value={Colors.blue}
             label={t("commun.save")}

@@ -34,10 +34,10 @@ export const SeeChallengeModal = ({ challenge, open, close }: Props) => {
                     }}
                   />
                 </Typography>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <CardSignalQuestion question={question} />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Divider sx={{ borderBottomWidth: 5 }} />
                 </Grid>
               </Fragment>

@@ -1,11 +1,10 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, TypographyVariant } from "@mui/material";
 import { px } from "csx";
 import { Colors } from "src/style/Colors";
 import { GoBackButtonIcon } from "../navigation/GoBackButton";
 
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
-import { Variant } from "@mui/material/styles/createTypography";
 import { useMemo } from "react";
 import { useUser } from "src/context/UserProvider";
 import { TitleProfile } from "src/models/Title";
@@ -39,10 +38,10 @@ export const TitleBlock = ({
       alignItems="center"
       justifyContent="space-between"
     >
-      <Grid item>
+      <Grid>
         <GoBackButtonIcon link={link} />
       </Grid>
-      <Grid item xs sx={{ textAlign: "center" }}>
+      <Grid sx={{ textAlign: "center" }} size="grow">
         {typeof title === "string" ? (
           <Typography variant="h2">{title}</Typography>
         ) : (
@@ -50,7 +49,7 @@ export const TitleBlock = ({
         )}
       </Grid>
       {addFavorite && (
-        <Grid item sx={{ minWidth: px(60) }}>
+        <Grid sx={{ minWidth: px(60) }}>
           {favorite ? (
             <StarIcon
               sx={{
@@ -79,7 +78,7 @@ export const TitleBlock = ({
 
 interface TitleTextProps {
   value: TitleProfile;
-  variant?: Variant;
+  variant?: TypographyVariant;
   color?: string;
 }
 export const TitleText = ({

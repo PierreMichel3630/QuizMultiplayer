@@ -7,13 +7,13 @@ import { percent, px } from "csx";
 import { updateProfilByFunction } from "src/api/profile";
 import { NotificationBlock } from "src/component/notification/NotificationBlock";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { useNotification } from "src/context/NotificationProvider";
+import { useRealtime } from "src/context/NotificationProvider";
 import { NotificationType } from "src/models/enum/NotificationType";
+import { UpdateAppNotificationBlock } from "src/component/notification/UpdateAppNotificationBlock";
 
 export default function NotificationOutlet() {
   const { profile, setStreak } = useAuth();
-  const { notificationUpdate, notifications, getNotifications } =
-    useNotification();
+  const { notifications, getNotifications } = useRealtime();
 
   const gamesNotifications = useMemo(
     () =>
@@ -59,7 +59,6 @@ export default function NotificationOutlet() {
           margin: px(5),
         }}
       >
-        {}
         {gamesNotifications.map((notification) => (
           <NotificationBlock
             key={notification.id}
@@ -67,12 +66,7 @@ export default function NotificationOutlet() {
             onDelete={getNotifications}
           />
         ))}
-        {notificationUpdate && (
-          <NotificationBlock
-            notification={notificationUpdate}
-            onDelete={getNotifications}
-          />
-        )}
+        <UpdateAppNotificationBlock />
       </Box>
     </>
   );

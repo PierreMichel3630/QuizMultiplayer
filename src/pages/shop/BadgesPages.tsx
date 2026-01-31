@@ -38,11 +38,11 @@ export default function BadgesPage() {
         <Helmet>
           <title>{`${t("pages.badges.title")} - ${t("appname")}`}</title>
         </Helmet>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <TitleBlock title={t("commun.badges")} />
         </Grid>
         {badgesDisplay.map((badge) => (
-          <Grid item key={badge.id}>
+          <Grid key={badge.id}>
             <BadgeShop badge={badge} />
           </Grid>
         ))}

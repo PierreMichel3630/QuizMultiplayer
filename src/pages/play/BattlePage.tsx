@@ -13,11 +13,10 @@ import {
 } from "src/api/game";
 import { supabase } from "src/api/supabase";
 import { ButtonColor } from "src/component/Button";
-import { SelectedTheme } from "src/component/SelectedTheme";
-import { SelectorProfileBattleBlock } from "src/component/SelectorProfileBlock";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { BarNavigation } from "src/component/navigation/BarNavigation";
-import { useApp } from "src/context/AppProvider";
+import { SelectedTheme } from "src/component/SelectedTheme";
+import { SelectorProfileBattleBlock } from "src/component/SelectorProfileBlock";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import {
   BattleGame,
@@ -30,21 +29,22 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import HistoryIcon from "@mui/icons-material/History";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import { sendNotification } from "src/api/notification";
 import { ICardImage } from "src/component/card/CardImage";
+import { FavoriteSelectAvatarBlock } from "src/component/FavoriteBlock";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import { HistoryGameModal } from "src/component/modal/HistoryGameModal";
 import { SearchThemeSelectScrollBlock } from "src/component/scroll/SearchThemeScrollBlock";
-import { weightedRandom } from "src/utils/random";
-import { FavoriteSelectAvatarBlock } from "src/component/FavoriteBlock";
-import { sendNotification } from "src/api/notification";
+import { useAppBar } from "src/context/AppBarProvider";
 import { NotificationType } from "src/models/enum/NotificationType";
 import { Profile } from "src/models/Profile";
+import { weightedRandom } from "src/utils/random";
 
 export default function BattlePage() {
   const { t } = useTranslation();
   const { uuidGame } = useParams();
   const { user } = useAuth();
-  const { headerSize } = useApp();
+  const { top, appBarVisible } = useAppBar();
   const navigate = useNavigate();
 
   const [game, setGame] = useState<BattleGame | null>(null);
@@ -55,14 +55,14 @@ export default function BattlePage() {
 
   const isPlayer1 = useMemo(
     () => (user && game ? user.id === game.player1.id : null),
-    [game, user]
+    [game, user],
   );
 
   const isReady = useMemo(
     () =>
       game &&
       ((isPlayer1 && game.readyplayer1) || (!isPlayer1 && game.readyplayer2)),
-    [game, isPlayer1]
+    [game, isPlayer1],
   );
 
   const getHistory = () => {
@@ -115,9 +115,9 @@ export default function BattlePage() {
                     game: change.game,
                     games: change.games,
                   }
-                : prev
+                : prev,
             );
-          }
+          },
         )
         .on(
           "postgres_changes",
@@ -131,7 +131,7 @@ export default function BattlePage() {
             if (game.id === id) {
               navigate(`/`);
             }
-          }
+          },
         )
         .subscribe();
       return () => {
@@ -171,7 +171,7 @@ export default function BattlePage() {
         await updateBattleGameByUuid(value);
       }
     },
-    [game, isPlayer1]
+    [game, isPlayer1],
   );
 
   const ready = useCallback(() => {
@@ -190,7 +190,7 @@ export default function BattlePage() {
       const themesplayer2 = [...game.themesplayer2];
       const distinctTheme = uniqBy(
         [...themesplayer1, ...themesplayer2],
-        (el) => el
+        (el) => el,
       );
       res = distinctTheme.map((el) => {
         const avatars = [];
@@ -231,7 +231,7 @@ export default function BattlePage() {
         game.player1.id,
         game.player2.id,
         themeRandom,
-        game.uuid
+        game.uuid,
       ).then(({ data }) => {
         updateGame({ uuid: game.uuid, game: data.uuid });
       });
@@ -298,10 +298,10 @@ export default function BattlePage() {
             gap: 1,
             backgroundColor: "background.paper",
             position: "sticky",
-            top: headerSize,
+            top: appBarVisible ? top : 0,
+            zIndex: (theme) => theme.zIndex.appBar + 1,
             left: 0,
             right: 0,
-            zIndex: 2,
             p: 1,
           }}
         >
@@ -342,21 +342,21 @@ export default function BattlePage() {
           sx={{ marginBottom: px(125) }}
         >
           {game && (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Grid container spacing={1} justifyContent="center">
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <SelectedTheme
                     avatars={avatars}
                     select={(t) => selectTheme(t)}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <FavoriteSelectAvatarBlock
                     select={(t) => selectTheme(t)}
                     avatars={avatars}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <SearchThemeSelectScrollBlock
                     onSelect={(v) => selectTheme(v)}
                     search={""}

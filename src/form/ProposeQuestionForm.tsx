@@ -181,7 +181,7 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={2} alignItems="center">
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.question && formik.errors.question)}
@@ -208,7 +208,7 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.response && formik.errors.response)}
@@ -233,7 +233,7 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(
@@ -260,7 +260,7 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(
@@ -287,7 +287,7 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(
@@ -314,7 +314,7 @@ export const ProposeQuestionForm = ({ validate, theme }: Props) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <ButtonColor
             value={Colors.green}
             label={t("commun.validate")}

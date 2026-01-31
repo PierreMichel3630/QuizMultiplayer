@@ -95,10 +95,18 @@ export const UsernameInput = () => {
     <form onSubmit={formik.handleSubmit}>
       <FormControl fullWidth error={Boolean(formik.errors.username)}>
         <Grid container spacing={1} alignItems="center">
-          <Grid item xs={12} md={4}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 4
+            }}>
             <Typography variant="h4">{t("commun.username")}</Typography>
           </Grid>
-          <Grid item xs={12} md={8}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 8
+            }}>
             <OutlinedInput
               id="register-username-input"
               type="text"
@@ -117,7 +125,7 @@ export const UsernameInput = () => {
             )}
           </Grid>
           {Object.keys(formik.errors).length === 0 && isModified && (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Button
                 disableElevation
                 type="submit"

@@ -9,74 +9,60 @@ import {
 } from "react";
 import { selectNotificationsNotRead } from "src/api/notification";
 import { supabase } from "src/api/supabase";
-import { Notification } from "src/models/Notification";
-import { useAuth } from "./AuthProviderSupabase";
+import { Config } from "src/models/Config";
 import { NotificationType } from "src/models/enum/NotificationType";
-import { useRegisterSW } from "virtual:pwa-register/react";
+import { Notification } from "src/models/Notification";
+import { isVersionGreater } from "src/utils/compare";
 import { VERSION_APP } from "src/utils/config";
+import { useAuth } from "./AuthProviderSupabase";
+import { selectConfig } from "src/api/config";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[];
 };
 
-const NotificationContext = createContext<{
+const RealtimeContext = createContext<{
+  config?: Config;
   notifications: Array<Notification>;
-  notificationUpdate?: Notification;
+  needUpdate: boolean;
   getNotifications: () => void;
 }>({
+  config: undefined,
   notifications: [],
-  notificationUpdate: undefined,
+  needUpdate: false,
   getNotifications: () => {},
 });
 
-export const useNotification = () => useContext(NotificationContext);
+export const useRealtime = () => useContext(RealtimeContext);
 
-export const NotificationProvider = ({ children }: Props) => {
+export const RealtimeProvider = ({ children }: Props) => {
   const { user } = useAuth();
 
-  const [isLoading, setIsLoading] = useState(false);
   const [notifications, setNotifications] = useState<Array<Notification>>([]);
+  const [config, setConfig] = useState<undefined | Config>(undefined);
 
-  const {
-    needRefresh: [needRefresh, setNeedRefresh],
-  } = useRegisterSW({
-    onNeedRefresh() {
-      setNeedRefresh(true);
-    },
-  });
-
-  const notificationUpdate = useMemo(() => {
-    let result: Notification | undefined = undefined;
-    if (!isLoading) {
-      const notif = [...notifications].find(
-        (el) => el.type === NotificationType.update_app
-      );
-      result = notif
-        ? notif
-        : needRefresh
-        ? {
-            id: 0,
-            profile: "",
-            type: NotificationType.update_app,
-            data: { version: VERSION_APP },
-            isread: false,
-            created_at: new Date(),
-          }
-        : undefined;
-    }
+  const needUpdate = useMemo(() => {
+    const result = config
+      ? isVersionGreater(config.version_app, VERSION_APP)
+      : false;
     return result;
-  }, [isLoading, notifications, needRefresh]);
+  }, [config]);
+
+  useEffect(() => {
+    const getConfig = () => {
+      selectConfig().then(({ data }) => {
+        setConfig(data ?? undefined);
+      });
+    };
+    getConfig();
+  }, []);
 
   const getNotifications = useCallback(() => {
-    setIsLoading(true);
     if (user) {
       selectNotificationsNotRead(user.id).then(({ data }) => {
-        const res = data !== null ? (data as Array<Notification>) : [];
+        const res = data === null ? [] : (data as Array<Notification>);
         setNotifications(res);
-        setIsLoading(false);
       });
-    } else {
-      setIsLoading(false);
     }
   }, [user]);
 
@@ -86,7 +72,7 @@ export const NotificationProvider = ({ children }: Props) => {
       const id = user.id;
       getNotifications();
       channel = supabase
-        .channel("notification")
+        .channel("realtime")
         .on(
           "postgres_changes",
           {
@@ -131,6 +117,34 @@ export const NotificationProvider = ({ children }: Props) => {
             );
           }
         )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "config",
+          },
+          (payload) => {
+            const config = payload.new as Config;
+            setConfig(config);
+          }
+        )
+        .subscribe();
+    } else {
+      channel = supabase
+        .channel("realtime")
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "config",
+          },
+          (payload) => {
+            const config = payload.new as Config;
+            setConfig(config);
+          }
+        )
         .subscribe();
     }
     return () => {
@@ -150,14 +164,15 @@ export const NotificationProvider = ({ children }: Props) => {
     () => ({
       notifications: notificationDisplay,
       getNotifications,
-      notificationUpdate,
+      needUpdate,
+      config,
     }),
-    [notificationDisplay, getNotifications, notificationUpdate]
+    [notificationDisplay, getNotifications, needUpdate, config]
   );
 
   return (
-    <NotificationContext.Provider value={value}>
+    <RealtimeContext.Provider value={value}>
       {children}
-    </NotificationContext.Provider>
+    </RealtimeContext.Provider>
   );
 };

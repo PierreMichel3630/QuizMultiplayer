@@ -10,19 +10,23 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import AppsIcon from "@mui/icons-material/Apps";
 import BarChartIcon from "@mui/icons-material/BarChart";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import MenuIcon from "@mui/icons-material/Menu";
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import { padding, px } from "csx";
-import { useNotification } from "src/context/NotificationProvider";
-import { LogoIcon } from "src/icons/LogoIcon";
+import { useAuth } from "src/context/AuthProviderSupabase";
+import { useRealtime } from "src/context/NotificationProvider";
+import { LogoIconRound } from "src/icons/LogoIcon";
 import { NotificationType } from "src/models/enum/NotificationType";
 import { Colors } from "src/style/Colors";
+
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { AvatarAccountBadge } from "./avatar/AvatarAccount";
 
 export const BottomNavigationBlock = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
-  const { notifications } = useNotification();
+  const { notifications } = useRealtime();
+  const { profile } = useAuth();
 
   const [menu, setMenu] = useState(location.pathname.split("/")[1]);
 
@@ -35,9 +39,19 @@ export const BottomNavigationBlock = () => {
       [...notifications].filter(
         (el) =>
           el.isread === false &&
-          el.type === NotificationType.accomplishment_unlock
+          el.type === NotificationType.accomplishment_unlock,
       ).length,
-    [notifications]
+    [notifications],
+  );
+
+  const iconProfile = useMemo(
+    () =>
+      profile ? (
+        <AvatarAccountBadge profile={profile} size={28} />
+      ) : (
+        <AccountCircleIcon />
+      ),
+    [profile],
   );
 
   return (
@@ -77,7 +91,7 @@ export const BottomNavigationBlock = () => {
           label={t("commun.accomplishments")}
           icon={
             <Badge badgeContent={notificationsAccomplishment} color="error">
-              <EmojiEventsIcon />
+              <MilitaryTechIcon />
             </Badge>
           }
           component={Link}
@@ -94,11 +108,11 @@ export const BottomNavigationBlock = () => {
         />
         <BottomNavigationAction
           sx={{ p: padding(0, 5), minWidth: px(30) }}
-          value={"menus"}
-          label={t("commun.menus")}
-          icon={<MenuIcon />}
+          value={"profile"}
+          label={t("commun.you")}
+          icon={iconProfile}
           component={Link}
-          to={"/menus"}
+          to={profile ? `/profil/${profile.id}` : "/login"}
         />
       </BottomNavigation>
       <Box
@@ -113,21 +127,7 @@ export const BottomNavigationBlock = () => {
         }}
         onClick={() => navigate("/play")}
       >
-        <Box
-          sx={{
-            backgroundColor: Colors.colorApp,
-            width: px(60),
-            height: px(60),
-            borderRadius: "50%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <LogoIcon
-            sx={{ color: Colors.white, ml: "2px", mt: "3px", fontSize: 40 }}
-          />
-        </Box>
+        <LogoIconRound />
       </Box>
       <Box
         sx={{

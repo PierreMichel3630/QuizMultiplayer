@@ -1,5 +1,5 @@
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import { Avatar, Box, Container, Grid, Typography } from "@mui/material";
 import { padding, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
@@ -128,20 +128,18 @@ export default function BadgePage() {
         <title>{`${t("pages.badge.title")} - ${t("appname")}`}</title>
       </Helmet>
       <BarNavigation title={t("pages.badge.title")} quit={() => navigate(-1)} />
-
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Container maxWidth="md">
           {badge && profile && (
             <ProfilHeader profile={profile} badge={badge.icon} />
           )}
         </Container>
       </Grid>
-
-      <Grid item xs={12}>
-        <Container maxWidth="md" sx={{ mt: 2, mb: 12 }}>
+      <Grid size={12}>
+        <Container maxWidth="md">
           {badge && (
             <Grid container spacing={2} justifyContent="center">
-              <Grid item>
+              <Grid>
                 <Avatar
                   sx={{
                     width: 120,
@@ -152,7 +150,7 @@ export default function BadgePage() {
               </Grid>
 
               {accomplishment && (
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Box sx={{ p: 2 }}>
                     <CardAccomplishment
                       accomplishment={accomplishment}
@@ -164,7 +162,7 @@ export default function BadgePage() {
               )}
             </Grid>
           )}
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Box
               sx={{ p: 1, display: "flex", flexDirection: "column", gap: 1 }}
             >
@@ -205,7 +203,7 @@ export default function BadgePage() {
                 <ButtonColor
                   value={Colors.yellow}
                   label={t("commun.goaccomplishments")}
-                  icon={EmojiEventsIcon}
+                  icon={MilitaryTechIcon}
                   variant="contained"
                   onClick={() => {
                     navigate(`/accomplishments`);
@@ -223,7 +221,6 @@ export default function BadgePage() {
           </Grid>
         </Container>
       </Grid>
-
       <ConfirmDialog
         title={t("commun.confirmbuy")}
         open={openModal}

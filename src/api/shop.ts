@@ -20,6 +20,13 @@ export const selectThemeShop = () =>
     .select("*, themeshoptranslation(*, language(*))")
     .order("id");
 
+export const selectThemeShopById = (id: number) =>
+  supabase
+    .from(SUPABASE_THEMESHOP_TABLE)
+    .select("*, themeshoptranslation(*, language(*))")
+    .eq("id", id)
+    .maybeSingle();
+
 export const updateThemeShop = (value: ThemeShopUpdate) =>
   supabase
     .from(SUPABASE_THEMESHOP_TABLE)

@@ -40,7 +40,7 @@ export const CardSignalQuestionV1 = ({
       }}
     >
       <Grid container spacing={1} justifyContent="center">
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
+        <Grid sx={{ textAlign: "center" }} size={12}>
           <JsonLanguageBlock
             variant="h2"
             color={color}
@@ -48,7 +48,7 @@ export const CardSignalQuestionV1 = ({
           />
         </Grid>
         {question.extra && (
-          <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <Grid sx={{ textAlign: "center" }} size={12}>
             <JsonLanguageBlock
               variant="caption"
               color={color}
@@ -61,16 +61,16 @@ export const CardSignalQuestionV1 = ({
           </Grid>
         )}
         {question.typequestion === "MAPPOSITION" && question.data !== null && (
-          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
             <MapPositionBlock data={question.data} height={300} />
           </Grid>
         )}
         {question.image && (
-          <Grid item xs={12} sx={{ maxWidth: percent(80), maxHeight: px(300) }}>
+          <Grid sx={{ maxWidth: percent(80), maxHeight: px(300) }} size={12}>
             <ImageQuestionBlock src={question.image} />
           </Grid>
         )}
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
+        <Grid sx={{ textAlign: "center" }} size={12}>
           {question.isqcm ? (
             <QcmBlockDuelResultBlockV1 question={question} />
           ) : (
@@ -192,7 +192,7 @@ export const CardSignalQuestionV1 = ({
           )}
         </Grid>
         {report && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ButtonColor
               value={Colors.yellow}
               label={t("commun.report")}

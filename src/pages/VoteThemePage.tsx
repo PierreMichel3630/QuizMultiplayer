@@ -89,7 +89,7 @@ export default function VoteThemePage() {
         <Helmet>
           <title>{`${t("pages.votetheme.title")} - ${t("appname")}`}</title>
         </Helmet>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box sx={{ p: 1 }}>
             <Grid
               container
@@ -97,25 +97,25 @@ export default function VoteThemePage() {
               alignItems="center"
               justifyContent="center"
             >
-              <Grid item>
+              <Grid>
                 <GoBackButtonIcon />
               </Grid>
-              <Grid item xs sx={{ textAlign: "center" }}>
+              <Grid sx={{ textAlign: "center" }} size="grow">
                 <Typography variant="h2">{t("commun.votetheme")}</Typography>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Typography variant="caption">
                   {t("commun.votethemetext")}
                 </Typography>
               </Grid>
-              <Grid item>
+              <Grid>
                 <TimeLeftLabel
                   intervalHours={12}
                   lastDate={voteDate}
                   size="large"
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Button
                   fullWidth
                   variant="contained"
@@ -130,7 +130,7 @@ export default function VoteThemePage() {
                 </Button>
               </Grid>
               {themes.map((theme) => (
-                <Grid item xs={12} key={theme.id}>
+                <Grid key={theme.id} size={12}>
                   <CardVoteTheme
                     theme={theme}
                     onClick={() => vote(theme)}

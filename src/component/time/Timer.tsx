@@ -11,7 +11,7 @@ interface Props {
 export const Timer = ({ time, end }: Props) => {
   const DELAY = 100;
   const [intervalTimer, setIntervalTimer] = useState<
-    NodeJS.Timeout | undefined
+    ReturnType<typeof setTimeout> | undefined
   >(undefined);
   const [totalTime, setTotalTime] = useState(1);
   const [timer, setTimer] = useState(0);
@@ -90,7 +90,7 @@ interface PropsVerticalTimer {
 export const VerticalTimer = ({ time, color, answer }: PropsVerticalTimer) => {
   const DELAY = 100;
   const [intervalTimer, setIntervalTimer] = useState<
-    NodeJS.Timeout | undefined
+    ReturnType<typeof setTimeout> | undefined
   >(undefined);
   const [totalTime, setTotalTime] = useState(1);
   const [timer, setTimer] = useState(0);
@@ -180,7 +180,7 @@ export const RoundTimer = ({
 }: PropsRoundTimer) => {
   const DELAY = 100;
   const [intervalTimer, setIntervalTimer] = useState<
-    NodeJS.Timeout | undefined
+    ReturnType<typeof setTimeout> | undefined
   >(undefined);
   const [totalTime, setTotalTime] = useState(1);
   const [timer, setTimer] = useState(0);

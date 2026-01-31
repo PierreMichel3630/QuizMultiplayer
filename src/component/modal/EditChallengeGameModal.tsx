@@ -15,7 +15,7 @@ export const EditChallengeGameModal = ({ date, game, open, close }: Props) => {
     <Dialog onClose={close} open={open}>
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ChallengeGameForm date={date} game={game} validate={close} />
           </Grid>
         </Grid>

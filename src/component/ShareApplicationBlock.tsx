@@ -3,11 +3,11 @@ import { Box, IconButton } from "@mui/material";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Theme } from "src/models/Theme";
-import { urlPc } from "src/pages/help/InstallationPage";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "./Button";
 import { ShareModal } from "./modal/ShareModal";
 import { useUser } from "src/context/UserProvider";
+import { urlPc } from "src/utils/config";
 
 interface Props {
   title: string;

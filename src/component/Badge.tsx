@@ -46,7 +46,6 @@ export const BadgeDifficulty = ({ value }: Props) => {
 
 interface PropsBadgeAccountActive {
   online: boolean;
-
   children: string | JSX.Element | JSX.Element[];
 }
 

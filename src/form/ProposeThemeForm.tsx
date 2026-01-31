@@ -77,7 +77,7 @@ export const ProposeThemeForm = ({ validate }: Props) => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={2} alignItems="center">
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.title && formik.errors.title)}
@@ -102,7 +102,7 @@ export const ProposeThemeForm = ({ validate }: Props) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <ButtonColor
             value={Colors.green}
             label={t("commun.validate")}

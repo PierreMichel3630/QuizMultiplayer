@@ -35,7 +35,7 @@ export const DuelNotificationBlock = ({ notification, onDelete }: Props) => {
 
   const data = useMemo(
     () => notification.data as NotificationData,
-    [notification]
+    [notification],
   );
 
   const playDuel = (uuid: string) => {
@@ -60,7 +60,7 @@ export const DuelNotificationBlock = ({ notification, onDelete }: Props) => {
 
   const themeText = useMemo(() => {
     const themeLanguage = [...data.theme.themetranslation].find(
-      (el) => el.language.id === language?.id
+      (el) => el.language.id === language?.id,
     );
     return themeLanguage?.name ?? data.theme.themetranslation[0].name;
   }, [data, language]);
@@ -68,14 +68,14 @@ export const DuelNotificationBlock = ({ notification, onDelete }: Props) => {
   return (
     <Paper
       sx={{
-        zIndex: 1500,
+        zIndex: (theme) => theme.zIndex.appBar + 1,
         p: px(5),
         width: percent(100),
       }}
       elevation={8}
     >
       <Grid container spacing={1}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box
             sx={{
               display: "flex",
@@ -102,7 +102,7 @@ export const DuelNotificationBlock = ({ notification, onDelete }: Props) => {
             </Box>
           </Box>
         </Grid>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <ButtonColor
             typography="h6"
             iconSize={20}
@@ -113,7 +113,7 @@ export const DuelNotificationBlock = ({ notification, onDelete }: Props) => {
             onClick={() => playDuel(data.uuid)}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <ButtonColor
             typography="h6"
             iconSize={20}

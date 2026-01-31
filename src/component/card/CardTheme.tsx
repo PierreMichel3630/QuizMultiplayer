@@ -229,19 +229,15 @@ export const CardAdminTheme = ({
   return (
     <Paper sx={{ p: 1 }} elevation={6}>
       <Grid container spacing={1} alignItems="center">
-        <Grid item sx={{ width: px(50) }}>
+        <Grid sx={{ width: px(50) }}>
           <Typography variant="h2">{theme.id}</Typography>
         </Grid>
-        <Grid item>
+        <Grid>
           <Box sx={{ width: px(60) }}>
             <ImageThemeBlock theme={theme} />
           </Box>
         </Grid>
-        <Grid
-          item
-          xs
-          sx={{ display: "flex", flexDirection: "column", gap: px(5) }}
-        >
+        <Grid sx={{ display: "flex", flexDirection: "column", gap: px(5) }} size="grow">
           {theme.themetranslation.map((el, index) => (
             <Box
               key={index}
@@ -254,7 +250,7 @@ export const CardAdminTheme = ({
             </Box>
           ))}
         </Grid>
-        <Grid item>
+        <Grid>
           <FormGroup>
             <FormControlLabel
               control={
@@ -278,12 +274,12 @@ export const CardAdminTheme = ({
             />
           </FormGroup>
         </Grid>
-        <Grid item>
+        <Grid>
           <IconButton aria-label="edit" onClick={onEdit}>
             <EditIcon />
           </IconButton>
         </Grid>
-        <Grid item>
+        <Grid>
           <IconButton aria-label="edit" onClick={onDelete}>
             <DeleteIcon />
           </IconButton>
@@ -360,13 +356,13 @@ export const CardProposeTheme = ({ theme }: PropsCardProposeTheme) => {
       }}
     >
       <Grid container spacing={1} justifyContent="center" alignItems="center">
-        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+        <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
           <ProposeAlert value={status} />
         </Grid>
-        <Grid item>
+        <Grid>
           <ImageThemeBlock theme={theme} size={35} border={false} />
         </Grid>
-        <Grid item xs sx={{ textAlign: "center" }}>
+        <Grid sx={{ textAlign: "center" }} size="grow">
           <TextNameBlock
             variant="h4"
             sx={{

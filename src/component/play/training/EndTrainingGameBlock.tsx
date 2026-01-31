@@ -62,13 +62,13 @@ export const EndTrainingGameBlock = ({
     <Box sx={{ display: "flex", width: percent(100), mb: 6 }}>
       <Grid container spacing={1}>
         {isAllQuestion && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Alert severity="warning" sx={{ width: percent(100) }}>
               {t("alert.allresponseanswer")}
             </Alert>
           </Grid>
         )}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Divider
             sx={{
               borderBottomWidth: 5,
@@ -77,17 +77,17 @@ export const EndTrainingGameBlock = ({
             }}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Grid container spacing={1}>
             {questionsDisplay.map((el, index) => (
               <Fragment key={index}>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <CardSignalQuestion
                     question={el}
                     report={() => setQuestionReport(el)}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Divider
                     sx={{
                       borderBottomWidth: 5,

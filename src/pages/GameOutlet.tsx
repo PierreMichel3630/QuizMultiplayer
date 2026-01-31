@@ -6,7 +6,7 @@ import { useEffect, useMemo } from "react";
 import { updateProfilByFunction } from "src/api/profile";
 import { UpdateNotificationBlock } from "src/component/notification/UpdateNotificationBlock";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { useNotification } from "src/context/NotificationProvider";
+import { useRealtime } from "src/context/NotificationProvider";
 import { NotificationType } from "src/models/enum/NotificationType";
 import { DuelNotificationBlock } from "src/component/notification/DuelNotificationBlock";
 import { BattleNotificationBlock } from "src/component/notification/BattleNotificationBlock";
@@ -14,7 +14,7 @@ import { percent } from "csx";
 
 export default function GameOutlet() {
   const { profile, setStreak } = useAuth();
-  const { notifications, getNotifications } = useNotification();
+  const { notifications, getNotifications } = useRealtime();
 
   const duelGames = useMemo(
     () =>

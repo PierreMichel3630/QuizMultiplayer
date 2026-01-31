@@ -29,14 +29,14 @@ export const CardReport = ({ report, onDelete }: Props) => {
       variant="outlined"
     >
       <Grid container spacing={1} justifyContent="center">
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
+        <Grid sx={{ textAlign: "center" }} size={12}>
           <Typography variant="h4" component="span">
             {`${t("commun.signal")}  ${moment(report.created_at).format(
               "DD/MM/YYYY à HH:mm"
             )}`}
           </Typography>
           {report.profile && (
-            <Grid item xs={12} sx={{ textAlign: "center" }}>
+            <Grid sx={{ textAlign: "center" }} size={12}>
               <Link to={`/profile/${report.profile.id}`}>
                 <Typography variant="h6" component="span">
                   {`${t("commun.per")} ${report.profile.username}`}
@@ -45,13 +45,13 @@ export const CardReport = ({ report, onDelete }: Props) => {
             </Grid>
           )}
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography variant="h6" component="span">{`${t(
             "commun.typeproblem"
           )} : `}</Typography>
           <JsonLanguageBlock value={report.message.message} component="span" />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography variant="h6" component="span">{`${t(
             "commun.descriptionerror"
           )} : `}</Typography>
@@ -59,7 +59,7 @@ export const CardReport = ({ report, onDelete }: Props) => {
             {report.description}
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           {(report.duelgame || report.sologame) && (
             <Box
               sx={{
@@ -107,7 +107,11 @@ export const CardReport = ({ report, onDelete }: Props) => {
             </Box>
           )}
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 4
+          }}>
           {(report.duelgame || report.sologame) && (
             <ButtonColor
               value={Colors.purple}
@@ -124,7 +128,11 @@ export const CardReport = ({ report, onDelete }: Props) => {
             />
           )}
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 4
+          }}>
           {report.question && (
             <ButtonColor
               value={Colors.blue}
@@ -139,7 +147,11 @@ export const CardReport = ({ report, onDelete }: Props) => {
             />
           )}
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 4
+          }}>
           <ButtonColor
             value={Colors.red}
             label={t("commun.delete")}

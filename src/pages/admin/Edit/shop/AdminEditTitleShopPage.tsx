@@ -52,7 +52,7 @@ export default function AdminEditTitleShopPage() {
 
   return (
     <Grid container spacing={1} justifyContent="center">
-      <Grid item xs={12}>
+      <Grid size={12}>
         <ButtonColor
           icon={AddIcon}
           label={t("commun.addtitle")}
@@ -62,7 +62,7 @@ export default function AdminEditTitleShopPage() {
         />
       </Grid>
       {titles.map((title) => (
-        <Grid item xs={12} key={title.id}>
+        <Grid key={title.id} size={12}>
           <CardAdminTitle
             title={title}
             onEdit={() => {
@@ -75,7 +75,7 @@ export default function AdminEditTitleShopPage() {
       {isLoading && (
         <>
           {Array.from(new Array(10)).map((_, index) => (
-            <Grid item xs={12} key={index}>
+            <Grid key={index} size={12}>
               <SkeletonCardTheme />
             </Grid>
           ))}

@@ -145,15 +145,13 @@ export const EndDuelGameBlock = ({ game }: Props) => {
     <Box sx={{ mb: gamebattle !== null ? px(50) : px(140) }}>
       <Grid container spacing={2}>
         <Grid
-          item
-          xs={12}
           sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             gap: 1,
           }}
-        >
+          size={12}>
           <Box sx={{ width: px(70) }}>
             <ImageThemeBlock theme={game.theme} />
           </Box>
@@ -163,7 +161,7 @@ export const EndDuelGameBlock = ({ game }: Props) => {
             values={game.theme.themetranslation}
           />
         </Grid>
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
+        <Grid sx={{ textAlign: "center" }} size={12}>
           <Typography variant="h1">
             {equality
               ? t("commun.equality")
@@ -173,15 +171,13 @@ export const EndDuelGameBlock = ({ game }: Props) => {
           </Typography>
         </Grid>
         <Grid
-          item
-          xs={5}
           sx={{
             display: "flex",
             flexDirection: "column",
             alignItems: "flex-end",
             gap: 1,
           }}
-        >
+          size={5}>
           <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
             <Typography
               variant="h2"
@@ -217,26 +213,22 @@ export const EndDuelGameBlock = ({ game }: Props) => {
           </Box>
         </Grid>
         <Grid
-          item
-          xs={2}
           sx={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
           }}
-        >
+          size={2}>
           <BoltIcon sx={{ fontSize: 50, color: "text.primary" }} />
         </Grid>
         <Grid
-          item
-          xs={5}
           sx={{
             display: "flex",
             flexDirection: "column",
             alignItems: "flex-start",
             gap: 1,
           }}
-        >
+          size={5}>
           {game.player2 && (
             <>
               <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
@@ -276,7 +268,7 @@ export const EndDuelGameBlock = ({ game }: Props) => {
           )}
         </Grid>
         {(isPlayer1 || isPlayer2) && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ExperienceDuelBlock
               score={isPlayer1 ? game.ptsplayer1 : game.ptsplayer2}
               victory={isPlayer1 ? resultPlayer1 === 1 : resultPlayer2 === 1}
@@ -284,14 +276,14 @@ export const EndDuelGameBlock = ({ game }: Props) => {
           </Grid>
         )}
         {money && (
-          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
             <AddMoneyBlock money={Math.round(money)} />
           </Grid>
         )}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <RankingTableSoloDuel theme={game.theme} max={3} mode="DUEL" />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Divider
             sx={{
               borderBottomWidth: 5,
@@ -302,13 +294,13 @@ export const EndDuelGameBlock = ({ game }: Props) => {
         </Grid>
         {[...game.questions].map((el) => (
           <Fragment key={el.id}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <CardSignalQuestion
                 question={el}
                 report={() => setQuestion(el)}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Divider
                 sx={{
                   borderBottomWidth: 3,

@@ -16,12 +16,12 @@ export const CreateEditTitleDialog = ({ title, open, close }: Props) => {
     <Dialog onClose={close} open={open}>
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <Grid sx={{ textAlign: "center" }} size={12}>
             <Typography variant="h2">
               {title ? t("commun.edittitle") : t("commun.addtitle")}
             </Typography>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <TitleForm title={title} validate={close} />
           </Grid>
         </Grid>

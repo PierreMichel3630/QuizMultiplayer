@@ -1,12 +1,11 @@
-import { Box, Typography } from "@mui/material";
-import { Variant } from "@mui/material/styles/createTypography";
+import { Box, Typography, TypographyVariant } from "@mui/material";
 import { important, px } from "csx";
 
 import xpIcon from "src/assets/xp.svg";
 
 interface Props {
   xp: number | string;
-  variant?: Variant;
+  variant?: TypographyVariant;
   color?: string;
 }
 
@@ -29,7 +28,7 @@ export const AddXpBlock = ({
 
 interface PropsAddXpImageBlock {
   xp: number | string;
-  variant?: Variant;
+  variant?: TypographyVariant;
   color?: string;
   width?: number;
   fontSize?: number;

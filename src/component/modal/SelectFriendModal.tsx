@@ -87,7 +87,7 @@ export const SelectFriendModal = ({
       </AppBar>
       <DialogContent sx={{ p: 1 }}>
         <Grid container spacing={1}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <BasicSearchInput
               label={t("commun.searchfriend")}
               onChange={(value) => setSearch(value)}
@@ -97,7 +97,15 @@ export const SelectFriendModal = ({
           </Grid>
           {profiles.length > 0 ? (
             profiles.map((profile) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} xl={3} key={profile.id}>
+              <Grid
+                key={profile.id}
+                size={{
+                  xs: 12,
+                  sm: 6,
+                  md: 4,
+                  lg: 3,
+                  xl: 3
+                }}>
                 <CardProfile
                   profile={profile}
                   onSelect={() => onValid(profile)}
@@ -107,15 +115,19 @@ export const SelectFriendModal = ({
           ) : (
             <>
               {search !== "" ? (
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Alert severity="warning">{t("commun.noresult")}</Alert>
                 </Grid>
               ) : (
                 <>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <Alert severity="info">{t("commun.noresultfriends")}</Alert>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 6
+                    }}>
                     <ButtonColor
                       value={Colors.blue}
                       label={t("commun.addfriend")}
@@ -127,7 +139,11 @@ export const SelectFriendModal = ({
                       endIcon={<PersonAddIcon />}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 6
+                    }}>
                     <ButtonColor
                       value={Colors.red}
                       label={t("commun.leave")}

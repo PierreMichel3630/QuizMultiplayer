@@ -4,7 +4,7 @@ import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { useNotification } from "src/context/NotificationProvider";
+import { useRealtime } from "src/context/NotificationProvider";
 import { NotificationType } from "src/models/enum/NotificationType";
 import { FRIENDSTATUS } from "src/models/Friend";
 import { sortByUsername } from "src/utils/sort";
@@ -19,7 +19,7 @@ export const FriendScrollBlock = ({ search }: Props) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const { friends, getFriends } = useApp();
-  const { notifications } = useNotification();
+  const { notifications } = useRealtime();
 
   useEffect(() => {
     getFriends();
@@ -56,30 +56,29 @@ export const FriendScrollBlock = ({ search }: Props) => {
     <Grid container spacing={1}>
       {invitationsfriends.length > 0 && (
         <>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <TitleCount
               title={t("commun.myinvitation")}
               count={invitationsfriends.length}
             />
           </Grid>
           {invitationsfriends.map((friend) => (
-            <Grid item xs={12} key={friend.id}>
+            <Grid key={friend.id} size={12}>
               <NotificationBlock notification={friend} />
             </Grid>
           ))}
         </>
       )}
-
       {friendsFilter.length > 0 && (
         <>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <TitleCount
               title={t("commun.myfriends")}
               count={friendsFilter.length}
             />
           </Grid>
           {friendsFilter.map((friend, index) => (
-            <Grid item key={index} xs={12}>
+            <Grid key={index} size={12}>
               <BasicCardFriendProfile profile={friend} />
             </Grid>
           ))}

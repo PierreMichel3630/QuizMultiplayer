@@ -13,7 +13,7 @@ import {
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
-import { useNotification } from "src/context/NotificationProvider";
+import { useRealtime } from "src/context/NotificationProvider";
 import { Accomplishment } from "src/models/Accomplishment";
 import { Notification } from "src/models/Notification";
 import { ButtonColor } from "../Button";
@@ -38,7 +38,7 @@ export const AccomplishmentNotificationBlock = ({
 }: Props) => {
   const { t } = useTranslation();
   const { refreshProfil } = useAuth();
-  const { getNotifications } = useNotification();
+  const { getNotifications } = useRealtime();
   const { getMyAccomplishments } = useApp();
   const { setMessage, setSeverity } = useMessage();
 
@@ -93,19 +93,19 @@ export const AccomplishmentNotificationBlock = ({
           alignItems="center"
           sx={{ height: percent(100) }}
         >
-          <Grid item xs={12}>
+          <Grid size={12}>
             <TextNameBlock
               variant="h4"
               values={accomplishment.accomplishmenttranslation}
             />
           </Grid>
           {data.extra && (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Typography variant="caption">{data.extra}</Typography>
             </Grid>
           )}
           {accomplishment.badge && (
-            <Grid item>
+            <Grid>
               <Link to={`/personalized#badges`}>
                 <img
                   alt="badge"
@@ -116,10 +116,10 @@ export const AccomplishmentNotificationBlock = ({
               </Link>
             </Grid>
           )}
-          <Grid item xs={accomplishment.value ? 7 : 12}>
+          <Grid size={accomplishment.value ? 7 : 12}>
             <Grid container spacing={1} alignItems="center">
               {accomplishment.title && (
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Typography variant="body1" component="span">
                     {`${t("commun.title")} "`}
                   </Typography>
@@ -140,7 +140,7 @@ export const AccomplishmentNotificationBlock = ({
                   </Typography>
                 </Grid>
               )}
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Box
                   sx={{
                     display: "flex",
@@ -168,7 +168,7 @@ export const AccomplishmentNotificationBlock = ({
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ButtonColor
               typography="h6"
               iconSize={20}

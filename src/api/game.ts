@@ -10,6 +10,7 @@ import { VERSION_QUESTION } from "src/utils/config";
 export const SUPABASE_PREVIOUSTHEMES_TABLE = "previousthemes";
 export const SUPABASE_HISTORYGAMES_TABLE = "historygamesv2";
 export const SUPABASE_HISTORYSOLOGAMES_TABLE = "viewhistorysologames";
+export const SUPABASE_LASTPLAYEDTHEME_FUNCTION = "get_last_played_themes";
 
 export const SUPABASE_LAUNCHSOLOGAME_FUNCTION = "launch-solo-gameV2";
 export const SUPABASE_ENDSOLOGAME_FUNCTION = "end-solo-game";
@@ -27,6 +28,13 @@ export const SUPABASE_MATCHMAKINGDUELGAME_FUNCTION = "matchmaking-duel-gameV3";
 export const SUPABASE_ENDDUELGAME_FUNCTION = "end-duel-game";
 
 export const SUPABASE_BATTLEGAME_TABLE = "battlegame";
+
+// LAST PLAYED THEME
+export const selectLastPlayedThemeByProfile = (uuid: string, limit = 10) =>
+  supabase.rpc(SUPABASE_LASTPLAYEDTHEME_FUNCTION, {
+    player_id: uuid,
+    result_number: limit,
+  });
 
 //BATTLE GAME
 
@@ -228,14 +236,6 @@ export const endDuelGame = (
   });
 
 // HISTORY
-
-export const selectLastXThemeByPlayer = (player: string, x: number) => {
-  return supabase
-    .from(SUPABASE_PREVIOUSTHEMES_TABLE)
-    .select("*, theme(*)")
-    .eq("player", player)
-    .limit(x);
-};
 
 export const selectSoloGames = (
   filter: FilterGame,

@@ -26,7 +26,7 @@ export default function AdminQuestionPage() {
   return (
     <Grid container spacing={1} justifyContent="center" sx={{ mt: 2, mb: 2 }}>
       {question && (
-        <Grid item xs={12}>
+        <Grid size={12}>
           <QuestionForm validate={close} question={question} />
         </Grid>
       )}

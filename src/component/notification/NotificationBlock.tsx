@@ -1,11 +1,10 @@
 import { deleteNotificationsById } from "src/api/notification";
 import { Notification } from "src/models/Notification";
+import { AccomplishmentNotificationBlock } from "./AccomplishmentNotificationBlock";
 import { BattleNotificationBlock } from "./BattleNotificationBlock";
 import { DuelNotificationBlock } from "./DuelNotificationBlock";
 import { FriendNotificationBlock } from "./FriendNotificationBlock";
 import { OtherNotificationBlock } from "./OtherNotificationBlock";
-import { UpdateAppNotificationBlock } from "./UpdateAppNotificationBlock";
-import { AccomplishmentNotificationBlock } from "./AccomplishmentNotificationBlock";
 
 interface Props {
   notification: Notification;
@@ -40,9 +39,6 @@ export const NotificationBlock = ({ notification, onDelete }: Props) => {
               notification={notification}
               onDelete={onDeleteNotification}
             />
-          ),
-          update_app: (
-            <UpdateAppNotificationBlock notification={notification} />
           ),
           accomplishment_unlock: (
             <AccomplishmentNotificationBlock

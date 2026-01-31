@@ -14,7 +14,7 @@ export default function AdminProposePage() {
   );
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <DefaultTabs
           values={tabs}
           tab={tab}
@@ -23,7 +23,7 @@ export default function AdminProposePage() {
           }}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         {tab === 0 ? <AdminThemeProposeBlock /> : <AdminQuestionProposeBlock />}
       </Grid>
     </Grid>

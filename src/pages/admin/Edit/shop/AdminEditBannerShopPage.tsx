@@ -32,7 +32,7 @@ export default function AdminEditBannerShopPage() {
 
   return (
     <Grid container spacing={1} justifyContent="center">
-      <Grid item xs={12}>
+      <Grid size={12}>
         <ButtonColor
           icon={AddIcon}
           label={t("commun.addbanner")}
@@ -42,7 +42,7 @@ export default function AdminEditBannerShopPage() {
         />
       </Grid>
       {banners.map((banner) => (
-        <Grid item xs={12} key={banner.id}>
+        <Grid key={banner.id} size={12}>
           <CardAdminBanner
             banner={banner}
             onEdit={() => {
@@ -55,7 +55,7 @@ export default function AdminEditBannerShopPage() {
       {isLoading && (
         <>
           {Array.from(new Array(10)).map((_, index) => (
-            <Grid item xs={12} key={index}>
+            <Grid key={index} size={12}>
               <SkeletonCardTheme />
             </Grid>
           ))}

@@ -1,11 +1,10 @@
-import { Box, Typography } from "@mui/material";
-import { Variant } from "@mui/material/styles/createTypography";
+import { Box, Typography, TypographyVariant } from "@mui/material";
 import { important, px } from "csx";
 import moneyIcon from "src/assets/money.svg";
 
 interface Props {
   money: number | string;
-  variant?: Variant;
+  variant?: TypographyVariant;
   color?: string;
   width?: number;
   fontSize?: number;
@@ -59,7 +58,7 @@ export const AddMoneyBlock = ({
 interface PropsMoneyArrondieBlock {
   money: number | string;
   language?: { iso: string };
-  variant?: Variant;
+  variant?: TypographyVariant;
   color?: string;
   width?: number;
   fontSize?: number;

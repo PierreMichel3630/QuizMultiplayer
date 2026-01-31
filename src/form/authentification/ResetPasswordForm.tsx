@@ -72,7 +72,7 @@ export const ResetPasswordForm = () => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.password && formik.errors.password)}
@@ -110,7 +110,7 @@ export const ResetPasswordForm = () => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(
@@ -152,12 +152,12 @@ export const ResetPasswordForm = () => {
           </FormControl>
         </Grid>
         {formik.errors.submit && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <FormHelperText error>{formik.errors.submit}</FormHelperText>
           </Grid>
         )}
 
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Button
             disableElevation
             type="submit"

@@ -75,22 +75,22 @@ export default function ForgotPasswordPage() {
             >
               {isSend ? (
                 <>
-                  <Grid item>
+                  <Grid>
                     <MarkEmailReadIcon
                       sx={{ fontSize: 100, color: Colors.colorApp }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <Typography variant="h4">
                       {t("form.forgotpassword.sendemail")}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <Typography variant="caption">
                       {t("form.forgotpassword.sendemailinfo")}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <ButtonColor
                       value={Colors.blue}
                       label={t("commun.return")}
@@ -104,24 +104,20 @@ export default function ForgotPasswordPage() {
                 </>
               ) : (
                 <>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <Typography variant="h4">
                       {t("form.forgotpassword.forgotpassword")}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <Typography variant="body1">
                       {t("form.forgotpassword.modality")}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <ForgotPasswordForm send={() => setIsSend(true)} />
                   </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{ justifyContent: "center", display: "flex", gap: 1 }}
-                  >
+                  <Grid sx={{ justifyContent: "center", display: "flex", gap: 1 }} size={12}>
                     <Typography variant="body1">
                       {t("form.forgotpassword.notforget")}
                     </Typography>

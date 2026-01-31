@@ -159,7 +159,7 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
     <FormikProvider value={formik}>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12}>
+          <Grid size={12}>
             <FormControl
               fullWidth
               error={Boolean(formik.touched.image && formik.errors.image)}
@@ -185,11 +185,11 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
             </FormControl>
           </Grid>
           {formik.values.image && formik.values.image !== "" && (
-            <Grid item xs={12} sx={{ height: px(200) }}>
+            <Grid sx={{ height: px(200) }} size={12}>
               <ImageQCMBlock src={formik.values.image} />
             </Grid>
           )}
-          <Grid item xs={12}>
+          <Grid size={12}>
             <FieldArray name="answertranslation">
               {({ push, remove }) => {
                 const idLanguageUsed = [...formik.values.answertranslation].map(
@@ -205,8 +205,6 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
                       return (
                         <>
                           <Grid
-                            item
-                            xs={12}
                             key={index}
                             sx={{
                               display: "flex",
@@ -214,7 +212,7 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
                               justifyContent: "space-between",
                               alignItems: "center",
                             }}
-                          >
+                            size={12}>
                             <SelectLanguage
                               value={value.language}
                               languages={languageNotUsed}
@@ -307,14 +305,14 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
                               <DeleteIcon fontSize="large" />
                             </IconButton>
                           </Grid>
-                          <Grid item xs={12}>
+                          <Grid size={12}>
                             <Divider />
                           </Grid>
                         </>
                       );
                     })}
                     {languageNotUsed.length > 0 && (
-                      <Grid item xs={12}>
+                      <Grid size={12}>
                         <ButtonColor
                           value={Colors.blue}
                           label={t("commun.addtranslation")}
@@ -336,7 +334,7 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
             </FieldArray>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ButtonColor
               value={Colors.green}
               label={t("commun.validate")}
@@ -407,7 +405,7 @@ export const ResponseImageForm = ({ validate, response, type }: PropsImage) => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={2} alignItems="center" justifyContent="center">
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.response && formik.errors.response)}
@@ -432,7 +430,7 @@ export const ResponseImageForm = ({ validate, response, type }: PropsImage) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.image && formik.errors.image)}
@@ -458,11 +456,11 @@ export const ResponseImageForm = ({ validate, response, type }: PropsImage) => {
           </FormControl>
         </Grid>
         {formik.values.image !== "" && (
-          <Grid item sx={{ height: px(200) }}>
+          <Grid sx={{ height: px(200) }}>
             <ImageQuestionBlock src={formik.values.image} />
           </Grid>
         )}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <ButtonColor
             value={Colors.green}
             label={t("commun.validate")}

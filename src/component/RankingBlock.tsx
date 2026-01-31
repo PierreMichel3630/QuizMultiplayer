@@ -56,7 +56,7 @@ export const RankingBlock = ({ themes }: Props) => {
     setData([]);
     const ids = themes ?? [];
     if (language) {
-      selectScore(language, tab, 0, 3, ids).then(({ data }) => {
+      selectScore(tab, 0, 3, language, ids).then(({ data }) => {
         const res = data as Array<Score>;
         const newdata = res.map((el, index) => {
           const champ = el[tab];
@@ -77,14 +77,13 @@ export const RankingBlock = ({ themes }: Props) => {
   return (
     <Grid container spacing={1}>
       <Grid
-        item
-        xs={12}
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           gap: 1,
         }}
+        size={12}
       >
         <GroupButtonTypeGame
           selected={tab}
@@ -93,10 +92,10 @@ export const RankingBlock = ({ themes }: Props) => {
           }}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <RankingTable data={data} loading={isLoading} />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Divider sx={{ borderBottomWidth: 5 }} />
       </Grid>
     </Grid>
@@ -281,7 +280,7 @@ export const RankingTop5Block = () => {
           });
         }
       } else if (tab === AllGameModeEnum.DUEL) {
-        selectScore(language, "rank", 0, 5).then(({ data }) => {
+        selectScore("rank", 0, 5, language).then(({ data }) => {
           const res = data as Array<Score>;
           const newdata = res.map((el, index) => {
             const champ = el.rank;
@@ -374,7 +373,7 @@ export const RankingTop5Block = () => {
   return (
     <Container maxWidth="sm">
       <Grid container spacing={1} alignItems="center">
-        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+        <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
           <GroupButtonAllGameMode
             selected={tab}
             onChange={(value) => {
@@ -383,7 +382,7 @@ export const RankingTop5Block = () => {
           />
         </Grid>
         {tab === AllGameModeEnum.SOLO && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <GroupButtonTime
               selected={tabTimeSolo}
               onChange={(value) => {
@@ -394,7 +393,7 @@ export const RankingTop5Block = () => {
         )}
         {tab === AllGameModeEnum.CHALLENGE && (
           <>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <GroupButtonChallengeTime
                 selected={tabTimeChallenge}
                 onChange={(value) => {
@@ -403,19 +402,19 @@ export const RankingTop5Block = () => {
               />
             </Grid>
             {avg && (
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <RecapAvgChallenge avg={avg} />
               </Grid>
             )}
             {!hasPlayChallenge && (
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <ChallengeButton />
               </Grid>
             )}
           </>
         )}
 
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box sx={{ p: 1 }}>
             <RankingTable
               data={data}

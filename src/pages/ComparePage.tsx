@@ -15,7 +15,7 @@ import { CardCompare } from "src/component/card/CardCompare";
 import { CardTitle } from "src/component/card/CardTitle";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { SkeletonRectangulars } from "src/component/skeleton/SkeletonRectangular";
-import { useApp } from "src/context/AppProvider";
+import { useAppBar } from "src/context/AppBarProvider";
 import { useUser } from "src/context/UserProvider";
 import { Badge, BadgeProfile } from "src/models/Badge";
 import { ComparePlayers } from "src/models/Compare";
@@ -25,18 +25,18 @@ import { TitleProfile } from "src/models/Title";
 export default function ComparePage() {
   const { t } = useTranslation();
   const location = useLocation();
-  const { headerSize } = useApp();
+  const { top, appBarVisible } = useAppBar();
   const { language } = useUser();
 
   const [profile1, setProfile1] = useState<Profile | undefined>(
-    location.state ? location.state.profile1 : undefined
+    location.state ? location.state.profile1 : undefined,
   );
   const [titles1, setTitles1] = useState<Array<TitleProfile>>([]);
   const [badges1, setBadges1] = useState<Array<Badge>>([]);
   const [openModalFriend1, setOpenModalFriend1] = useState(false);
 
   const [profile2, setProfile2] = useState<Profile | undefined>(
-    location.state ? location.state.profile2 : undefined
+    location.state ? location.state.profile2 : undefined,
   );
   const [titles2, setTitles2] = useState<Array<TitleProfile>>([]);
   const [badges2, setBadges2] = useState<Array<Badge>>([]);
@@ -68,7 +68,7 @@ export default function ComparePage() {
 
   const getTitles = (
     uuid: string,
-    set: (value: Array<TitleProfile>) => void
+    set: (value: Array<TitleProfile>) => void,
   ) => {
     selectTitleByProfile(uuid).then(({ data }) => {
       set(data ?? []);
@@ -101,12 +101,12 @@ export default function ComparePage() {
           search,
           language.id,
           sort,
-          page
+          page,
         ).then(({ data }) => {
           const result = data ?? [];
           setIsEnd(result.length < itemperpage);
           setValues((prev) =>
-            page === 0 ? [...result] : [...prev, ...result]
+            page === 0 ? [...result] : [...prev, ...result],
           );
           setLoading(false);
         });
@@ -114,7 +114,7 @@ export default function ComparePage() {
         setLoading(false);
       }
     },
-    [language, loading, profile1, profile2, search, sort]
+    [language, loading, profile1, profile2, search, sort],
   );
 
   useEffect(() => {
@@ -150,17 +150,17 @@ export default function ComparePage() {
       <Helmet>
         <title>{`${t("pages.compare.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <SelectorProfileBlock
                 label={t("commun.selectplayer")}
                 profile={profile1}
                 onChange={() => setOpenModalFriend1(true)}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <SelectorProfileBlock
                 label={t("commun.selectplayer")}
                 profile={profile2}
@@ -169,16 +169,16 @@ export default function ComparePage() {
             </Grid>
             {profile1 && profile2 && (
               <>
-                <Grid item xs={6}>
+                <Grid size={6}>
                   <CardBadge badges={badges1} />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid size={6}>
                   <CardBadge badges={badges2} />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid size={6}>
                   <CardTitle titles={titles1} />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid size={6}>
                   <CardTitle titles={titles2} />
                 </Grid>
               </>
@@ -195,7 +195,9 @@ export default function ComparePage() {
                   gap: px(5),
                   p: 1,
                   position: "sticky",
-                  top: headerSize,
+                  top: appBarVisible ? top : 0,
+                  zIndex: (theme) => theme.zIndex.appBar + 1,
+                  transition: "top 350ms ease-in-out",
                   backgroundColor: "background.paper",
                   width: percent(100),
                 }}
@@ -212,10 +214,9 @@ export default function ComparePage() {
                 <Grid container spacing={1}>
                   {values.map((value, index) => (
                     <Grid
-                      item
-                      xs={12}
                       key={index}
                       ref={index === values.length - 1 ? lastItemRef : null}
+                      size={12}
                     >
                       <CardCompare value={value} />
                     </Grid>

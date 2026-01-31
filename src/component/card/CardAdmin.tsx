@@ -51,10 +51,10 @@ export const CardAdminThemeShop = ({
   return (
     <Paper sx={{ p: 1 }}>
       <Grid container spacing={1} alignItems="center">
-        <Grid item>
+        <Grid>
           <Typography variant="h2">{theme.id}</Typography>
         </Grid>
-        <Grid item xs sx={{ display: "flex", gap: px(5) }}>
+        <Grid sx={{ display: "flex", gap: px(5) }} size="grow">
           {theme.themeshoptranslation.map((el, index) => (
             <Box
               key={index}
@@ -67,12 +67,12 @@ export const CardAdminThemeShop = ({
             </Box>
           ))}
         </Grid>
-        <Grid item>
+        <Grid>
           <IconButton aria-label="edit" onClick={onEdit}>
             <EditIcon />
           </IconButton>
         </Grid>
-        <Grid item>
+        <Grid>
           <IconButton
             aria-label="edit"
             onClick={() => setOpenConfirmModal(true)}
@@ -100,10 +100,10 @@ export const CardAdminAvatar = ({ avatar, onEdit }: PropsCardAdminAvatar) => {
   return (
     <Paper sx={{ p: 1 }}>
       <Grid container spacing={1} alignItems="center">
-        <Grid item xs>
+        <Grid size="grow">
           <Typography variant="h2">{avatar.id}</Typography>
         </Grid>
-        <Grid item xs>
+        <Grid size="grow">
           <MuiAvatar
             sx={{
               width: 60,
@@ -112,15 +112,15 @@ export const CardAdminAvatar = ({ avatar, onEdit }: PropsCardAdminAvatar) => {
             src={avatar.icon}
           />
         </Grid>
-        <Grid item xs>
+        <Grid size="grow">
           <Typography variant="h4">{avatar.price}</Typography>
         </Grid>
-        <Grid item xs>
+        <Grid size="grow">
           <Typography variant="h4">
             {avatar.isaccomplishment.toString()}
           </Typography>
         </Grid>
-        <Grid item>
+        <Grid>
           <IconButton aria-label="edit" onClick={onEdit}>
             <EditIcon />
           </IconButton>
@@ -139,21 +139,21 @@ export const CardAdminBanner = ({ banner, onEdit }: PropsCardAdminBanner) => {
   return (
     <Paper sx={{ p: 1 }}>
       <Grid container spacing={1} alignItems="center">
-        <Grid item xs>
+        <Grid size="grow">
           <Typography variant="h2">{banner.id}</Typography>
         </Grid>
-        <Grid item xs>
+        <Grid size="grow">
           <img alt="banner" width={200} src={banner.src} />
         </Grid>
-        <Grid item xs>
+        <Grid size="grow">
           <Typography variant="h4">{banner.price}</Typography>
         </Grid>
-        <Grid item xs>
+        <Grid size="grow">
           <Typography variant="h4">
             {banner.isaccomplishment.toString()}
           </Typography>
         </Grid>
-        <Grid item>
+        <Grid>
           <IconButton aria-label="edit" onClick={onEdit}>
             <EditIcon />
           </IconButton>
@@ -172,10 +172,10 @@ export const CardAdminTitle = ({ title, onEdit }: PropsCardAdminTitle) => {
   return (
     <Paper sx={{ p: 1 }}>
       <Grid container spacing={1} alignItems="center">
-        <Grid item>
+        <Grid>
           <Typography variant="h2">{title.id}</Typography>
         </Grid>
-        <Grid item xs sx={{ display: "flex", gap: px(5) }}>
+        <Grid sx={{ display: "flex", gap: px(5) }} size="grow">
           {title.titletranslation.map((el, index) => (
             <Box
               key={index}
@@ -188,15 +188,15 @@ export const CardAdminTitle = ({ title, onEdit }: PropsCardAdminTitle) => {
             </Box>
           ))}
         </Grid>
-        <Grid item>
+        <Grid>
           <Typography variant="h4">{title.price}</Typography>
         </Grid>
-        <Grid item>
+        <Grid>
           <Typography variant="h4">
             {title.isaccomplishment.toString()}
           </Typography>
         </Grid>
-        <Grid item>
+        <Grid>
           <IconButton aria-label="edit" onClick={onEdit}>
             <EditIcon />
           </IconButton>

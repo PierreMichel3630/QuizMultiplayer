@@ -9,7 +9,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useMemo } from "react";
 import { updateFriend } from "src/api/friend";
 import { useMessage } from "src/context/MessageProvider";
-import { useNotification } from "src/context/NotificationProvider";
+import { useRealtime } from "src/context/NotificationProvider";
 import { FRIENDSTATUS, FriendUpdate } from "src/models/Friend";
 import { Notification } from "src/models/Notification";
 import { Profile } from "src/models/Profile";
@@ -30,12 +30,12 @@ interface NotificationData {
 export const FriendNotificationBlock = ({ notification, onDelete }: Props) => {
   const { t } = useTranslation();
   const { getFriends } = useApp();
-  const { getNotifications } = useNotification();
+  const { getNotifications } = useRealtime();
   const { setMessage, setSeverity } = useMessage();
 
   const data = useMemo(
     () => notification.data as NotificationData,
-    [notification]
+    [notification],
   );
 
   const confirmFriend = (status: FRIENDSTATUS) => {
@@ -55,7 +55,7 @@ export const FriendNotificationBlock = ({ notification, onDelete }: Props) => {
         setMessage(
           status === FRIENDSTATUS.VALID
             ? t("alert.validatefriendrequest")
-            : t("alert.refusefriendrequest")
+            : t("alert.refusefriendrequest"),
         );
         getFriends();
         getNotifications();
@@ -66,14 +66,14 @@ export const FriendNotificationBlock = ({ notification, onDelete }: Props) => {
   return (
     <Paper
       sx={{
-        zIndex: 1500,
+        zIndex: (theme) => theme.zIndex.appBar + 1,
         p: 1,
         width: percent(100),
       }}
       elevation={8}
     >
       <Grid container spacing={1}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box
             sx={{
               display: "flex",
@@ -95,7 +95,7 @@ export const FriendNotificationBlock = ({ notification, onDelete }: Props) => {
             </Box>
           </Box>
         </Grid>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <ButtonColor
             typography="h6"
             iconSize={20}
@@ -106,7 +106,7 @@ export const FriendNotificationBlock = ({ notification, onDelete }: Props) => {
             onClick={() => confirmFriend(FRIENDSTATUS.VALID)}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <ButtonColor
             typography="h6"
             iconSize={20}

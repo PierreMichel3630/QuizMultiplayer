@@ -17,10 +17,10 @@ import { important, px } from "csx";
 import { useMemo } from "react";
 import googleplay from "src/assets/google-play.png";
 import logo from "src/assets/logo.svg";
-import { urlGooglePlay, urlPc } from "src/pages/help/InstallationPage";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
 import { CopyTextBlock } from "../CopyTextBlock";
+import { urlGooglePlay, urlPc } from "src/utils/config";
 
 interface Props {
   open: boolean;
@@ -77,11 +77,11 @@ export const ShareModal = ({ open, close }: Props) => {
       </AppBar>
       <DialogContent sx={{ p: 2, pt: 3 }}>
         <Grid container spacing={1} alignItems="center">
-          <Grid item xs={12} sx={{ mb: 2 }}>
+          <Grid sx={{ mb: 2 }} size={12}>
             <Typography variant="body1">{t("commun.sharetext")}</Typography>
           </Grid>
           {canBrowserShareData && (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <ButtonColor
                 typography="h6"
                 iconSize={20}
@@ -94,13 +94,12 @@ export const ShareModal = ({ open, close }: Props) => {
             </Grid>
           )}
           <Grid
-            item
-            xs={2}
             sx={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
+            size={2}
           >
             <img
               alt="google play icon"
@@ -109,18 +108,17 @@ export const ShareModal = ({ open, close }: Props) => {
               style={{ maxWidth: px(50) }}
             />
           </Grid>
-          <Grid item xs={10}>
+          <Grid size={10}>
             <Typography variant="h4">{t("commun.googleplay")}</Typography>
             <CopyTextBlock text={urlGooglePlay} />
           </Grid>
           <Grid
-            item
-            xs={2}
             sx={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
+            size={2}
           >
             <img
               alt="share icon"
@@ -129,7 +127,7 @@ export const ShareModal = ({ open, close }: Props) => {
               style={{ maxWidth: px(50) }}
             />
           </Grid>
-          <Grid item xs={10}>
+          <Grid size={10}>
             <Typography variant="h4">{t("commun.computer")}</Typography>
             <CopyTextBlock text={urlPc} />
           </Grid>

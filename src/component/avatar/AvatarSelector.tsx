@@ -36,7 +36,7 @@ export const AvatarSelector = ({ onSelect }: Props) => {
   return (
     <Grid container>
       {avatarsDisplay.length === 0 && (
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Grid
             container
             spacing={1}
@@ -47,12 +47,12 @@ export const AvatarSelector = ({ onSelect }: Props) => {
           </Grid>
         </Grid>
       )}
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Grid container spacing={1} alignItems="center" justifyContent="center">
           {avatarsDisplay.map((avatar) => {
             const isSelect = profile && profile.avatar.id === avatar.id;
             return (
-              <Grid item key={avatar.id} sx={{ position: "relative" }}>
+              <Grid key={avatar.id} sx={{ position: "relative" }}>
                 {isSelect && (
                   <CheckCircleTwoToneIcon
                     sx={{
@@ -102,7 +102,7 @@ export const AvatarLoginSelector = ({
         const isSelect = avatar === el.id;
         const color = isSelect ? Colors.green2 : "transparent";
         return (
-          <Grid item key={el.id} sx={{ position: "relative" }}>
+          <Grid key={el.id} sx={{ position: "relative" }}>
             {isSelect && (
               <CheckCircleOutlineIcon
                 sx={{

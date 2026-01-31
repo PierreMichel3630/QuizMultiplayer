@@ -42,10 +42,18 @@ export const EmailInput = () => {
 
   return (
     <Grid container spacing={1} alignItems="center">
-      <Grid item xs={12} md={4}>
+      <Grid
+        size={{
+          xs: 12,
+          md: 4
+        }}>
         <Typography variant="h4">{t("commun.email")}</Typography>
       </Grid>
-      <Grid item xs={12} md={8}>
+      <Grid
+        size={{
+          xs: 12,
+          md: 8
+        }}>
         <BaseInput
           value={email}
           clear={() => setEmail(user ? user.email ?? "" : "")}
@@ -59,7 +67,7 @@ export const EmailInput = () => {
       </Grid>
       {isModified && (
         <>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Button
               variant="contained"
               startIcon={<DoneIcon />}
@@ -71,7 +79,7 @@ export const EmailInput = () => {
               {t("commun.validate")}
             </Button>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Alert severity="info">{t("pages.parameters.infoemail")}</Alert>
           </Grid>
         </>

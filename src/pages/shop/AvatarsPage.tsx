@@ -38,11 +38,11 @@ export default function AvatarsPage() {
         <Helmet>
           <title>{`${t("pages.avatars.title")} - ${t("appname")}`}</title>
         </Helmet>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <TitleBlock title={t("commun.avatars")} />
         </Grid>
         {avatarsDisplay.map((avatar) => (
-          <Grid item key={avatar.id}>
+          <Grid key={avatar.id}>
             <AvatarShop avatar={avatar} />
           </Grid>
         ))}

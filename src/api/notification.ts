@@ -17,6 +17,9 @@ export const selectNotificationsNotRead = (profile: string) =>
 export const deleteNotificationsById = (id: number) =>
   supabase.from(SUPABASE_NOTIFICATION_TABLE).delete().eq("id", id);
 
+export const deleteNotificationsByType = (type: string) =>
+  supabase.from(SUPABASE_NOTIFICATION_TABLE).delete().eq("type", type);
+
 export const sendNotification = (type: string, data: unknown) =>
   supabase.functions.invoke(SUPABASE_SENDNOTIFICATION_FUNCTION, {
     body: { type_notification: type, data: data },
@@ -52,7 +55,6 @@ export const updateReadNotifications = () => {
     NotificationType.accomplishment_unlock,
     NotificationType.battle_request,
     NotificationType.duel_request,
-    NotificationType.update_app,
     NotificationType.friend_request,
   ];
 

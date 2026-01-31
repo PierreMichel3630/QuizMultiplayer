@@ -34,10 +34,10 @@ export default function MyProposalsPage() {
       <Helmet>
         <title>{`${t("pages.parameters.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 2 }}>
           <Grid container spacing={2} justifyContent="center">
-            <Grid item>
+            <Grid>
               <DefaultTabs
                 values={tabs}
                 tab={tab}
@@ -46,7 +46,7 @@ export default function MyProposalsPage() {
                 }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               {tab === 0 ? <ProposalQuestionBlock /> : <ProposalThemeBlock />}
             </Grid>
           </Grid>
@@ -82,12 +82,12 @@ const ProposalQuestionBlock = () => {
         <>
           {questions.length > 0 ? (
             questions.map((question) => (
-              <Grid item xs={12} key={question.id}>
+              <Grid key={question.id} size={12}>
                 <CardProposeQuestion question={question} />
               </Grid>
             ))
           ) : (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <NoResultAlert />
             </Grid>
           )}
@@ -123,12 +123,12 @@ const ProposalThemeBlock = () => {
         <>
           {themes.length > 0 ? (
             themes.map((theme) => (
-              <Grid item xs={12} key={theme.id}>
+              <Grid key={theme.id} size={12}>
                 <CardProposeTheme theme={theme} />
               </Grid>
             ))
           ) : (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <NoResultAlert />
             </Grid>
           )}

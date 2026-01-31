@@ -57,7 +57,7 @@ export const ForgotPasswordForm = ({ send }: Props) => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={1} alignItems="center">
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.email && formik.errors.email)}
@@ -82,11 +82,11 @@ export const ForgotPasswordForm = ({ send }: Props) => {
           </FormControl>
         </Grid>
         {formik.errors.submit && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <FormHelperText error>{formik.errors.submit}</FormHelperText>
           </Grid>
         )}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Button
             disableElevation
             fullWidth

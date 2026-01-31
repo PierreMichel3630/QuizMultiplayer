@@ -30,14 +30,14 @@ export default function AdminEditShopPage() {
 
   return (
     <Grid container spacing={1}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Tabs value={value} onChange={handleChange} centered>
           {menus.map((menu, index) => (
             <Tab key={index} label={menu.label} value={menu.value} />
           ))}
         </Tabs>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         {
           {
             themes: <AdminEditThemeShopPage />,

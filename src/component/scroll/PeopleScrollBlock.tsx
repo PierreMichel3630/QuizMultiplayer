@@ -83,22 +83,20 @@ export const PeopleScrollBlock = ({ search }: Props) => {
 
   return (
     <Grid container spacing={1}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <TitleCount title={t("commun.players")} count={nbPlayers} />
       </Grid>
       {isEnd && players.length === 0 ? (
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Alert severity="warning">{t("commun.noresult")}</Alert>
         </Grid>
       ) : (
         <>
           {players.map((player, index) => (
             <Grid
-              item
               key={index}
-              xs={12}
               ref={index === players.length - 1 ? lastItemRef : null}
-            >
+              size={12}>
               <BasicCardProfile profile={player} />
             </Grid>
           ))}

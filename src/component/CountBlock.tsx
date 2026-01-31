@@ -17,15 +17,13 @@ export const CountBlock = ({ title, count, link, children }: Props) => {
   return (
     <Grid container spacing={1}>
       <Grid
-        item
-        xs={12}
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           gap: 1,
         }}
-      >
+        size={12}>
         <Box sx={{ maxWidth: "calc(100% - 105px)" }}>
           <TitleCount title={title} count={count} />
         </Box>
@@ -47,10 +45,10 @@ export const CountBlock = ({ title, count, link, children }: Props) => {
           </Typography>
         </Button>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         {children}
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Divider sx={{ borderBottomWidth: 5 }} />
       </Grid>
     </Grid>

@@ -11,6 +11,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useBreakpoint } from "src/utils/mediaQuery";
 import { TextNameBlock } from "../language/TextLanguageBlock";
 import { SkeletonTitles } from "../skeleton/SkeletonShop";
+import { Translation } from "src/models/Translation";
 
 interface PropsTitleShopBlock {
   titles: Array<Title>;
@@ -84,9 +85,10 @@ export const TitleShopBlock = ({ titles }: PropsTitleShopBlock) => {
 interface Props {
   title: Title;
   noWrap?: boolean;
+  translations?: Array<Translation>;
 }
 
-export const TitleShop = ({ title, noWrap = true }: Props) => {
+export const TitleShop = ({ title, noWrap = true, translations }: Props) => {
   return (
     <Link to={`/title/${title.id}`} style={{ textDecoration: "none" }}>
       <Box
@@ -103,7 +105,7 @@ export const TitleShop = ({ title, noWrap = true }: Props) => {
           variant="h6"
           color="text.secondary"
           noWrap={noWrap}
-          values={title.titletranslation}
+          values={translations ?? title.titletranslation}
         />
         {title.price > 0 ? (
           <Box

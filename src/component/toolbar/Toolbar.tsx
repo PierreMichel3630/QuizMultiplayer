@@ -1,8 +1,8 @@
 import { Toolbar } from "@mui/material";
 import { important, px } from "csx";
-import { useApp } from "src/context/AppProvider";
+import { useAppBar } from "src/context/AppBarProvider";
 
 export const DefaultToolbar = () => {
-  const { headerSize } = useApp();
-  return <Toolbar sx={{ minHeight: important(px(headerSize)) }} />;
+  const { top } = useAppBar();
+  return <Toolbar sx={{ minHeight: important(px(top)) }} />;
 };

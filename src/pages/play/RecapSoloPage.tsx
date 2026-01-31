@@ -107,7 +107,6 @@ export default function RecapSoloPage() {
       <Helmet>
         <title>{`${t("pages.play.title")} - ${t("appname")}`}</title>
       </Helmet>
-
       <Box
         sx={{
           p: 1,
@@ -117,17 +116,17 @@ export default function RecapSoloPage() {
         {game && (
           <>
             <Grid container spacing={1}>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <ScoreThemeBlock theme={game.theme} />
               </Grid>
               {allquestion && (
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Alert severity="warning">
                     {t("alert.allresponseanswer")}
                   </Alert>
                 </Grid>
               )}
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <MyExperienceSoloBlock
                   xp={{
                     match: 50,
@@ -136,11 +135,7 @@ export default function RecapSoloPage() {
                 />
               </Grid>
               {profile !== null ? (
-                <Grid
-                  item
-                  xs={12}
-                  sx={{ display: "flex", justifyContent: "center" }}
-                >
+                <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
                   <AddMoneyBlock
                     money={game.points * 10}
                     variant="h4"
@@ -148,27 +143,27 @@ export default function RecapSoloPage() {
                   />
                 </Grid>
               ) : (
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <ConnectAlert />
                 </Grid>
               )}
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <BestScoreBlock theme={game.theme} points={game.points} />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <RankingTableSoloDuel theme={game.theme} max={3} mode="SOLO" />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Grid container spacing={1}>
                   {questionsDisplay.map((el, index) => (
                     <Fragment key={index}>
-                      <Grid item xs={12}>
+                      <Grid size={12}>
                         <CardSignalQuestion
                           question={el}
                           report={() => setQuestion(el)}
                         />
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid size={12}>
                         <Divider
                           sx={{
                             borderBottomWidth: 5,

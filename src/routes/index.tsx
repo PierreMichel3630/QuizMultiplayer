@@ -1,13 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import { PlayRoutes } from "./playRoutes";
-
 import App from "src/App";
+import NavigationOutletPage from "src/pages/outlet/NavigationOutletPage";
 import NotificationOutlet from "src/pages/outlet/NotificationOutlet";
 import { AppNavigationAndAppBarRoutes } from "./AppNavigationAndAppBarRoutes";
 import { AppNavigationRoutes } from "./AppNavigationRoutes";
-import { ConnectRoutes } from "./connectRoutes";
-import NavigationOutletPage from "src/pages/outlet/NavigationOutletPage";
+import { DefaultRoutes } from "./DefaultRoutes";
+import { PlayModeRoutes } from "./PlayModeRoutes";
 
 export const router = createBrowserRouter([
   {
@@ -25,8 +24,8 @@ export const router = createBrowserRouter([
           },
         ],
       },
-      ...PlayRoutes,
-      ...ConnectRoutes,
+      ...PlayModeRoutes,
+      ...DefaultRoutes,
     ],
   },
 ]);

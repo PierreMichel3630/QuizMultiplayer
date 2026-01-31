@@ -573,7 +573,7 @@ export const RankingChallenge = () => {
 
   return (
     <Grid container spacing={1} justifyContent="center">
-      <Grid item xs={12}>
+      <Grid size={12}>
         <GroupButtonChallenge
           selected={tab}
           onChange={(value) => {
@@ -593,7 +593,7 @@ export const RankingChallenge = () => {
           }}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         {tab === ClassementChallengeEnum.global ? (
           <GroupButtonChallengeGlobal
             selected={tabChallengeMode}
@@ -627,7 +627,7 @@ export const RankingChallenge = () => {
               onChange={(value) => setDate(value)}
             />
           )}
-          <Grid item>
+          <Grid>
             {
               {
                 day: (
@@ -660,14 +660,12 @@ export const RankingChallenge = () => {
         </>
       )}
       <Grid
-        item
-        xs={12}
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
         }}
-      >
+        size={12}>
         <Box
           sx={{
             display: "flex",
@@ -709,7 +707,7 @@ export const RankingChallenge = () => {
           </Box>
         )}
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <RankingChallengeTable data={dataDisplay} loading={loading} />
         {total !== null && total > 0 && (
           <TablePagination

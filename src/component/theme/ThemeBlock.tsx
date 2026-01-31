@@ -1,15 +1,14 @@
-import { Box } from "@mui/material";
+import { Box, TypographyVariant } from "@mui/material";
 import { px } from "csx";
 import { Link } from "react-router-dom";
 import { Theme } from "src/models/Theme";
 import { ImageThemeBlock } from "../ImageThemeBlock";
 import { TextNameBlock } from "../language/TextLanguageBlock";
-import { Variant } from "@mui/material/styles/createTypography";
 
 interface Props {
   theme: Theme;
   size?: number;
-  variant?: Variant;
+  variant?: TypographyVariant;
 }
 
 export const ThemeBlock = ({ theme, size = 20, variant = "body1" }: Props) => {

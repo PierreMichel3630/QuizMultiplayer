@@ -36,8 +36,6 @@ export const QuestionLanguageModal = ({
         <Grid container spacing={1}>
           {values.map((value, index) => (
             <Grid
-              item
-              xs={12}
               key={index}
               sx={{
                 display: "flex",
@@ -45,7 +43,7 @@ export const QuestionLanguageModal = ({
                 alignItems: "center",
                 gap: 2,
               }}
-            >
+              size={12}>
               <LanguageIcon language={value.language} size={40} />
               <Typography variant="h4">
                 <Trans

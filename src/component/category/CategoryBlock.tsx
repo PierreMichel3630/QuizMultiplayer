@@ -74,10 +74,10 @@ export const CategoryBlock = ({
 
   return (
     <Grid container spacing={1}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <TitleCategories title={title} count={count} link={link} />
       </Grid>
-      <Grid item xs={12} sx={{ display: "flex", position: "relative" }}>
+      <Grid sx={{ display: "flex", position: "relative" }} size={12}>
         {displayLeft && !isMobile && (
           <Box
             sx={{
@@ -128,7 +128,7 @@ export const CategoryBlock = ({
           </Box>
         )}
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Divider sx={{ borderBottomWidth: 5, mb: 1 }} />
       </Grid>
     </Grid>

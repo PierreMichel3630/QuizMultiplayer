@@ -9,20 +9,15 @@ import ConfidentialityPage from "src/pages/ConfidentialityPage";
 import FavoritePage from "src/pages/FavoritePage";
 import HistoryGamePage from "src/pages/HistoryGamePage";
 import ImprovePage from "src/pages/ImprovePage";
-import MenuPage from "src/pages/MenuPage";
 import NewThemePage from "src/pages/NewThemePage";
 import PeoplePage from "src/pages/PeoplePage";
 import PersonalizedPage from "src/pages/PersonalizedPage";
 import ProfilPage from "src/pages/ProfilPage";
 import RankingPage from "src/pages/RankingPage";
-import ReportPage from "src/pages/ReportPage";
 import ThemePage from "src/pages/ThemePage";
 import ThemesPage from "src/pages/ThemesPage";
 import AdminPage from "src/pages/admin/AdminOutletPage";
 import ResetPasswordPage from "src/pages/connect/ResetPasswordPage";
-import FAQPage from "src/pages/help/FAQPage";
-import HelpPage from "src/pages/help/HelpPage";
-import InstallationPage from "src/pages/help/InstallationPage";
 import ConfigTrainingPage from "src/pages/play/ConfigTrainingPage";
 
 import MyProposalsPage from "src/pages/MyProposalsPage";
@@ -40,6 +35,9 @@ import BannersPage from "src/pages/shop/BannersPage";
 import ShopPage from "src/pages/shop/ShopPage";
 import ShopThemePage from "src/pages/shop/ShopThemePage";
 import TitlesPage from "src/pages/shop/TitlesPage";
+import GameModePage from "src/pages/GameModePage";
+import SearchPage from "src/pages/SearchPage";
+import MostPlayedThemePage from "src/pages/MostPlayedThemePage";
 
 export const AppNavigationAndAppBarRoutes = [
   {
@@ -51,8 +49,16 @@ export const AppNavigationAndAppBarRoutes = [
         element: <ThemesPage />,
       },
       {
+        path: "/search",
+        element: <SearchPage />,
+      },
+      {
         path: "/favorite",
         element: <FavoritePage />,
+      },
+      {
+        path: "/mostplayedthemes",
+        element: <MostPlayedThemePage />,
       },
       {
         path: "/previousgame",
@@ -69,6 +75,10 @@ export const AppNavigationAndAppBarRoutes = [
       {
         path: "/categories",
         element: <CategoriesPage />,
+      },
+      {
+        path: "/gamemode",
+        element: <GameModePage />,
       },
       {
         path: "/category/:id",
@@ -116,14 +126,6 @@ export const AppNavigationAndAppBarRoutes = [
         element: <RankingPage />,
       },
       {
-        path: "/menus",
-        element: <MenuPage />,
-      },
-      {
-        path: "/report",
-        element: <ReportPage />,
-      },
-      {
         path: "/profil/:id",
         element: <ProfilPage />,
       },
@@ -134,18 +136,6 @@ export const AppNavigationAndAppBarRoutes = [
       {
         path: "/confidentiality",
         element: <ConfidentialityPage />,
-      },
-      {
-        path: "/help",
-        element: <HelpPage />,
-      },
-      {
-        path: "/faq",
-        element: <FAQPage />,
-      },
-      {
-        path: "/installation",
-        element: <InstallationPage />,
       },
       {
         path: "/improve",

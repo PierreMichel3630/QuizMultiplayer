@@ -101,7 +101,7 @@ export const ReportModal = ({
       <AppBar sx={{ position: "relative" }}>
         <Toolbar sx={{ minHeight: important("auto") }}>
           <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.reportquestion")}
+            {question ? t("commun.reportquestion") : t("commun.report")}
           </Typography>
           <IconButton color="inherit" onClick={close} aria-label="close">
             <CloseIcon />
@@ -111,11 +111,11 @@ export const ReportModal = ({
       <DialogContent sx={{ p: 1 }}>
         <Grid container spacing={3}>
           {question && (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <CardSignalQuestion question={question} />
             </Grid>
           )}
-          <Grid item xs={12}>
+          <Grid size={12}>
             <TextField
               id="select-type"
               select
@@ -131,7 +131,7 @@ export const ReportModal = ({
               ))}
             </TextField>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <TextField
               label={t("commun.descriptionerror")}
               placeholder={t("commun.placeholderdescriptionerror")}
@@ -142,7 +142,7 @@ export const ReportModal = ({
               onChange={changeDescription}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ButtonColor
               value={Colors.green}
               label={t("commun.validate")}

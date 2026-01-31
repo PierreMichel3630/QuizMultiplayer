@@ -59,7 +59,7 @@ export const ProfilHeader = ({
       }}
     >
       <Grid container spacing={1} justifyContent="center">
-        <Grid item sx={{ mb: 1 }}>
+        <Grid sx={{ mb: 1 }}>
           <AvatarAccountBadge
             profile={profile}
             avatar={avatar}
@@ -71,12 +71,10 @@ export const ProfilHeader = ({
           />
         </Grid>
         <Grid
-          item
-          xs={12}
           sx={{
             textAlign: "center",
           }}
-        >
+          size={12}>
           <Typography
             variant="h2"
             color="text.secondary"
@@ -93,7 +91,7 @@ export const ProfilHeader = ({
           )}
         </Grid>
         {profile.country && (
-          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
             <CountryBlock country={profile.country} color="text.secondary" />
           </Grid>
         )}

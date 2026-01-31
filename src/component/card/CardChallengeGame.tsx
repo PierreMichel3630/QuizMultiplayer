@@ -39,15 +39,15 @@ export const CardChallengeGame = ({ game }: Props) => {
         alignItems="center"
         sx={{ textAlign: "center" }}
       >
-        <Grid item xs={3}>
+        <Grid size={3}>
           <Typography variant="h6">
             {moment(game.challenge.date).format("DD/MM/YY")}
           </Typography>
         </Grid>
-        <Grid item xs={3}>
+        <Grid size={3}>
           <PositionTypography position={game.ranking} />
         </Grid>
-        <Grid item xs={4}>
+        <Grid size={4}>
           <Box
             sx={{
               display: "flex",
@@ -73,7 +73,7 @@ export const CardChallengeGame = ({ game }: Props) => {
           </Box>
         </Grid>
         {showGame && (
-          <Grid item xs={2}>
+          <Grid size={2}>
             <Link
               to={`/challenge/game/${game.uuid}`}
               state={{

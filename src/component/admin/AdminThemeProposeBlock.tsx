@@ -49,7 +49,7 @@ export const AdminThemeProposeBlock = () => {
   return (
     <Grid container spacing={1}>
       {themes.map((theme) => (
-        <Grid item xs={12} key={theme.id}>
+        <Grid key={theme.id} size={12}>
           <CardAdminTheme
             theme={theme}
             onEdit={() => {

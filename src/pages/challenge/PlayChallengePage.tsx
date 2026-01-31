@@ -36,7 +36,7 @@ export default function PlayChallengePage() {
   const [response, setResponse] = useState<undefined | Response>(undefined);
   const [timer, setTimer] = useState<undefined | number>(undefined);
   const [timeoutQuestion, setTimeoutQuestion] = useState<
-    string | number | NodeJS.Timeout | undefined
+    ReturnType<typeof setTimeout> | undefined
   >(undefined);
 
   const [correctAnswer, setCorrectAnswer] = useState<number>(0);

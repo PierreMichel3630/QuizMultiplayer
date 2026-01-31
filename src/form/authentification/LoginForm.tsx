@@ -97,10 +97,10 @@ export const LoginForm = () => {
     >
       <Box>
         <Grid container spacing={1} alignItems="center">
-          <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <Grid sx={{ textAlign: "center" }} size={12}>
             <Typography variant="h4">{t("commun.login")}</Typography>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <FormControl
               fullWidth
               error={Boolean(formik.touched.email && formik.errors.email)}
@@ -125,7 +125,7 @@ export const LoginForm = () => {
               )}
             </FormControl>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <FormControl
               fullWidth
               error={Boolean(formik.touched.password && formik.errors.password)}
@@ -164,7 +164,7 @@ export const LoginForm = () => {
               )}
             </FormControl>
           </Grid>
-          <Grid item xs={12} sx={{ textAlign: "right", mb: 2 }}>
+          <Grid sx={{ textAlign: "right", mb: 2 }} size={12}>
             <Link to="/forgotpassword">
               <Typography variant="body1" sx={{ textDecoration: "underline" }}>
                 {t("form.login.forgotpassword")}
@@ -172,7 +172,7 @@ export const LoginForm = () => {
             </Link>
           </Grid>
           {formik.errors.submit && (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <FormHelperText error>{formik.errors.submit}</FormHelperText>
             </Grid>
           )}
@@ -180,7 +180,7 @@ export const LoginForm = () => {
       </Box>
       <Box>
         <Grid container spacing={1} alignItems="center" justifyContent="center">
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Button
               disableElevation
               fullWidth
@@ -192,12 +192,12 @@ export const LoginForm = () => {
               {t("form.login.connect")}
             </Button>
           </Grid>
-          <Grid item>
+          <Grid>
             <Typography variant="body1">
               {t("form.login.haveaccount")}
             </Typography>
           </Grid>
-          <Grid item>
+          <Grid>
             <Link to="/register">
               <Typography variant="body1" sx={{ textDecoration: "underline" }}>
                 {t("form.login.createaccount")}

@@ -7,7 +7,7 @@ import StarIcon from "@mui/icons-material/Star";
 import { useMemo } from "react";
 import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
-import { TypeCardEnum } from "src/models/enum/TypeCardEnum";
+import { SearchType } from "src/models/enum/TypeCardEnum";
 import { ImageCard } from "../image/ImageCard";
 
 export interface ICardImage {
@@ -15,7 +15,7 @@ export interface ICardImage {
   name: string;
   image?: string | JSX.Element;
   color?: string;
-  type?: TypeCardEnum;
+  type?: SearchType;
 }
 
 interface Props {
@@ -36,7 +36,7 @@ export const CardImage = ({ value, width = 90 }: Props) => {
   const isFavorite = useMemo(
     () =>
       favorites.some((favorite) =>
-        value.type === TypeCardEnum.THEME
+        value.type === SearchType.THEME
           ? favorite.theme === value.id
           : favorite.category === value.id
       ),
@@ -46,7 +46,7 @@ export const CardImage = ({ value, width = 90 }: Props) => {
   const goLink = () => {
     if (value.type)
       navigate(
-        value.type === TypeCardEnum.THEME
+        value.type === SearchType.THEME
           ? `/theme/${value.id}`
           : `/category/${value.id}`
       );

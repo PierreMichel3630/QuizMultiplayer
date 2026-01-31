@@ -40,7 +40,7 @@ export const CardAdminAnswer = ({
       sx={{ p: 1, border: isCorrect ? `4px solid ${Colors.green}` : "primary" }}
     >
       <Grid container spacing={1} alignItems="center">
-        <Grid item xs>
+        <Grid size="grow">
           {answer.image ? (
             <Box sx={{ height: px(150) }}>
               <ImageQCMBlock src={answer.image} />
@@ -64,13 +64,13 @@ export const CardAdminAnswer = ({
           )}
         </Grid>
 
-        <Grid item>
+        <Grid>
           <IconButton aria-label="edit" onClick={onEdit}>
             <EditIcon />
           </IconButton>
         </Grid>
         {onDelete && (
-          <Grid item>
+          <Grid>
             <IconButton aria-label="delete" onClick={onDelete}>
               <DeleteIcon />
             </IconButton>

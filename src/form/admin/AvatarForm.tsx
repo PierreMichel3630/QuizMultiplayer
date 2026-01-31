@@ -99,7 +99,7 @@ export const AvatarForm = ({ validate, avatar }: Props) => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={2} alignItems="center">
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.theme && formik.errors.theme)}
@@ -113,7 +113,7 @@ export const AvatarForm = ({ validate, avatar }: Props) => {
             </FormHelperText>
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.price && formik.errors.price)}
@@ -138,13 +138,13 @@ export const AvatarForm = ({ validate, avatar }: Props) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Divider />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography variant="h6">{t("form.createavatar.icon")}</Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FileUploadInput
             formik={formik}
             field="icon"
@@ -152,7 +152,7 @@ export const AvatarForm = ({ validate, avatar }: Props) => {
             maxSize={25}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <ButtonColor
             value={Colors.green}
             label={t("commun.add")}

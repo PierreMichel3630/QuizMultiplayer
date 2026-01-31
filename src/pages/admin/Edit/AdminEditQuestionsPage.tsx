@@ -101,7 +101,7 @@ export default function AdminEditQuestionsPage() {
   return (
     <Box sx={{ position: "relative", p: 1, mb: 7 }}>
       <Grid container spacing={1} justifyContent="center">
-        <Grid item xs={12}>
+        <Grid size={12}>
           <AutocompleteTheme
             value={themes}
             onChange={(value) => {
@@ -115,7 +115,7 @@ export default function AdminEditQuestionsPage() {
             }}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <ButtonColor
             icon={AddIcon}
             label={t("commun.addquestion")}
@@ -125,7 +125,13 @@ export default function AdminEditQuestionsPage() {
           />
         </Grid>
         {questions.map((question, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
+          <Grid
+            key={index}
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 4
+            }}>
             <CardAdminQuestion question={question} refresh={getPage} />
           </Grid>
         ))}

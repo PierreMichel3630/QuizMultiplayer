@@ -60,7 +60,7 @@ export const ModesBlock = ({ summary = false }: Props) => {
   return (
     <Grid container spacing={1}>
       {modes.map((mode, i) => (
-        <Grid item xs={12} key={i}>
+        <Grid key={i} size={12}>
           <ModeBlock mode={mode} summary={summary} />
         </Grid>
       ))}
@@ -90,15 +90,13 @@ const ModeBlock = ({ mode, summary }: PropsModeBlock) => {
     >
       <Grid container spacing={1}>
         <Grid
-          item
-          xs={12}
           sx={{
             display: "flex",
             gap: 1,
             alignItems: "center",
             justifyContent: "center",
           }}
-        >
+          size={12}>
           {mode.icon}
           <Typography variant="h2" color="text.secondary">
             {mode.title}
@@ -106,7 +104,7 @@ const ModeBlock = ({ mode, summary }: PropsModeBlock) => {
         </Grid>
 
         {!summary && (
-          <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <Grid sx={{ textAlign: "center" }} size={12}>
             <Typography
               variant="h4"
               color="text.secondary"
@@ -116,7 +114,7 @@ const ModeBlock = ({ mode, summary }: PropsModeBlock) => {
             </Typography>
           </Grid>
         )}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography variant="body1" color="text.secondary">
             {mode.explain}
           </Typography>

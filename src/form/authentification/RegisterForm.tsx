@@ -144,15 +144,15 @@ export const RegisterForm = () => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={1} justifyContent="center">
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
+        <Grid sx={{ textAlign: "center" }} size={12}>
           <Typography variant="h4">
             {t("form.register.createaccount")}
           </Typography>
         </Grid>
-        <Grid item xs={12} sx={{ textAlign: "right" }}>
+        <Grid sx={{ textAlign: "right" }} size={12}>
           <Typography variant="caption">{t("form.mandatoryvalue")}</Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.username && formik.errors.username)}
@@ -177,7 +177,7 @@ export const RegisterForm = () => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.email && formik.errors.email)}
@@ -202,7 +202,7 @@ export const RegisterForm = () => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FormControl
             fullWidth
             error={Boolean(formik.touched.password && formik.errors.password)}
@@ -240,20 +240,20 @@ export const RegisterForm = () => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={12} sx={{ mt: 1 }}>
+        <Grid sx={{ mt: 1 }} size={12}>
           <Typography variant="h6">{t("commun.myorigincountry")}</Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <RegisterCountryBlock
             country={formik.values.country}
             onChange={(value) => formik.setFieldValue(`country`, value)}
             onDelete={() => formik.setFieldValue(`country`, null)}
           />
         </Grid>
-        <Grid item xs={12} sx={{ mt: 1 }}>
+        <Grid sx={{ mt: 1 }} size={12}>
           <Typography variant="h6">{t("commun.avatars")}</Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <AvatarLoginSelector
             avatars={avatars}
             avatar={formik.values.avatar}
@@ -261,12 +261,12 @@ export const RegisterForm = () => {
           />
         </Grid>
         {formik.errors.submit && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <FormHelperText error>{formik.errors.submit}</FormHelperText>
           </Grid>
         )}
 
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Button
             disableElevation
             type="submit"
@@ -278,12 +278,12 @@ export const RegisterForm = () => {
             {t("form.register.continue")}
           </Button>
         </Grid>
-        <Grid item>
+        <Grid>
           <Typography variant="body1">
             {t("form.register.alreadyaccount")}
           </Typography>
         </Grid>
-        <Grid item>
+        <Grid>
           <Link to="/login">
             <Typography variant="body1" sx={{ textDecoration: "underline" }}>
               {t("form.register.connect")}

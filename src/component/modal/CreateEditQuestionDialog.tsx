@@ -36,7 +36,7 @@ export const CreateEditQuestionDialog = ({ question, open, close }: Props) => {
       <DialogContent>
         <Grid container spacing={2}>
           {question && (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <QuestionForm validate={close} question={question} />
             </Grid>
           )}

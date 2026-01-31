@@ -24,6 +24,7 @@ export const Colors = {
   grey4: "#a6acaf",
   grey5: grey[600],
   grey6: grey[500],
+  grey7: grey[200],
   greyDarkMode: "#8ca3ba",
   greyLightMode: "#5f748d",
   lightBlue: lightBlue[100],

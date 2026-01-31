@@ -65,8 +65,6 @@ export const CardChallenge = ({ profileId }: Props) => {
     >
       <Grid container>
         <Grid
-          item
-          xs={12}
           sx={{
             backgroundColor: Colors.colorApp,
             p: px(10),
@@ -74,47 +72,41 @@ export const CardChallenge = ({ profileId }: Props) => {
             gap: 1,
             alignItems: "center",
           }}
-        >
+          size={12}>
           <Typography variant="h2" color="text.secondary">
             {t("commun.daychallenge")}
           </Typography>
         </Grid>
         <Grid
-          item
-          xs={12}
           sx={{
             display: "flex",
             p: 1,
           }}
-        >
+          size={12}>
           <Grid container spacing={1} justifyContent="center">
             {stat && (
               <>
                 <Grid
-                  item
-                  xs={6}
                   sx={{
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                     gap: 1,
                   }}
-                >
+                  size={6}>
                   <PositionTypography position={stat.ranking} />
                   <Typography variant="caption">
                     ({t("commun.top")} : {topPercent}%)
                   </Typography>
                 </Grid>
                 <Grid
-                  item
-                  xs={6}
                   sx={{
                     display: "flex",
                     gap: 1,
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                >
+                  size={6}>
                   <SportsEsportsIcon />
                   <Typography variant="h4">
                     <Trans
@@ -126,15 +118,13 @@ export const CardChallenge = ({ profileId }: Props) => {
                   </Typography>
                 </Grid>
                 <Grid
-                  item
-                  xs={6}
                   sx={{
                     display: "flex",
                     gap: 1,
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                >
+                  size={6}>
                   <QuestionMarkIcon />
                   <Typography variant="h4" noWrap>
                     {stat.score} / {stat.games * NUMBER_QUESTIONS_CHALLENGE}
@@ -144,15 +134,13 @@ export const CardChallenge = ({ profileId }: Props) => {
                   </Typography>
                 </Grid>
                 <Grid
-                  item
-                  xs={6}
                   sx={{
                     display: "flex",
                     gap: 1,
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                >
+                  size={6}>
                   <AccessTimeIcon />
                   <Typography variant="h4" noWrap>
                     {(stat.time / 1000).toFixed(2)}s
@@ -161,7 +149,7 @@ export const CardChallenge = ({ profileId }: Props) => {
               </>
             )}
             {profileId && (
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <ButtonColor
                   value={Colors.blue2}
                   label={t("commun.seestatchallenge")}
@@ -202,21 +190,19 @@ export const CardChallengeWeek = ({ value }: CardChallengeWeekProps) => {
         sx={{ textAlign: "center" }}
       >
         <Grid
-          item
-          xs={12}
           sx={{
             display: "flex",
             gap: 3,
             alignItems: "baseline",
             justifyContent: "center",
           }}
-        >
+          size={12}>
           <Typography variant="h6">
             {start.format("DD MMMM")} - {end.format("DD MMMM YYYY")}
           </Typography>
           <PositionTypography position={value.ranking} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box
             sx={{
               display: "flex",
@@ -281,21 +267,19 @@ export const CardChallengeMonth = ({ value }: CardChallengeMonthProps) => {
         sx={{ textAlign: "center" }}
       >
         <Grid
-          item
-          xs={12}
           sx={{
             display: "flex",
             gap: 3,
             alignItems: "baseline",
             justifyContent: "center",
           }}
-        >
+          size={12}>
           <Typography variant="h6">
             {moment(value.month, "MM/YYYY").format("MMMM YYYY")}
           </Typography>
           <PositionTypography position={value.ranking} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box
             sx={{
               display: "flex",
@@ -360,18 +344,16 @@ export const CardChallengeAllTime = ({ value }: CardChallengeAllTimeProps) => {
         sx={{ textAlign: "center" }}
       >
         <Grid
-          item
-          xs={12}
           sx={{
             display: "flex",
             gap: 3,
             alignItems: "baseline",
             justifyContent: "center",
           }}
-        >
+          size={12}>
           <PositionTypography position={value.ranking} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box
             sx={{
               display: "flex",

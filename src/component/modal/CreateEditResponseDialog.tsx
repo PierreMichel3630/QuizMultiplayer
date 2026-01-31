@@ -41,7 +41,7 @@ export const CreateEditResponseDialog = ({
       </AppBar>
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ResponseForm type={type} response={response} validate={close} />
           </Grid>
         </Grid>
@@ -79,7 +79,7 @@ export const CreateEditResponseImageDialog = ({
       </AppBar>
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ResponseImageForm
               type={type}
               response={response}

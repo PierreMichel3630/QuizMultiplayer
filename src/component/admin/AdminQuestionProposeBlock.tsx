@@ -21,7 +21,13 @@ export const AdminQuestionProposeBlock = () => {
   return (
     <Grid container spacing={1}>
       {questions.map((question, index) => (
-        <Grid item xs={12} sm={6} md={4} key={index}>
+        <Grid
+          key={index}
+          size={{
+            xs: 12,
+            sm: 6,
+            md: 4
+          }}>
           <CardAdminQuestion
             question={question}
             refresh={() => getQuestionsPropose()}

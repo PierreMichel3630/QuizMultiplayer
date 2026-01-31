@@ -34,7 +34,7 @@ export default function SoloPage() {
   const [audio, setAudio] = useState<undefined | HTMLAudioElement>(undefined);
   const [images, setImages] = useState<Array<string>>([]);
 
-  const timeoutQuestion = useRef<NodeJS.Timeout | null>(null);
+  const timeoutQuestion = useRef<ReturnType<typeof setTimeout> | null>(null);
   const localStorageId = useMemo(() => `game-solo-${uuidGame}`, [uuidGame]);
 
   const generateQuestion = useCallback(

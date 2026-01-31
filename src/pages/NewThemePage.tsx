@@ -29,7 +29,7 @@ export default function NewThemePage() {
       <Helmet>
         <title>{`${t("pages.new.title")} - ${t("appname")}`}</title>
       </Helmet>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <PageCategoryBlock
           title={t("pages.new.title")}
           values={itemsSearch}

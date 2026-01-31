@@ -15,13 +15,18 @@ export const TitleSelector = ({ onSelect }: Props) => {
 
   return (
     <Grid container spacing={1}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Grid container spacing={1} alignItems="center">
           {myTitles.map((title) => {
             const isSelect = profile?.titleprofile?.id === title.id;
 
             return (
-              <Grid item xs={12} sm={6} key={title.id}>
+              <Grid
+                key={title.id}
+                size={{
+                  xs: 12,
+                  sm: 6
+                }}>
                 <Box sx={{ position: "relative", textAlign: "center" }}>
                   <BadgeTitleProfile
                     title={title}

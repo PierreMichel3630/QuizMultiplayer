@@ -26,43 +26,37 @@ export const SelectedTheme = ({ select, avatars }: Props) => {
     }
   }, [avatars, language]);
 
-  return (
-    themes.length > 0 && (
-      <Grid container spacing={1}>
-        <Grid
-          item
-          xs={12}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Typography variant="h2">{t("commun.themesselected")}</Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 1,
-              overflowX: "auto",
-              scrollbarWidth: "none",
-            }}
-          >
-            {themes.map((theme, index) => (
-              <CardSelectAvatarTheme
-                key={index}
-                theme={theme}
-                avatars={avatars}
-                onSelect={() => select(theme)}
-              />
-            ))}
-          </Box>
-        </Grid>
-        <Grid item xs={12}>
-          <Divider sx={{ borderBottomWidth: 5 }} />
-        </Grid>
-      </Grid>
-    )
-  );
+  return (themes.length > 0 && (<Grid container spacing={1}>
+    <Grid
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+      size={12}>
+      <Typography variant="h2">{t("commun.themesselected")}</Typography>
+    </Grid>
+    <Grid size={12}>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 1,
+          overflowX: "auto",
+          scrollbarWidth: "none",
+        }}
+      >
+        {themes.map((theme, index) => (
+          <CardSelectAvatarTheme
+            key={index}
+            theme={theme}
+            avatars={avatars}
+            onSelect={() => select(theme)}
+          />
+        ))}
+      </Box>
+    </Grid>
+    <Grid size={12}>
+      <Divider sx={{ borderBottomWidth: 5 }} />
+    </Grid>
+  </Grid>));
 };

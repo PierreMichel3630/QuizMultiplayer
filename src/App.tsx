@@ -10,14 +10,17 @@ import "./i18n/config";
 import { getTheme } from "./style/ThemeBlock";
 import ScrollToTop from "./component/navigation/ScrollToTop";
 import { Outlet } from "react-router-dom";
-import { NotificationProvider } from "./context/NotificationProvider";
+import { RealtimeProvider } from "./context/NotificationProvider";
+import { AppBarProvider } from "./context/AppBarProvider";
 
 function App() {
   return (
     <Box className="fullscreen">
       <AuthProviderSupabase>
         <UserProvider>
-          <Body />
+          <AppBarProvider>
+            <Body />
+          </AppBarProvider>
         </UserProvider>
       </AuthProviderSupabase>
     </Box>
@@ -33,7 +36,7 @@ const Body = () => {
   useViewportHeight();
   return (
     <AppProvider>
-      <NotificationProvider>
+      <RealtimeProvider>
         <ThemeProvider theme={theme}>
           <MessageProvider>
             <CssBaseline />
@@ -51,7 +54,7 @@ const Body = () => {
             <Outlet />
           </MessageProvider>
         </ThemeProvider>
-      </NotificationProvider>
+      </RealtimeProvider>
     </AppProvider>
   );
 };

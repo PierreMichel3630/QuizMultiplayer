@@ -9,7 +9,7 @@ import { CardHistoryGame } from "src/component/card/CardHistoryGame";
 import { ICardImage } from "src/component/card/CardImage";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { SkeletonGames } from "src/component/skeleton/SkeletonGame";
-import { useApp } from "src/context/AppProvider";
+import { useAppBar } from "src/context/AppBarProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { DuelGame } from "src/models/DuelGame";
 import { GameModeEnum } from "src/models/enum/GameEnum";
@@ -26,7 +26,7 @@ export default function HistoryGamePage() {
   const { t } = useTranslation();
   const location = useLocation();
 
-  const { headerSize } = useApp();
+  const { top, appBarVisible } = useAppBar();
   const { profile } = useAuth();
 
   const ITEMPERPAGE = 10;
@@ -83,7 +83,7 @@ export default function HistoryGamePage() {
             });
 
             setGames((prev) =>
-              page === 0 ? [...historygames] : [...prev, ...historygames]
+              page === 0 ? [...historygames] : [...prev, ...historygames],
             );
             setIsEnd(result.length === 0);
             setLoading(false);
@@ -106,7 +106,7 @@ export default function HistoryGamePage() {
             });
 
             setGames((prev) =>
-              page === 0 ? [...historygames] : [...prev, ...historygames]
+              page === 0 ? [...historygames] : [...prev, ...historygames],
             );
             setIsEnd(result.length === 0);
             setLoading(false);
@@ -114,7 +114,7 @@ export default function HistoryGamePage() {
         }
       }
     },
-    [isEnd, loading, filter]
+    [isEnd, loading, filter],
   );
 
   useEffect(() => {
@@ -151,20 +151,20 @@ export default function HistoryGamePage() {
         <title>{`${t("pages.history.title")} - ${t("appname")}`}</title>
       </Helmet>
       <Grid
-        item
-        xs={12}
         sx={{
           position: "sticky",
-          top: headerSize,
+          top: appBarVisible ? top : 0,
+          zIndex: (theme) => theme.zIndex.appBar + 1,
+          transition: "top 350ms ease-in-out",
           p: 1,
           backgroundColor: "background.paper",
           display: "flex",
           justifyContent: "center",
-          zIndex: 10,
         }}
+        size={12}
       >
         <Grid container spacing={1} justifyContent="center" alignItems="center">
-          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
             <GroupButtonAllTypeGame
               selected={filter.type}
               onChange={(value) => {
@@ -177,22 +177,21 @@ export default function HistoryGamePage() {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Box sx={{ p: 1 }}>
           <Grid container spacing={1}>
             {games.map((game, index) => (
               <Grid
-                item
-                xs={12}
                 key={game.uuid}
                 ref={index === games.length - 1 ? lastItemRef : null}
+                size={12}
               >
                 <CardHistoryGame game={game} />
               </Grid>
             ))}
             {!isEnd && <SkeletonGames number={10} />}
             {!loading && games.length === 0 && isEnd && (
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Alert severity="warning">{t("commun.noresult")}</Alert>
               </Grid>
             )}

@@ -35,7 +35,7 @@ export default function AdminEditThemeShopPage() {
 
   return (
     <Grid container spacing={1} justifyContent="center">
-      <Grid item xs={12}>
+      <Grid size={12}>
         <ButtonColor
           icon={AddIcon}
           label={t("commun.addtheme")}
@@ -44,7 +44,7 @@ export default function AdminEditThemeShopPage() {
           variant="contained"
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <BasicSearchInput
           label={t("commun.search")}
           onChange={(value) => setSearch(value)}
@@ -53,7 +53,7 @@ export default function AdminEditThemeShopPage() {
         />
       </Grid>
       {themesShop.map((theme) => (
-        <Grid item xs={12} key={theme.id}>
+        <Grid key={theme.id} size={12}>
           <CardAdminThemeShop
             theme={theme}
             onChange={() => {
@@ -69,7 +69,7 @@ export default function AdminEditThemeShopPage() {
       {isLoading && (
         <>
           {Array.from(new Array(10)).map((_, index) => (
-            <Grid item xs={12} key={index}>
+            <Grid key={index} size={12}>
               <SkeletonCardTheme />
             </Grid>
           ))}
