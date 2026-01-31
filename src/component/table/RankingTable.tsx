@@ -29,10 +29,9 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import {
   selectRankingDuelByThemeAndProfile,
-  selectRankingDuelByThemePaginate,
   selectRankingSoloByThemeAndProfile,
-  selectRankingSoloByThemePaginate,
 } from "src/api/ranking";
+import { selectScore } from "src/api/score";
 import rank1 from "src/assets/rank/rank1.png";
 import rank2 from "src/assets/rank/rank2.png";
 import rank3 from "src/assets/rank/rank3.png";
@@ -156,7 +155,7 @@ export const RankingTable = ({
                       ref={index === data.length - 1 ? lastItemRef : null}
                     >
                       <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
-                        {getIcon(el.rank)}
+                        {getIcon(index + 1)}
                       </TableCell>
                       <TableCell sx={{ p: px(4), width: px(50) }}>
                         {el.profile ? (
@@ -443,7 +442,7 @@ export const RankingTableSoloDuelPaginate = ({
       if (isLoading) return;
       if (theme && (page === 0 || !isEnd)) {
         setIsLoading(true);
-        selectRankingDuelByThemePaginate(theme.id, page, ITEMPERPAGE).then(
+        selectScore("rank", page, ITEMPERPAGE, undefined, [theme.id]).then(
           ({ data }) => {
             const result = data as Array<Ranking>;
             const newData = result.map((el) => ({
@@ -467,21 +466,20 @@ export const RankingTableSoloDuelPaginate = ({
   const getRankingSolo = useCallback(
     (page: number) => {
       if (isLoading) return;
-      const itemperpage = 30;
       if (theme && (page === 0 || !isEnd)) {
         setIsLoading(true);
-        selectRankingSoloByThemePaginate(theme.id, page, itemperpage).then(
+        selectScore("points", page, ITEMPERPAGE, undefined, [theme.id]).then(
           ({ data }) => {
             const result = data as Array<Ranking>;
             const newData = result.map((el) => ({
               profile: el.profile,
               value: el.points,
-              uuid: el.uuidgame !== null ? el.uuidgame.uuid : undefined,
+              uuid: el.uuidgame === null ? undefined : el.uuidgame.uuid,
               extra: t("commun.pointsabbreviation"),
               rank: el.ranking,
               size: 70,
             })) as Array<DataRanking>;
-            setIsEnd(result.length < itemperpage);
+            setIsEnd(result.length < ITEMPERPAGE);
             setData((prev) =>
               page === 0 ? [...newData] : [...prev, ...newData]
             );

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { insertBattleGame } from "src/api/game";
-import { selectThemesById } from "src/api/theme";
+import { selectThemesByIdAndLanguage } from "src/api/theme";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { SearchType } from "src/models/enum/TypeCardEnum";
@@ -52,7 +52,7 @@ export const GameModeBlock = () => {
   useEffect(() => {
     const idThemes = [271, 272];
     if (language) {
-      selectThemesById(idThemes, language.iso).then(({ data }) => {
+      selectThemesByIdAndLanguage(idThemes, language.iso).then(({ data }) => {
         const res = data ?? [];
         setThemes(
           [...res].map((el) => ({

@@ -45,7 +45,7 @@ import { getLevel } from "src/utils/calcul";
 export default function RankingPage() {
   const { t } = useTranslation();
   const { idsFriend } = useApp();
-  const { top } = useAppBar();
+  const { top, appBarVisible } = useAppBar();
   const { profile } = useAuth();
   const { language } = useUser();
   const [searchParams] = useSearchParams();
@@ -57,7 +57,7 @@ export default function RankingPage() {
   const [type, setType] = useState(
     searchParams.has("sort")
       ? (searchParams.get("sort") as ClassementEnum)
-      : ClassementEnum.points
+      : ClassementEnum.points,
   );
   const [data, setData] = useState<Array<DataRanking>>([]);
   const [, setPage] = useState(0);
@@ -65,14 +65,14 @@ export default function RankingPage() {
   const [tabSoloMode, setTabSoloMode] = useState(
     searchParams.has("time")
       ? (searchParams.get("time") as ClassementSoloModeEnum)
-      : ClassementSoloModeEnum.alltime
+      : ClassementSoloModeEnum.alltime,
   );
   const [tabDuelMode, setTabDuelMode] = useState(
-    ClassementDuelModeEnum.bestrank
+    ClassementDuelModeEnum.bestrank,
   );
   const [tabOthers, setTabOthers] = useState(ClassementOtherEnum.xp);
   const [tabChallengeMode, setTabChallengeMode] = useState(
-    ClassementChallengeGlobalTimeEnum.windaychallenge
+    ClassementChallengeGlobalTimeEnum.windaychallenge,
   );
 
   const observer = useRef<IntersectionObserver | null>(null);
@@ -109,10 +109,10 @@ export default function RankingPage() {
               }));
               setIsEnd(newdata.length < ITEMPERPAGE);
               setData((prev) =>
-                page === 0 ? [...newdata] : [...prev, ...newdata]
+                page === 0 ? [...newdata] : [...prev, ...newdata],
               );
               setLoading(false);
-            }
+            },
           );
         } else if (
           (type === ClassementEnum.points &&
@@ -120,7 +120,7 @@ export default function RankingPage() {
           (type === ClassementEnum.rank &&
             tabDuelMode === ClassementDuelModeEnum.bestrank)
         ) {
-          selectScore(language, type, page, ITEMPERPAGE, [], ids).then(
+          selectScore(type, page, ITEMPERPAGE, language, [], ids).then(
             ({ data }) => {
               const res = data as Array<Score>;
               const newdata = res.map((el, index) => {
@@ -135,10 +135,10 @@ export default function RankingPage() {
               });
               setIsEnd(newdata.length < ITEMPERPAGE);
               setData((prev) =>
-                page === 0 ? [...newdata] : [...prev, ...newdata]
+                page === 0 ? [...newdata] : [...prev, ...newdata],
               );
               setLoading(false);
-            }
+            },
           );
         } else if (
           type === ClassementEnum.points &&
@@ -154,7 +154,7 @@ export default function RankingPage() {
             }));
             setIsEnd(newdata.length < ITEMPERPAGE);
             setData((prev) =>
-              page === 0 ? [...newdata] : [...prev, ...newdata]
+              page === 0 ? [...newdata] : [...prev, ...newdata],
             );
             setLoading(false);
           });
@@ -163,7 +163,7 @@ export default function RankingPage() {
             tabChallengeMode,
             page,
             ITEMPERPAGE,
-            ids
+            ids,
           ).then(({ data }) => {
             const res = data as Array<StatAccomplishment>;
             const newdata = res.map((el, index) => {
@@ -177,7 +177,7 @@ export default function RankingPage() {
             });
             setIsEnd(newdata.length < ITEMPERPAGE);
             setData((prev) =>
-              page === 0 ? [...newdata] : [...prev, ...newdata]
+              page === 0 ? [...newdata] : [...prev, ...newdata],
             );
             setLoading(false);
           });
@@ -203,17 +203,17 @@ export default function RankingPage() {
                 });
                 setIsEnd(newdata.length < ITEMPERPAGE);
                 setData((prev) =>
-                  page === 0 ? [...newdata] : [...prev, ...newdata]
+                  page === 0 ? [...newdata] : [...prev, ...newdata],
                 );
                 setLoading(false);
-              }
+              },
             );
           } else if (tabOthers === ClassementOtherEnum.streak) {
             selectProfile(
               { value: tabOthers, ascending: false },
               page,
               ITEMPERPAGE,
-              ids
+              ids,
             ).then(({ data }) => {
               const res = data as Array<Profile>;
               const newdata = res.map((el, index) => {
@@ -227,7 +227,7 @@ export default function RankingPage() {
               });
               setIsEnd(newdata.length < ITEMPERPAGE);
               setData((prev) =>
-                page === 0 ? [...newdata] : [...prev, ...newdata]
+                page === 0 ? [...newdata] : [...prev, ...newdata],
               );
               setLoading(false);
             });
@@ -236,7 +236,7 @@ export default function RankingPage() {
               { value: tabOthers, ascending: false },
               page,
               ITEMPERPAGE,
-              ids
+              ids,
             ).then(({ data }) => {
               const res = data as Array<Profile>;
               const newdata = res.map((el, index) => {
@@ -252,7 +252,7 @@ export default function RankingPage() {
               });
               setIsEnd(newdata.length < ITEMPERPAGE);
               setData((prev) =>
-                page === 0 ? [...newdata] : [...prev, ...newdata]
+                page === 0 ? [...newdata] : [...prev, ...newdata],
               );
               setLoading(false);
             });
@@ -276,10 +276,10 @@ export default function RankingPage() {
               });
               setIsEnd(newdata.length < ITEMPERPAGE);
               setData((prev) =>
-                page === 0 ? [...newdata] : [...prev, ...newdata]
+                page === 0 ? [...newdata] : [...prev, ...newdata],
               );
               setLoading(false);
-            }
+            },
           );
         }
       }
@@ -294,7 +294,7 @@ export default function RankingPage() {
       tabDuelMode,
       tabChallengeMode,
       tabOthers,
-    ]
+    ],
   );
 
   useEffect(() => {
@@ -346,11 +346,11 @@ export default function RankingPage() {
       <Grid
         sx={{
           position: "sticky",
-          top: top,
+          top: appBarVisible ? top : 0,
+          zIndex: (theme) => theme.zIndex.appBar + 1,
           transition: "top 350ms ease-in-out",
           backgroundColor: "background.paper",
           p: 1,
-          zIndex: 10,
           display: "flex",
           gap: 1,
           flexDirection: "column",

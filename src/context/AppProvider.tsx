@@ -87,7 +87,7 @@ export const AppProvider = ({ children }: Props) => {
   const [friends, setFriends] = useState<Array<Friend>>([]);
   const [favorites, setFavorites] = useState<Array<Favorite>>([]);
   const [reportmessages, setReportmessages] = useState<Array<ReportMessage>>(
-    []
+    [],
   );
   const [myaccomplishments, setMyaccomplishments] = useState<
     Array<ProfileAccomplishment>
@@ -104,12 +104,12 @@ export const AppProvider = ({ children }: Props) => {
                   value.user2.id === user.id
                     ? [...acc, value.user1.id]
                     : [...acc, value.user2.id],
-                [] as Array<string>
+                [] as Array<string>,
               ),
             user.id,
           ]
         : [],
-    [friends, user]
+    [friends, user],
   );
 
   useEffect(() => {
@@ -134,7 +134,7 @@ export const AppProvider = ({ children }: Props) => {
 
   useEffect(() => {
     getFavorite();
-  }, [getFavorite, user]);
+  }, [getFavorite]);
 
   const getFriends = useCallback(() => {
     if (user === null) {
@@ -282,7 +282,7 @@ export const AppProvider = ({ children }: Props) => {
       nbThemes,
       getFavorite,
       reportmessages,
-    ]
+    ],
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

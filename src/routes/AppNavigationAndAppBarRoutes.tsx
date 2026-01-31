@@ -37,6 +37,7 @@ import ShopThemePage from "src/pages/shop/ShopThemePage";
 import TitlesPage from "src/pages/shop/TitlesPage";
 import GameModePage from "src/pages/GameModePage";
 import SearchPage from "src/pages/SearchPage";
+import MostPlayedThemePage from "src/pages/MostPlayedThemePage";
 
 export const AppNavigationAndAppBarRoutes = [
   {
@@ -54,6 +55,10 @@ export const AppNavigationAndAppBarRoutes = [
       {
         path: "/favorite",
         element: <FavoritePage />,
+      },
+      {
+        path: "/mostplayedthemes",
+        element: <MostPlayedThemePage />,
       },
       {
         path: "/previousgame",

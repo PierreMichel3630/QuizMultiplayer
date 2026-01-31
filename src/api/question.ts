@@ -73,7 +73,10 @@ export const selectQuestion = (
       .eq("questiontheme.theme.id", filter.theme)
       .not("questiontheme.theme", "is", null);
   }
-  query = query.order("id", { ascending: true }).range(from, to);
+  query = query
+    .not("image", "is", null)
+    .order("id", { ascending: true })
+    .range(from, to);
   return query;
 };
 
@@ -125,7 +128,7 @@ export const countQuestions = (filter: FilterQuestion) => {
   if (filter.theme) {
     query = query.eq("theme", filter.theme);
   }
-  return query;
+  return query.not("question.image", "is", null);
 };
 
 export const selectImageQuestion = (page: number, itemperpage = 1000) =>

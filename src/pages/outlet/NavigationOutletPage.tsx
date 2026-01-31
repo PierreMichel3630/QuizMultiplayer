@@ -27,7 +27,7 @@ export default function NavigationOutletPage() {
   return (
     <>
       <Box sx={{ display: "flex" }}>
-        {!isMobileOrTablet && <DrawerMenus />}
+        <DrawerMenus />
         <Box
           component="main"
           sx={{

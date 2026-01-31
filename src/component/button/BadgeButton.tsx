@@ -1,7 +1,47 @@
-import { Button, Grid, Typography, useTheme } from "@mui/material";
+import { Box, Button, Grid, Typography, useTheme } from "@mui/material";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { useAuth } from "src/context/AuthProviderSupabase";
+
+import ExploreIcon from "@mui/icons-material/Explore";
+import { useAppBar } from "src/context/AppBarProvider";
+import { useIsMobileOrTablet } from "src/hook/useSize";
+import { padding, px } from "csx";
+
+interface PropsBadgeIconButton {
+  icon: JSX.Element;
+  onClick: () => void;
+}
+
+export const BadgeIconButton = ({ icon, onClick }: PropsBadgeIconButton) => {
+  const theme = useTheme();
+  const isDark = useMemo(() => theme.palette.mode === "dark", [theme]);
+  return (
+    <Box
+      sx={{
+        p: padding(2, 8),
+        borderRadius: px(5),
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: isDark
+          ? theme.palette.grey[800]
+          : theme.palette.grey[300],
+        color: isDark ? theme.palette.grey[100] : theme.palette.grey[900],
+        "&:hover": {
+          backgroundColor: isDark
+            ? theme.palette.grey[700]
+            : theme.palette.grey[400],
+        },
+      }}
+      onClick={onClick}
+    >
+      {icon}
+    </Box>
+  );
+};
 
 interface ButtonValue {
   label: string;
@@ -53,7 +93,6 @@ export const BadgeButtonGroup = ({ values }: PropsBadgeButtonGroup) => (
       "&::-webkit-scrollbar": {
         display: "none",
       },
-      pb: 1,
     }}
   >
     {values.map((el, index) => (
@@ -66,12 +105,42 @@ export const BadgeButtonGroup = ({ values }: PropsBadgeButtonGroup) => (
 
 export const BadgeButtonRedirection = () => {
   const { t } = useTranslation();
-  const buttons = [
-    { label: t("commun.daychallenge"), link: "/challenge" },
-    { label: t("commun.favorite"), link: "/favorite" },
-    { label: t("commun.gamemode"), link: "/gamemode" },
-    { label: t("commun.categories"), link: "/categories" },
-  ];
+  const { profile } = useAuth();
+  const { toogleOpenDrawer } = useAppBar();
+  const isMobileOrTablet = useIsMobileOrTablet();
 
-  return <BadgeButtonGroup values={buttons} />;
+  const buttons = useMemo(
+    () => [
+      { label: t("commun.daychallenge"), link: "/challenge" },
+      { label: t("commun.favorite"), link: "/favorite" },
+      { label: t("commun.gamemode"), link: "/gamemode" },
+      { label: t("commun.mostplayedthemes"), link: "/mostplayedthemes" },
+      { label: t("commun.categories"), link: "/categories" },
+      { label: t("commun.people"), link: "/people" },
+      ...(profile
+        ? [
+            { label: t("commun.myprofile"), link: `/profil/${profile.id}` },
+            { label: t("commun.mygames"), link: "/games" },
+            { label: t("commun.lastplayedthemes"), link: "/lastplayedthemes" },
+          ]
+        : []),
+    ],
+    [profile, t],
+  );
+
+  const openDrawer = () => {
+    toogleOpenDrawer();
+  };
+
+  return (
+    <Box sx={{ display: "flex", gap: 1 }}>
+      {isMobileOrTablet && (
+        <BadgeIconButton
+          icon={<ExploreIcon fontSize="small" />}
+          onClick={openDrawer}
+        />
+      )}
+      <BadgeButtonGroup values={buttons} />
+    </Box>
+  );
 };

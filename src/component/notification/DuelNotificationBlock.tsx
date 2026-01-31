@@ -35,7 +35,7 @@ export const DuelNotificationBlock = ({ notification, onDelete }: Props) => {
 
   const data = useMemo(
     () => notification.data as NotificationData,
-    [notification]
+    [notification],
   );
 
   const playDuel = (uuid: string) => {
@@ -60,7 +60,7 @@ export const DuelNotificationBlock = ({ notification, onDelete }: Props) => {
 
   const themeText = useMemo(() => {
     const themeLanguage = [...data.theme.themetranslation].find(
-      (el) => el.language.id === language?.id
+      (el) => el.language.id === language?.id,
     );
     return themeLanguage?.name ?? data.theme.themetranslation[0].name;
   }, [data, language]);
@@ -68,7 +68,7 @@ export const DuelNotificationBlock = ({ notification, onDelete }: Props) => {
   return (
     <Paper
       sx={{
-        zIndex: 1500,
+        zIndex: (theme) => theme.zIndex.appBar + 1,
         p: px(5),
         width: percent(100),
       }}

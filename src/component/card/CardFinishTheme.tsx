@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { getFinishThemeByProfile } from "src/api/ranking";
-import { selectThemesById } from "src/api/theme";
+import { selectThemesByIdAndLanguage } from "src/api/theme";
 import { Profile } from "src/models/Profile";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
@@ -25,7 +25,7 @@ export const CardFinishTheme = ({ profile }: Props) => {
     getFinishThemeByProfile(profile.id).then(({ data }) => {
       if (data !== null) {
         const idThemes = data.themes;
-        selectThemesById(idThemes).then(({ data }) => {
+        selectThemesByIdAndLanguage(idThemes).then(({ data }) => {
           const res = data ?? [];
           setThemes(res);
           setLoading(false);
@@ -34,62 +34,68 @@ export const CardFinishTheme = ({ profile }: Props) => {
     });
   }, [profile]);
 
-  return (themes.length > 0 && (<Paper
-    sx={{
-      overflow: "hidden",
-      height: percent(100),
-      backgroundColor: Colors.grey,
-    }}
-  >
-    <Grid container>
-      <Grid
+  return (
+    themes.length > 0 && (
+      <Paper
         sx={{
-          backgroundColor: Colors.colorApp,
-          p: px(10),
-          display: "flex",
-          gap: 1,
-          alignItems: "center",
+          overflow: "hidden",
+          height: percent(100),
+          backgroundColor: Colors.grey,
         }}
-        size={12}>
-        <Typography variant="h2" color="text.secondary">
-          {t("commun.finishtheme")}
-        </Typography>
-        {!loading && (
-          <Typography variant="h4" color="text.secondary">
-            ({themes.length})
-          </Typography>
-        )}
-      </Grid>
-      <Grid
-        sx={{
-          display: "flex",
-          p: 1,
-          maxHeight: viewHeight(15),
-          overflowX: "scroll",
-        }}
-        size={12}>
-        <Grid container spacing={1} justifyContent="center">
-          {loading ? (
-            <>
-              {Array.from(new Array(6)).map((_, index) => (
-                <Grid key={index}>
-                  <Skeleton variant="circular" width={45} height={45} />
-                </Grid>
-              ))}
-            </>
-          ) : (
-            <>
-              {themes.map((theme) => (
-                <Grid key={theme.id}>
-                  <Link to={`/theme/${theme.id}`}>
-                    <ImageThemeBlock theme={theme} size={35} />
-                  </Link>
-                </Grid>
-              ))}
-            </>
-          )}
+      >
+        <Grid container>
+          <Grid
+            sx={{
+              backgroundColor: Colors.colorApp,
+              p: px(10),
+              display: "flex",
+              gap: 1,
+              alignItems: "center",
+            }}
+            size={12}
+          >
+            <Typography variant="h2" color="text.secondary">
+              {t("commun.finishtheme")}
+            </Typography>
+            {!loading && (
+              <Typography variant="h4" color="text.secondary">
+                ({themes.length})
+              </Typography>
+            )}
+          </Grid>
+          <Grid
+            sx={{
+              display: "flex",
+              p: 1,
+              maxHeight: viewHeight(15),
+              overflowX: "scroll",
+            }}
+            size={12}
+          >
+            <Grid container spacing={1} justifyContent="center">
+              {loading ? (
+                <>
+                  {Array.from(new Array(6)).map((_, index) => (
+                    <Grid key={index}>
+                      <Skeleton variant="circular" width={45} height={45} />
+                    </Grid>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {themes.map((theme) => (
+                    <Grid key={theme.id}>
+                      <Link to={`/theme/${theme.id}`}>
+                        <ImageThemeBlock theme={theme} size={35} />
+                      </Link>
+                    </Grid>
+                  ))}
+                </>
+              )}
+            </Grid>
+          </Grid>
         </Grid>
-      </Grid>
-    </Grid>
-  </Paper>));
+      </Paper>
+    )
+  );
 };

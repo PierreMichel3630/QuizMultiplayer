@@ -56,7 +56,7 @@ export const RankingBlock = ({ themes }: Props) => {
     setData([]);
     const ids = themes ?? [];
     if (language) {
-      selectScore(language, tab, 0, 3, ids).then(({ data }) => {
+      selectScore(tab, 0, 3, language, ids).then(({ data }) => {
         const res = data as Array<Score>;
         const newdata = res.map((el, index) => {
           const champ = el[tab];
@@ -83,7 +83,8 @@ export const RankingBlock = ({ themes }: Props) => {
           justifyContent: "center",
           gap: 1,
         }}
-        size={12}>
+        size={12}
+      >
         <GroupButtonTypeGame
           selected={tab}
           onChange={(value) => {
@@ -279,7 +280,7 @@ export const RankingTop5Block = () => {
           });
         }
       } else if (tab === AllGameModeEnum.DUEL) {
-        selectScore(language, "rank", 0, 5).then(({ data }) => {
+        selectScore("rank", 0, 5, language).then(({ data }) => {
           const res = data as Array<Score>;
           const newdata = res.map((el, index) => {
             const champ = el.rank;

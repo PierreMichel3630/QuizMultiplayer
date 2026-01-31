@@ -18,7 +18,7 @@ import { ImageThemeBlock } from "../ImageThemeBlock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { percent, px } from "csx";
 import { unlockAccomplishment } from "src/api/accomplishment";
-import { selectThemesById } from "src/api/theme";
+import { selectThemesByIdAndLanguage } from "src/api/theme";
 import { Theme } from "src/models/Theme";
 import { BarAccomplishment } from "../bar/Bar";
 import { TextNameBlock } from "../language/TextLanguageBlock";
@@ -55,7 +55,7 @@ export const CardAccomplishment = ({
 
   useEffect(() => {
     if (Array.isArray(champ) && champ.length > 0) {
-      selectThemesById(champ).then(({ data }) => {
+      selectThemesByIdAndLanguage(champ).then(({ data }) => {
         setThemes(data ?? []);
       });
     }
@@ -241,7 +241,7 @@ export const CardUnlockAccomplishment = ({
 
   useEffect(() => {
     if (Array.isArray(champ) && champ.length > 0) {
-      selectThemesById(champ).then(({ data }) => {
+      selectThemesByIdAndLanguage(champ).then(({ data }) => {
         setThemes(data ?? []);
       });
     }

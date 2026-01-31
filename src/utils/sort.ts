@@ -166,3 +166,9 @@ export const sortByUsername = (
 
 export const sortByVoteDesc = (a: { vote: number }, b: { vote: number }) =>
   b.vote - a.vote;
+
+export const sortByIds = (
+  idsTheme: Array<number>,
+  a: { id: number },
+  b: { id: number }
+) => idsTheme.indexOf(a.id) - idsTheme.indexOf(b.id);

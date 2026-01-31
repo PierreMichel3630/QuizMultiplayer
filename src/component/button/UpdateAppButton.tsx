@@ -16,11 +16,12 @@ export const UpdateAppButton = ({ onUpdate }: Props) => {
   const { updateServiceWorker } = useRegisterSW();
   const { config } = useRealtime();
 
-  const updateApp = () => {
-    updateServiceWorker();
+  const updateApp = async () => {
+    await updateServiceWorker(true);
     if (onUpdate) {
       onUpdate();
     }
+    window.location.reload();
   };
 
   const needUpdate = useMemo(() => {

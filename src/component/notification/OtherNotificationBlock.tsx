@@ -19,13 +19,13 @@ interface NotificationData {
 export const OtherNotificationBlock = ({ notification }: Props) => {
   const data = useMemo(
     () => notification.data as NotificationData,
-    [notification]
+    [notification],
   );
 
   return (
     <Paper
       sx={{
-        zIndex: 1500,
+        zIndex: (theme) => theme.zIndex.appBar + 1,
         p: px(5),
         width: percent(100),
       }}

@@ -37,7 +37,7 @@ export default function PersonalizedPage() {
   const { setMessage, setSeverity } = useMessage();
   const { user, profile, setProfile } = useAuth();
   const { getMyTitles, getMyBadges } = useApp();
-  const { top } = useAppBar();
+  const { top, appBarVisible } = useAppBar();
 
   useEffect(() => {
     getMyTitles();
@@ -152,9 +152,9 @@ export default function PersonalizedPage() {
         <Grid
           sx={{
             position: "sticky",
-            top: top,
+            top: appBarVisible ? top : 0,
+            zIndex: (theme) => theme.zIndex.appBar + 1,
             transition: "top 350ms ease-in-out",
-            zIndex: 100,
             pb: 1,
           }}
           size={12}

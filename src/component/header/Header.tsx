@@ -16,11 +16,13 @@ import { SearchBar } from "../search/SearchBar";
 import { HeaderProfileBarMobile } from "./HeaderProfileBarMobile";
 import { StreakBlock } from "../StreakBlock";
 import { NotificationBadgeIcon } from "../button/NotificationBadge";
+import { AdminButton } from "../button/AdminButton";
+import { HeaderLogo } from "./HeaderLogo";
 
 export const Header = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { toogleOpenDrawer } = useAppBar();
+  const { toogleSizeDrawer } = useAppBar();
   const { user, streak } = useAuth();
   const isMobileOrTablet = useIsMobileOrTablet();
 
@@ -44,25 +46,7 @@ export const Header = () => {
                 alignItems: "center",
               }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: px(2),
-                  alignItems: "center",
-                  textDecoration: "none",
-                }}
-                component={Link}
-                to="/"
-              >
-                <img alt="logo" src={logo} width={25} />
-                <Typography
-                  variant="h4"
-                  color="text.secondary"
-                  sx={{ textTransform: "uppercase" }}
-                >
-                  {t("appname")}
-                </Typography>
-              </Box>
+              <HeaderLogo />
               <NoConnectBar />
             </Box>
           )}
@@ -77,7 +61,7 @@ export const Header = () => {
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton aria-label="menu" onClick={toogleOpenDrawer}>
+            <IconButton aria-label="menu" onClick={toogleSizeDrawer}>
               <MenuIcon fontSize="large" />
             </IconButton>
             <Box
@@ -123,6 +107,7 @@ export const Header = () => {
             </Box>
           ) : (
             <>
+              <AdminButton />
               <Link to={`/notifications`}>
                 <NotificationBadgeIcon />
               </Link>

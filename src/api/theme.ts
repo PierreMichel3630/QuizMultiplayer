@@ -11,7 +11,20 @@ import { Language } from "src/models/Language";
 
 export const SUPABASE_THEME_TABLE = "theme";
 export const SUPABASE_THEME_TRANSLATION_TABLE = "themetranslation";
+export const SUPABASE_VUEMOSTPLAYEDTHEME_TABLE = "viewmostplayedtheme";
 export const SUPABASE_VUETHEME_TABLE = "viewthemev3";
+
+export const selectMostPlayedTheme = (language: Language, limit = 10) => {
+  return supabase
+    .from(SUPABASE_VUEMOSTPLAYEDTHEME_TABLE)
+    .select("*, themetranslation!inner(id, name, language(*))")
+    .eq("enabled", true)
+    .eq("validate", true)
+    .eq("themetranslation.language", language.id)
+    .not("themetranslation.language", "is", null)
+    .order("players", { ascending: false })
+    .limit(limit);
+};
 
 export const selectThemesByModifiedAt = (modify_at: Moment) =>
   supabase
@@ -31,7 +44,7 @@ export const selectThemesByCreatedAt = (created_at: Moment) =>
     .gte("created_at", created_at.toISOString())
     .order("created_at", { ascending: false });
 
-export const selectThemesById = (
+export const selectThemesByIdAndLanguage = (
   ids: Array<string | number>,
   language?: string
 ) => {
@@ -77,6 +90,12 @@ export const countThemesByCategory = (
     .eq("enabled", true)
     .ilike(`namelower`, `%${search}%`)
     .eq("language", language.id);
+
+export const selectThemeByIds = (ids: Array<number>) =>
+  supabase
+    .from(SUPABASE_THEME_TABLE)
+    .select("*, themetranslation!inner(id, name, language(*))")
+    .in("id", ids);
 
 export const selectThemeById = (id: number) =>
   supabase

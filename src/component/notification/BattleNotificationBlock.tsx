@@ -33,7 +33,7 @@ export const BattleNotificationBlock = ({ notification, onDelete }: Props) => {
 
   const data = useMemo(
     () => notification.data as NotificationData,
-    [notification]
+    [notification],
   );
 
   const playBattle = (uuid: string) => {
@@ -59,7 +59,7 @@ export const BattleNotificationBlock = ({ notification, onDelete }: Props) => {
   return (
     <Paper
       sx={{
-        zIndex: 1500,
+        zIndex: (theme) => theme.zIndex.appBar + 1,
         p: px(5),
         width: percent(100),
       }}

@@ -28,8 +28,10 @@ export const FavoriteBlock = () => {
       getThemesAndCategoriesById(language, idCategories, idThemes).then(
         ({ data }) => {
           setItemsSearch(data ?? []);
-        }
+        },
       );
+    } else {
+      setItemsSearch([]);
     }
   }, [favorites, language]);
 
@@ -70,37 +72,42 @@ export const FavoriteSelectAvatarBlock = ({
     }
   }, [favorites, language]);
 
-  return (values.length > 0 && (<Grid container spacing={1}>
-    <Grid
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
-      size={12}>
-      <Typography variant="h2">{t("commun.favorite")}</Typography>
-    </Grid>
-    <Grid size={12}>
-      <Box
-        sx={{
-          display: "flex",
-          gap: px(5),
-          overflowX: "auto",
-          scrollbarWidth: "none",
-        }}
-      >
-        {values.map((theme, index) => (
-          <CardSelectAvatarTheme
-            key={index}
-            theme={theme}
-            avatars={avatars}
-            onSelect={() => select(theme)}
-          />
-        ))}
-      </Box>
-    </Grid>
-    <Grid size={12}>
-      <Divider sx={{ borderBottomWidth: 5 }} />
-    </Grid>
-  </Grid>));
+  return (
+    values.length > 0 && (
+      <Grid container spacing={1}>
+        <Grid
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+          size={12}
+        >
+          <Typography variant="h2">{t("commun.favorite")}</Typography>
+        </Grid>
+        <Grid size={12}>
+          <Box
+            sx={{
+              display: "flex",
+              gap: px(5),
+              overflowX: "auto",
+              scrollbarWidth: "none",
+            }}
+          >
+            {values.map((theme, index) => (
+              <CardSelectAvatarTheme
+                key={index}
+                theme={theme}
+                avatars={avatars}
+                onSelect={() => select(theme)}
+              />
+            ))}
+          </Box>
+        </Grid>
+        <Grid size={12}>
+          <Divider sx={{ borderBottomWidth: 5 }} />
+        </Grid>
+      </Grid>
+    )
+  );
 };

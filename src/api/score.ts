@@ -59,10 +59,10 @@ export const selectScoreByThemeAndPlayer = (player: string, theme: number) =>
     .maybeSingle();
 
 export const selectScore = (
-  language: Language,
   order: string,
   page: number,
   itemperpage = 25,
+  language?: Language,
   ids = [] as Array<number>,
   idsProfile = [] as Array<string>,
   start = undefined as Moment | undefined,
@@ -75,7 +75,6 @@ export const selectScore = (
     .select(
       "*, profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))), theme(color,image ,themetranslation!inner(name, language(*))), uuidgame(uuid, created_at)"
     )
-    .gt(order, 0)
     .not("profile", "in", `(${bots.join(",")})`)
     .not("theme", "is", null);
   if (ids.length > 0) {
@@ -90,9 +89,12 @@ export const selectScore = (
   if (end) {
     query = query.lte("created_at", end.toISOString());
   }
+  if (language) {
+    query = query
+      .eq("theme.themetranslation.language", language.id)
+      .not("theme.themetranslation.language", "is", null);
+  }
   return query
-    .eq("theme.themetranslation.language", language.id)
-    .not("theme.themetranslation.language", "is", null)
     .order(order, { ascending: false })
     .order("uuidgame(created_at)", { ascending: false })
     .range(from, to);
@@ -102,7 +104,8 @@ export const countPlayersByTheme = (theme: number) =>
   supabase
     .from(SUPABASE_SCORE_TABLE)
     .select("*", { count: "exact", head: true })
-    .eq("theme", theme);
+    .eq("theme", theme)
+    .not("profile", "in", `(${bots.join(",")})`);
 
 //Opposition
 

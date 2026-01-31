@@ -11,7 +11,7 @@ import { useAppBar } from "src/context/AppBarProvider";
 
 export default function PeoplePage() {
   const { t } = useTranslation();
-  const { top } = useAppBar();
+  const { top, appBarVisible } = useAppBar();
 
   const [search, setSearch] = useState("");
 
@@ -23,9 +23,9 @@ export default function PeoplePage() {
       <Box
         sx={{
           position: "sticky",
-          top: top,
+          top: appBarVisible ? top : 0,
+          zIndex: (theme) => theme.zIndex.appBar + 1,
           transition: "top 350ms ease-in-out",
-          zIndex: 3,
           p: 1,
           width: percent(100),
           bgcolor: "background.paper",

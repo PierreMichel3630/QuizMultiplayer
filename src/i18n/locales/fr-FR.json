@@ -161,6 +161,8 @@
     "no": "Non",
     "seeall": "Voir tous",
     "seemore": "Voir la suite",
+    "more": "Plus",
+    "less": "Moins",
     "seeallaccomplishment": "Voir tous les succès",
     "favorite": "Favoris",
     "addfavorite": "Ajouter aux favoris",
@@ -395,7 +397,11 @@
     "send": "Envoyé",
     "help": "Aide",
     "account": "Compte",
-    "helpregulations" : "Aide et règlement"
+    "helpregulations" : "Aide et règlement",
+    "mostplayed": "Les + joués",
+    "mostplayedthemes": "Thèmes les plus joués",
+    "lastplayedthemes": "Dernier thèmes joués",
+    "you": "Vous"
   },
   "abrevation": {
     "average": "Moy."
@@ -622,6 +628,9 @@
     },
     "gamemode": {
       "title": "Mode de jeu"
+    }, 
+    "mostplayedthemes": {
+      "title": "Thèmes les plus joués"
     }
   },
   "enum": {
@@ -999,6 +1008,17 @@
     "friend_request_accept": "{{username}} a accepté ta demande"
   },
   "patchnote": {
+    "2.0.4": {
+      "version": "2.0.4",
+      "changes" : [
+        "Affichage du menu via un scroll de gauche à droite sur mobile",
+        "Ajout des modules 'Joué récemment' et 'Les + joué' ",
+        "Mise à jour des librairies utilisées. (TECHNIQUE)"
+      ],
+      "bug": [
+        "Correction de la barre de recherche qui clignote lors du scroll"
+      ]
+    },
     "2.0.3": {
       "version": "2.0.3",
       "changes" : [
