@@ -20,7 +20,13 @@ export const router = createBrowserRouter([
           {
             path: "/",
             element: <NavigationOutletPage />,
-            children: [...AppNavigationRoutes, ...AppNavigationAndAppBarRoutes],
+            children: [
+              ...AppNavigationRoutes,
+              ...AppNavigationAndAppBarRoutes.map((el) => ({
+                ...el,
+                handle: { withAppBar: true },
+              })),
+            ],
           },
         ],
       },

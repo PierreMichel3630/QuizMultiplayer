@@ -20,185 +20,178 @@ import AdminPage from "src/pages/admin/AdminOutletPage";
 import ResetPasswordPage from "src/pages/connect/ResetPasswordPage";
 import ConfigTrainingPage from "src/pages/play/ConfigTrainingPage";
 
+import GameModePage from "src/pages/GameModePage";
+import MostPlayedThemePage from "src/pages/MostPlayedThemePage";
 import MyProposalsPage from "src/pages/MyProposalsPage";
 import PreviousThemePage from "src/pages/PreviousThemePage";
 import ProposeThemePage from "src/pages/ProposeThemePage";
+import SearchPage from "src/pages/SearchPage";
 import StreakPage from "src/pages/StreakPage";
 import UpdatedThemePage from "src/pages/UpdatedThemePage";
 import ChallengeOutletPage from "src/pages/challenge/ChallengeOutletPage";
 import ChallengePage from "src/pages/challenge/ChallengePage";
 import SharePage from "src/pages/help/SharePage";
-import AppBarOutletPage from "src/pages/outlet/AppBarOutletPage";
 import AvatarsPage from "src/pages/shop/AvatarsPage";
 import BadgesPage from "src/pages/shop/BadgesPages";
 import BannersPage from "src/pages/shop/BannersPage";
 import ShopPage from "src/pages/shop/ShopPage";
 import ShopThemePage from "src/pages/shop/ShopThemePage";
 import TitlesPage from "src/pages/shop/TitlesPage";
-import GameModePage from "src/pages/GameModePage";
-import SearchPage from "src/pages/SearchPage";
-import MostPlayedThemePage from "src/pages/MostPlayedThemePage";
 
 export const AppNavigationAndAppBarRoutes = [
   {
     path: "/",
-    element: <AppBarOutletPage />,
+    element: <ThemesPage />,
+  },
+  {
+    path: "/search",
+    element: <SearchPage />,
+  },
+  {
+    path: "/favorite",
+    element: <FavoritePage />,
+  },
+  {
+    path: "/mostplayedthemes",
+    element: <MostPlayedThemePage />,
+  },
+  {
+    path: "/previousgame",
+    element: <PreviousThemePage />,
+  },
+  {
+    path: "/new",
+    element: <NewThemePage />,
+  },
+  {
+    path: "/updated",
+    element: <UpdatedThemePage />,
+  },
+  {
+    path: "/categories",
+    element: <CategoriesPage />,
+  },
+  {
+    path: "/gamemode",
+    element: <GameModePage />,
+  },
+  {
+    path: "/category/:id",
+    element: <CategoryPage />,
+  },
+  {
+    path: "/theme/:id",
+    element: <ThemePage />,
+  },
+  {
+    path: "/administration",
+    element: (
+      <ProtectedRoute>
+        <AdminPage />
+      </ProtectedRoute>
+    ),
+    children: [...AdminRoutes],
+  },
+  {
+    path: "/resetpassword",
+    element: <ResetPasswordPage />,
+  },
+  {
+    path: "/personalized",
+    element: (
+      <ProtectedRoute>
+        <PersonalizedPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/accomplishments",
+    element: <AccomplishmentPage />,
+  },
+  {
+    path: "/compare",
+    element: (
+      <ProtectedRoute>
+        <ComparePage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/ranking",
+    element: <RankingPage />,
+  },
+  {
+    path: "/profil/:id",
+    element: <ProfilPage />,
+  },
+  {
+    path: "/people",
+    element: <PeoplePage />,
+  },
+  {
+    path: "/confidentiality",
+    element: <ConfidentialityPage />,
+  },
+  {
+    path: "/improve",
+    element: <ImprovePage />,
+  },
+  {
+    path: "/myproposals",
+    element: <MyProposalsPage />,
+  },
+  {
+    path: "/share",
+    element: <SharePage />,
+  },
+  {
+    path: "/proposetheme",
+    element: <ProposeThemePage />,
+  },
+  {
+    path: "/streak",
+    element: <StreakPage />,
+  },
+  {
+    path: "/games",
+    element: <HistoryGamePage />,
+  },
+  {
+    path: "/config/training/:themeid",
+    element: <ConfigTrainingPage />,
+  },
+  /* SHOP */
+  {
+    path: "/shop",
+    element: <ShopPage />,
+  },
+  {
+    path: "/avatars",
+    element: <AvatarsPage />,
+  },
+  {
+    path: "/banners",
+    element: <BannersPage />,
+  },
+  {
+    path: "/badges",
+    element: <BadgesPage />,
+  },
+  {
+    path: "/titles",
+    element: <TitlesPage />,
+  },
+  {
+    path: "/theme/:id/shop",
+    element: <ShopThemePage />,
+  },
+  {
+    path: "/challenge",
+    element: <ChallengeOutletPage />,
     children: [
       {
-        path: "/",
-        element: <ThemesPage />,
-      },
-      {
-        path: "/search",
-        element: <SearchPage />,
-      },
-      {
-        path: "/favorite",
-        element: <FavoritePage />,
-      },
-      {
-        path: "/mostplayedthemes",
-        element: <MostPlayedThemePage />,
-      },
-      {
-        path: "/previousgame",
-        element: <PreviousThemePage />,
-      },
-      {
-        path: "/new",
-        element: <NewThemePage />,
-      },
-      {
-        path: "/updated",
-        element: <UpdatedThemePage />,
-      },
-      {
-        path: "/categories",
-        element: <CategoriesPage />,
-      },
-      {
-        path: "/gamemode",
-        element: <GameModePage />,
-      },
-      {
-        path: "/category/:id",
-        element: <CategoryPage />,
-      },
-      {
-        path: "/theme/:id",
-        element: <ThemePage />,
-      },
-      {
-        path: "/administration",
-        element: (
-          <ProtectedRoute>
-            <AdminPage />
-          </ProtectedRoute>
-        ),
-        children: [...AdminRoutes],
-      },
-      {
-        path: "/resetpassword",
-        element: <ResetPasswordPage />,
-      },
-      {
-        path: "/personalized",
-        element: (
-          <ProtectedRoute>
-            <PersonalizedPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "/accomplishments",
-        element: <AccomplishmentPage />,
-      },
-      {
-        path: "/compare",
-        element: (
-          <ProtectedRoute>
-            <ComparePage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "/ranking",
-        element: <RankingPage />,
-      },
-      {
-        path: "/profil/:id",
-        element: <ProfilPage />,
-      },
-      {
-        path: "/people",
-        element: <PeoplePage />,
-      },
-      {
-        path: "/confidentiality",
-        element: <ConfidentialityPage />,
-      },
-      {
-        path: "/improve",
-        element: <ImprovePage />,
-      },
-      {
-        path: "/myproposals",
-        element: <MyProposalsPage />,
-      },
-      {
-        path: "/share",
-        element: <SharePage />,
-      },
-      {
-        path: "/proposetheme",
-        element: <ProposeThemePage />,
-      },
-      {
-        path: "/streak",
-        element: <StreakPage />,
-      },
-      {
-        path: "/games",
-        element: <HistoryGamePage />,
-      },
-      {
-        path: "/config/training/:themeid",
-        element: <ConfigTrainingPage />,
-      },
-      /* SHOP */
-      {
-        path: "/shop",
-        element: <ShopPage />,
-      },
-      {
-        path: "/avatars",
-        element: <AvatarsPage />,
-      },
-      {
-        path: "/banners",
-        element: <BannersPage />,
-      },
-      {
-        path: "/badges",
-        element: <BadgesPage />,
-      },
-      {
-        path: "/titles",
-        element: <TitlesPage />,
-      },
-      {
-        path: "/theme/:id/shop",
-        element: <ShopThemePage />,
-      },
-      {
         path: "/challenge",
-        element: <ChallengeOutletPage />,
-        children: [
-          {
-            path: "/challenge",
-            element: <ChallengePage />,
-          },
-        ],
+        element: <ChallengePage />,
       },
     ],
   },
