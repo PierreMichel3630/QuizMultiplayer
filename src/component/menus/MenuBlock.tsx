@@ -43,6 +43,7 @@ import { ICardImage } from "../card/CardImage";
 import { ImageCard } from "../image/ImageCard";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import { px } from "csx";
 
 interface MenuTitle {
   title: string;
@@ -72,6 +73,11 @@ export const MenuBlock = ({ sizeDrawer = DrawerSize.MEDIUM }: Props) => {
 
   const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
   const [maxFavoriteDisplay, setMaxFavoriteDisplay] = useState(3);
+
+  const isSmallDrawer = useMemo(
+    () => sizeDrawer === DrawerSize.SMALL,
+    [sizeDrawer],
+  );
 
   useEffect(() => {
     if (favorites.length > 0 && language) {
@@ -293,8 +299,8 @@ export const MenuBlock = ({ sizeDrawer = DrawerSize.MEDIUM }: Props) => {
               sx={{
                 display: "flex",
                 alignItems: "center",
-                gap: 2,
-                pl: 1,
+                gap: isSmallDrawer ? px(2) : 2,
+                pl: isSmallDrawer ? px(2) : 1,
                 cursor: "pointer",
               }}
               onClick={() =>

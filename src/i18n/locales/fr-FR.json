@@ -388,6 +388,7 @@
     "older": "Plus anciennes",
     "seenews": "Voir les nouveautés",
     "installupdate": "Installer la mise à jour",
+    "loadinginstallupdate": "Installation en cours",
     "newversionavailable": "La version {{version}} de l'application est disponible. Mettez vous à jour.",
     "appversion": "Version de l'application",
     "installupdatetitle": "Mettre à jour l'application",

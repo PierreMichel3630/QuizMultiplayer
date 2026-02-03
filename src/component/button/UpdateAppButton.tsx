@@ -1,41 +1,31 @@
 import DownloadIcon from "@mui/icons-material/Download";
-import { useMemo } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useRealtime } from "src/context/NotificationProvider";
 import { Colors } from "src/style/Colors";
-import { isVersionGreater } from "src/utils/compare";
-import { VERSION_APP } from "src/utils/config";
 import { useRegisterSW } from "virtual:pwa-register/react";
-import { ButtonColor } from "../Button";
+import { ButtonLoadingColor } from "../Button";
 
-interface Props {
-  onUpdate?: () => void;
-}
-export const UpdateAppButton = ({ onUpdate }: Props) => {
+export const UpdateAppButton = () => {
   const { t } = useTranslation();
-  const { updateServiceWorker } = useRegisterSW();
-  const { config } = useRealtime();
+  const {
+    updateServiceWorker,
+    needRefresh: [needRefresh],
+  } = useRegisterSW();
+
+  const [loading, setLoading] = useState(false);
 
   const updateApp = async () => {
+    setLoading(true);
     await updateServiceWorker(true);
-    if (onUpdate) {
-      onUpdate();
-    }
-    window.location.reload();
   };
 
-  const needUpdate = useMemo(() => {
-    const result = config
-      ? isVersionGreater(config.version_app, VERSION_APP)
-      : false;
-    return result;
-  }, [config]);
-
   return (
-    needUpdate && (
-      <ButtonColor
+    needRefresh && (
+      <ButtonLoadingColor
         typography="h6"
         iconSize={20}
+        loading={loading}
+        loadingIndicator={t("commun.loadinginstallupdate")}
         value={Colors.green}
         label={t("commun.installupdate")}
         icon={DownloadIcon}

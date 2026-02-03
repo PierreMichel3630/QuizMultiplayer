@@ -10,7 +10,8 @@ import {
 import { important, percent, px } from "csx";
 import { ElementType, ReactNode } from "react";
 import { Colors } from "src/style/Colors";
-interface Props extends ButtonProps {
+
+interface ButtonColorProps extends ButtonProps {
   value: string;
   label: string;
   icon?: ElementType;
@@ -30,7 +31,7 @@ export const ButtonColor = ({
   iconSize = 25,
   noWrap = false,
   ...props
-}: Props) => {
+}: ButtonColorProps) => {
   const style =
     variant && variant === "outlined"
       ? {
@@ -82,6 +83,87 @@ export const ButtonColor = ({
     >
       <Typography variant={typography} noWrap={noWrap}>
         {label}
+      </Typography>
+    </Button>
+  );
+};
+
+interface ButtonLoadingColorProps extends ButtonColorProps {
+  loading: boolean;
+  loadingIndicator: string;
+}
+export const ButtonLoadingColor = ({
+  icon,
+  value,
+  label,
+  loading,
+  loadingIndicator,
+  fullWidth = true,
+  typography = "h4",
+  variant = "outlined",
+  iconSize = 25,
+  noWrap = false,
+  ...props
+}: ButtonLoadingColorProps) => {
+  const style =
+    variant && variant === "outlined"
+      ? {
+          minWidth: "auto",
+          color: value,
+          borderColor: value,
+          borderWidth: 2,
+          padding: "3px 5px",
+          backgroundColor: Colors.colorApp,
+          "&:hover": {
+            opacity: 0.85,
+          },
+        }
+      : {
+          minWidth: "auto",
+          backgroundColor: important(value),
+          padding: "3px 5px",
+          color: Colors.white,
+          border: `2px solid ${value}`,
+          "&:hover": {
+            opacity: 0.85,
+          },
+        };
+
+  return icon ? (
+    <Button
+      size="small"
+      color="secondary"
+      sx={loading ? {} : { ...style }}
+      loading={loading}
+      loadingPosition="start"
+      startIcon={
+        <SvgIcon
+          component={icon}
+          inheritViewBox
+          sx={{ fontSize: important(px(iconSize)) }}
+        />
+      }
+      variant="contained"
+      fullWidth={fullWidth}
+      {...props}
+    >
+      <Typography variant={typography} noWrap={noWrap}>
+        {loading ? loadingIndicator : label}
+      </Typography>
+    </Button>
+  ) : (
+    <Button
+      size="small"
+      color="secondary"
+      sx={loading ? {} : { ...style }}
+      loading={loading}
+      loadingPosition="start"
+      variant="contained"
+      fullWidth={fullWidth}
+      {...props}
+    >
+      <Typography variant={typography} noWrap={noWrap}>
+        {loading ? loadingIndicator : label}
       </Typography>
     </Button>
   );

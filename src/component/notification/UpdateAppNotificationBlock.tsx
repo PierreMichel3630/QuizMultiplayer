@@ -8,18 +8,22 @@ import NewspaperIcon from "@mui/icons-material/Newspaper";
 import { useRealtime } from "src/context/NotificationProvider";
 import { ButtonColor } from "../Button";
 import { UpdateAppButton } from "../button/UpdateAppButton";
+import { useRegisterSW } from "virtual:pwa-register/react";
 
 export const UpdateAppNotificationBlock = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { config, needUpdate } = useRealtime();
+  const {
+    needRefresh: [needRefresh],
+  } = useRegisterSW();
+  const { config } = useRealtime();
 
   const seeNews = () => {
     navigate("/news");
   };
 
   return (
-    needUpdate && (
+    needRefresh && (
       <Paper
         sx={{
           zIndex: 1500,

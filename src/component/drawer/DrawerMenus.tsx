@@ -96,7 +96,7 @@ const DrawerContent = ({ size = DrawerSize.MEDIUM }: PropsDrawerContent) => {
   return (
     <>
       {!isMobileOrTablet && <DefaultToolbar />}
-      <Box sx={{ overflow: "auto" }}>
+      <Box sx={{ overflowY: "auto", overflowX: "hidden" }}>
         <Grid container spacing={1}>
           {isMobileOrTablet && (
             <Grid size={12} sx={{ p: 1 }}>

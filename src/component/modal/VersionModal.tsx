@@ -73,7 +73,7 @@ export const VersionModal = ({
             </Box>
           </Grid>
           <Grid size={12}>
-            <UpdateAppButton onUpdate={() => close()} />
+            <UpdateAppButton />
           </Grid>
         </Grid>
       </DialogContent>
