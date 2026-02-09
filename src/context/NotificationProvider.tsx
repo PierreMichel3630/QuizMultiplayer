@@ -25,10 +25,12 @@ const RealtimeContext = createContext<{
   config?: Config;
   notifications: Array<Notification>;
   getNotifications: () => void;
+  forceCheckUpdate: () => void;
 }>({
   config: undefined,
   notifications: [],
   getNotifications: () => {},
+  forceCheckUpdate: () => {},
 });
 
 export const useRealtime = () => useContext(RealtimeContext);
@@ -47,7 +49,6 @@ export const RealtimeProvider = ({ children }: Props) => {
   }, [config]);
 
   const forceCheckUpdate = async () => {
-    console.log("forceCheckUpdate");
     if (!("serviceWorker" in navigator)) return;
 
     const registration = await navigator.serviceWorker.getRegistration();
@@ -55,7 +56,6 @@ export const RealtimeProvider = ({ children }: Props) => {
   };
 
   useEffect(() => {
-    console.log(needUpdate);
     if (needUpdate) {
       forceCheckUpdate();
     }
@@ -178,6 +178,7 @@ export const RealtimeProvider = ({ children }: Props) => {
       notifications: notificationDisplay,
       getNotifications,
       config,
+      forceCheckUpdate,
     }),
     [notificationDisplay, getNotifications, config],
   );

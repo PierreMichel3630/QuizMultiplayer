@@ -38,7 +38,6 @@ const Body = () => {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.addEventListener("controllerchange", () => {
-        console.log("reload");
         window.location.reload();
       });
     }

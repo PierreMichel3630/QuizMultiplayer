@@ -47,6 +47,7 @@ export interface Theme {
   themetranslation: Array<ThemeTranslation>;
   categorytheme: Array<CategoryTheme>;
   generatequestion: boolean;
+  minversion?: string;
 }
 
 export interface ThemeInsertAdmin {
