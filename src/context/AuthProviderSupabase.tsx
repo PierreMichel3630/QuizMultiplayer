@@ -98,6 +98,8 @@ export const AuthProviderSupabase = ({ children }: Props) => {
             }
           });
         });
+      } else {
+        setProfile(null);
       }
     };
     localStorage.setItem("user", JSON.stringify(user));

@@ -16,6 +16,7 @@ export interface ICardImage {
   image?: string | JSX.Element;
   color?: string;
   type?: SearchType;
+  minversion?: string;
 }
 
 interface Props {
@@ -30,7 +31,7 @@ export const CardImage = ({ value, width = 90 }: Props) => {
 
   const borderColor = useMemo(
     () => (mode === "dark" ? Colors.white : Colors.black),
-    [mode]
+    [mode],
   );
 
   const isFavorite = useMemo(
@@ -38,9 +39,9 @@ export const CardImage = ({ value, width = 90 }: Props) => {
       favorites.some((favorite) =>
         value.type === SearchType.THEME
           ? favorite.theme === value.id
-          : favorite.category === value.id
+          : favorite.category === value.id,
       ),
-    [favorites, value]
+    [favorites, value],
   );
 
   const goLink = () => {
@@ -48,7 +49,7 @@ export const CardImage = ({ value, width = 90 }: Props) => {
       navigate(
         value.type === SearchType.THEME
           ? `/theme/${value.id}`
-          : `/category/${value.id}`
+          : `/category/${value.id}`,
       );
   };
 

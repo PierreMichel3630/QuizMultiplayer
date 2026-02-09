@@ -1,5 +1,5 @@
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { AppProvider } from "./context/AppProvider";
 import { AuthProviderSupabase } from "./context/AuthProviderSupabase";
@@ -34,6 +34,15 @@ const Body = () => {
   const theme = useMemo(() => getTheme(mode), [mode]);
 
   useViewportHeight();
+
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        window.location.reload();
+      });
+    }
+  }, []);
+
   return (
     <AppProvider>
       <RealtimeProvider>

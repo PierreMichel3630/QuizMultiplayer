@@ -7,6 +7,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { selectConfig } from "src/api/config";
 import { selectNotificationsNotRead } from "src/api/notification";
 import { supabase } from "src/api/supabase";
 import { Config } from "src/models/Config";
@@ -15,7 +16,6 @@ import { Notification } from "src/models/Notification";
 import { isVersionGreater } from "src/utils/compare";
 import { VERSION_APP } from "src/utils/config";
 import { useAuth } from "./AuthProviderSupabase";
-import { selectConfig } from "src/api/config";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[];
@@ -24,13 +24,13 @@ type Props = {
 const RealtimeContext = createContext<{
   config?: Config;
   notifications: Array<Notification>;
-  needUpdate: boolean;
   getNotifications: () => void;
+  forceCheckUpdate: () => void;
 }>({
   config: undefined,
   notifications: [],
-  needUpdate: false,
   getNotifications: () => {},
+  forceCheckUpdate: () => {},
 });
 
 export const useRealtime = () => useContext(RealtimeContext);
@@ -47,6 +47,19 @@ export const RealtimeProvider = ({ children }: Props) => {
       : false;
     return result;
   }, [config]);
+
+  const forceCheckUpdate = async () => {
+    if (!("serviceWorker" in navigator)) return;
+
+    const registration = await navigator.serviceWorker.getRegistration();
+    await registration?.update();
+  };
+
+  useEffect(() => {
+    if (needUpdate) {
+      forceCheckUpdate();
+    }
+  }, [needUpdate]);
 
   useEffect(() => {
     const getConfig = () => {
@@ -84,7 +97,7 @@ export const RealtimeProvider = ({ children }: Props) => {
           (payload) => {
             const notification = payload.new as Notification;
             setNotifications((prev) => [...prev, notification]);
-          }
+          },
         )
         .on(
           "postgres_changes",
@@ -98,7 +111,7 @@ export const RealtimeProvider = ({ children }: Props) => {
             setNotifications((prev) => {
               return [...prev].filter((el) => el.id !== notification.id);
             });
-          }
+          },
         )
         .on(
           "postgres_changes",
@@ -112,10 +125,10 @@ export const RealtimeProvider = ({ children }: Props) => {
             const notification = payload.new as Notification;
             setNotifications((prev) =>
               [...prev].map((el) =>
-                el.id === notification.id ? notification : el
-              )
+                el.id === notification.id ? notification : el,
+              ),
             );
-          }
+          },
         )
         .on(
           "postgres_changes",
@@ -127,7 +140,7 @@ export const RealtimeProvider = ({ children }: Props) => {
           (payload) => {
             const config = payload.new as Config;
             setConfig(config);
-          }
+          },
         )
         .subscribe();
     } else {
@@ -143,7 +156,7 @@ export const RealtimeProvider = ({ children }: Props) => {
           (payload) => {
             const config = payload.new as Config;
             setConfig(config);
-          }
+          },
         )
         .subscribe();
     }
@@ -156,7 +169,7 @@ export const RealtimeProvider = ({ children }: Props) => {
     const enumValues = Object.values(NotificationType);
 
     return [...notifications].filter((notification) =>
-      enumValues.includes(notification.type)
+      enumValues.includes(notification.type),
     );
   }, [notifications]);
 
@@ -164,10 +177,10 @@ export const RealtimeProvider = ({ children }: Props) => {
     () => ({
       notifications: notificationDisplay,
       getNotifications,
-      needUpdate,
       config,
+      forceCheckUpdate,
     }),
-    [notificationDisplay, getNotifications, needUpdate, config]
+    [notificationDisplay, getNotifications, config],
   );
 
   return (

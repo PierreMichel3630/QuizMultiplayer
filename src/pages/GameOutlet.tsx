@@ -19,16 +19,16 @@ export default function GameOutlet() {
   const duelGames = useMemo(
     () =>
       [...notifications].filter(
-        (el) => el.type === NotificationType.duel_request && !el.isread
+        (el) => el.type === NotificationType.duel_request && !el.isread,
       ),
-    [notifications]
+    [notifications],
   );
   const battles = useMemo(
     () =>
       [...notifications].filter(
-        (el) => el.type === NotificationType.battle_request && !el.isread
+        (el) => el.type === NotificationType.battle_request && !el.isread,
       ),
-    [notifications]
+    [notifications],
   );
 
   useEffect(() => {

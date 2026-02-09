@@ -44,7 +44,7 @@ export const DrawerMenus = () => {
         [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: "border-box" },
       }}
     >
-      <DrawerContent size={DrawerSize.MEDIUM} />
+      <DrawerContent size={DrawerSize.MEDIUM} onRedirect={toogleOpenDrawer} />
     </SwipeableDrawer>
   ) : (
     <Drawer
@@ -63,8 +63,12 @@ export const DrawerMenus = () => {
 
 interface PropsDrawerContent {
   size: DrawerSize;
+  onRedirect?: () => void;
 }
-const DrawerContent = ({ size = DrawerSize.MEDIUM }: PropsDrawerContent) => {
+const DrawerContent = ({
+  size = DrawerSize.MEDIUM,
+  onRedirect,
+}: PropsDrawerContent) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { language } = useUser();
@@ -91,12 +95,15 @@ const DrawerContent = ({ size = DrawerSize.MEDIUM }: PropsDrawerContent) => {
   const disconnect = async () => {
     await logout();
     navigate("/");
+    if (onRedirect) {
+      onRedirect();
+    }
   };
 
   return (
     <>
       {!isMobileOrTablet && <DefaultToolbar />}
-      <Box sx={{ overflow: "auto" }}>
+      <Box sx={{ overflowY: "auto", overflowX: "hidden" }}>
         <Grid container spacing={1}>
           {isMobileOrTablet && (
             <Grid size={12} sx={{ p: 1 }}>
@@ -115,7 +122,11 @@ const DrawerContent = ({ size = DrawerSize.MEDIUM }: PropsDrawerContent) => {
                 <Box
                   sx={{ p: 1, display: "flex", gap: 1, alignItems: "center" }}
                 >
-                  <Link to={`/personalized`} style={{ textDecoration: "none" }}>
+                  <Link
+                    to={`/personalized`}
+                    style={{ textDecoration: "none" }}
+                    onClick={onRedirect}
+                  >
                     <AvatarAccountBadge
                       avatar={profile.avatar.icon}
                       size={50}
@@ -132,6 +143,7 @@ const DrawerContent = ({ size = DrawerSize.MEDIUM }: PropsDrawerContent) => {
                         <Link
                           to={`/personalized`}
                           style={{ textDecoration: "none" }}
+                          onClick={onRedirect}
                         >
                           <CountryImageBlock
                             country={profile.country}
@@ -145,6 +157,7 @@ const DrawerContent = ({ size = DrawerSize.MEDIUM }: PropsDrawerContent) => {
                           textDecoration: "none",
                           maxWidth: "calc(100% -30px)",
                         }}
+                        onClick={onRedirect}
                       >
                         <Typography
                           variant="h4"
@@ -168,7 +181,11 @@ const DrawerContent = ({ size = DrawerSize.MEDIUM }: PropsDrawerContent) => {
                       <Box
                         sx={{ display: "flex", justifyContent: "flex-start" }}
                       >
-                        <Link to={`/shop`} style={{ textDecoration: "none" }}>
+                        <Link
+                          to={`/shop`}
+                          style={{ textDecoration: "none" }}
+                          onClick={onRedirect}
+                        >
                           <MoneyArrondieBlock
                             money={profile.money}
                             language={language}
@@ -205,7 +222,7 @@ const DrawerContent = ({ size = DrawerSize.MEDIUM }: PropsDrawerContent) => {
             </Grid>
           )}
           <Grid size={12}>
-            <MenuBlock sizeDrawer={size} />
+            <MenuBlock sizeDrawer={size} onRedirect={onRedirect} />
           </Grid>
         </Grid>
       </Box>

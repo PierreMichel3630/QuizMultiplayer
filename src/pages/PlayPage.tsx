@@ -39,7 +39,7 @@ export default function PlayPage() {
   const [mode, setMode] = useState<string | null>(null);
   const [openModalFriend, setOpenModalFriend] = useState(false);
   const [profileAdv, setProfileAdv] = useState<undefined | Profile>(
-    location.state ? location.state.opponent : undefined
+    location.state ? location.state.opponent : undefined,
   );
 
   const play = () => {
@@ -121,12 +121,12 @@ export default function PlayPage() {
                   </Grid>
                   <Grid size={6}>
                     <ButtonColorSelect select={mode === "duel"}>
-                      <DuelButton play={() => setMode("duel")} />
+                      <DuelButton play={() => setMode("duel")} theme={theme} />
                     </ButtonColorSelect>
                   </Grid>
                   <Grid size={6}>
                     <ButtonColorSelect select={mode === "solo"}>
-                      <SoloButton play={() => setMode("solo")} />
+                      <SoloButton play={() => setMode("solo")} theme={theme} />
                     </ButtonColorSelect>
                   </Grid>
                 </>

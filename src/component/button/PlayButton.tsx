@@ -13,29 +13,34 @@ import { useRealtime } from "src/context/NotificationProvider";
 
 interface Props {
   play: () => void;
+  theme: { minversion?: string };
 }
-export const DuelButton = ({ play }: Props) => {
+export const DuelButton = ({ play, theme }: Props) => {
   const { t } = useTranslation();
   const { config } = useRealtime();
 
   const [openModal, setOpenModal] = useState(false);
 
-  const versionMin = useMemo(
-    () => (config ? config.min_version_duel : "2.0.2"),
-    [config]
-  );
+  const isPlayableMode = useMemo(() => {
+    const version = config ? config.min_version_duel : "2.0.2";
+    let result = true;
+    if (config) {
+      result = isVersionGreaterOrEqual(VERSION_APP, version);
+    }
+    return result;
+  }, [config]);
+
+  const isPlayableTheme = useMemo(() => {
+    let result = true;
+    if (theme?.minversion) {
+      result = isVersionGreaterOrEqual(VERSION_APP, theme?.minversion);
+    }
+    return result;
+  }, [theme]);
 
   const playDuel = () => {
-    if (config) {
-      const isPlayable = isVersionGreaterOrEqual(
-        VERSION_APP,
-        config.min_version_duel
-      );
-      if (isPlayable) {
-        play();
-      } else {
-        setOpenModal(true);
-      }
+    if (isPlayableMode && isPlayableTheme) {
+      play();
     } else {
       setOpenModal(true);
     }
@@ -56,7 +61,7 @@ export const DuelButton = ({ play }: Props) => {
       />
       <VersionModal
         close={onClose}
-        versionMin={versionMin}
+        versionMin={config?.version_app}
         versionApp={VERSION_APP}
         open={openModal}
       />
@@ -64,31 +69,32 @@ export const DuelButton = ({ play }: Props) => {
   );
 };
 
-interface Props {
-  play: () => void;
-}
-export const SoloButton = ({ play }: Props) => {
+export const SoloButton = ({ play, theme }: Props) => {
   const { t } = useTranslation();
   const { config } = useRealtime();
 
   const [openModal, setOpenModal] = useState(false);
 
-  const versionMin = useMemo(
-    () => (config ? config.min_version_solo : "2.0.2"),
-    [config]
-  );
+  const isPlayableMode = useMemo(() => {
+    const version = config ? config.min_version_solo : "2.0.2";
+    let result = true;
+    if (config) {
+      result = isVersionGreaterOrEqual(VERSION_APP, version);
+    }
+    return result;
+  }, [config]);
+
+  const isPlayableTheme = useMemo(() => {
+    let result = true;
+    if (theme?.minversion) {
+      result = isVersionGreaterOrEqual(VERSION_APP, theme?.minversion);
+    }
+    return result;
+  }, [theme]);
 
   const playSolo = () => {
-    if (config) {
-      const isPlayable = isVersionGreaterOrEqual(
-        VERSION_APP,
-        config.min_version_solo
-      );
-      if (isPlayable) {
-        play();
-      } else {
-        setOpenModal(true);
-      }
+    if (isPlayableMode && isPlayableTheme) {
+      play();
     } else {
       setOpenModal(true);
     }
@@ -109,7 +115,7 @@ export const SoloButton = ({ play }: Props) => {
       />
       <VersionModal
         close={onClose}
-        versionMin={versionMin}
+        versionMin={config?.version_app}
         versionApp={VERSION_APP}
         open={openModal}
       />
@@ -117,31 +123,32 @@ export const SoloButton = ({ play }: Props) => {
   );
 };
 
-interface Props {
-  play: () => void;
-}
-export const TrainingButton = ({ play }: Props) => {
+export const TrainingButton = ({ play, theme }: Props) => {
   const { t } = useTranslation();
   const { config } = useRealtime();
 
   const [openModal, setOpenModal] = useState(false);
 
-  const versionMin = useMemo(
-    () => (config ? config.min_version_solo : "2.0.2"),
-    [config]
-  );
+  const isPlayableMode = useMemo(() => {
+    const version = config ? config.min_version_training : "2.0.2";
+    let result = true;
+    if (config) {
+      result = isVersionGreaterOrEqual(VERSION_APP, version);
+    }
+    return result;
+  }, [config]);
+
+  const isPlayableTheme = useMemo(() => {
+    let result = true;
+    if (theme?.minversion) {
+      result = isVersionGreaterOrEqual(VERSION_APP, theme?.minversion);
+    }
+    return result;
+  }, [theme]);
 
   const playTraining = () => {
-    if (config) {
-      const isPlayable = isVersionGreaterOrEqual(
-        VERSION_APP,
-        config.min_version_training
-      );
-      if (isPlayable) {
-        play();
-      } else {
-        setOpenModal(true);
-      }
+    if (isPlayableMode && isPlayableTheme) {
+      play();
     } else {
       setOpenModal(true);
     }
@@ -162,7 +169,7 @@ export const TrainingButton = ({ play }: Props) => {
       />
       <VersionModal
         close={onClose}
-        versionMin={versionMin}
+        versionMin={config?.version_app}
         versionApp={VERSION_APP}
         open={openModal}
       />

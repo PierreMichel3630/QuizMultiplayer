@@ -30,12 +30,15 @@ const HideOnScroll = (props: Props) => {
   );
 };
 
-export const AppBarBlock = () => {
+interface PropsAppBarBlock {
+  withAppBar?: boolean;
+}
+export const AppBarBlock = ({ withAppBar = false }: PropsAppBarBlock) => {
   const isMobileOrTablet = useIsMobileOrTablet();
 
   return (
     <>
-      {isMobileOrTablet ? (
+      {isMobileOrTablet && withAppBar && (
         <>
           <HideOnScroll>
             <Box>
@@ -44,7 +47,9 @@ export const AppBarBlock = () => {
           </HideOnScroll>
           <DefaultToolbar />
         </>
-      ) : (
+      )}
+
+      {!isMobileOrTablet && (
         <>
           <AppBarDefault />
           <DefaultToolbar />

@@ -63,7 +63,7 @@ export default function ThemePage() {
   const [openProposeQuestion, setOpenProposeQuestion] = useState(false);
   const [players, setPlayers] = useState<number | undefined>(undefined);
   const [questionsCount, setQuestionsCount] = useState<Array<QuestionCount>>(
-    []
+    [],
   );
   const [theme, setTheme] = useState<Theme | undefined>(undefined);
   const [loadingTheme, setLoadingTheme] = useState(true);
@@ -71,12 +71,12 @@ export default function ThemePage() {
 
   const loading = useMemo(
     () => loadingTheme || loadingQuestions,
-    [loadingQuestions, loadingTheme]
+    [loadingQuestions, loadingTheme],
   );
 
   const favorite = useMemo(
     () => favorites.find((el) => el.theme === Number(id)),
-    [id, favorites]
+    [id, favorites],
   );
 
   useEffect(() => {
@@ -105,6 +105,8 @@ export default function ThemePage() {
         setQuestionsCount(data ?? []);
         setLoadingQuestions(false);
       });
+    } else {
+      setLoadingQuestions(false);
     }
   }, [language, theme]);
 
@@ -182,7 +184,7 @@ export default function ThemePage() {
             .filter((el) => el.language.activate)
             .map((el) => el.language)
         : [],
-    [theme]
+    [theme],
   );
 
   const questions = useMemo(() => {
@@ -192,7 +194,7 @@ export default function ThemePage() {
         res = "∞";
       } else {
         const questionsLanguage = [...questionsCount].find(
-          (el) => el.language.id === language.id
+          (el) => el.language.id === language.id,
         );
         res = questionsLanguage ? questionsLanguage.questions : 0;
       }
@@ -204,7 +206,7 @@ export default function ThemePage() {
     let result = undefined;
     if (theme && language) {
       const themetranslation = [...theme.themetranslation].find(
-        (el) => el.language.id === language.id
+        (el) => el.language.id === language.id,
       );
       result = themetranslation?.name ?? undefined;
     }
@@ -368,13 +370,22 @@ export default function ThemePage() {
                           profile?.isadmin ? (
                             <>
                               <Grid size={12}>
-                                <DuelButton play={() => playDuel()} />
+                                <DuelButton
+                                  play={() => playDuel()}
+                                  theme={theme}
+                                />
                               </Grid>
                               <Grid size={12}>
-                                <SoloButton play={() => playSolo()} />
+                                <SoloButton
+                                  play={() => playSolo()}
+                                  theme={theme}
+                                />
                               </Grid>
                               <Grid size={12}>
-                                <TrainingButton play={() => playTraining()} />
+                                <TrainingButton
+                                  play={() => playTraining()}
+                                  theme={theme}
+                                />
                               </Grid>
                               <Grid size={12}>
                                 <ButtonColor
@@ -504,16 +515,7 @@ export default function ThemePage() {
             </Grid>
           </>
         ) : (
-          <Box
-            sx={{
-              display: "flex",
-              position: "absolute",
-              transform: "translate(0%, -50%)",
-              top: percent(50),
-              width: percent(100),
-              p: 2,
-            }}
-          >
+          <Grid size={12}>
             <Container maxWidth="md">
               <Grid container spacing={1}>
                 <Grid sx={{ textAlign: "center" }} size={12}>
@@ -547,7 +549,7 @@ export default function ThemePage() {
                 </Grid>
               </Grid>
             </Container>
-          </Box>
+          </Grid>
         )}
       </Grid>
       <SelectFriendModal

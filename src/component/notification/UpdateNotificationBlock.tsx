@@ -1,9 +1,10 @@
-import { Box, Button, Paper, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import { percent, px } from "csx";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Colors } from "src/style/Colors";
 import { useRegisterSW } from "virtual:pwa-register/react";
+import { UpdateAppButton } from "../button/UpdateAppButton";
 
 export const UpdateNotificationBlock = () => {
   const { t } = useTranslation();
@@ -11,7 +12,6 @@ export const UpdateNotificationBlock = () => {
 
   const {
     needRefresh: [needRefresh, setNeedRefresh],
-    updateServiceWorker,
   } = useRegisterSW({
     onRegisteredSW(swUrl) {
       console.log(`Service Worker at: ${swUrl}`);
@@ -24,11 +24,6 @@ export const UpdateNotificationBlock = () => {
       setNeedRefresh(true);
     },
   });
-
-  const updateApp = () => {
-    updateServiceWorker();
-    setNeedRefresh(false);
-  };
 
   return (
     needRefresh && (
@@ -54,11 +49,7 @@ export const UpdateNotificationBlock = () => {
           <Typography color="text.secondary">
             {t("commun.newversionavailable")}
           </Typography>
-          <Button size="large" onClick={updateApp}>
-            <Typography variant="h4" color="text.secondary">
-              {t("commun.install")}
-            </Typography>
-          </Button>
+          <UpdateAppButton />
         </Box>
       </Paper>
     )
