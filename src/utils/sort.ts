@@ -20,7 +20,7 @@ export const sortByGamesScore1Or2Desc = (
   b: {
     score1: undefined | { games: number };
     score2: undefined | { games: number };
-  }
+  },
 ) => {
   const valueA =
     (a.score1 ? a.score1.games : 0) + (a.score2 ? a.score2.games : 0);
@@ -38,7 +38,7 @@ export const sortByDuelGamesScore1Or2Desc = (
   b: {
     score1: undefined | { duelgames: number };
     score2: undefined | { duelgames: number };
-  }
+  },
 ) => {
   const valueA =
     (a.score1 ? a.score1.duelgames : 0) + (a.score2 ? a.score2.duelgames : 0);
@@ -56,15 +56,15 @@ export const sortByPointsGamesScore1Or2Desc = (
   b: {
     score1: undefined | { points: number };
     score2: undefined | { points: number };
-  }
+  },
 ) => {
   const valueA = Math.max(
     a.score1 ? a.score1.points : 0,
-    a.score2 ? a.score2.points : 0
+    a.score2 ? a.score2.points : 0,
   );
   const valueB = Math.max(
     b.score1 ? b.score1.points : 0,
-    b.score2 ? b.score2.points : 0
+    b.score2 ? b.score2.points : 0,
   );
 
   return valueB - valueA;
@@ -78,15 +78,15 @@ export const sortByRankGamesScore1Or2Desc = (
   b: {
     score1: undefined | { rank: number };
     score2: undefined | { rank: number };
-  }
+  },
 ) => {
   const valueA = Math.max(
     a.score1 ? a.score1.rank : 0,
-    a.score2 ? a.score2.rank : 0
+    a.score2 ? a.score2.rank : 0,
   );
   const valueB = Math.max(
     b.score1 ? b.score1.rank : 0,
-    b.score2 ? b.score2.rank : 0
+    b.score2 ? b.score2.rank : 0,
   );
 
   return valueB - valueA;
@@ -94,7 +94,7 @@ export const sortByRankGamesScore1Or2Desc = (
 
 export const sortByPointsDesc = (
   a: { points: number },
-  b: { points: number }
+  b: { points: number },
 ) => b.points - a.points;
 
 export const sortByRankDesc = (a: { rank: number }, b: { rank: number }) =>
@@ -117,7 +117,7 @@ export const sortByPriceDesc = (a: { price: number }, b: { price: number }) => {
 
 export const sortByIsaccomplishmentAndPriceDesc = (
   a: { isaccomplishment: boolean; price: number },
-  b: { isaccomplishment: boolean; price: number }
+  b: { isaccomplishment: boolean; price: number },
 ) => {
   return (
     Number(a.isaccomplishment) - Number(b.isaccomplishment) || a.price - b.price
@@ -126,31 +126,38 @@ export const sortByIsaccomplishmentAndPriceDesc = (
 
 export const sortByCreatedAt = (
   a: { created_at: Date },
-  b: { created_at: Date }
+  b: { created_at: Date },
 ) => moment(b.created_at).diff(moment(a.created_at));
 
 export const sortByModifyAt = (
   a: { modify_at: Date },
-  b: { modify_at: Date }
+  b: { modify_at: Date },
 ) => moment(b.modify_at).diff(moment(a.modify_at));
 
 export const sortByDuelGamesDesc = (
   a: { duelgames: number },
-  b: { duelgames: number }
+  b: { duelgames: number },
 ) => b.duelgames - a.duelgames;
 
-export const sortByName = (a: any, b: any) => a.name.localeCompare(b.name);
+export const sortByName = (a: { name: string }, b: { name: string }) =>
+  a.name.localeCompare(b.name);
+
+export const sortByOrderAndName = (
+  a: { name: string; order: number },
+  b: { name: string; order: number },
+) => a.order - b.order || a.name.localeCompare(b.name);
+
 export const sortByLanguageName = (language: Language, a: any, b: any) =>
   a.name[language.iso].localeCompare(b.name[language.iso]);
 
 export const sortByThemeTitle = (
   a: { theme: { title: string } },
-  b: { theme: { title: string } }
+  b: { theme: { title: string } },
 ) => a.theme.title.localeCompare(b.theme.title);
 
 export const sortByUnlock = (
   a: { unlock: boolean; price: number },
-  b: { unlock: boolean; price: number }
+  b: { unlock: boolean; price: number },
 ) => Number(b.unlock) - Number(a.unlock) || a.price - b.price;
 
 export const sortByGamesDesc = (a: { games: number }, b: { games: number }) =>
@@ -161,7 +168,7 @@ export const sortByUsValue = (a: { usvalue: string }, b: { usvalue: string }) =>
 
 export const sortByUsername = (
   a: { username: string },
-  b: { username: string }
+  b: { username: string },
 ) => a.username.localeCompare(b.username);
 
 export const sortByVoteDesc = (a: { vote: number }, b: { vote: number }) =>
@@ -170,5 +177,5 @@ export const sortByVoteDesc = (a: { vote: number }, b: { vote: number }) =>
 export const sortByIds = (
   idsTheme: Array<number>,
   a: { id: number },
-  b: { id: number }
+  b: { id: number },
 ) => idsTheme.indexOf(a.id) - idsTheme.indexOf(b.id);

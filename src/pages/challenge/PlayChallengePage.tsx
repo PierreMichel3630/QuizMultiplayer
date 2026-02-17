@@ -20,6 +20,7 @@ import { useUser } from "src/context/UserProvider";
 import { decryptToNumber } from "src/utils/crypt";
 import { preloadAllImages } from "src/utils/preload";
 import { getResponse, verifyResponseCrypt } from "src/utils/response";
+import { DEFAULT_TIME_QUESTION } from "src/utils/config";
 
 export default function PlayChallengePage() {
   const { t } = useTranslation();
@@ -54,7 +55,7 @@ export default function PlayChallengePage() {
 
   const numberQuestions = useMemo(
     () => correctAnswer + wrongAnswer,
-    [correctAnswer, wrongAnswer]
+    [correctAnswer, wrongAnswer],
   );
 
   const validateResponse = (value?: AnswerUser) => {
@@ -67,7 +68,7 @@ export default function PlayChallengePage() {
         : false;
       const response = getResponse(question, language);
       const questionsgame: Array<unknown> = JSON.parse(
-        localStorage.getItem(uuidGame) ?? "[]"
+        localStorage.getItem(uuidGame) ?? "[]",
       );
       questionsgame.push({
         ...question,
@@ -102,7 +103,7 @@ export default function PlayChallengePage() {
       setIsEnd(true);
       blockerState?.reset?.();
       const questionsgame: Array<unknown> = JSON.parse(
-        localStorage.getItem(uuidGame) ?? "[]"
+        localStorage.getItem(uuidGame) ?? "[]",
       );
       endChallenge(questionsgame, uuidGame).then(({ data }) => {
         navigate(`/challenge/game/${uuidGame}`, {
@@ -117,14 +118,19 @@ export default function PlayChallengePage() {
   }, [blockerState, navigate, uuidGame]);
 
   useEffect(() => {
+    let newtimeoutQuestion: number | undefined = undefined;
     if (question) {
+      const time = Number(question.time);
+      const timerTimeout = Number.isNaN(time)
+        ? DEFAULT_TIME_QUESTION * 10000
+        : time * 10000;
       setTimer(question.time);
-      const newtimeoutQuestion = setTimeout(async () => {
+      newtimeoutQuestion = setTimeout(async () => {
         if (question && uuidGame) {
           const result = false;
           const response = decryptToNumber(question.response);
           const questionsgame: Array<unknown> = JSON.parse(
-            localStorage.getItem(uuidGame) ?? "[]"
+            localStorage.getItem(uuidGame) ?? "[]",
           );
           questionsgame.push({
             ...question,
@@ -152,11 +158,15 @@ export default function PlayChallengePage() {
             }
           }, DELAY_BETWEEN_QUESTION);
         }
-      }, question.time * 1000);
+      }, timerTimeout);
       setTimeoutQuestion(newtimeoutQuestion);
     } else {
       setTimer(undefined);
     }
+
+    return () => {
+      clearTimeout(newtimeoutQuestion);
+    };
   }, [end, question, questions, uuidGame]);
 
   useEffect(() => {
@@ -165,26 +175,26 @@ export default function PlayChallengePage() {
         selectChallengeGameByUuid(uuidGame).then(({ data }) => {
           const challengeGame = data as ChallengeGame;
           const questions = challengeGame.challenge.questionsv2;
-          const hasgame = localStorage.getItem(uuidGame) !== null;
+          const hasgame = safeGetStorage(uuidGame) !== null;
           if (hasgame) {
             const questionsgame = JSON.parse(
-              localStorage.getItem(uuidGame) ?? "[]"
+              localStorage.getItem(uuidGame) ?? "[]",
             ) as Array<QuestionSolo>;
             const indexNextQuestion = questionsgame.length;
             setResponse(undefined);
             const correct = [...questionsgame].reduce(
               (acc, el) => (el.resultPlayer1 === true ? acc + 1 : acc),
-              0
+              0,
             );
             const wrong = [...questionsgame].reduce(
               (acc, el) => (el.resultPlayer1 === false ? acc + 1 : acc),
-              0
+              0,
             );
             setCorrectAnswer(correct);
             setWrongAnswer(wrong);
             setQuestions(questions);
             if (indexNextQuestion < questions.length - 1) {
-              setQuestion(questions[indexNextQuestion] as QuestionSolo);
+              setQuestion(questions[indexNextQuestion]);
             } else {
               navigate(`/challenge/game/${uuidGame}`, {
                 state: {
@@ -212,10 +222,12 @@ export default function PlayChallengePage() {
   const shouldBlock = useCallback(() => !isEnd, [isEnd]);
   const blocker = useBlocker(shouldBlock);
 
-  if (blocker.state === "blocked" && !openConfirmModal) {
-    setOpenConfirmModal(true);
-    setBlockerState(blocker);
-  }
+  useEffect(() => {
+    if (blocker.state === "blocked" && !openConfirmModal) {
+      setOpenConfirmModal(true);
+      setBlockerState(blocker);
+    }
+  }, [blocker, openConfirmModal]);
 
   const handleConfirm = () => {
     setOpenConfirmModal(false);
@@ -225,6 +237,14 @@ export default function PlayChallengePage() {
   const handleCancel = () => {
     setOpenConfirmModal(false);
     blockerState?.reset?.();
+  };
+
+  const safeGetStorage = (key: string) => {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
   };
 
   return (

@@ -126,6 +126,7 @@
     "loose": "Perdu !",
     "equality": "Égalité !",
     "cancelgame": "Match annulé",
+    "cancel": "Abandonner",
     "opponentdontjoin": "Votre adversaire n'a pas rejoint le match à temps.",
     "color": "Couleur",
     "myorigincountry": "Pays d'origine",
@@ -404,7 +405,12 @@
     "mostplayed": "Les + joués",
     "mostplayedthemes": "Thèmes les plus joués",
     "lastplayedthemes": "Dernier thèmes joués",
-    "you": "Vous"
+    "you": "Vous",
+    "item_one": "{{count}} élément",
+    "item_other": "{{count}} éléments",
+    "attempt_one": "{{count}} tentative",
+    "attempt_other": "{{count}} tentatives",
+    "finditem": "{{value}}/{{total}} trouvés"
   },
   "abrevation": {
     "average": "Moy."
@@ -634,6 +640,9 @@
     }, 
     "mostplayedthemes": {
       "title": "Thèmes les plus joués"
+    }, 
+    "lists": {
+      "title": "Mode de jeu liste"
     }
   },
   "enum": {
@@ -985,6 +994,7 @@
   },
   "mode": {
     "fightfriend":"Combat contre un ami",
+    "list":"Mode Liste",
     "randomquestion": "Question Aléatoire",
     "randomtheme": "Thème Aléatoire"
   },
@@ -1011,6 +1021,16 @@
     "friend_request_accept": "{{username}} a accepté ta demande"
   },
   "patchnote": {
+    "2.1.0": {
+      "version": "2.1.0",
+      "changes" : ["Ajout du mode liste, devinez tous les élements d'une liste définie (Par exemple : Top 10 plus grand pays du monde). Pas de classement pour l'instant"],
+      "bug": []
+    },
+    "2.0.8": {
+      "version": "2.0.8",
+      "changes" : [],
+      "bug": ["Correction du défis du jour pour Apple 11"]
+    },
     "2.0.7": {
       "version": "2.0.7",
       "changes" : [],

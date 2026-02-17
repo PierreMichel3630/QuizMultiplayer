@@ -3,5 +3,6 @@ export interface GameMode {
   image: string;
   color: string;
   name: string;
+  order: number;
   onClick: () => void;
 }

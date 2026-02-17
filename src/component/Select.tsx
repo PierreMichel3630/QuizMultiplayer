@@ -22,7 +22,6 @@ import { colorDifficulty, Difficulty } from "src/models/enum/DifficultyEnum";
 import { Language } from "src/models/Language";
 import { ThemeShop } from "src/models/Shop";
 import { Colors } from "src/style/Colors";
-import { sortByName } from "src/utils/sort";
 import { AutocompleteInputTheme } from "./Autocomplete";
 import { ICardImage } from "./card/CardImage";
 import { ImageThemeBlock } from "./ImageThemeBlock";
@@ -197,10 +196,7 @@ export const SelectThemeShop = ({ theme, onChange }: PropsSelectThemeShop) => {
     });
   }, []);
 
-  const options = useMemo(
-    () => [...themes].sort((a, b) => sortByName(a, b)),
-    [themes]
-  );
+  const options = useMemo(() => [...themes], [themes]);
 
   return (
     <Autocomplete
@@ -352,7 +348,7 @@ export const SelectCategory = ({ value, onChange }: PropsSelectCategory) => {
     Array<{ id: number; name: string }>
   >([]);
   const [category, setCategory] = useState<{ id: number; name: string } | null>(
-    null
+    null,
   );
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);

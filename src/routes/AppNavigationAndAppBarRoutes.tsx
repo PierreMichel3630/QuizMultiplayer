@@ -31,6 +31,7 @@ import UpdatedThemePage from "src/pages/UpdatedThemePage";
 import ChallengeOutletPage from "src/pages/challenge/ChallengeOutletPage";
 import ChallengePage from "src/pages/challenge/ChallengePage";
 import SharePage from "src/pages/help/SharePage";
+import ListsPage from "src/pages/modes/list/ListsPage";
 import AvatarsPage from "src/pages/shop/AvatarsPage";
 import BadgesPage from "src/pages/shop/BadgesPages";
 import BannersPage from "src/pages/shop/BannersPage";
@@ -74,6 +75,10 @@ export const AppNavigationAndAppBarRoutes = [
   {
     path: "/gamemode",
     element: <GameModePage />,
+  },
+  {
+    path: "/list",
+    element: <ListsPage />,
   },
   {
     path: "/category/:id",

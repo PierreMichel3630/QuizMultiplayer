@@ -10,6 +10,7 @@ import RecapSoloPage from "src/pages/play/RecapSoloPage";
 import SoloPage from "src/pages/play/SoloPage";
 import TrainingPage from "src/pages/play/TrainingPage";
 import { ProtectedRoute } from "./ProtectedRoute";
+import ListPage from "src/pages/modes/list/ListPage";
 
 export const PlayModeRoutes = [
   {
@@ -63,5 +64,9 @@ export const PlayModeRoutes = [
   {
     path: "/recapduel/:uuidGame",
     element: <RecapDuelPage />,
+  },
+  {
+    path: "/list/:id",
+    element: <ListPage />,
   },
 ];

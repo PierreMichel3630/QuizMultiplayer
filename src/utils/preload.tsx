@@ -14,6 +14,11 @@ export const PreloadImages = ({ urls }: Props) => (
 
 export const preloadAllImages = (srcList: string[]): Promise<void> => {
   return new Promise((resolve) => {
+    // si la liste est vide
+    if (srcList.length === 0) {
+      resolve();
+    }
+
     let loaded = 0;
 
     const checkDone = () => {
@@ -26,13 +31,8 @@ export const preloadAllImages = (srcList: string[]): Promise<void> => {
     srcList.forEach((src) => {
       const img = new Image();
       img.onload = checkDone;
-      img.onerror = checkDone; // même si erreur, on considère comme "chargée"
+      img.onerror = checkDone;
       img.src = src;
     });
-
-    // si la liste est vide
-    if (srcList.length === 0) {
-      resolve();
-    }
   });
 };

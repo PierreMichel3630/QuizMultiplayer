@@ -25,14 +25,14 @@ export const TextLabelBlock = ({
   const { language } = useUser();
   const languageText = useMemo(
     () => languageParameter ?? language,
-    [languageParameter, language]
+    [languageParameter, language],
   );
 
   const label = useMemo(() => {
     const translations = [...values];
     if (languageText && translations.length > 0) {
       const trad = translations.find(
-        (el) => el.language.id === languageText?.id
+        (el) => el.language.id === languageText?.id,
       );
       const labelTranslation = trad ? trad.label : translations[0].label;
       const labelNoTranslation = trad ? trad.label : undefined;
@@ -68,8 +68,42 @@ export const TextNameBlock = ({
   const name = useMemo(() => {
     const translations = values ? [...values] : [];
     if (language && translations.length > 0) {
-      const trad = translations.find((el) => typeof(el.language) === "number" ? el.language === language?.id :  el.language.id === language?.id);
+      const trad = translations.find((el) =>
+        typeof el.language === "number"
+          ? el.language === language?.id
+          : el.language.id === language?.id,
+      );
       return trad ? trad.name : translations[0].name;
+    }
+    return "";
+  }, [language, values]);
+
+  return <Typography {...typographyProps}>{name}</Typography>;
+};
+
+interface TextQuestion {
+  question: string;
+  language: number | Language;
+}
+
+interface PropsTextQuestionBlock extends TypographyProps {
+  values: Array<TextQuestion>;
+}
+
+export const TextQuestionBlock = ({
+  values,
+  ...typographyProps
+}: PropsTextQuestionBlock) => {
+  const { language } = useUser();
+  const name = useMemo(() => {
+    const translations = values ? [...values] : [];
+    if (language && translations.length > 0) {
+      const trad = translations.find((el) =>
+        typeof el.language === "number"
+          ? el.language === language?.id
+          : el.language.id === language?.id,
+      );
+      return trad ? trad.question : translations[0].question;
     }
     return "";
   }, [language, values]);

@@ -10,12 +10,17 @@ import { useUser } from "src/context/UserProvider";
 import { SearchType } from "src/models/enum/TypeCardEnum";
 import { ImageCard } from "../image/ImageCard";
 
+export interface ICardImageOrder extends ICardImage {
+  order: number;
+}
+
 export interface ICardImage {
   id: number;
   name: string;
   image?: string | JSX.Element;
   color?: string;
   type?: SearchType;
+  onClick?: () => void;
   minversion?: string;
 }
 
@@ -55,7 +60,7 @@ export const CardImage = ({ value, width = 90 }: Props) => {
 
   return (
     <Box
-      onClick={() => goLink()}
+      onClick={() => (value.onClick ? value.onClick() : goLink())}
       sx={{
         display: "flex",
         alignItems: "center",

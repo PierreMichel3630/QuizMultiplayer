@@ -44,9 +44,12 @@ export const selectThemesByCreatedAt = (created_at: Moment) =>
     .gte("created_at", created_at.toISOString())
     .order("created_at", { ascending: false });
 
+export const selectThemesByIds = (ids: Array<string | number>) =>
+  supabase.from(SUPABASE_THEME_TABLE).select().in("id", ids);
+
 export const selectThemesByIdAndLanguage = (
   ids: Array<string | number>,
-  language?: string
+  language?: string,
 ) => {
   let query = supabase.from(SUPABASE_THEME_TABLE).select();
   if (language) {
@@ -60,7 +63,7 @@ export const selectThemesByCategory = (
   id: number | string,
   search = "",
   page = 0,
-  itemperpage = 25
+  itemperpage = 25,
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
@@ -80,7 +83,7 @@ export const selectThemesByCategory = (
 export const countThemesByCategory = (
   id: number | string,
   language: Language,
-  search = ""
+  search = "",
 ) =>
   supabase
     .from(SUPABASE_VUETHEME_TABLE)
@@ -101,7 +104,7 @@ export const selectThemeById = (id: number) =>
   supabase
     .from(SUPABASE_THEME_TABLE)
     .select(
-      "*, themetranslation!inner(id, name, language(*)), categorytheme(*)"
+      "*, themetranslation!inner(id, name, language(*)), categorytheme(*)",
     )
     .eq("id", id)
     .maybeSingle();
@@ -124,11 +127,11 @@ export const insertTheme = (value: ThemeInsert) =>
   supabase.from(SUPABASE_THEME_TABLE).insert(value).select().single();
 
 export const insertThemeTranslations = (
-  values: Array<ThemeTranslationInsert>
+  values: Array<ThemeTranslationInsert>,
 ) => supabase.from(SUPABASE_THEME_TRANSLATION_TABLE).insert(values);
 
 export const updateThemeTranslations = (
-  values: Array<ThemeTranslationUpdate>
+  values: Array<ThemeTranslationUpdate>,
 ) => supabase.from(SUPABASE_THEME_TRANSLATION_TABLE).upsert(values);
 
 export const insertThemeTranslation = (values: Array<ThemeTranslationInsert>) =>
@@ -180,7 +183,7 @@ export const searchThemes = (
   language: Language,
   search: string,
   page = 0,
-  itemperpage = 20
+  itemperpage = 20,
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;

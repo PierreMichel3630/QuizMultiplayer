@@ -1,10 +1,11 @@
-export const VERSION_APP = "2.0.7";
+export const VERSION_APP = "2.1.0";
 
 export const MAX_DAY_NEW_THEME = 14;
 export const MAX_DAY_UPDATED_THEME = 14;
 export const VERSION_QUESTION = 2;
 export const MAX_MOST_PLAYED_THEME = 20;
 export const MAX_LAST_PLAYED_THEME = 20;
+export const DEFAULT_TIME_QUESTION = 20; // en secondes
 
 // LIEN
 export const urlYoutube = "https://www.youtube.com/@QuizBattleofficial";

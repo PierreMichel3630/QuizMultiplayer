@@ -19,6 +19,12 @@ export const selectCategoryById = (id: string | number) =>
     .eq("id", id)
     .maybeSingle();
 
+export const selectCategoriesByIds = (ids: Array<string | number>) =>
+  supabase
+    .from(SUPABASE_CATEGORY_TABLE)
+    .select("*, categorytranslation!inner(id, name, language(*))")
+    .in("id", ids);
+
 export const insertCategoryTheme = (values: Array<CategoryThemeInsert>) =>
   supabase.from(SUPABASE_CATEGORYTHEME_TABLE).insert(values);
 
@@ -65,7 +71,7 @@ export const searchCategories = (
   language: Language,
   search: string,
   page = 0,
-  itemperpage = 20
+  itemperpage = 20,
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
