@@ -1,17 +1,18 @@
 import { Box, Paper, Typography } from "@mui/material";
+import { percent, px } from "csx";
 import moment from "moment";
 import { useMemo } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useUser } from "src/context/UserProvider";
 import {
+  ListAnswer,
   ListAnswerPlay,
-  ListAnswerTranslation,
   ListTranslation,
-  ListType,
+  TypeList,
 } from "src/models/List";
-import { ImageCard } from "../image/ImageCard";
 import { Colors } from "src/style/Colors";
+import { ImageCard } from "../image/ImageCard";
 
 interface Props {
   value: ListTranslation;
@@ -59,10 +60,12 @@ export const CardList = ({ value }: Props) => {
 interface PropsCardAnswerList {
   value: ListAnswerPlay;
   showAnswer?: boolean;
+  type?: TypeList;
 }
 
 export const CardAnswerList = ({
   value,
+  type,
   showAnswer = false,
 }: PropsCardAnswerList) => {
   const { language } = useUser();
@@ -90,6 +93,22 @@ export const CardAnswerList = ({
         }}
         elevation={8}
       >
+        {value.image && (
+          <Box sx={{ maxWidth: px(70), maxHeight: px(70) }}>
+            <img
+              src={value.image}
+              data-src={value.image}
+              loading="lazy"
+              style={{
+                maxHeight: percent(100),
+                maxWidth: percent(100),
+                objectFit: "contain",
+                backgroundColor: Colors.grey2,
+                outline: "2px solid black",
+              }}
+            />
+          </Box>
+        )}
         <Typography
           variant="h2"
           sx={{
@@ -98,26 +117,27 @@ export const CardAnswerList = ({
         >
           {value.hasAnswer || showAnswer ? answer.name : ""}
         </Typography>
-        <ValueAnswerList value={answer} />
+        <ValueAnswerList value={value} type={type} />
       </Paper>
     )
   );
 };
 
 interface PropsValueAnswerList {
-  value: ListAnswerTranslation;
+  value: ListAnswer;
+  type?: TypeList;
 }
 
-export const ValueAnswerList = ({ value }: PropsValueAnswerList) => {
+export const ValueAnswerList = ({ value, type }: PropsValueAnswerList) => {
   const label = useMemo(() => {
     let result = undefined;
-    if (value.type === ListType.DATE) {
+    if (type === TypeList.DATE) {
       result = moment(value.value).toLocaleString();
-    } else if (value.type === ListType.NUMBER) {
+    } else if (type === TypeList.NUMBER) {
       result = Number(value.value).toLocaleString();
     }
     return result;
-  }, [value]);
+  }, [type, value.value]);
 
   return (
     <Box

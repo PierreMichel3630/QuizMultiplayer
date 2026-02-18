@@ -11,13 +11,20 @@ import {
   TextQuestionBlock,
 } from "src/component/language/TextLanguageBlock";
 import { TitleBlock } from "src/component/title/Title";
-import { List, ListAnswer, ListAnswerPlay } from "src/models/List";
+import {
+  List,
+  ListAnswer,
+  ListAnswerPlay,
+  OrderList,
+  TypeList,
+} from "src/models/List";
 import { compareString } from "src/utils/string";
 
+import CancelIcon from "@mui/icons-material/Cancel";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
-import CancelIcon from "@mui/icons-material/Cancel";
 import { px } from "csx";
+import { shuffle } from "lodash";
 import moment from "moment";
 import { ButtonColor } from "src/component/Button";
 import { LogoIcon } from "src/icons/LogoIcon";
@@ -55,13 +62,19 @@ export default function ListPage() {
 
   useEffect(() => {
     if (id) {
-      selectListById(id).then(({ data }) => {
-        setList(data);
-      });
-      selectListAnswerByListId(id).then(({ data }) => {
-        const res: Array<ListAnswer> = data ?? [];
-        setTotal(res.length);
-        setAnswers([...res].map((el) => ({ ...el, hasAnswer: false })));
+      selectListById(id).then((resList) => {
+        const list: List | null = resList.data;
+        const type = list ? list.type : TypeList.TEXT;
+        const order = list && list.order ? list.order : OrderList.DESC;
+        setList(list);
+        selectListAnswerByListId(id).then(({ data }) => {
+          const res: Array<ListAnswer> = data ?? [];
+          setTotal(res.length);
+          const answersSort = orderAnswers(res, type, order);
+          setAnswers(
+            [...answersSort].map((el) => ({ ...el, hasAnswer: false })),
+          );
+        });
       });
     }
   }, [id]);
@@ -147,6 +160,27 @@ export default function ListPage() {
     return res;
   }, [correctAnswer]);
 
+  const orderAnswers = (
+    answers: Array<ListAnswer>,
+    type: TypeList,
+    order = OrderList.DESC,
+  ) => {
+    let result = [...answers];
+    if (type === TypeList.NUMBER) {
+      console.log(order);
+      const asc = (a: ListAnswer, b: ListAnswer) =>
+        Number(a.value) - Number(b.value);
+      const desc = (a: ListAnswer, b: ListAnswer) =>
+        Number(b.value) - Number(a.value);
+      result = [...answers].sort(order === OrderList.DESC ? desc : asc);
+    } else if (type === TypeList.IMAGE) {
+      result = shuffle([...answers]);
+    } else if (type === TypeList.DATE) {
+      result = [...answers];
+    }
+    return result;
+  };
+
   return (
     <Container maxWidth="sm">
       <Grid container>
@@ -166,7 +200,7 @@ export default function ListPage() {
                           values={list.listtranslation}
                         />
                       }
-                      link="/"
+                      link="/list"
                     />
                   </Grid>
                   <Grid size={12} sx={{ textAlign: "center" }}>
@@ -372,6 +406,7 @@ export default function ListPage() {
                       <CardAnswerList
                         value={answer}
                         showAnswer={statusGame === Status.FINISH}
+                        type={list.type}
                       />
                     </Grid>
                   ))}

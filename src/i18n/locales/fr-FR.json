@@ -1021,6 +1021,11 @@
     "friend_request_accept": "{{username}} a accepté ta demande"
   },
   "patchnote": {
+    "2.1.1": {
+      "version": "2.1.1",
+      "changes" : ["Amélioration du mode liste, ajout d'image (pour les listes de drapeaux par exemple) et trie par ordre de valeur (Si image le trie est random)"],
+      "bug": []
+    },
     "2.1.0": {
       "version": "2.1.0",
       "changes" : ["Ajout du mode liste, devinez tous les élements d'une liste définie (Par exemple : Top 10 plus grand pays du monde). Pas de classement pour l'instant"],

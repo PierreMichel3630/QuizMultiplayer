@@ -28,7 +28,9 @@ export const searchListPaginate = (
     .from(SUPABASE_LISTTRANSLATION_TABLE)
     .select("*, list(*)")
     .ilike(`namelower`, `%${searchLower}%`)
+    .eq("list.enabled", true)
     .eq("language", language.id)
+    .not("list", "is", null)
     .range(from, to)
     .order(`namelower`, { ascending: true });
 };
