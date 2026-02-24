@@ -193,8 +193,8 @@
     "addlanguage": "Ajouter une langue",
     "addavatar": "Ajouter un avatar",
     "addbanner": "Ajouter une photo de couverture",
-    "addtitle" : "Ajouter un titre",
-    "addtranslation" : "Ajouter une traduction",
+    "addtitle": "Ajouter un titre",
+    "addtranslation": "Ajouter une traduction",
     "removelanguage": "Supprimer la langue",
     "editquestion": "Modifier une question",
     "editthequestion": "Modifier la question",
@@ -354,12 +354,12 @@
     "proposition": "Proposition {{count}}",
     "addmodifydelete": "Ajout / Modification / Suppression",
     "summaryabreviation": "Récap.",
-    "onlyfriend" : "Afficher uniquement mes amis",
+    "onlyfriend": "Afficher uniquement mes amis",
     "titleholder": "Tenant du titre",
     "install": "Installer",
     "version": "Version",
     "grades": "Notes",
-    "result" : "Résultat",
+    "result": "Résultat",
     "average": "Moyenne",
     "time": "Temps",
     "save": "Enregistrer",
@@ -368,9 +368,9 @@
     "translations": "Traductions",
     "totranslation": "À traduire",
     "or": "Ou",
-    "viaexcel" : "Via Excel",
-    "viaform" : "Via Formulaire",
-    "template" : "Template",
+    "viaexcel": "Via Excel",
+    "viaform": "Via Formulaire",
+    "template": "Template",
     "download": "Télécharger",
     "inprogress": "En cours de traitement",
     "myproposals": "Mes propositions (Thèmes / Questions)",
@@ -394,14 +394,14 @@
     "appversion": "Version de l'application",
     "installupdatetitle": "Mettre à jour l'application",
     "installupdatetext": "Votre version de l'application n'est pas assez récente pour jouer à ce mode. Veuillez vous mettre à jour.",
-    "requiredversion" : "Version minimal",
+    "requiredversion": "Version minimal",
     "myversion": "Votre version",
     "verifynewversion": "Vérification d'une nouvelle version",
     "refreshversion": "Vous pouvez rafraîchir l'application (scroll de haut vers le bas) ou tentez de relancer l'application.",
     "send": "Envoyé",
     "help": "Aide",
     "account": "Compte",
-    "helpregulations" : "Aide et règlement",
+    "helpregulations": "Aide et règlement",
     "mostplayed": "Les + joués",
     "mostplayedthemes": "Thèmes les plus joués",
     "lastplayedthemes": "Dernier thèmes joués",
@@ -644,13 +644,13 @@
     },
     "gamemode": {
       "title": "Mode de jeu"
-    }, 
+    },
     "mostplayedthemes": {
       "title": "Thèmes les plus joués"
-    }, 
+    },
     "lists": {
       "title": "Mode de jeu liste"
-    }, 
+    },
     "search": {
       "title": "Recherche"
     }
@@ -852,7 +852,7 @@
   },
   "alert": {
     "inprogress": "En attente de validation",
-    "validate": "Demande validée" ,
+    "validate": "Demande validée",
     "maintenance": "En maintenance",
     "pagenotfound": "Cette page n'est pas disponible.",
     "noresult": "Aucun résultat.",
@@ -977,12 +977,12 @@
     "gain500gold": "Gagner 500 Quizcoin"
   },
   "challenge": {
-    "winner" :{
+    "winner": {
       "day": "Jour",
       "week": "Semaine",
       "month": "Mois"
     },
-    "alltime" :{
+    "alltime": {
       "day": "Jour",
       "week": "Semaine",
       "month": "Mois"
@@ -1004,8 +1004,8 @@
     "other": "Autre"
   },
   "mode": {
-    "fightfriend":"Combat contre un ami",
-    "list":"Mode Liste",
+    "fightfriend": "Combat contre un ami",
+    "list": "Mode Liste",
     "randomquestion": "Question Aléatoire",
     "randomtheme": "Thème Aléatoire"
   },
@@ -1019,12 +1019,12 @@
       "wronganswer1": "Mauvaise reponse 1",
       "wronganswer2": "Mauvaise reponse 2",
       "wronganswer3": "Mauvaise reponse 3",
-      "examplequestion" : "De quelle couleur est le cheval blanc d'Henri IV ?",
-      "examplereponse" : "Blanc",
-      "examplewronganswer1" : "Rouge",
-      "examplewronganswer2" : "Bleu",
-      "examplewronganswer3" : "Vert",
-      "uploadfile" : "Déposer le fichier"
+      "examplequestion": "De quelle couleur est le cheval blanc d'Henri IV ?",
+      "examplereponse": "Blanc",
+      "examplewronganswer1": "Rouge",
+      "examplewronganswer2": "Bleu",
+      "examplewronganswer3": "Vert",
+      "uploadfile": "Déposer le fichier"
     }
   },
   "notifications": {
@@ -1032,75 +1032,86 @@
     "friend_request_accept": "{{username}} a accepté ta demande"
   },
   "patchnote": {
+    "2.1.4": {
+      "version": "2.1.4",
+      "changes": [
+        "Mode liste: ajout de la validation de mot similaire (par exemple Vatican à la place de Cité du Vatican).",
+        "Mode liste: validation de réponse multiple (par exemple si dans la liste France apparait plusieurs une saisie valide tout)."
+      ],
+      "bug": [
+        "Mode liste: Bug lors de la validation de la dernière reponse d'une liste on ne pouvait plus quitter.",
+        "Mode liste: Bug pas de rafraichissement de mon record après une partie."
+      ]
+    },
     "2.1.3": {
       "version": "2.1.3",
-      "changes" : ["Ajout du classement pour le mode liste."],
+      "changes": ["Ajout du classement pour le mode liste."],
       "bug": []
     },
     "2.1.2": {
       "version": "2.1.2",
-      "changes" : ["Ajout record au mode liste + ajout de liste dans la recherche et nouveauté."],
+      "changes": [
+        "Ajout record au mode liste + ajout de liste dans la recherche et nouveauté."
+      ],
       "bug": []
     },
     "2.1.1": {
       "version": "2.1.1",
-      "changes" : ["Amélioration du mode liste, ajout d'image (pour les listes de drapeaux par exemple) et trie par ordre de valeur (Si image le trie est random)"],
+      "changes": [
+        "Amélioration du mode liste, ajout d'image (pour les listes de drapeaux par exemple) et trie par ordre de valeur (Si image le trie est random)"
+      ],
       "bug": []
     },
     "2.1.0": {
       "version": "2.1.0",
-      "changes" : ["Ajout du mode liste, devinez tous les élements d'une liste définie (Par exemple : Top 10 plus grand pays du monde). Pas de classement pour l'instant"],
+      "changes": [
+        "Ajout du mode liste, devinez tous les élements d'une liste définie (Par exemple : Top 10 plus grand pays du monde). Pas de classement pour l'instant"
+      ],
       "bug": []
     },
     "2.0.8": {
       "version": "2.0.8",
-      "changes" : [],
+      "changes": [],
       "bug": ["Correction du défis du jour pour Apple 11"]
     },
     "2.0.7": {
       "version": "2.0.7",
-      "changes" : [],
+      "changes": [],
       "bug": ["Correction affichage sur PC des thèmes"]
     },
     "2.0.6": {
       "version": "2.0.6",
-      "changes" : [
+      "changes": [
         "Ajout d'un contrôle de la version d'un utilisateur avant de lancer un thème"
       ],
       "bug": []
     },
     "2.0.5": {
       "version": "2.0.5",
-      "changes" : [
-        "Ajout d'indice sur les questions"
-      ],
+      "changes": ["Ajout d'indice sur les questions"],
       "bug": []
     },
     "2.0.4": {
       "version": "2.0.4",
-      "changes" : [
+      "changes": [
         "Affichage du menu via un scroll de gauche à droite sur mobile",
         "Ajout des modules 'Joué récemment' et 'Les + joué' ",
         "Mise à jour des librairies utilisées. (TECHNIQUE)"
       ],
-      "bug": [
-        "Correction de la barre de recherche qui clignote lors du scroll"
-      ]
+      "bug": ["Correction de la barre de recherche qui clignote lors du scroll"]
     },
     "2.0.3": {
       "version": "2.0.3",
-      "changes" : [
+      "changes": [
         "Amélioration de l'affichage sur PC/ Mobile.",
         "Contrôle de la version de l'application pour jouer aux différents modes (Duel, Solo, Entraînement).",
         "Mise à jour des librairies utilisées. (TECHNIQUE)"
       ],
-      "bug": [
-        "Problème d'affichage des titres dans la boutique."
-      ]
+      "bug": ["Problème d'affichage des titres dans la boutique."]
     },
     "2.0.2": {
       "version": "2.0.2",
-      "changes" : [
+      "changes": [
         "Amélioration de l'affichage sur PC.",
         "Ajout d'un Patch Note et d'une Roadmap."
       ],
@@ -1110,9 +1121,7 @@
     },
     "2.0.1": {
       "version": "2.0.1",
-      "changes" : [
-        "Amélioration de l'affichage sur PC."
-      ],
+      "changes": ["Amélioration de l'affichage sur PC."],
       "bug": [
         "Correction de l'affichage d'une notification de demande d'un duel",
         "Correction des récompenses de défis du jour / semaine / mois."
@@ -1120,15 +1129,13 @@
     },
     "2.0.0": {
       "version": "2.0.0",
-      "changes" : [
+      "changes": [
         "Gestion de plusieurs langues (Français, Anglais, Espagnol, Allemand)",
         "Suppression de l'affichage des temps et score du défis du jour avant de jouer le défis. Afin d'éviter de pénaliser le joueurs jouant en premier.",
         "Ajout proposition des questions via formulaire ou excel.",
         "Ajout d'un menu pour voir mes propositions de thèmes et questions."
       ],
-      "bug": [
-        
-      ]
+      "bug": []
     }
   },
   "roadmap": {

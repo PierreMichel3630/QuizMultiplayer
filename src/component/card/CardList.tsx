@@ -1,6 +1,5 @@
 import { Box, Divider, Grid, Paper, Typography } from "@mui/material";
 import { padding, percent, px } from "csx";
-import moment from "moment";
 import { useMemo } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -18,6 +17,9 @@ import { ImageCard } from "../image/ImageCard";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
+import { green } from "@mui/material/colors";
+import ListMode from "src/assets/mode/list.png";
+
 interface Props {
   value: ListTranslation;
 }
@@ -27,8 +29,8 @@ export const CardList = ({ value }: Props) => {
 
   const image = useMemo(
     () => ({
-      image: undefined,
-      color: undefined,
+      image: ListMode,
+      color: green["A400"],
     }),
     [],
   );
@@ -44,14 +46,14 @@ export const CardList = ({ value }: Props) => {
         }}
         elevation={8}
       >
-        <ImageCard value={image} size={40} />
+        <ImageCard value={image} size={50} />
         <Box>
           <Typography variant="h4">{value.name}</Typography>
           <Typography>
             <Trans
               i18nKey={t("commun.item")}
               values={{
-                count: value.elements,
+                count: value.list.elements,
               }}
             />
           </Typography>
@@ -138,7 +140,7 @@ export const ValueAnswerList = ({ value, type }: PropsValueAnswerList) => {
   const label = useMemo(() => {
     let result = undefined;
     if (type === TypeList.DATE) {
-      result = moment(value.value).toLocaleString();
+      result = value.value;
     } else if (type === TypeList.NUMBER) {
       result = Number(value.value).toLocaleString();
     }

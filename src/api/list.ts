@@ -52,7 +52,7 @@ export const countList = (language: Language, search = "") =>
 export const selectListAnswerByListId = (id: number | string) =>
   supabase
     .from(SUPABASE_LISTANSWER_TABLE)
-    .select("*, listanswertranslation(*)")
+    .select("*, listanswertranslation(*, language(*))")
     .eq("list", id);
 
 export const selectListScoreByListId = (id: number | string) =>

@@ -40,6 +40,7 @@ import { LogoIcon } from "src/icons/LogoIcon";
 import { Colors } from "src/style/Colors";
 import { DialogResultListModal } from "src/component/modal/ListModal";
 import { RankingListMode } from "src/component/ranking/list/RankingListMode";
+import { useUser } from "src/context/UserProvider";
 
 enum Status {
   NOTSTART = "NOTSTART",
@@ -56,6 +57,7 @@ enum AnswerStatus {
 interface BestMatch {
   id: number;
   score: number;
+  response: string;
   hasAnswer: boolean;
 }
 
@@ -67,6 +69,7 @@ export interface ResultGameList {
 
 export default function ListPage() {
   const { t } = useTranslation();
+  const { language } = useUser();
   const { profile } = useAuth();
   const { id } = useParams();
 
@@ -120,7 +123,7 @@ export default function ListPage() {
         selectListAnswerByListId(id).then(({ data }) => {
           const res: Array<ListAnswer> = data ?? [];
           setTotal(res.length);
-          const answersSort = orderAnswers(res, type, order);
+          const answersSort = orderAnswers(res, type, order, list?.format);
           setAnswers(
             [...answersSort].map((el) => ({ ...el, hasAnswer: false })),
           );
@@ -145,9 +148,20 @@ export default function ListPage() {
 
     if (allFound && statusGame !== Status.FINISH) {
       setScore(answers.length);
+      if (profile && id) {
+        setResult({
+          score: answers.length,
+          time,
+          attempts,
+        });
+        setOpenResult(true);
+        saveScoreList(answers, time, attempts, Number(id)).then(({ data }) => {
+          setDataResult(data);
+        });
+      }
       setStatusGame(Status.FINISH);
     }
-  }, [answers, statusGame]);
+  }, [answers, attempts, id, profile, statusGame, time]);
 
   const startGame = () => {
     setAttempts(0);
@@ -183,8 +197,14 @@ export default function ListPage() {
         let bestMatch: BestMatch | undefined = undefined;
 
         prevAnswers.forEach((listAnswer) => {
-          listAnswer.listanswertranslation.forEach((translation) => {
-            const score = compareString(answer, translation.name);
+          const translation = [...listAnswer.listanswertranslation].find(
+            (el) => el.language.id === language?.id,
+          );
+          if (translation) {
+            const score = Math.max(
+              compareString(answer, translation.name),
+              ...translation.othername.map((n) => compareString(answer, n)),
+            );
             if (score > 0.8) {
               if (
                 !bestMatch ||
@@ -194,11 +214,12 @@ export default function ListPage() {
                 bestMatch = {
                   id: listAnswer.id,
                   score,
+                  response: translation.name,
                   hasAnswer: listAnswer.hasAnswer,
                 };
               }
             }
-          });
+          }
         });
 
         if (!bestMatch) {
@@ -206,11 +227,24 @@ export default function ListPage() {
           return prevAnswers;
         }
 
-        const { id, hasAnswer } = bestMatch;
+        const { id, response, hasAnswer } = bestMatch;
 
-        setCorrectAnswer(
-          hasAnswer ? AnswerStatus.ALREADYANSWER : AnswerStatus.CORRECT,
-        );
+        let ids: Array<number> = [];
+
+        if (hasAnswer) {
+          setCorrectAnswer(AnswerStatus.ALREADYANSWER);
+        } else {
+          setCorrectAnswer(AnswerStatus.CORRECT);
+          ids = prevAnswers
+            .filter((el) =>
+              el.listanswertranslation.some(
+                (translation) =>
+                  translation.name === response &&
+                  translation.language.id === language?.id,
+              ),
+            )
+            .map((answer) => answer.id);
+        }
 
         const element = answerRefs.current[id];
         if (element && stickyRef.current) {
@@ -228,18 +262,20 @@ export default function ListPage() {
         }
 
         return prevAnswers.map((item) =>
-          item.id === id ? { ...item, hasAnswer: true } : item,
+          ids.includes(item.id) ? { ...item, hasAnswer: true } : item,
         );
       });
 
       setAttempts((prev) => prev + 1);
       setAnswer("");
     },
-    [answer],
+    [answer, language],
   );
 
   const quit = () => {
+    setAnswers((prev) => prev.map((a) => ({ ...a, hasAnswer: false })));
     setStatusGame(Status.NOTSTART);
+    getMyScore();
   };
 
   const colorBorder = useMemo(() => {
@@ -262,6 +298,7 @@ export default function ListPage() {
     answers: Array<ListAnswer>,
     type: TypeList,
     order = OrderList.DESC,
+    format?: string,
   ) => {
     let result = [...answers];
     if (type === TypeList.NUMBER) {
@@ -273,7 +310,25 @@ export default function ListPage() {
     } else if (type === TypeList.IMAGE) {
       result = shuffle([...answers]);
     } else if (type === TypeList.DATE) {
-      result = [...answers];
+      const hasDash = format?.includes("-");
+      if (hasDash) {
+        const formatSplit = format?.split("-")[0];
+        const asc = (a: ListAnswer, b: ListAnswer) =>
+          moment(a.value.split("-")[0], formatSplit, true).valueOf() -
+          moment(b.value.split("-")[0], formatSplit, true).valueOf();
+        const desc = (a: ListAnswer, b: ListAnswer) =>
+          moment(b.value.split("-")[0], formatSplit, true).valueOf() -
+          moment(a.value.split("-")[0], formatSplit, true).valueOf();
+        result = [...answers].sort(order === OrderList.DESC ? desc : asc);
+      } else {
+        const asc = (a: ListAnswer, b: ListAnswer) =>
+          moment(a.value, format, true).valueOf() -
+          moment(b.value, format, true).valueOf();
+        const desc = (a: ListAnswer, b: ListAnswer) =>
+          moment(b.value, format, true).valueOf() -
+          moment(a.value, format, true).valueOf();
+        result = [...answers].sort(order === OrderList.DESC ? desc : asc);
+      }
     }
     return result;
   };

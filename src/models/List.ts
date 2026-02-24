@@ -23,16 +23,17 @@ export interface List {
   order: null | OrderList;
   type: TypeList;
   listtranslation: Array<ListTranslation>;
+  format?: string;
 }
 
 export interface ListTranslation {
   id: number;
   language: Language;
   name: string;
-  elements: number;
   question: string;
   list: {
     id: number;
+    elements: number;
   };
 }
 
@@ -48,6 +49,7 @@ export interface ListAnswerTranslation {
   id: number;
   language: Language;
   name: string;
+  othername: Array<string>;
 }
 
 export interface ListAnswerPlay extends ListAnswer {
