@@ -62,6 +62,8 @@ export const Colors = {
   correctanswerborder: green["A200"],
   wronganswer: "#fc4a3d",
   wronganswerborder: red[500],
+  sameanswer: yellow[200],
+  sameanswerborder: yellow[500],
   waitanswer: grey[600],
   waitanswerborder: grey[200],
   colorDuel1: pink[300],

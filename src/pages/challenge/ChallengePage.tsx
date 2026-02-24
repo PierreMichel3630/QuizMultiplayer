@@ -13,7 +13,7 @@ import { launchChallenge } from "src/api/challenge";
 import { updateProfil } from "src/api/profile";
 import { ButtonColor } from "src/component/Button";
 import { WinnerChallengeBlock } from "src/component/challenge/WinnerChallengeBlock";
-import { RankingChallenge } from "src/component/RankingChallenge";
+import { RankingChallenge } from "src/component/ranking/RankingChallenge";
 import { TimeLeftToNextDayLabel } from "src/component/TimeLeftBlock";
 import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";

@@ -1,4 +1,10 @@
 import { Language } from "./Language";
+import { Profile } from "./Profile";
+
+export enum OrderListScore {
+  TIME = "rank_time",
+  ATTEMPT = "rank_attempt",
+}
 
 export enum OrderList {
   DESC = "DESC",
@@ -46,4 +52,28 @@ export interface ListAnswerTranslation {
 
 export interface ListAnswerPlay extends ListAnswer {
   hasAnswer: boolean;
+}
+
+export interface ListScore {
+  id: number;
+  result: number;
+  attempts_recordattempts: number;
+  attempts_recordtime: number;
+  time_recordattempts: number;
+  time_recordtime: number;
+}
+
+export interface ResultScoreList {
+  hasrecordattempts: boolean;
+  hasrecordscore: boolean;
+  hasrecordtime: boolean;
+  listscore: ListScore;
+  previouslistscore: ListScore | null;
+}
+
+export interface ListScoreWithRanking extends ListScore {
+  rank: number;
+  profile: Profile;
+  rank_time: number;
+  rank_attempt: number;
 }

@@ -9,6 +9,8 @@ import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
 import { SearchType } from "src/models/enum/TypeCardEnum";
 import { ImageCard } from "../image/ImageCard";
+import ListMode from "src/assets/mode/list.png";
+import { green } from "@mui/material/colors";
 
 export interface ICardImageOrder extends ICardImage {
   order: number;
@@ -22,6 +24,7 @@ export interface ICardImage {
   type?: SearchType;
   onClick?: () => void;
   minversion?: string;
+  created_at: Date;
 }
 
 interface Props {
@@ -50,13 +53,37 @@ export const CardImage = ({ value, width = 90 }: Props) => {
   );
 
   const goLink = () => {
-    if (value.type)
-      navigate(
-        value.type === SearchType.THEME
-          ? `/theme/${value.id}`
-          : `/category/${value.id}`,
-      );
+    if (value.type) {
+      let link = "/";
+      switch (value.type) {
+        case SearchType.THEME:
+          link = `/theme/${value.id}`;
+          break;
+        case SearchType.CATEGORY:
+          link = `/category/${value.id}`;
+          break;
+        case SearchType.LIST:
+          link = `/list/${value.id}`;
+          break;
+      }
+      navigate(link);
+    }
   };
+
+  const valueImageCard = useMemo(() => {
+    let result = { image: value.image, color: value.color };
+    switch (value.type) {
+      case SearchType.LIST:
+        result = { image: ListMode, color: green["A400"] };
+        break;
+      case SearchType.CATEGORY:
+      case SearchType.GAMEMODE:
+      case SearchType.THEME:
+        result = { image: value.image, color: value.color };
+        break;
+    }
+    return result;
+  }, [value]);
 
   return (
     <Box
@@ -73,7 +100,7 @@ export const CardImage = ({ value, width = 90 }: Props) => {
         position: "relative",
       }}
     >
-      <ImageCard value={value} size={width} />
+      <ImageCard value={valueImageCard} size={width} />
       <Typography
         variant="h6"
         sx={{

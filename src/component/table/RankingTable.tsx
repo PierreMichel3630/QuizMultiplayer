@@ -546,3 +546,4 @@ export const RankingTableSoloDuelPaginate = ({
     </Box>
   );
 };
+

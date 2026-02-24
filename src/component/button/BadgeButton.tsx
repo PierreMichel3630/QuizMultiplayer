@@ -112,8 +112,10 @@ export const BadgeButtonRedirection = () => {
   const buttons = useMemo(
     () => [
       { label: t("commun.daychallenge"), link: "/challenge" },
-      { label: t("commun.favorite"), link: "/favorite" },
       { label: t("commun.gamemode"), link: "/gamemode" },
+      { label: t("mode.list"), link: "/list" },
+      { label: t("commun.favorite"), link: "/favorite" },
+      { label: t("commun.new"), link: "/new" },
       { label: t("commun.mostplayedthemes"), link: "/mostplayedthemes" },
       { label: t("commun.categories"), link: "/categories" },
       { label: t("commun.people"), link: "/people" },

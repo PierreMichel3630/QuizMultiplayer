@@ -1,18 +1,18 @@
+import { green } from "@mui/material/colors";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { pink } from "@mui/material/colors";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 import { insertBattleGame } from "src/api/game";
 import { selectThemesByIds } from "src/api/theme";
+import { ICardImageOrder } from "src/component/card/CardImage";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { SearchType } from "src/models/enum/TypeCardEnum";
 import { GameMode } from "src/models/GameMode";
 import { sortByOrderAndName } from "src/utils/sort";
-import { ICardImageOrder } from "src/component/card/CardImage";
 
-import ListMode from "src/assets/mode/listmode.png";
+import ListMode from "src/assets/mode/list.png";
 
 export const useGameModes = () => {
   const { t } = useTranslation();
@@ -51,15 +51,17 @@ export const useGameModes = () => {
         onClick: launchBattleGame,
         type: SearchType.GAMEMODE,
         order: 2,
+        created_at: new Date("24/07/2025")
       },
       {
         id: 1,
         image: ListMode,
-        color: pink[300],
+        color: green["A400"],
         name: t("mode.list"),
         onClick: goList,
         type: SearchType.GAMEMODE,
         order: 1,
+        created_at: new Date("23/02/2026")
       },
     ],
     [launchBattleGame, goList, t],
@@ -81,6 +83,7 @@ export const useGameModes = () => {
             link: `/theme/${el.id}`,
             type: SearchType.THEME,
             order: 3,
+            created_at: el.created_at
           })),
         );
       });

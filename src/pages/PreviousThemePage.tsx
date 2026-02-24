@@ -43,6 +43,7 @@ export default function PreviousThemePage() {
             color: el.color,
             image: el.image,
             type: SearchType.THEME,
+            created_at: el.created_at
           }))
           .sort((a, b) => sortByIds(idsTheme, a, b));
         setItemsSearch(values);

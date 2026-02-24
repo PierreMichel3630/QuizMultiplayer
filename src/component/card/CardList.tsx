@@ -1,5 +1,5 @@
-import { Box, Paper, Typography } from "@mui/material";
-import { percent, px } from "csx";
+import { Box, Divider, Grid, Paper, Typography } from "@mui/material";
+import { padding, percent, px } from "csx";
 import moment from "moment";
 import { useMemo } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -8,11 +8,15 @@ import { useUser } from "src/context/UserProvider";
 import {
   ListAnswer,
   ListAnswerPlay,
+  ListScore,
   ListTranslation,
   TypeList,
 } from "src/models/List";
 import { Colors } from "src/style/Colors";
 import { ImageCard } from "../image/ImageCard";
+
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
 interface Props {
   value: ListTranslation;
@@ -90,11 +94,13 @@ export const CardAnswerList = ({
           alignItems: "center",
           justifyContent: "space-between",
           gap: 1,
+          height: percent(100),
+          minHeight: px(40),
         }}
         elevation={8}
       >
         {value.image && (
-          <Box sx={{ maxWidth: px(70), maxHeight: px(70) }}>
+          <Box sx={{ width: px(70), display: "flex" }}>
             <img
               src={value.image}
               data-src={value.image}
@@ -157,5 +163,174 @@ export const ValueAnswerList = ({ value, type }: PropsValueAnswerList) => {
         </Typography>
       )}
     </Box>
+  );
+};
+
+interface PropsCardRecordList {
+  score: ListScore;
+  total: number;
+}
+export const CardRecordList = ({ score, total }: PropsCardRecordList) => {
+  const { t } = useTranslation();
+
+  const isSame = useMemo(
+    () =>
+      score.attempts_recordattempts === score.attempts_recordtime &&
+      score.time_recordattempts === score.time_recordtime,
+    [score],
+  );
+  return (
+    <Paper elevation={8} sx={{ overflow: "hidden" }}>
+      <Grid container>
+        <Grid
+          size={12}
+          sx={{
+            backgroundColor: Colors.grey,
+            p: padding(5, 20),
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h4" textAlign="center">
+            {t("commun.mybestscore")}
+          </Typography>
+        </Grid>
+        <Grid size={12} sx={{ p: padding(10, 5) }}>
+          <Grid container spacing={1}>
+            <Grid size={12}>
+              <Typography variant="h2" textAlign="center">
+                <Trans
+                  i18nKey={t("commun.finditem")}
+                  values={{
+                    value: score.result,
+                    total: total,
+                  }}
+                />
+              </Typography>
+            </Grid>
+            {isSame ? (
+              <>
+                <Grid
+                  size={6}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                  }}
+                >
+                  <QuestionMarkIcon />
+                  <Typography variant="h4">
+                    <Trans
+                      i18nKey={t("commun.attempt")}
+                      values={{
+                        count: score.attempts_recordattempts,
+                      }}
+                    />
+                  </Typography>
+                </Grid>
+                <Grid
+                  size={6}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                  }}
+                >
+                  <AccessTimeIcon />
+                  <Typography variant="h4">
+                    {(score.time_recordattempts / 1000).toFixed(2)}s
+                  </Typography>
+                </Grid>
+              </>
+            ) : (
+              <>
+                <Grid size={12}>
+                  <Typography variant="h6" textAlign="center">
+                    {t("commun.mybestscoretime")}
+                  </Typography>
+                </Grid>
+                <Grid
+                  size={6}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                  }}
+                >
+                  <QuestionMarkIcon />
+                  <Typography variant="h4">
+                    <Trans
+                      i18nKey={t("commun.attempt")}
+                      values={{
+                        count: score.attempts_recordtime,
+                      }}
+                    />
+                  </Typography>
+                </Grid>
+                <Grid
+                  size={6}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                  }}
+                >
+                  <AccessTimeIcon />
+                  <Typography variant="h4">
+                    {(score.time_recordtime / 1000).toFixed(2)}s
+                  </Typography>
+                </Grid>
+                <Grid size={12}>
+                  <Divider />
+                </Grid>
+                <Grid size={12}>
+                  <Typography variant="h6" textAlign="center">
+                    {t("commun.mybestscoreattempts")}
+                  </Typography>
+                </Grid>
+                <Grid
+                  size={6}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                  }}
+                >
+                  <QuestionMarkIcon />
+                  <Typography variant="h4">
+                    <Trans
+                      i18nKey={t("commun.attempt")}
+                      values={{
+                        count: score.attempts_recordattempts,
+                      }}
+                    />
+                  </Typography>
+                </Grid>
+                <Grid
+                  size={6}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                  }}
+                >
+                  <AccessTimeIcon />
+                  <Typography variant="h4">
+                    {(score.time_recordattempts / 1000).toFixed(2)}s
+                  </Typography>
+                </Grid>
+              </>
+            )}
+          </Grid>
+        </Grid>
+      </Grid>
+    </Paper>
   );
 };

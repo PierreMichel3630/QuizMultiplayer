@@ -50,23 +50,23 @@ import {
   GroupButtonChallenge,
   GroupButtonChallengeGlobal,
   GroupButtonChallengeTime,
-} from "./button/ButtonGroup";
-import { WinBlock } from "./challenge/WinBlock";
+} from "../button/ButtonGroup";
+import { WinBlock } from "../challenge/WinBlock";
 import {
   CellRankingChallengeDay,
   ResultAllTimeChallengeBlock,
   ResultDayChallengeBlock,
   ResultMonthChallengeBlock,
   ResultWeekChallengeBlock,
-} from "./ChallengeBlock";
-import { ChangeDateBlock } from "./date/ChangeDateBlock";
-import { BasicSearchInput } from "./Input";
-import { SortButton } from "./SortBlock";
-import { OnlyFriendSwitch } from "./switch/OnlyFriendSwitch";
+} from "../ChallengeBlock";
+import { ChangeDateBlock } from "../date/ChangeDateBlock";
+import { BasicSearchInput } from "../Input";
+import { SortButton } from "../SortBlock";
+import { OnlyFriendSwitch } from "../switch/OnlyFriendSwitch";
 import {
   DataRankingChallenge,
   RankingChallengeTable,
-} from "./table/RankingChallengeTable";
+} from "../table/RankingChallengeTable";
 
 export const RankingChallenge = () => {
   const { t } = useTranslation();

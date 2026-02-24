@@ -7,6 +7,7 @@ import { ICardImage } from "src/component/card/CardImage";
 import { PageCategoryBlock } from "src/component/page/PageCategoryBlock";
 import { useUser } from "src/context/UserProvider";
 
+
 export default function NewThemePage() {
   const { t } = useTranslation();
   const { language } = useUser();
@@ -23,6 +24,7 @@ export default function NewThemePage() {
       });
     }
   }, [language]);
+
 
   return (
     <Grid container>

@@ -26,6 +26,7 @@ export const MostPlayedThemeBlock = () => {
             color: el.color,
             image: el.image,
             type: SearchType.THEME,
+            created_at: el.created_at
           }));
           setItemsSearch(values);
         }

@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { searchListPaginate } from "src/api/list";
 import { CardList } from "src/component/card/CardList";
+import { SkeletonRectangulars } from "src/component/skeleton/SkeletonRectangular";
 import { TitleBlock } from "src/component/title/Title";
 import { useUser } from "src/context/UserProvider";
 import { ListTranslation } from "src/models/List";
@@ -80,7 +81,7 @@ export default function ListsPage() {
         <Box sx={{ p: 2 }}>
           <Grid container spacing={1}>
             <Grid size={12}>
-              <TitleBlock title={t("pages.lists.title")} />
+              <TitleBlock title={t("pages.lists.title")} link="/" />
             </Grid>
             {itemsSearch.map((el, index) => (
               <Grid
@@ -91,6 +92,7 @@ export default function ListsPage() {
                 <CardList value={el} />
               </Grid>
             ))}
+            {!isEnd && <SkeletonRectangulars number={8} height={40} />}
           </Grid>
         </Box>
       </Grid>

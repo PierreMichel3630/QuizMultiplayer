@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getThemesAndCategoriesByDate } from "src/api/search";
+import { useUser } from "src/context/UserProvider";
 import { ICardImage } from "./card/CardImage";
 import { CategoryBlock } from "./category/CategoryBlock";
-import { useUser } from "src/context/UserProvider";
+
 
 export const NewBlock = () => {
   const { t } = useTranslation();

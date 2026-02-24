@@ -1,11 +1,16 @@
 import { Container, InputBase, Paper, Typography } from "@mui/material";
 import { Box, Grid } from "@mui/system";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Trans, useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
-import { selectListAnswerByListId, selectListById } from "src/api/list";
-import { CardAnswerList } from "src/component/card/CardList";
+import { useParams } from "react-router-dom";
+import {
+  saveScoreList,
+  selectListAnswerByListId,
+  selectListById,
+  selectListScoreByListIdAndProfile,
+} from "src/api/list";
+import { CardAnswerList, CardRecordList } from "src/component/card/CardList";
 import {
   TextNameBlock,
   TextQuestionBlock,
@@ -15,7 +20,9 @@ import {
   List,
   ListAnswer,
   ListAnswerPlay,
+  ListScore,
   OrderList,
+  ResultScoreList,
   TypeList,
 } from "src/models/List";
 import { compareString } from "src/utils/string";
@@ -27,8 +34,12 @@ import { px } from "csx";
 import { shuffle } from "lodash";
 import moment from "moment";
 import { ButtonColor } from "src/component/Button";
+import { SkeletonRectangulars } from "src/component/skeleton/SkeletonRectangular";
+import { useAuth } from "src/context/AuthProviderSupabase";
 import { LogoIcon } from "src/icons/LogoIcon";
 import { Colors } from "src/style/Colors";
+import { DialogResultListModal } from "src/component/modal/ListModal";
+import { RankingListMode } from "src/component/ranking/list/RankingListMode";
 
 enum Status {
   NOTSTART = "NOTSTART",
@@ -36,23 +47,50 @@ enum Status {
   FINISH = "FINISH",
 }
 
+enum AnswerStatus {
+  CORRECT = "CORRECT",
+  WRONG = "WRONG",
+  ALREADYANSWER = "ALREADYANSWER",
+}
+
+interface BestMatch {
+  id: number;
+  score: number;
+  hasAnswer: boolean;
+}
+
+export interface ResultGameList {
+  score: number;
+  attempts: number;
+  time: number;
+}
+
 export default function ListPage() {
   const { t } = useTranslation();
+  const { profile } = useAuth();
   const { id } = useParams();
-  const navigate = useNavigate();
+
+  const answerRefs = useRef<Record<number, HTMLDivElement | null>>({});
+  const stickyRef = useRef<HTMLDivElement | null>(null);
 
   const [statusGame, setStatusGame] = useState<Status>(Status.NOTSTART);
   const [time, setTime] = useState(0);
-  const [correctAnswer, setCorrectAnswer] = useState<null | boolean>(null);
+  const [correctAnswer, setCorrectAnswer] = useState<null | AnswerStatus>(null);
   const [attempts, setAttempts] = useState(0);
   const [answer, setAnswer] = useState<string>("");
   const [list, setList] = useState<List | null>(null);
   const [answers, setAnswers] = useState<Array<ListAnswerPlay>>([]);
   const [total, setTotal] = useState(0);
   const [score, setScore] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [myScore, setMyScore] = useState<null | ListScore>(null);
+
+  const [openResult, setOpenResult] = useState(false);
+  const [dataResult, setDataResult] = useState<null | ResultScoreList>(null);
+  const [result, setResult] = useState<ResultGameList | null>(null);
 
   const formattedTime = useMemo(() => {
-    return moment.utc(time * 1000).format("mm:ss");
+    return moment.utc(time).format("mm:ss");
   }, [time]);
 
   const findItems = useMemo(
@@ -60,12 +98,24 @@ export default function ListPage() {
     [answers],
   );
 
+  const getMyScore = useCallback(() => {
+    if (id && profile) {
+      selectListScoreByListIdAndProfile(id, profile.id).then(({ data }) => {
+        setMyScore(data);
+      });
+    }
+  }, [id, profile]);
+
+  useEffect(() => {
+    getMyScore();
+  }, [getMyScore]);
+
   useEffect(() => {
     if (id) {
       selectListById(id).then((resList) => {
         const list: List | null = resList.data;
         const type = list ? list.type : TypeList.TEXT;
-        const order = list && list.order ? list.order : OrderList.DESC;
+        const order = list?.order ? list.order : OrderList.DESC;
         setList(list);
         selectListAnswerByListId(id).then(({ data }) => {
           const res: Array<ListAnswer> = data ?? [];
@@ -74,6 +124,7 @@ export default function ListPage() {
           setAnswers(
             [...answersSort].map((el) => ({ ...el, hasAnswer: false })),
           );
+          setLoading(false);
         });
       });
     }
@@ -83,8 +134,8 @@ export default function ListPage() {
     if (statusGame !== Status.PROGRESS) return;
 
     const interval = setInterval(() => {
-      setTime((prev) => prev + 1);
-    }, 1000);
+      setTime((prev) => prev + 100);
+    }, 100);
 
     return () => clearInterval(interval);
   }, [statusGame]);
@@ -110,52 +161,99 @@ export default function ListPage() {
   const cancel = () => {
     setStatusGame(Status.FINISH);
     setScore(findItems);
-  };
-
-  const validateAnswer = (event: React.FormEvent<HTMLFormElement>) => {
-    event.stopPropagation();
-    event.preventDefault();
-    setAttempts((prev) => prev++);
-    let bestMatch: { id: number; score: number } | null = null;
-
-    answers.forEach((listAnswer) => {
-      listAnswer.listanswertranslation.forEach((translation) => {
-        const score = compareString(answer, translation.name);
-        if (score > 0.8) {
-          if (!bestMatch || score > bestMatch.score) {
-            bestMatch = {
-              id: listAnswer.id,
-              score,
-            };
-          }
-        }
+    if (profile && id) {
+      setResult({
+        score: findItems,
+        time,
+        attempts,
       });
-    });
-
-    if (bestMatch) {
-      setAnswers((prevAnswers) =>
-        prevAnswers.map((item) =>
-          item.id === bestMatch!.id ? { ...item, hasAnswer: true } : item,
-        ),
-      );
-      setCorrectAnswer(true);
-    } else {
-      setCorrectAnswer(false);
+      setOpenResult(true);
+      saveScoreList(answers, time, attempts, Number(id)).then(({ data }) => {
+        setDataResult(data);
+      });
     }
-    setAttempts((prev) => prev + 1);
-    setAnswer("");
   };
+
+  const validateAnswer = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      setAnswers((prevAnswers) => {
+        let bestMatch: BestMatch | undefined = undefined;
+
+        prevAnswers.forEach((listAnswer) => {
+          listAnswer.listanswertranslation.forEach((translation) => {
+            const score = compareString(answer, translation.name);
+            if (score > 0.8) {
+              if (
+                !bestMatch ||
+                bestMatch.hasAnswer ||
+                score > bestMatch.score
+              ) {
+                bestMatch = {
+                  id: listAnswer.id,
+                  score,
+                  hasAnswer: listAnswer.hasAnswer,
+                };
+              }
+            }
+          });
+        });
+
+        if (!bestMatch) {
+          setCorrectAnswer(AnswerStatus.WRONG);
+          return prevAnswers;
+        }
+
+        const { id, hasAnswer } = bestMatch;
+
+        setCorrectAnswer(
+          hasAnswer ? AnswerStatus.ALREADYANSWER : AnswerStatus.CORRECT,
+        );
+
+        const element = answerRefs.current[id];
+        if (element && stickyRef.current) {
+          const stickyHeight = stickyRef.current.offsetHeight;
+
+          const y =
+            element.getBoundingClientRect().top +
+            window.pageYOffset -
+            stickyHeight;
+
+          window.scrollTo({
+            top: y,
+            behavior: "smooth",
+          });
+        }
+
+        return prevAnswers.map((item) =>
+          item.id === id ? { ...item, hasAnswer: true } : item,
+        );
+      });
+
+      setAttempts((prev) => prev + 1);
+      setAnswer("");
+    },
+    [answer],
+  );
 
   const quit = () => {
-    navigate(-1);
+    setStatusGame(Status.NOTSTART);
   };
 
   const colorBorder = useMemo(() => {
     let res: string = Colors.waitanswerborder;
-    if (correctAnswer === true) {
-      res = Colors.correctanswerborder;
-    } else if (correctAnswer === false) {
-      res = Colors.wronganswerborder;
+    switch (correctAnswer) {
+      case AnswerStatus.CORRECT:
+        res = Colors.correctanswerborder;
+        break;
+      case AnswerStatus.WRONG:
+        res = Colors.wronganswerborder;
+        break;
+      case AnswerStatus.ALREADYANSWER:
+        res = Colors.sameanswerborder;
+        break;
     }
     return res;
   }, [correctAnswer]);
@@ -167,7 +265,6 @@ export default function ListPage() {
   ) => {
     let result = [...answers];
     if (type === TypeList.NUMBER) {
-      console.log(order);
       const asc = (a: ListAnswer, b: ListAnswer) =>
         Number(a.value) - Number(b.value);
       const desc = (a: ListAnswer, b: ListAnswer) =>
@@ -182,7 +279,7 @@ export default function ListPage() {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md">
       <Grid container>
         <Helmet>
           <title>{`${t("pages.lists.title")} - ${t("appname")}`}</title>
@@ -209,213 +306,282 @@ export default function ListPage() {
                       values={list.listtranslation}
                     />
                   </Grid>
-                  <Grid
-                    size={12}
-                    sx={{
-                      position: "sticky",
-                      top: 0,
-                      pt: 1,
-                      pb: 1,
-                      backgroundColor: "background.paper",
-                    }}
-                  >
-                    <Grid container spacing={1}>
-                      {
-                        {
-                          NOTSTART: (
-                            <>
-                              <Grid size={12}>
-                                <ButtonColor
-                                  value={Colors.colorApp}
-                                  label={t("commun.launchgame")}
-                                  icon={LogoIcon}
-                                  variant="contained"
-                                  onClick={startGame}
-                                />
-                              </Grid>
-                              <Grid size={12}>
-                                <Typography
-                                  variant="h4"
-                                  sx={{ textAlign: "center" }}
-                                >
-                                  <Trans
-                                    i18nKey={t("commun.item")}
-                                    values={{
-                                      count: total,
-                                    }}
-                                  />
-                                </Typography>
-                              </Grid>
-                            </>
-                          ),
-                          PROGRESS: (
-                            <>
-                              <Grid
-                                size={12}
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "baseline",
-                                  justifyContent: "space-between",
-                                }}
-                              >
-                                <Typography variant="h2">
-                                  {formattedTime}
-                                </Typography>
-                                <Typography variant="h4">
-                                  <Trans
-                                    i18nKey={t("commun.attempt")}
-                                    values={{
-                                      count: attempts,
-                                    }}
-                                  />
-                                </Typography>
-                              </Grid>
-                              <Grid
-                                size={12}
-                                sx={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  gap: px(4),
-                                }}
-                              >
-                                <Paper
-                                  component="form"
-                                  sx={{
-                                    p: px(4),
-                                    display: "flex",
-                                    alignItems: "center",
-                                    border: `2px solid ${colorBorder}`,
-                                  }}
-                                  onSubmit={validateAnswer}
-                                >
-                                  <InputBase
-                                    sx={{ ml: 1, flex: 1 }}
-                                    placeholder="Saisir votre réponse ici"
-                                    value={answer}
-                                    autoFocus
-                                    onChange={(
-                                      e: React.ChangeEvent<HTMLInputElement>,
-                                    ) => {
-                                      setCorrectAnswer(null);
-                                      setAnswer(e.target.value);
-                                    }}
-                                  />
-                                  {correctAnswer !== null && (
-                                    <>
-                                      {correctAnswer ? (
-                                        <CheckIcon
-                                          sx={{
-                                            color: Colors.green,
-                                            fontSize: 30,
-                                          }}
-                                        />
-                                      ) : (
-                                        <CloseIcon
-                                          sx={{
-                                            color: Colors.wronganswer,
-                                            fontSize: 30,
-                                          }}
-                                        />
-                                      )}
-                                    </>
-                                  )}
-                                </Paper>
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                  }}
-                                >
-                                  <ButtonColor
-                                    value={Colors.red}
-                                    label={t("commun.cancel")}
-                                    icon={CancelIcon}
-                                    variant="contained"
-                                    onClick={cancel}
-                                    typography="h6"
-                                    iconSize={20}
-                                    sx={{ width: "fit-content" }}
-                                  />
-                                  <Typography
-                                    variant="body1"
-                                    sx={{ textAlign: "right" }}
-                                  >
-                                    <Trans
-                                      i18nKey={t("commun.finditem")}
-                                      values={{
-                                        value: findItems,
-                                        total: total,
-                                      }}
+                  {loading ? (
+                    <SkeletonRectangulars number={20} height={25} />
+                  ) : (
+                    <>
+                      <Grid
+                        size={12}
+                        ref={stickyRef}
+                        sx={{
+                          position: "sticky",
+                          top: 0,
+                          pt: 1,
+                          pb: 1,
+                          backgroundColor: "background.paper",
+                        }}
+                      >
+                        <Grid container spacing={1}>
+                          {
+                            {
+                              NOTSTART: (
+                                <>
+                                  <Grid size={12}>
+                                    <ButtonColor
+                                      value={Colors.colorApp}
+                                      label={t("commun.launchgame")}
+                                      icon={LogoIcon}
+                                      variant="contained"
+                                      onClick={startGame}
                                     />
-                                  </Typography>
-                                </Box>
-                              </Grid>
-                            </>
-                          ),
-                          FINISH: (
-                            <>
-                              <Grid
-                                size={12}
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "baseline",
-                                  justifyContent: "space-between",
-                                }}
-                              >
-                                <Typography variant="h2">
-                                  {formattedTime}
-                                </Typography>
-                                <Typography variant="h4">
-                                  <Trans
-                                    i18nKey={t("commun.attempt")}
-                                    values={{
-                                      count: attempts,
+                                  </Grid>
+                                  <Grid size={12}>
+                                    <Typography
+                                      variant="h4"
+                                      sx={{ textAlign: "center" }}
+                                    >
+                                      <Trans
+                                        i18nKey={t("commun.item")}
+                                        values={{
+                                          count: total,
+                                        }}
+                                      />
+                                    </Typography>
+                                  </Grid>
+                                </>
+                              ),
+                              PROGRESS: (
+                                <>
+                                  <Grid
+                                    size={12}
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "baseline",
+                                      justifyContent: "space-between",
                                     }}
-                                  />
-                                </Typography>
-                              </Grid>
-                              <Grid size={12}>
-                                <Typography variant="h4">
-                                  <Trans
-                                    i18nKey={t("commun.finditem")}
-                                    values={{
-                                      value: score,
-                                      total: total,
+                                  >
+                                    <Typography variant="h2">
+                                      {formattedTime}
+                                    </Typography>
+                                    <Typography variant="h4">
+                                      <Trans
+                                        i18nKey={t("commun.attempt")}
+                                        values={{
+                                          count: attempts,
+                                        }}
+                                      />
+                                    </Typography>
+                                  </Grid>
+                                  <Grid
+                                    size={12}
+                                    sx={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      gap: px(4),
                                     }}
-                                  />
-                                </Typography>
-                              </Grid>
-                              <Grid size={12}>
-                                <ButtonColor
-                                  value={Colors.red}
-                                  label={t("commun.leave")}
-                                  icon={CancelIcon}
-                                  variant="contained"
-                                  onClick={quit}
-                                />
-                              </Grid>
-                            </>
-                          ),
-                        }[statusGame]
-                      }
-                    </Grid>
-                  </Grid>
-                  {answers.map((answer) => (
-                    <Grid size={12} key={answer.id}>
-                      <CardAnswerList
-                        value={answer}
-                        showAnswer={statusGame === Status.FINISH}
-                        type={list.type}
-                      />
-                    </Grid>
-                  ))}
+                                  >
+                                    <Paper
+                                      component="form"
+                                      sx={{
+                                        p: px(4),
+                                        display: "flex",
+                                        alignItems: "center",
+                                        border: `2px solid ${colorBorder}`,
+                                      }}
+                                      onSubmit={validateAnswer}
+                                    >
+                                      <InputBase
+                                        sx={{ ml: 1, flex: 1 }}
+                                        placeholder="Saisir votre réponse ici"
+                                        value={answer}
+                                        autoFocus
+                                        onChange={(
+                                          e: React.ChangeEvent<HTMLInputElement>,
+                                        ) => {
+                                          setCorrectAnswer(null);
+                                          setAnswer(e.target.value);
+                                        }}
+                                      />
+                                      {correctAnswer !== null && (
+                                        <>
+                                          {
+                                            {
+                                              CORRECT: (
+                                                <CheckIcon
+                                                  sx={{
+                                                    color: Colors.green,
+                                                    fontSize: 30,
+                                                  }}
+                                                />
+                                              ),
+                                              WRONG: (
+                                                <CloseIcon
+                                                  sx={{
+                                                    color: Colors.wronganswer,
+                                                    fontSize: 30,
+                                                  }}
+                                                />
+                                              ),
+                                              ALREADYANSWER: (
+                                                <Box
+                                                  sx={{
+                                                    color: Colors.sameanswer,
+                                                    display: "inline-flex",
+                                                    alignItems: "center",
+                                                    lineHeight: 1,
+                                                  }}
+                                                >
+                                                  <Typography
+                                                    component="span"
+                                                    sx={{
+                                                      fontSize: 30,
+                                                      lineHeight: 1,
+                                                      display: "inline",
+                                                    }}
+                                                  >
+                                                    =
+                                                  </Typography>
+                                                </Box>
+                                              ),
+                                            }[correctAnswer]
+                                          }
+                                        </>
+                                      )}
+                                    </Paper>
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                      }}
+                                    >
+                                      <ButtonColor
+                                        value={Colors.red}
+                                        label={t("commun.cancel")}
+                                        icon={CancelIcon}
+                                        variant="contained"
+                                        onClick={cancel}
+                                        typography="h6"
+                                        iconSize={20}
+                                        sx={{ width: "fit-content" }}
+                                      />
+                                      <Typography
+                                        variant="body1"
+                                        sx={{ textAlign: "right" }}
+                                      >
+                                        <Trans
+                                          i18nKey={t("commun.finditem")}
+                                          values={{
+                                            value: findItems,
+                                            total: total,
+                                          }}
+                                        />
+                                      </Typography>
+                                    </Box>
+                                  </Grid>
+                                </>
+                              ),
+                              FINISH: (
+                                <>
+                                  <Grid
+                                    size={12}
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "baseline",
+                                      justifyContent: "space-between",
+                                    }}
+                                  >
+                                    <Typography variant="h2">
+                                      {formattedTime}
+                                    </Typography>
+                                    <Typography variant="h4">
+                                      <Trans
+                                        i18nKey={t("commun.attempt")}
+                                        values={{
+                                          count: attempts,
+                                        }}
+                                      />
+                                    </Typography>
+                                  </Grid>
+                                  <Grid size={12}>
+                                    <Typography variant="h4">
+                                      <Trans
+                                        i18nKey={t("commun.finditem")}
+                                        values={{
+                                          value: score,
+                                          total: total,
+                                        }}
+                                      />
+                                    </Typography>
+                                  </Grid>
+                                  <Grid size={12}>
+                                    <ButtonColor
+                                      value={Colors.red}
+                                      label={t("commun.leave")}
+                                      icon={CancelIcon}
+                                      variant="contained"
+                                      onClick={quit}
+                                    />
+                                  </Grid>
+                                </>
+                              ),
+                            }[statusGame]
+                          }
+                        </Grid>
+                      </Grid>
+                      {statusGame === Status.NOTSTART ? (
+                        <>
+                          {myScore && (
+                            <Grid size={12}>
+                              <CardRecordList score={myScore} total={total} />
+                            </Grid>
+                          )}
+                          {list && total > 0 && (
+                            <Grid size={12}>
+                              <RankingListMode list={list} totalList={total} />
+                            </Grid>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          {answers.map((answer) => (
+                            <Grid
+                              size={{ xs: 12, sm: 6 }}
+                              key={answer.id}
+                              ref={(el: HTMLDivElement | null) => {
+                                answerRefs.current[answer.id] = el;
+                              }}
+                            >
+                              <CardAnswerList
+                                value={answer}
+                                showAnswer={statusGame === Status.FINISH}
+                                type={list.type}
+                              />
+                            </Grid>
+                          ))}
+                        </>
+                      )}
+                    </>
+                  )}
                 </>
               )}
             </Grid>
           </Box>
         </Grid>
       </Grid>
+      <DialogResultListModal
+        open={openResult}
+        data={dataResult}
+        total={total}
+        result={result}
+        handleClose={() => {
+          setOpenResult(false);
+        }}
+        retry={() => {
+          setOpenResult(false);
+          startGame();
+        }}
+      />
     </Container>
   );
 }

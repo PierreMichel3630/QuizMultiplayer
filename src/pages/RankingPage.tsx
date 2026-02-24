@@ -1,5 +1,4 @@
-import { Box, Grid, Switch, Typography } from "@mui/material";
-import { percent } from "csx";
+import { Grid } from "@mui/material";
 import moment, { Moment } from "moment";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -20,6 +19,7 @@ import {
 import { ButtonRankingDuel } from "src/component/button/ButtonRankingDuel";
 import { ButtonRankingSolo } from "src/component/button/ButtonRankingSolo";
 import { WinBlock } from "src/component/challenge/WinBlock";
+import { OnlyFriendSwitch } from "src/component/switch/OnlyFriendSwitch";
 import { DataRanking, RankingTable } from "src/component/table/RankingTable";
 import { useAppBar } from "src/context/AppBarProvider";
 import { useApp } from "src/context/AppProvider";
@@ -413,25 +413,13 @@ export default function RankingPage() {
       </Grid>
       {profile && (
         <Grid sx={{ pl: 1, pr: 1 }} size={12}>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-              gap: 1,
-              width: percent(100),
+          <OnlyFriendSwitch
+            isOnlyFriend={isOnlyFriend}
+            onChange={(value) => {
+              setPage(0);
+              setIsOnlyFriend(value);
             }}
-          >
-            <Switch
-              color="secondary"
-              checked={isOnlyFriend}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setPage(0);
-                setIsOnlyFriend(event.target.checked);
-              }}
-            />
-            <Typography variant="body1">{t("commun.onlyfriend")}</Typography>
-          </Box>
+          />
         </Grid>
       )}
       <Grid sx={{ p: 1 }} size={12}>
