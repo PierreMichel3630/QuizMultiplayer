@@ -13,7 +13,6 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
-import { SearchType } from "src/models/enum/TypeCardEnum";
 import { FavoriteInsert } from "src/models/Favorite";
 
 export default function CategoryPage() {
@@ -38,17 +37,14 @@ export default function CategoryPage() {
       if (language && category) {
         selectThemesByCategory(language, category.id, "", page, 50).then(
           ({ data }) => {
-            const res = (data ?? []).map((el) => ({
-              ...el,
-              type: SearchType.THEME,
-            }));
+            const res = data ?? [];
             setThemes((prev) => (page === 0 ? [...res] : [...prev, ...res]));
             setIsLoading(false);
-          }
+          },
         );
       }
     },
-    [category, language]
+    [category, language],
   );
 
   useEffect(() => {
@@ -66,7 +62,7 @@ export default function CategoryPage() {
 
   const favorite = useMemo(
     () => favorites.find((el) => el.category === Number(id)),
-    [id, favorites]
+    [id, favorites],
   );
 
   const addFavorite = () => {

@@ -1,4 +1,10 @@
-import { Box, ClickAwayListener, Paper, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  ClickAwayListener,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { px } from "csx";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -11,6 +17,10 @@ import { ImageCard } from "../image/ImageCard";
 import { BasicSearchInput } from "../Input";
 import { SkeletonSearchs } from "../skeleton/SkeletonSearch";
 import { Colors } from "src/style/Colors";
+import { debounce } from "lodash";
+
+import ListMode from "src/assets/mode/list.png";
+import { green } from "@mui/material/colors";
 
 export const SearchBar = () => {
   const { t } = useTranslation();
@@ -24,15 +34,14 @@ export const SearchBar = () => {
   const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
 
   const getSearch = useCallback(
-    (page: number) => {
+    (page: number, searchValue: string) => {
       setItemsSearch([]);
-      setLoading(true);
       if (language) {
         searchThemesAndCategoriesPaginate(
           language,
-          search,
+          searchValue,
           page,
-          ITEM_PER_PAGE
+          ITEM_PER_PAGE,
         ).then(({ data }) => {
           const result = data ?? [];
           setItemsSearch([...result]);
@@ -40,12 +49,26 @@ export const SearchBar = () => {
         });
       }
     },
-    [search, language]
+    [language],
+  );
+
+  const debouncedFetch = useMemo(
+    () => debounce((val: string) => getSearch(0, val), 500),
+    [getSearch],
   );
 
   useEffect(() => {
-    getSearch(0);
-  }, [searchOpen, getSearch]);
+    return () => {
+      debouncedFetch.cancel();
+    };
+  }, [debouncedFetch]);
+
+  useEffect(() => {
+    if (searchOpen) {
+      setLoading(true);
+      debouncedFetch(search);
+    }
+  }, [search, searchOpen, debouncedFetch]);
 
   const handleSubmit = () => {
     setSearchOpen(false);
@@ -84,13 +107,19 @@ export const SearchBar = () => {
               <SkeletonSearchs number={ITEM_PER_PAGE} />
             ) : (
               <>
-                {itemsSearch.map((el, index) => (
-                  <SearchResult
-                    key={index}
-                    value={el}
-                    onSelect={() => setSearchOpen(false)}
-                  />
-                ))}
+                {itemsSearch.length > 0 ? (
+                  <>
+                    {itemsSearch.map((el, index) => (
+                      <SearchResult
+                        key={index}
+                        value={el}
+                        onSelect={() => setSearchOpen(false)}
+                      />
+                    ))}
+                  </>
+                ) : (
+                  <Alert severity="warning">{t("commun.noresult")}</Alert>
+                )}
               </>
             )}
           </Paper>
@@ -105,13 +134,38 @@ interface SearchResultProps {
   onSelect: () => void;
 }
 const SearchResult = ({ value, onSelect }: SearchResultProps) => {
-  const link = useMemo(
-    () =>
-      value.type === SearchType.THEME
-        ? `/theme/${value.id}`
-        : `/category/${value.id}`,
-    [value.id, value.type]
-  );
+  const link = useMemo(() => {
+    let result = "/";
+    if (value.type) {
+      switch (value.type) {
+        case SearchType.THEME:
+          result = `/theme/${value.id}`;
+          break;
+        case SearchType.CATEGORY:
+          result = `/category/${value.id}`;
+          break;
+        case SearchType.LIST:
+          result = `/list/${value.id}`;
+          break;
+      }
+    }
+    return result;
+  }, [value.id, value.type]);
+
+  const valueImageCard = useMemo(() => {
+    let result = { image: value.image, color: value.color };
+    switch (value.type) {
+      case SearchType.LIST:
+        result = { image: ListMode, color: green["A400"] };
+        break;
+      case SearchType.CATEGORY:
+      case SearchType.GAMEMODE:
+      case SearchType.THEME:
+        result = { image: value.image, color: value.color };
+        break;
+    }
+    return result;
+  }, [value]);
 
   return (
     <Link
@@ -136,7 +190,7 @@ const SearchResult = ({ value, onSelect }: SearchResultProps) => {
           },
         }}
       >
-        <ImageCard value={value} size={40} />
+        <ImageCard value={valueImageCard} size={40} />
         <Box>
           <Typography variant="h6">{value.name}</Typography>
           <TypeSearchTypography type={value.type} />

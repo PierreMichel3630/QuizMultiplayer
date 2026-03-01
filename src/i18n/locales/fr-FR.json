@@ -270,6 +270,7 @@
     "installapplication": "Installer l'application",
     "computer": "Ordinateur",
     "new": "Nouveautés",
+    "newabreviation": "New",
     "leave": "Quitter",
     "gamemode": "Mode de Jeu",
     "themesselected": "Thèmes sélectionnés",
@@ -1032,6 +1033,25 @@
     "friend_request_accept": "{{username}} a accepté ta demande"
   },
   "patchnote": {
+    "2.1.6": {
+      "version": "2.1.6",
+      "changes": [
+        "Mode liste: Lié à des catégories possibilité de les voir sur la page d'accueil.",
+        "Mode liste ajout champ de recherche dans le menu liste.",
+        "Ajout badge 'Nouveautés' pour les thèmes, catégories et listes de moins de 14 jours, pour les voir mieux."
+      ],
+      "bug": [
+      ]
+    },
+    "2.1.5": {
+      "version": "2.1.5",
+      "changes": [
+      ],
+      "bug": [
+        "Optimisation de la recherche qui envoyé trop de requête au serveur.",
+        "Mode liste correction de bug d'affichage sur des nouvelles listes."
+      ]
+    },
     "2.1.4": {
       "version": "2.1.4",
       "changes": [

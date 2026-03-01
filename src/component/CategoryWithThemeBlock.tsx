@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { countThemesByCategory, selectThemesByCategory } from "src/api/theme";
 import { useUser } from "src/context/UserProvider";
-import { SearchType } from "src/models/enum/TypeCardEnum";
 import { ICardImage } from "./card/CardImage";
 import { CategoryBlock } from "./category/CategoryBlock";
 
@@ -24,17 +23,14 @@ export const CategoryWithThemeBlock = ({ category }: Props) => {
       if (language) {
         selectThemesByCategory(language, category.id, "", page, 15).then(
           ({ data }) => {
-            const res = (data ?? []).map((el) => ({
-              ...el,
-              type: SearchType.THEME,
-            }));
+            const res = data ?? [];
             setThemes((prev) => (page === 0 ? [...res] : [...prev, ...res]));
             setIsLoading(false);
-          }
+          },
         );
       }
     },
-    [category.id, language]
+    [category.id, language],
   );
 
   useEffect(() => {

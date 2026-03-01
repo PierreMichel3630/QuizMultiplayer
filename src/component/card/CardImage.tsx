@@ -4,13 +4,16 @@ import { useNavigate } from "react-router-dom";
 import { Colors } from "src/style/Colors";
 
 import StarIcon from "@mui/icons-material/Star";
+import { green } from "@mui/material/colors";
+import moment from "moment";
 import { useMemo } from "react";
+import ListMode from "src/assets/mode/list.png";
 import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
 import { SearchType } from "src/models/enum/TypeCardEnum";
+import { MAX_DAY_NEW_THEME } from "src/utils/config";
+import { BadgeNew } from "../badge/BadgeNew";
 import { ImageCard } from "../image/ImageCard";
-import ListMode from "src/assets/mode/list.png";
-import { green } from "@mui/material/colors";
 
 export interface ICardImageOrder extends ICardImage {
   order: number;
@@ -36,6 +39,11 @@ export const CardImage = ({ value, width = 90 }: Props) => {
   const navigate = useNavigate();
   const { favorites } = useApp();
   const { mode } = useUser();
+
+  const isNew = useMemo(
+    () => moment().diff(moment(value.created_at), "days") < MAX_DAY_NEW_THEME,
+    [value.created_at],
+  );
 
   const borderColor = useMemo(
     () => (mode === "dark" ? Colors.white : Colors.black),
@@ -100,7 +108,14 @@ export const CardImage = ({ value, width = 90 }: Props) => {
         position: "relative",
       }}
     >
-      <ImageCard value={valueImageCard} size={width} />
+      <Box
+        sx={{
+          position: "relative",
+        }}
+      >
+        <BadgeNew isNew={isNew} />
+        <ImageCard value={valueImageCard} size={width} />
+      </Box>
       <Typography
         variant="h6"
         sx={{

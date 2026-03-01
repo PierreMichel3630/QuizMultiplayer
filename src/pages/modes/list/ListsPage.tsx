@@ -1,9 +1,11 @@
 import { Box, Grid } from "@mui/system";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { debounce } from "lodash";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { searchListPaginate } from "src/api/list";
 import { CardList } from "src/component/card/CardList";
+import { BasicSearchInput } from "src/component/Input";
 import { SkeletonRectangulars } from "src/component/skeleton/SkeletonRectangular";
 import { TitleBlock } from "src/component/title/Title";
 import { useUser } from "src/context/UserProvider";
@@ -17,19 +19,19 @@ export default function ListsPage() {
   const observer = useRef<IntersectionObserver | null>(null);
   const lastItemRef = useRef<HTMLDivElement | null>(null);
 
+  const [search, setSearch] = useState("");
   const [, setPage] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
   const [loading, setLoading] = useState(false);
   const [itemsSearch, setItemsSearch] = useState<Array<ListTranslation>>([]);
 
   const getList = useCallback(
-    (page: number) => {
+    (page: number, searchValue: string) => {
       if (page === 0) {
         window.scrollTo(0, 0);
       }
-      if (loading) return;
       if (language) {
-        searchListPaginate(language, "", page, ITEM_PER_PAGE).then(
+        searchListPaginate(language, searchValue, page, ITEM_PER_PAGE).then(
           ({ data }) => {
             const res = data ?? [];
             setItemsSearch((prev) =>
@@ -41,15 +43,26 @@ export default function ListsPage() {
         );
       }
     },
-    [language, loading],
+    [language],
   );
+
+  const debouncedFetch = useMemo(
+    () => debounce((page: number, val: string) => getList(page, val), 500),
+    [getList],
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedFetch.cancel();
+    };
+  }, [debouncedFetch]);
 
   useEffect(() => {
     setPage(0);
     setItemsSearch([]);
     setIsEnd(false);
-    getList(0);
-  }, [language]);
+    debouncedFetch(0, search);
+  }, [debouncedFetch, language, search]);
 
   useEffect(() => {
     if (loading) return;
@@ -59,7 +72,7 @@ export default function ListsPage() {
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && !isEnd) {
         setPage((prev) => {
-          getList(prev + 1);
+          debouncedFetch(prev + 1, search);
           return prev + 1;
         });
       }
@@ -70,7 +83,7 @@ export default function ListsPage() {
     }
 
     return () => observer.current?.disconnect();
-  }, [itemsSearch, loading, isEnd, getList]);
+  }, [itemsSearch, loading, isEnd, debouncedFetch, search]);
 
   return (
     <Grid container>
@@ -82,6 +95,14 @@ export default function ListsPage() {
           <Grid container spacing={1}>
             <Grid size={12}>
               <TitleBlock title={t("pages.lists.title")} link="/" />
+            </Grid>
+            <Grid size={12}>
+              <BasicSearchInput
+                label={t("commun.search")}
+                onChange={(value) => setSearch(value)}
+                value={search}
+                clear={() => setSearch("")}
+              />
             </Grid>
             {itemsSearch.map((el, index) => (
               <Grid

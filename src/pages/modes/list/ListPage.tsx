@@ -34,13 +34,13 @@ import { px } from "csx";
 import { shuffle } from "lodash";
 import moment from "moment";
 import { ButtonColor } from "src/component/Button";
-import { SkeletonRectangulars } from "src/component/skeleton/SkeletonRectangular";
-import { useAuth } from "src/context/AuthProviderSupabase";
-import { LogoIcon } from "src/icons/LogoIcon";
-import { Colors } from "src/style/Colors";
 import { DialogResultListModal } from "src/component/modal/ListModal";
 import { RankingListMode } from "src/component/ranking/list/RankingListMode";
+import { SkeletonRectangulars } from "src/component/skeleton/SkeletonRectangular";
+import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
+import { LogoIcon } from "src/icons/LogoIcon";
+import { Colors } from "src/style/Colors";
 
 enum Status {
   NOTSTART = "NOTSTART",

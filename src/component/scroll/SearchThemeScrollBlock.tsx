@@ -1,5 +1,5 @@
 import { Alert, Grid } from "@mui/material";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   searchThemesAndCategoriesPaginate,
@@ -9,6 +9,7 @@ import { useUser } from "src/context/UserProvider";
 import { CardImage, ICardImage } from "../card/CardImage";
 import { CardSelectTheme } from "../card/CardTheme";
 import { SkeletonThemesGrid } from "../skeleton/SkeletonTheme";
+import { debounce } from "lodash";
 
 interface Props {
   search: string;
@@ -17,6 +18,7 @@ interface Props {
 export const SearchThemeScrollBlock = ({ search }: Props) => {
   const { t } = useTranslation();
   const { language } = useUser();
+  const ITEM_PER_PAGE = 40;
 
   const [, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -27,36 +29,44 @@ export const SearchThemeScrollBlock = ({ search }: Props) => {
   const lastItemRef = useRef<HTMLDivElement | null>(null);
 
   const getSearch = useCallback(
-    (page: number) => {
-      if (loading) return;
-
-      setLoading(true);
-      const itemperpage = 40;
+    (page: number, searchValue: string) => {
       if (language) {
         searchThemesAndCategoriesPaginate(
           language,
-          search,
+          searchValue,
           page,
-          itemperpage
+          ITEM_PER_PAGE,
         ).then(({ data }) => {
           const result = data ?? [];
-          setIsEnd(result.length < itemperpage);
+          setIsEnd(result.length < ITEM_PER_PAGE);
           setItemsSearch((prev) =>
-            page === 0 ? [...result] : [...prev, ...result]
+            page === 0 ? [...result] : [...prev, ...result],
           );
           setLoading(false);
         });
       }
     },
-    [search, loading, language]
+    [language],
+  );
+
+  const debouncedFetch = useMemo(
+    () => debounce((page: number, val: string) => getSearch(page, val), 500),
+    [getSearch],
   );
 
   useEffect(() => {
+    return () => {
+      debouncedFetch.cancel();
+    };
+  }, [debouncedFetch]);
+
+  useEffect(() => {
+    setLoading(true);
     setPage(0);
     setItemsSearch([]);
     setIsEnd(false);
-    getSearch(0);
-  }, [search]);
+    debouncedFetch(0, search);
+  }, [debouncedFetch, search]);
 
   useEffect(() => {
     if (loading) return;
@@ -66,7 +76,7 @@ export const SearchThemeScrollBlock = ({ search }: Props) => {
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && !isEnd) {
         setPage((prev) => {
-          getSearch(prev + 1);
+          debouncedFetch(prev + 1, search);
           return prev + 1;
         });
       }
@@ -77,7 +87,7 @@ export const SearchThemeScrollBlock = ({ search }: Props) => {
     }
 
     return () => observer.current?.disconnect();
-  }, [itemsSearch, loading, isEnd, getSearch]);
+  }, [itemsSearch, loading, isEnd, debouncedFetch, search]);
 
   return (
     <>
@@ -89,7 +99,10 @@ export const SearchThemeScrollBlock = ({ search }: Props) => {
         <Grid size={12}>
           <Grid container spacing={1} justifyContent="center" sx={{ mb: 1 }}>
             {itemsSearch.map((item, index) => (
-              <Grid key={index} ref={index === itemsSearch.length - 1 ? lastItemRef : null}>
+              <Grid
+                key={index}
+                ref={index === itemsSearch.length - 1 ? lastItemRef : null}
+              >
                 <CardImage value={item} />
               </Grid>
             ))}
@@ -136,14 +149,14 @@ export const SearchThemeSelectScrollBlock = ({
             const result = data ?? [];
             setIsEnd(result.length < ITEMPERPAGE);
             setItemsSearch((prev) =>
-              page === 0 ? [...result] : [...prev, ...result]
+              page === 0 ? [...result] : [...prev, ...result],
             );
             setLoading(false);
-          }
+          },
         );
       }
     },
-    [search, loading, language]
+    [search, loading, language],
   );
 
   useEffect(() => {
@@ -184,7 +197,10 @@ export const SearchThemeSelectScrollBlock = ({
         <Grid size={12}>
           <Grid container spacing={1} justifyContent="center" sx={{ mb: 1 }}>
             {itemsSearch.map((item, index) => (
-              <Grid key={index} ref={index === itemsSearch.length - 1 ? lastItemRef : null}>
+              <Grid
+                key={index}
+                ref={index === itemsSearch.length - 1 ? lastItemRef : null}
+              >
                 <CardSelectTheme
                   theme={item}
                   onSelect={() => onSelect(item)}

@@ -51,7 +51,7 @@ export const useGameModes = () => {
         onClick: launchBattleGame,
         type: SearchType.GAMEMODE,
         order: 2,
-        created_at: new Date("24/07/2025")
+        created_at:  new Date(2024, 7, 23)
       },
       {
         id: 1,
@@ -61,7 +61,7 @@ export const useGameModes = () => {
         onClick: goList,
         type: SearchType.GAMEMODE,
         order: 1,
-        created_at: new Date("23/02/2026")
+        created_at: new Date(2026, 2, 23)
       },
     ],
     [launchBattleGame, goList, t],

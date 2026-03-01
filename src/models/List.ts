@@ -35,6 +35,7 @@ export interface ListTranslation {
     id: number;
     elements: number;
   };
+  created_at: Date
 }
 
 export interface ListAnswer {

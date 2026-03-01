@@ -19,6 +19,9 @@ import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
 import { green } from "@mui/material/colors";
 import ListMode from "src/assets/mode/list.png";
+import moment from "moment";
+import { MAX_DAY_NEW_THEME } from "src/utils/config";
+import { BadgeNew } from "../badge/BadgeNew";
 
 interface Props {
   value: ListTranslation;
@@ -26,6 +29,11 @@ interface Props {
 
 export const CardList = ({ value }: Props) => {
   const { t } = useTranslation();
+
+  const isNew = useMemo(
+    () => moment().diff(moment(value.created_at), "days") < MAX_DAY_NEW_THEME,
+    [value.created_at],
+  );
 
   const image = useMemo(
     () => ({
@@ -46,7 +54,14 @@ export const CardList = ({ value }: Props) => {
         }}
         elevation={8}
       >
-        <ImageCard value={image} size={50} />
+        <Box
+          sx={{
+            position: "relative",
+          }}
+        >
+          <BadgeNew isNew={isNew} />
+          <ImageCard value={image} size={70} />
+        </Box>
         <Box>
           <Typography variant="h4">{value.name}</Typography>
           <Typography>
