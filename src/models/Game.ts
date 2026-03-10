@@ -51,8 +51,9 @@ export interface ExtraSoloGame {
 }
 
 export interface ExtraSoloGameXP {
-  matchscore: number;
-  match: number;
+  matchscore?: number;
+  match?: number;
+  record?: number
 }
 
 export interface SoloGamePayload {

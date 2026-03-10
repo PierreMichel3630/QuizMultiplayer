@@ -10,6 +10,8 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
+import { px } from "csx";
+import moment from "moment";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 
@@ -71,6 +73,7 @@ export default function NewsPage() {
 
 interface PatchNote {
   version: string;
+  date?: string;
   changes: Array<string>;
   bug: Array<string>;
 }
@@ -90,9 +93,29 @@ const PatchNoteBlock = () => {
           <Grid key={version} size={12}>
             <Card elevation={5}>
               <CardContent>
-                <Typography variant="h5" gutterBottom>
-                  Version {data.version}
-                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "baseline", 
+                    flexWrap: "wrap", 
+                    gap: px(4), 
+                    mb:1
+                  }}
+                >
+                  <Typography variant="h5" component="span">
+                    Version {data.version}
+                  </Typography>
+
+                  {data.date && (
+                    <Typography
+                      variant="body1"
+                      component="span"
+                      sx={{ color: "text.secondary" }}
+                    >
+                      ({moment(data.date, "DD/MM/YYYY").format("DD MMMM YYYY")})
+                    </Typography>
+                  )}
+                </Box>
 
                 {/* Changes */}
                 {data.changes && data.changes.length > 0 && (

@@ -1,5 +1,5 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { padding, percent, px } from "csx";
+import { percent, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
@@ -32,16 +32,16 @@ export const ExperienceBlock = ({ xp, xpgain }: Props) => {
 
   const xpLevel = useMemo(() => {
     const lvlCurrent =
-      myLevel !== undefined ? getExperienceByLevel(myLevel) : 0;
+      myLevel === undefined ? 0 : getExperienceByLevel(myLevel);
     const lvlNext =
-      myLevel !== undefined ? getExperienceByLevel(myLevel + 1) : 0;
-    return myLevel !== undefined ? lvlNext - lvlCurrent : undefined;
+      myLevel === undefined ? 0 : getExperienceByLevel(myLevel + 1);
+    return myLevel === undefined ? undefined : lvlNext - lvlCurrent;
   }, [myLevel]);
 
   const myXpLevel = useMemo(() => {
     const lvlCurrent =
-      myLevel !== undefined ? getExperienceByLevel(myLevel) : 0;
-    return myLevel !== undefined ? xp - lvlCurrent : undefined;
+      myLevel === undefined ? 0 : getExperienceByLevel(myLevel);
+    return myLevel === undefined ? undefined : xp - lvlCurrent;
   }, [myLevel, xp]);
 
   const pourcentage = useMemo(() => {
@@ -51,7 +51,7 @@ export const ExperienceBlock = ({ xp, xpgain }: Props) => {
   }, [xpLevel, myXpLevel, xpTotal]);
 
   const pourcentageGain = useMemo(() => {
-    return xpLevel !== undefined ? (xpTotal / xpLevel) * 100 : 0;
+    return xpLevel === undefined ? 0 : (xpTotal / xpLevel) * 100;
   }, [xpLevel, xpTotal]);
 
   return (
@@ -113,7 +113,7 @@ export const ExperienceBlock = ({ xp, xpgain }: Props) => {
             <Box
               sx={{
                 height: px(20),
-                width: percent(pourcentage > 0 ? pourcentage : 0),
+                width: percent(Math.max(pourcentage, 0)),
                 backgroundColor: Colors.colorApp,
                 borderTopLeftRadius: px(25),
                 borderBottomLeftRadius: px(25),
@@ -170,20 +170,20 @@ export const ExperienceDuelBlock = ({
   }, [victory, score]);
 
   const myLevel = useMemo(() => {
-    return stat !== undefined ? getLevel(stat.xp) : undefined;
+    return stat === undefined ? undefined : getLevel(stat.xp);
   }, [stat]);
 
   const xpLevel = useMemo(() => {
     const lvlCurrent =
-      myLevel !== undefined ? getExperienceByLevel(myLevel) : 0;
+      myLevel === undefined ? 0 : getExperienceByLevel(myLevel);
     const lvlNext =
-      myLevel !== undefined ? getExperienceByLevel(myLevel + 1) : 0;
-    return myLevel !== undefined ? lvlNext - lvlCurrent : undefined;
+      myLevel === undefined ? 0 : getExperienceByLevel(myLevel + 1);
+    return myLevel === undefined ? undefined : lvlNext - lvlCurrent;
   }, [myLevel]);
 
   const myXpLevel = useMemo(() => {
     const lvlCurrent =
-      myLevel !== undefined ? getExperienceByLevel(myLevel) : 0;
+      myLevel === undefined ? 0 : getExperienceByLevel(myLevel);
     return myLevel !== undefined && stat !== undefined
       ? stat.xp - lvlCurrent
       : undefined;
@@ -196,7 +196,7 @@ export const ExperienceDuelBlock = ({
   }, [xpLevel, myXpLevel, xpTotal]);
 
   const pourcentageGain = useMemo(() => {
-    return xpLevel !== undefined ? (xpTotal / xpLevel) * 100 : 0;
+    return xpLevel === undefined ? 0 : (xpTotal / xpLevel) * 100;
   }, [xpLevel, xpTotal]);
 
   const duelXp = useMemo(
@@ -222,7 +222,7 @@ export const ExperienceDuelBlock = ({
         value: xpTotal,
       },
     ],
-    [t, victory, score, xpTotal]
+    [t, victory, score, xpTotal],
   );
 
   return (
@@ -284,7 +284,7 @@ export const ExperienceDuelBlock = ({
             <Box
               sx={{
                 height: px(20),
-                width: percent(pourcentage > 0 ? pourcentage : 0),
+                width: percent(Math.max(pourcentage, 0)),
                 backgroundColor: Colors.colorApp,
                 borderTopLeftRadius: px(25),
                 borderBottomLeftRadius: px(25),
@@ -339,24 +339,24 @@ export const MyExperienceSoloBlock = ({ xp }: PropsSolo) => {
   }, [profile]);
 
   const xpTotal = useMemo(() => {
-    return xp ? xp.match + xp.matchscore : 0;
+    return xp ? (xp.match ?? 0) + (xp.matchscore ?? 0) +  (xp.record ?? 0) : 0;
   }, [xp]);
 
   const myLevel = useMemo(() => {
-    return stat !== undefined ? getLevel(stat.xp) : undefined;
+    return stat === undefined ? undefined : getLevel(stat.xp);
   }, [stat]);
 
   const xpLevel = useMemo(() => {
     const lvlCurrent =
-      myLevel !== undefined ? getExperienceByLevel(myLevel) : 0;
+      myLevel === undefined ? 0 : getExperienceByLevel(myLevel);
     const lvlNext =
-      myLevel !== undefined ? getExperienceByLevel(myLevel + 1) : 0;
-    return myLevel !== undefined ? lvlNext - lvlCurrent : undefined;
+      myLevel === undefined ? 0 : getExperienceByLevel(myLevel + 1);
+    return myLevel === undefined ? undefined : lvlNext - lvlCurrent;
   }, [myLevel]);
 
   const myXpLevel = useMemo(() => {
     const lvlCurrent =
-      myLevel !== undefined ? getExperienceByLevel(myLevel) : 0;
+      myLevel === undefined ? 0 : getExperienceByLevel(myLevel);
     return myLevel !== undefined && stat !== undefined
       ? stat.xp - lvlCurrent
       : undefined;
@@ -369,128 +369,135 @@ export const MyExperienceSoloBlock = ({ xp }: PropsSolo) => {
   }, [xpLevel, myXpLevel, xpTotal]);
 
   const pourcentageGain = useMemo(() => {
-    return xpLevel !== undefined ? (xpTotal / xpLevel) * 100 : 0;
+    return xpLevel === undefined ? 0 : (xpTotal / xpLevel) * 100;
   }, [xpLevel, xpTotal]);
 
-  const duelXp = useMemo(
-    () =>
-      xp
-        ? [
-            {
-              color: Colors.pink,
-              title: t("commun.match"),
-              value: xp.match,
-            },
-            {
-              color: Colors.yellow,
-              title: t("commun.matchscore"),
-              value: xp.matchscore,
-            },
-            {
-              color: Colors.purple2,
-              title: t("commun.totalxp"),
-              value: xpTotal,
-            },
-          ]
-        : [],
-    [t, xp, xpTotal]
-  );
+  const duelXp = useMemo(() => {
+    if (!xp) return [];
 
-  return (xp &&
-  profile !== null && (<Grid container spacing={1} justifyContent="center" alignItems="end">
-    {profile && (
-      <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
-        <AvatarAccountBadge
-          profile={profile}
-          size={100}
-          color={Colors.pink}
-        />
-      </Grid>
-    )}
-    <Grid>
-      <Typography variant="h4">
-        {t("commun.level")} {myLevel}
-      </Typography>
-    </Grid>
-    <Grid size={12}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          position: "relative",
-        }}
-      >
-        {xpLevel !== undefined && myXpLevel !== undefined && (
+    return [
+      xp.record !== undefined && {
+        color: Colors.green,
+        title: t("commun.record"),
+        value: xp.record,
+      },
+      xp.match !== undefined && {
+        color: Colors.pink,
+        title: t("commun.match"),
+        value: xp.match,
+      },
+      xp.matchscore !== undefined && {
+        color: Colors.yellow,
+        title: t("commun.matchscore"),
+        value: xp.matchscore,
+      },
+      {
+        color: Colors.purple2,
+        title: t("commun.totalxp"),
+        value: xpTotal,
+      },
+    ].filter(Boolean) as Array<{color: string, title: string, value: number}>;
+  }, [t, xp, xpTotal]);
+
+  return (
+    xp &&
+    profile !== null && (
+      <Grid container spacing={1} justifyContent="center" alignItems="end">
+        {profile && (
+          <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
+            <AvatarAccountBadge
+              profile={profile}
+              size={100}
+              color={Colors.pink}
+            />
+          </Grid>
+        )}
+        <Grid>
+          <Typography variant="h4">
+            {t("commun.level")} {myLevel}
+          </Typography>
+        </Grid>
+        <Grid size={12}>
           <Box
             sx={{
-              position: "absolute",
-              right: 8,
-              zIndex: 1,
+              display: "flex",
+              justifyContent: "center",
+              position: "relative",
             }}
           >
-            <Typography
-              variant="h6"
-              component="span"
-              color={isDarkMode ? Colors.black2 : Colors.white}
+            {xpLevel !== undefined && myXpLevel !== undefined && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  right: 8,
+                  zIndex: 1,
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  component="span"
+                  color={isDarkMode ? Colors.black2 : Colors.white}
+                >
+                  {xpLevel - myXpLevel}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  component="span"
+                  color={isDarkMode ? Colors.black2 : Colors.white}
+                >
+                  {t("commun.xpnextlevel")}
+                </Typography>
+              </Box>
+            )}
+            <Box
+              sx={{
+                height: px(20),
+                width: percent(100),
+                backgroundColor: isDarkMode ? Colors.white : Colors.black2,
+                borderRadius: px(25),
+              }}
+            />
+            <Box
+              sx={{
+                position: "absolute",
+                left: 0,
+                width: percent(100),
+                display: "flex",
+              }}
             >
-              {xpLevel - myXpLevel}
-            </Typography>
-            <Typography
-              variant="caption"
-              component="span"
-              color={isDarkMode ? Colors.black2 : Colors.white}
-            >
-              {t("commun.xpnextlevel")}
-            </Typography>
+              <Box
+                sx={{
+                  height: px(20),
+                  width: percent(Math.max(pourcentage, 0)),
+                  backgroundColor: Colors.colorApp,
+                  borderTopLeftRadius: px(25),
+                  borderBottomLeftRadius: px(25),
+                }}
+              />
+              <Box
+                sx={{
+                  height: px(20),
+                  width: percent(pourcentageGain),
+                  backgroundColor: Colors.purple2,
+                  borderTopLeftRadius: pourcentage > 0 ? "none" : px(25),
+                  borderBottomLeftRadius: pourcentage > 0 ? "none" : px(25),
+                }}
+              />
+            </Box>
           </Box>
-        )}
-        <Box
-          sx={{
-            height: px(20),
-            width: percent(100),
-            backgroundColor: isDarkMode ? Colors.white : Colors.black2,
-            borderRadius: px(25),
-          }}
-        />
-        <Box
-          sx={{
-            position: "absolute",
-            left: 0,
-            width: percent(100),
-            display: "flex",
-          }}
-        >
-          <Box
-            sx={{
-              height: px(20),
-              width: percent(pourcentage > 0 ? pourcentage : 0),
-              backgroundColor: Colors.colorApp,
-              borderTopLeftRadius: px(25),
-              borderBottomLeftRadius: px(25),
-            }}
-          />
-          <Box
-            sx={{
-              height: px(20),
-              width: percent(pourcentageGain),
-              backgroundColor: Colors.purple2,
-              borderTopLeftRadius: pourcentage > 0 ? "none" : px(25),
-              borderBottomLeftRadius: pourcentage > 0 ? "none" : px(25),
-            }}
-          />
-        </Box>
-      </Box>
-    </Grid>
-    {duelXp.map((el, index) => (
-      <Grid key={index} size={4}>
-        <ExperienceGainBlock
-          color={el.color}
-          title={el.title}
-          value={el.value}
-        />
+        </Grid>
+        {duelXp.map((el, index) => (
+          <Grid key={index} size={12 / duelXp.length}>
+            <ExperienceGainBlock
+              color={el.color}
+              title={el.title}
+              value={el.value}
+            />
+          </Grid>
+        ))}
       </Grid>
-    ))}
-  </Grid>));
+    )
+  );
 };
 
 interface PropsExperienceGainBlock {
@@ -518,7 +525,7 @@ const ExperienceGainBlock = ({
       </Typography>
       <Box
         sx={{
-          p: padding(5, 15),
+          p: px(5),
           border: `2px solid ${color}`,
           borderRadius: px(5),
         }}
@@ -550,11 +557,11 @@ export const XpBar = ({ previousxp, value }: PropsXpBar) => {
 
   const experienceLevel = useMemo(
     () => getExperienceByLevel(myLevel),
-    [myLevel]
+    [myLevel],
   );
   const experienceNextLevel = useMemo(
     () => getExperienceByLevel(myLevel + 1),
-    [myLevel]
+    [myLevel],
   );
 
   const xpLevel = useMemo(() => {
@@ -642,7 +649,7 @@ export const XpBar = ({ previousxp, value }: PropsXpBar) => {
           <Box
             sx={{
               height: px(20),
-              width: percent(pourcentage > 0 ? pourcentage : 0),
+              width: percent(Math.max(pourcentage, 0)),
               backgroundColor: Colors.colorApp,
               borderTopLeftRadius: px(25),
               borderBottomLeftRadius: px(25),

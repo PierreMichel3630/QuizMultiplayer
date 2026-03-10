@@ -667,6 +667,11 @@
       "THEME": "Thème",
       "CATEGORY": "Catégorie",
       "GAMEMODE": "Mode de jeu"
+    },
+    "status": {
+      "FINISH": "Terminé",
+      "PLAY": "Joué",
+      "NOTPLAY": "Non joué"
     }
   },
   "form": {
@@ -1033,6 +1038,17 @@
     "friend_request_accept": "{{username}} a accepté ta demande"
   },
   "patchnote": {
+    "2.1.7": {
+      "version": "2.1.7",
+      "date": "10/03/2026",
+      "changes": [
+        "Mode liste: Ajout de gain d'expérience et argent à chaque partie",
+        "Mode liste: Affichage de son score dans la recherche des listes",
+        "Défis du jour: l'affichage de l'ordre des questions et réponses est aléatoire pour limiter la triche"
+      ],
+      "bug": [
+      ]
+    },
     "2.1.6": {
       "version": "2.1.6",
       "changes": [

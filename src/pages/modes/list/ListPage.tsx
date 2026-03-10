@@ -42,7 +42,7 @@ import { useUser } from "src/context/UserProvider";
 import { LogoIcon } from "src/icons/LogoIcon";
 import { Colors } from "src/style/Colors";
 
-enum Status {
+enum StatusGame {
   NOTSTART = "NOTSTART",
   PROGRESS = "PROGRESS",
   FINISH = "FINISH",
@@ -76,7 +76,7 @@ export default function ListPage() {
   const answerRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const stickyRef = useRef<HTMLDivElement | null>(null);
 
-  const [statusGame, setStatusGame] = useState<Status>(Status.NOTSTART);
+  const [statusGame, setStatusGame] = useState<StatusGame>(StatusGame.NOTSTART);
   const [time, setTime] = useState(0);
   const [correctAnswer, setCorrectAnswer] = useState<null | AnswerStatus>(null);
   const [attempts, setAttempts] = useState(0);
@@ -134,7 +134,7 @@ export default function ListPage() {
   }, [id]);
 
   useEffect(() => {
-    if (statusGame !== Status.PROGRESS) return;
+    if (statusGame !== StatusGame.PROGRESS) return;
 
     const interval = setInterval(() => {
       setTime((prev) => prev + 100);
@@ -146,7 +146,7 @@ export default function ListPage() {
   useEffect(() => {
     const allFound = answers.length > 0 && answers.every((a) => a.hasAnswer);
 
-    if (allFound && statusGame !== Status.FINISH) {
+    if (allFound && statusGame !== StatusGame.FINISH) {
       setScore(answers.length);
       if (profile && id) {
         setResult({
@@ -159,7 +159,7 @@ export default function ListPage() {
           setDataResult(data);
         });
       }
-      setStatusGame(Status.FINISH);
+      setStatusGame(StatusGame.FINISH);
     }
   }, [answers, attempts, id, profile, statusGame, time]);
 
@@ -169,11 +169,11 @@ export default function ListPage() {
     setCorrectAnswer(null);
     setAnswer("");
     setAnswers((prev) => prev.map((a) => ({ ...a, hasAnswer: false })));
-    setStatusGame(Status.PROGRESS);
+    setStatusGame(StatusGame.PROGRESS);
   };
 
   const cancel = () => {
-    setStatusGame(Status.FINISH);
+    setStatusGame(StatusGame.FINISH);
     setScore(findItems);
     if (profile && id) {
       setResult({
@@ -274,7 +274,7 @@ export default function ListPage() {
 
   const quit = () => {
     setAnswers((prev) => prev.map((a) => ({ ...a, hasAnswer: false })));
-    setStatusGame(Status.NOTSTART);
+    setStatusGame(StatusGame.NOTSTART);
     getMyScore();
   };
 
@@ -374,6 +374,7 @@ export default function ListPage() {
                           pt: 1,
                           pb: 1,
                           backgroundColor: "background.paper",
+                          zIndex: 1000
                         }}
                       >
                         <Grid container spacing={1}>
@@ -584,7 +585,7 @@ export default function ListPage() {
                           }
                         </Grid>
                       </Grid>
-                      {statusGame === Status.NOTSTART ? (
+                      {statusGame === StatusGame.NOTSTART ? (
                         <>
                           {myScore && (
                             <Grid size={12}>
@@ -609,7 +610,7 @@ export default function ListPage() {
                             >
                               <CardAnswerList
                                 value={answer}
-                                showAnswer={statusGame === Status.FINISH}
+                                showAnswer={statusGame === StatusGame.FINISH}
                                 type={list.type}
                               />
                             </Grid>

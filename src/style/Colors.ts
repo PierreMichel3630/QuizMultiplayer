@@ -1,4 +1,5 @@
 import {
+  amber,
   blue,
   brown,
   deepPurple,
@@ -51,6 +52,7 @@ export const Colors = {
   yellow4: yellow[600],
   orange: orange[900],
   orange2: orange[300],
+  orange3: amber[400],
   black: "#000000",
   black2: grey[900],
   white: "#FFFFFF",

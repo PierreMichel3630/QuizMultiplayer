@@ -21,6 +21,7 @@ export enum TypeList {
 export interface List {
   id: number;
   order: null | OrderList;
+  elements: number
   type: TypeList;
   listtranslation: Array<ListTranslation>;
   format?: string;
@@ -35,7 +36,7 @@ export interface ListTranslation {
     id: number;
     elements: number;
   };
-  created_at: Date
+  created_at: Date;
 }
 
 export interface ListAnswer {
@@ -64,6 +65,8 @@ export interface ListScore {
   attempts_recordtime: number;
   time_recordattempts: number;
   time_recordtime: number;
+  list: List
+  finish: boolean;
 }
 
 export interface ResultScoreList {

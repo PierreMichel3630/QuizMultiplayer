@@ -15,6 +15,8 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import { ChangeNumberBlock, Order } from "../ChangeBlock";
+import { MyExperienceSoloBlock } from "../ExperienceBlock";
+import { AddMoneyBlock } from "../MoneyBlock";
 
 interface Props {
   open: boolean;
@@ -88,6 +90,25 @@ export const DialogResultListModal = ({
             )}
             {result && (
               <>
+                <Grid size={12}>
+                  <MyExperienceSoloBlock
+                    xp={{
+                      match: 50,
+                      matchscore: 5 * result.score,
+                      record: hasNewRecord ? 100 : undefined
+                    }}
+                  />
+                </Grid>
+                <Grid
+                  sx={{ display: "flex", justifyContent: "center" }}
+                  size={12}
+                >
+                  <AddMoneyBlock
+                    money={result.score * 10}
+                    variant="h4"
+                    width={25}
+                  />
+                </Grid>
                 <Grid
                   size={12}
                   sx={{
@@ -172,7 +193,9 @@ export const DialogResultListModal = ({
                     <Box>
                       <ChangeNumberBlock
                         value={result.attempts}
-                        previous={data.previouslistscore.attempts_recordattempts}
+                        previous={
+                          data.previouslistscore.attempts_recordattempts
+                        }
                         order={Order.DESC}
                       />
                     </Box>

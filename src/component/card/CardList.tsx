@@ -18,10 +18,14 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
 import { green } from "@mui/material/colors";
-import ListMode from "src/assets/mode/list.png";
 import moment from "moment";
+import ListMode from "src/assets/mode/list.png";
+import { useAuth } from "src/context/AuthProviderSupabase";
+import { useList } from "src/context/ListProvider";
+import { Status } from "src/models/enum/Status";
 import { MAX_DAY_NEW_THEME } from "src/utils/config";
 import { BadgeNew } from "../badge/BadgeNew";
+import { BadgeStatusList } from "../badge/BadgeText";
 
 interface Props {
   value: ListTranslation;
@@ -29,6 +33,8 @@ interface Props {
 
 export const CardList = ({ value }: Props) => {
   const { t } = useTranslation();
+  const { scores } = useList();
+  const { profile } = useAuth();
 
   const isNew = useMemo(
     () => moment().diff(moment(value.created_at), "days") < MAX_DAY_NEW_THEME,
@@ -42,6 +48,27 @@ export const CardList = ({ value }: Props) => {
     }),
     [],
   );
+
+  const score = useMemo(
+    () => [...scores].find((s) => s.list.id === value.list.id),
+    [value, scores],
+  );
+
+  const status = useMemo(() => {
+    let result: Status | undefined = undefined;
+    if (profile) {
+      if (score) {
+        if (score.result >= score.list.elements) {
+          result = Status.FINISH;
+        } else {
+          result = Status.PLAY;
+        }
+      } else {
+        result = Status.NOTPLAY;
+      }
+    }
+    return result;
+  }, [score, profile]);
 
   return (
     <Link to={`/list/${value.list.id}`} style={{ textDecoration: "none" }}>
@@ -60,18 +87,38 @@ export const CardList = ({ value }: Props) => {
           }}
         >
           <BadgeNew isNew={isNew} />
-          <ImageCard value={image} size={70} />
+          <ImageCard value={image} size={80} />
         </Box>
-        <Box>
+        <Box sx={{ display: " flex", flexDirection: "column", gap: 1 }}>
           <Typography variant="h4">{value.name}</Typography>
-          <Typography>
-            <Trans
-              i18nKey={t("commun.item")}
-              values={{
-                count: value.list.elements,
-              }}
-            />
-          </Typography>
+          <BadgeStatusList score={score} />
+          {status && score && status !== Status.NOTPLAY ? (
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Typography variant="h6">
+                {score.result} / {score.list.elements}
+              </Typography>
+              <Typography variant="h6">
+                {(score.time_recordtime / 1000).toFixed(2)}s
+              </Typography>
+              <Typography variant="h6">
+                <Trans
+                  i18nKey={t("commun.attempt")}
+                  values={{
+                    count: score.attempts_recordattempts,
+                  }}
+                />
+              </Typography>
+            </Box>
+          ) : (
+            <Typography variant="h6">
+              <Trans
+                i18nKey={t("commun.item")}
+                values={{
+                  count: value.list.elements,
+                }}
+              />
+            </Typography>
+          )}
         </Box>
       </Paper>
     </Link>
@@ -207,11 +254,13 @@ export const CardRecordList = ({ score, total }: PropsCardRecordList) => {
             display: "flex",
             gap: 1,
             alignItems: "center",
+            justifyContent: "space-between"
           }}
         >
           <Typography variant="h4" textAlign="center">
             {t("commun.mybestscore")}
           </Typography>
+          <BadgeStatusList score={score} />
         </Grid>
         <Grid size={12} sx={{ p: padding(10, 5) }}>
           <Grid container spacing={1}>

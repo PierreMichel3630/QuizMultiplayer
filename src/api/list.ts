@@ -69,7 +69,7 @@ export const selectListScoreByListIdAndProfile = (
 ) =>
   supabase
     .from(SUPABASE_LISTSCORE_TABLE)
-    .select("*")
+    .select("*, list(*)")
     .eq("list", id)
     .eq("profile", profile)
     .maybeSingle();
@@ -141,3 +141,10 @@ export const selectListScorePaginate = (
   }
   return query.range(from, to).order(sort, { ascending: true });
 };
+
+
+
+export const selectListScoreByProfile = (profile: string) => supabase
+    .from(SUPABASE_LISTSCORE_TABLE)
+    .select("*, list(*)")
+    .eq("profile", profile);

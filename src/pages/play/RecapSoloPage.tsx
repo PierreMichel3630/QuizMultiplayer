@@ -134,17 +134,17 @@ export default function RecapSoloPage() {
                   }}
                 />
               </Grid>
-              {profile !== null ? (
+              {profile === null ? (
+                <Grid size={12}>
+                  <ConnectAlert />
+                </Grid>
+              ) : (
                 <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
                   <AddMoneyBlock
                     money={game.points * 10}
                     variant="h4"
                     width={25}
                   />
-                </Grid>
-              ) : (
-                <Grid size={12}>
-                  <ConnectAlert />
                 </Grid>
               )}
               <Grid size={12}>

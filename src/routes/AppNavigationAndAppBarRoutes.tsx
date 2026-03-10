@@ -38,6 +38,7 @@ import BannersPage from "src/pages/shop/BannersPage";
 import ShopPage from "src/pages/shop/ShopPage";
 import ShopThemePage from "src/pages/shop/ShopThemePage";
 import TitlesPage from "src/pages/shop/TitlesPage";
+import ListOutletPage from "src/pages/modes/list/ListOutletPage";
 
 export const AppNavigationAndAppBarRoutes = [
   {
@@ -78,7 +79,13 @@ export const AppNavigationAndAppBarRoutes = [
   },
   {
     path: "/list",
-    element: <ListsPage />,
+    element: <ListOutletPage />,
+    children: [
+      {
+        path: "/list",
+        element: <ListsPage />,
+      },
+    ],
   },
   {
     path: "/category/:id",

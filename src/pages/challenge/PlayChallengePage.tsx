@@ -21,6 +21,7 @@ import { decryptToNumber } from "src/utils/crypt";
 import { preloadAllImages } from "src/utils/preload";
 import { getResponse, verifyResponseCrypt } from "src/utils/response";
 import { DEFAULT_TIME_QUESTION } from "src/utils/config";
+import { shuffle } from "src/utils/sort";
 
 export default function PlayChallengePage() {
   const { t } = useTranslation();
@@ -174,12 +175,16 @@ export default function PlayChallengePage() {
       if (uuidGame) {
         selectChallengeGameByUuid(uuidGame).then(({ data }) => {
           const challengeGame = data as ChallengeGame;
-          const questions = challengeGame.challenge.questionsv2;
+          const questions = [...challengeGame.challenge.questionsv2].sort(shuffle);
           const hasgame = safeGetStorage(uuidGame) !== null;
           if (hasgame) {
             const questionsgame = JSON.parse(
               localStorage.getItem(uuidGame) ?? "[]",
             ) as Array<QuestionSolo>;
+            const idsQuestionsPlay = [...questionsgame].map(el => el.id)
+            const questionsNotPlay = [...questions].filter(el => !idsQuestionsPlay.includes(el.id))
+            const questionsPlay = [...questions].filter(el => idsQuestionsPlay.includes(el.id))
+            const questionsGame = [...questionsPlay, ...questionsNotPlay]
             const indexNextQuestion = questionsgame.length;
             setResponse(undefined);
             const correct = [...questionsgame].reduce(
@@ -192,9 +197,9 @@ export default function PlayChallengePage() {
             );
             setCorrectAnswer(correct);
             setWrongAnswer(wrong);
-            setQuestions(questions);
+            setQuestions(questionsGame);
             if (indexNextQuestion < questions.length - 1) {
-              setQuestion(questions[indexNextQuestion]);
+              setQuestion(questionsGame[indexNextQuestion]);
             } else {
               navigate(`/challenge/game/${uuidGame}`, {
                 state: {

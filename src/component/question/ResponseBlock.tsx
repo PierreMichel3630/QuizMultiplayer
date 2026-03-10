@@ -14,6 +14,7 @@ import { Language } from "src/models/Language";
 import { Question } from "src/models/Question";
 import { ExtraResponse } from "src/models/Response";
 import { decryptToNumber } from "src/utils/crypt";
+import { shuffle } from "src/utils/sort";
 import { ArrowLeft, ArrowRight } from "../icon/Arrow";
 import { ImageQCMBlock } from "../ImageBlock";
 import { TextLabelBlock } from "../language/TextLanguageBlock";
@@ -65,12 +66,12 @@ export const ResponsesQCMBlock = ({
 
   const isQuestionOrder = useMemo(
     () => question.typequestion === TypeQuestionEnum.ORDER,
-    [question]
+    [question],
   );
 
   const hasImage = useMemo(
     () => question.image ?? question.typequestion === "MAPPOSITION",
-    [question]
+    [question],
   );
 
   const columns = useMemo(() => {
@@ -86,6 +87,10 @@ export const ResponsesQCMBlock = ({
   const rows = useMemo(() => {
     return question.answers.length / columns;
   }, [question.answers.length, columns]);
+
+  const answers = useMemo(() => {
+    return [...question.answers].sort(shuffle);
+  }, [question.answers]);
 
   return (
     <Box
@@ -105,7 +110,7 @@ export const ResponsesQCMBlock = ({
         mb: 1,
       }}
     >
-      {question.answers.map((r) => {
+      {answers.map((r) => {
         const index = r.id;
         const isCorrectResponse = response && Number(response.answer) === index;
         const isAnswerP1 =
@@ -178,12 +183,12 @@ export const ResponsesQCMEditBlock = ({
 
   const isQuestionOrder = useMemo(
     () => question.typequestion === TypeQuestionEnum.ORDER,
-    [question]
+    [question],
   );
 
   const hasImage = useMemo(
     () => question.image ?? question.typequestion === "MAPPOSITION",
-    [question]
+    [question],
   );
 
   const columns = useMemo(() => {
@@ -307,7 +312,7 @@ export const ResponseQCMBlock = ({
 
   const arrowColor: string = useMemo(
     () => (isDarkMode ? Colors.white : Colors.black2),
-    [isDarkMode]
+    [isDarkMode],
   );
 
   return (
@@ -406,7 +411,7 @@ export const ResponseInputBlock = ({
   const isDarkMode = useMemo(() => mode === "dark", [mode]);
   const arrowColor: string = useMemo(
     () => (isDarkMode ? Colors.white : Colors.black2),
-    [isDarkMode]
+    [isDarkMode],
   );
 
   return (
@@ -478,7 +483,7 @@ export const CorrectAnswerBlock = ({ question }: CorrectAnswerBlockProps) => {
   const answer = useMemo(() => {
     const response = decryptToNumber(question.answer);
     const correctAnswer = [...question.answers].find(
-      (el) => Number(el.id) === Number(response)
+      (el) => Number(el.id) === Number(response),
     );
     return correctAnswer;
   }, [question]);
@@ -517,7 +522,7 @@ export const ResponsesBlockAdmin = ({
 
   const numberAnswer = useMemo(
     () => [answer, ...wrongAnswers].length,
-    [answer, wrongAnswers]
+    [answer, wrongAnswers],
   );
 
   const columns = useMemo(() => {
