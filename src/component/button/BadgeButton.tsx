@@ -9,6 +9,10 @@ import { useAppBar } from "src/context/AppBarProvider";
 import { useIsMobileOrTablet } from "src/hook/useSize";
 import { padding, px } from "csx";
 
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import { Colors } from "src/style/Colors";
+import { BadgeDot } from "../badge/BadgeDot";
+
 interface PropsBadgeIconButton {
   icon: JSX.Element;
   onClick: () => void;
@@ -46,6 +50,8 @@ export const BadgeIconButton = ({ icon, onClick }: PropsBadgeIconButton) => {
 interface ButtonValue {
   label: string;
   link: string;
+  icon?: JSX.Element;
+  notifications?: boolean;
 }
 
 interface PropsBadgeButton {
@@ -56,25 +62,52 @@ export const BadgeButton = ({ value }: PropsBadgeButton) => {
   const theme = useTheme();
   const isDark = useMemo(() => theme.palette.mode === "dark", [theme]);
   return (
-    <Button
-      variant="contained"
-      sx={{
-        backgroundColor: isDark
-          ? theme.palette.grey[800]
-          : theme.palette.grey[300],
-        color: isDark ? theme.palette.grey[100] : theme.palette.grey[900],
-        "&:hover": {
-          backgroundColor: isDark
-            ? theme.palette.grey[700]
-            : theme.palette.grey[400],
-        },
-      }}
-      size="small"
-      component={Link}
-      to={value.link}
+    <Box
+      sx={
+        value.notifications
+          ? {
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+              cursor: "pointer",
+              "--border-angle": "0deg",
+              borderRadius: "5px",
+              boxShadow: "0px 2px 4px hsl(0 0% 0% / 25%)",
+              animation: "border-angle-rotate 2s infinite linear",
+              border: "2px solid transparent",
+              position: "relative",
+              background: `linear-gradient(${Colors.black}, ${Colors.black}) padding-box, conic-gradient(from var(--border-angle),oklch(100% 100% 0deg),oklch(100% 100% 45deg),oklch(100% 100% 90deg),oklch(100% 100% 135deg),oklch(100% 100% 180deg),oklch(100% 100% 225deg),oklch(100% 100% 270deg),oklch(100% 100% 315deg),oklch(100% 100% 360deg)) border-box`,
+            }
+          : {}
+      }
     >
-      <Typography variant="h6">{value.label}</Typography>
-    </Button>
+      <Button
+        variant="contained"
+        sx={{
+          display: "flex",
+          gap: px(5),
+          backgroundColor: isDark
+            ? theme.palette.grey[800]
+            : theme.palette.grey[300],
+          color: isDark ? theme.palette.grey[100] : theme.palette.grey[900],
+          "&:hover": {
+            backgroundColor: isDark
+              ? theme.palette.grey[700]
+              : theme.palette.grey[400],
+          },
+          transition: "border-color 0.3s ease",
+          borderColor: "secondary.main",
+        }}
+        size="small"
+        component={Link}
+        to={value.link}
+      >
+        {value.icon && value.icon}
+        <Typography variant="h6">{value.label}</Typography>
+        {value.notifications && <BadgeDot />}
+      </Button>
+    </Box>
   );
 };
 
@@ -94,6 +127,7 @@ export const BadgeButtonGroup = ({ values }: PropsBadgeButtonGroup) => (
         display: "none",
       },
     }}
+    alignItems="center"
   >
     {values.map((el, index) => (
       <Grid key={index} sx={{ flexShrink: 0 }}>
@@ -108,10 +142,16 @@ export const BadgeButtonRedirection = () => {
   const { profile } = useAuth();
   const { toogleOpenDrawer } = useAppBar();
   const isMobileOrTablet = useIsMobileOrTablet();
+  const { hasPlayChallenge } = useAuth();
 
   const buttons = useMemo(
     () => [
-      { label: t("commun.daychallenge"), link: "/challenge" },
+      {
+        icon: <EmojiEventsIcon fontSize="small" />,
+        label: t("commun.daychallenge"),
+        link: "/challenge",
+        notifications: !hasPlayChallenge,
+      },
       { label: t("commun.gamemode"), link: "/gamemode" },
       { label: t("mode.list"), link: "/list" },
       { label: t("commun.favorite"), link: "/favorite" },
@@ -127,7 +167,7 @@ export const BadgeButtonRedirection = () => {
           ]
         : []),
     ],
-    [profile, t],
+    [hasPlayChallenge, profile, t],
   );
 
   const openDrawer = () => {

@@ -8,26 +8,23 @@ import { CategoriesBlock } from "src/component/CategoriesBlock";
 import { GameModeBlock } from "src/component/GameModeBlock";
 import { NewBlock } from "src/component/NewBlock";
 import { RankingTop5Block } from "src/component/RankingBlock";
-import { useAuth } from "src/context/AuthProviderSupabase";
 
-import { ChallengeButton } from "src/component/button/ChallengeButton";
+import { useNavigate } from "react-router-dom";
 import { HeaderApp } from "src/component/header/HeaderApp";
+import { MostPlayedThemeBlock } from "src/component/MostPlayedThemeBlock";
+import { PreviousGameBlock } from "src/component/PreviousGameBlock";
 import { CategoriesScrollBlock } from "src/component/scroll/CategoriesScrollBlock";
 import { SearchBlock } from "src/component/search/SearchBlock";
 import { ShopBlock } from "src/component/ShopBlock";
 import { UpdatedThemeBlock } from "src/component/theme/UpdatedThemeBlock";
 import { useAppBar } from "src/context/AppBarProvider";
 import { useIsMobileOrTablet } from "src/hook/useSize";
-import { useNavigate } from "react-router-dom";
-import { MostPlayedThemeBlock } from "src/component/MostPlayedThemeBlock";
-import { PreviousGameBlock } from "src/component/PreviousGameBlock";
 
 export default function ThemesPage() {
   const isMobileOrTablet = useIsMobileOrTablet();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { hasPlayChallenge } = useAuth();
   const { appBarVisible, top } = useAppBar();
 
   const goSearch = () => {
@@ -77,11 +74,6 @@ export default function ThemesPage() {
           }}
         >
           <Grid container spacing={1}>
-            {!hasPlayChallenge && (
-              <Grid size={12}>
-                <ChallengeButton />
-              </Grid>
-            )}
             <Grid size={12}>
               <NewBlock />
             </Grid>

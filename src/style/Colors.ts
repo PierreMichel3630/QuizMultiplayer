@@ -71,4 +71,8 @@ export const Colors = {
   colorDuel1: pink[300],
   colorDuel2: lightBlue[200],
   colorApp: "#01b5da",
+
+  // MODE
+  colorList: green["A400"],
+  colorBrainTest: deepPurple["A200"],
 };

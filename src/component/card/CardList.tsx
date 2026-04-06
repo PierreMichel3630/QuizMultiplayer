@@ -17,13 +17,10 @@ import { ImageCard } from "../image/ImageCard";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
-import { green } from "@mui/material/colors";
-import moment from "moment";
 import ListMode from "src/assets/mode/list.png";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useList } from "src/context/ListProvider";
 import { Status } from "src/models/enum/Status";
-import { MAX_DAY_NEW_THEME } from "src/utils/config";
 import { BadgeNew } from "../badge/BadgeNew";
 import { BadgeStatusList } from "../badge/BadgeText";
 
@@ -36,15 +33,10 @@ export const CardList = ({ value }: Props) => {
   const { scores } = useList();
   const { profile } = useAuth();
 
-  const isNew = useMemo(
-    () => moment().diff(moment(value.created_at), "days") < MAX_DAY_NEW_THEME,
-    [value.created_at],
-  );
-
   const image = useMemo(
     () => ({
       image: ListMode,
-      color: green["A400"],
+      color: Colors.colorList,
     }),
     [],
   );
@@ -86,7 +78,7 @@ export const CardList = ({ value }: Props) => {
             position: "relative",
           }}
         >
-          <BadgeNew isNew={isNew} />
+          <BadgeNew date={value.created_at} />
           <ImageCard value={image} size={80} />
         </Box>
         <Box sx={{ display: " flex", flexDirection: "column", gap: 1 }}>

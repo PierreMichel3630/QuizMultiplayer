@@ -52,7 +52,7 @@ export const CreateEditThemeQuestionDialog = ({
   };
 
   const onInsert = (theme: ICardImage) => {
-    insertQuestionTheme({ question: question.id, theme: theme.id }).then(() => {
+    insertQuestionTheme({ question: question.id, theme: Number(theme.id) }).then(() => {
       refresh();
     });
   };

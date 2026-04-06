@@ -44,6 +44,7 @@ import { ImageCard } from "../image/ImageCard";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { px } from "csx";
+import { useGameModes } from "src/hook/useGameModes";
 
 interface MenuTitle {
   title: string;
@@ -54,8 +55,9 @@ interface Menu {
   value: string;
   label: string;
   icon: JSX.Element;
-  to: string;
+  to?: string;
   state?: unknown;
+  onClick?: () => void;
 }
 
 interface Props {
@@ -74,9 +76,12 @@ export const MenuBlock = ({
   const { toogleOpenDrawer } = useAppBar();
   const { language } = useUser();
   const { favorites } = useApp();
+  const { allValues } = useGameModes();
 
   const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
-  const [maxFavoriteDisplay, setMaxFavoriteDisplay] = useState(3);
+  const [maxFavoriteDisplay, setMaxFavoriteDisplay] = useState(2);
+
+  const [maxGameModeDisplay, setMaxGameModeDisplay] = useState(2);
 
   const isSmallDrawer = useMemo(
     () => sizeDrawer === DrawerSize.SMALL,
@@ -253,6 +258,22 @@ export const MenuBlock = ({
     }
   };
 
+  const gameModeDisplay = useMemo(() => {
+    return [...allValues].slice(0, maxGameModeDisplay).map((el) => {
+      return {
+        label: el.name,
+        icon: <ImageCard value={el} size={40} />,
+        value: el.id.toString(),
+        onClick: el.onClick,
+      };
+    });
+  }, [maxGameModeDisplay, allValues]);
+
+  const isEndGameMode = useMemo(
+    () => allValues.length <= maxGameModeDisplay,
+    [allValues, maxGameModeDisplay],
+  );
+
   const favoritesDisplay = useMemo(() => {
     return [...itemsSearch].slice(0, maxFavoriteDisplay).map((el) => {
       const link =
@@ -312,7 +333,7 @@ export const MenuBlock = ({
                 cursor: "pointer",
               }}
               onClick={() =>
-                setMaxFavoriteDisplay((prev) => (isEndFavorite ? 3 : prev + 3))
+                setMaxFavoriteDisplay((prev) => (isEndFavorite ? 2 : prev + 3))
               }
             >
               {isEndFavorite ? (
@@ -328,6 +349,53 @@ export const MenuBlock = ({
           <Grid size={12}>
             <Divider />
           </Grid>
+        </>
+      )}
+      <Grid size={12} sx={{ pt: 1, pl: 1, pr: 1 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+          onClick={() => goTo("/gamemode")}
+        >
+          <Typography variant="h4">{t("commun.gamemode")}</Typography>
+          <KeyboardArrowRightIcon fontSize="large" />
+        </Box>
+        <List>
+          {[...gameModeDisplay].map((value, i) => (
+            <MenuItem key={i} menu={value} size={sizeDrawer} />
+          ))}
+        </List>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: isSmallDrawer ? px(2) : 2,
+            pl: isSmallDrawer ? px(2) : 1,
+            cursor: "pointer",
+          }}
+          onClick={() =>
+            setMaxGameModeDisplay((prev) => (isEndGameMode ? 3 : prev + 3))
+          }
+        >
+          {isEndGameMode ? (
+            <ExpandLessIcon fontSize="large" />
+          ) : (
+            <ExpandMoreIcon fontSize="large" />
+          )}
+          <Typography variant="h6">
+            {isEndGameMode ? t("commun.less") : t("commun.more")}
+          </Typography>
+        </Box>
+      </Grid>
+      <Grid size={12}>
+        <Divider />
+      </Grid>
+      {profile && (
+        <>
           <Grid size={12} sx={{ pt: 1, pl: 1, pr: 1 }}>
             <MenuCard
               value={menuAccount}
@@ -399,10 +467,26 @@ const MenuItem = ({
 
   const isSelected = useMemo(
     () =>
-      location.pathname === menu.to ||
-      location.pathname.startsWith(menu.to + "/"),
+      menu.to !== undefined &&
+      (location.pathname === menu.to ||
+        location.pathname.startsWith(menu.to + "/")),
     [menu, location],
   );
+
+  const goTo = (menu: Menu) => {
+    if (menu.onClick) {
+      menu.onClick();
+    } else {
+      if (menu.to) {
+        navigate(menu.to, {
+          state: menu.state,
+        });
+      }
+    }
+    if (onRedirect) {
+      onRedirect();
+    }
+  };
 
   return (
     <ListItem disablePadding>
@@ -418,14 +502,7 @@ const MenuItem = ({
                 justifyContent: "center",
               }
         }
-        onClick={() => {
-          navigate(menu.to, {
-            state: menu.state,
-          });
-          if (onRedirect) {
-            onRedirect();
-          }
-        }}
+        onClick={() => goTo(menu)}
       >
         <ListItemIcon sx={isMedium ? {} : { minWidth: "inherit" }}>
           {menu.icon}

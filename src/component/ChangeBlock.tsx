@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Typography, TypographyVariant } from "@mui/material";
 import { useMemo } from "react";
 import { Colors } from "src/style/Colors";
 export enum Order {
@@ -15,12 +15,14 @@ interface Props {
   value: number;
   unit?: string;
   order?: Order;
+  variant?:TypographyVariant
 }
 export const ChangeNumberBlock = ({
   previous,
   value,
   order = Order.ASC,
   unit = "",
+  variant="h2"
 }: Props) => {
   const variation = useMemo(() => {
     if (value === previous) {
@@ -65,7 +67,7 @@ export const ChangeNumberBlock = ({
 
   return (
     <Typography
-      variant="h2"
+      variant={variant}
       sx={{
         color: color,
       }}

@@ -31,6 +31,8 @@ import UpdatedThemePage from "src/pages/UpdatedThemePage";
 import ChallengeOutletPage from "src/pages/challenge/ChallengeOutletPage";
 import ChallengePage from "src/pages/challenge/ChallengePage";
 import SharePage from "src/pages/help/SharePage";
+import BrainTestPage from "src/pages/modes/braintest/BrainTestPage";
+import ListOutletPage from "src/pages/modes/list/ListOutletPage";
 import ListsPage from "src/pages/modes/list/ListsPage";
 import AvatarsPage from "src/pages/shop/AvatarsPage";
 import BadgesPage from "src/pages/shop/BadgesPages";
@@ -38,7 +40,6 @@ import BannersPage from "src/pages/shop/BannersPage";
 import ShopPage from "src/pages/shop/ShopPage";
 import ShopThemePage from "src/pages/shop/ShopThemePage";
 import TitlesPage from "src/pages/shop/TitlesPage";
-import ListOutletPage from "src/pages/modes/list/ListOutletPage";
 
 export const AppNavigationAndAppBarRoutes = [
   {
@@ -86,6 +87,10 @@ export const AppNavigationAndAppBarRoutes = [
         element: <ListsPage />,
       },
     ],
+  },
+  {
+    path: "/braintest",
+    element: <BrainTestPage />
   },
   {
     path: "/category/:id",

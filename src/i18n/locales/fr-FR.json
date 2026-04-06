@@ -418,7 +418,8 @@
     "mybestscoretime": "Meilleur temps",
     "mybestscoreattempts": "Moins de tentative",
     "norecordbroken": "Aucun record battu",
-    "newrecord": "Nouveau Record"
+    "newrecord": "Nouveau Record",
+    "warning": "Attention"
   },
   "abrevation": {
     "average": "Moy."
@@ -654,6 +655,9 @@
     },
     "search": {
       "title": "Recherche"
+    },
+    "braintest": {
+      "title": "Test cérébral"
     }
   },
   "enum": {
@@ -1012,8 +1016,62 @@
   "mode": {
     "fightfriend": "Combat contre un ami",
     "list": "Mode Liste",
+    "braintest": "Test Cérébral",
     "randomquestion": "Question Aléatoire",
     "randomtheme": "Thème Aléatoire"
+  },
+  "gamemode": {
+    "results": "Résultats",
+    "record": "Mon Record",
+    "score": "Mon Score",
+    "reactiontime": {
+      "name": "Temps de réaction",
+      "description": "Testez vos réflexes visuels.",
+      "rules": "Quand l'écran passe du rouge au vert, cliquer le plus vite possible. Votre score sera validé après 5 tentatives.",
+      "warning": "Si vous cliquez avant que la l'écran passe vert le nombre de tentative recommence à 0",
+      "average": "Moyenne",
+      "continue": "Cliquez pour continuer",
+      "tryagain": "Cliquez pour recommencer",
+      "clic": "Cliquez !!!",
+      "wait": "Attendez",
+      "attempt": "Éssai",
+      "clictoosoon": "Trop tôt !!!",
+      "clictoosoontext": "Vous avez cliquez avant que l'écran passe au vert."
+    },
+    "sequencememory": {
+      "name": "Mémoire de séquence",
+      "description": "Rappelez-vous un motif de plus en plus long de boutons pressées.",
+      "rules": "Rappelez-vous un motif de plus en plus long de boutons pressées."
+    },
+    "aimtrainer": {
+      "name": "Entraînement AIM",
+      "description": "À quelle vitesse pouvez-vous atteindre toutes les cibles."
+    },
+    "numbermemory": {
+      "name": "Mémoire de nombre",
+      "description": "Rappelez-vous le nombre le plus long que vous pouvez.",
+      "rules": "Un chiffre de plus en plus long va apparaître, Retenez le, puis saisissez le.",
+      "placeholder": "Quel est le chiffre ?",
+      "number": "Nombre",
+      "answer": "Ma réponse",
+      "continue": "Continuer"
+    },
+    "verbalmemory": {
+      "name": "Mémoire verbale",
+      "description": "Gardez autant de mots en mémoire que possible."
+    },
+    "chimptest": {
+      "name": "Test de chimpanzé",
+      "description": "Êtes-vous plus intelligent qu'un chimpanzé ?"
+    },
+    "visualmemory": {
+      "name": "Mémoire visuelle",
+      "description": "Rappelez-vous la position de carré sur un quadrillage de plus en plus grand."
+    },
+    "typing": {
+      "name": "Concours de frappe",
+      "description": "Combien de mots par minutes pouvez-vous taper ?"
+    }
   },
   "proposequestion": {
     "excel": {
@@ -1038,6 +1096,14 @@
     "friend_request_accept": "{{username}} a accepté ta demande"
   },
   "patchnote": {
+    "2.2.0": {
+      "version": "2.2.0",
+      "date": "23/03/2026",
+      "changes": [
+        "Ajout d'un mode Test cérébral avec plusieurs jeux testant la mémoire et le temps de réaction."
+      ],
+      "bug": []
+    },
     "2.1.7": {
       "version": "2.1.7",
       "date": "10/03/2026",
@@ -1046,8 +1112,7 @@
         "Mode liste: Affichage de son score dans la recherche des listes",
         "Défis du jour: l'affichage de l'ordre des questions et réponses est aléatoire pour limiter la triche"
       ],
-      "bug": [
-      ]
+      "bug": []
     },
     "2.1.6": {
       "version": "2.1.6",
@@ -1056,13 +1121,11 @@
         "Mode liste ajout champ de recherche dans le menu liste.",
         "Ajout badge 'Nouveautés' pour les thèmes, catégories et listes de moins de 14 jours, pour les voir mieux."
       ],
-      "bug": [
-      ]
+      "bug": []
     },
     "2.1.5": {
       "version": "2.1.5",
-      "changes": [
-      ],
+      "changes": [],
       "bug": [
         "Optimisation de la recherche qui envoyé trop de requête au serveur.",
         "Mode liste correction de bug d'affichage sur des nouvelles listes."

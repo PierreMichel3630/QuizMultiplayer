@@ -7,18 +7,17 @@ import {
 } from "@mui/material";
 import { percent, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
-import { Trans, useTranslation } from "react-i18next";
-import { countListScore, selectListScorePaginate } from "src/api/list";
-import { useApp } from "src/context/AppProvider";
-import { useAuth } from "src/context/AuthProviderSupabase";
-import { useUser } from "src/context/UserProvider";
-import { FRIENDSTATUS } from "src/models/Friend";
-import { List, ListScoreWithRanking, OrderListScore } from "src/models/List";
+import { useTranslation } from "react-i18next";
+import {
+  countGameModeScore,
+  selectGameModeScorePaginate,
+} from "src/api/gamemode";
+import { TypeGameMode } from "src/models/enum/GameMode";
+import { GameModeScore, OrderGameModeScore } from "src/models/GameMode";
 import { Profile } from "src/models/Profile";
 import { BasicSearchInput } from "../../Input";
 import { SortButton } from "../../SortBlock";
-import { OnlyFriendSwitch } from "../../switch/OnlyFriendSwitch";
-import { RankingListTable } from "./RankingListTable";
+import { RankingGameModeTable } from "./RankingGameModeTable";
 
 export interface DataRankingListScore {
   profile: Profile;
@@ -28,61 +27,49 @@ export interface DataRankingListScore {
 }
 
 interface Props {
-  list: List;
-  totalList: number;
+  type: TypeGameMode;
+  unit?: string;
+  asc?: boolean;
 }
-export const RankingListMode = ({ list, totalList }: Props) => {
+export const RankingGameMode = ({ type, unit, asc = true }: Props) => {
   const { t } = useTranslation();
-  const { profile } = useAuth();
-  const { friends } = useApp();
-  const { language } = useUser();
 
   const [search, setSearch] = useState("");
   const [total, setTotal] = useState<null | number>(null);
-  const [dataBdd, setDataBdd] = useState<Array<ListScoreWithRanking>>([]);
+  const [dataBdd, setDataBdd] = useState<Array<GameModeScore>>([]);
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState({
-    value: OrderListScore.TIME,
-    ascending: true,
+    value: OrderGameModeScore.SCORE,
+    ascending: asc,
   });
-  const [isOnlyFriend, setIsOnlyFriend] = useState(false);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const idFriends = useMemo(
-    () =>
-      profile && isOnlyFriend
-        ? [
-            profile.id,
-            ...friends
-              .filter((el) => el.status === FRIENDSTATUS.VALID)
-              .reduce(
-                (acc, value) =>
-                  value.user2.id === profile.id
-                    ? [...acc, value.user1.id]
-                    : [...acc, value.user2.id],
-                [] as Array<string>,
-              ),
-          ]
-        : undefined,
-    [friends, profile, isOnlyFriend],
-  );
+  const indexStart = useMemo(() => page * rowsPerPage + 1, [page, rowsPerPage]);
 
   const sorts = useMemo(
     () => [
       {
-        value: OrderListScore.TIME,
-        label: t("sort.time"),
-        sort: () => setSort({ value: OrderListScore.TIME, ascending: true }),
+        value: OrderGameModeScore.SCORE,
+        label: t("sort.points"),
+        sort: () =>
+          setSort({ value: OrderGameModeScore.SCORE, ascending: asc }),
       },
       {
-        value: OrderListScore.ATTEMPT,
-        label: t("sort.attempts"),
-        sort: () => setSort({ value: OrderListScore.ATTEMPT, ascending: true }),
+        value: OrderGameModeScore.AVERAGE,
+        label: t("sort.pointsavg"),
+        sort: () =>
+          setSort({ value: OrderGameModeScore.AVERAGE, ascending: asc }),
+      },
+      {
+        value: OrderGameModeScore.GAMES,
+        label: t("sort.games"),
+        sort: () =>
+          setSort({ value: OrderGameModeScore.GAMES, ascending: false }),
       },
     ],
-    [t],
+    [t, asc],
   );
 
   const handleChangePage = (
@@ -101,21 +88,22 @@ export const RankingListMode = ({ list, totalList }: Props) => {
 
   useEffect(() => {
     const getTotal = () => {
-      countListScore(list.id, idFriends, search).then(({ count }) => {
+      countGameModeScore(type, [], search).then(({ count }) => {
         setTotal(count);
       });
     };
     getTotal();
-  }, [idFriends, list.id, search]);
+  }, [type, search]);
 
   useEffect(() => {
     const getRanking = () => {
-      selectListScorePaginate(
-        list.id,
+      selectGameModeScorePaginate(
+        type,
         search,
         page,
         rowsPerPage,
         sort.value,
+        sort.ascending,
       ).then(({ data }) => {
         setDataBdd(data ?? []);
         setLoading(false);
@@ -123,11 +111,11 @@ export const RankingListMode = ({ list, totalList }: Props) => {
     };
     const timeout = setTimeout(getRanking, 200);
     return () => clearTimeout(timeout);
-  }, [language, list.id, total, page, rowsPerPage, search, sort]);
+  }, [type, total, page, rowsPerPage, search, sort]);
 
   const data = useMemo(
     () =>
-      [...dataBdd].map((el) => ({
+      [...dataBdd].map((el, index) => ({
         profile: el.profile,
         value: (
           <TableCell
@@ -139,39 +127,19 @@ export const RankingListMode = ({ list, totalList }: Props) => {
             width={100}
           >
             <Typography variant="h6">
-              <Trans
-                i18nKey={t("commun.finditem")}
-                values={{
-                  value: el.result,
-                  total: totalList,
-                }}
-              />
+              {el.score} {unit ?? ""}
             </Typography>
             <Typography variant="h6">
-              <Trans
-                i18nKey={t("commun.attempt")}
-                values={{
-                  count:
-                    sort.value === OrderListScore.TIME
-                      ? el.attempts_recordtime
-                      : el.attempts_recordattempts,
-                }}
-              />
+              {t("abrevation.average")} {el.average.toFixed(2)}
             </Typography>
             <Typography variant="h6">
-              {(
-                (sort.value === OrderListScore.TIME
-                  ? el.time_recordtime
-                  : el.time_recordattempts) / 1000
-              ).toFixed(2)}
-              s
+              {el.games} {t("commun.games")}
             </Typography>
           </TableCell>
         ),
-        rank:
-          sort.value === OrderListScore.TIME ? el.rank_time : el.rank_attempt,
+        rank: index + indexStart,
       })),
-    [dataBdd, sort.value, t, totalList],
+    [dataBdd, unit, indexStart, t],
   );
 
   return (
@@ -201,18 +169,9 @@ export const RankingListMode = ({ list, totalList }: Props) => {
           />
           <SortButton menus={sorts} />
         </Box>
-        {profile && (
-          <OnlyFriendSwitch
-            isOnlyFriend={isOnlyFriend}
-            onChange={(value) => {
-              setPage(0);
-              setIsOnlyFriend(value);
-            }}
-          />
-        )}
       </Grid>
       <Grid size={12}>
-        <RankingListTable data={data} loading={loading} />
+        <RankingGameModeTable data={data} loading={loading} />
         {total !== null && total > 0 && (
           <TablePagination
             component="div"

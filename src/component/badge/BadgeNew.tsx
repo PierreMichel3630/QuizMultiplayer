@@ -1,13 +1,22 @@
 import { Box, Typography } from "@mui/material";
 import { padding, px, percent } from "csx";
+import moment from "moment";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Colors } from "src/style/Colors";
+import { MAX_DAY_NEW_THEME } from "src/utils/config";
 
 interface Props {
-  isNew: boolean;
+  date: Date;
 }
-export const BadgeNew = ({ isNew }: Props) => {
+export const BadgeNew = ({ date }: Props) => {
   const { t } = useTranslation();
+
+  const isNew = useMemo(
+    () => moment().diff(moment(date), "days") < MAX_DAY_NEW_THEME,
+    [date],
+  );
+
   return (
     isNew && (
       <Box

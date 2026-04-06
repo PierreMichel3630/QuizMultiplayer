@@ -3,4 +3,5 @@ export enum SearchType {
   CATEGORY = "CATEGORY",
   GAMEMODE = "GAMEMODE",
   LIST = "LIST",
+  GAME = "GAME",
 }

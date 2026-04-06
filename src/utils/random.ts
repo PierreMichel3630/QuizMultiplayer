@@ -26,3 +26,10 @@ export const randomIntFromInterval = (min: number, max: number) =>
 export const randomFromArray = (arr: Array<number>) => {
   return arr[Math.floor(Math.random() * arr.length)];
 };
+
+export const generateRandomNumber = (size: number) => {
+  const values = new Uint32Array(size);
+  crypto.getRandomValues(values);
+  
+  return Number(Array.from(values).map(v => v % 10).join(''));
+}

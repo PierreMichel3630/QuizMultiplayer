@@ -4,14 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { Colors } from "src/style/Colors";
 
 import StarIcon from "@mui/icons-material/Star";
-import { green } from "@mui/material/colors";
-import moment from "moment";
 import { useMemo } from "react";
 import ListMode from "src/assets/mode/list.png";
 import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
 import { SearchType } from "src/models/enum/TypeCardEnum";
-import { MAX_DAY_NEW_THEME } from "src/utils/config";
 import { BadgeNew } from "../badge/BadgeNew";
 import { ImageCard } from "../image/ImageCard";
 
@@ -21,6 +18,7 @@ export interface ICardImageOrder extends ICardImage {
 
 export interface ICardImage {
   id: number;
+  identifier?: string;
   name: string;
   image?: string | JSX.Element;
   color?: string;
@@ -39,11 +37,6 @@ export const CardImage = ({ value, width = 90 }: Props) => {
   const navigate = useNavigate();
   const { favorites } = useApp();
   const { mode } = useUser();
-
-  const isNew = useMemo(
-    () => moment().diff(moment(value.created_at), "days") < MAX_DAY_NEW_THEME,
-    [value.created_at],
-  );
 
   const borderColor = useMemo(
     () => (mode === "dark" ? Colors.white : Colors.black),
@@ -64,6 +57,9 @@ export const CardImage = ({ value, width = 90 }: Props) => {
     if (value.type) {
       let link = "/";
       switch (value.type) {
+        case SearchType.GAME:
+          link = `/gamemode/${value.identifier}`;
+          break;
         case SearchType.THEME:
           link = `/theme/${value.id}`;
           break;
@@ -82,7 +78,10 @@ export const CardImage = ({ value, width = 90 }: Props) => {
     let result = { image: value.image, color: value.color };
     switch (value.type) {
       case SearchType.LIST:
-        result = { image: ListMode, color: green["A400"] };
+        result = { image: ListMode, color: Colors.colorList };
+        break;
+      case SearchType.GAME:
+        result = { image: value.image, color: Colors.colorBrainTest };
         break;
       case SearchType.CATEGORY:
       case SearchType.GAMEMODE:
@@ -113,7 +112,7 @@ export const CardImage = ({ value, width = 90 }: Props) => {
           position: "relative",
         }}
       >
-        <BadgeNew isNew={isNew} />
+        <BadgeNew date={value.created_at} />
         <ImageCard value={valueImageCard} size={width} />
       </Box>
       <Typography

@@ -129,6 +129,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     }
     setUser(null);
     setProfile(null);
+    setHasPlayChallenge(false);
     clearLocalStorage();
     return signOut();
   }, [user]);

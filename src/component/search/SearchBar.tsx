@@ -6,21 +6,20 @@ import {
   Typography,
 } from "@mui/material";
 import { px } from "csx";
+import { debounce } from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { searchThemesAndCategoriesPaginate } from "src/api/search";
 import { useUser } from "src/context/UserProvider";
 import { SearchType } from "src/models/enum/TypeCardEnum";
+import { Colors } from "src/style/Colors";
 import { ICardImage } from "../card/CardImage";
 import { ImageCard } from "../image/ImageCard";
 import { BasicSearchInput } from "../Input";
 import { SkeletonSearchs } from "../skeleton/SkeletonSearch";
-import { Colors } from "src/style/Colors";
-import { debounce } from "lodash";
 
 import ListMode from "src/assets/mode/list.png";
-import { green } from "@mui/material/colors";
 
 export const SearchBar = () => {
   const { t } = useTranslation();
@@ -156,7 +155,10 @@ const SearchResult = ({ value, onSelect }: SearchResultProps) => {
     let result = { image: value.image, color: value.color };
     switch (value.type) {
       case SearchType.LIST:
-        result = { image: ListMode, color: green["A400"] };
+        result = { image: ListMode, color: Colors.colorList };
+        break;
+      case SearchType.GAME:
+        result = { image: value.image, color: Colors.colorBrainTest };
         break;
       case SearchType.CATEGORY:
       case SearchType.GAMEMODE:

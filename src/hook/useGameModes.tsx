@@ -1,4 +1,3 @@
-import { green } from "@mui/material/colors";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +11,9 @@ import { SearchType } from "src/models/enum/TypeCardEnum";
 import { GameMode } from "src/models/GameMode";
 import { sortByOrderAndName } from "src/utils/sort";
 
+import BrainTest from "src/assets/mode/braintest.png";
 import ListMode from "src/assets/mode/list.png";
+import { Colors } from "src/style/Colors";
 
 export const useGameModes = () => {
   const { t } = useTranslation();
@@ -36,9 +37,12 @@ export const useGameModes = () => {
     }
   }, [profile, navigate]);
 
-  const goList = useCallback(() => {
-    navigate(`/list`);
-  }, [navigate]);
+  const goTo = useCallback(
+    (value: string) => {
+      navigate(value);
+    },
+    [navigate],
+  );
 
   const modes: Array<GameMode> = useMemo(
     () => [
@@ -50,21 +54,31 @@ export const useGameModes = () => {
         name: t("mode.fightfriend"),
         onClick: launchBattleGame,
         type: SearchType.GAMEMODE,
-        order: 2,
-        created_at:  new Date(2024, 7, 23)
+        order: 3,
+        created_at: new Date(2024, 7, 23),
       },
       {
         id: 1,
         image: ListMode,
-        color: green["A400"],
+        color: Colors.colorList,
         name: t("mode.list"),
-        onClick: goList,
+        onClick: () => goTo(`/list`),
+        type: SearchType.GAMEMODE,
+        order: 2,
+        created_at: new Date(2026, 1, 23),
+      },
+      {
+        id: 2,
+        image: BrainTest,
+        color: Colors.colorBrainTest,
+        name: t("mode.braintest"),
+        onClick: () => goTo(`/braintest`),
         type: SearchType.GAMEMODE,
         order: 1,
-        created_at: new Date(2026, 2, 23)
+        created_at: new Date(2026, 2, 11),
       },
     ],
-    [launchBattleGame, goList, t],
+    [launchBattleGame, goTo, t],
   );
 
   useEffect(() => {
@@ -83,7 +97,7 @@ export const useGameModes = () => {
             link: `/theme/${el.id}`,
             type: SearchType.THEME,
             order: 3,
-            created_at: el.created_at
+            created_at: el.created_at,
           })),
         );
       });

@@ -11,6 +11,9 @@ import SoloPage from "src/pages/play/SoloPage";
 import TrainingPage from "src/pages/play/TrainingPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import ListPage from "src/pages/modes/list/ListPage";
+import ReactionTimePage from "src/pages/modes/braintest/games/ReactionTimePage";
+import NumberMemoryPage from "src/pages/modes/braintest/games/NumberMemoryPage";
+import SequenceMemoryPage from "src/pages/modes/braintest/games/SequenceMemoryPage";
 
 export const PlayModeRoutes = [
   {
@@ -68,5 +71,18 @@ export const PlayModeRoutes = [
   {
     path: "/list/:id",
     element: <ListPage />,
+  },
+  // BRAIN TEST
+  {
+    path: "/gamemode/reactiontime",
+    element: <ReactionTimePage />,
+  },
+  {
+    path: "/gamemode/numbermemory",
+    element: <NumberMemoryPage />,
+  },
+  {
+    path: "/gamemode/sequencememory",
+    element: <SequenceMemoryPage />,
   },
 ];
