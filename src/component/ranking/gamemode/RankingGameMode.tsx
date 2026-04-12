@@ -56,12 +56,12 @@ export const RankingGameMode = ({ type, unit, asc = true }: Props) => {
         sort: () =>
           setSort({ value: OrderGameModeScore.SCORE, ascending: asc }),
       },
-      {
+      /*{
         value: OrderGameModeScore.AVERAGE,
         label: t("sort.pointsavg"),
         sort: () =>
           setSort({ value: OrderGameModeScore.AVERAGE, ascending: asc }),
-      },
+      },*/
       {
         value: OrderGameModeScore.GAMES,
         label: t("sort.games"),
@@ -129,9 +129,9 @@ export const RankingGameMode = ({ type, unit, asc = true }: Props) => {
             <Typography variant="h6">
               {el.score} {unit ?? ""}
             </Typography>
-            <Typography variant="h6">
+            {/*<Typography variant="h6">
               {t("abrevation.average")} {el.average.toFixed(2)}
-            </Typography>
+            </Typography>*/}
             <Typography variant="h6">
               {el.games} {t("commun.games")}
             </Typography>

@@ -43,7 +43,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
   const { setMessage, setSeverity } = useMessage();
 
   const [questionThemes, setQuestionThemes] = useState<Array<QuestionTheme>>(
-    []
+    [],
   );
 
   const initialValue: {
@@ -68,13 +68,13 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
     difficulty: Yup.string(),
     theme: Yup.mixed(),
     wrongresponse1: Yup.string().required(
-      t("form.proposequestion.requiredwrongresponses")
+      t("form.proposequestion.requiredwrongresponses"),
     ),
     wrongresponse2: Yup.string().required(
-      t("form.proposequestion.requiredwrongresponses")
+      t("form.proposequestion.requiredwrongresponses"),
     ),
     wrongresponse3: Yup.string().required(
-      t("form.proposequestion.requiredwrongresponses")
+      t("form.proposequestion.requiredwrongresponses"),
     ),
   });
 
@@ -128,9 +128,9 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
     });
   };
 
-  const insertTheme = (theme: { id: number }) => {
+  const insertTheme = (theme: { id: number | string }) => {
     if (question) {
-      const value = { theme: theme.id, question: question.id };
+      const value = { theme: Number(theme.id), question: question.id };
       insertQuestionTheme(value).then(() => {
         getThemes();
       });
@@ -155,7 +155,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
           <FormControl
             fullWidth
             error={Boolean(
-              formik.touched.difficulty && formik.errors.difficulty
+              formik.touched.difficulty && formik.errors.difficulty,
             )}
           >
             <SelectDifficulty
@@ -223,7 +223,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
           <FormControl
             fullWidth
             error={Boolean(
-              formik.touched.wrongresponse1 && formik.errors.wrongresponse1
+              formik.touched.wrongresponse1 && formik.errors.wrongresponse1,
             )}
             variant="filled"
           >
@@ -250,7 +250,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
           <FormControl
             fullWidth
             error={Boolean(
-              formik.touched.wrongresponse2 && formik.errors.wrongresponse2
+              formik.touched.wrongresponse2 && formik.errors.wrongresponse2,
             )}
             variant="filled"
           >
@@ -277,7 +277,7 @@ export const ValidateProposeQuestionForm = ({ validate, question }: Props) => {
           <FormControl
             fullWidth
             error={Boolean(
-              formik.touched.wrongresponse3 && formik.errors.wrongresponse3
+              formik.touched.wrongresponse3 && formik.errors.wrongresponse3,
             )}
             variant="filled"
           >

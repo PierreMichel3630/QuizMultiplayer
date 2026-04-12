@@ -1,28 +1,27 @@
 import { Box, Typography } from "@mui/material";
-import { percent, px } from "csx";
+import { px } from "csx";
 import { useNavigate } from "react-router-dom";
 import { Colors } from "src/style/Colors";
 
-import StarIcon from "@mui/icons-material/Star";
 import { useMemo } from "react";
-import ListMode from "src/assets/mode/list.png";
 import { useApp } from "src/context/AppProvider";
 import { useUser } from "src/context/UserProvider";
 import { SearchType } from "src/models/enum/TypeCardEnum";
-import { BadgeNew } from "../badge/BadgeNew";
-import { ImageCard } from "../image/ImageCard";
+import { ImageTypeCard } from "../image/ImageCard";
+
+import StarIcon from "@mui/icons-material/Star";
+import { getLink } from "src/utils/link";
 
 export interface ICardImageOrder extends ICardImage {
   order: number;
 }
 
 export interface ICardImage {
-  id: number;
-  identifier?: string;
+  id: number | string;
   name: string;
   image?: string | JSX.Element;
   color?: string;
-  type?: SearchType;
+  type: SearchType;
   onClick?: () => void;
   minversion?: string;
   created_at: Date;
@@ -54,43 +53,9 @@ export const CardImage = ({ value, width = 90 }: Props) => {
   );
 
   const goLink = () => {
-    if (value.type) {
-      let link = "/";
-      switch (value.type) {
-        case SearchType.GAME:
-          link = `/gamemode/${value.identifier}`;
-          break;
-        case SearchType.THEME:
-          link = `/theme/${value.id}`;
-          break;
-        case SearchType.CATEGORY:
-          link = `/category/${value.id}`;
-          break;
-        case SearchType.LIST:
-          link = `/list/${value.id}`;
-          break;
-      }
-      navigate(link);
-    }
+    const link = getLink(value.type, value.id);
+    navigate(link);
   };
-
-  const valueImageCard = useMemo(() => {
-    let result = { image: value.image, color: value.color };
-    switch (value.type) {
-      case SearchType.LIST:
-        result = { image: ListMode, color: Colors.colorList };
-        break;
-      case SearchType.GAME:
-        result = { image: value.image, color: Colors.colorBrainTest };
-        break;
-      case SearchType.CATEGORY:
-      case SearchType.GAMEMODE:
-      case SearchType.THEME:
-        result = { image: value.image, color: value.color };
-        break;
-    }
-    return result;
-  }, [value]);
 
   return (
     <Box
@@ -103,27 +68,22 @@ export const CardImage = ({ value, width = 90 }: Props) => {
         borderRadius: px(10),
         gap: px(2),
         mt: 1,
-        width: width,
         position: "relative",
       }}
     >
-      <Box
-        sx={{
-          position: "relative",
-        }}
-      >
-        <BadgeNew date={value.created_at} />
-        <ImageCard value={valueImageCard} size={width} />
-      </Box>
+      <ImageTypeCard type={value.type} value={value} size={width} />
       <Typography
         variant="h6"
         sx={{
-          width: percent(100),
+          minWidth: px(90),
+          width: "min-content",
           overflow: "hidden",
           display: "-webkit-box",
           WebkitLineClamp: 3,
           WebkitBoxOrient: "vertical",
           textAlign: "center",
+          wordBreak: "keep-all",
+          overflowWrap: "normal",
         }}
       >
         {value.name}

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { selectCategoryById } from "src/api/category";
 import { deleteFavoriteById, insertFavorite } from "src/api/favorite";
-import { countThemesByCategory, selectThemesByCategory } from "src/api/theme";
+import { selectItemsByCategory } from "src/api/search";
 import { ICardImage } from "src/component/card/CardImage";
 import { PageCategoryBlock } from "src/component/page/PageCategoryBlock";
 import { useApp } from "src/context/AppProvider";
@@ -14,6 +14,7 @@ import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
 import { Category } from "src/models/Category";
 import { FavoriteInsert } from "src/models/Favorite";
+import { SearchResult } from "src/models/Search";
 
 export default function CategoryPage() {
   const { t } = useTranslation();
@@ -26,19 +27,24 @@ export default function CategoryPage() {
   const { setMessage, setSeverity } = useMessage();
 
   const [category, setCategory] = useState<Category | null>(null);
-  const [themes, setThemes] = useState<Array<ICardImage>>([]);
+  const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [count, setCount] = useState<undefined | number>(undefined);
   const [, setPage] = useState(0);
 
-  const getTheme = useCallback(
+  const getItemsSearch = useCallback(
     (page: number) => {
       setIsLoading(true);
       if (language && category) {
-        selectThemesByCategory(language, category.id, "", page, 50).then(
+        selectItemsByCategory(language,category.id , "", page, 50).then(
           ({ data }) => {
-            const res = data ?? [];
-            setThemes((prev) => (page === 0 ? [...res] : [...prev, ...res]));
+            if (data !== null) {
+              const res: SearchResult<ICardImage> = data;
+              setItemsSearch((prev) =>
+                page === 0 ? [...res.elements] : [...prev, ...res.elements],
+              );
+              setCount(res.total_count);
+            }
             setIsLoading(false);
           },
         );
@@ -48,7 +54,7 @@ export default function CategoryPage() {
   );
 
   useEffect(() => {
-    getTheme(0);
+    getItemsSearch(0);
   }, [category, language]);
 
   useEffect(() => {
@@ -110,17 +116,6 @@ export default function CategoryPage() {
     }
   }, [language, category]);
 
-  useEffect(() => {
-    const getCount = () => {
-      if (language && category) {
-        countThemesByCategory(category.id, language).then(({ count }) => {
-          setCount(count ?? 0);
-        });
-      }
-    };
-    getCount();
-  }, [category, language]);
-
   return (
     <Grid container>
       <Helmet>
@@ -135,14 +130,14 @@ export default function CategoryPage() {
       <Grid size={12}>
         <PageCategoryBlock
           title={title}
-          values={themes}
+          values={itemsSearch}
           addFavorite={addFavorite}
           favorite={favorite !== undefined}
           isLoading={isLoading}
           count={count}
           handleScroll={() =>
             setPage((prev) => {
-              getTheme(prev + 1);
+              getItemsSearch(prev + 1);
               return prev + 1;
             })
           }

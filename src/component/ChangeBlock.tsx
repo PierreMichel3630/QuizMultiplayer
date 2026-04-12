@@ -1,10 +1,8 @@
 import { Typography, TypographyVariant } from "@mui/material";
 import { useMemo } from "react";
+import { Order } from "src/models/enum/Order";
 import { Colors } from "src/style/Colors";
-export enum Order {
-  DESC = "DESC",
-  ASC = "ASC",
-}
+
 enum Variation {
   LOWER = "LOWER",
   UPPER = "UPPER",

@@ -21,7 +21,6 @@ import {
   ListAnswer,
   ListAnswerPlay,
   ListScore,
-  OrderList,
   ResultScoreList,
   TypeList,
 } from "src/models/List";
@@ -41,6 +40,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { LogoIcon } from "src/icons/LogoIcon";
 import { Colors } from "src/style/Colors";
+import { Order } from "src/models/enum/Order";
 
 enum StatusGame {
   NOTSTART = "NOTSTART",
@@ -118,7 +118,7 @@ export default function ListPage() {
       selectListById(id).then((resList) => {
         const list: List | null = resList.data;
         const type = list ? list.type : TypeList.TEXT;
-        const order = list?.order ? list.order : OrderList.DESC;
+        const order = list?.order ? list.order : Order.DESC;
         setList(list);
         selectListAnswerByListId(id).then(({ data }) => {
           const res: Array<ListAnswer> = data ?? [];
@@ -297,7 +297,7 @@ export default function ListPage() {
   const orderAnswers = (
     answers: Array<ListAnswer>,
     type: TypeList,
-    order = OrderList.DESC,
+    order = Order.DESC,
     format?: string,
   ) => {
     let result = [...answers];
@@ -306,7 +306,7 @@ export default function ListPage() {
         Number(a.value) - Number(b.value);
       const desc = (a: ListAnswer, b: ListAnswer) =>
         Number(b.value) - Number(a.value);
-      result = [...answers].sort(order === OrderList.DESC ? desc : asc);
+      result = [...answers].sort(order === Order.DESC ? desc : asc);
     } else if (type === TypeList.IMAGE) {
       result = shuffle([...answers]);
     } else if (type === TypeList.DATE) {
@@ -319,7 +319,7 @@ export default function ListPage() {
         const desc = (a: ListAnswer, b: ListAnswer) =>
           moment(b.value.split("-")[0], formatSplit, true).valueOf() -
           moment(a.value.split("-")[0], formatSplit, true).valueOf();
-        result = [...answers].sort(order === OrderList.DESC ? desc : asc);
+        result = [...answers].sort(order === Order.DESC ? desc : asc);
       } else {
         const asc = (a: ListAnswer, b: ListAnswer) =>
           moment(a.value, format, true).valueOf() -
@@ -327,7 +327,7 @@ export default function ListPage() {
         const desc = (a: ListAnswer, b: ListAnswer) =>
           moment(b.value, format, true).valueOf() -
           moment(a.value, format, true).valueOf();
-        result = [...answers].sort(order === OrderList.DESC ? desc : asc);
+        result = [...answers].sort(order === Order.DESC ? desc : asc);
       }
     }
     return result;

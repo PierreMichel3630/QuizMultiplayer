@@ -1,13 +1,15 @@
 import { TypeGameMode } from "src/models/enum/GameMode";
 import { supabase } from "./supabase";
 import { OrderGameModeScore } from "src/models/GameMode";
+import { Order } from "src/models/enum/Order";
 
 export const SUPABASE_GAMEMODESCORE_TABLE = "gamemodescore";
 export const SUPABASE_SAVEGAMEMODESCORE_FUNCTION = "savegamemodescore";
 
-export const saveGameModeScore = (score: number, typegame: TypeGameMode) =>
+// Si DESC garde score le plus petit
+export const saveGameModeScore = (score: number, typegame: TypeGameMode, order: Order = Order.ASC, extra: unknown = null ) =>
   supabase.functions.invoke(SUPABASE_SAVEGAMEMODESCORE_FUNCTION, {
-    body: { score, typegame },
+    body: { score, typegame, order, extra },
   });
 
 export const selectGameModeScorePaginate = (

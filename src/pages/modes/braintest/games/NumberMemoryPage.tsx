@@ -20,6 +20,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { TypeGameMode } from "src/models/enum/GameMode";
 import { ResultGameModeScore } from "src/models/GameMode";
 import { generateRandomNumber } from "src/utils/random";
+import { CircularLoading } from "src/component/Loading";
 
 enum StatusGame {
   NOTSTART = "NOTSTART",
@@ -40,6 +41,7 @@ export default function NumberMemoryPage() {
     undefined,
   );
   const [score, setScore] = useState(0);
+  const [lengthAnswer, setLengthAnswer] = useState(0);
 
   const [statusGame, setStatusGame] = useState<StatusGame>(StatusGame.NOTSTART);
   const [dataResult, setDataResult] = useState<null | ResultGameModeScore>(
@@ -49,6 +51,7 @@ export default function NumberMemoryPage() {
   const timerRef = useRef<undefined | number>(undefined);
 
   const reset = () => {
+    setDataResult(null);
     setScore(0);
     setNumberToGuess(undefined);
     launchRound(0);
@@ -58,6 +61,7 @@ export default function NumberMemoryPage() {
     timerRef.current = 3 + currentScore * 0.5;
     const newNumber = generateRandomNumber(currentScore + 1);
     setNumberToGuess(newNumber);
+    setLengthAnswer(currentScore + 1);
     setAnswer("");
     setStatusGame(StatusGame.PLAY);
   }, []);
@@ -65,8 +69,7 @@ export default function NumberMemoryPage() {
   const validate = useCallback(() => {
     timerRef.current = undefined;
     if (Number(answer) === numberToGuess) {
-      const nextScore = score + 1;
-      setScore(nextScore);
+      setScore((prev) => prev + 1);
       setStatusGame(StatusGame.ANSWER);
     } else {
       setStatusGame(StatusGame.FINISH);
@@ -81,7 +84,7 @@ export default function NumberMemoryPage() {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (statusGame === StatusGame.ANSWER && event.key === "Enter") {
-        launchRound(score);
+        launchRound(lengthAnswer);
       }
     };
 
@@ -90,7 +93,7 @@ export default function NumberMemoryPage() {
     return () => {
       globalThis.removeEventListener("keydown", handleKeyDown);
     };
-  }, [launchRound, statusGame, score]);
+  }, [launchRound, statusGame, lengthAnswer]);
 
   return (
     <Container maxWidth="md">
@@ -249,7 +252,7 @@ export default function NumberMemoryPage() {
                     value={Colors.green}
                     label={t("gamemode.numbermemory.continue")}
                     variant="contained"
-                    onClick={() => launchRound(score)}
+                    onClick={() => launchRound(lengthAnswer + 1)}
                   />
                 </Grid>
               </Grid>
@@ -295,57 +298,78 @@ export default function NumberMemoryPage() {
                 <Grid size={12}>
                   <Typography variant="h2">{t("gamemode.results")}</Typography>
                 </Grid>
-                {dataResult && (
+                {profile ? (
                   <>
-                    {dataResult.hasrecord ? (
-                      <Grid
-                        size={12}
-                        sx={{
-                          color: Colors.correctanswer,
-                          textAlign: "center",
-                        }}
-                      >
-                        <Typography
-                          variant="h2"
-                          textAlign="center"
-                          sx={{ fontSize: important(px(45)) }}
-                        >
-                          {t("commun.win")}
-                        </Typography>
-                        <Typography>{t("commun.newrecord")}</Typography>
-                      </Grid>
+                    {dataResult ? (
+                      <>
+                        {dataResult.hasrecord ? (
+                          <Grid
+                            size={12}
+                            sx={{
+                              color: Colors.correctanswer,
+                              textAlign: "center",
+                            }}
+                          >
+                            <Typography
+                              variant="h2"
+                              textAlign="center"
+                              sx={{ fontSize: important(px(45)) }}
+                            >
+                              {t("commun.win")}
+                            </Typography>
+                            <Typography>{t("commun.newrecord")}</Typography>
+                          </Grid>
+                        ) : (
+                          <Grid
+                            size={12}
+                            sx={{
+                              color: Colors.wronganswer,
+                              textAlign: "center",
+                            }}
+                          >
+                            <Typography
+                              variant="h2"
+                              textAlign="center"
+                              sx={{ fontSize: important(px(45)) }}
+                            >
+                              {t("commun.loose")}
+                            </Typography>
+                            <Typography>
+                              {t("commun.norecordbroken")}
+                            </Typography>
+                          </Grid>
+                        )}
+                        <Grid size={12}>
+                          <MyExperienceSoloBlock
+                            xp={{
+                              match: 50,
+                              record: dataResult.hasrecord ? 100 : undefined,
+                            }}
+                          />
+                        </Grid>
+                        {dataResult.hasrecord && (
+                          <Grid
+                            sx={{ display: "flex", justifyContent: "center" }}
+                            size={12}
+                          >
+                            <AddMoneyBlock
+                              money={100}
+                              variant="h4"
+                              width={25}
+                            />
+                          </Grid>
+                        )}
+                      </>
                     ) : (
-                      <Grid
-                        size={12}
-                        sx={{ color: Colors.wronganswer, textAlign: "center" }}
-                      >
-                        <Typography
-                          variant="h2"
-                          textAlign="center"
-                          sx={{ fontSize: important(px(45)) }}
-                        >
-                          {t("commun.loose")}
-                        </Typography>
-                        <Typography>{t("commun.norecordbroken")}</Typography>
-                      </Grid>
-                    )}
-                    <Grid size={12}>
-                      <MyExperienceSoloBlock
-                        xp={{
-                          match: 50,
-                          record: dataResult.hasrecord ? 100 : undefined,
-                        }}
-                      />
-                    </Grid>
-                    {dataResult.hasrecord && (
-                      <Grid
-                        sx={{ display: "flex", justifyContent: "center" }}
-                        size={12}
-                      >
-                        <AddMoneyBlock money={100} variant="h4" width={25} />
+                      <Grid size={12}>
+                        <CircularLoading />
                       </Grid>
                     )}
                   </>
+                ) : (
+                  <Grid size={12}>
+                    <ConnectAlert />
+                  </Grid>
                 )}
                 <Grid
                   sx={{

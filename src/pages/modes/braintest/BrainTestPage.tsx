@@ -5,9 +5,9 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 
 import { Link } from "react-router-dom";
-import { BadgeNew } from "src/component/badge/BadgeNew";
-import { ImageCard } from "src/component/image/ImageCard";
+import { ImageTypeCard } from "src/component/image/ImageCard";
 import { useGames } from "src/hook/useGame";
+import { SearchType } from "src/models/enum/TypeCardEnum";
 import { Colors } from "src/style/Colors";
 import { GameModeType } from "src/utils/mode";
 
@@ -28,9 +28,9 @@ export default function BrainTestPage() {
         <Box sx={{ padding: 2 }}>
           <Grid container spacing={1}>
             {gamesBrainTest.map((game) => (
-              <Grid size={12} key={game.identifier}>
+              <Grid size={12} key={game.id}>
                 <Link
-                  to={`/gamemode/${game.identifier}`}
+                  to={`/gamemode/${game.id}`}
                   style={{ textDecoration: "none" }}
                 >
                   <Paper
@@ -42,14 +42,15 @@ export default function BrainTestPage() {
                     }}
                     elevation={8}
                   >
-                    <Box
-                      sx={{
-                        position: "relative",
+                    <ImageTypeCard
+                      type={SearchType.GAME}
+                      value={{
+                        image: game.image,
+                        color: Colors.colorBrainTest,
+                        created_at: game.created_at,
                       }}
-                    >
-                      <BadgeNew date={game.created_at} />
-                      <ImageCard value={{ image: game.image, color: Colors.colorBrainTest }} size={80} />
-                    </Box>
+                      size={80}
+                    />
                     <Box
                       sx={{ display: " flex", flexDirection: "column", gap: 1 }}
                     >

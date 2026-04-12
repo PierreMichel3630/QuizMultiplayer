@@ -1,14 +1,10 @@
+import { Order } from "./enum/Order";
 import { Language } from "./Language";
 import { Profile } from "./Profile";
 
 export enum OrderListScore {
   TIME = "rank_time",
   ATTEMPT = "rank_attempt",
-}
-
-export enum OrderList {
-  DESC = "DESC",
-  ASC = "ASC",
 }
 
 export enum TypeList {
@@ -20,7 +16,7 @@ export enum TypeList {
 
 export interface List {
   id: number;
-  order: null | OrderList;
+  order: null | Order;
   elements: number
   type: TypeList;
   listtranslation: Array<ListTranslation>;

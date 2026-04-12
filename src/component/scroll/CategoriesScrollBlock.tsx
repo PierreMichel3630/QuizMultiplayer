@@ -1,7 +1,10 @@
 import { Grid } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { searchCategoriesPaginate } from "src/api/search";
+import { search } from "src/api/search";
 import { useUser } from "src/context/UserProvider";
+import { SearchType } from "src/models/enum/TypeCardEnum";
+import { SearchResult } from "src/models/Search";
+import { ICardImage } from "../card/CardImage";
 import { CategoryWithThemeBlock } from "../CategoryWithThemeBlock";
 import { SkeletonCategories } from "../skeleton/SkeletonCategory";
 
@@ -11,9 +14,7 @@ export const CategoriesScrollBlock = () => {
   const [, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [isEnd, setIsEnd] = useState(false);
-  const [categories, setCategories] = useState<
-    Array<{ id: number; name: string }>
-  >([]);
+  const [categories, setCategories] = useState<Array<ICardImage>>([]);
 
   const observer = useRef<IntersectionObserver | null>(null);
   const lastItemRef = useRef<HTMLDivElement | null>(null);
@@ -24,19 +25,22 @@ export const CategoriesScrollBlock = () => {
       if (!isEnd && language) {
         setLoading(true);
         const itemperpage = 5;
-        searchCategoriesPaginate(language, "", page, itemperpage).then(
+        search(language, "", page, itemperpage, SearchType.CATEGORY).then(
           ({ data }) => {
-            const result: Array<any> = data ?? [];
-            setIsEnd(result.length < itemperpage);
-            setCategories((prev) =>
-              page === 0 ? [...result] : [...prev, ...result]
-            );
+            if (data !== null) {
+              const res: SearchResult<ICardImage> = data;
+              const result: Array<ICardImage> = res.elements;
+              setIsEnd(result.length < itemperpage);
+              setCategories((prev) =>
+                page === 0 ? [...result] : [...prev, ...result],
+              );
+            }
             setLoading(false);
-          }
+          },
         );
       }
     },
-    [isEnd, loading, language]
+    [isEnd, loading, language],
   );
 
   useEffect(() => {

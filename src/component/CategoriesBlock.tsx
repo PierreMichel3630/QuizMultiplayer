@@ -1,30 +1,49 @@
 import { Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CategoryBlock } from "./category/CategoryBlock";
 
-import { countCategoryByLanguage } from "src/api/category";
-import { getCategories } from "src/api/search";
+import { search } from "src/api/search";
 import { useUser } from "src/context/UserProvider";
+import { SearchType } from "src/models/enum/TypeCardEnum";
+import { SearchResult } from "src/models/Search";
 import { ICardImage } from "./card/CardImage";
 
 export const CategoriesBlock = () => {
   const { t } = useTranslation();
   const { language } = useUser();
 
-  const [total, setTotal] = useState(0);
+  const ITEMPERPAGE = 25;
+
   const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [count, setCount] = useState<undefined | number>(undefined);
+  const [, setPage] = useState(0);
+
+  const getItemsSearch = useCallback(
+    (page: number) => {
+      setIsLoading(true);
+      if (language) {
+        search(language, "", page, ITEMPERPAGE, SearchType.CATEGORY).then(
+          ({ data }) => {
+            if (data !== null) {
+              const res: SearchResult<ICardImage> = data;
+              setItemsSearch((prev) =>
+                page === 0 ? [...res.elements] : [...prev, ...res.elements],
+              );
+              setCount(res.total_count);
+            }
+            setIsLoading(false);
+          },
+        );
+      }
+    },
+    [language],
+  );
 
   useEffect(() => {
-    if (language) {
-      countCategoryByLanguage(language).then(({ count }) => {
-        setTotal(count ?? 0);
-      });
-      getCategories(language).then(({ data }) => {
-        setItemsSearch(data ?? []);
-      });
-    }
-  }, [language]);
+    getItemsSearch(0);
+  }, [getItemsSearch]);
 
   return (
     <Grid container spacing={1}>
@@ -32,9 +51,16 @@ export const CategoriesBlock = () => {
         {itemsSearch.length > 0 && (
           <CategoryBlock
             title={t("commun.categories")}
-            count={total}
+            count={count}
             link={`/categories`}
             values={itemsSearch}
+            isLoading={isLoading}
+            handleScroll={() =>
+              setPage((prev) => {
+                getItemsSearch(prev + 1);
+                return prev + 1;
+              })
+            }
           />
         )}
       </Grid>

@@ -4,6 +4,8 @@ import BrushIcon from "@mui/icons-material/Brush";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import EditIcon from "@mui/icons-material/Edit";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HelpIcon from "@mui/icons-material/Help";
 import HistoryIcon from "@mui/icons-material/History";
 import InstallMobileIcon from "@mui/icons-material/InstallMobile";
@@ -26,6 +28,7 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
+import { px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -35,16 +38,14 @@ import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useRealtime } from "src/context/NotificationProvider";
 import { useUser } from "src/context/UserProvider";
+import { useGameModes } from "src/hook/useGameModes";
 import { DrawerSize } from "src/models/enum/DrawerSize";
 import { NotificationType } from "src/models/enum/NotificationType";
-import { SearchType } from "src/models/enum/TypeCardEnum";
+import { getLink } from "src/utils/link";
+import { BadgeDot } from "../badge/BadgeDot";
 import { NotificationBadgeIcon } from "../button/NotificationBadge";
 import { ICardImage } from "../card/CardImage";
-import { ImageCard } from "../image/ImageCard";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import { px } from "csx";
-import { useGameModes } from "src/hook/useGameModes";
+import { ImageTypeCard } from "../image/ImageCard";
 
 interface MenuTitle {
   title: string;
@@ -57,6 +58,7 @@ interface Menu {
   icon: JSX.Element;
   to?: string;
   state?: unknown;
+  notifications?: boolean;
   onClick?: () => void;
 }
 
@@ -72,7 +74,7 @@ export const MenuBlock = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { notifications } = useRealtime();
-  const { profile } = useAuth();
+  const { profile, hasPlayChallenge } = useAuth();
   const { toogleOpenDrawer } = useAppBar();
   const { language } = useUser();
   const { favorites } = useApp();
@@ -194,6 +196,7 @@ export const MenuBlock = ({
           label: t("commun.daychallenge"),
           icon: <EmojiEventsIcon fontSize="large" />,
           to: "/challenge",
+          notifications: !hasPlayChallenge,
         },
         {
           value: "ranking",
@@ -215,7 +218,7 @@ export const MenuBlock = ({
         },
       ],
     }),
-    [t],
+    [t, hasPlayChallenge],
   );
 
   const menuHelp = useMemo(
@@ -262,7 +265,7 @@ export const MenuBlock = ({
     return [...allValues].slice(0, maxGameModeDisplay).map((el) => {
       return {
         label: el.name,
-        icon: <ImageCard value={el} size={40} />,
+        icon: <ImageTypeCard type={el.type} value={el} size={35} />,
         value: el.id.toString(),
         onClick: el.onClick,
       };
@@ -276,11 +279,10 @@ export const MenuBlock = ({
 
   const favoritesDisplay = useMemo(() => {
     return [...itemsSearch].slice(0, maxFavoriteDisplay).map((el) => {
-      const link =
-        el.type === SearchType.THEME ? `theme/${el.id}` : `category/${el.id}`;
+      const link = getLink(el.type, el.id);
       return {
         label: el.name,
-        icon: <ImageCard value={el} size={40} />,
+        icon: <ImageTypeCard type={el.type} value={el} size={35} />,
         to: link,
         value: el.id.toString(),
       };
@@ -319,7 +321,7 @@ export const MenuBlock = ({
               <Typography variant="h4">{t("commun.favorite")}</Typography>
               <KeyboardArrowRightIcon fontSize="large" />
             </Box>
-            <List>
+            <List dense>
               {[...favoritesDisplay].map((value, i) => (
                 <MenuItem key={i} menu={value} size={sizeDrawer} />
               ))}
@@ -364,7 +366,7 @@ export const MenuBlock = ({
           <Typography variant="h4">{t("commun.gamemode")}</Typography>
           <KeyboardArrowRightIcon fontSize="large" />
         </Box>
-        <List>
+        <List dense>
           {[...gameModeDisplay].map((value, i) => (
             <MenuItem key={i} menu={value} size={sizeDrawer} />
           ))}
@@ -429,7 +431,7 @@ const MenuCard = ({ value, sizeDrawer, onRedirect }: PropsMenuCard) => {
   return (
     <>
       <MenuTitle title={value.title} />
-      <List>
+      <List dense>
         {[...value.menus].map((menu, i) => (
           <MenuItem
             key={i}
@@ -515,6 +517,7 @@ const MenuItem = ({
             </Typography>
           }
         />
+        {menu.notifications && <BadgeDot />}
       </ListItemButton>
     </ListItem>
   );

@@ -72,10 +72,10 @@ export const BadgeButton = ({ value }: PropsBadgeButton) => {
               gap: 1,
               cursor: "pointer",
               "--border-angle": "0deg",
-              borderRadius: "5px",
+              borderRadius: "4px",
               boxShadow: "0px 2px 4px hsl(0 0% 0% / 25%)",
               animation: "border-angle-rotate 2s infinite linear",
-              border: "2px solid transparent",
+              border: "5px solid transparent",
               position: "relative",
               background: `linear-gradient(${Colors.black}, ${Colors.black}) padding-box, conic-gradient(from var(--border-angle),oklch(100% 100% 0deg),oklch(100% 100% 45deg),oklch(100% 100% 90deg),oklch(100% 100% 135deg),oklch(100% 100% 180deg),oklch(100% 100% 225deg),oklch(100% 100% 270deg),oklch(100% 100% 315deg),oklch(100% 100% 360deg)) border-box`,
             }
@@ -87,6 +87,7 @@ export const BadgeButton = ({ value }: PropsBadgeButton) => {
         sx={{
           display: "flex",
           gap: px(5),
+          borderRadius: px(0),
           backgroundColor: isDark
             ? theme.palette.grey[800]
             : theme.palette.grey[300],
@@ -103,7 +104,7 @@ export const BadgeButton = ({ value }: PropsBadgeButton) => {
         component={Link}
         to={value.link}
       >
-        {value.icon && value.icon}
+        {value.icon !== undefined && value.icon}
         <Typography variant="h6">{value.label}</Typography>
         {value.notifications && <BadgeDot />}
       </Button>

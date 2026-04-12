@@ -175,16 +175,22 @@ export default function PlayChallengePage() {
       if (uuidGame) {
         selectChallengeGameByUuid(uuidGame).then(({ data }) => {
           const challengeGame = data as ChallengeGame;
-          const questions = [...challengeGame.challenge.questionsv2].sort(shuffle);
+          const questions = [...challengeGame.challenge.questionsv2].sort(
+            shuffle,
+          );
           const hasgame = safeGetStorage(uuidGame) !== null;
           if (hasgame) {
             const questionsgame = JSON.parse(
               localStorage.getItem(uuidGame) ?? "[]",
             ) as Array<QuestionSolo>;
-            const idsQuestionsPlay = [...questionsgame].map(el => el.id)
-            const questionsNotPlay = [...questions].filter(el => !idsQuestionsPlay.includes(el.id))
-            const questionsPlay = [...questions].filter(el => idsQuestionsPlay.includes(el.id))
-            const questionsGame = [...questionsPlay, ...questionsNotPlay]
+            const idsQuestionsPlay = [...questionsgame].map((el) => el.id);
+            const questionsNotPlay = [...questions].filter(
+              (el) => !idsQuestionsPlay.includes(el.id),
+            );
+            const questionsPlay = [...questions].filter((el) =>
+              idsQuestionsPlay.includes(el.id),
+            );
+            const questionsGame = [...questionsPlay, ...questionsNotPlay];
             const indexNextQuestion = questionsgame.length;
             setResponse(undefined);
             const correct = [...questionsgame].reduce(

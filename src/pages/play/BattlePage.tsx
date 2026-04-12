@@ -158,10 +158,10 @@ export default function BattlePage() {
         const myThemes = isPlayer1
           ? [...game.themesplayer1]
           : [...game.themesplayer2];
-        const isSelect = myThemes.includes(theme.id);
+        const isSelect = myThemes.includes(Number(theme.id));
         const newThemes = isSelect
           ? [...myThemes].filter((el) => el !== theme.id)
-          : [...myThemes, theme.id];
+          : [...myThemes, Number(theme.id)];
         const value = isPlayer1
           ? {
               uuid: game.uuid,

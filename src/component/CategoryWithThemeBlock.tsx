@@ -1,30 +1,36 @@
 import { useCallback, useEffect, useState } from "react";
-import { countThemesByCategory, selectThemesByCategory } from "src/api/theme";
+import { selectItemsByCategory } from "src/api/search";
 import { useUser } from "src/context/UserProvider";
+import { SearchResult } from "src/models/Search";
 import { ICardImage } from "./card/CardImage";
 import { CategoryBlock } from "./category/CategoryBlock";
 
 interface Props {
   category: {
-    id: number;
+    id: number | string;
     name: string;
   };
 }
 export const CategoryWithThemeBlock = ({ category }: Props) => {
   const { language } = useUser();
-  const [themes, setThemes] = useState<Array<ICardImage>>([]);
+  const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [count, setCount] = useState<undefined | number>(undefined);
   const [, setPage] = useState(0);
 
-  const getTheme = useCallback(
+  const getItemsSearch = useCallback(
     (page: number) => {
       setIsLoading(true);
       if (language) {
-        selectThemesByCategory(language, category.id, "", page, 15).then(
+        selectItemsByCategory(language, category.id, "", page, 15).then(
           ({ data }) => {
-            const res = data ?? [];
-            setThemes((prev) => (page === 0 ? [...res] : [...prev, ...res]));
+            if (data !== null) {
+              const res: SearchResult<ICardImage> = data;
+              setItemsSearch((prev) =>
+                page === 0 ? [...res.elements] : [...prev, ...res.elements],
+              );
+              setCount(res.total_count);
+            }
             setIsLoading(false);
           },
         );
@@ -34,31 +40,20 @@ export const CategoryWithThemeBlock = ({ category }: Props) => {
   );
 
   useEffect(() => {
-    const getCount = () => {
-      if (language) {
-        countThemesByCategory(category.id, language).then(({ count }) => {
-          setCount(count ?? 0);
-        });
-      }
-    };
-    getCount();
-  }, [category, language]);
-
-  useEffect(() => {
-    getTheme(0);
+    getItemsSearch(0);
   }, []);
 
   return (
-    themes.length > 0 && (
+    itemsSearch.length > 0 && (
       <CategoryBlock
         title={category.name}
         count={count}
         link={`/category/${category.id}`}
-        values={themes}
+        values={itemsSearch}
         isLoading={isLoading}
         handleScroll={() =>
           setPage((prev) => {
-            getTheme(prev + 1);
+            getItemsSearch(prev + 1);
             return prev + 1;
           })
         }

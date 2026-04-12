@@ -14,6 +14,7 @@ import ListPage from "src/pages/modes/list/ListPage";
 import ReactionTimePage from "src/pages/modes/braintest/games/ReactionTimePage";
 import NumberMemoryPage from "src/pages/modes/braintest/games/NumberMemoryPage";
 import SequenceMemoryPage from "src/pages/modes/braintest/games/SequenceMemoryPage";
+import AimPage from "src/pages/modes/braintest/games/AimPage";
 
 export const PlayModeRoutes = [
   {
@@ -84,5 +85,9 @@ export const PlayModeRoutes = [
   {
     path: "/gamemode/sequencememory",
     element: <SequenceMemoryPage />,
+  },
+  {
+    path: "/gamemode/aimtrainer",
+    element: <AimPage />,
   },
 ];

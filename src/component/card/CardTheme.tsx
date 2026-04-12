@@ -105,7 +105,7 @@ export const CardSelectAvatarTheme = ({
 
 interface PropsCardSelectTheme {
   theme: {
-    id: number;
+    id: number | string;
     name: string;
     image?: string | JSX.Element;
     color?: string;
@@ -123,7 +123,7 @@ export const CardSelectTheme = ({
 }: PropsCardSelectTheme) => {
   const avatarsTheme = useMemo(
     () => (avatars ? avatars.find((el) => el.id === theme.id) : undefined),
-    [avatars, theme.id]
+    [avatars, theme.id],
   );
   return (
     <Box
@@ -237,7 +237,10 @@ export const CardAdminTheme = ({
             <ImageThemeBlock theme={theme} />
           </Box>
         </Grid>
-        <Grid sx={{ display: "flex", flexDirection: "column", gap: px(5) }} size="grow">
+        <Grid
+          sx={{ display: "flex", flexDirection: "column", gap: px(5) }}
+          size="grow"
+        >
           {theme.themetranslation.map((el, index) => (
             <Box
               key={index}

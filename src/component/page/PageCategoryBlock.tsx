@@ -33,13 +33,15 @@ export const PageCategoryBlock = ({
 
   const idThemes = useMemo(
     () =>
-      values.filter((el) => el.type === SearchType.THEME).map((el) => el.id),
-    [values]
+      values
+        .filter((el) => el.type === SearchType.THEME)
+        .map((el) => Number(el.id)),
+    [values],
   );
 
   const isEnd = useMemo(
     () => (count ? values.length >= count : true),
-    [count, values.length]
+    [count, values.length],
   );
 
   useEffect(() => {

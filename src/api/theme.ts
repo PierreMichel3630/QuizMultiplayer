@@ -29,7 +29,7 @@ export const selectMostPlayedTheme = (language: Language, limit = 10) => {
 export const selectThemesByModifiedAt = (modify_at: Moment) =>
   supabase
     .from(SUPABASE_THEME_TABLE)
-    .select("*")
+    .select("*,themetranslation!inner(name, language(*))")
     .eq("validate", true)
     .eq("enabled", true)
     .gte("modify_at", modify_at.toISOString())
@@ -57,42 +57,6 @@ export const selectThemesByIdAndLanguage = (
   }
   return query.in("id", ids);
 };
-
-export const selectThemesByCategory = (
-  language: Language,
-  id: number | string,
-  search = "",
-  page = 0,
-  itemperpage = 25,
-) => {
-  const from = page * itemperpage;
-  const to = from + itemperpage - 1;
-  return supabase
-    .from(SUPABASE_VUETHEME_TABLE)
-    .select("*")
-    .eq("category", id)
-    .eq("validate", true)
-    .eq("enabled", true)
-    .ilike(`namelower`, `%${search}%`)
-    .eq("language", language.id)
-    .range(from, to)
-    .order("isfirst", { ascending: false })
-    .order(`namelower`, { ascending: true });
-};
-
-export const countThemesByCategory = (
-  id: number | string,
-  language: Language,
-  search = "",
-) =>
-  supabase
-    .from(SUPABASE_VUETHEME_TABLE)
-    .select("*", { count: "exact", head: true })
-    .eq("category", id)
-    .eq("validate", true)
-    .eq("enabled", true)
-    .ilike(`namelower`, `%${search}%`)
-    .eq("language", language.id);
 
 export const selectThemeByIds = (ids: Array<number>) =>
   supabase

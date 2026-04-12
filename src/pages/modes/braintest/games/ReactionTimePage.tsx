@@ -1,4 +1,11 @@
-import { Alert, Container, Divider, List, ListItem, Typography } from "@mui/material";
+import {
+  Alert,
+  Container,
+  Divider,
+  List,
+  ListItem,
+  Typography,
+} from "@mui/material";
 import { Box, Grid } from "@mui/system";
 import { important, percent, px } from "csx";
 import { Fragment, useRef, useState } from "react";
@@ -12,13 +19,15 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { useNavigate } from "react-router-dom";
 import { saveGameModeScore } from "src/api/gamemode";
 import { ConnectAlert } from "src/component/alert/ConnectAlert";
-import { ChangeNumberBlock, Order } from "src/component/ChangeBlock";
+import { ChangeNumberBlock } from "src/component/ChangeBlock";
 import { MyExperienceSoloBlock } from "src/component/ExperienceBlock";
 import { AddMoneyBlock } from "src/component/MoneyBlock";
 import { RankingGameMode } from "src/component/ranking/gamemode/RankingGameMode";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { TypeGameMode } from "src/models/enum/GameMode";
+import { Order } from "src/models/enum/Order";
 import { ResultGameModeScore } from "src/models/GameMode";
+import { CircularLoading } from "src/component/Loading";
 
 enum StatusGame {
   NOTSTART = "NOTSTART",
@@ -70,7 +79,6 @@ export default function ReactionTimePage() {
     if (finishReaction === false) {
       clearTimeout(timerRef.current);
       setAttempts([]);
-      //ignoreClickRef.current = true;
       setStatusGame(StatusGame.ERROR);
     } else {
       const endTime = performance.now();
@@ -87,12 +95,11 @@ export default function ReactionTimePage() {
         setAverage(result);
         setStatusGame(StatusGame.FINISH);
         if (profile) {
-          saveGameModeScore(result, type).then(({ data }) => {
+          saveGameModeScore(result, type, Order.DESC).then(({ data }) => {
             setDataResult(data);
           });
         }
       } else {
-        //ignoreClickRef.current = true;
         setStatusGame(StatusGame.WAIT);
       }
     }
@@ -108,8 +115,7 @@ export default function ReactionTimePage() {
         <Grid size={12}>
           {statusGame === StatusGame.PLAY && (
             <Box
-              onMouseDown={handleAreaClick}
-              onTouchStart={handleAreaClick}
+              onPointerDown={handleAreaClick}
               sx={{
                 backgroundColor: finishReaction ? Colors.green : Colors.red,
                 width: "100vw",
@@ -124,6 +130,7 @@ export default function ReactionTimePage() {
                 top: 0,
                 left: 0,
                 zIndex: 9999,
+                touchAction: "none",
               }}
             >
               <Typography
@@ -142,9 +149,9 @@ export default function ReactionTimePage() {
           )}
           {statusGame === StatusGame.ERROR && (
             <Box
-              onClick={(event) => {
-                event.preventDefault()
-                event.stopPropagation()
+              onPointerDown={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
                 reset();
               }}
               sx={{
@@ -186,9 +193,9 @@ export default function ReactionTimePage() {
           )}
           {statusGame === StatusGame.WAIT && (
             <Box
-              onClick={(event) => {
-                event.preventDefault()
-                event.stopPropagation()
+              onPointerDown={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
                 launch();
               }}
               sx={{
@@ -236,7 +243,10 @@ export default function ReactionTimePage() {
                   </Typography>
                 </Grid>
                 {profile === null && (
-                  <Grid size={12}>
+                  <Grid
+                    size={12}
+                    sx={{ display: "flex", justifyContent: "center" }}
+                  >
                     <ConnectAlert />
                   </Grid>
                 )}
@@ -261,115 +271,135 @@ export default function ReactionTimePage() {
                 <Grid size={12}>
                   <Typography variant="h2">{t("gamemode.results")}</Typography>
                 </Grid>
-                {dataResult && (
+                {profile ? (
                   <>
-                    {dataResult.hasrecord ? (
-                      <Grid
-                        size={12}
-                        sx={{
-                          color: Colors.correctanswer,
-                          textAlign: "center",
-                        }}
-                      >
-                        <Typography
-                          variant="h2"
-                          textAlign="center"
-                          sx={{ fontSize: important(px(45)) }}
+                    {dataResult ? (
+                      <>
+                        {dataResult.hasrecord ? (
+                          <Grid
+                            size={12}
+                            sx={{
+                              color: Colors.correctanswer,
+                              textAlign: "center",
+                            }}
+                          >
+                            <Typography
+                              variant="h2"
+                              textAlign="center"
+                              sx={{ fontSize: important(px(45)) }}
+                            >
+                              {t("commun.win")}
+                            </Typography>
+                            <Typography>{t("commun.newrecord")}</Typography>
+                          </Grid>
+                        ) : (
+                          <Grid
+                            size={12}
+                            sx={{
+                              color: Colors.wronganswer,
+                              textAlign: "center",
+                            }}
+                          >
+                            <Typography
+                              variant="h2"
+                              textAlign="center"
+                              sx={{ fontSize: important(px(45)) }}
+                            >
+                              {t("commun.loose")}
+                            </Typography>
+                            <Typography>
+                              {t("commun.norecordbroken")}
+                            </Typography>
+                          </Grid>
+                        )}
+                        <Grid size={12}>
+                          <MyExperienceSoloBlock
+                            xp={{
+                              match: 50,
+                              record: dataResult.hasrecord ? 100 : undefined,
+                            }}
+                          />
+                        </Grid>
+                        {dataResult.hasrecord && (
+                          <Grid
+                            sx={{ display: "flex", justifyContent: "center" }}
+                            size={12}
+                          >
+                            <AddMoneyBlock
+                              money={100}
+                              variant="h4"
+                              width={25}
+                            />
+                          </Grid>
+                        )}
+                        <Grid
+                          sx={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            flexDirection: "column",
+                          }}
                         >
-                          {t("commun.win")}
-                        </Typography>
-                        <Typography>{t("commun.newrecord")}</Typography>
-                      </Grid>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              gap: 1,
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Typography variant="subtitle1">
+                              {t("gamemode.record")} :
+                            </Typography>
+                            <Typography
+                              variant="h3"
+                              color="primary"
+                              sx={{ fontWeight: "bold" }}
+                            >
+                              {dataResult.result.score} ms
+                            </Typography>
+                          </Box>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              gap: 1,
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Typography variant="subtitle1">
+                              {t("gamemode.score")} :
+                            </Typography>
+                            <Typography
+                              variant="h3"
+                              color="primary"
+                              sx={{ fontWeight: "bold" }}
+                            >
+                              {average?.toFixed(2)} ms
+                            </Typography>
+                            {dataResult?.previousScore && average && (
+                              <ChangeNumberBlock
+                                value={average}
+                                previous={dataResult?.previousScore.score}
+                                unit="ms"
+                                variant="h6"
+                                order={Order.DESC}
+                              />
+                            )}
+                          </Box>
+                        </Grid>
+                      </>
                     ) : (
-                      <Grid
-                        size={12}
-                        sx={{ color: Colors.wronganswer, textAlign: "center" }}
-                      >
-                        <Typography
-                          variant="h2"
-                          textAlign="center"
-                          sx={{ fontSize: important(px(45)) }}
-                        >
-                          {t("commun.loose")}
-                        </Typography>
-                        <Typography>{t("commun.norecordbroken")}</Typography>
-                      </Grid>
-                    )}
-                    <Grid size={12}>
-                      <MyExperienceSoloBlock
-                        xp={{
-                          match: 50,
-                          record: dataResult.hasrecord ? 100 : undefined,
-                        }}
-                      />
-                    </Grid>
-                    {dataResult.hasrecord && (
-                      <Grid
-                        sx={{ display: "flex", justifyContent: "center" }}
-                        size={12}
-                      >
-                        <AddMoneyBlock money={100} variant="h4" width={25} />
+                      <Grid size={12}>
+                        <CircularLoading />
                       </Grid>
                     )}
                   </>
+                ) : (
+                  <Grid size={12}>
+                    <ConnectAlert />
+                  </Grid>
                 )}
-                <Grid
-                  sx={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    flexDirection: "column",
-                  }}
-                >
-                  {dataResult?.result.score && (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        gap: 1,
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Typography variant="subtitle1">
-                        {t("gamemode.record")} :
-                      </Typography>
-                      <Typography
-                        variant="h3"
-                        color="primary"
-                        sx={{ fontWeight: "bold" }}
-                      >
-                        {dataResult?.result.score} ms
-                      </Typography>
-                    </Box>
-                  )}
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: 1,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Typography variant="subtitle1">
-                      {t("gamemode.score")} :
-                    </Typography>
-                    <Typography
-                      variant="h3"
-                      color="primary"
-                      sx={{ fontWeight: "bold" }}
-                    >
-                      {average?.toFixed(2)} ms
-                    </Typography>
-                    {dataResult?.previousScore && average && (
-                      <ChangeNumberBlock
-                        value={average}
-                        previous={dataResult?.previousScore.score}
-                        unit="ms"
-                        variant="h6"
-                        order={Order.DESC}
-                      />
-                    )}
-                  </Box>
-                </Grid>
+
                 <Grid size={12}>
                   <List>
                     {attempts.map((attempt, i) => (

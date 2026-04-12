@@ -8,7 +8,6 @@ import { ICardImageOrder } from "src/component/card/CardImage";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { SearchType } from "src/models/enum/TypeCardEnum";
-import { GameMode } from "src/models/GameMode";
 import { sortByOrderAndName } from "src/utils/sort";
 
 import BrainTest from "src/assets/mode/braintest.png";
@@ -44,7 +43,7 @@ export const useGameModes = () => {
     [navigate],
   );
 
-  const modes: Array<GameMode> = useMemo(
+  const modes: Array<ICardImageOrder> = useMemo(
     () => [
       {
         id: 0,
@@ -75,7 +74,7 @@ export const useGameModes = () => {
         onClick: () => goTo(`/braintest`),
         type: SearchType.GAMEMODE,
         order: 1,
-        created_at: new Date(2026, 2, 11),
+        created_at: new Date(2026, 3, 12),
       },
     ],
     [launchBattleGame, goTo, t],

@@ -1,130 +1,111 @@
-import { Container, Typography } from "@mui/material";
-import { Box, Grid } from "@mui/system";
+import { Typography } from "@mui/material";
+import { Box, Container, Grid } from "@mui/system";
 import { important, px } from "csx";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { ButtonColor } from "src/component/Button";
-import { TitleBlock } from "src/component/title/Title";
-import { Colors } from "src/style/Colors";
-
 import { useNavigate } from "react-router-dom";
 import { saveGameModeScore } from "src/api/gamemode";
 import { ConnectAlert } from "src/component/alert/ConnectAlert";
+import { ButtonColor } from "src/component/Button";
 import { ChangeNumberBlock } from "src/component/ChangeBlock";
 import { MyExperienceSoloBlock } from "src/component/ExperienceBlock";
 import { CircularLoading } from "src/component/Loading";
 import { AddMoneyBlock } from "src/component/MoneyBlock";
 import { RankingGameMode } from "src/component/ranking/gamemode/RankingGameMode";
+
+import { Target } from "src/component/svg/Target";
+import { TitleBlock } from "src/component/title/Title";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { TypeGameMode } from "src/models/enum/GameMode";
+import { Order } from "src/models/enum/Order";
 import { ResultGameModeScore } from "src/models/GameMode";
+import { Colors } from "src/style/Colors";
+
+const TARGETS_TOTAL = 20;
+const TARGET_RADIUS = 40;
+const TARGET_SIZE = TARGET_RADIUS * 2;
 
 enum StatusGame {
   NOTSTART = "NOTSTART",
   PLAY = "PLAY",
-  WAIT = "WAIT",
-  ANSWER = "ANSWER",
   FINISH = "FINISH",
 }
-export default function SequenceMemoryPage() {
+
+export default function AimPage() {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const navigate = useNavigate();
 
-  const type = TypeGameMode.sequencememory;
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const [isLandscape, setIsLandscape] = useState(false);
+  const type = TypeGameMode.aimtrainer;
+
   const [score, setScore] = useState(0);
+  const [targetsHit, setTargetsHit] = useState(0);
+  const [target, setTarget] = useState({ x: 200, y: 200 });
 
   const [statusGame, setStatusGame] = useState<StatusGame>(StatusGame.NOTSTART);
   const [dataResult, setDataResult] = useState<null | ResultGameModeScore>(
     null,
   );
 
-  const [sequence, setSequence] = useState<Array<number>>([]);
-  const [userSequence, setUserSequence] = useState<Array<number>>([]);
-  const [activeSquare, setActiveSquare] = useState<null | number>(null);
-  const [isDisplaying, setIsDisplaying] = useState(false);
-
-  const observerRef = useRef<ResizeObserver | null>(null);
-  const measuredRef = (node: HTMLDivElement | null) => {
-    if (node === null) {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    } else {
-      const observer = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          const { width, height } = entry.contentRect;
-          setIsLandscape(width > height);
-        }
-      });
-
-      observer.observe(node);
-      observerRef.current = observer;
-    }
-  };
-
-  const nextLevel = (currentSeq = sequence) => {
-    const nextStep = Math.floor(Math.random() * 9);
-    const newSeq = [...currentSeq, nextStep];
-    setSequence(newSeq);
-    setUserSequence([]);
-    setTimeout(() => playSequence(newSeq), 500);
-  };
-
-  const playSequence = async (seq: Array<number>) => {
-    setIsDisplaying(true);
-    for (const element of seq) {
-      await new Promise((resolve) => setTimeout(resolve, 600)); // Pause entre
-      setActiveSquare(element);
-      await new Promise((resolve) => setTimeout(resolve, 300)); // Temps d'allumage
-      setActiveSquare(null);
-    }
-    setIsDisplaying(false);
-  };
-
-  const handleSquareClick = (index: number) => {
-    setActiveSquare(index);
-    setTimeout(() => setActiveSquare(null), 150);
-
-    const newUserSequence = [...userSequence, index];
-    setUserSequence(newUserSequence);
-
-    // Vérification immédiate du dernier clic
-    if (index !== sequence[newUserSequence.length - 1]) {
-      setStatusGame(StatusGame.FINISH);
-      if (profile) {
-        saveGameModeScore(score, type).then(({ data }) => {
-          setTimeout(() => setDataResult(data), 5000);
-        });
-      }
-      return;
-    }
-
-    // Si la séquence est complétée
-    if (newUserSequence.length === sequence.length) {
-      setScore((prev) => prev + 1);
-      nextLevel();
-    }
-  };
+  const startTimeRef = useRef<number>(0);
 
   const reset = () => {
-    setScore(0);
-    setSequence([]);
-    setUserSequence([]);
-    setStatusGame(StatusGame.PLAY);
+    setDataResult(null);
+    setTargetsHit(0);
+    launch();
   };
 
-  const newGame = () => {
-    reset();
-    nextLevel([]);
-    setDataResult(null);
+  const launch = () => {
+    setStatusGame(StatusGame.PLAY);
+    startTimeRef.current = performance.now();
+  };
+
+  useEffect(() => {
+    generateTarget();
+  }, []);
+
+  const generateTarget = () => {
+    if (!containerRef.current) return;
+
+    const rect = containerRef.current.getBoundingClientRect();
+
+    const maxX = rect.width - TARGET_SIZE;
+    const maxY = rect.height - TARGET_SIZE;
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    setTarget({ x, y });
+  };
+
+  const handleClick = () => {
+    const endTime = performance.now();
+
+    const newCount = targetsHit + 1;
+    setTargetsHit(newCount);
+
+    if (newCount >= TARGETS_TOTAL) {
+      const diff = endTime - startTimeRef.current;
+      const result = diff / TARGETS_TOTAL;
+      setScore(result);
+      setStatusGame(StatusGame.FINISH);
+      if (profile) {
+        const rect = containerRef.current?.getBoundingClientRect();
+        const extra = rect ? { width: Math.round(rect.width), height: Math.round(rect.height)} : null
+        saveGameModeScore(result, type, Order.DESC, extra).then(({ data }) => {
+          setDataResult(data);
+        });
+      }
+    } else {
+      generateTarget();
+    }
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md">
       <Grid container>
         <Helmet>
           <title>{`${t("pages.braintest.title")} - ${t("appname")}`}</title>
@@ -134,91 +115,25 @@ export default function SequenceMemoryPage() {
           {statusGame === StatusGame.PLAY && (
             <Box
               sx={{
-                p: 3,
-                gap: 4,
-                height: "100dvh",
+                height: "100vh",
                 display: "flex",
                 flexDirection: "column",
               }}
-              ref={measuredRef}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Typography variant="subtitle1">
-                  {t("gamemode.score")} :
+              <Box sx={{p: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 1}}>
+                <Typography variant="h6">
+                  {t("gamemode.aimtrainer.targettouch")} :
                 </Typography>
-                <Typography
-                  variant="h3"
-                  color="primary"
-                  sx={{ fontWeight: "bold" }}
-                >
-                  {score}
+                <Typography variant="h2">
+                  {targetsHit}/{TARGETS_TOTAL}
                 </Typography>
               </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flex: 1,
-                }}
-              >
-                <Box
-                  sx={{
-                    width: isLandscape ? "auto" : "100%",
-                    height: isLandscape ? "100%" : "auto",
-                    maxWidth: "100%",
-                    maxHeight: "100%",
-                    objectFit: "contain",
-                    aspectRatio: 1,
-                    gap: 2,
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: "100%",
-                      height: "100%",
-                      display: "grid",
-                      gridTemplateColumns: "repeat(3, 1fr)",
-                      gridTemplateRows: "repeat(3, 1fr)",
-                      gap: 3,
-                    }}
-                  >
-                    {[...Array(9)].map((_, index) => (
-                      <Box
-                        key={index}
-                        onClick={() =>
-                          !isDisplaying && handleSquareClick(index)
-                        }
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          bgcolor:
-                            activeSquare === index
-                              ? Colors.white
-                              : Colors.grey5,
-                          borderRadius: px(10),
-                          border: "3px solid",
-                          borderColor: Colors.grey5,
-                          color: "white",
-                          fontSize: "1.5rem",
-                          fontWeight: "bold",
-                          cursor: isDisplaying ? "default" : "pointer",
-                          transition: "background-color 0.2s",
-                          transform:
-                            "0.3s ease-out, opacity 0.3s ease-out, background 0.3s ease-out",
-                        }}
-                      />
-                    ))}
-                  </Box>
-                </Box>
+              <Box ref={containerRef} sx={{ flex: 1 }}>
+                <Target
+                  size={TARGET_SIZE}
+                  transform={`translate(${target.x}, ${target.y})`}
+                  onClick={() => handleClick()}
+                />
               </Box>
             </Box>
           )}
@@ -226,11 +141,11 @@ export default function SequenceMemoryPage() {
             <Box sx={{ padding: 2, textAlign: "center" }}>
               <Grid container spacing={2} justifyContent="center">
                 <Grid size={12}>
-                  <TitleBlock title={t("gamemode.sequencememory.name")} />
+                  <TitleBlock title={t("gamemode.aimtrainer.name")} />
                 </Grid>
                 <Grid size={12}>
                   <Typography fontSize={15}>
-                    {t("gamemode.sequencememory.rules")}
+                    {t("gamemode.aimtrainer.rules")}
                   </Typography>
                 </Grid>
                 {profile === null && (
@@ -246,11 +161,11 @@ export default function SequenceMemoryPage() {
                     value={Colors.colorApp}
                     label={t("commun.launchgame")}
                     variant="contained"
-                    onClick={newGame}
+                    onClick={reset}
                   />
                 </Grid>
                 <Grid size={12}>
-                  <RankingGameMode type={type} />
+                  <RankingGameMode type={type} unit="ms" />
                 </Grid>
               </Grid>
             </Box>
@@ -335,12 +250,11 @@ export default function SequenceMemoryPage() {
                     <ConnectAlert />
                   </Grid>
                 )}
-
                 <Grid
                   sx={{
                     display: "flex",
-                    alignItems: "flex-start",
-                    flexDirection: "column",
+                    alignItems: "center",
+                    flexDirection: "column"
                   }}
                 >
                   {dataResult?.result.score && (
@@ -360,7 +274,7 @@ export default function SequenceMemoryPage() {
                         color="primary"
                         sx={{ fontWeight: "bold" }}
                       >
-                        {dataResult?.result.score}
+                        {dataResult?.result.score}ms
                       </Typography>
                     </Box>
                   )}
@@ -373,20 +287,22 @@ export default function SequenceMemoryPage() {
                     }}
                   >
                     <Typography variant="subtitle1">
-                      {t("gamemode.score")} :
+                      {t("gamemode.aimtrainer.score")} :
                     </Typography>
                     <Typography
                       variant="h3"
                       color="primary"
                       sx={{ fontWeight: "bold" }}
                     >
-                      {score}
+                      {score}ms
                     </Typography>
                     {dataResult?.previousScore && (
                       <ChangeNumberBlock
                         value={score}
-                        previous={dataResult?.previousScore.score}
+                        previous={dataResult?.result.score}
                         variant="h6"
+                        order={Order.DESC}
+                        unit="ms"
                       />
                     )}
                   </Box>
@@ -396,7 +312,7 @@ export default function SequenceMemoryPage() {
                     value={Colors.colorApp}
                     label={t("commun.replay")}
                     variant="contained"
-                    onClick={newGame}
+                    onClick={reset}
                   />
                 </Grid>
                 <Grid size={12}>

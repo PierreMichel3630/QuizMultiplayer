@@ -141,7 +141,7 @@ export const AutocompleteTheme = ({
 }: PropsAutocompleteTheme) => {
   const { t } = useTranslation();
 
-  const deleteTheme = (id: number) => {
+  const deleteTheme = (id: number | string) => {
     let newValue: Array<ICardImage> = [...value];
     newValue = newValue.filter((el) => el.id !== id);
     onChange(newValue);

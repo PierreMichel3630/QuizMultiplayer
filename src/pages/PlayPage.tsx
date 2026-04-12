@@ -45,22 +45,26 @@ export default function PlayPage() {
   const play = () => {
     if (language) {
       if (theme && mode === "solo" && language) {
-        launchSoloGame(uuid, theme.id, language).then(({ data }) => {
+        launchSoloGame(uuid, Number(theme.id), language).then(({ data }) => {
           navigate(`/solo/${data.uuid}`);
         });
       } else if (theme && mode === "duel" && profileAdv !== undefined) {
         if (user) {
-          launchDuelGame(uuid, profileAdv.id, theme.id).then(({ data }) => {
-            if (data) navigate(`/duel/${data.uuid}`);
-          });
+          launchDuelGame(uuid, profileAdv.id, Number(theme.id)).then(
+            ({ data }) => {
+              if (data) navigate(`/duel/${data.uuid}`);
+            },
+          );
         } else {
           navigate(`/login`);
         }
       } else if (theme && mode === "duel" && profileAdv === undefined) {
         if (user) {
-          matchmakingDuelGame(uuid, theme.id, language).then(({ data }) => {
-            if (data) navigate(`/duel/${data.uuid}`);
-          });
+          matchmakingDuelGame(uuid, Number(theme.id), language).then(
+            ({ data }) => {
+              if (data) navigate(`/duel/${data.uuid}`);
+            },
+          );
         } else {
           navigate(`/login`);
         }

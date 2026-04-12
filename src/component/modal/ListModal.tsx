@@ -14,9 +14,10 @@ import { ResultGameList } from "src/pages/modes/list/ListPage";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
-import { ChangeNumberBlock, Order } from "../ChangeBlock";
+import { ChangeNumberBlock } from "../ChangeBlock";
 import { MyExperienceSoloBlock } from "../ExperienceBlock";
 import { AddMoneyBlock } from "../MoneyBlock";
+import { Order } from "src/models/enum/Order";
 
 interface Props {
   open: boolean;
@@ -95,7 +96,7 @@ export const DialogResultListModal = ({
                     xp={{
                       match: 50,
                       matchscore: 5 * result.score,
-                      record: hasNewRecord ? 100 : undefined
+                      record: hasNewRecord ? 100 : undefined,
                     }}
                   />
                 </Grid>

@@ -15,11 +15,11 @@ import { useUser } from "src/context/UserProvider";
 import { SearchType } from "src/models/enum/TypeCardEnum";
 import { Colors } from "src/style/Colors";
 import { ICardImage } from "../card/CardImage";
-import { ImageCard } from "../image/ImageCard";
+import { ImageTypeCard } from "../image/ImageCard";
 import { BasicSearchInput } from "../Input";
 import { SkeletonSearchs } from "../skeleton/SkeletonSearch";
 
-import ListMode from "src/assets/mode/list.png";
+import { getLink } from "src/utils/link";
 
 export const SearchBar = () => {
   const { t } = useTranslation();
@@ -134,40 +134,8 @@ interface SearchResultProps {
 }
 const SearchResult = ({ value, onSelect }: SearchResultProps) => {
   const link = useMemo(() => {
-    let result = "/";
-    if (value.type) {
-      switch (value.type) {
-        case SearchType.THEME:
-          result = `/theme/${value.id}`;
-          break;
-        case SearchType.CATEGORY:
-          result = `/category/${value.id}`;
-          break;
-        case SearchType.LIST:
-          result = `/list/${value.id}`;
-          break;
-      }
-    }
-    return result;
+    return getLink(value.type, value.id);
   }, [value.id, value.type]);
-
-  const valueImageCard = useMemo(() => {
-    let result = { image: value.image, color: value.color };
-    switch (value.type) {
-      case SearchType.LIST:
-        result = { image: ListMode, color: Colors.colorList };
-        break;
-      case SearchType.GAME:
-        result = { image: value.image, color: Colors.colorBrainTest };
-        break;
-      case SearchType.CATEGORY:
-      case SearchType.GAMEMODE:
-      case SearchType.THEME:
-        result = { image: value.image, color: value.color };
-        break;
-    }
-    return result;
-  }, [value]);
 
   return (
     <Link
@@ -192,7 +160,7 @@ const SearchResult = ({ value, onSelect }: SearchResultProps) => {
           },
         }}
       >
-        <ImageCard value={valueImageCard} size={40} />
+        <ImageTypeCard type={value.type} value={value} size={40} />
         <Box>
           <Typography variant="h6">{value.name}</Typography>
           <TypeSearchTypography type={value.type} />

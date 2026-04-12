@@ -12,16 +12,15 @@ import {
   TypeList,
 } from "src/models/List";
 import { Colors } from "src/style/Colors";
-import { ImageCard } from "../image/ImageCard";
+import { ImageTypeCard } from "../image/ImageCard";
 
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
-import ListMode from "src/assets/mode/list.png";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useList } from "src/context/ListProvider";
 import { Status } from "src/models/enum/Status";
-import { BadgeNew } from "../badge/BadgeNew";
+import { SearchType } from "src/models/enum/TypeCardEnum";
 import { BadgeStatusList } from "../badge/BadgeText";
 
 interface Props {
@@ -32,14 +31,6 @@ export const CardList = ({ value }: Props) => {
   const { t } = useTranslation();
   const { scores } = useList();
   const { profile } = useAuth();
-
-  const image = useMemo(
-    () => ({
-      image: ListMode,
-      color: Colors.colorList,
-    }),
-    [],
-  );
 
   const score = useMemo(
     () => [...scores].find((s) => s.list.id === value.list.id),
@@ -73,14 +64,7 @@ export const CardList = ({ value }: Props) => {
         }}
         elevation={8}
       >
-        <Box
-          sx={{
-            position: "relative",
-          }}
-        >
-          <BadgeNew date={value.created_at} />
-          <ImageCard value={image} size={80} />
-        </Box>
+        <ImageTypeCard type={SearchType.LIST} value={value} size={80} />
         <Box sx={{ display: " flex", flexDirection: "column", gap: 1 }}>
           <Typography variant="h4">{value.name}</Typography>
           <BadgeStatusList score={score} />
@@ -246,7 +230,7 @@ export const CardRecordList = ({ score, total }: PropsCardRecordList) => {
             display: "flex",
             gap: 1,
             alignItems: "center",
-            justifyContent: "space-between"
+            justifyContent: "space-between",
           }}
         >
           <Typography variant="h4" textAlign="center">

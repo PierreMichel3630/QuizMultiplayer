@@ -8,8 +8,9 @@ import { MAX_DAY_NEW_THEME } from "src/utils/config";
 
 interface Props {
   date: Date;
+  fontSize?: number
 }
-export const BadgeNew = ({ date }: Props) => {
+export const BadgeNew = ({ date, fontSize = 10 }: Props) => {
   const { t } = useTranslation();
 
   const isNew = useMemo(
@@ -31,7 +32,7 @@ export const BadgeNew = ({ date }: Props) => {
           transformOrigin: "center",
         }}
       >
-        <Typography sx={{ fontWeight: 700, fontSize: px(10) }}>
+        <Typography sx={{ fontWeight: 700, fontSize: px(fontSize) }}>
           {t("commun.new")}
         </Typography>
       </Box>

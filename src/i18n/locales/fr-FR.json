@@ -670,7 +670,8 @@
     "searchtype": {
       "THEME": "Thème",
       "CATEGORY": "Catégorie",
-      "GAMEMODE": "Mode de jeu"
+      "GAMEMODE": "Mode de jeu",
+      "LIST": "Liste"
     },
     "status": {
       "FINISH": "Terminé",
@@ -1045,7 +1046,10 @@
     },
     "aimtrainer": {
       "name": "Entraînement AIM",
-      "description": "À quelle vitesse pouvez-vous atteindre toutes les cibles."
+      "description": "À quelle vitesse pouvez-vous atteindre toutes les cibles.",
+      "rules": "Toucher 20 cibles le plus rapidement possible.",
+      "targettouch": "Cibles touchées",
+      "score": "Temps moyen par cible"
     },
     "numbermemory": {
       "name": "Mémoire de nombre",
@@ -1098,9 +1102,10 @@
   "patchnote": {
     "2.2.0": {
       "version": "2.2.0",
-      "date": "23/03/2026",
+      "date": "12/04/2026",
       "changes": [
-        "Ajout d'un mode Test cérébral avec plusieurs jeux testant la mémoire et le temps de réaction."
+        "Ajout d'un mode Test cérébral avec plusieurs jeux testant la mémoire et le temps de réaction.",
+        "Ajout des modes dans le menu"
       ],
       "bug": []
     },
