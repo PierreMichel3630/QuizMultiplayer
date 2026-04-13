@@ -11,6 +11,7 @@ import { ButtonColor } from "src/component/Button";
 import { ChangeNumberBlock } from "src/component/ChangeBlock";
 import { MyExperienceSoloBlock } from "src/component/ExperienceBlock";
 import { CircularLoading } from "src/component/Loading";
+import { GameModeDialog } from "src/component/modal/gamemode/GameModeModal";
 import { AddMoneyBlock } from "src/component/MoneyBlock";
 import { RankingGameMode } from "src/component/ranking/gamemode/RankingGameMode";
 
@@ -19,7 +20,7 @@ import { TitleBlock } from "src/component/title/Title";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { TypeGameMode } from "src/models/enum/GameMode";
 import { Order } from "src/models/enum/Order";
-import { ResultGameModeScore } from "src/models/GameMode";
+import { GameModeScore, ResultGameModeScore } from "src/models/GameMode";
 import { Colors } from "src/style/Colors";
 
 const TARGETS_TOTAL = 20;
@@ -49,6 +50,8 @@ export default function AimPage() {
   const [dataResult, setDataResult] = useState<null | ResultGameModeScore>(
     null,
   );
+
+  const [data, setData] = useState<GameModeScore | undefined>(undefined);
 
   const startTimeRef = useRef<number>(0);
 
@@ -94,7 +97,9 @@ export default function AimPage() {
       setStatusGame(StatusGame.FINISH);
       if (profile) {
         const rect = containerRef.current?.getBoundingClientRect();
-        const extra = rect ? { width: Math.round(rect.width), height: Math.round(rect.height)} : null
+        const extra = rect
+          ? { width: Math.round(rect.width), height: Math.round(rect.height) }
+          : null;
         saveGameModeScore(result, type, Order.DESC, extra).then(({ data }) => {
           setDataResult(data);
         });
@@ -102,6 +107,10 @@ export default function AimPage() {
     } else {
       generateTarget();
     }
+  };
+
+  const getDetail = (data: GameModeScore) => {
+    setData(data);
   };
 
   return (
@@ -120,7 +129,16 @@ export default function AimPage() {
                 flexDirection: "column",
               }}
             >
-              <Box sx={{p: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 1}}>
+              <Box
+                sx={{
+                  p: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 1,
+                }}
+              >
                 <Typography variant="h6">
                   {t("gamemode.aimtrainer.targettouch")} :
                 </Typography>
@@ -165,7 +183,7 @@ export default function AimPage() {
                   />
                 </Grid>
                 <Grid size={12}>
-                  <RankingGameMode type={type} unit="ms" />
+                  <RankingGameMode type={type} unit="ms" onClick={getDetail} />
                 </Grid>
               </Grid>
             </Box>
@@ -254,7 +272,7 @@ export default function AimPage() {
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    flexDirection: "column"
+                    flexDirection: "column",
                   }}
                 >
                   {dataResult?.result.score && (
@@ -267,7 +285,7 @@ export default function AimPage() {
                       }}
                     >
                       <Typography variant="subtitle1">
-                        {t("gamemode.record")} :
+                        {t("gamemode.myrecord")} :
                       </Typography>
                       <Typography
                         variant="h3"
@@ -328,6 +346,14 @@ export default function AimPage() {
           )}
         </Grid>
       </Grid>
+
+      <GameModeDialog
+        open={data !== undefined}
+        close={() => setData(undefined)}
+        data={data}
+        unit="ms"
+        fixed={2}
+      />
     </Container>
   );
 }

@@ -7,7 +7,12 @@ export const SUPABASE_GAMEMODESCORE_TABLE = "gamemodescore";
 export const SUPABASE_SAVEGAMEMODESCORE_FUNCTION = "savegamemodescore";
 
 // Si DESC garde score le plus petit
-export const saveGameModeScore = (score: number, typegame: TypeGameMode, order: Order = Order.ASC, extra: unknown = null ) =>
+export const saveGameModeScore = (
+  score: number,
+  typegame: TypeGameMode,
+  order: Order = Order.ASC,
+  extra: unknown = null,
+) =>
   supabase.functions.invoke(SUPABASE_SAVEGAMEMODESCORE_FUNCTION, {
     body: { score, typegame, order, extra },
   });
@@ -28,7 +33,7 @@ export const selectGameModeScorePaginate = (
     .from(SUPABASE_GAMEMODESCORE_TABLE)
     .select(
       `
-      *, profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))))
+      *, profile(*, titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))), avatar(*), badge(*), banner(*), country(*))
     `,
     )
     .eq("type", type)
@@ -39,7 +44,6 @@ export const selectGameModeScorePaginate = (
   }
   return query.range(from, to).order(sort, { ascending: asc });
 };
-
 
 export const countGameModeScore = (
   type: TypeGameMode,

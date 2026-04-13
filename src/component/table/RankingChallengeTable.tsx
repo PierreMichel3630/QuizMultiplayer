@@ -16,7 +16,7 @@ import { AvatarAccount } from "../avatar/AvatarAccount";
 import { percent, px } from "csx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import rank1 from "src/assets/rank/rank1.png";
 import rank2 from "src/assets/rank/rank2.png";
 import rank3 from "src/assets/rank/rank3.png";
@@ -44,7 +44,6 @@ interface Props {
 
 export const RankingChallengeTable = ({ data, loading = false }: Props) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { profile } = useAuth();
   const { friends } = useApp();
 
@@ -59,11 +58,11 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                   value.user2.id === profile.id
                     ? [...acc, value.user1.id]
                     : [...acc, value.user2.id],
-                [] as Array<string>
+                [] as Array<string>,
               ),
           ]
         : [],
-    [friends, profile]
+    [friends, profile],
   );
 
   const getIcon = (rank: number) => {
@@ -118,24 +117,19 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                     sx={{
                       backgroundColor: color,
                       cursor: "pointer",
+                      textDecoration: "inherit",
                     }}
-                    onClick={() =>
-                      navigate(`/challenge/profil/${el.profile.id}`)
-                    }
+                    component={Link}
+                    to={`/challenge/profil/${el.profile.id}`}
                   >
                     <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
                       {getIcon(el.rank)}
                     </TableCell>
                     <TableCell sx={{ p: px(4), width: px(45) }}>
-                      <Link
-                        to={`/challenge/profil/${el.profile.id}`}
-                        style={{ textDecoration: "inherit" }}
-                      >
-                        <AvatarAccount
-                          avatar={el.profile.avatar.icon}
-                          size={38}
-                        />
-                      </Link>
+                      <AvatarAccount
+                        avatar={el.profile.avatar.icon}
+                        size={38}
+                      />
                     </TableCell>
                     <TableCell
                       align="left"

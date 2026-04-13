@@ -1023,7 +1023,8 @@
   },
   "gamemode": {
     "results": "Résultats",
-    "record": "Mon Record",
+    "record": "Record",
+    "myrecord": "Mon Record",
     "score": "Mon Score",
     "reactiontime": {
       "name": "Temps de réaction",
@@ -1100,6 +1101,15 @@
     "friend_request_accept": "{{username}} a accepté ta demande"
   },
   "patchnote": {
+    "2.2.1": {
+      "version": "2.2.1",
+      "date": "14/04/2026",
+      "changes": [
+        "Mode Test cérébral ajout detail du score quand on clique dans le tableau des scores",
+        "Mode Test cérébral correction des arrondis de résultat"
+      ],
+      "bug": []
+    },
     "2.2.0": {
       "version": "2.2.0",
       "date": "12/04/2026",

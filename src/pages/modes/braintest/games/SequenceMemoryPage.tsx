@@ -18,7 +18,8 @@ import { AddMoneyBlock } from "src/component/MoneyBlock";
 import { RankingGameMode } from "src/component/ranking/gamemode/RankingGameMode";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { TypeGameMode } from "src/models/enum/GameMode";
-import { ResultGameModeScore } from "src/models/GameMode";
+import { GameModeScore, ResultGameModeScore } from "src/models/GameMode";
+import { GameModeDialog } from "src/component/modal/gamemode/GameModeModal";
 
 enum StatusGame {
   NOTSTART = "NOTSTART",
@@ -46,6 +47,8 @@ export default function SequenceMemoryPage() {
   const [userSequence, setUserSequence] = useState<Array<number>>([]);
   const [activeSquare, setActiveSquare] = useState<null | number>(null);
   const [isDisplaying, setIsDisplaying] = useState(false);
+
+  const [data, setData] = useState<GameModeScore | undefined>(undefined);
 
   const observerRef = useRef<ResizeObserver | null>(null);
   const measuredRef = (node: HTMLDivElement | null) => {
@@ -121,6 +124,10 @@ export default function SequenceMemoryPage() {
     reset();
     nextLevel([]);
     setDataResult(null);
+  };
+
+  const getDetail = (data: GameModeScore) => {
+    setData(data);
   };
 
   return (
@@ -250,7 +257,11 @@ export default function SequenceMemoryPage() {
                   />
                 </Grid>
                 <Grid size={12}>
-                  <RankingGameMode type={type} />
+                  <RankingGameMode
+                    type={type}
+                    asc={false}
+                    onClick={getDetail}
+                  />
                 </Grid>
               </Grid>
             </Box>
@@ -353,7 +364,7 @@ export default function SequenceMemoryPage() {
                       }}
                     >
                       <Typography variant="subtitle1">
-                        {t("gamemode.record")} :
+                        {t("gamemode.myrecord")} :
                       </Typography>
                       <Typography
                         variant="h3"
@@ -412,6 +423,11 @@ export default function SequenceMemoryPage() {
           )}
         </Grid>
       </Grid>
+      <GameModeDialog
+        open={data !== undefined}
+        close={() => setData(undefined)}
+        data={data}
+      />
     </Container>
   );
 }

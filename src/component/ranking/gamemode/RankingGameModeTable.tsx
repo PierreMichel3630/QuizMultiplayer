@@ -16,10 +16,6 @@ import { AvatarAccount } from "../../avatar/AvatarAccount";
 import { percent, px } from "csx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import rank1 from "src/assets/rank/rank1.png";
-import rank2 from "src/assets/rank/rank2.png";
-import rank3 from "src/assets/rank/rank3.png";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { FRIENDSTATUS } from "src/models/Friend";
@@ -29,22 +25,32 @@ import { CountryImageBlock } from "../../CountryBlock";
 import { Profile } from "src/models/Profile";
 import { ProfileTitleBlock } from "../../title/ProfileTitle";
 
+import rank1 from "src/assets/rank/rank1.png";
+import rank2 from "src/assets/rank/rank2.png";
+import rank3 from "src/assets/rank/rank3.png";
+import { GameModeScore } from "src/models/GameMode";
+
 export interface DataRanking {
   profile: Profile;
   value: JSX.Element;
   extra?: JSX.Element;
   rank: number;
   uuid?: string;
+  data: GameModeScore;
 }
 
 interface Props {
   data: Array<DataRanking>;
   loading?: boolean;
+  onClick?: (data: GameModeScore) => void;
 }
 
-export const RankingGameModeTable = ({ data, loading = false }: Props) => {
+export const RankingGameModeTable = ({
+  data,
+  onClick,
+  loading = false,
+}: Props) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { profile } = useAuth();
   const { friends } = useApp();
 
@@ -117,11 +123,11 @@ export const RankingGameModeTable = ({ data, loading = false }: Props) => {
                     key={index}
                     sx={{
                       backgroundColor: color,
-                      cursor: "pointer",
+                      cursor: onClick ? "pointer" : "default",
                     }}
-                    onClick={() =>
-                      navigate(`/challenge/profil/${el.profile.id}`)
-                    }
+                    onClick={() => {
+                      if (onClick) onClick(el.data);
+                    }}
                   >
                     <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
                       {getIcon(el.rank)}

@@ -18,9 +18,10 @@ import { RankingGameMode } from "src/component/ranking/gamemode/RankingGameMode"
 import { Timer } from "src/component/time/Timer";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { TypeGameMode } from "src/models/enum/GameMode";
-import { ResultGameModeScore } from "src/models/GameMode";
+import { GameModeScore, ResultGameModeScore } from "src/models/GameMode";
 import { generateRandomNumber } from "src/utils/random";
 import { CircularLoading } from "src/component/Loading";
+import { GameModeDialog } from "src/component/modal/gamemode/GameModeModal";
 
 enum StatusGame {
   NOTSTART = "NOTSTART",
@@ -47,6 +48,8 @@ export default function NumberMemoryPage() {
   const [dataResult, setDataResult] = useState<null | ResultGameModeScore>(
     null,
   );
+
+  const [data, setData] = useState<GameModeScore | undefined>(undefined);
 
   const timerRef = useRef<undefined | number>(undefined);
 
@@ -94,6 +97,10 @@ export default function NumberMemoryPage() {
       globalThis.removeEventListener("keydown", handleKeyDown);
     };
   }, [launchRound, statusGame, lengthAnswer]);
+
+  const getDetail = (data: GameModeScore) => {
+    setData(data);
+  };
 
   return (
     <Container maxWidth="md">
@@ -286,7 +293,11 @@ export default function NumberMemoryPage() {
                   />
                 </Grid>
                 <Grid size={12}>
-                  <RankingGameMode type={type} />
+                  <RankingGameMode
+                    type={type}
+                    asc={false}
+                    onClick={getDetail}
+                  />
                 </Grid>
               </Grid>
             </Box>
@@ -388,7 +399,7 @@ export default function NumberMemoryPage() {
                       }}
                     >
                       <Typography variant="subtitle1">
-                        {t("gamemode.record")} :
+                        {t("gamemode.myrecord")} :
                       </Typography>
                       <Typography
                         variant="h3"
@@ -470,6 +481,12 @@ export default function NumberMemoryPage() {
           )}
         </Grid>
       </Grid>
+
+      <GameModeDialog
+        open={data !== undefined}
+        close={() => setData(undefined)}
+        data={data}
+      />
     </Container>
   );
 }

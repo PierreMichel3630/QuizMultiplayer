@@ -16,7 +16,6 @@ import { AvatarAccount } from "../../avatar/AvatarAccount";
 import { percent, px } from "csx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import rank1 from "src/assets/rank/rank1.png";
 import rank2 from "src/assets/rank/rank2.png";
 import rank3 from "src/assets/rank/rank3.png";
@@ -44,7 +43,6 @@ interface Props {
 
 export const RankingListTable = ({ data, loading = false }: Props) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { profile } = useAuth();
   const { friends } = useApp();
 
@@ -117,11 +115,7 @@ export const RankingListTable = ({ data, loading = false }: Props) => {
                     key={index}
                     sx={{
                       backgroundColor: color,
-                      cursor: "pointer",
                     }}
-                    onClick={() =>
-                      navigate(`/challenge/profil/${el.profile.id}`)
-                    }
                   >
                     <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
                       {getIcon(el.rank)}

@@ -26,8 +26,9 @@ import { RankingGameMode } from "src/component/ranking/gamemode/RankingGameMode"
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { TypeGameMode } from "src/models/enum/GameMode";
 import { Order } from "src/models/enum/Order";
-import { ResultGameModeScore } from "src/models/GameMode";
+import { GameModeScore, ResultGameModeScore } from "src/models/GameMode";
 import { CircularLoading } from "src/component/Loading";
+import { ReactionTimeDetailDialog } from "src/component/modal/gamemode/GameModeModal";
 
 enum StatusGame {
   NOTSTART = "NOTSTART",
@@ -52,6 +53,8 @@ export default function ReactionTimePage() {
   const [dataResult, setDataResult] = useState<null | ResultGameModeScore>(
     null,
   );
+
+  const [data, setData] = useState<GameModeScore | undefined>(undefined);
 
   const startTimeRef = useRef<number>(0);
   const timerRef = useRef<undefined | number>(undefined);
@@ -95,7 +98,9 @@ export default function ReactionTimePage() {
         setAverage(result);
         setStatusGame(StatusGame.FINISH);
         if (profile) {
-          saveGameModeScore(result, type, Order.DESC).then(({ data }) => {
+          saveGameModeScore(result, type, Order.DESC, {
+            attempts: newAttempts,
+          }).then(({ data }) => {
             setDataResult(data);
           });
         }
@@ -103,6 +108,10 @@ export default function ReactionTimePage() {
         setStatusGame(StatusGame.WAIT);
       }
     }
+  };
+
+  const getDetail = (data: GameModeScore) => {
+    setData(data);
   };
 
   return (
@@ -259,7 +268,12 @@ export default function ReactionTimePage() {
                   />
                 </Grid>
                 <Grid size={12}>
-                  <RankingGameMode type={type} unit="ms" />
+                  <RankingGameMode
+                    type={type}
+                    unit="ms"
+                    fixed={2}
+                    onClick={getDetail}
+                  />
                 </Grid>
               </Grid>
             </Box>
@@ -348,14 +362,14 @@ export default function ReactionTimePage() {
                             }}
                           >
                             <Typography variant="subtitle1">
-                              {t("gamemode.record")} :
+                              {t("gamemode.myrecord")} :
                             </Typography>
                             <Typography
                               variant="h3"
                               color="primary"
                               sx={{ fontWeight: "bold" }}
                             >
-                              {dataResult.result.score} ms
+                              {dataResult.result.score.toFixed(2)} ms
                             </Typography>
                           </Box>
                           <Box
@@ -440,6 +454,12 @@ export default function ReactionTimePage() {
           )}
         </Grid>
       </Grid>
+
+      <ReactionTimeDetailDialog
+        open={data !== undefined}
+        close={() => setData(undefined)}
+        data={data}
+      />
     </Container>
   );
 }

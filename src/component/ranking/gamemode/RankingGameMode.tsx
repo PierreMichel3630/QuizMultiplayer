@@ -28,10 +28,18 @@ export interface DataRankingListScore {
 
 interface Props {
   type: TypeGameMode;
+  onClick?: (data: GameModeScore) => void;
   unit?: string;
   asc?: boolean;
+  fixed?: number;
 }
-export const RankingGameMode = ({ type, unit, asc = true }: Props) => {
+export const RankingGameMode = ({
+  type,
+  unit,
+  onClick,
+  asc = true,
+  fixed = 0,
+}: Props) => {
   const { t } = useTranslation();
 
   const [search, setSearch] = useState("");
@@ -56,12 +64,6 @@ export const RankingGameMode = ({ type, unit, asc = true }: Props) => {
         sort: () =>
           setSort({ value: OrderGameModeScore.SCORE, ascending: asc }),
       },
-      /*{
-        value: OrderGameModeScore.AVERAGE,
-        label: t("sort.pointsavg"),
-        sort: () =>
-          setSort({ value: OrderGameModeScore.AVERAGE, ascending: asc }),
-      },*/
       {
         value: OrderGameModeScore.GAMES,
         label: t("sort.games"),
@@ -127,19 +129,17 @@ export const RankingGameMode = ({ type, unit, asc = true }: Props) => {
             width={100}
           >
             <Typography variant="h6">
-              {el.score} {unit ?? ""}
+              {el.score.toFixed(fixed)} {unit ?? ""}
             </Typography>
-            {/*<Typography variant="h6">
-              {t("abrevation.average")} {el.average.toFixed(2)}
-            </Typography>*/}
             <Typography variant="h6">
               {el.games} {t("commun.games")}
             </Typography>
           </TableCell>
         ),
         rank: index + indexStart,
+        data: el,
       })),
-    [dataBdd, unit, indexStart, t],
+    [dataBdd, fixed, unit, indexStart, t],
   );
 
   return (
@@ -171,7 +171,7 @@ export const RankingGameMode = ({ type, unit, asc = true }: Props) => {
         </Box>
       </Grid>
       <Grid size={12}>
-        <RankingGameModeTable data={data} loading={loading} />
+        <RankingGameModeTable data={data} loading={loading} onClick={onClick} />
         {total !== null && total > 0 && (
           <TablePagination
             component="div"
