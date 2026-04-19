@@ -29,6 +29,7 @@ import rank1 from "src/assets/rank/rank1.png";
 import rank2 from "src/assets/rank/rank2.png";
 import rank3 from "src/assets/rank/rank3.png";
 import { GameModeScore } from "src/models/GameMode";
+import { sortByRankAsc } from "src/utils/sort";
 
 export interface DataRanking {
   profile: Profile;
@@ -112,7 +113,7 @@ export const RankingGameModeTable = ({
         >
           <Table size="small" sx={{ tableLayout: "fixed" }}>
             <TableBody>
-              {data.map((el, index) => {
+              {data.sort(sortByRankAsc).map((el, index) => {
                 const isMe = el.profile.id === profile?.id;
                 const isFriend = idFriend.includes(el.profile.id);
                 const colorFriend = isFriend ? Colors.purple : "initial";

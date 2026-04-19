@@ -14,7 +14,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { launchSoloGame, selectSoloGameById } from "src/api/game";
-import { BestScoreBlock } from "src/component/BestScoreBlock";
+import { BestScoreBlockTheme } from "src/component/BestScoreBlock";
 import { MyExperienceSoloBlock } from "src/component/ExperienceBlock";
 import { AddMoneyBlock } from "src/component/MoneyBlock";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
@@ -36,7 +36,7 @@ export default function RecapSoloPage() {
   const { getMyAccomplishments } = useApp();
 
   const [question, setQuestion] = useState<QuestionResult | undefined>(
-    undefined
+    undefined,
   );
   const [game, setGame] = useState<undefined | SoloGameResult>(undefined);
   const [maxIndex, setMaxIndex] = useState(5);
@@ -86,12 +86,12 @@ export default function RecapSoloPage() {
 
   const questions = useMemo(
     () => (game ? [...game.questions].reverse() : []),
-    [game]
+    [game],
   );
 
   const questionsDisplay = useMemo(
     () => [...questions].splice(0, maxIndex),
-    [questions, maxIndex]
+    [questions, maxIndex],
   );
 
   return (
@@ -139,7 +139,10 @@ export default function RecapSoloPage() {
                   <ConnectAlert />
                 </Grid>
               ) : (
-                <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
+                <Grid
+                  sx={{ display: "flex", justifyContent: "center" }}
+                  size={12}
+                >
                   <AddMoneyBlock
                     money={game.points * 10}
                     variant="h4"
@@ -148,7 +151,7 @@ export default function RecapSoloPage() {
                 </Grid>
               )}
               <Grid size={12}>
-                <BestScoreBlock theme={game.theme} points={game.points} />
+                <BestScoreBlockTheme theme={game.theme} points={game.points} />
               </Grid>
               <Grid size={12}>
                 <RankingTableSoloDuel theme={game.theme} max={3} mode="SOLO" />

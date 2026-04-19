@@ -1,14 +1,9 @@
-import {
-  Box,
-  Grid,
-  TableCell,
-  TablePagination,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, TableCell, Typography } from "@mui/material";
 import { percent, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { countListScore, selectListScorePaginate } from "src/api/list";
+import { Pagination } from "src/component/page/Pagination";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
@@ -37,6 +32,8 @@ export const RankingListMode = ({ list, totalList }: Props) => {
   const { friends } = useApp();
   const { language } = useUser();
 
+  const rowsPerPage = 10;
+
   const [search, setSearch] = useState("");
   const [total, setTotal] = useState<null | number>(null);
   const [dataBdd, setDataBdd] = useState<Array<ListScoreWithRanking>>([]);
@@ -48,7 +45,6 @@ export const RankingListMode = ({ list, totalList }: Props) => {
   const [isOnlyFriend, setIsOnlyFriend] = useState(false);
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const idFriends = useMemo(
     () =>
@@ -90,13 +86,6 @@ export const RankingListMode = ({ list, totalList }: Props) => {
     newPage: number,
   ) => {
     setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
   };
 
   useEffect(() => {
@@ -213,23 +202,12 @@ export const RankingListMode = ({ list, totalList }: Props) => {
       </Grid>
       <Grid size={12}>
         <RankingListTable data={data} loading={loading} />
-        {total !== null && total > 0 && (
-          <TablePagination
-            component="div"
-            count={total}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            labelDisplayedRows={({ from, to, count }) =>
-              `${from}–${to} ${t("commun.to")} ${count}`
-            }
-            labelRowsPerPage={""}
-            showFirstButton
-            showLastButton
-            rowsPerPageOptions={[5, 10, 25, 50, 100]}
-          />
-        )}
+        <Pagination
+          total={total}
+          page={page}
+          handleChangePage={handleChangePage}
+          rowsPerPage={rowsPerPage}
+        />
       </Grid>
     </Grid>
   );

@@ -1,18 +1,15 @@
-import {
-  Box,
-  Grid,
-  TableCell,
-  TablePagination,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, TableCell, Typography } from "@mui/material";
 import { percent, px } from "csx";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  countGameModeScore,
-  selectGameModeScorePaginate,
-} from "src/api/gamemode";
+import { countGameModeScore, getLeaderboardGameMode } from "src/api/gamemode";
+import { Pagination } from "src/component/page/Pagination";
+import { OnlyFriendSwitch } from "src/component/switch/OnlyFriendSwitch";
+import { useApp } from "src/context/AppProvider";
+import { useAuth } from "src/context/AuthProviderSupabase";
 import { TypeGameMode } from "src/models/enum/GameMode";
+import { Order } from "src/models/enum/Order";
+import { FRIENDSTATUS } from "src/models/Friend";
 import { GameModeScore, OrderGameModeScore } from "src/models/GameMode";
 import { Profile } from "src/models/Profile";
 import { BasicSearchInput } from "../../Input";
@@ -30,31 +27,49 @@ interface Props {
   type: TypeGameMode;
   onClick?: (data: GameModeScore) => void;
   unit?: string;
-  asc?: boolean;
+  order?: Order;
   fixed?: number;
 }
+
+interface Sort {
+  value: OrderGameModeScore;
+  order: Order;
+}
+
+interface Query {
+  page: number;
+  rowsPerPage: number;
+  search: string;
+  type: TypeGameMode;
+  isOnlyFriend: boolean;
+  friends?: Array<string>;
+  sort: Sort;
+}
+
 export const RankingGameMode = ({
   type,
   unit,
   onClick,
-  asc = true,
+  order = Order.ASC,
   fixed = 0,
 }: Props) => {
   const { t } = useTranslation();
+  const { profile } = useAuth();
+  const { friends } = useApp();
 
-  const [search, setSearch] = useState("");
   const [total, setTotal] = useState<null | number>(null);
   const [dataBdd, setDataBdd] = useState<Array<GameModeScore>>([]);
   const [loading, setLoading] = useState(true);
-  const [sort, setSort] = useState({
-    value: OrderGameModeScore.SCORE,
-    ascending: asc,
+
+  const [query, setQuery] = useState<Query>({
+    page: 0,
+    rowsPerPage: 10,
+    search: "",
+    type: type,
+    isOnlyFriend: false,
+    friends: undefined,
+    sort: { value: OrderGameModeScore.SCORE, order: order },
   });
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const indexStart = useMemo(() => page * rowsPerPage + 1, [page, rowsPerPage]);
 
   const sorts = useMemo(
     () => [
@@ -62,62 +77,107 @@ export const RankingGameMode = ({
         value: OrderGameModeScore.SCORE,
         label: t("sort.points"),
         sort: () =>
-          setSort({ value: OrderGameModeScore.SCORE, ascending: asc }),
+          onChangeSort({ value: OrderGameModeScore.SCORE, order: order }),
       },
       {
         value: OrderGameModeScore.GAMES,
         label: t("sort.games"),
         sort: () =>
-          setSort({ value: OrderGameModeScore.GAMES, ascending: false }),
+          onChangeSort({ value: OrderGameModeScore.GAMES, order: Order.DESC }),
       },
     ],
-    [t, asc],
+    [t, order],
   );
 
-  const handleChangePage = (
+  const idFriends = useMemo(
+    () =>
+      profile
+        ? [
+            profile.id,
+            ...friends
+              .filter((el) => el.status === FRIENDSTATUS.VALID)
+              .reduce(
+                (acc, value) =>
+                  value.user2.id === profile.id
+                    ? [...acc, value.user1.id]
+                    : [...acc, value.user2.id],
+                [] as Array<string>,
+              ),
+          ]
+        : [],
+    [friends, profile],
+  );
+
+  const onChangePage = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number,
   ) => {
-    setPage(newPage);
+    setQuery((prev) => ({
+      ...prev,
+      page: newPage,
+    }));
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  const onChangeSort = (value: Sort) => {
+    setQuery((prev) => ({
+      ...prev,
+      sort: value,
+      page: 0,
+    }));
   };
+
+  const onChangeSearch = (value: string) => {
+    setQuery((prev) => ({
+      ...prev,
+      search: value,
+      page: 0,
+    }));
+  };
+
+  const onChangeIsOnlyFriend = useCallback(
+    (value: boolean) => {
+      setQuery((prev) => ({
+        ...prev,
+        friends: value ? [...idFriends] : undefined,
+        isOnlyFriend: !prev.isOnlyFriend,
+        page: 0,
+      }));
+    },
+    [idFriends],
+  );
 
   useEffect(() => {
     const getTotal = () => {
-      countGameModeScore(type, [], search).then(({ count }) => {
-        setTotal(count);
-      });
+      countGameModeScore(query.type, query.friends, query.search).then(
+        (res) => {
+          setTotal(res.count);
+        },
+      );
     };
     getTotal();
-  }, [type, search]);
+  }, [query]);
 
   useEffect(() => {
     const getRanking = () => {
-      selectGameModeScorePaginate(
-        type,
-        search,
-        page,
-        rowsPerPage,
-        sort.value,
-        sort.ascending,
+      getLeaderboardGameMode(
+        query.type,
+        query.search,
+        query.page,
+        query.rowsPerPage,
+        query.sort.value,
+        query.sort.order,
+        query.friends,
       ).then(({ data }) => {
         setDataBdd(data ?? []);
         setLoading(false);
       });
     };
-    const timeout = setTimeout(getRanking, 200);
-    return () => clearTimeout(timeout);
-  }, [type, total, page, rowsPerPage, search, sort]);
+    getRanking();
+  }, [query]);
 
   const data = useMemo(
     () =>
-      [...dataBdd].map((el, index) => ({
+      [...dataBdd].map((el) => ({
         profile: el.profile,
         value: (
           <TableCell
@@ -136,10 +196,10 @@ export const RankingGameMode = ({
             </Typography>
           </TableCell>
         ),
-        rank: index + indexStart,
+        rank: el.rank,
         data: el,
       })),
-    [dataBdd, fixed, unit, indexStart, t],
+    [dataBdd, fixed, unit, t],
   );
 
   return (
@@ -163,32 +223,27 @@ export const RankingGameMode = ({
         >
           <BasicSearchInput
             label={t("commun.searchplayer")}
-            onChange={(value) => setSearch(value)}
-            value={search}
-            clear={() => setSearch("")}
+            onChange={(value) => onChangeSearch(value)}
+            value={query.search}
+            clear={() => onChangeSearch("")}
           />
           <SortButton menus={sorts} />
         </Box>
+        {profile && (
+          <OnlyFriendSwitch
+            isOnlyFriend={query.isOnlyFriend}
+            onChange={(value) => onChangeIsOnlyFriend(value)}
+          />
+        )}
       </Grid>
       <Grid size={12}>
         <RankingGameModeTable data={data} loading={loading} onClick={onClick} />
-        {total !== null && total > 0 && (
-          <TablePagination
-            component="div"
-            count={total}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            labelDisplayedRows={({ from, to, count }) =>
-              `${from}–${to} ${t("commun.to")} ${count}`
-            }
-            labelRowsPerPage={""}
-            showFirstButton
-            showLastButton
-            rowsPerPageOptions={[5, 10, 25, 50, 100]}
-          />
-        )}
+        <Pagination
+          total={total}
+          page={query.page}
+          handleChangePage={onChangePage}
+          rowsPerPage={query.rowsPerPage}
+        />
       </Grid>
     </Grid>
   );

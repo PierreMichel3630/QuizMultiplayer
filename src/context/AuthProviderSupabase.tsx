@@ -92,7 +92,8 @@ export const AuthProviderSupabase = ({ children }: Props) => {
         getProfilById(user.id).then(({ data }) => {
           const res = data as Profile;
           setProfile(res);
-          updateProfilByFunction().then(({ data }) => {
+          const accounts = saveAccountConnect(res);
+          updateProfilByFunction(accounts).then(({ data }) => {
             if (data !== null) {
               setStreak(data.streak);
             }
@@ -105,6 +106,16 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     localStorage.setItem("user", JSON.stringify(user));
     getProfilUser();
   }, [user]);
+
+  const saveAccountConnect = (profile: Profile) => {
+    const accounts = JSON.parse(localStorage.getItem("accounts") || "[]");
+
+    if (!accounts.includes(profile.id)) {
+      accounts.push(profile.id);
+      localStorage.setItem("accounts", JSON.stringify(accounts));
+    }
+    return accounts;
+  };
 
   const refreshHasPlayChallenge = useCallback(() => {
     if (user) {

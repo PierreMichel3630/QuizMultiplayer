@@ -11,7 +11,7 @@ export const getProfilById = (uuid: string) =>
   supabase
     .from(SUPABASE_PROFILE_TABLE)
     .select(
-      "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))"
+      "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))",
     )
     .eq("id", uuid)
     .single();
@@ -25,7 +25,7 @@ export const updateSelectProfil = (profil: ProfileUpdate) =>
     .update(profil)
     .eq("id", profil.id)
     .select(
-      "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))"
+      "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))",
     )
     .single();
 
@@ -41,14 +41,14 @@ export const searchProfilePagination = (
   search: string,
   notin: Array<string>,
   page: number,
-  itemperpage: number
+  itemperpage: number,
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
   return supabase
     .from(SUPABASE_PROFILE_TABLE)
     .select(
-      "*, avatar(*), badge(*),country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))"
+      "*, avatar(*), badge(*),country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))",
     )
     .ilike("username", `%${search}%`)
     .not("id", "in", `(${notin.join(",")})`)
@@ -73,11 +73,12 @@ export const countPlayersSameUsername = (username: string) =>
     .select("*", { count: "exact", head: true })
     .eq("username", username);
 
-export const updateProfilByFunction = () =>
+export const updateProfilByFunction = (accounts?: Array<string>) =>
   supabase.functions.invoke(SUPABASE_UPDATEPROFIL_FUNCTION, {
     body: {
       date: moment(),
       version: VERSION_APP,
+      accounts,
     },
   });
 
@@ -86,7 +87,7 @@ export const selectProfile = (
   page: number,
   itemperpage = 25,
   idsProfile = [] as Array<string>,
-  search = ""
+  search = "",
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
@@ -94,7 +95,7 @@ export const selectProfile = (
   let query = supabase
     .from(SUPABASE_PROFILE_TABLE)
     .select(
-      "*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))"
+      "*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))",
     )
     .gt(order.value, 0)
     .ilike("username", `%${search}%`)

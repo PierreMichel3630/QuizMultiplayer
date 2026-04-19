@@ -1,11 +1,5 @@
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import {
-  Box,
-  Grid,
-  TableCell,
-  TablePagination,
-  Typography
-} from "@mui/material";
+import { Box, Grid, TableCell, Typography } from "@mui/material";
 import { percent, px } from "csx";
 import moment, { Moment } from "moment";
 import { useEffect, useMemo, useState } from "react";
@@ -61,6 +55,7 @@ import {
 } from "./ChallengeBlock";
 import { ChangeDateBlock } from "./date/ChangeDateBlock";
 import { BasicSearchInput } from "./Input";
+import { Pagination } from "./page/Pagination";
 import { SortButton } from "./SortBlock";
 import { OnlyFriendSwitch } from "./switch/OnlyFriendSwitch";
 import {
@@ -75,6 +70,8 @@ export const RankingChallenge = () => {
   const { language } = useUser();
   const [searchParams] = useSearchParams();
 
+  const rowsPerPage = 10;
+
   const [search, setSearch] = useState("");
   const [total, setTotal] = useState<null | number>(null);
   const [date, setDate] = useState<Moment>(moment());
@@ -85,7 +82,6 @@ export const RankingChallenge = () => {
   const [avg, setAvg] = useState<null | ChallengeAvg>(null);
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const [tab, setTab] = useState(ClassementChallengeEnum.perdate);
   const [tabChallengeMode, setTabChallengeMode] = useState(
@@ -161,13 +157,6 @@ export const RankingChallenge = () => {
     newPage: number,
   ) => {
     setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
   };
 
   useEffect(() => {
@@ -698,23 +687,12 @@ export const RankingChallenge = () => {
       </Grid>
       <Grid size={12}>
         <RankingChallengeTable data={dataDisplay} loading={loading} />
-        {total !== null && total > 0 && (
-          <TablePagination
-            component="div"
-            count={total}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            labelDisplayedRows={({ from, to, count }) =>
-              `${from}–${to} ${t("commun.to")} ${count}`
-            }
-            labelRowsPerPage={""}
-            showFirstButton
-            showLastButton
-            rowsPerPageOptions={[5, 10, 25, 50, 100]}
-          />
-        )}
+        <Pagination
+          total={total}
+          page={page}
+          handleChangePage={handleChangePage}
+          rowsPerPage={rowsPerPage}
+        />
       </Grid>
     </Grid>
   );

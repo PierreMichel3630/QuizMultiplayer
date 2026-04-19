@@ -65,3 +65,24 @@ export const countGameModeScore = (
   }
   return query;
 };
+
+export const getLeaderboardGameMode = (
+  type: TypeGameMode,
+  search = "",
+  page = 0,
+  itemperpage = 5,
+  sort = OrderGameModeScore.SCORE,
+  asc = Order.ASC,
+  idsProfile: undefined | Array<string> = undefined,
+) => {
+  const from = page * itemperpage;
+  return supabase.rpc("get_leaderboard_gamemodescore", {
+    p_type: type,
+    p_sort: sort,
+    p_order: asc,
+    p_search: search.length > 0 ? search : null,
+    p_profile_ids: idsProfile ?? null,
+    p_limit: itemperpage,
+    p_offset: from
+  });
+};

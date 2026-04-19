@@ -5,9 +5,6 @@
   -ms-user-select: none;
   user-select: none;
 }
-.MuiSelect-select {
-  padding: 10px !important;
-}
 .MuiContainer-root {
   padding: 0 !important;
 }

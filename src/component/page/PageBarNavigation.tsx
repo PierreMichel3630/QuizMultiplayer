@@ -13,7 +13,7 @@ export const PageBarNavigation = ({ title, content, children }: Props) => {
   return (
     <Box
       sx={{
-        height: "100vh",
+        height: "100dvh",
         display: "flex",
         flexDirection: "column",
       }}

@@ -23,6 +23,7 @@ export interface GameModeScore {
   score: number;
   average: number;
   games: number;
+  rank: number;
   extra: any;
 }
 

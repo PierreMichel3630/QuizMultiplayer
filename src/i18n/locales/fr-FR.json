@@ -362,6 +362,7 @@
     "grades": "Notes",
     "result": "Résultat",
     "average": "Moyenne",
+    "averagepergame": "Moyenne par partie",
     "time": "Temps",
     "save": "Enregistrer",
     "streak": "Série",
@@ -419,7 +420,8 @@
     "mybestscoreattempts": "Moins de tentative",
     "norecordbroken": "Aucun record battu",
     "newrecord": "Nouveau Record",
-    "warning": "Attention"
+    "warning": "Attention",
+    "position": "Position"
   },
   "abrevation": {
     "average": "Moy."
@@ -1050,7 +1052,9 @@
       "description": "À quelle vitesse pouvez-vous atteindre toutes les cibles.",
       "rules": "Toucher 20 cibles le plus rapidement possible.",
       "targettouch": "Cibles touchées",
-      "score": "Temps moyen par cible"
+      "score": "Temps moyen par cible",
+      "screensize": "Taille de l'écran",
+      "target": "Cible"
     },
     "numbermemory": {
       "name": "Mémoire de nombre",
@@ -1101,6 +1105,15 @@
     "friend_request_accept": "{{username}} a accepté ta demande"
   },
   "patchnote": {
+    "2.2.2": {
+      "version": "2.2.2",
+      "date": "19/04/2026",
+      "changes": [
+        "Mode Test cérébral ajout detail pour la mode AIM trainer",
+        "Mode Test cérébral amélioration du classement recherche et filtre par amis (maintient le rank global)"
+      ],
+      "bug": []
+    },
     "2.2.1": {
       "version": "2.2.1",
       "date": "14/04/2026",

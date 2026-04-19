@@ -1,22 +1,14 @@
 import { Typography } from "@mui/material";
 import { Box, Container, Grid } from "@mui/system";
-import { important, px } from "csx";
 import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import { saveGameModeScore } from "src/api/gamemode";
-import { ConnectAlert } from "src/component/alert/ConnectAlert";
-import { ButtonColor } from "src/component/Button";
-import { ChangeNumberBlock } from "src/component/ChangeBlock";
-import { MyExperienceSoloBlock } from "src/component/ExperienceBlock";
-import { CircularLoading } from "src/component/Loading";
-import { GameModeDialog } from "src/component/modal/gamemode/GameModeModal";
-import { AddMoneyBlock } from "src/component/MoneyBlock";
-import { RankingGameMode } from "src/component/ranking/gamemode/RankingGameMode";
+import { AimDetailDialog } from "src/component/modal/gamemode/GameModeModal";
+import { NotStartGameMode } from "src/component/ranking/gamemode/NotStartGameMode";
+import { ResultGameMode } from "src/component/ranking/gamemode/ResultGameMode";
 
 import { Target } from "src/component/svg/Target";
-import { TitleBlock } from "src/component/title/Title";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { TypeGameMode } from "src/models/enum/GameMode";
 import { Order } from "src/models/enum/Order";
@@ -27,6 +19,14 @@ const TARGETS_TOTAL = 20;
 const TARGET_RADIUS = 40;
 const TARGET_SIZE = TARGET_RADIUS * 2;
 
+interface TargetPosition {
+  x: number;
+  y: number;
+}
+
+export interface TargetResult extends TargetPosition {
+  time: number;
+}
 enum StatusGame {
   NOTSTART = "NOTSTART",
   PLAY = "PLAY",
@@ -36,15 +36,16 @@ enum StatusGame {
 export default function AimPage() {
   const { t } = useTranslation();
   const { profile } = useAuth();
-  const navigate = useNavigate();
 
   const containerRef = useRef<HTMLDivElement>(null);
 
   const type = TypeGameMode.aimtrainer;
+  const unit = "ms";
+  const order = Order.ASC;
+  const fixed = 2;
 
-  const [score, setScore] = useState(0);
-  const [targetsHit, setTargetsHit] = useState(0);
-  const [target, setTarget] = useState({ x: 200, y: 200 });
+  const [targets, setTargets] = useState<Array<TargetResult>>([]);
+  const [target, setTarget] = useState<TargetPosition | undefined>(undefined);
 
   const [statusGame, setStatusGame] = useState<StatusGame>(StatusGame.NOTSTART);
   const [dataResult, setDataResult] = useState<null | ResultGameModeScore>(
@@ -57,18 +58,13 @@ export default function AimPage() {
 
   const reset = () => {
     setDataResult(null);
-    setTargetsHit(0);
+    setTargets([]);
     launch();
   };
 
   const launch = () => {
     setStatusGame(StatusGame.PLAY);
-    startTimeRef.current = performance.now();
   };
-
-  useEffect(() => {
-    generateTarget();
-  }, []);
 
   const generateTarget = () => {
     if (!containerRef.current) return;
@@ -84,22 +80,50 @@ export default function AimPage() {
     setTarget({ x, y });
   };
 
+  useEffect(() => {
+    if (statusGame === StatusGame.PLAY) {
+      generateTarget();
+    }
+  }, [statusGame]);
+
+  useEffect(() => {
+    if (target) {
+      requestAnimationFrame(() => {
+        startTimeRef.current = performance.now();
+      });
+    }
+  }, [target]);
+
   const handleClick = () => {
     const endTime = performance.now();
+    const diff = endTime - startTimeRef.current;
+    const roundedDiff = Math.round(diff * 100) / 100;
 
-    const newCount = targetsHit + 1;
-    setTargetsHit(newCount);
+    const newTargets: Array<TargetResult> = [
+      ...targets,
+      {
+        x: target?.x ?? 0,
+        y: target?.y ?? 0,
+        time: roundedDiff,
+      },
+    ];
 
-    if (newCount >= TARGETS_TOTAL) {
-      const diff = endTime - startTimeRef.current;
-      const result = diff / TARGETS_TOTAL;
-      setScore(result);
+    setTargets(newTargets);
+
+    if (newTargets.length >= TARGETS_TOTAL) {
+      const result =
+        [...newTargets].reduce((acc, value) => acc + value.time, 0) /
+        TARGETS_TOTAL;
       setStatusGame(StatusGame.FINISH);
       if (profile) {
         const rect = containerRef.current?.getBoundingClientRect();
         const extra = rect
-          ? { width: Math.round(rect.width), height: Math.round(rect.height) }
-          : null;
+          ? {
+              width: Math.round(rect.width),
+              height: Math.round(rect.height),
+              targets: newTargets,
+            }
+          : { targets: newTargets };
         saveGameModeScore(result, type, Order.DESC, extra).then(({ data }) => {
           setDataResult(data);
         });
@@ -124,7 +148,7 @@ export default function AimPage() {
           {statusGame === StatusGame.PLAY && (
             <Box
               sx={{
-                height: "100vh",
+                height: "100dvh",
                 display: "flex",
                 flexDirection: "column",
               }}
@@ -143,216 +167,65 @@ export default function AimPage() {
                   {t("gamemode.aimtrainer.targettouch")} :
                 </Typography>
                 <Typography variant="h2">
-                  {targetsHit}/{TARGETS_TOTAL}
+                  {targets.length}/{TARGETS_TOTAL}
                 </Typography>
               </Box>
-              <Box ref={containerRef} sx={{ flex: 1 }}>
-                <Target
-                  size={TARGET_SIZE}
-                  transform={`translate(${target.x}, ${target.y})`}
-                  onClick={() => handleClick()}
-                />
+              <Box
+                ref={containerRef}
+                sx={{
+                  flex: 1,
+                  color: (theme) =>
+                    theme.palette.mode === "light"
+                      ? Colors.white
+                      : Colors.black,
+                }}
+              >
+                {target && (
+                  <Target
+                    size={TARGET_SIZE}
+                    transform={`translate(${target.x}, ${target.y})`}
+                    onPointerDown={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      handleClick();
+                    }}
+                  />
+                )}
               </Box>
             </Box>
           )}
           {statusGame === StatusGame.NOTSTART && (
             <Box sx={{ padding: 2, textAlign: "center" }}>
-              <Grid container spacing={2} justifyContent="center">
-                <Grid size={12}>
-                  <TitleBlock title={t("gamemode.aimtrainer.name")} />
-                </Grid>
-                <Grid size={12}>
-                  <Typography fontSize={15}>
-                    {t("gamemode.aimtrainer.rules")}
-                  </Typography>
-                </Grid>
-                {profile === null && (
-                  <Grid
-                    size={12}
-                    sx={{ display: "flex", justifyContent: "center" }}
-                  >
-                    <ConnectAlert />
-                  </Grid>
-                )}
-                <Grid size={12}>
-                  <ButtonColor
-                    value={Colors.colorApp}
-                    label={t("commun.launchgame")}
-                    variant="contained"
-                    onClick={reset}
-                  />
-                </Grid>
-                <Grid size={12}>
-                  <RankingGameMode type={type} unit="ms" onClick={getDetail} />
-                </Grid>
-              </Grid>
+              <NotStartGameMode
+                type={type}
+                newGame={reset}
+                getDetail={getDetail}
+                order={order}
+                unit={unit}
+                fixed={fixed}
+              />
             </Box>
           )}
 
           {statusGame === StatusGame.FINISH && (
             <Box sx={{ padding: 2, textAlign: "center" }}>
-              <Grid container spacing={2} justifyContent="center">
-                <Grid size={12}>
-                  <Typography variant="h2">{t("gamemode.results")}</Typography>
-                </Grid>
-                {profile ? (
-                  <>
-                    {dataResult ? (
-                      <>
-                        {dataResult.hasrecord ? (
-                          <Grid
-                            size={12}
-                            sx={{
-                              color: Colors.correctanswer,
-                              textAlign: "center",
-                            }}
-                          >
-                            <Typography
-                              variant="h2"
-                              textAlign="center"
-                              sx={{ fontSize: important(px(45)) }}
-                            >
-                              {t("commun.win")}
-                            </Typography>
-                            <Typography>{t("commun.newrecord")}</Typography>
-                          </Grid>
-                        ) : (
-                          <Grid
-                            size={12}
-                            sx={{
-                              color: Colors.wronganswer,
-                              textAlign: "center",
-                            }}
-                          >
-                            <Typography
-                              variant="h2"
-                              textAlign="center"
-                              sx={{ fontSize: important(px(45)) }}
-                            >
-                              {t("commun.loose")}
-                            </Typography>
-                            <Typography>
-                              {t("commun.norecordbroken")}
-                            </Typography>
-                          </Grid>
-                        )}
-                        <Grid size={12}>
-                          <MyExperienceSoloBlock
-                            xp={{
-                              match: 50,
-                              record: dataResult.hasrecord ? 100 : undefined,
-                            }}
-                          />
-                        </Grid>
-                        {dataResult.hasrecord && (
-                          <Grid
-                            sx={{ display: "flex", justifyContent: "center" }}
-                            size={12}
-                          >
-                            <AddMoneyBlock
-                              money={100}
-                              variant="h4"
-                              width={25}
-                            />
-                          </Grid>
-                        )}
-                      </>
-                    ) : (
-                      <Grid size={12}>
-                        <CircularLoading />
-                      </Grid>
-                    )}
-                  </>
-                ) : (
-                  <Grid size={12}>
-                    <ConnectAlert />
-                  </Grid>
-                )}
-                <Grid
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    flexDirection: "column",
-                  }}
-                >
-                  {dataResult?.result.score && (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        gap: 1,
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Typography variant="subtitle1">
-                        {t("gamemode.myrecord")} :
-                      </Typography>
-                      <Typography
-                        variant="h3"
-                        color="primary"
-                        sx={{ fontWeight: "bold" }}
-                      >
-                        {dataResult?.result.score}ms
-                      </Typography>
-                    </Box>
-                  )}
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: 1,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Typography variant="subtitle1">
-                      {t("gamemode.aimtrainer.score")} :
-                    </Typography>
-                    <Typography
-                      variant="h3"
-                      color="primary"
-                      sx={{ fontWeight: "bold" }}
-                    >
-                      {score}ms
-                    </Typography>
-                    {dataResult?.previousScore && (
-                      <ChangeNumberBlock
-                        value={score}
-                        previous={dataResult?.result.score}
-                        variant="h6"
-                        order={Order.DESC}
-                        unit="ms"
-                      />
-                    )}
-                  </Box>
-                </Grid>
-                <Grid size={12}>
-                  <ButtonColor
-                    value={Colors.colorApp}
-                    label={t("commun.replay")}
-                    variant="contained"
-                    onClick={reset}
-                  />
-                </Grid>
-                <Grid size={12}>
-                  <ButtonColor
-                    value={Colors.red}
-                    label={t("commun.leave")}
-                    variant="contained"
-                    onClick={() => navigate(-1)}
-                  />
-                </Grid>
-              </Grid>
+              <ResultGameMode
+                result={dataResult}
+                order={order}
+                onLeave={() => setStatusGame(StatusGame.NOTSTART)}
+                onNewGame={reset}
+              />
             </Box>
           )}
         </Grid>
       </Grid>
 
-      <GameModeDialog
+      <AimDetailDialog
         open={data !== undefined}
         close={() => setData(undefined)}
         data={data}
-        unit="ms"
-        fixed={2}
+        unit={unit}
+        fixed={fixed}
       />
     </Container>
   );
