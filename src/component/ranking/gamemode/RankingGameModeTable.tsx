@@ -99,7 +99,7 @@ export const RankingGameModeTable = ({
     <Box sx={{ display: "flex", justifyContent: "center" }}>
       {data.length === 0 && !loading ? (
         <Alert severity="warning" sx={{ width: percent(100) }}>
-          {t("commun.noresultgame")}
+          {t("commun.noresult")}
         </Alert>
       ) : (
         <TableContainer
@@ -113,7 +113,7 @@ export const RankingGameModeTable = ({
         >
           <Table size="small" sx={{ tableLayout: "fixed" }}>
             <TableBody>
-              {data.sort(sortByRankAsc).map((el, index) => {
+              {[...data].sort(sortByRankAsc).map((el, index) => {
                 const isMe = el.profile.id === profile?.id;
                 const isFriend = idFriend.includes(el.profile.id);
                 const colorFriend = isFriend ? Colors.purple : "initial";

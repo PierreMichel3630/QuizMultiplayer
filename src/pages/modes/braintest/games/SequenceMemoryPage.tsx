@@ -7,13 +7,12 @@ import { useTranslation } from "react-i18next";
 import { Colors } from "src/style/Colors";
 
 import { saveGameModeScore } from "src/api/gamemode";
-import { GameModeDialog } from "src/component/modal/gamemode/GameModeModal";
 import { NotStartGameMode } from "src/component/ranking/gamemode/NotStartGameMode";
 import { ResultGameMode } from "src/component/ranking/gamemode/ResultGameMode";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { TypeGameMode } from "src/models/enum/GameMode";
 import { Order } from "src/models/enum/Order";
-import { GameModeScore, ResultGameModeScore } from "src/models/GameMode";
+import { ResultGameModeScore } from "src/models/GameMode";
 
 enum StatusGame {
   NOTSTART = "NOTSTART",
@@ -41,8 +40,6 @@ export default function SequenceMemoryPage() {
   const [userSequence, setUserSequence] = useState<Array<number>>([]);
   const [activeSquare, setActiveSquare] = useState<null | number>(null);
   const [isDisplaying, setIsDisplaying] = useState(false);
-
-  const [data, setData] = useState<GameModeScore | undefined>(undefined);
 
   const observerRef = useRef<ResizeObserver | null>(null);
   const measuredRef = (node: HTMLDivElement | null) => {
@@ -93,7 +90,7 @@ export default function SequenceMemoryPage() {
     if (index !== sequence[newUserSequence.length - 1]) {
       setStatusGame(StatusGame.FINISH);
       if (profile) {
-        saveGameModeScore(score, type).then(({ data }) => {
+        saveGameModeScore(score, type, order).then(({ data }) => {
           setDataResult(data);
         });
       }
@@ -118,10 +115,6 @@ export default function SequenceMemoryPage() {
     reset();
     nextLevel([]);
     setDataResult(null);
-  };
-
-  const getDetail = (data: GameModeScore) => {
-    setData(data);
   };
 
   return (
@@ -225,18 +218,14 @@ export default function SequenceMemoryPage() {
           )}
           {statusGame === StatusGame.NOTSTART && (
             <Box sx={{ padding: 2, textAlign: "center" }}>
-              <NotStartGameMode
-                order={order}
-                type={type}
-                newGame={newGame}
-                getDetail={getDetail}
-              />
+              <NotStartGameMode order={order} type={type} newGame={newGame} />
             </Box>
           )}
 
           {statusGame === StatusGame.FINISH && (
             <Box sx={{ padding: 2, textAlign: "center" }}>
               <ResultGameMode
+                type={type}
                 result={dataResult}
                 order={order}
                 onLeave={() => setStatusGame(StatusGame.NOTSTART)}
@@ -246,12 +235,6 @@ export default function SequenceMemoryPage() {
           )}
         </Grid>
       </Grid>
-
-      <GameModeDialog
-        open={data !== undefined}
-        close={() => setData(undefined)}
-        data={data}
-      />
     </Container>
   );
 }

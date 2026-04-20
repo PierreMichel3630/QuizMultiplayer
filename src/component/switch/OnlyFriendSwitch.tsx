@@ -25,6 +25,12 @@ export const OnlyFriendSwitch = ({ isOnlyFriend, onChange }: Props) => (
         onChange(event.target.checked);
       }}
     />
-    <Typography variant="body1">{t("commun.onlyfriend")}</Typography>
+    <Typography
+      variant="body1"
+      onClick={() => onChange(!isOnlyFriend)}
+      sx={{ cursor: "pointer" }}
+    >
+      {t("commun.onlyfriend")}
+    </Typography>
   </Box>
 );

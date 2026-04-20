@@ -15,13 +15,12 @@ import { Colors } from "src/style/Colors";
 
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { saveGameModeScore } from "src/api/gamemode";
-import { ReactionTimeDetailDialog } from "src/component/modal/gamemode/GameModeModal";
 import { NotStartGameMode } from "src/component/ranking/gamemode/NotStartGameMode";
 import { ResultGameMode } from "src/component/ranking/gamemode/ResultGameMode";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { TypeGameMode } from "src/models/enum/GameMode";
 import { Order } from "src/models/enum/Order";
-import { GameModeScore, ResultGameModeScore } from "src/models/GameMode";
+import { ResultGameModeScore } from "src/models/GameMode";
 
 enum StatusGame {
   NOTSTART = "NOTSTART",
@@ -47,8 +46,6 @@ export default function ReactionTimePage() {
   const [dataResult, setDataResult] = useState<null | ResultGameModeScore>(
     null,
   );
-
-  const [data, setData] = useState<GameModeScore | undefined>(undefined);
 
   const startTimeRef = useRef<number>(0);
   const timerRef = useRef<undefined | number>(undefined);
@@ -102,10 +99,6 @@ export default function ReactionTimePage() {
         setStatusGame(StatusGame.WAIT);
       }
     }
-  };
-
-  const getDetail = (data: GameModeScore) => {
-    setData(data);
   };
 
   return (
@@ -239,7 +232,6 @@ export default function ReactionTimePage() {
               <NotStartGameMode
                 type={type}
                 newGame={reset}
-                getDetail={getDetail}
                 order={order}
                 unit={unit}
                 fixed={fixed}
@@ -250,40 +242,65 @@ export default function ReactionTimePage() {
           {statusGame === StatusGame.FINISH && (
             <Box sx={{ padding: 2, textAlign: "center" }}>
               <ResultGameMode
+                type={type}
                 result={dataResult}
                 order={order}
+                unit={unit}
+                fixed={2}
                 onLeave={() => setStatusGame(StatusGame.NOTSTART)}
                 onNewGame={reset}
-                extra={
-                  <List>
-                    {attempts.map((attempt, i) => (
-                      <Fragment key={i}>
-                        <ListItem>
-                          <Box sx={{ display: "flex", gap: 1 }}>
-                            <Typography>
-                              {t("gamemode.reactiontime.attempt")} {i + 1} :
-                            </Typography>
-                            <Typography sx={{ fontWeight: "bold" }}>
-                              {attempt} ms
-                            </Typography>
-                          </Box>
-                        </ListItem>
-                        <Divider variant="inset" component="li" />
-                      </Fragment>
-                    ))}
-                  </List>
-                }
+                extra={<ExtraReactionTime attempts={attempts} fixed={fixed} />}
               />
             </Box>
           )}
         </Grid>
       </Grid>
-
-      <ReactionTimeDetailDialog
-        open={data !== undefined}
-        close={() => setData(undefined)}
-        data={data}
-      />
     </Container>
   );
 }
+
+interface PropsExtraReactionTime {
+  attempts: Array<number>;
+  fixed: number;
+}
+
+export const ExtraReactionTime = ({
+  attempts,
+  fixed,
+}: PropsExtraReactionTime) => {
+  const { t } = useTranslation();
+  return (
+    attempts.length > 0 && (
+      <List>
+        {attempts.map((attempt, i) => (
+          <Fragment key={i}>
+            <ListItem>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <Typography>
+                  {t("gamemode.reactiontime.attempt")} {i + 1} :
+                </Typography>
+                <Typography sx={{ fontWeight: "bold" }}>
+                  {attempt.toFixed(0)} ms
+                </Typography>
+              </Box>
+            </ListItem>
+            <Divider variant="inset" component="li" />
+          </Fragment>
+        ))}
+        <ListItem sx={{ display: "flex", justifyContent: "center" }}>
+          <Box>
+            <Typography variant="subtitle2" component="span">
+              {t("commun.average")} :{" "}
+            </Typography>
+            <Typography variant="h4" component="span">
+              {(
+                attempts.reduce((acc, v) => acc + v, 0) / attempts.length
+              ).toFixed(fixed)}{" "}
+              ms
+            </Typography>
+          </Box>
+        </ListItem>
+      </List>
+    )
+  );
+};

@@ -16,21 +16,6 @@ import { BasicSearchInput } from "../../Input";
 import { SortButton } from "../../SortBlock";
 import { RankingGameModeTable } from "./RankingGameModeTable";
 
-export interface DataRankingListScore {
-  profile: Profile;
-  value: JSX.Element;
-  extra?: JSX.Element;
-  rank: number;
-}
-
-interface Props {
-  type: TypeGameMode;
-  onClick?: (data: GameModeScore) => void;
-  unit?: string;
-  order?: Order;
-  fixed?: number;
-}
-
 interface Sort {
   value: OrderGameModeScore;
   order: Order;
@@ -46,12 +31,29 @@ interface Query {
   sort: Sort;
 }
 
+export interface DataRankingListScore {
+  profile: Profile;
+  value: JSX.Element;
+  extra?: JSX.Element;
+  rank: number;
+}
+
+interface Props {
+  type: TypeGameMode;
+  onClick?: (data: GameModeScore) => void;
+  unit?: string;
+  order?: Order;
+  fixed?: number;
+  rowsPerPage?: number;
+}
+
 export const RankingGameMode = ({
   type,
   unit,
   onClick,
   order = Order.ASC,
   fixed = 0,
+  rowsPerPage = 10,
 }: Props) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
@@ -63,7 +65,7 @@ export const RankingGameMode = ({
 
   const [query, setQuery] = useState<Query>({
     page: 0,
-    rowsPerPage: 10,
+    rowsPerPage: rowsPerPage,
     search: "",
     type: type,
     isOnlyFriend: false,

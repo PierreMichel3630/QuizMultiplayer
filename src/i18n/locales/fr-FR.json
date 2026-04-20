@@ -1105,6 +1105,34 @@
     "friend_request_accept": "{{username}} a accepté ta demande"
   },
   "patchnote": {
+    "2.2.5": {
+      "version": "2.2.5",
+      "date": "20/04/2026",
+      "changes": [
+      ],
+      "bug": [
+        "Mode Test cérébral Mémoire de séquence et Mémoire de nombre la sauvegarde du meilleur score était inversé (le pire score était sauvegardé)"
+      ]
+    },
+    "2.2.4": {
+      "version": "2.2.4",
+      "date": "20/04/2026",
+      "changes": [
+      ],
+      "bug": [
+        "Mode Test cérébral AIM trainer la sauvegarde du meilleur score était inversé (le pire score était sauvegardé)"
+      ]
+    },
+    "2.2.3": {
+      "version": "2.2.3",
+      "date": "20/04/2026",
+      "changes": [
+        "Mode Test cérébral ajout du classement à la fin d'une partie"
+      ],
+      "bug": [
+        "Mode Test cérébral correction sur l'affichage des resultats de la partie"
+      ]
+    },
     "2.2.2": {
       "version": "2.2.2",
       "date": "19/04/2026",

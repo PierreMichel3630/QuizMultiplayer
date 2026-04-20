@@ -8,14 +8,13 @@ import { ButtonColor } from "src/component/Button";
 import { Colors } from "src/style/Colors";
 
 import { saveGameModeScore } from "src/api/gamemode";
-import { GameModeDialog } from "src/component/modal/gamemode/GameModeModal";
 import { NotStartGameMode } from "src/component/ranking/gamemode/NotStartGameMode";
 import { ResultGameMode } from "src/component/ranking/gamemode/ResultGameMode";
 import { Timer } from "src/component/time/Timer";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { TypeGameMode } from "src/models/enum/GameMode";
 import { Order } from "src/models/enum/Order";
-import { GameModeScore, ResultGameModeScore } from "src/models/GameMode";
+import { ResultGameModeScore } from "src/models/GameMode";
 import { generateRandomNumber } from "src/utils/random";
 
 enum StatusGame {
@@ -44,8 +43,6 @@ export default function NumberMemoryPage() {
     null,
   );
 
-  const [data, setData] = useState<GameModeScore | undefined>(undefined);
-
   const timerRef = useRef<undefined | number>(undefined);
 
   const reset = () => {
@@ -72,12 +69,12 @@ export default function NumberMemoryPage() {
     } else {
       setStatusGame(StatusGame.FINISH);
       if (profile) {
-        saveGameModeScore(score, type).then(({ data }) => {
+        saveGameModeScore(score, type, order).then(({ data }) => {
           setDataResult(data);
         });
       }
     }
-  }, [answer, numberToGuess, profile, score, type]);
+  }, [answer, numberToGuess, order, profile, score, type]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -92,10 +89,6 @@ export default function NumberMemoryPage() {
       globalThis.removeEventListener("keydown", handleKeyDown);
     };
   }, [launchRound, statusGame, lengthAnswer]);
-
-  const getDetail = (data: GameModeScore) => {
-    setData(data);
-  };
 
   return (
     <Container maxWidth="md">
@@ -262,18 +255,14 @@ export default function NumberMemoryPage() {
           )}
           {statusGame === StatusGame.NOTSTART && (
             <Box sx={{ padding: 2, textAlign: "center" }}>
-              <NotStartGameMode
-                type={type}
-                order={order}
-                newGame={reset}
-                getDetail={getDetail}
-              />
+              <NotStartGameMode type={type} order={order} newGame={reset} />
             </Box>
           )}
 
           {statusGame === StatusGame.FINISH && (
             <Box sx={{ padding: 2, textAlign: "center" }}>
               <ResultGameMode
+                type={type}
                 result={dataResult}
                 order={order}
                 onLeave={() => setStatusGame(StatusGame.NOTSTART)}
@@ -313,12 +302,6 @@ export default function NumberMemoryPage() {
           )}
         </Grid>
       </Grid>
-
-      <GameModeDialog
-        open={data !== undefined}
-        close={() => setData(undefined)}
-        data={data}
-      />
     </Container>
   );
 }

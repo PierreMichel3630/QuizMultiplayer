@@ -29,7 +29,7 @@ export const ChangeNumberBlock = ({
         variation: Variation.EGAL,
       };
     } else {
-      if (order === Order.ASC) {
+      if (order === Order.DESC) {
         return value > previous
           ? {
               label: `+${(value - previous).toFixed(0)}${unit}`,

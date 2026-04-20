@@ -89,10 +89,10 @@ export const BestScoreBlock = ({
   const bestscore = useMemo(() => {
     let result = undefined;
     if (score !== undefined && previousscore !== undefined) {
-      if (order === Order.ASC) {
-        result = score > previousscore ? score : previousscore;
+      if (order === Order.DESC) {
+        result = Math.max(score, previousscore);
       } else {
-        result = score < previousscore ? score : previousscore;
+        result = Math.min(score, previousscore);
       }
     }
     return result;
@@ -109,10 +109,10 @@ export const BestScoreBlock = ({
             alignItems: "center",
             gap: 1,
           }}
-          size={6}
+          size={{ xs: 12, md: 6 }}
         >
-          <Typography variant="h6">{t("commun.score")} : </Typography>
-          <Typography variant="h2" sx={{ fontSize: important(px(35)) }}>
+          <Typography variant="body1">{t("commun.score")} : </Typography>
+          <Typography variant="h2">
             {score} {unit}
           </Typography>
           <ChangeNumberBlock
@@ -131,10 +131,10 @@ export const BestScoreBlock = ({
               alignItems: "center",
               gap: 1,
             }}
-            size={6}
+          size={{ xs: 12, md: 6 }}
           >
-            <Typography variant="h6">{t("commun.bestscore")} : </Typography>
-            <Typography variant="h2" sx={{ fontSize: important(px(35)) }}>
+            <Typography variant="body1">{t("commun.bestscore")} : </Typography>
+            <Typography variant="h2" >
               {bestscore} {unit}
             </Typography>
           </Grid>
