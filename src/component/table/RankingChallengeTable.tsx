@@ -14,9 +14,8 @@ import {
 import { AvatarAccount } from "../avatar/AvatarAccount";
 
 import { percent, px } from "csx";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 import rank1 from "src/assets/rank/rank1.png";
 import rank2 from "src/assets/rank/rank2.png";
 import rank3 from "src/assets/rank/rank3.png";
@@ -28,6 +27,7 @@ import { CountryImageBlock } from "../CountryBlock";
 
 import { Profile } from "src/models/Profile";
 import { ProfileTitleBlock } from "../title/ProfileTitle";
+import { ChallengeProfilDialog } from "../challenge/ChallengeProfilDialog";
 
 export interface DataRankingChallenge {
   profile: Profile;
@@ -46,6 +46,10 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const { friends } = useApp();
+
+  const [dataRankingChallenge, setDataRankingChallenge] = useState<
+    DataRankingChallenge | undefined
+  >(undefined);
 
   const idFriend = useMemo(
     () =>
@@ -119,8 +123,9 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                       cursor: "pointer",
                       textDecoration: "inherit",
                     }}
-                    component={Link}
-                    to={`/challenge/profil/${el.profile.id}`}
+                    onClick={() => {
+                      setDataRankingChallenge(el);
+                    }}
                   >
                     <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
                       {getIcon(el.rank)}
@@ -192,6 +197,11 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
           </Table>
         </TableContainer>
       )}
+      <ChallengeProfilDialog
+        data={dataRankingChallenge}
+        close={() => setDataRankingChallenge(undefined)}
+        open={dataRankingChallenge !== undefined}
+      />
     </Box>
   );
 };

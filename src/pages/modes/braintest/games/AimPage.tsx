@@ -120,17 +120,27 @@ export default function AimPage() {
         [...newTargets].reduce((acc, value) => acc + value.time, 0) /
         TARGETS_TOTAL;
       setStatusGame(StatusGame.FINISH);
+      const rect = containerRef.current?.getBoundingClientRect();
+      const extra = rect
+        ? {
+            width: Math.round(rect.width),
+            height: Math.round(rect.height),
+            targets: newTargets,
+          }
+        : { targets: newTargets };
       if (profile) {
-        const rect = containerRef.current?.getBoundingClientRect();
-        const extra = rect
-          ? {
-              width: Math.round(rect.width),
-              height: Math.round(rect.height),
-              targets: newTargets,
-            }
-          : { targets: newTargets };
         saveGameModeScore(result, type, order, extra).then(({ data }) => {
           setDataResult(data);
+        });
+      } else {
+        setDataResult({
+          hasrecord: false,
+          result: {
+            type: type,
+            score: result,
+            extra,
+          },
+          previousScore: null,
         });
       }
     } else {
@@ -213,6 +223,8 @@ export default function AimPage() {
                 type={type}
                 result={dataResult}
                 order={order}
+                unit={unit}
+                fixed={fixed}
                 onLeave={() => setStatusGame(StatusGame.NOTSTART)}
                 onNewGame={reset}
                 extra={<ExtraAim value={dataResult?.result.extra} />}

@@ -32,7 +32,7 @@ export default function NumberMemoryPage() {
   const order = Order.DESC;
 
   const [answer, setAnswer] = useState("");
-  const [numberToGuess, setNumberToGuess] = useState<number | undefined>(
+  const [numberToGuess, setNumberToGuess] = useState<string | undefined>(
     undefined,
   );
   const [score, setScore] = useState(0);
@@ -63,7 +63,7 @@ export default function NumberMemoryPage() {
 
   const validate = useCallback(() => {
     timerRef.current = undefined;
-    if (Number(answer) === numberToGuess) {
+    if (answer.toString() === numberToGuess) {
       setScore((prev) => prev + 1);
       setStatusGame(StatusGame.ANSWER);
     } else {
@@ -71,6 +71,15 @@ export default function NumberMemoryPage() {
       if (profile) {
         saveGameModeScore(score, type, order).then(({ data }) => {
           setDataResult(data);
+        });
+      } else {
+        setDataResult({
+          hasrecord: false,
+          result: {
+            type: type,
+            score: score,
+          },
+          previousScore: null,
         });
       }
     }
@@ -247,7 +256,7 @@ export default function NumberMemoryPage() {
                     value={Colors.green}
                     label={t("gamemode.numbermemory.continue")}
                     variant="contained"
-                    onClick={() => launchRound(lengthAnswer + 1)}
+                    onClick={() => launchRound(lengthAnswer)}
                   />
                 </Grid>
               </Grid>

@@ -1,5 +1,4 @@
 import ChallengeGamePage from "src/pages/challenge/ChallengeGamePage";
-import ChallengeProfilPage from "src/pages/challenge/ChallengeProfilPage";
 import PlayChallengePage from "src/pages/challenge/PlayChallengePage";
 import GameDuelPage from "src/pages/GameDuelPage";
 import GameSoloPage from "src/pages/GameSoloPage";
@@ -52,10 +51,6 @@ export const PlayModeRoutes = [
   {
     path: "/challenge/game/:uuid",
     element: <ChallengeGamePage />,
-  },
-  {
-    path: "/challenge/profil/:uuid",
-    element: <ChallengeProfilPage />,
   },
   {
     path: "/game/duel/:uuid",

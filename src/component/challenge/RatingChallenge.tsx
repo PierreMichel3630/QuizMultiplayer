@@ -2,18 +2,20 @@ import { Grid, Paper, Typography } from "@mui/material";
 import { px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
 import {
   selectChallengeGameByProfileIdGroupByRanking,
   selectChallengeGameByProfileIdGroupByRating,
 } from "src/api/challenge";
+import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
 import { Data, RatingChart } from "../chart/RatingChart";
 import { ToogleButtonCard } from "../ToogleButton";
 
-export const RatingChallenge = () => {
+interface Props {
+  profile: Profile;
+}
+export const RatingChallenge = ({ profile }: Props) => {
   const { t } = useTranslation();
-  const { uuid } = useParams();
   const [type, setType] = useState<"grade" | "position">("grade");
   const types = [
     { label: t("chart.grade"), value: "grade" },
@@ -34,55 +36,51 @@ export const RatingChallenge = () => {
       Colors.green,
       Colors.green3,
     ],
-    []
+    [],
   );
 
   const [data, setData] = useState<Array<Data>>([]);
 
   useEffect(() => {
-    const getStatDay = () => {
-      if (uuid) {
-        if (type === "grade") {
-          selectChallengeGameByProfileIdGroupByRating(uuid).then(({ data }) => {
-            const ratingPlayer: Array<any> = data ?? [];
-            const rating = Array.from(Array(11).keys());
-            const result: Array<Data> = [...rating].map((el) => {
-              const value = ratingPlayer.find((d) => d.label === el);
-              return value
-                ? { label: value.label, value: value.value, color: colors[el] }
-                : { label: el, value: 0, color: Colors.black };
-            });
-            setData(result);
+    const getStatDay = (uuid: string) => {
+      if (type === "grade") {
+        selectChallengeGameByProfileIdGroupByRating(uuid).then(({ data }) => {
+          const ratingPlayer: Array<any> = data ?? [];
+          const rating = Array.from(Array(11).keys());
+          const result: Array<Data> = [...rating].map((el) => {
+            const value = ratingPlayer.find((d) => d.label === el);
+            return value
+              ? { label: value.label, value: value.value, color: colors[el] }
+              : { label: el, value: 0, color: Colors.black };
           });
-        } else {
-          selectChallengeGameByProfileIdGroupByRanking(uuid).then(
-            ({ data }) => {
-              const values = [
-                { label: t("chart.top1"), min: 1, max: 1 },
-                { label: t("chart.top3"), min: 2, max: 3 },
-                { label: t("chart.top5"), min: 4, max: 5 },
-                { label: t("chart.top10"), min: 6, max: 10 },
-                { label: t("chart.other"), min: 11, max: 10000000 },
-              ];
-              const rankingPlayer: Array<any> = data ?? [];
-              const result: Array<Data> = [...values].map((el) => {
-                const value = [...rankingPlayer]
-                  .filter((d) => el.min <= d.label && el.max >= d.label)
-                  .reduce((acc, v) => acc + v.value, 0);
-                return {
-                  label: el.label,
-                  value: value,
-                  color: Colors.blue,
-                };
-              });
-              setData(result);
-            }
-          );
-        }
+          setData(result);
+        });
+      } else {
+        selectChallengeGameByProfileIdGroupByRanking(uuid).then(({ data }) => {
+          const values = [
+            { label: t("chart.top1"), min: 1, max: 1 },
+            { label: t("chart.top3"), min: 2, max: 3 },
+            { label: t("chart.top5"), min: 4, max: 5 },
+            { label: t("chart.top10"), min: 6, max: 10 },
+            { label: t("chart.other"), min: 11, max: 10000000 },
+          ];
+          const rankingPlayer: Array<any> = data ?? [];
+          const result: Array<Data> = [...values].map((el) => {
+            const value = [...rankingPlayer]
+              .filter((d) => el.min <= d.label && el.max >= d.label)
+              .reduce((acc, v) => acc + v.value, 0);
+            return {
+              label: el.label,
+              value: value,
+              color: Colors.blue,
+            };
+          });
+          setData(result);
+        });
       }
     };
-    getStatDay();
-  }, [colors, uuid, type, t]);
+    getStatDay(profile.id);
+  }, [colors, profile, type, t]);
 
   return (
     <Paper
@@ -101,7 +99,8 @@ export const RatingChallenge = () => {
             alignItems: "center",
             justifyContent: "space-between",
           }}
-          size={12}>
+          size={12}
+        >
           <Typography variant="h2">{t("chart.distribution")}</Typography>
           <ToogleButtonCard
             select={type}

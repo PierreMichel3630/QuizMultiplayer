@@ -16,12 +16,12 @@ import {
 } from "src/models/Challenge";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
-import { PositionTypography } from "../typography/PositionTypography";
 
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import moment from "moment";
+import { Rank } from "../ranking/Rank";
 
 interface Props {
   profileId: string | undefined;
@@ -52,7 +52,7 @@ export const CardChallenge = ({ profileId }: Props) => {
       stat && numberPlayers
         ? ((stat.ranking / numberPlayers) * 100).toFixed(2)
         : undefined,
-    [numberPlayers, stat]
+    [numberPlayers, stat],
   );
 
   return (
@@ -72,7 +72,8 @@ export const CardChallenge = ({ profileId }: Props) => {
             gap: 1,
             alignItems: "center",
           }}
-          size={12}>
+          size={12}
+        >
           <Typography variant="h2" color="text.secondary">
             {t("commun.daychallenge")}
           </Typography>
@@ -82,7 +83,8 @@ export const CardChallenge = ({ profileId }: Props) => {
             display: "flex",
             p: 1,
           }}
-          size={12}>
+          size={12}
+        >
           <Grid container spacing={1} justifyContent="center">
             {stat && (
               <>
@@ -93,8 +95,9 @@ export const CardChallenge = ({ profileId }: Props) => {
                     alignItems: "center",
                     gap: 1,
                   }}
-                  size={6}>
-                  <PositionTypography position={stat.ranking} />
+                  size={6}
+                >
+                  <Rank value={stat.ranking} />
                   <Typography variant="caption">
                     ({t("commun.top")} : {topPercent}%)
                   </Typography>
@@ -106,7 +109,8 @@ export const CardChallenge = ({ profileId }: Props) => {
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                  size={6}>
+                  size={6}
+                >
                   <SportsEsportsIcon />
                   <Typography variant="h4">
                     <Trans
@@ -124,7 +128,8 @@ export const CardChallenge = ({ profileId }: Props) => {
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                  size={6}>
+                  size={6}
+                >
                   <QuestionMarkIcon />
                   <Typography variant="h4" noWrap>
                     {stat.score} / {stat.games * NUMBER_QUESTIONS_CHALLENGE}
@@ -140,7 +145,8 @@ export const CardChallenge = ({ profileId }: Props) => {
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                  size={6}>
+                  size={6}
+                >
                   <AccessTimeIcon />
                   <Typography variant="h4" noWrap>
                     {(stat.time / 1000).toFixed(2)}s
@@ -196,11 +202,12 @@ export const CardChallengeWeek = ({ value }: CardChallengeWeekProps) => {
             alignItems: "baseline",
             justifyContent: "center",
           }}
-          size={12}>
+          size={12}
+        >
           <Typography variant="h6">
             {start.format("DD MMMM")} - {end.format("DD MMMM YYYY")}
           </Typography>
-          <PositionTypography position={value.ranking} />
+          <Rank value={value.ranking} />
         </Grid>
         <Grid size={12}>
           <Box
@@ -273,11 +280,12 @@ export const CardChallengeMonth = ({ value }: CardChallengeMonthProps) => {
             alignItems: "baseline",
             justifyContent: "center",
           }}
-          size={12}>
+          size={12}
+        >
           <Typography variant="h6">
             {moment(value.month, "MM/YYYY").format("MMMM YYYY")}
           </Typography>
-          <PositionTypography position={value.ranking} />
+          <Rank value={value.ranking} />
         </Grid>
         <Grid size={12}>
           <Box
@@ -350,8 +358,9 @@ export const CardChallengeAllTime = ({ value }: CardChallengeAllTimeProps) => {
             alignItems: "baseline",
             justifyContent: "center",
           }}
-          size={12}>
-          <PositionTypography position={value.ranking} />
+          size={12}
+        >
+          <Rank value={value.ranking} />
         </Grid>
         <Grid size={12}>
           <Box

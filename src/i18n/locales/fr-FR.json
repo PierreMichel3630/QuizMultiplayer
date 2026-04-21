@@ -895,7 +895,7 @@
     "buyitem": "Votre achat à été pris en compte.",
     "usernametooshort": "Votre nom d'utilisateur doit contenir au moins 4 caractères.",
     "notconnect": "Vous n'êtes pas connecté, vos scores ne seront pas sauvegardés. <br> <anchor1>{{link}}</anchor1> ou <anchor2>{{link2}}</anchor2>",
-    "notconnect2": "Pour jouer à ce mode de jeu vous devez <anchor1>{{link}}</anchor1> ou <anchor2>{{link2}}</anchor2>",
+    "notconnect2": "Pour jouer à ce mode de jeu vous devez <br> <anchor1>{{link}}</anchor1> ou <anchor2>{{link2}}</anchor2>",
     "duplicateusername": "Le pseudonyme est déjà utilisé.",
     "vote": "Votre vote a été pris en compte.",
     "addquestionpropose": "Votre proposition de question a été prise en compte.",
@@ -1104,21 +1104,23 @@
     "friend_request": "{{username}} vous demande en ami",
     "friend_request_accept": "{{username}} a accepté ta demande"
   },
+  "ordinal": {
+    "ordinal_one": "er",
+    "ordinal_other": "ème"
+  },
   "patchnote": {
     "2.2.5": {
       "version": "2.2.5",
-      "date": "20/04/2026",
-      "changes": [
-      ],
+      "date": "21/04/2026",
+      "changes": [],
       "bug": [
-        "Mode Test cérébral Mémoire de séquence et Mémoire de nombre la sauvegarde du meilleur score était inversé (le pire score était sauvegardé)"
+        "Mode Test cérébral modification du récapitulatif (classement + détails de la partie)."
       ]
     },
     "2.2.4": {
       "version": "2.2.4",
       "date": "20/04/2026",
-      "changes": [
-      ],
+      "changes": [],
       "bug": [
         "Mode Test cérébral AIM trainer la sauvegarde du meilleur score était inversé (le pire score était sauvegardé)"
       ]

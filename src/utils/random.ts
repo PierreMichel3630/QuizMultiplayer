@@ -31,5 +31,5 @@ export const generateRandomNumber = (size: number) => {
   const values = new Uint32Array(size);
   crypto.getRandomValues(values);
   
-  return Number(Array.from(values).map(v => v % 10).join(''));
+  return Array.from(values).map(v => v % 10).join('');
 }

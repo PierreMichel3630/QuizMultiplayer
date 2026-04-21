@@ -93,6 +93,15 @@ export default function SequenceMemoryPage() {
         saveGameModeScore(score, type, order).then(({ data }) => {
           setDataResult(data);
         });
+      } else {
+        setDataResult({
+          hasrecord: false,
+          result: {
+            type: type,
+            score: score,
+          },
+          previousScore: null,
+        });
       }
       return;
     }

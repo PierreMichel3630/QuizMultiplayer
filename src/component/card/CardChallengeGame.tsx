@@ -1,6 +1,5 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { ChallengeRanking } from "src/models/Challenge";
-import { PositionTypography } from "../typography/PositionTypography";
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -11,6 +10,7 @@ import { px } from "csx";
 import { Link, useLocation } from "react-router-dom";
 import { useMemo } from "react";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { Rank } from "../ranking/Rank";
 
 interface Props {
   game: ChallengeRanking;
@@ -45,7 +45,7 @@ export const CardChallengeGame = ({ game }: Props) => {
           </Typography>
         </Grid>
         <Grid size={3}>
-          <PositionTypography position={game.ranking} />
+          <Rank value={game.ranking} />
         </Grid>
         <Grid size={4}>
           <Box

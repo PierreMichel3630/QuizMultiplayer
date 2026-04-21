@@ -29,7 +29,7 @@ import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import moment, { Moment } from "moment";
 import { Profile } from "src/models/Profile";
-import { PositionTypography } from "./typography/PositionTypography";
+import { Rank } from "./ranking/Rank";
 
 interface PropsBase {
   profile: Profile | null;
@@ -69,7 +69,7 @@ export const ResultDayChallengeBlock = ({
         selectChallengeGameByDateAndProfileId(valueDate, profile.id).then(
           ({ data }) => {
             setGame(data);
-          }
+          },
         );
       }
     };
@@ -78,7 +78,7 @@ export const ResultDayChallengeBlock = ({
         selectRankingChallengeByDateAndProfileId(valueDate, profile.id).then(
           ({ data }) => {
             setRank(data);
-          }
+          },
         );
       }
     };
@@ -91,103 +91,110 @@ export const ResultDayChallengeBlock = ({
       rank && numberPlayers
         ? ((rank.ranking / numberPlayers) * 100).toFixed(2)
         : undefined,
-    [numberPlayers, rank]
+    [numberPlayers, rank],
   );
 
-  return (isDisplay && (<Box
-    sx={{
-      backgroundColor: Colors.green3,
-      color: Colors.white,
-      borderRadius: px(10),
-      p: 1,
-    }}
-  >
-    <Grid container spacing={1}>
-      <Grid
+  return (
+    isDisplay && (
+      <Box
         sx={{
-          display: "flex",
-          gap: 1,
-          justifyContent: "center",
-          alignItems: "baseline",
+          backgroundColor: Colors.green3,
+          color: Colors.white,
+          borderRadius: px(10),
+          p: 1,
         }}
-        size={12}>
-        {title && (
-          <Typography variant="h4" noWrap>
-            {title}
-          </Typography>
-        )}
-        {rank && avg ? (
-          <>
-            <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
-              <PositionTypography position={rank.ranking} />
-              <Typography variant="h2" noWrap>
-                / {avg.players}
+      >
+        <Grid container spacing={1}>
+          <Grid
+            sx={{
+              display: "flex",
+              gap: 1,
+              justifyContent: "center",
+              alignItems: "baseline",
+            }}
+            size={12}
+          >
+            {title && (
+              <Typography variant="h4" noWrap>
+                {title}
               </Typography>
+            )}
+            {rank && avg ? (
+              <>
+                <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
+                  <Rank value={rank.ranking} />
+                  <Typography variant="h2" noWrap>
+                    / {avg.players}
+                  </Typography>
+                </Box>
+                <Typography variant="body1">
+                  ({t("commun.top")} : {topPercent}%)
+                </Typography>
+              </>
+            ) : (
+              avg && (
+                <Typography variant="h2">
+                  <Trans
+                    i18nKey={t("commun.player")}
+                    values={{
+                      count: avg.players,
+                    }}
+                  />
+                </Typography>
+              )
+            )}
+          </Grid>
+          <Grid
+            sx={{
+              display: "flex",
+              gap: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            size={6}
+          >
+            <QuestionMarkIcon />
+            <Box>
+              {game && (
+                <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
+                  {game.score} / {NUMBER_QUESTIONS_CHALLENGE}
+                </Typography>
+              )}
+              {avg && (
+                <Typography variant="body1" noWrap>
+                  ({t("abrevation.average")} {avg.score.toFixed(2)}/
+                  {NUMBER_QUESTIONS_CHALLENGE})
+                </Typography>
+              )}
             </Box>
-            <Typography variant="body1">
-              ({t("commun.top")} : {topPercent}%)
-            </Typography>
-          </>
-        ) : (
-          avg && (
-            <Typography variant="h2">
-              <Trans
-                i18nKey={t("commun.player")}
-                values={{
-                  count: avg.players,
-                }}
-              />
-            </Typography>
-          )
-        )}
-      </Grid>
-      <Grid
-        sx={{
-          display: "flex",
-          gap: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        size={6}>
-        <QuestionMarkIcon />
-        <Box>
-          {game && (
-            <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-              {game.score} / {NUMBER_QUESTIONS_CHALLENGE}
-            </Typography>
-          )}
-          {avg && (
-            <Typography variant="body1" noWrap>
-              ({t("abrevation.average")} {avg.score.toFixed(2)}/
-              {NUMBER_QUESTIONS_CHALLENGE})
-            </Typography>
-          )}
-        </Box>
-      </Grid>
-      <Grid
-        sx={{
-          display: "flex",
-          gap: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        size={6}>
-        <AccessTimeIcon />
-        <Box>
-          {game && (
-            <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-              {(game.time / 1000).toFixed(2)}s
-            </Typography>
-          )}
-          {avg && (
-            <Typography variant="body1" noWrap>
-              ({t("abrevation.average")} {(avg.time / 1000).toFixed(2)}s)
-            </Typography>
-          )}
-        </Box>
-      </Grid>
-    </Grid>
-  </Box>));
+          </Grid>
+          <Grid
+            sx={{
+              display: "flex",
+              gap: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            size={6}
+          >
+            <AccessTimeIcon />
+            <Box>
+              {game && (
+                <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
+                  {(game.time / 1000).toFixed(2)}s
+                </Typography>
+              )}
+              {avg && (
+                <Typography variant="body1" noWrap>
+                  ({t("abrevation.average")} {(avg.time / 1000).toFixed(2)}s)
+                </Typography>
+              )}
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+    )
+  );
 };
 
 interface PropsResultWeekChallengeBlock extends PropsBase {
@@ -211,7 +218,7 @@ export const ResultWeekChallengeBlock = ({
     countRankingChallengeByWeek(valueDate.format("WW/YYYY")).then(
       ({ count }) => {
         setNumberPlayers(count);
-      }
+      },
     );
   }, [date]);
 
@@ -221,7 +228,7 @@ export const ResultWeekChallengeBlock = ({
         const valueDate = date ?? moment();
         selectRankingChallengeWeekByWeekAndProfileId(
           valueDate.format("WW/YYYY"),
-          profile.id
+          profile.id,
         ).then(({ data }) => {
           setStat(data);
         });
@@ -235,131 +242,139 @@ export const ResultWeekChallengeBlock = ({
       stat && numberPlayers
         ? ((stat.ranking / numberPlayers) * 100).toFixed(2)
         : undefined,
-    [numberPlayers, stat]
+    [numberPlayers, stat],
   );
 
-  return (isDisplay && (<Box
-    sx={{
-      backgroundColor: Colors.green3,
-      color: Colors.white,
-      borderRadius: px(10),
-      p: 1,
-    }}
-  >
-    <Grid container spacing={1}>
-      <Grid
+  return (
+    isDisplay && (
+      <Box
         sx={{
-          display: "flex",
-          gap: 1,
-          justifyContent: "center",
-          alignItems: "baseline",
+          backgroundColor: Colors.green3,
+          color: Colors.white,
+          borderRadius: px(10),
+          p: 1,
         }}
-        size={12}>
-        {title && (
-          <Typography variant="h4" noWrap>
-            {title}
-          </Typography>
-        )}
-        {stat && avg ? (
-          <>
-            <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
-              <PositionTypography position={stat.ranking} />
-              <Typography variant="h2" noWrap>
-                / {avg.players}
+      >
+        <Grid container spacing={1}>
+          <Grid
+            sx={{
+              display: "flex",
+              gap: 1,
+              justifyContent: "center",
+              alignItems: "baseline",
+            }}
+            size={12}
+          >
+            {title && (
+              <Typography variant="h4" noWrap>
+                {title}
               </Typography>
-            </Box>
-            <Typography variant="body1">
-              ({t("commun.top")} : {topPercent}%)
-            </Typography>
-          </>
-        ) : (
-          avg && (
-            <Typography variant="h2">
-              <Trans
-                i18nKey={t("commun.player")}
-                values={{
-                  count: avg.players,
-                }}
-              />
-            </Typography>
-          )
-        )}
-      </Grid>
-      <Grid
-        sx={{
-          display: "flex",
-          gap: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        size={12}>
-        <SportsEsportsIcon />
-        {stat && (
-          <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-            <Trans
-              i18nKey={t("commun.game")}
-              values={{
-                count: stat.games,
-              }}
-            />
-          </Typography>
-        )}
-        {avg?.games && (
-          <Box>
-            <Typography variant="body1" noWrap>
-              ({t("abrevation.average")} {avg.games.toFixed(2)})
-            </Typography>
-          </Box>
-        )}
-      </Grid>
-      <Grid
-        sx={{
-          display: "flex",
-          gap: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        size={6}>
-        <QuestionMarkIcon />
-        <Box>
-          {stat && (
-            <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-              {stat.score} / {stat.games * NUMBER_QUESTIONS_CHALLENGE}
-            </Typography>
-          )}
-          {avg && (
-            <Typography variant="body1" noWrap>
-              ({t("abrevation.average")} {avg.score.toFixed(2)})
-            </Typography>
-          )}
-        </Box>
-      </Grid>
-      <Grid
-        sx={{
-          display: "flex",
-          gap: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        size={6}>
-        <AccessTimeIcon />
-        <Box>
-          {stat && (
-            <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-              {(stat.time / 1000).toFixed(2)}s
-            </Typography>
-          )}
-          {avg && (
+            )}
+            {stat && avg ? (
+              <>
+                <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
+                  <Rank value={stat.ranking} />
+                  <Typography variant="h2" noWrap>
+                    / {avg.players}
+                  </Typography>
+                </Box>
+                <Typography variant="body1">
+                  ({t("commun.top")} : {topPercent}%)
+                </Typography>
+              </>
+            ) : (
+              avg && (
+                <Typography variant="h2">
+                  <Trans
+                    i18nKey={t("commun.player")}
+                    values={{
+                      count: avg.players,
+                    }}
+                  />
+                </Typography>
+              )
+            )}
+          </Grid>
+          <Grid
+            sx={{
+              display: "flex",
+              gap: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            size={12}
+          >
+            <SportsEsportsIcon />
+            {stat && (
+              <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
+                <Trans
+                  i18nKey={t("commun.game")}
+                  values={{
+                    count: stat.games,
+                  }}
+                />
+              </Typography>
+            )}
+            {avg?.games && (
+              <Box>
+                <Typography variant="body1" noWrap>
+                  ({t("abrevation.average")} {avg.games.toFixed(2)})
+                </Typography>
+              </Box>
+            )}
+          </Grid>
+          <Grid
+            sx={{
+              display: "flex",
+              gap: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            size={6}
+          >
+            <QuestionMarkIcon />
             <Box>
-              <Typography variant="body1" noWrap>
-                ({t("abrevation.average")} {(avg.time / 1000).toFixed(2)}s)
-              </Typography>
+              {stat && (
+                <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
+                  {stat.score} / {stat.games * NUMBER_QUESTIONS_CHALLENGE}
+                </Typography>
+              )}
+              {avg && (
+                <Typography variant="body1" noWrap>
+                  ({t("abrevation.average")} {avg.score.toFixed(2)})
+                </Typography>
+              )}
             </Box>
-          )}
-        </Box>
-      </Grid>
-    </Grid>
-  </Box>));
+          </Grid>
+          <Grid
+            sx={{
+              display: "flex",
+              gap: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            size={6}
+          >
+            <AccessTimeIcon />
+            <Box>
+              {stat && (
+                <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
+                  {(stat.time / 1000).toFixed(2)}s
+                </Typography>
+              )}
+              {avg && (
+                <Box>
+                  <Typography variant="body1" noWrap>
+                    ({t("abrevation.average")} {(avg.time / 1000).toFixed(2)}s)
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+    )
+  );
 };
 
 interface PropsResultMonthChallengeBlock extends PropsBase {
@@ -384,7 +399,7 @@ export const ResultMonthChallengeBlock = ({
     countRankingChallengeByMonth(valueDate.format("MM/YYYY")).then(
       ({ count }) => {
         setNumberPlayers(count);
-      }
+      },
     );
   }, [date]);
 
@@ -394,7 +409,7 @@ export const ResultMonthChallengeBlock = ({
         const valueDate = date ?? moment();
         selectRankingChallengeMonthByMonthAndProfileId(
           valueDate.format("MM/YYYY"),
-          profile.id
+          profile.id,
         ).then(({ data }) => {
           setStat(data);
         });
@@ -408,131 +423,139 @@ export const ResultMonthChallengeBlock = ({
       stat && numberPlayers
         ? ((stat.ranking / numberPlayers) * 100).toFixed(2)
         : undefined,
-    [numberPlayers, stat]
+    [numberPlayers, stat],
   );
 
-  return (isDisplay && (<Box
-    sx={{
-      backgroundColor: Colors.green3,
-      color: Colors.white,
-      borderRadius: px(10),
-      p: 1,
-    }}
-  >
-    <Grid container spacing={1}>
-      <Grid
+  return (
+    isDisplay && (
+      <Box
         sx={{
-          display: "flex",
-          gap: 1,
-          justifyContent: "center",
-          alignItems: "baseline",
+          backgroundColor: Colors.green3,
+          color: Colors.white,
+          borderRadius: px(10),
+          p: 1,
         }}
-        size={12}>
-        {title && (
-          <Typography variant="h4" noWrap>
-            {title}
-          </Typography>
-        )}
-        {stat && avg ? (
-          <>
-            <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
-              <PositionTypography position={stat.ranking} />
-              <Typography variant="h2" noWrap>
-                / {avg.players}
+      >
+        <Grid container spacing={1}>
+          <Grid
+            sx={{
+              display: "flex",
+              gap: 1,
+              justifyContent: "center",
+              alignItems: "baseline",
+            }}
+            size={12}
+          >
+            {title && (
+              <Typography variant="h4" noWrap>
+                {title}
               </Typography>
-            </Box>
-            <Typography variant="body1">
-              ({t("commun.top")} : {topPercent}%)
-            </Typography>
-          </>
-        ) : (
-          avg && (
-            <Typography variant="h2">
-              <Trans
-                i18nKey={t("commun.player")}
-                values={{
-                  count: avg.players,
-                }}
-              />
-            </Typography>
-          )
-        )}
-      </Grid>
-      <Grid
-        sx={{
-          display: "flex",
-          gap: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        size={12}>
-        <SportsEsportsIcon />
-        {stat && (
-          <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-            <Trans
-              i18nKey={t("commun.game")}
-              values={{
-                count: stat.games,
-              }}
-            />
-          </Typography>
-        )}
-        {avg?.games && (
-          <Box>
-            <Typography variant="body1" noWrap>
-              ({t("abrevation.average")} {avg.games.toFixed(2)})
-            </Typography>
-          </Box>
-        )}
-      </Grid>
-      <Grid
-        sx={{
-          display: "flex",
-          gap: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        size={6}>
-        <QuestionMarkIcon />
-        <Box>
-          {stat && (
-            <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-              {stat.score} / {stat.games * NUMBER_QUESTIONS_CHALLENGE}
-            </Typography>
-          )}
-          {avg && (
-            <Typography variant="body1" noWrap>
-              ({t("abrevation.average")} {avg.score.toFixed(2)})
-            </Typography>
-          )}
-        </Box>
-      </Grid>
-      <Grid
-        sx={{
-          display: "flex",
-          gap: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        size={6}>
-        <AccessTimeIcon />
-        <Box>
-          {stat && (
-            <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-              {(stat.time / 1000).toFixed(2)}s
-            </Typography>
-          )}
-          {avg && (
+            )}
+            {stat && avg ? (
+              <>
+                <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
+                  <Rank value={stat.ranking} />
+                  <Typography variant="h2" noWrap>
+                    / {avg.players}
+                  </Typography>
+                </Box>
+                <Typography variant="body1">
+                  ({t("commun.top")} : {topPercent}%)
+                </Typography>
+              </>
+            ) : (
+              avg && (
+                <Typography variant="h2">
+                  <Trans
+                    i18nKey={t("commun.player")}
+                    values={{
+                      count: avg.players,
+                    }}
+                  />
+                </Typography>
+              )
+            )}
+          </Grid>
+          <Grid
+            sx={{
+              display: "flex",
+              gap: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            size={12}
+          >
+            <SportsEsportsIcon />
+            {stat && (
+              <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
+                <Trans
+                  i18nKey={t("commun.game")}
+                  values={{
+                    count: stat.games,
+                  }}
+                />
+              </Typography>
+            )}
+            {avg?.games && (
+              <Box>
+                <Typography variant="body1" noWrap>
+                  ({t("abrevation.average")} {avg.games.toFixed(2)})
+                </Typography>
+              </Box>
+            )}
+          </Grid>
+          <Grid
+            sx={{
+              display: "flex",
+              gap: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            size={6}
+          >
+            <QuestionMarkIcon />
             <Box>
-              <Typography variant="body1" noWrap>
-                ({t("abrevation.average")} {(avg.time / 1000).toFixed(2)}s)
-              </Typography>
+              {stat && (
+                <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
+                  {stat.score} / {stat.games * NUMBER_QUESTIONS_CHALLENGE}
+                </Typography>
+              )}
+              {avg && (
+                <Typography variant="body1" noWrap>
+                  ({t("abrevation.average")} {avg.score.toFixed(2)})
+                </Typography>
+              )}
             </Box>
-          )}
-        </Box>
-      </Grid>
-    </Grid>
-  </Box>));
+          </Grid>
+          <Grid
+            sx={{
+              display: "flex",
+              gap: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            size={6}
+          >
+            <AccessTimeIcon />
+            <Box>
+              {stat && (
+                <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
+                  {(stat.time / 1000).toFixed(2)}s
+                </Typography>
+              )}
+              {avg && (
+                <Box>
+                  <Typography variant="body1" noWrap>
+                    ({t("abrevation.average")} {(avg.time / 1000).toFixed(2)}s)
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+    )
+  );
 };
 
 export const ResultAllTimeChallengeBlock = ({
@@ -557,7 +580,7 @@ export const ResultAllTimeChallengeBlock = ({
         selectRankingChallengeAllTimeByProfileId(profile.id).then(
           ({ data }) => {
             setStat(data);
-          }
+          },
         );
       }
     };
@@ -569,7 +592,7 @@ export const ResultAllTimeChallengeBlock = ({
       stat && numberPlayers
         ? ((stat.ranking / numberPlayers) * 100).toFixed(2)
         : undefined,
-    [numberPlayers, stat]
+    [numberPlayers, stat],
   );
 
   return (
@@ -589,7 +612,8 @@ export const ResultAllTimeChallengeBlock = ({
             justifyContent: "center",
             alignItems: "baseline",
           }}
-          size={12}>
+          size={12}
+        >
           {title && (
             <Typography variant="h4" noWrap>
               {title}
@@ -598,7 +622,7 @@ export const ResultAllTimeChallengeBlock = ({
           {stat && avg ? (
             <>
               <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
-                <PositionTypography position={stat.ranking} />
+                <Rank value={stat.ranking} />
                 <Typography variant="h2" noWrap>
                   / {avg.players}
                 </Typography>
@@ -627,7 +651,8 @@ export const ResultAllTimeChallengeBlock = ({
             justifyContent: "center",
             alignItems: "center",
           }}
-          size={12}>
+          size={12}
+        >
           <SportsEsportsIcon />
           {stat && (
             <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
@@ -654,7 +679,8 @@ export const ResultAllTimeChallengeBlock = ({
             justifyContent: "center",
             alignItems: "center",
           }}
-          size={6}>
+          size={6}
+        >
           <QuestionMarkIcon />
           <Box>
             {stat && (
@@ -676,7 +702,8 @@ export const ResultAllTimeChallengeBlock = ({
             justifyContent: "center",
             alignItems: "center",
           }}
-          size={6}>
+          size={6}
+        >
           <AccessTimeIcon />
           <Box>
             {stat && (

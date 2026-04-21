@@ -103,7 +103,7 @@ export const GroupButtonTypeGame = ({
         color: Colors.red,
       },
     ],
-    [t]
+    [t],
   );
 
   return (
@@ -180,7 +180,7 @@ export const GroupButtonAllTypeGame = ({
         color: Colors.red,
       },
     ],
-    [t]
+    [t],
   );
 
   return (
@@ -217,7 +217,7 @@ export const GroupButtonTime = ({
         value: ClassementSoloTimeEnum.alltime,
       },
     ],
-    [t]
+    [t],
   );
 
   return (
@@ -253,12 +253,8 @@ export const GroupButtonChallengeTime = ({
         label: t("commun.month"),
         value: ClassementChallengeTimeEnum.month,
       },
-      {
-        label: t("commun.alltime"),
-        value: ClassementChallengeTimeEnum.alltime,
-      },
     ],
-    [t]
+    [t],
   );
 
   return (
@@ -298,7 +294,7 @@ export const GroupButtonOthersClassement = ({
         value: ClassementOtherEnum.money,
       },
     ],
-    [t]
+    [t],
   );
 
   return (
@@ -335,7 +331,7 @@ export const GroupButtonChallengeGlobal = ({
         value: ClassementChallengeGlobalTimeEnum.winmonthchallenge,
       },
     ],
-    [t]
+    [t],
   );
 
   return (
@@ -383,7 +379,7 @@ export const GroupButtonClassement = ({
         color: Colors.pink,
       },
     ],
-    [t]
+    [t],
   );
 
   return (
@@ -424,7 +420,7 @@ export const GroupButtonSoloRanking = ({
         value: ClassementSoloModeEnum.finishtheme,
       },
     ],
-    [t]
+    [t],
   );
 
   return (
@@ -459,7 +455,7 @@ export const GroupButtonResultChallenge = ({
         color: Colors.red,
       },
     ],
-    [t]
+    [t],
   );
 
   return (
@@ -494,7 +490,7 @@ export const GroupButtonChallenge = ({
         color: Colors.red,
       },
     ],
-    [t]
+    [t],
   );
 
   return (

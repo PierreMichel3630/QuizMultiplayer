@@ -88,11 +88,22 @@ export default function ReactionTimePage() {
         const result =
           newAttempts.reduce((a, b) => a + b, 0) / newAttempts.length;
         setStatusGame(StatusGame.FINISH);
+        const extra = {
+          attempts: newAttempts,
+        };
         if (profile) {
-          saveGameModeScore(result, type, order, {
-            attempts: newAttempts,
-          }).then(({ data }) => {
+          saveGameModeScore(result, type, order, extra).then(({ data }) => {
             setDataResult(data);
+          });
+        } else {
+          setDataResult({
+            hasrecord: false,
+            result: {
+              type: type,
+              score: result,
+              extra,
+            },
+            previousScore: null,
           });
         }
       } else {

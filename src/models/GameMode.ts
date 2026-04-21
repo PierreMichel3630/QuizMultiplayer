@@ -17,6 +17,12 @@ export interface GameMode {
   onClick: () => void;
 }
 
+export interface GameModeScoreNotConnect {
+  type: TypeGameMode;
+  score: number;
+  extra?: any;
+}
+
 export interface GameModeScore {
   type: TypeGameMode;
   profile: Profile;
@@ -24,7 +30,7 @@ export interface GameModeScore {
   average: number;
   games: number;
   rank: number;
-  extra: any;
+  extra?: any;
 }
 
 export interface GameModeScoreInsert {
@@ -37,6 +43,6 @@ export interface GameModeScoreInsert {
 
 export interface ResultGameModeScore {
   hasrecord: boolean;
-  result: GameModeScore;
+  result: GameModeScore | GameModeScoreNotConnect;
   previousScore: GameModeScore | null;
 }

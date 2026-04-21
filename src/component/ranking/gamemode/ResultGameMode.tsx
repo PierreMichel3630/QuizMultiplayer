@@ -49,9 +49,9 @@ export const ResultGameMode = ({
   return (
     <>
       <Grid container spacing={2} justifyContent="center" sx={{ mb: px(120) }}>
-        {profile ? (
+        {result ? (
           <>
-            {result ? (
+            {profile ? (
               <>
                 {result.hasrecord ? (
                   <Grid
@@ -111,35 +111,36 @@ export const ResultGameMode = ({
                   <Typography variant="h2">{t("gamemode.results")}</Typography>
                 </Grid>
                 <Grid size={12}>
-                  <CircularLoading />
+                  <ConnectAlert />
                 </Grid>
               </>
             )}
+            <Grid size={12}>
+              <BestScoreBlock
+                type={type}
+                score={result?.result.score}
+                previousscore={result?.previousScore?.score}
+                unit={unit}
+                order={order}
+              />
+            </Grid>
+            <Grid size={12}>
+              <RankingGameMode
+                type={type}
+                unit={unit}
+                fixed={fixed}
+                order={order}
+                rowsPerPage={5}
+                onClick={setData}
+              />
+            </Grid>
+            {extra && <Grid size={12}>{extra}</Grid>}
           </>
         ) : (
           <Grid size={12}>
-            <ConnectAlert />
+            <CircularLoading />
           </Grid>
         )}
-        <Grid size={12}>
-          <BestScoreBlock
-            score={result?.result.score}
-            previousscore={result?.previousScore?.score}
-            unit={unit}
-            order={order}
-          />
-        </Grid>
-        <Grid size={12}>
-          <RankingGameMode
-            type={type}
-            unit={unit}
-            fixed={fixed}
-            order={order}
-            rowsPerPage={5}
-            onClick={setData}
-          />
-        </Grid>
-        {extra && <Grid size={12}>{extra}</Grid>}
       </Grid>
       <Box
         sx={{
