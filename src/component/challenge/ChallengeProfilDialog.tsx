@@ -11,31 +11,34 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { useTranslation } from "react-i18next";
-import { DataRankingChallenge } from "../table/RankingChallengeTable";
-import { ProfileBlock } from "../profile/ProfileBlock";
-import { GroupButtonChallengeTime } from "../button/ButtonGroup";
-import { ClassementChallengeTimeEnum } from "src/models/enum/ClassementEnum";
 import { useEffect, useRef, useState } from "react";
-import { RatingChallenge } from "./RatingChallenge";
-import {
-  ChallengeRanking,
-  ChallengeRankingAllTime,
-  ChallengeRankingMonth,
-  ChallengeRankingWeek,
-} from "src/models/Challenge";
-import { CardChallengeGame } from "../card/CardChallengeGame";
-import {
-  CardChallengeWeek,
-  CardChallengeMonth,
-  CardChallengeAllTime,
-} from "../card/CardChallenge";
+import { useTranslation } from "react-i18next";
 import {
   selectChallengeGameByProfileId,
+  selectRankingChallengeAllTimeByProfileId,
   selectRankingChallengeMonthByProfileId,
   selectRankingChallengeWeekByProfileId,
-  selectRankingChallengeAllTimeByProfileId,
 } from "src/api/challenge";
+import {
+  ChallengeRankingAllTime,
+  ChallengeRankingDay,
+  ChallengeRankingMonth,
+  ChallengeRankingWeek
+} from "src/models/Challenge";
+import {
+  ClassementChallengeTimeListEnum
+} from "src/models/enum/ClassementEnum";
+import { GroupButtonChallengeTime } from "../button/ButtonGroup";
+import {
+  CardChallengeAllTime,
+  CardChallengeDay,
+  CardChallengeMonth,
+  CardChallengeWeek,
+} from "../card/CardChallenge";
+import { ProfileBlock } from "../profile/ProfileBlock";
+import { SkeletonChallenges } from "../skeleton/SkeletonChallenge";
+import { DataRankingChallenge } from "../table/RankingChallengeTable";
+import { RatingChallenge } from "./RatingChallenge";
 
 export interface Props {
   data?: DataRankingChallenge;
@@ -51,8 +54,8 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
   const ITEM_PER_PAGE = 20;
   const loaderRef = useRef(null);
 
-  const [tabTime, setTabTime] = useState(ClassementChallengeTimeEnum.day);
-  const [games, setGames] = useState<Array<ChallengeRanking>>([]);
+  const [tabTime, setTabTime] = useState(ClassementChallengeTimeListEnum.day);
+  const [statDay, setStatDay] = useState<Array<ChallengeRankingDay>>([]);
   const [statMonth, setStatMonth] = useState<Array<ChallengeRankingMonth>>([]);
   const [statWeek, setStatWeek] = useState<Array<ChallengeRankingWeek>>([]);
   const [statAllTime, setStatAllTime] =
@@ -63,7 +66,7 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
   const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    setGames([]);
+    setStatDay([]);
     setStatMonth([]);
     setStatWeek([]);
     setStatAllTime(null);
@@ -76,90 +79,30 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
   }, [data]);
 
   useEffect(() => {
+    if (!data) return;
+
     setPage(0);
     setHasMore(true);
-    fetchData();
-  }, [tabTime]);
+    fetchData(0);
+  }, [tabTime, data]);
 
-  /*useEffect(() => {
-    if (!data) return;
-    const profile = data.profile;
-
-    if (tabTime === ClassementChallengeTimeEnum.day) {
-      setLoading(true);
-
-      selectChallengeGameByProfileId(profile.id, page, ITEM_PER_PAGE).then(
-        ({ data }) => {
-          if (page === 0) {
-            setGames(data ?? []);
-          } else {
-            setGames((prev) => [...prev, ...(data ?? [])]);
-          }
-
-          if (!data || data.length === 0) {
-            setHasMore(false);
-          }
-        },
-      );
-    } else if (tabTime === ClassementChallengeTimeEnum.week) {
-      setLoading(true);
-      selectRankingChallengeWeekByProfileId(
-        profile.id,
-        page,
-        ITEM_PER_PAGE,
-      ).then(({ data }) => {
-        setStatWeek(data ?? []);
-      });
-    } else if (tabTime === ClassementChallengeTimeEnum.month) {
-      setLoading(true);
-      selectRankingChallengeMonthByProfileId(
-        profile.id,
-        page,
-        ITEM_PER_PAGE,
-      ).then(({ data }) => {
-        setStatMonth(data ?? []);
-      });
-    } else if (tabTime === ClassementChallengeTimeEnum.alltime) {
-      setLoading(true);
-      selectRankingChallengeAllTimeByProfileId(profile.id).then(({ data }) => {
-        setStatAllTime(data);
-      });
-    }
-  }, [tabTime, data, page]);*/
-
-  const fetchData = async () => {
-    console.log("fetchData");
+  const fetchData = async (pageToFetch = page) => {
     if (loading) return;
     if (data) {
       setLoading(true);
       const profile = data.profile;
-      if (tabTime === ClassementChallengeTimeEnum.day) {
-        selectChallengeGameByProfileId(profile.id, page, ITEM_PER_PAGE).then(
-          ({ data }) => {
-            if (page === 0) {
-              setGames(data ?? []);
-            } else {
-              setGames((prev) => [...prev, ...(data ?? [])]);
-            }
-
-            if (!data || data.length === 0) {
-              setHasMore(false);
-            }
-            setPage((prev) => prev + 1);
-            setLoading(false);
-          },
-        );
-      } else if (tabTime === ClassementChallengeTimeEnum.week) {
-        setLoading(true);
-        selectRankingChallengeWeekByProfileId(
+      if (tabTime === ClassementChallengeTimeListEnum.day) {
+        selectChallengeGameByProfileId(
           profile.id,
-          page,
+          pageToFetch,
           ITEM_PER_PAGE,
         ).then(({ data }) => {
-          if (page === 0) {
-            setStatWeek(data ?? []);
+          if (pageToFetch === 0) {
+            setStatDay(data ?? []);
+            setPage(1);
           } else {
-            setStatWeek((prev) => [...prev, ...(data ?? [])]);
+            setStatDay((prev) => [...prev, ...(data ?? [])]);
+            setPage((prev) => prev + 1);
           }
 
           if (!data || data.length === 0) {
@@ -168,23 +111,44 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
           setPage((prev) => prev + 1);
           setLoading(false);
         });
-      } else if (tabTime === ClassementChallengeTimeEnum.month) {
+      } else if (tabTime === ClassementChallengeTimeListEnum.week) {
         setLoading(true);
-        selectRankingChallengeMonthByProfileId(
+        selectRankingChallengeWeekByProfileId(
           profile.id,
-          page,
+          pageToFetch,
           ITEM_PER_PAGE,
         ).then(({ data }) => {
-          if (page === 0) {
-            setStatMonth(data ?? []);
+          if (pageToFetch === 0) {
+            setStatWeek(data ?? []);
+            setPage(1);
           } else {
-            setStatMonth((prev) => [...prev, ...(data ?? [])]);
+            setStatWeek((prev) => [...prev, ...(data ?? [])]);
+            setPage((prev) => prev + 1);
           }
 
           if (!data || data.length === 0) {
             setHasMore(false);
           }
-          setPage((prev) => prev + 1);
+          setLoading(false);
+        });
+      } else if (tabTime === ClassementChallengeTimeListEnum.month) {
+        setLoading(true);
+        selectRankingChallengeMonthByProfileId(
+          profile.id,
+          pageToFetch,
+          ITEM_PER_PAGE,
+        ).then(({ data }) => {
+          if (pageToFetch === 0) {
+            setStatMonth(data ?? []);
+            setPage(1);
+          } else {
+            setStatMonth((prev) => [...prev, ...(data ?? [])]);
+            setPage((prev) => prev + 1);
+          }
+
+          if (!data || data.length === 0) {
+            setHasMore(false);
+          }
           setLoading(false);
         });
       }
@@ -193,10 +157,8 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
 
   useEffect(() => {
     if (data) {
-      console.log(data);
       const observer = new IntersectionObserver(
         (entries) => {
-          console.log(entries);
           if (entries[0].isIntersecting && hasMore) {
             fetchData();
           }
@@ -214,7 +176,7 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
 
       return () => observer.disconnect();
     }
-  }, [page, loading, hasMore, data]);
+  }, [loading, hasMore, data]);
 
   return (
     <Dialog onClose={close} open={open} maxWidth="md" fullScreen={fullScreen}>
@@ -241,9 +203,10 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
             )}
             <Grid size={12}>
               <GroupButtonChallengeTime
+                type={ClassementChallengeTimeListEnum}
                 selected={tabTime}
                 onChange={(value) => {
-                  setTabTime(value);
+                  setTabTime(value as ClassementChallengeTimeListEnum);
                 }}
               />
             </Grid>
@@ -257,9 +220,9 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
                     <Grid size={12}>
                       <Divider sx={{ borderBottomWidth: 5 }} />
                     </Grid>
-                    {games.map((game) => (
-                      <Grid key={game.id} size={12}>
-                        <CardChallengeGame game={game} />
+                    {statDay.map((stat , index) => (
+                      <Grid key={index} size={12}>
+                        <CardChallengeDay value={stat} />
                       </Grid>
                     ))}
                   </>
@@ -282,20 +245,10 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
                     ))}
                   </>
                 ),
-                alltime: (
-                  <>
-                    {statAllTime && (
-                      <Grid size={12}>
-                        <CardChallengeAllTime value={statAllTime} />
-                      </Grid>
-                    )}
-                  </>
-                ),
               }[tabTime]
             }
-            <Grid size={12} ref={loaderRef}>
-              {loading && <p>Chargement...</p>}
-            </Grid>
+            <Grid size={12} ref={loaderRef} />
+            {hasMore && <SkeletonChallenges number={2} />}
           </Grid>
         )}
       </DialogContent>

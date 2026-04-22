@@ -595,13 +595,14 @@ export const RankingChallenge = () => {
           />
         ) : (
           <GroupButtonChallengeTime
+            type={ClassementChallengeTimeEnum}
             selected={tabTime}
             onChange={(value) => {
               if (value === ClassementChallengeTimeEnum.day) {
                 setSort({ value: "ranking", ascending: true });
               }
               setDate(moment());
-              setTabTime(value);
+              setTabTime(value as ClassementChallengeTimeEnum);
               setPage(0);
             }}
           />

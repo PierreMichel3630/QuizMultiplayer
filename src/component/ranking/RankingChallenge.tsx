@@ -5,34 +5,18 @@ import moment, { Moment } from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useSearchParams } from "react-router-dom";
+import { selectStatAccomplishment } from "src/api/accomplishment";
 import {
-  countStatAccomplishment,
-  selectStatAccomplishment,
-} from "src/api/accomplishment";
-import {
-  countChallengeGameByDate,
-  countRankingChallengeAllTime,
-  countRankingChallengeByMonth,
-  countRankingChallengeByWeek,
-  selectAvgChallengeByAllTime,
-  selectAvgChallengeByDate,
-  selectAvgChallengeByMonth,
-  selectAvgChallengeByWeek,
-  selectRankingChallengeAllTimePaginate,
-  selectRankingChallengeByDatePaginate,
-  selectRankingChallengeByMonthPaginate,
-  selectRankingChallengeByWeekPaginate,
+  selectChallengeAllTimePaginate,
+  selectChallengeDayPaginate,
+  selectChallengeMonthPaginate,
+  selectChallengeWeekPaginate,
 } from "src/api/challenge";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { StatAccomplishment } from "src/models/Accomplishment";
-import {
-  ChallengeAvg,
-  ChallengeRankingAllTime,
-  ChallengeRankingMonth,
-  ChallengeRankingWeek,
-} from "src/models/Challenge";
+import { ChallengeAvg } from "src/models/Challenge";
 import {
   ClassementChallengeEnum,
   ClassementChallengeGlobalTimeEnum,
@@ -63,6 +47,24 @@ import {
   RankingChallengeTable,
 } from "../table/RankingChallengeTable";
 
+interface Sort {
+  value: string;
+  ascending: boolean;
+}
+
+interface Query {
+  date: Moment;
+  page: number;
+  rowsPerPage: number;
+  search: string;
+  isOnlyFriend: boolean;
+  friends?: Array<string>;
+  sort: Sort;
+  type: ClassementChallengeEnum;
+  typeglobal: ClassementChallengeGlobalTimeEnum;
+  typeperdate: ClassementChallengeTimeEnum;
+}
+
 export const RankingChallenge = () => {
   const { t } = useTranslation();
   const { profile, hasPlayChallenge } = useAuth();
@@ -72,30 +74,31 @@ export const RankingChallenge = () => {
 
   const rowsPerPage = 10;
 
-  const [search, setSearch] = useState("");
+  const [query, setQuery] = useState<Query>({
+    date: moment(),
+    type: ClassementChallengeEnum.perdate,
+    typeglobal: ClassementChallengeGlobalTimeEnum.windaychallenge,
+    typeperdate: searchParams.has("time")
+      ? (searchParams.get("time") as ClassementChallengeTimeEnum)
+      : ClassementChallengeTimeEnum.day,
+    page: 0,
+    rowsPerPage: rowsPerPage,
+    search: "",
+    isOnlyFriend: false,
+    friends: undefined,
+    sort: { value: "ranking", ascending: true },
+  });
   const [total, setTotal] = useState<null | number>(null);
-  const [date, setDate] = useState<Moment>(moment());
   const [data, setData] = useState<Array<DataRankingChallenge>>([]);
   const [loading, setLoading] = useState(true);
-  const [sort, setSort] = useState({ value: "ranking", ascending: true });
   const [isOnlyFriend, setIsOnlyFriend] = useState(false);
   const [avg, setAvg] = useState<null | ChallengeAvg>(null);
 
   const [page, setPage] = useState(0);
 
-  const [tab, setTab] = useState(ClassementChallengeEnum.perdate);
-  const [tabChallengeMode, setTabChallengeMode] = useState(
-    ClassementChallengeGlobalTimeEnum.windaychallenge,
-  );
-  const [tabTime, setTabTime] = useState(
-    searchParams.has("time")
-      ? (searchParams.get("time") as ClassementChallengeTimeEnum)
-      : ClassementChallengeTimeEnum.day,
-  );
-
   const idFriends = useMemo(
     () =>
-      profile && isOnlyFriend
+      profile
         ? [
             profile.id,
             ...friends
@@ -108,141 +111,114 @@ export const RankingChallenge = () => {
                 [] as Array<string>,
               ),
           ]
-        : undefined,
-    [friends, profile, isOnlyFriend],
+        : [],
+    [friends, profile],
   );
 
   const sorts = useMemo(
     () =>
-      tabTime === ClassementChallengeTimeEnum.day
+      query.typeperdate === ClassementChallengeTimeEnum.day
         ? [
             {
               value: "ranking",
               label: t("sort.ranking"),
-              sort: () => setSort({ value: "ranking", ascending: true }),
+              sort: () =>
+                setQuery((prev) => ({
+                  ...prev,
+                  page: 0,
+                  sort: { value: "ranking", ascending: true },
+                })),
             },
             {
               value: "time",
               label: t("sort.time"),
-              sort: () => setSort({ value: "time", ascending: true }),
+              sort: () =>
+                setQuery((prev) => ({
+                  ...prev,
+                  page: 0,
+                  sort: { value: "time", ascending: true },
+                })),
             },
           ]
         : [
             {
               value: "ranking",
               label: t("sort.ranking"),
-              sort: () => setSort({ value: "ranking", ascending: true }),
+              sort: () =>
+                setQuery((prev) => ({
+                  ...prev,
+                  page: 0,
+                  sort: { value: "ranking", ascending: true },
+                })),
             },
             {
               value: "time",
               label: t("sort.time"),
-              sort: () => setSort({ value: "time", ascending: true }),
+              sort: () =>
+                setQuery((prev) => ({
+                  ...prev,
+                  page: 0,
+                  sort: { value: "time", ascending: true },
+                })),
             },
             {
               value: "pointsavg",
               label: t("sort.pointsavg"),
-              sort: () => setSort({ value: "scoreavg", ascending: false }),
+              sort: () =>
+                setQuery((prev) => ({
+                  ...prev,
+                  page: 0,
+                  sort: { value: "scoreavg", ascending: false },
+                })),
             },
             {
               value: "games",
               label: t("sort.games"),
-              sort: () => setSort({ value: "games", ascending: false }),
+              sort: () =>
+                setQuery((prev) => ({
+                  ...prev,
+                  page: 0,
+                  sort: { value: "games", ascending: false },
+                })),
             },
           ],
-    [t, tabTime],
+    [t, query],
   );
 
   const handleChangePage = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number,
   ) => {
-    setPage(newPage);
+    setQuery((prev) => ({
+      ...prev,
+      page: newPage,
+    }));
   };
 
   useEffect(() => {
-    const getTotal = () => {
-      if (tab === ClassementChallengeEnum.perdate) {
-        if (tabTime === ClassementChallengeTimeEnum.day) {
-          countChallengeGameByDate(date, idFriends, search).then(
-            ({ count }) => {
-              setTotal(count);
-            },
-          );
-        } else if (tabTime === ClassementChallengeTimeEnum.month) {
-          countRankingChallengeByMonth(
-            date.format("MM/YYYY"),
-            search,
-            idFriends,
-          ).then(({ count }) => {
-            setTotal(count);
-          });
-        } else if (tabTime === ClassementChallengeTimeEnum.week) {
-          countRankingChallengeByWeek(
-            date.format("WW/YYYY"),
-            search,
-            idFriends,
-          ).then(({ count }) => {
-            setTotal(count);
-          });
-        } else if (tabTime === ClassementChallengeTimeEnum.alltime) {
-          countRankingChallengeAllTime(search, idFriends).then(({ count }) => {
-            setTotal(count);
-          });
-        }
-      } else {
-        countStatAccomplishment(tabChallengeMode, search, idFriends).then(
-          ({ count }) => {
-            setTotal(count);
-          },
-        );
-      }
-    };
-    getTotal();
-  }, [date, tabTime, tabChallengeMode, search, idFriends, tab]);
-
-  useEffect(() => {
-    const getAvg = () => {
-      if (tab === ClassementChallengeEnum.perdate) {
-        if (tabTime === ClassementChallengeTimeEnum.day) {
-          selectAvgChallengeByDate(date).then(({ data }) => {
-            setAvg(data);
-          });
-        } else if (tabTime === ClassementChallengeTimeEnum.week) {
-          selectAvgChallengeByWeek(date).then(({ data }) => {
-            setAvg(data);
-          });
-        } else if (tabTime === ClassementChallengeTimeEnum.month) {
-          selectAvgChallengeByMonth(date).then(({ data }) => {
-            setAvg(data);
-          });
-        } else if (tabTime === ClassementChallengeTimeEnum.alltime) {
-          selectAvgChallengeByAllTime().then(({ data }) => {
-            setAvg(data);
-          });
-        }
-      } else {
-        setAvg(null);
-      }
-    };
-    getAvg();
-  }, [tab, tabTime, date]);
+    setQuery((prev) => ({
+      ...prev,
+      friends: idFriends,
+    }));
+  }, [idFriends]);
 
   useEffect(() => {
     const getRanking = () => {
-      if (tab === ClassementChallengeEnum.perdate) {
-        if (tabTime === ClassementChallengeTimeEnum.day) {
+      if (query.type === ClassementChallengeEnum.perdate) {
+        if (query.typeperdate === ClassementChallengeTimeEnum.day) {
           if (language) {
-            selectRankingChallengeByDatePaginate(
-              date,
-              search,
-              page,
-              rowsPerPage,
-              sort.value,
-              sort.ascending,
-              idFriends,
+            selectChallengeDayPaginate(
+              query.date,
+              query.search,
+              query.sort.value,
+              query.sort.ascending,
+              query.page,
+              query.rowsPerPage,
             ).then(({ data }) => {
-              const res: Array<any> = data ?? [];
-              const newdata = res.map((el) => {
+              const values: Array<any> = data.data;
+              const avg: ChallengeAvg = data.avg;
+              const count: number = data.count;
+              const newdata = values.map((el) => {
                 return {
                   profile: el.profile,
                   value: hasPlayChallenge ? (
@@ -262,22 +238,25 @@ export const RankingChallenge = () => {
                   uuid: el.uuid,
                 };
               });
+              setTotal(count);
+              setAvg(avg);
               setData(newdata);
               setLoading(false);
             });
           }
-        } else if (tabTime === ClassementChallengeTimeEnum.month) {
-          selectRankingChallengeByMonthPaginate(
-            date.format("MM/YYYY"),
-            search,
-            page,
-            rowsPerPage,
-            sort.value,
-            sort.ascending,
-            idFriends,
+        } else if (query.typeperdate === ClassementChallengeTimeEnum.month) {
+          selectChallengeMonthPaginate(
+            query.date.format("MM/YYYY"),
+            query.search,
+            query.sort.value,
+            query.sort.ascending,
+            query.page,
+            query.rowsPerPage,
           ).then(({ data }) => {
-            const res = (data ?? []) as Array<ChallengeRankingMonth>;
-            const newdata = res.map((el) => {
+            const values: Array<any> = data.data;
+            const avg: ChallengeAvg = data.avg;
+            const count: number = data.count;
+            const newdata = values.map((el) => {
               return {
                 profile: el.profile,
                 value: (
@@ -328,21 +307,24 @@ export const RankingChallenge = () => {
                 rank: el.ranking,
               };
             });
+            setTotal(count);
+            setAvg(avg);
             setData(newdata);
             setLoading(false);
           });
-        } else if (tabTime === ClassementChallengeTimeEnum.week) {
-          selectRankingChallengeByWeekPaginate(
-            date.format("WW/YYYY"),
-            search,
-            page,
-            rowsPerPage,
-            sort.value,
-            sort.ascending,
-            idFriends,
+        } else if (query.typeperdate === ClassementChallengeTimeEnum.week) {
+          selectChallengeWeekPaginate(
+            query.date.format("WW/YYYY"),
+            query.search,
+            query.sort.value,
+            query.sort.ascending,
+            query.page,
+            query.rowsPerPage,
           ).then(({ data }) => {
-            const res = (data ?? []) as Array<ChallengeRankingWeek>;
-            const newdata = res.map((el) => {
+            const values: Array<any> = data.data;
+            const avg: ChallengeAvg = data.avg;
+            const count: number = data.count;
+            const newdata = values.map((el) => {
               return {
                 profile: el.profile,
                 value: (
@@ -393,20 +375,23 @@ export const RankingChallenge = () => {
                 rank: el.ranking,
               };
             });
+            setTotal(count);
+            setAvg(avg);
             setData(newdata);
             setLoading(false);
           });
-        } else if (tabTime === ClassementChallengeTimeEnum.alltime) {
-          selectRankingChallengeAllTimePaginate(
-            search,
-            page,
-            rowsPerPage,
-            sort.value,
-            sort.ascending,
-            idFriends,
+        } else if (query.typeperdate === ClassementChallengeTimeEnum.alltime) {
+          selectChallengeAllTimePaginate(
+            query.search,
+            query.sort.value,
+            query.sort.ascending,
+            query.page,
+            query.rowsPerPage,
           ).then(({ data }) => {
-            const res = (data ?? []) as Array<ChallengeRankingAllTime>;
-            const newdata = res.map((el) => {
+            const values: Array<any> = data.data;
+            const avg: ChallengeAvg = data.avg;
+            const count: number = data.count;
+            const newdata = values.map((el) => {
               return {
                 profile: el.profile,
                 value: (
@@ -457,21 +442,23 @@ export const RankingChallenge = () => {
                 rank: el.ranking,
               };
             });
+            setTotal(count);
+            setAvg(avg);
             setData(newdata);
             setLoading(false);
           });
         }
       } else {
         selectStatAccomplishment(
-          tabChallengeMode,
-          page,
-          rowsPerPage,
-          idFriends,
-          search,
+          query.typeglobal,
+          query.page,
+          query.rowsPerPage,
+          query.friends,
+          query.search,
         ).then(({ data }) => {
           const res = data as Array<StatAccomplishment>;
           const newdata = res.map((el, index) => {
-            const champ = el[tabChallengeMode];
+            const champ = el[query.typeglobal];
             return {
               profile: el.profile,
               value: (
@@ -495,42 +482,30 @@ export const RankingChallenge = () => {
     };
     const timeout = setTimeout(getRanking, 200);
     return () => clearTimeout(timeout);
-  }, [
-    search,
-    page,
-    rowsPerPage,
-    date,
-    tabTime,
-    t,
-    sort,
-    idFriends,
-    language,
-    tab,
-    tabChallengeMode,
-    hasPlayChallenge,
-  ]);
+  }, [query, t, language, hasPlayChallenge]);
 
   const dateDisplay = useMemo(() => {
     let result = undefined;
-    if (tabTime === ClassementChallengeTimeEnum.day) {
+    const date = query.date;
+    if (query.typeperdate === ClassementChallengeTimeEnum.day) {
       result = date.format("DD/MM/YYYY");
-    } else if (tabTime === ClassementChallengeTimeEnum.month) {
+    } else if (query.typeperdate === ClassementChallengeTimeEnum.month) {
       result = date.format("MM/YYYY");
-    } else if (tabTime === ClassementChallengeTimeEnum.week) {
+    } else if (query.typeperdate === ClassementChallengeTimeEnum.week) {
       const start = date.clone().weekday(1);
       const end = date.clone().weekday(7);
       result = `${start.format("DD MMM")} - ${end.format("DD MMM YYYY")}`;
     }
     return result;
-  }, [date, tabTime]);
+  }, [query]);
 
   const dataDisplay = useMemo(() => {
     return [...data].map((el) => ({
       ...el,
       extra:
-        tabTime === ClassementChallengeTimeEnum.day ? (
+        query.typeperdate === ClassementChallengeTimeEnum.day ? (
           <>
-            {(hasPlayChallenge || date.diff(moment(), "day") < 0) && (
+            {(hasPlayChallenge || query.date.diff(moment(), "day") < 0) && (
               <TableCell sx={{ p: px(4), color: "inherit" }} width={40}>
                 <Link
                   to={`/challenge/game/${el.uuid}`}
@@ -558,62 +533,80 @@ export const RankingChallenge = () => {
           </TableCell>
         ),
     }));
-  }, [data, hasPlayChallenge, tabTime, date]);
+  }, [data, hasPlayChallenge, query.typeperdate, query.date]);
 
   return (
     <Grid container spacing={1} justifyContent="center">
       <Grid size={12}>
         <GroupButtonChallenge
-          selected={tab}
+          selected={query.type}
           onChange={(value) => {
             if (value === ClassementChallengeEnum.global) {
-              setSort({
-                value: ClassementChallengeGlobalTimeEnum.windaychallenge,
-                ascending: true,
-              });
-              setTabChallengeMode(
-                ClassementChallengeGlobalTimeEnum.windaychallenge,
-              );
+              setQuery((prev) => ({
+                ...prev,
+                type: value,
+                sort: {
+                  value: ClassementChallengeGlobalTimeEnum.windaychallenge,
+                  ascending: true,
+                },
+                typeglobal: ClassementChallengeGlobalTimeEnum.windaychallenge,
+              }));
             } else {
-              setSort({ value: "ranking", ascending: true });
-              setTabTime(ClassementChallengeTimeEnum.day);
+              setQuery((prev) => ({
+                ...prev,
+                type: value,
+                sort: { value: "ranking", ascending: true },
+                typeperdate: ClassementChallengeTimeEnum.day,
+              }));
             }
-            setTab(value);
           }}
         />
       </Grid>
       <Grid size={12}>
-        {tab === ClassementChallengeEnum.global ? (
+        {query.type === ClassementChallengeEnum.global ? (
           <GroupButtonChallengeGlobal
-            selected={tabChallengeMode}
+            selected={query.typeglobal}
             onChange={(value) => {
-              setSort({ value: value, ascending: true });
-              setDate(moment());
-              setTabChallengeMode(value);
-              setPage(0);
+              setQuery((prev) => ({
+                ...prev,
+                sort: { value: value, ascending: true },
+                typeglobal: value,
+                page: 0,
+              }));
             }}
           />
         ) : (
           <GroupButtonChallengeTime
-            selected={tabTime}
+            type={ClassementChallengeTimeEnum}
+            selected={query.typeperdate}
             onChange={(value) => {
-              if (value === ClassementChallengeTimeEnum.day) {
-                setSort({ value: "ranking", ascending: true });
-              }
-              setDate(moment());
-              setTabTime(value);
-              setPage(0);
+              setQuery((prev) => ({
+                ...prev,
+                sort:
+                  value === ClassementChallengeTimeEnum.day
+                    ? { value: "ranking", ascending: true }
+                    : prev.sort,
+                typeperdate: value as ClassementChallengeTimeEnum,
+                page: 0,
+                date: moment(),
+              }));
             }}
           />
         )}
       </Grid>
-      {tab === ClassementChallengeEnum.perdate && (
+      {query.type === ClassementChallengeEnum.perdate && (
         <>
           {dateDisplay && (
             <ChangeDateBlock
-              date={date}
-              format={tabTime as unknown as DateFormat}
-              onChange={(value) => setDate(value)}
+              date={query.date}
+              format={query.typeperdate as unknown as DateFormat}
+              onChange={(value) => {
+                setQuery((prev) => ({
+                  ...prev,
+                  page: 0,
+                  date: value,
+                }));
+              }}
             />
           )}
           <Grid>
@@ -621,21 +614,21 @@ export const RankingChallenge = () => {
               {
                 day: (
                   <ResultDayChallengeBlock
-                    date={date}
+                    date={query.date}
                     profile={profile}
                     avg={avg}
                   />
                 ),
                 week: (
                   <ResultWeekChallengeBlock
-                    date={date}
+                    date={query.date}
                     profile={profile}
                     avg={avg}
                   />
                 ),
                 month: (
                   <ResultMonthChallengeBlock
-                    date={date}
+                    date={query.date}
                     profile={profile}
                     avg={avg}
                   />
@@ -643,7 +636,7 @@ export const RankingChallenge = () => {
                 alltime: (
                   <ResultAllTimeChallengeBlock profile={profile} avg={avg} />
                 ),
-              }[tabTime]
+              }[query.typeperdate]
             }
           </Grid>
         </>
@@ -667,11 +660,23 @@ export const RankingChallenge = () => {
         >
           <BasicSearchInput
             label={t("commun.searchplayer")}
-            onChange={(value) => setSearch(value)}
-            value={search}
-            clear={() => setSearch("")}
+            onChange={(value) => {
+              setQuery((prev) => ({
+                ...prev,
+                search: value,
+                page: 0,
+              }));
+            }}
+            value={query.search}
+            clear={() => {
+              setQuery((prev) => ({
+                ...prev,
+                search: "",
+                page: 0,
+              }));
+            }}
           />
-          {tab === ClassementChallengeEnum.perdate && (
+          {query.type === ClassementChallengeEnum.perdate && (
             <SortButton menus={sorts} />
           )}
         </Box>

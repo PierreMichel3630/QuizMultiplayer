@@ -110,7 +110,7 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
           <Table size="small" sx={{ tableLayout: "fixed" }}>
             <TableBody>
               {data.map((el, index) => {
-                const isMe = profile && el.profile.id === profile.id;
+                const isMe = el.profile.id === profile?.id;
                 const isFriend = idFriend.includes(el.profile.id);
                 const colorFriend = isFriend ? Colors.purple : "initial";
                 const color = isMe ? Colors.colorApp : colorFriend;

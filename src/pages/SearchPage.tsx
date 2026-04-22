@@ -11,7 +11,7 @@ import { useAppBar } from "src/context/AppBarProvider";
 export default function SearchPage() {
   const { t } = useTranslation();
   const location = useLocation();
-  const { top, appBarVisible } = useAppBar();
+  const { top } = useAppBar();
   const { search } = location.state ?? { search: "" };
 
   return (
@@ -32,7 +32,7 @@ export default function SearchPage() {
               size={12}
               sx={{
                 position: "sticky",
-                top: appBarVisible ? top : 0,
+                top: top,
                 zIndex: (theme) => theme.zIndex.appBar + 1,
                 bgcolor: "background.paper",
                 gap: 1,

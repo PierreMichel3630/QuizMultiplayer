@@ -119,12 +119,12 @@ export const ResultDayChallengeBlock = ({
                 {title}
               </Typography>
             )}
-            {rank && avg ? (
+            {rank && numberPlayers ? (
               <>
                 <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
                   <Rank value={rank.ranking} />
                   <Typography variant="h2" noWrap>
-                    / {avg.players}
+                    / {numberPlayers}
                   </Typography>
                 </Box>
                 <Typography variant="body1">
@@ -132,12 +132,12 @@ export const ResultDayChallengeBlock = ({
                 </Typography>
               </>
             ) : (
-              avg && (
+              numberPlayers && (
                 <Typography variant="h2">
                   <Trans
                     i18nKey={t("commun.player")}
                     values={{
-                      count: avg.players,
+                      count: numberPlayers,
                     }}
                   />
                 </Typography>
@@ -270,12 +270,12 @@ export const ResultWeekChallengeBlock = ({
                 {title}
               </Typography>
             )}
-            {stat && avg ? (
+            {stat && numberPlayers ? (
               <>
                 <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
                   <Rank value={stat.ranking} />
                   <Typography variant="h2" noWrap>
-                    / {avg.players}
+                    / {numberPlayers}
                   </Typography>
                 </Box>
                 <Typography variant="body1">
@@ -283,12 +283,12 @@ export const ResultWeekChallengeBlock = ({
                 </Typography>
               </>
             ) : (
-              avg && (
+              numberPlayers && (
                 <Typography variant="h2">
                   <Trans
                     i18nKey={t("commun.player")}
                     values={{
-                      count: avg.players,
+                      count: numberPlayers,
                     }}
                   />
                 </Typography>
@@ -315,10 +315,10 @@ export const ResultWeekChallengeBlock = ({
                 />
               </Typography>
             )}
-            {avg?.games && (
+            {numberPlayers && (
               <Box>
                 <Typography variant="body1" noWrap>
-                  ({t("abrevation.average")} {avg.games.toFixed(2)})
+                  ({t("abrevation.average")} {numberPlayers.toFixed(2)})
                 </Typography>
               </Box>
             )}
@@ -451,12 +451,12 @@ export const ResultMonthChallengeBlock = ({
                 {title}
               </Typography>
             )}
-            {stat && avg ? (
+            {stat && numberPlayers ? (
               <>
                 <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
                   <Rank value={stat.ranking} />
                   <Typography variant="h2" noWrap>
-                    / {avg.players}
+                    / {numberPlayers}
                   </Typography>
                 </Box>
                 <Typography variant="body1">
@@ -464,12 +464,12 @@ export const ResultMonthChallengeBlock = ({
                 </Typography>
               </>
             ) : (
-              avg && (
+              numberPlayers && (
                 <Typography variant="h2">
                   <Trans
                     i18nKey={t("commun.player")}
                     values={{
-                      count: avg.players,
+                      count: numberPlayers,
                     }}
                   />
                 </Typography>
@@ -496,10 +496,10 @@ export const ResultMonthChallengeBlock = ({
                 />
               </Typography>
             )}
-            {avg?.games && (
+            {numberPlayers && (
               <Box>
                 <Typography variant="body1" noWrap>
-                  ({t("abrevation.average")} {avg.games.toFixed(2)})
+                  ({t("abrevation.average")} {numberPlayers.toFixed(2)})
                 </Typography>
               </Box>
             )}
@@ -619,12 +619,12 @@ export const ResultAllTimeChallengeBlock = ({
               {title}
             </Typography>
           )}
-          {stat && avg ? (
+          {stat && numberPlayers ? (
             <>
               <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
                 <Rank value={stat.ranking} />
                 <Typography variant="h2" noWrap>
-                  / {avg.players}
+                  / {numberPlayers}
                 </Typography>
               </Box>
               <Typography variant="body1">
@@ -637,7 +637,7 @@ export const ResultAllTimeChallengeBlock = ({
                 <Trans
                   i18nKey={t("commun.player")}
                   values={{
-                    count: avg.players,
+                    count: numberPlayers,
                   }}
                 />
               </Typography>
@@ -664,10 +664,10 @@ export const ResultAllTimeChallengeBlock = ({
               />
             </Typography>
           )}
-          {avg?.games && (
+          {numberPlayers && (
             <Box>
               <Typography variant="body1" noWrap>
-                ({t("abrevation.average")} {avg.games.toFixed(2)})
+                ({t("abrevation.average")} {numberPlayers.toFixed(2)})
               </Typography>
             </Box>
           )}
@@ -727,9 +727,10 @@ export const ResultAllTimeChallengeBlock = ({
 
 interface PropsRecapAvgChallenge {
   avg: ChallengeAvg;
+  count: number;
 }
 
-export const RecapAvgChallenge = ({ avg }: PropsRecapAvgChallenge) => {
+export const RecapAvgChallenge = ({ avg, count }: PropsRecapAvgChallenge) => {
   const { t } = useTranslation();
   return (
     <Box
@@ -744,7 +745,7 @@ export const RecapAvgChallenge = ({ avg }: PropsRecapAvgChallenge) => {
         <Trans
           i18nKey={t("commun.player")}
           values={{
-            count: avg.players,
+            count: count,
           }}
         />
       </Typography>

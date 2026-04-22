@@ -16,7 +16,7 @@ interface Props {
 export const Rank = ({ value, variant = "h2" }: Props) => {
   const { i18n, t } = useTranslation();
 
-  const iconSize = 20;
+  const iconSize = 35;
   const pr = new Intl.PluralRules(i18n.language, { type: "ordinal" });
   const rule = pr.select(value);
 
@@ -62,11 +62,12 @@ export const Rank = ({ value, variant = "h2" }: Props) => {
 
   return (
     <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-      {iconRank}
-      <Box sx={{ display: "flex", alignItems: "flex-start" }}>
-        <Typography variant={variant}>{value}</Typography>
-        <Typography>{t(`ordinal.ordinal_${rule}`)}</Typography>
-      </Box>
+      {iconRank ?? (
+        <Box sx={{ display: "flex", alignItems: "flex-start" }}>
+          <Typography variant={variant}>{value}</Typography>
+          <Typography>{t(`ordinal.ordinal_${rule}`)}</Typography>
+        </Box>
+      )}
     </Box>
   );
 };

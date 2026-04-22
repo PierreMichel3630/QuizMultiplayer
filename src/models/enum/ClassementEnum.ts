@@ -51,10 +51,16 @@ export enum ClassementChallengeEnum {
 }
 
 export enum ClassementChallengeTimeEnum {
-  alltime = "alltime",
   day = "day",
-  month = "month",
   week = "week",
+  month = "month",
+  alltime = "alltime",
+}
+
+export enum ClassementChallengeTimeListEnum {
+  day = "day",
+  week = "week",
+  month = "month",
 }
 
 export enum ClassementChallengeGlobalTimeEnum {

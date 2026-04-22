@@ -71,7 +71,7 @@ export const WinnerChallengeBlock = () => {
         label={t("commun.day")}
         date={getDate(
           "day",
-          isWin ? winDay?.challenge.date : allTimeDay?.challenge.date
+          isWin ? winDay?.date : allTimeDay?.date
         )}
         extra={<ResultChallengeDay value={isWin ? winDay : allTimeDay} />}
       />

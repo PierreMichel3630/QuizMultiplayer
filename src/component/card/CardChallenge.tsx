@@ -1,7 +1,7 @@
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import { Box, Grid, Paper, Typography } from "@mui/material";
-import { percent, px } from "csx";
-import { useEffect, useMemo, useState } from "react";
+import { Box, Divider, Grid, Paper, Typography } from "@mui/material";
+import { padding, percent, px } from "csx";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import {
@@ -11,6 +11,7 @@ import {
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import {
   ChallengeRankingAllTime,
+  ChallengeRankingDay,
   ChallengeRankingMonth,
   ChallengeRankingWeek,
 } from "src/models/Challenge";
@@ -20,8 +21,11 @@ import { ButtonColor } from "../Button";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import moment from "moment";
+import { useAuth } from "src/context/AuthProviderSupabase";
 import { Rank } from "../ranking/Rank";
+import { CardSignalQuestion } from "./CardQuestion";
 
 interface Props {
   profileId: string | undefined;
@@ -172,6 +176,97 @@ export const CardChallenge = ({ profileId }: Props) => {
   );
 };
 
+interface CardChallengeDayProps {
+  value: ChallengeRankingDay;
+}
+
+export const CardChallengeDay = ({ value }: CardChallengeDayProps) => {
+  const { hasPlayChallenge } = useAuth();
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const showGame = useMemo(() => {
+    const result =
+      hasPlayChallenge || moment(value.date).diff(moment(), "day") < 0;
+    return result;
+  }, [hasPlayChallenge, value]);
+
+  return (
+    <Paper
+      sx={{
+        p: padding(10, 20),
+        cursor: showGame ? "pointer" : "default",
+      }}
+      elevation={8}
+      onClick={() => {
+        if (showGame) {
+          setIsOpen((prev) => !prev);
+        }
+      }}
+    >
+      <Grid
+        container
+        spacing={1}
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Grid>
+          <Typography variant="h6">
+            {moment(value.date).format("DD/MM/YY")}
+          </Typography>
+        </Grid>
+        <Grid>
+          <Rank value={value.ranking} />
+        </Grid>
+        <Grid>
+          <Box sx={{ display: "flex", gap: px(2), alignItems: "center" }}>
+            <QuestionMarkIcon fontSize="small" />
+            <Typography variant="h6" noWrap>
+              {value.score} / {NUMBER_QUESTIONS_CHALLENGE}
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid>
+          <Box sx={{ display: "flex", gap: px(2), alignItems: "center" }}>
+            <AccessTimeIcon fontSize="small" />
+            <Typography variant="h6" noWrap>
+              {(value.time / 1000).toFixed(2)}s
+            </Typography>
+          </Box>
+        </Grid>
+
+        {showGame && (
+          <Grid sx={{ display: "flex" }}>
+            <VisibilityIcon sx={{ color: "text.primary" }} />
+          </Grid>
+        )}
+        {isOpen && (
+          <Grid size={12}>
+            <Grid container spacing={1}>
+              {value.questions.map((el, index) => (
+                <Fragment key={index}>
+                  <Grid size={12}>
+                    <CardSignalQuestion question={el} version={value.version} />
+                  </Grid>
+                  <Grid size={12}>
+                    <Divider
+                      sx={{
+                        borderBottomWidth: 5,
+                        borderColor: Colors.white,
+                        borderRadius: px(5),
+                      }}
+                    />
+                  </Grid>
+                </Fragment>
+              ))}
+            </Grid>
+          </Grid>
+        )}
+      </Grid>
+    </Paper>
+  );
+};
+
 interface CardChallengeWeekProps {
   value: ChallengeRankingWeek;
 }
@@ -185,7 +280,7 @@ export const CardChallengeWeek = ({ value }: CardChallengeWeekProps) => {
   return (
     <Paper
       sx={{
-        p: 1,
+        p: padding(10, 20),
       }}
       elevation={8}
     >
@@ -199,8 +294,8 @@ export const CardChallengeWeek = ({ value }: CardChallengeWeekProps) => {
           sx={{
             display: "flex",
             gap: 3,
-            alignItems: "baseline",
-            justifyContent: "center",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
           size={12}
         >
@@ -263,7 +358,7 @@ export const CardChallengeMonth = ({ value }: CardChallengeMonthProps) => {
   return (
     <Paper
       sx={{
-        p: 1,
+        p: padding(10, 20),
       }}
       elevation={8}
     >
@@ -277,8 +372,8 @@ export const CardChallengeMonth = ({ value }: CardChallengeMonthProps) => {
           sx={{
             display: "flex",
             gap: 3,
-            alignItems: "baseline",
-            justifyContent: "center",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
           size={12}
         >

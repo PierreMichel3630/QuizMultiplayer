@@ -15,6 +15,7 @@ import {
 } from "src/api/challenge";
 import { selectSoloGameByDate } from "src/api/game";
 import { selectScore } from "src/api/score";
+import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import {
   ChallengeAvg,
@@ -36,10 +37,8 @@ import {
   GroupButtonTime,
   GroupButtonTypeGame,
 } from "./button/ButtonGroup";
-import { ChallengeButton } from "./button/ChallengeButton";
 import { CellRankingChallengeDay, RecapAvgChallenge } from "./ChallengeBlock";
 import { DataRanking, RankingTable } from "./table/RankingTable";
-import { useAuth } from "src/context/AuthProviderSupabase";
 
 interface Props {
   themes?: Array<number>;
@@ -110,7 +109,7 @@ export const RankingTop5Block = () => {
   const [tab, setTab] = useState(AllGameModeEnum.CHALLENGE);
   const [tabTimeSolo, setTabTimeSolo] = useState(ClassementSoloTimeEnum.week);
   const [tabTimeChallenge, setTabTimeChallenge] = useState(
-    ClassementChallengeTimeEnum.day
+    ClassementChallengeTimeEnum.day,
   );
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<Array<DataRanking>>([]);
@@ -184,11 +183,11 @@ export const RankingTop5Block = () => {
               });
               setData(newdata);
               setIsLoading(false);
-            }
+            },
           );
         } else if (tabTimeChallenge === ClassementChallengeTimeEnum.month) {
           selectRankingChallengeByMonthPaginate(
-            moment().format("MM/YYYY")
+            moment().format("MM/YYYY"),
           ).then(({ data }) => {
             const res = (data ?? []) as Array<ChallengeRankingMonth>;
             const newdata = res.map((el) => {
@@ -395,20 +394,16 @@ export const RankingTop5Block = () => {
           <>
             <Grid size={12}>
               <GroupButtonChallengeTime
+                type={ClassementChallengeTimeEnum}
                 selected={tabTimeChallenge}
                 onChange={(value) => {
-                  setTabTimeChallenge(value);
+                  setTabTimeChallenge(value as ClassementChallengeTimeEnum);
                 }}
               />
             </Grid>
             {avg && (
               <Grid size={12}>
-                <RecapAvgChallenge avg={avg} />
-              </Grid>
-            )}
-            {!hasPlayChallenge && (
-              <Grid size={12}>
-                <ChallengeButton />
+                <RecapAvgChallenge avg={avg} count={50} />
               </Grid>
             )}
           </>

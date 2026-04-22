@@ -12,12 +12,11 @@ import { ChallengeTypeResultEnum } from "src/models/enum/ChallengeEnum";
 import {
   ClassementChallengeEnum,
   ClassementChallengeGlobalTimeEnum,
-  ClassementChallengeTimeEnum,
   ClassementEnum,
   ClassementOtherEnum,
   ClassementScoreEnum,
   ClassementSoloModeEnum,
-  ClassementSoloTimeEnum,
+  ClassementSoloTimeEnum
 } from "src/models/enum/ClassementEnum";
 import { AllGameModeEnum, GameModeEnum } from "src/models/enum/GameEnum";
 import { Colors } from "src/style/Colors";
@@ -230,38 +229,31 @@ export const GroupButtonTime = ({
 };
 
 interface PropsGroupButtonChallengeTime {
-  selected: ClassementChallengeTimeEnum;
-  onChange: (value: ClassementChallengeTimeEnum) => void;
+  type: Record<string, string>;
+  selected: string;
+  onChange: (value: string) => void;
 }
 export const GroupButtonChallengeTime = ({
+  type,
   selected,
   onChange,
 }: PropsGroupButtonChallengeTime) => {
   const { t } = useTranslation();
 
   const options = useMemo(
-    () => [
-      {
-        label: t("commun.day"),
-        value: ClassementChallengeTimeEnum.day,
-      },
-      {
-        label: t("commun.week"),
-        value: ClassementChallengeTimeEnum.week,
-      },
-      {
-        label: t("commun.month"),
-        value: ClassementChallengeTimeEnum.month,
-      },
-    ],
-    [t],
+    () =>
+      Object.values(type).map((value) => ({
+        label: t(`commun.${value}`),
+        value,
+      })),
+    [type, t],
   );
 
   return (
     <GroupButton
       options={options}
       selected={selected}
-      onChange={(value) => onChange(value as ClassementChallengeTimeEnum)}
+      onChange={(value) => onChange(value)}
     />
   );
 };

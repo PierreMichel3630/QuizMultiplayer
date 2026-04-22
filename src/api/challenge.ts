@@ -1,7 +1,7 @@
 import { Moment } from "moment";
 import { ChallengeGameInsert, ChallengeGameUpdate } from "src/models/Challenge";
-import { supabase } from "./supabase";
 import { VERSION_QUESTION } from "src/utils/config";
+import { supabase } from "./supabase";
 
 export const SUPABASE_CHALLENGE_TABLE = "challenge";
 export const SUPABASE_CHALLENGEGAME_TABLE = "challengegame";
@@ -15,9 +15,6 @@ export const SUPABASE_RANKINGCHALLENGE_VIEW = "rankingchallenge";
 export const SUPABASE_LAUNCHCHALLENGE_FUNCTION = "launch-challengeV3";
 export const SUPABASE_ENDCHALLENGE_FUNCTION = "end-challenge";
 export const SUPABASE_CREATECHALLENGE_FUNCTION = "create-challenge";
-
-export const SUPABASE_GETCHALLENGEWEEKLYRANKING_FUNCTION =
-  "get_challenge_weekly_ranking";
 
 export const createChallenge = (date: string) =>
   supabase.functions.invoke(SUPABASE_CREATECHALLENGE_FUNCTION, {
@@ -123,24 +120,6 @@ export const selectChallengeGameByUuid = (uuid: string) =>
 
 export const deleteChallengeGameById = (id: number) =>
   supabase.from(SUPABASE_CHALLENGEGAME_TABLE).delete().eq("id", id);
-
-export const selectChallengeGameByProfileId = (
-  id: string,
-  page = 0,
-  itemperpage = 25,
-) => {
-  const from = page * itemperpage;
-  const to = from + itemperpage - 1;
-  return supabase
-    .from(SUPABASE_RANKINGCHALLENGE_VIEW)
-    .select(
-      "*, profile(*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), country(*)), challenge(*)",
-    )
-    .eq("profile.id", id)
-    .not("profile", "is", null)
-    .range(from, to)
-    .order("id", { ascending: false });
-};
 
 export const selectChallengeGameByProfileIdGroupByRating = (id: string) =>
   supabase
@@ -356,21 +335,6 @@ export const selectRankingChallengeMonthByMonthAndProfileId = (
     .eq("month", date)
     .maybeSingle();
 
-export const selectRankingChallengeMonthByProfileId = (
-  id: string,
-  page = 0,
-  itemperpage = 25,
-) => {
-  const from = page * itemperpage;
-  const to = from + itemperpage - 1;
-  return supabase
-    .from(SUPABASE_CHALLENGEGAMEMONTH_VIEW)
-    .select("*")
-    .eq("profile", id)
-    .range(from, to)
-    .order("month", { ascending: false });
-};
-
 export const selectFirstRankingChallengeByMonth = (
   date: string, // Format MM/YYYY
 ) => {
@@ -507,18 +471,6 @@ export const selectRankingChallengeWeekByWeekAndProfileId = (
     .eq("week", date)
     .maybeSingle();
 
-export const selectRankingChallengeWeekByProfileId = (
-  id: string,
-  page = 0,
-  itemperpage = 25,
-) => {
-  return supabase.rpc(SUPABASE_GETCHALLENGEWEEKLYRANKING_FUNCTION, {
-    p_profile: id,
-    p_limit: itemperpage,
-    p_offset: page * itemperpage,
-  });
-};
-
 export const selectFirstRankingChallengeByWeek = (
   date: string, // Format WW/YYYY
 ) => {
@@ -590,3 +542,134 @@ export const endChallenge = (questions: Array<unknown>, gameUuid: string) =>
       gameUuid,
     },
   });
+
+/***************   NEW    *************/
+
+// Global
+export const SUPABASE_GETLEADERBOARDCHALLENGEDAY_FUNCTION =
+  "get_leaderboard_challenge_day";
+export const SUPABASE_GETLEADERBOARDCHALLENGEWEEK_FUNCTION =
+  "get_leaderboard_challenge_week";
+export const SUPABASE_GETLEADERBOARDCHALLENGEMONTH_FUNCTION =
+  "get_leaderboard_challenge_month";
+export const SUPABASE_GETLEADERBOARDCHALLENGEALLTIME_FUNCTION =
+  "get_leaderboard_challenge_alltime";
+
+export const selectChallengeAllTimePaginate = (
+  search: string,
+  sort: string,
+  order = false,
+  page = 0,
+  itemperpage = 25,
+) => {
+  return supabase.rpc(SUPABASE_GETLEADERBOARDCHALLENGEALLTIME_FUNCTION, {
+    p_search: search,
+    p_page: page,
+    p_itemperpage: itemperpage,
+    p_ascending: order,
+    p_sort: sort,
+    p_ids_profile: null,
+  });
+};
+
+
+export const selectChallengeMonthPaginate = (
+  date: string,
+  search: string,
+  sort: string,
+  order = false,
+  page = 0,
+  itemperpage = 25,
+) => {
+  return supabase.rpc(SUPABASE_GETLEADERBOARDCHALLENGEMONTH_FUNCTION, {
+    p_date: date,
+    p_search: search,
+    p_page: page,
+    p_itemperpage: itemperpage,
+    p_ascending: order,
+    p_sort: sort,
+    p_ids_profile: null,
+  });
+};
+
+export const selectChallengeWeekPaginate = (
+  date: string,
+  search: string,
+  sort: string,
+  order = false,
+  page = 0,
+  itemperpage = 25,
+) => {
+  return supabase.rpc(SUPABASE_GETLEADERBOARDCHALLENGEWEEK_FUNCTION, {
+    p_date: date,
+    p_search: search,
+    p_page: page,
+    p_itemperpage: itemperpage,
+    p_ascending: order,
+    p_sort: sort,
+    p_ids_profile: null,
+  });
+};
+
+export const selectChallengeDayPaginate = (
+  date: Moment,
+  search: string,
+  sort: string,
+  order = false,
+  page = 0,
+  itemperpage = 25,
+) => {
+  return supabase.rpc(SUPABASE_GETLEADERBOARDCHALLENGEDAY_FUNCTION, {
+    p_date: date.format("YYYY-MM-DD"),
+    p_search: search,
+    p_page: page,
+    p_itemperpage: itemperpage,
+    p_ascending: order,
+    p_sort: sort,
+    p_ids_profile: null,
+  });
+};
+
+// Par profile
+export const SUPABASE_GETCHALLENGEWEEKLYRANKING_FUNCTION =
+  "get_challenge_weekly_ranking";
+export const SUPABASE_GETCHALLENGEMONTHLYRANKING_FUNCTION =
+  "get_challenge_monthly_ranking";
+export const SUPABASE_GETCHALLENGEDAILYRANKING_FUNCTION =
+  "get_challenge_daily_ranking";
+
+export const selectRankingChallengeWeekByProfileId = (
+  id: string,
+  page = 0,
+  itemperpage = 25,
+) => {
+  return supabase.rpc(SUPABASE_GETCHALLENGEWEEKLYRANKING_FUNCTION, {
+    p_profile: id,
+    p_limit: itemperpage,
+    p_offset: page * itemperpage,
+  });
+};
+
+export const selectRankingChallengeMonthByProfileId = (
+  id: string,
+  page = 0,
+  itemperpage = 25,
+) => {
+  return supabase.rpc(SUPABASE_GETCHALLENGEMONTHLYRANKING_FUNCTION, {
+    p_profile: id,
+    p_limit: itemperpage,
+    p_offset: page * itemperpage,
+  });
+};
+
+export const selectChallengeGameByProfileId = (
+  id: string,
+  page = 0,
+  itemperpage = 25,
+) => {
+  return supabase.rpc(SUPABASE_GETCHALLENGEDAILYRANKING_FUNCTION, {
+    p_profile: id,
+    p_limit: itemperpage,
+    p_offset: page * itemperpage,
+  });
+};
