@@ -17,6 +17,7 @@ import { RankingChallenge } from "src/component/ranking/RankingChallenge";
 import { TimeLeftToNextDayLabel } from "src/component/TimeLeftBlock";
 import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";
+import { removeHistoryLocalStorage } from "src/utils/localStorage";
 
 export default function ChallengePage() {
   const { t } = useTranslation();
@@ -43,6 +44,10 @@ export default function ChallengePage() {
   useEffect(() => {
     refreshHasPlayChallenge();
   }, [refreshHasPlayChallenge]);
+
+  useEffect(() => {
+    removeHistoryLocalStorage();
+  }, []);
 
   return (
     <Grid container>

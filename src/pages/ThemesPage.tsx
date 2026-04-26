@@ -19,6 +19,8 @@ import { ShopBlock } from "src/component/ShopBlock";
 import { UpdatedThemeBlock } from "src/component/theme/UpdatedThemeBlock";
 import { useAppBar } from "src/context/AppBarProvider";
 import { useIsMobileOrTablet } from "src/hook/useSize";
+import { useEffect } from "react";
+import { removeHistoryLocalStorage } from "src/utils/localStorage";
 
 export default function ThemesPage() {
   const isMobileOrTablet = useIsMobileOrTablet();
@@ -34,6 +36,10 @@ export default function ThemesPage() {
       },
     });
   };
+
+  useEffect(() => {
+    removeHistoryLocalStorage();
+  });
 
   return (
     <Grid container>

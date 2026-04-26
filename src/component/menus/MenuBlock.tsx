@@ -306,7 +306,7 @@ export const MenuBlock = ({
       <Grid size={12}>
         <Divider />
       </Grid>
-      {profile && (
+      {profile && favoritesDisplay.length > 0 && (
         <>
           <Grid size={12} sx={{ pt: 1, pl: 1, pr: 1 }}>
             <Box
@@ -326,27 +326,31 @@ export const MenuBlock = ({
                 <MenuItem key={i} menu={value} size={sizeDrawer} />
               ))}
             </List>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: isSmallDrawer ? px(2) : 2,
-                pl: isSmallDrawer ? px(2) : 1,
-                cursor: "pointer",
-              }}
-              onClick={() =>
-                setMaxFavoriteDisplay((prev) => (isEndFavorite ? 2 : prev + 3))
-              }
-            >
-              {isEndFavorite ? (
-                <ExpandLessIcon fontSize="large" />
-              ) : (
-                <ExpandMoreIcon fontSize="large" />
-              )}
-              <Typography variant="h6">
-                {isEndFavorite ? t("commun.less") : t("commun.more")}
-              </Typography>
-            </Box>
+            {itemsSearch.length > 2 && (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: isSmallDrawer ? px(2) : 2,
+                  pl: isSmallDrawer ? px(2) : 1,
+                  cursor: "pointer",
+                }}
+                onClick={() =>
+                  setMaxFavoriteDisplay((prev) =>
+                    isEndFavorite ? 2 : prev + 3,
+                  )
+                }
+              >
+                {isEndFavorite ? (
+                  <ExpandLessIcon fontSize="large" />
+                ) : (
+                  <ExpandMoreIcon fontSize="large" />
+                )}
+                <Typography variant="h6">
+                  {isEndFavorite ? t("commun.less") : t("commun.more")}
+                </Typography>
+              </Box>
+            )}
           </Grid>
           <Grid size={12}>
             <Divider />

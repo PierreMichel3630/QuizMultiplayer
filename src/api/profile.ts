@@ -71,7 +71,7 @@ export const countPlayersSameUsername = (username: string) =>
   supabase
     .from(SUPABASE_PROFILE_TABLE)
     .select("*", { count: "exact", head: true })
-    .eq("username", username);
+    .ilike("username", username);
 
 export const updateProfilByFunction = (accounts?: Array<string>) =>
   supabase.functions.invoke(SUPABASE_UPDATEPROFIL_FUNCTION, {

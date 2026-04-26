@@ -3,22 +3,16 @@ import { px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
-  countChallengeGameByDate,
-  countRankingChallengeAllTime,
-  countRankingChallengeByMonth,
-  countRankingChallengeByWeek,
-  selectChallengeGameByDateAndProfileId,
-  selectRankingChallengeAllTimeByProfileId,
-  selectRankingChallengeByDateAndProfileId,
-  selectRankingChallengeMonthByMonthAndProfileId,
-  selectRankingChallengeWeekByWeekAndProfileId,
+  selectChallengeAllTimeByProfile,
+  selectChallengeDayByProfileId,
+  selectChallengeMonthByProfileId,
+  selectChallengeWeekByProfileId,
 } from "src/api/challenge";
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import {
   ChallengeAvg,
-  ChallengeGame,
-  ChallengeRanking,
   ChallengeRankingAllTime,
+  ChallengeRankingDay,
   ChallengeRankingMonth,
   ChallengeRankingWeek,
 } from "src/models/Challenge";
@@ -44,54 +38,41 @@ interface PropsResultDayChallengeBlock extends PropsBase {
 export const ResultDayChallengeBlock = ({
   date,
   profile,
-  title,
-  avg,
 }: PropsResultDayChallengeBlock) => {
   const { t } = useTranslation();
 
-  const [game, setGame] = useState<null | ChallengeGame>(null);
-  const [rank, setRank] = useState<null | ChallengeRanking>(null);
+  const [stat, setStat] = useState<null | ChallengeRankingDay>(null);
+  const [avg, setAvg] = useState<null | ChallengeAvg>(null);
   const [numberPlayers, setNumberPlayers] = useState<null | number>(null);
 
-  const isDisplay = useMemo(() => rank || avg, [avg, rank]);
-
-  useEffect(() => {
-    const valueDate = date ?? moment();
-    countChallengeGameByDate(valueDate).then(({ count }) => {
-      setNumberPlayers(count);
-    });
-  }, [date]);
+  const isDisplay = useMemo(() => stat || avg, [avg, stat]);
 
   useEffect(() => {
     const valueDate = date ?? moment();
     const getGame = () => {
       if (profile) {
-        selectChallengeGameByDateAndProfileId(valueDate, profile.id).then(
-          ({ data }) => {
-            setGame(data);
-          },
-        );
-      }
-    };
-    const getRank = () => {
-      if (profile) {
-        selectRankingChallengeByDateAndProfileId(valueDate, profile.id).then(
-          ({ data }) => {
-            setRank(data);
-          },
-        );
+        selectChallengeDayByProfileId(
+          valueDate.format("YYYY-MM-DD"),
+          profile.id,
+        ).then(({ data }) => {
+          const values: Array<ChallengeRankingDay> = data.data;
+          const avg: ChallengeAvg = data.avg;
+          const total: number = data.total;
+          setStat(values[0] ?? null);
+          setAvg(avg);
+          setNumberPlayers(total);
+        });
       }
     };
     getGame();
-    getRank();
   }, [date, profile]);
 
   const topPercent = useMemo(
     () =>
-      rank && numberPlayers
-        ? ((rank.ranking / numberPlayers) * 100).toFixed(2)
+      stat && numberPlayers
+        ? ((stat.ranking / numberPlayers) * 100).toFixed(2)
         : undefined,
-    [numberPlayers, rank],
+    [numberPlayers, stat],
   );
 
   return (
@@ -114,15 +95,10 @@ export const ResultDayChallengeBlock = ({
             }}
             size={12}
           >
-            {title && (
-              <Typography variant="h4" noWrap>
-                {title}
-              </Typography>
-            )}
-            {rank && numberPlayers ? (
+            {stat && numberPlayers ? (
               <>
                 <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
-                  <Rank value={rank.ranking} />
+                  <Rank value={stat.ranking} />
                   <Typography variant="h2" noWrap>
                     / {numberPlayers}
                   </Typography>
@@ -155,9 +131,9 @@ export const ResultDayChallengeBlock = ({
           >
             <QuestionMarkIcon />
             <Box>
-              {game && (
+              {stat && (
                 <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-                  {game.score} / {NUMBER_QUESTIONS_CHALLENGE}
+                  {stat.score} / {NUMBER_QUESTIONS_CHALLENGE}
                 </Typography>
               )}
               {avg && (
@@ -179,9 +155,9 @@ export const ResultDayChallengeBlock = ({
           >
             <AccessTimeIcon />
             <Box>
-              {game && (
+              {stat && (
                 <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-                  {(game.time / 1000).toFixed(2)}s
+                  {(stat.time / 1000).toFixed(2)}s
                 </Typography>
               )}
               {avg && (
@@ -204,34 +180,27 @@ interface PropsResultWeekChallengeBlock extends PropsBase {
 export const ResultWeekChallengeBlock = ({
   date,
   profile,
-  title,
-  avg,
 }: PropsResultWeekChallengeBlock) => {
   const { t } = useTranslation();
 
   const [stat, setStat] = useState<null | ChallengeRankingWeek>(null);
+  const [avg, setAvg] = useState<null | ChallengeAvg>(null);
   const [numberPlayers, setNumberPlayers] = useState<null | number>(null);
   const isDisplay = useMemo(() => stat || avg, [avg, stat]);
 
   useEffect(() => {
-    const valueDate = date ?? moment();
-    countRankingChallengeByWeek(valueDate.format("WW/YYYY")).then(
-      ({ count }) => {
-        setNumberPlayers(count);
-      },
-    );
-  }, [date]);
-
-  useEffect(() => {
     const getStat = () => {
-      if (profile) {
-        const valueDate = date ?? moment();
-        selectRankingChallengeWeekByWeekAndProfileId(
-          valueDate.format("WW/YYYY"),
-          profile.id,
-        ).then(({ data }) => {
-          setStat(data);
-        });
+      if (profile && date) {
+        selectChallengeWeekByProfileId(date.format("WW/YYYY"), profile.id).then(
+          ({ data }) => {
+            const values: Array<ChallengeRankingWeek> = data.data;
+            const avg: ChallengeAvg = data.avg;
+            const total: number = data.total;
+            setStat(values[0] ?? null);
+            setAvg(avg);
+            setNumberPlayers(total);
+          },
+        );
       }
     };
     getStat();
@@ -265,11 +234,6 @@ export const ResultWeekChallengeBlock = ({
             }}
             size={12}
           >
-            {title && (
-              <Typography variant="h4" noWrap>
-                {title}
-              </Typography>
-            )}
             {stat && numberPlayers ? (
               <>
                 <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
@@ -315,10 +279,10 @@ export const ResultWeekChallengeBlock = ({
                 />
               </Typography>
             )}
-            {numberPlayers && (
+            {avg && (
               <Box>
                 <Typography variant="body1" noWrap>
-                  ({t("abrevation.average")} {numberPlayers.toFixed(2)})
+                  ({t("abrevation.average")} {avg.games.toFixed(2)})
                 </Typography>
               </Box>
             )}
@@ -384,39 +348,33 @@ interface PropsResultMonthChallengeBlock extends PropsBase {
 export const ResultMonthChallengeBlock = ({
   date,
   profile,
-  title,
-  avg,
 }: PropsResultMonthChallengeBlock) => {
   const { t } = useTranslation();
 
-  const [stat, setStat] = useState<null | ChallengeRankingMonth>(null);
+  const [stat, setStat] = useState<null | ChallengeRankingAllTime>(null);
+  const [avg, setAvg] = useState<null | ChallengeAvg>(null);
   const [numberPlayers, setNumberPlayers] = useState<null | number>(null);
-
-  const isDisplay = useMemo(() => stat || avg, [avg, stat]);
-
-  useEffect(() => {
-    const valueDate = date ?? moment();
-    countRankingChallengeByMonth(valueDate.format("MM/YYYY")).then(
-      ({ count }) => {
-        setNumberPlayers(count);
-      },
-    );
-  }, [date]);
 
   useEffect(() => {
     const getStat = () => {
-      if (profile) {
-        const valueDate = date ?? moment();
-        selectRankingChallengeMonthByMonthAndProfileId(
-          valueDate.format("MM/YYYY"),
+      if (profile && date) {
+        selectChallengeMonthByProfileId(
+          date.format("MM/YYYY"),
           profile.id,
         ).then(({ data }) => {
-          setStat(data);
+          const values: Array<ChallengeRankingMonth> = data.data;
+          const avg: ChallengeAvg = data.avg;
+          const total: number = data.total;
+          setStat(values[0] ?? null);
+          setAvg(avg);
+          setNumberPlayers(total);
         });
       }
     };
     getStat();
-  }, [date, profile]);
+  }, [profile, date]);
+
+  const isDisplay = useMemo(() => stat || avg, [avg, stat]);
 
   const topPercent = useMemo(
     () =>
@@ -446,11 +404,6 @@ export const ResultMonthChallengeBlock = ({
             }}
             size={12}
           >
-            {title && (
-              <Typography variant="h4" noWrap>
-                {title}
-              </Typography>
-            )}
             {stat && numberPlayers ? (
               <>
                 <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
@@ -496,10 +449,10 @@ export const ResultMonthChallengeBlock = ({
                 />
               </Typography>
             )}
-            {numberPlayers && (
+            {avg && (
               <Box>
                 <Typography variant="body1" noWrap>
-                  ({t("abrevation.average")} {numberPlayers.toFixed(2)})
+                  ({t("abrevation.average")} {avg.games.toFixed(2)})
                 </Typography>
               </Box>
             )}
@@ -558,30 +511,24 @@ export const ResultMonthChallengeBlock = ({
   );
 };
 
-export const ResultAllTimeChallengeBlock = ({
-  profile,
-  title,
-  avg,
-}: PropsBase) => {
+export const ResultAllTimeChallengeBlock = ({ profile }: PropsBase) => {
   const { t } = useTranslation();
 
   const [stat, setStat] = useState<null | ChallengeRankingAllTime>(null);
+  const [avg, setAvg] = useState<null | ChallengeAvg>(null);
   const [numberPlayers, setNumberPlayers] = useState<null | number>(null);
-
-  useEffect(() => {
-    countRankingChallengeAllTime().then(({ count }) => {
-      setNumberPlayers(count);
-    });
-  }, []);
 
   useEffect(() => {
     const getStat = () => {
       if (profile) {
-        selectRankingChallengeAllTimeByProfileId(profile.id).then(
-          ({ data }) => {
-            setStat(data);
-          },
-        );
+        selectChallengeAllTimeByProfile(profile.id).then(({ data }) => {
+          const values: Array<ChallengeRankingAllTime> = data.data;
+          const avg: ChallengeAvg = data.avg;
+          const count: number = data.total;
+          setStat(values[0] ?? null);
+          setAvg(avg);
+          setNumberPlayers(count);
+        });
       }
     };
     getStat();
@@ -614,11 +561,6 @@ export const ResultAllTimeChallengeBlock = ({
           }}
           size={12}
         >
-          {title && (
-            <Typography variant="h4" noWrap>
-              {title}
-            </Typography>
-          )}
           {stat && numberPlayers ? (
             <>
               <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
@@ -664,10 +606,10 @@ export const ResultAllTimeChallengeBlock = ({
               />
             </Typography>
           )}
-          {numberPlayers && (
+          {avg && (
             <Box>
               <Typography variant="body1" noWrap>
-                ({t("abrevation.average")} {numberPlayers.toFixed(2)})
+                ({t("abrevation.average")} {avg.games.toFixed(2)})
               </Typography>
             </Box>
           )}

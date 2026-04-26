@@ -1,4 +1,4 @@
-export const VERSION_APP = "2.2.5";
+export const VERSION_APP = "2.2.7";
 
 export const MAX_DAY_NEW_THEME = 14;
 export const MAX_DAY_UPDATED_THEME = 14;
@@ -25,3 +25,6 @@ export const headerSizePC = 55;
 export const headerSizeNoUser = 48;
 export const headerSizeUser = 72;
 export const BarNavigationSize = 50;
+
+// LOCAL STORAGE
+export const PREFIX_LOCALSTORAGE_GAME = "game_";

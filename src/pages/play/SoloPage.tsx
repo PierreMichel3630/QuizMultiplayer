@@ -18,6 +18,7 @@ import { StatusGameSolo } from "src/models/enum/StatusGame";
 import { decryptToNumber } from "src/utils/crypt";
 import { PreloadImages } from "src/utils/preload";
 import { verifyResponseCrypt } from "src/utils/response";
+import { PREFIX_LOCALSTORAGE_GAME } from "src/utils/config";
 
 export default function SoloPage() {
   const { t } = useTranslation();
@@ -35,13 +36,16 @@ export default function SoloPage() {
   const [images, setImages] = useState<Array<string>>([]);
 
   const timeoutQuestion = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const localStorageId = useMemo(() => `game-solo-${uuidGame}`, [uuidGame]);
+  const localStorageId = useMemo(
+    () => `${PREFIX_LOCALSTORAGE_GAME}${uuidGame}`,
+    [uuidGame],
+  );
 
   const generateQuestion = useCallback(
     (game: undefined | SoloGame, delay: number) => {
       if (game) {
         const questionsgame: Array<unknown> = JSON.parse(
-          localStorage.getItem(localStorageId) ?? "[]"
+          localStorage.getItem(localStorageId) ?? "[]",
         );
         supabase.functions
           .invoke("question-solo-gameV4", {
@@ -54,7 +58,7 @@ export default function SoloPage() {
             if (data.allresponse === true) {
               setTimeout(async () => {
                 const questionsgame: Array<unknown> = JSON.parse(
-                  localStorage.getItem(localStorageId) ?? "[]"
+                  localStorage.getItem(localStorageId) ?? "[]",
                 );
                 endSoloGame(questionsgame, game.uuid).then(() => {
                   navigate(`/recapsolo/${game.uuid}`, {
@@ -74,7 +78,7 @@ export default function SoloPage() {
               if (questionSolo.typequestion === "IMAGE") {
                 const images = questionSolo.answers.reduce(
                   (acc, v) => (v.image ? [...acc, v.image] : acc),
-                  [] as Array<string>
+                  [] as Array<string>,
                 );
                 urls = [...urls, ...images];
               }
@@ -97,7 +101,7 @@ export default function SoloPage() {
                 timeoutQuestion.current = setTimeout(async () => {
                   const response = decryptToNumber(questionSolo.answer);
                   const questionsgame: Array<unknown> = JSON.parse(
-                    localStorage.getItem(localStorageId) ?? "[]"
+                    localStorage.getItem(localStorageId) ?? "[]",
                   );
                   questionsgame.push({
                     ...questionSolo,
@@ -107,7 +111,7 @@ export default function SoloPage() {
                   });
                   localStorage.setItem(
                     localStorageId,
-                    JSON.stringify(questionsgame)
+                    JSON.stringify(questionsgame),
                   );
                   setResponse({
                     answer: response,
@@ -122,7 +126,7 @@ export default function SoloPage() {
           });
       }
     },
-    [localStorageId, navigate]
+    [localStorageId, navigate],
   );
 
   const validateResponse = useCallback(
@@ -134,7 +138,7 @@ export default function SoloPage() {
         const decryptResponse = decryptToNumber(question.answer);
         const result = verifyResponseCrypt(question, language, value);
         const questionsgame: Array<unknown> = JSON.parse(
-          localStorage.getItem(localStorageId) ?? "[]"
+          localStorage.getItem(localStorageId) ?? "[]",
         );
         questionsgame.push({
           ...question,
@@ -177,7 +181,7 @@ export default function SoloPage() {
       localStorageId,
       navigate,
       question,
-    ]
+    ],
   );
 
   useEffect(() => {

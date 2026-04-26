@@ -48,6 +48,7 @@ import { Profile } from "src/models/Profile";
 import { QuestionCount } from "src/models/Question";
 import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
+import { removeHistoryLocalStorage } from "src/utils/localStorage";
 
 export default function ThemePage() {
   const { t } = useTranslation();
@@ -94,6 +95,7 @@ export default function ThemePage() {
         });
       }
     };
+    removeHistoryLocalStorage();
     getTheme();
     getPlayers();
   }, [id]);

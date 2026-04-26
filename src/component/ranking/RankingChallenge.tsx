@@ -1,10 +1,9 @@
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Box, Grid, TableCell, Typography } from "@mui/material";
 import { percent, px } from "csx";
 import moment, { Moment } from "moment";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { selectStatAccomplishment } from "src/api/accomplishment";
 import {
   selectChallengeAllTimePaginate,
@@ -16,7 +15,12 @@ import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { StatAccomplishment } from "src/models/Accomplishment";
-import { ChallengeAvg } from "src/models/Challenge";
+import {
+  ChallengeRankingAllTime,
+  ChallengeRankingDay,
+  ChallengeRankingMonth,
+  ChallengeRankingWeek,
+} from "src/models/Challenge";
 import {
   ClassementChallengeEnum,
   ClassementChallengeGlobalTimeEnum,
@@ -72,7 +76,7 @@ export const RankingChallenge = () => {
   const { language } = useUser();
   const [searchParams] = useSearchParams();
 
-  const rowsPerPage = 10;
+  const ROWS_PER_PAGE = 10;
 
   const [query, setQuery] = useState<Query>({
     date: moment(),
@@ -82,19 +86,15 @@ export const RankingChallenge = () => {
       ? (searchParams.get("time") as ClassementChallengeTimeEnum)
       : ClassementChallengeTimeEnum.day,
     page: 0,
-    rowsPerPage: rowsPerPage,
+    rowsPerPage: ROWS_PER_PAGE,
     search: "",
     isOnlyFriend: false,
     friends: undefined,
-    sort: { value: "ranking", ascending: true },
+    sort: { value: "score", ascending: false },
   });
   const [total, setTotal] = useState<null | number>(null);
   const [data, setData] = useState<Array<DataRankingChallenge>>([]);
   const [loading, setLoading] = useState(true);
-  const [isOnlyFriend, setIsOnlyFriend] = useState(false);
-  const [avg, setAvg] = useState<null | ChallengeAvg>(null);
-
-  const [page, setPage] = useState(0);
 
   const idFriends = useMemo(
     () =>
@@ -120,13 +120,13 @@ export const RankingChallenge = () => {
       query.typeperdate === ClassementChallengeTimeEnum.day
         ? [
             {
-              value: "ranking",
-              label: t("sort.ranking"),
+              value: "score",
+              label: t("sort.score"),
               sort: () =>
                 setQuery((prev) => ({
                   ...prev,
                   page: 0,
-                  sort: { value: "ranking", ascending: true },
+                  sort: { value: "score", ascending: false },
                 })),
             },
             {
@@ -142,13 +142,13 @@ export const RankingChallenge = () => {
           ]
         : [
             {
-              value: "ranking",
-              label: t("sort.ranking"),
+              value: "score",
+              label: t("sort.score"),
               sort: () =>
                 setQuery((prev) => ({
                   ...prev,
                   page: 0,
-                  sort: { value: "ranking", ascending: true },
+                  sort: { value: "score", ascending: false },
                 })),
             },
             {
@@ -195,12 +195,17 @@ export const RankingChallenge = () => {
     }));
   };
 
-  useEffect(() => {
-    setQuery((prev) => ({
-      ...prev,
-      friends: idFriends,
-    }));
-  }, [idFriends]);
+  const onChangeIsOnlyFriend = useCallback(
+    (value: boolean) => {
+      setQuery((prev) => ({
+        ...prev,
+        friends: value ? [...idFriends] : undefined,
+        isOnlyFriend: !prev.isOnlyFriend,
+        page: 0,
+      }));
+    },
+    [idFriends],
+  );
 
   useEffect(() => {
     const getRanking = () => {
@@ -214,14 +219,18 @@ export const RankingChallenge = () => {
               query.sort.ascending,
               query.page,
               query.rowsPerPage,
+              query.friends,
             ).then(({ data }) => {
-              const values: Array<any> = data.data;
-              const avg: ChallengeAvg = data.avg;
+              const values: Array<ChallengeRankingDay> = data.data;
               const count: number = data.count;
+              const canSeeDayChallenge =
+                hasPlayChallenge ||
+                query.date.diff(moment(), "day") < 0 ||
+                profile?.isadmin;
               const newdata = values.map((el) => {
                 return {
                   profile: el.profile,
-                  value: hasPlayChallenge ? (
+                  value: canSeeDayChallenge ? (
                     <TableCell
                       sx={{
                         p: px(4),
@@ -235,11 +244,9 @@ export const RankingChallenge = () => {
                     <></>
                   ),
                   rank: el.ranking,
-                  uuid: el.uuid,
                 };
               });
               setTotal(count);
-              setAvg(avg);
               setData(newdata);
               setLoading(false);
             });
@@ -252,9 +259,9 @@ export const RankingChallenge = () => {
             query.sort.ascending,
             query.page,
             query.rowsPerPage,
+            query.friends,
           ).then(({ data }) => {
-            const values: Array<any> = data.data;
-            const avg: ChallengeAvg = data.avg;
+            const values: Array<ChallengeRankingMonth> = data.data;
             const count: number = data.count;
             const newdata = values.map((el) => {
               return {
@@ -308,7 +315,6 @@ export const RankingChallenge = () => {
               };
             });
             setTotal(count);
-            setAvg(avg);
             setData(newdata);
             setLoading(false);
           });
@@ -320,9 +326,9 @@ export const RankingChallenge = () => {
             query.sort.ascending,
             query.page,
             query.rowsPerPage,
+            query.friends,
           ).then(({ data }) => {
-            const values: Array<any> = data.data;
-            const avg: ChallengeAvg = data.avg;
+            const values: Array<ChallengeRankingWeek> = data.data;
             const count: number = data.count;
             const newdata = values.map((el) => {
               return {
@@ -376,7 +382,6 @@ export const RankingChallenge = () => {
               };
             });
             setTotal(count);
-            setAvg(avg);
             setData(newdata);
             setLoading(false);
           });
@@ -387,9 +392,9 @@ export const RankingChallenge = () => {
             query.sort.ascending,
             query.page,
             query.rowsPerPage,
+            query.friends,
           ).then(({ data }) => {
-            const values: Array<any> = data.data;
-            const avg: ChallengeAvg = data.avg;
+            const values: Array<ChallengeRankingAllTime> = data.data;
             const count: number = data.count;
             const newdata = values.map((el) => {
               return {
@@ -443,7 +448,6 @@ export const RankingChallenge = () => {
               };
             });
             setTotal(count);
-            setAvg(avg);
             setData(newdata);
             setLoading(false);
           });
@@ -472,7 +476,7 @@ export const RankingChallenge = () => {
                   <WinBlock value={champ} />
                 </TableCell>
               ),
-              rank: page * rowsPerPage + index + 1,
+              rank: query.page * query.rowsPerPage + index + 1,
             };
           });
           setData(newdata);
@@ -499,42 +503,6 @@ export const RankingChallenge = () => {
     return result;
   }, [query]);
 
-  const dataDisplay = useMemo(() => {
-    return [...data].map((el) => ({
-      ...el,
-      extra:
-        query.typeperdate === ClassementChallengeTimeEnum.day ? (
-          <>
-            {(hasPlayChallenge || query.date.diff(moment(), "day") < 0) && (
-              <TableCell sx={{ p: px(4), color: "inherit" }} width={40}>
-                <Link
-                  to={`/challenge/game/${el.uuid}`}
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                >
-                  <VisibilityIcon fontSize="small" />
-                </Link>
-              </TableCell>
-            )}
-          </>
-        ) : (
-          <TableCell sx={{ p: px(4), color: "inherit" }} width={40}>
-            <Link
-              to={`/challenge/profil/${el.profile.id}`}
-              style={{
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <VisibilityIcon fontSize="small" />
-            </Link>
-          </TableCell>
-        ),
-    }));
-  }, [data, hasPlayChallenge, query.typeperdate, query.date]);
-
   return (
     <Grid container spacing={1} justifyContent="center">
       <Grid size={12}>
@@ -555,7 +523,7 @@ export const RankingChallenge = () => {
               setQuery((prev) => ({
                 ...prev,
                 type: value,
-                sort: { value: "ranking", ascending: true },
+                sort: { value: "points", ascending: false },
                 typeperdate: ClassementChallengeTimeEnum.day,
               }));
             }
@@ -584,7 +552,7 @@ export const RankingChallenge = () => {
                 ...prev,
                 sort:
                   value === ClassementChallengeTimeEnum.day
-                    ? { value: "ranking", ascending: true }
+                    ? { value: "score", ascending: false }
                     : prev.sort,
                 typeperdate: value as ClassementChallengeTimeEnum,
                 page: 0,
@@ -616,26 +584,21 @@ export const RankingChallenge = () => {
                   <ResultDayChallengeBlock
                     date={query.date}
                     profile={profile}
-                    avg={avg}
                   />
                 ),
                 week: (
                   <ResultWeekChallengeBlock
                     date={query.date}
                     profile={profile}
-                    avg={avg}
                   />
                 ),
                 month: (
                   <ResultMonthChallengeBlock
                     date={query.date}
                     profile={profile}
-                    avg={avg}
                   />
                 ),
-                alltime: (
-                  <ResultAllTimeChallengeBlock profile={profile} avg={avg} />
-                ),
+                alltime: <ResultAllTimeChallengeBlock profile={profile} />,
               }[query.typeperdate]
             }
           </Grid>
@@ -682,21 +645,18 @@ export const RankingChallenge = () => {
         </Box>
         {profile && (
           <OnlyFriendSwitch
-            isOnlyFriend={isOnlyFriend}
-            onChange={(value) => {
-              setPage(0);
-              setIsOnlyFriend(value);
-            }}
+            isOnlyFriend={query.isOnlyFriend}
+            onChange={onChangeIsOnlyFriend}
           />
         )}
       </Grid>
       <Grid size={12}>
-        <RankingChallengeTable data={dataDisplay} loading={loading} />
+        <RankingChallengeTable data={data} loading={loading} />
         <Pagination
           total={total}
-          page={page}
+          page={query.page}
           handleChangePage={handleChangePage}
-          rowsPerPage={rowsPerPage}
+          rowsPerPage={query.rowsPerPage}
         />
       </Grid>
     </Grid>

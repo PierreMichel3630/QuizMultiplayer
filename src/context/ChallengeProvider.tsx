@@ -1,12 +1,9 @@
 import moment from "moment";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
-  selectBestRankingChallengeByDay,
-  selectBestRankingChallengeByMonth,
-  selectBestRankingChallengeByWeek,
+  selectChallengeMonthPaginate,
+  selectChallengeWeekPaginate,
   selectFirstRankingChallengeByDay,
-  selectFirstRankingChallengeByMonth,
-  selectFirstRankingChallengeByWeek,
 } from "src/api/challenge";
 import {
   ChallengeRankingDay,
@@ -23,16 +20,10 @@ const ChallengeContext = createContext<{
   winDay: ChallengeRankingDay | undefined;
   winWeek: ChallengeRankingWeek | undefined;
   winMonth: ChallengeRankingMonth | undefined;
-  allTimeDay: ChallengeRankingDay | undefined;
-  allTimeWeek: ChallengeRankingWeek | undefined;
-  allTimeMonth: ChallengeRankingMonth | undefined;
 }>({
   winDay: undefined,
   winWeek: undefined,
   winMonth: undefined,
-  allTimeDay: undefined,
-  allTimeWeek: undefined,
-  allTimeMonth: undefined,
 });
 
 export const useChallenge = () => useContext(ChallengeContext);
@@ -40,24 +31,14 @@ export const useChallenge = () => useContext(ChallengeContext);
 export const ChallengeProvider = ({ children }: Props) => {
   const { language } = useUser();
   const [winDay, setWinDay] = useState<ChallengeRankingDay | undefined>(
-    undefined
+    undefined,
   );
   const [winWeek, setWinWeek] = useState<ChallengeRankingWeek | undefined>(
-    undefined
+    undefined,
   );
   const [winMonth, setWinMonth] = useState<ChallengeRankingMonth | undefined>(
-    undefined
+    undefined,
   );
-
-  const [allTimeDay, setAllTimeDay] = useState<ChallengeRankingDay | undefined>(
-    undefined
-  );
-  const [allTimeWeek, setAllTimeWeek] = useState<
-    ChallengeRankingWeek | undefined
-  >(undefined);
-  const [allTimeMonth, setAllTimeMonth] = useState<
-    ChallengeRankingMonth | undefined
-  >(undefined);
 
   useEffect(() => {
     const getRankingDay = () => {
@@ -65,32 +46,37 @@ export const ChallengeProvider = ({ children }: Props) => {
       selectFirstRankingChallengeByDay(date.format("YYYY-MM-DD")).then(
         ({ data }) => {
           setWinDay(data);
-        }
+        },
       );
-      selectBestRankingChallengeByDay().then(({ data }) => {
-        setAllTimeDay(data);
-      });
     };
     const getRankingWeek = () => {
       const date = moment().subtract(1, "weeks");
-      selectFirstRankingChallengeByWeek(date.format("WW/YYYY")).then(
-        ({ data }) => {
-          setWinWeek(data);
+      selectChallengeWeekPaginate(
+        date.format("WW/YYYY"),
+        "",
+        "score",
+        false,
+        0,
+        1,
+      ).then(({ data }) => {
+        if (data?.data.length === 1) {
+          setWinWeek(data?.data[0]);
         }
-      );
-      selectBestRankingChallengeByWeek().then(({ data }) => {
-        setAllTimeWeek(data);
       });
     };
     const getRankingMonth = () => {
       const date = moment().subtract(1, "month");
-      selectFirstRankingChallengeByMonth(date.format("MM/YYYY")).then(
-        ({ data }) => {
-          setWinMonth(data);
+      selectChallengeMonthPaginate(
+        date.format("MM/YYYY"),
+        "",
+        "score",
+        false,
+        0,
+        1,
+      ).then(({ data }) => {
+        if (data?.data.length === 1) {
+          setWinMonth(data?.data[0]);
         }
-      );
-      selectBestRankingChallengeByMonth().then(({ data }) => {
-        setAllTimeMonth(data);
       });
     };
     getRankingDay();
@@ -103,11 +89,8 @@ export const ChallengeProvider = ({ children }: Props) => {
       winDay,
       winWeek,
       winMonth,
-      allTimeDay,
-      allTimeWeek,
-      allTimeMonth,
     }),
-    [allTimeDay, allTimeWeek, allTimeMonth, winDay, winMonth, winWeek]
+    [winDay, winMonth, winWeek],
   );
 
   return (

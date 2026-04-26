@@ -696,7 +696,8 @@
       "requiredpassword": "Veuillez saisir un mot de passe",
       "requiredmail": "Veuillez saisir une adresse mail",
       "formatmail": "Veuillez saisir une adresse mail valide",
-      "errorconnect": "L'adresse email ou le mot de passe est erroné"
+      "errorconnect": "L'adresse email ou le mot de passe est erroné",
+      "errorconfirmmail": "Votre adresse email n'a pas été confirmée, veuillez cliquer sur le lien reçu par email."
     },
     "register": {
       "username": "Pseudonyme *",
@@ -717,7 +718,9 @@
       "formatmail": "Veuillez saisir une adresse mail valide",
       "alreadyaccount": "Déjà un compte ?",
       "connect": "Connectez-vous",
-      "errorcreatemail": "L'adresse email est déjà utilisée"
+      "errorcreatemail": "L'adresse email est déjà utilisée",
+      "emailsend": "Un email de validation a été envoyé à l’adresse <b>{{mail}}</b> afin de finaliser votre inscription sur l’application.",
+      "emailsend2": "Merci de vérifier votre boîte de réception (ainsi que vos courriers indésirables si nécessaire) et de cliquer sur le lien de confirmation."
     },
     "forgotpassword": {
       "forgotpassword": "Mot de passe oublié ?",
@@ -962,7 +965,8 @@
     "ranking": "Trier par classement",
     "time": "Trier par temps de réponse",
     "attempts": "Trier par nombre de tentatives",
-    "points": "Trier par score",
+    "score": "Trier par score",
+    "points": "Trier par points",
     "pointsavg": "Trier par score moy.",
     "games": "Trier par nombre de partie"
   },
@@ -1109,6 +1113,24 @@
     "ordinal_other": "ème"
   },
   "patchnote": {
+    "2.2.7": {
+      "version": "2.2.7",
+      "date": "26/04/2026",
+      "changes": [
+      ],
+      "bug": [
+      ]
+    },
+    "2.2.6": {
+      "version": "2.2.6",
+      "date": "26/04/2026",
+      "changes": [
+        "Optimisation de la recherche des défis du jour."
+      ],
+      "bug": [
+        "Mauvaise suppression des parties dans le cache qui entraîner des erreurs de quota."
+      ]
+    },
     "2.2.5": {
       "version": "2.2.5",
       "date": "21/04/2026",

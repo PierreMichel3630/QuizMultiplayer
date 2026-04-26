@@ -71,7 +71,7 @@ export interface ChallengeRankingWeek extends ChallengeRankingDate {
 export interface ChallengeRankingDay extends ChallengeRankingDate {
   date: Date;
   questions: Array<QuestionResult>;
-  version: number
+  version: number;
 }
 
 export interface ExtraChallenge {
@@ -88,4 +88,5 @@ export interface ValueExtraChallenge {
 export interface ChallengeAvg {
   score: number;
   time: number;
+  games: number;
 }

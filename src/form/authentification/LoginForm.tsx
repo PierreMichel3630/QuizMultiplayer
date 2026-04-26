@@ -68,6 +68,9 @@ export const LoginForm = () => {
           if (error.message === "Invalid login credentials") {
             setSeverity("error");
             setMessage(t("form.login.errorconnect"));
+          } else if (error.code === "email_not_confirmed") {
+            setSeverity("error");
+            setMessage(t("form.login.errorconfirmmail"));
           } else {
             setSeverity("error");
             setMessage(t("commun.error"));

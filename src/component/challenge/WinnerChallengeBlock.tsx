@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { percent, px } from "csx";
 import moment from "moment";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useChallenge } from "src/context/ChallengeProvider";
 import {
@@ -10,7 +10,6 @@ import {
 } from "src/models/enum/ChallengeEnum";
 import { Profile } from "src/models/Profile";
 import { AvatarAccountBadge } from "../avatar/AvatarAccount";
-import { GroupButtonResultChallenge } from "../button/ButtonGroup";
 
 import { Link } from "react-router-dom";
 import crownalltime from "src/assets/crown/crownalltime.png";
@@ -27,15 +26,7 @@ import {
 export const WinnerChallengeBlock = () => {
   const { t } = useTranslation();
 
-  const { winDay, winWeek, winMonth, allTimeDay, allTimeWeek, allTimeMonth } =
-    useChallenge();
-
-  const [select, setSelect] = useState(ChallengeTypeResultEnum.winner);
-
-  const isWin = useMemo(
-    () => select === ChallengeTypeResultEnum.winner,
-    [select]
-  );
+  const { winDay, winWeek, winMonth } = useChallenge();
 
   const getDate = (format: string, dateString?: string | Date) => {
     let result = "";
@@ -62,30 +53,27 @@ export const WinnerChallengeBlock = () => {
           justifyContent: "space-between",
           alignItems: "center",
         }}
-        size={12}>
+        size={12}
+      >
         <Typography variant="h4">{t("commun.titleholder")}</Typography>
-        <GroupButtonResultChallenge selected={select} onChange={setSelect} />
       </Grid>
       <ResultChallengeBlock
-        profile={isWin ? winDay?.profile : allTimeDay?.profile}
+        profile={winDay?.profile}
         label={t("commun.day")}
-        date={getDate(
-          "day",
-          isWin ? winDay?.date : allTimeDay?.date
-        )}
-        extra={<ResultChallengeDay value={isWin ? winDay : allTimeDay} />}
+        date={getDate("day", winDay?.date)}
+        extra={<ResultChallengeDay value={winDay} />}
       />
       <ResultChallengeBlock
-        profile={isWin ? winWeek?.profile : allTimeWeek?.profile}
+        profile={winWeek?.profile}
         label={t("commun.week")}
-        date={getDate("week", isWin ? winWeek?.week : allTimeWeek?.week)}
-        extra={<ResultChallengeWeek value={isWin ? winWeek : allTimeWeek} />}
+        date={getDate("week", winWeek?.week)}
+        extra={<ResultChallengeWeek value={winWeek} />}
       />
       <ResultChallengeBlock
-        profile={isWin ? winMonth?.profile : allTimeMonth?.profile}
+        profile={winMonth?.profile}
         label={t("commun.month")}
-        date={getDate("month", isWin ? winMonth?.month : allTimeMonth?.month)}
-        extra={<ResultChallengeMonth value={isWin ? winMonth : allTimeMonth} />}
+        date={getDate("month", winMonth?.month)}
+        extra={<ResultChallengeMonth value={winMonth} />}
       />
     </Grid>
   );

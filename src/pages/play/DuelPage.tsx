@@ -28,6 +28,7 @@ import { ResponseDuelV2 } from "src/models/Response";
 import { StatusGameDuel } from "src/models/enum/StatusGame";
 import { Colors } from "src/style/Colors";
 import { Bot, getBotByUuid, getResponseBot } from "src/utils/bot";
+import { PREFIX_LOCALSTORAGE_GAME } from "src/utils/config";
 import { decrypt } from "src/utils/crypt";
 import { PreloadImages } from "src/utils/preload";
 import { verifyResponseCrypt } from "src/utils/response";
@@ -45,7 +46,7 @@ export default function DuelPage() {
   const [players, setPlayers] = useState<Array<string>>([]);
   const [game, setGame] = useState<undefined | DuelGame>(undefined);
   const [channel, setChannel] = useState<RealtimeChannel | undefined>(
-    undefined
+    undefined,
   );
   const [timer, setTimer] = useState<undefined | number>(undefined);
   const [questions, setQuestions] = useState<Array<QuestionDuel>>([]);
@@ -72,11 +73,11 @@ export default function DuelPage() {
 
   const isPlayer1 = useMemo(
     () => uuid === game?.player1?.id,
-    [uuid, game?.player1?.id]
+    [uuid, game?.player1?.id],
   );
   const isPlayer2 = useMemo(
     () => uuid === game?.player2?.id,
-    [uuid, game?.player2?.id]
+    [uuid, game?.player2?.id],
   );
 
   useEffect(() => {
@@ -131,7 +132,7 @@ export default function DuelPage() {
             if (res.status === StatusGameDuel.CANCEL) {
               navigate(`/recapduel/${res.uuid}`);
             }
-          }
+          },
         )
         .on("broadcast", { event: "updategame" }, (value) => {
           const res = value.payload as DuelGame;
@@ -170,7 +171,7 @@ export default function DuelPage() {
           if (res.uuid === uuidAdverse) {
             setResponsesAdverse((prev) => {
               const question = [...prev].find(
-                (el) => el.question === res.question
+                (el) => el.question === res.question,
               );
               return question ? prev : [...prev, res];
             });
@@ -201,7 +202,7 @@ export default function DuelPage() {
           : false;
         const answer = decrypt(question.answer) as string;
         const response = [...question.answers].findIndex(
-          (el) => el.id === value.value
+          (el) => el.id === value.value,
         );
         if (game?.player1.id === value.uuid) {
           setResponse((prev) => ({
@@ -267,17 +268,18 @@ export default function DuelPage() {
         }
       }
     },
-    [audio, channel, game, question, time, language]
+    [audio, channel, game, question, time, language],
   );
 
   const goNextQuestion = useCallback(() => {
     if (uuidGame) {
+      const localStorageUUID = PREFIX_LOCALSTORAGE_GAME + uuidGame;
       const index = question
         ? questions.findIndex((el) => el.id === question.id)
         : undefined;
 
       const questionsgame: Array<unknown> = JSON.parse(
-        localStorage.getItem(uuidGame) ?? "[]"
+        localStorage.getItem(localStorageUUID) ?? "[]",
       );
       questionsgame.push({
         ...question,
@@ -286,7 +288,7 @@ export default function DuelPage() {
         timePlayer2: response?.timePlayer2,
         responsePlayer2: response?.responsePlayer2,
       });
-      localStorage.setItem(uuidGame, JSON.stringify(questionsgame));
+      localStorage.setItem(localStorageUUID, JSON.stringify(questionsgame));
       if (index === undefined || index < questions.length - 1) {
         const idNextQuestion = index !== undefined ? index + 1 : 0;
         const question = questions[idNextQuestion];
@@ -307,7 +309,7 @@ export default function DuelPage() {
             navigate(`/recapduel/${uuidGame}`);
           });
         }
-        localStorage.removeItem(uuidGame);
+        localStorage.removeItem(localStorageUUID);
       }
     }
   }, [navigate, question, questions, response, uuidGame, uuid, bot]);
@@ -329,7 +331,7 @@ export default function DuelPage() {
               ...prev,
               answer: answer,
             }
-          : prev
+          : prev,
       );
     }
     setTimer(undefined);
@@ -355,7 +357,7 @@ export default function DuelPage() {
   const updateScore = (
     set: Dispatch<SetStateAction<number>>,
     result: boolean,
-    time: number
+    time: number,
   ) => {
     if (result) {
       const score = POINTSCORRECTANSWER - Math.round(time / 1000);
@@ -381,7 +383,7 @@ export default function DuelPage() {
   useEffect(() => {
     if (question) {
       const response = [...responsesAdverse].find(
-        (el) => el.question === question.id
+        (el) => el.question === question.id,
       );
       if (response) {
         if (isPlayer1) {
@@ -450,7 +452,8 @@ export default function DuelPage() {
                         justifyContent: "flex-start",
                         gap: 1,
                       }}
-                      size={5}>
+                      size={5}
+                    >
                       <AvatarAccount
                         avatar={game.player1.avatar.icon}
                         size={50}
@@ -495,7 +498,8 @@ export default function DuelPage() {
                         justifyContent: "flex-end",
                         gap: 1,
                       }}
-                      size={5}>
+                      size={5}
+                    >
                       <Box>
                         <Typography
                           variant="h6"

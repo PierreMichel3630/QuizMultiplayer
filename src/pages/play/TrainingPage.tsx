@@ -21,6 +21,7 @@ import { getResponse, verifyResponseCrypt } from "src/utils/response";
 
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import LastPageIcon from "@mui/icons-material/LastPage";
+import { PREFIX_LOCALSTORAGE_GAME } from "src/utils/config";
 
 export default function TrainingPage() {
   const { t } = useTranslation();
@@ -30,7 +31,7 @@ export default function TrainingPage() {
   const [game, setGame] = useState<undefined | TrainingGame>(undefined);
 
   const [question, setQuestion] = useState<undefined | QuestionTraining>(
-    undefined
+    undefined,
   );
   const [nextQuestion, setNextQuestion] = useState<
     undefined | QuestionTraining
@@ -47,7 +48,10 @@ export default function TrainingPage() {
   const [badAnswer, setBadAnswer] = useState(0);
   const [images, setImages] = useState<Array<string>>([]);
 
-  const localStorageId = useMemo(() => `game-training-${uuidGame}`, [uuidGame]);
+  const localStorageId = useMemo(
+    () => `${PREFIX_LOCALSTORAGE_GAME}${uuidGame}`,
+    [uuidGame],
+  );
 
   useEffect(() => {
     if (audio) {
@@ -58,7 +62,7 @@ export default function TrainingPage() {
 
   const getQuestion = useCallback((uuid: string, isfirstquestion = false) => {
     const questionsgame: Array<unknown> = JSON.parse(
-      localStorage.getItem(`game-training-${uuid}`) ?? "[]"
+      localStorage.getItem(`game-training-${uuid}`) ?? "[]",
     );
     setIsLoadingQuestion(true);
     getQuestionTrainingGame(uuid, questionsgame).then(({ data }) => {
@@ -71,7 +75,7 @@ export default function TrainingPage() {
         if (questionSolo.typequestion === "IMAGE") {
           const images = questionSolo.answers.reduce(
             (acc, v) => (v.image ? [...acc, v.image] : acc),
-            [] as Array<string>
+            [] as Array<string>,
           );
           urls = [...urls, ...images];
         }
@@ -107,7 +111,7 @@ export default function TrainingPage() {
       const result = verifyResponseCrypt(question, language, value);
       const response = getResponse(question, language);
       const questionsgame: Array<unknown> = JSON.parse(
-        localStorage.getItem(localStorageId) ?? "[]"
+        localStorage.getItem(localStorageId) ?? "[]",
       );
       questionsgame.push({
         ...question,

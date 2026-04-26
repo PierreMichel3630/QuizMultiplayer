@@ -4,12 +4,9 @@ import { padding, percent, px } from "csx";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import {
-  countRankingChallengeAllTime,
-  selectRankingChallengeAllTimeByProfileId,
-} from "src/api/challenge";
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import {
+  ChallengeAvg,
   ChallengeRankingAllTime,
   ChallengeRankingDay,
   ChallengeRankingMonth,
@@ -26,6 +23,7 @@ import moment from "moment";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Rank } from "../ranking/Rank";
 import { CardSignalQuestion } from "./CardQuestion";
+import { selectChallengeAllTimeByProfile } from "src/api/challenge";
 
 interface Props {
   profileId: string | undefined;
@@ -38,15 +36,16 @@ export const CardChallenge = ({ profileId }: Props) => {
   const [stat, setStat] = useState<null | ChallengeRankingAllTime>(null);
 
   useEffect(() => {
-    countRankingChallengeAllTime().then(({ count }) => {
-      setNumberPlayers(count);
-    });
-  }, []);
-
-  useEffect(() => {
     if (profileId) {
-      selectRankingChallengeAllTimeByProfileId(profileId).then(({ data }) => {
-        setStat(data);
+      selectChallengeAllTimeByProfile(profileId).then(({ data }) => {
+        const values: Array<ChallengeRankingAllTime> = data.data;
+        const avg: ChallengeAvg = data.avg;
+        const count: number = data.count;
+        setStat(values[0] ?? null);
+        setNumberPlayers(count);
+        console.log(values);
+        console.log(avg);
+        console.log(count);
       });
     }
   }, [profileId]);
@@ -234,12 +233,9 @@ export const CardChallengeDay = ({ value }: CardChallengeDayProps) => {
             </Typography>
           </Box>
         </Grid>
-
-        {showGame && (
-          <Grid sx={{ display: "flex" }}>
-            <VisibilityIcon sx={{ color: "text.primary" }} />
-          </Grid>
-        )}
+        <Grid sx={{ display: "flex", minWidth: px(24) }}>
+          {showGame && <VisibilityIcon sx={{ color: "text.primary" }} />}
+        </Grid>
         {isOpen && (
           <Grid size={12}>
             <Grid container spacing={1}>

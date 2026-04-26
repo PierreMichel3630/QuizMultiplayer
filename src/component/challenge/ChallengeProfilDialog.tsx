@@ -14,8 +14,8 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  selectChallengeAllTimeByProfile,
   selectChallengeGameByProfileId,
-  selectRankingChallengeAllTimeByProfileId,
   selectRankingChallengeMonthByProfileId,
   selectRankingChallengeWeekByProfileId,
 } from "src/api/challenge";
@@ -23,11 +23,9 @@ import {
   ChallengeRankingAllTime,
   ChallengeRankingDay,
   ChallengeRankingMonth,
-  ChallengeRankingWeek
+  ChallengeRankingWeek,
 } from "src/models/Challenge";
-import {
-  ClassementChallengeTimeListEnum
-} from "src/models/enum/ClassementEnum";
+import { ClassementChallengeTimeListEnum } from "src/models/enum/ClassementEnum";
 import { GroupButtonChallengeTime } from "../button/ButtonGroup";
 import {
   CardChallengeAllTime,
@@ -72,8 +70,9 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
     setStatAllTime(null);
     if (data) {
       const profile = data.profile;
-      selectRankingChallengeAllTimeByProfileId(profile.id).then(({ data }) => {
-        setStatAllTime(data);
+      selectChallengeAllTimeByProfile(profile.id).then(({ data }) => {
+        const values: Array<ChallengeRankingAllTime> = data.data;
+        setStatAllTime(values[0] ?? null);
       });
     }
   }, [data]);
@@ -220,7 +219,7 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
                     <Grid size={12}>
                       <Divider sx={{ borderBottomWidth: 5 }} />
                     </Grid>
-                    {statDay.map((stat , index) => (
+                    {statDay.map((stat, index) => (
                       <Grid key={index} size={12}>
                         <CardChallengeDay value={stat} />
                       </Grid>

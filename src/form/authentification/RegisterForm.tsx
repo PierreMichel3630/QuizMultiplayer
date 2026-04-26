@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   FormControl,
   FormHelperText,
@@ -11,31 +12,29 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import * as Yup from "yup";
 
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { Box } from "@mui/system";
 import { Link, useNavigate } from "react-router-dom";
 import { selectAvatarFree } from "src/api/avatar";
+import { countPlayersSameUsername } from "src/api/profile";
 import { signUpWithEmail } from "src/api/supabase";
 import { AvatarLoginSelector } from "src/component/avatar/AvatarSelector";
 import { RegisterCountryBlock } from "src/component/MyCountryBlock";
-import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
-import { useUser } from "src/context/UserProvider";
 import { Avatar } from "src/models/Avatar";
 import { Country } from "src/models/Country";
-import { countPlayersSameUsername } from "src/api/profile";
 
 export const RegisterForm = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { login } = useAuth();
-  const { setUuid } = useUser();
   const { setMessage, setSeverity } = useMessage();
 
   const [avatars, setAvatars] = useState<Array<Avatar>>([]);
+  const [email, setEmail] = useState<undefined | string>(undefined);
 
   useEffect(() => {
     const getAvatars = () => {
@@ -80,7 +79,7 @@ export const RegisterForm = () => {
               resolve(count === 0);
             });
           });
-        }
+        },
       )
       .test("noSpace", t("form.register.nospaceusername"), (value) => {
         const trimValue = value.replace(/\s+/g, "");
@@ -111,28 +110,17 @@ export const RegisterForm = () => {
           values.password,
           values.username,
           values.avatar,
-          values.country !== null ? values.country.id : null
+          values.country !== null ? values.country.id : null,
         );
         if (error) {
           setSeverity("error");
           setMessage(
             error.status === 422
               ? t("form.register.errorcreatemail")
-              : t("commun.error")
+              : t("commun.error"),
           );
         } else {
-          const {
-            data: { user, session },
-            error,
-          } = await login(values.email, values.password);
-          if (error) {
-            setSeverity("error");
-            setMessage(t("commun.error"));
-          }
-          if (user && session) {
-            setUuid(user.id);
-            navigate("/");
-          }
+          setEmail(values.email);
         }
       } catch (err) {
         setSeverity("error");
@@ -141,7 +129,38 @@ export const RegisterForm = () => {
     },
   });
 
-  return (
+  return email ? (
+    <Grid container spacing={3} justifyContent="center">
+      <Grid size={12}>
+        <Alert severity="success">
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            <Typography variant="body1">
+              <Trans
+                i18nKey={t("form.register.emailsend")}
+                values={{
+                  mail: email,
+                }}
+                components={{ b: <strong /> }}
+              />
+            </Typography>
+            <Typography>{t("form.register.emailsend2")}</Typography>
+          </Box>
+        </Alert>
+      </Grid>
+      <Grid>
+        <Button
+          size="large"
+          variant="contained"
+          color="secondary"
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          {t("form.register.continue")}
+        </Button>
+      </Grid>
+    </Grid>
+  ) : (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={1} justifyContent="center">
         <Grid sx={{ textAlign: "center" }} size={12}>
@@ -153,92 +172,113 @@ export const RegisterForm = () => {
           <Typography variant="caption">{t("form.mandatoryvalue")}</Typography>
         </Grid>
         <Grid size={12}>
-          <FormControl
-            fullWidth
-            error={Boolean(formik.touched.username && formik.errors.username)}
-          >
-            <InputLabel htmlFor="register-username-input">
-              {t("form.register.username")}
-            </InputLabel>
-            <OutlinedInput
-              id="register-username-input"
-              type="text"
-              value={formik.values.username}
-              name="username"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              label={t("form.register.username")}
-              inputProps={{}}
-            />
-            {formik.touched.username && formik.errors.username && (
-              <FormHelperText error id="register-error-username">
-                {formik.errors.username}
-              </FormHelperText>
-            )}
-          </FormControl>
-        </Grid>
-        <Grid size={12}>
-          <FormControl
-            fullWidth
-            error={Boolean(formik.touched.email && formik.errors.email)}
-          >
-            <InputLabel htmlFor="register-email-input">
-              {t("form.register.email")}
-            </InputLabel>
-            <OutlinedInput
-              id="register-email-input"
-              type="email"
-              value={formik.values.email}
-              name="email"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              label={t("form.register.email")}
-              inputProps={{}}
-            />
-            {formik.touched.email && formik.errors.email && (
-              <FormHelperText error id="register-error-email">
-                {formik.errors.email}
-              </FormHelperText>
-            )}
-          </FormControl>
-        </Grid>
-        <Grid size={12}>
-          <FormControl
-            fullWidth
-            error={Boolean(formik.touched.password && formik.errors.password)}
-          >
-            <InputLabel htmlFor="register-password-input">
-              {t("form.register.password")}
-            </InputLabel>
-            <OutlinedInput
-              id="register-password-input"
-              type={showPassword ? "text" : "password"}
-              value={formik.values.password}
-              name="password"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                    size="large"
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              label={t("form.register.password")}
-              inputProps={{}}
-            />
-            {formik.touched.password && formik.errors.password && (
-              <FormHelperText error id="register-error-password">
-                {formik.errors.password}
-              </FormHelperText>
-            )}
-          </FormControl>
+          <Grid container spacing={2}>
+            <Grid size={12}>
+              <FormControl
+                fullWidth
+                error={Boolean(
+                  formik.touched.username && formik.errors.username,
+                )}
+              >
+                <InputLabel htmlFor="register-username-input">
+                  {t("form.register.username")}
+                </InputLabel>
+                <OutlinedInput
+                  id="register-username-input"
+                  type="text"
+                  value={formik.values.username}
+                  name="username"
+                  onBlur={formik.handleBlur}
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                    formik.validateField("username");
+                  }}
+                  label={t("form.register.username")}
+                  inputProps={{}}
+                />
+                {formik.touched.username && formik.errors.username && (
+                  <FormHelperText error id="register-error-username">
+                    {formik.errors.username}
+                  </FormHelperText>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid size={12}>
+              <FormControl
+                fullWidth
+                error={Boolean(formik.touched.email && formik.errors.email)}
+              >
+                <InputLabel htmlFor="register-email-input">
+                  {t("form.register.email")}
+                </InputLabel>
+                <OutlinedInput
+                  id="register-email-input"
+                  type="email"
+                  value={formik.values.email}
+                  name="email"
+                  onBlur={formik.handleBlur}
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                    formik.validateField("email");
+                  }}
+                  label={t("form.register.email")}
+                  inputProps={{}}
+                />
+                {formik.touched.email && formik.errors.email && (
+                  <FormHelperText error id="register-error-email">
+                    {formik.errors.email}
+                  </FormHelperText>
+                )}
+              </FormControl>
+              <Alert severity="info">
+                Attention, un email vous sera envoyé afin de valider votre
+                compte.
+              </Alert>
+            </Grid>
+            <Grid size={12}>
+              <FormControl
+                fullWidth
+                error={Boolean(
+                  formik.touched.password && formik.errors.password,
+                )}
+              >
+                <InputLabel htmlFor="register-password-input">
+                  {t("form.register.password")}
+                </InputLabel>
+                <OutlinedInput
+                  id="register-password-input"
+                  type={showPassword ? "text" : "password"}
+                  value={formik.values.password}
+                  name="password"
+                  onBlur={formik.handleBlur}
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                    formik.validateField("password");
+                  }}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                        size="large"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label={t("form.register.password")}
+                  inputProps={{}}
+                />
+                {formik.touched.password && formik.errors.password && (
+                  <FormHelperText error id="register-error-password">
+                    {formik.errors.password}
+                  </FormHelperText>
+                )}
+              </FormControl>
+            </Grid>
+          </Grid>
         </Grid>
         <Grid sx={{ mt: 1 }} size={12}>
           <Typography variant="h6">{t("commun.myorigincountry")}</Typography>

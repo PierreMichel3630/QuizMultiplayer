@@ -32,7 +32,6 @@ import { ChallengeProfilDialog } from "../challenge/ChallengeProfilDialog";
 export interface DataRankingChallenge {
   profile: Profile;
   value: JSX.Element;
-  extra?: JSX.Element;
   rank: number;
   uuid?: string;
 }
