@@ -90,7 +90,7 @@ export default function ChallengePage() {
                 )}
               </>
             ) : (
-              <Grid size={12}>
+              <Grid>
                 <NeedConnectAlert />
               </Grid>
             )}

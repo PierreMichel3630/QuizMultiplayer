@@ -1,12 +1,11 @@
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import { Box, Divider, Grid, Paper, Typography } from "@mui/material";
+import { Box, Divider, Grid, Link, Paper, Typography } from "@mui/material";
 import { padding, percent, px } from "csx";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import {
-  ChallengeAvg,
   ChallengeRankingAllTime,
   ChallengeRankingDay,
   ChallengeRankingMonth,
@@ -18,12 +17,11 @@ import { ButtonColor } from "../Button";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import moment from "moment";
+import { selectChallengeAllTimeByProfile } from "src/api/challenge";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Rank } from "../ranking/Rank";
 import { CardSignalQuestion } from "./CardQuestion";
-import { selectChallengeAllTimeByProfile } from "src/api/challenge";
 
 interface Props {
   profileId: string | undefined;
@@ -39,13 +37,9 @@ export const CardChallenge = ({ profileId }: Props) => {
     if (profileId) {
       selectChallengeAllTimeByProfile(profileId).then(({ data }) => {
         const values: Array<ChallengeRankingAllTime> = data.data;
-        const avg: ChallengeAvg = data.avg;
         const count: number = data.count;
         setStat(values[0] ?? null);
         setNumberPlayers(count);
-        console.log(values);
-        console.log(avg);
-        console.log(count);
       });
     }
   }, [profileId]);
@@ -195,6 +189,7 @@ export const CardChallengeDay = ({ value }: CardChallengeDayProps) => {
       sx={{
         p: padding(10, 20),
         cursor: showGame ? "pointer" : "default",
+        position: "relative",
       }}
       elevation={8}
       onClick={() => {
@@ -203,40 +198,41 @@ export const CardChallengeDay = ({ value }: CardChallengeDayProps) => {
         }
       }}
     >
-      <Grid
-        container
-        spacing={1}
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <Grid>
-          <Typography variant="h6">
-            {moment(value.date).format("DD/MM/YY")}
-          </Typography>
+      <Grid container alignItems="center" justifyContent="space-between">
+        <Grid size={12}>
+          <Grid
+            container
+            alignItems="center"
+            justifyContent="space-between"
+            spacing={1}
+          >
+            <Grid size={3} sx={{ display: "flex", justifyContent: "center" }}>
+              <Typography variant="h6">
+                {moment(value.date).format("DD/MM/YY")}
+              </Typography>
+            </Grid>
+            <Grid size={3} sx={{ display: "flex", justifyContent: "center" }}>
+              <Rank value={value.ranking} />
+            </Grid>
+            <Grid size={3} sx={{ display: "flex", justifyContent: "center" }}>
+              <Box sx={{ display: "flex", gap: px(2), alignItems: "center" }}>
+                <QuestionMarkIcon fontSize="small" />
+                <Typography variant="h6" noWrap>
+                  {showGame ? value.score : "-"} / {NUMBER_QUESTIONS_CHALLENGE}
+                </Typography>
+              </Box>
+            </Grid>
+            <Grid size={3} sx={{ display: "flex", justifyContent: "center" }}>
+              <Box sx={{ display: "flex", gap: px(2), alignItems: "center" }}>
+                <AccessTimeIcon fontSize="small" />
+                <Typography variant="h6" noWrap>
+                  {showGame ? `${(value.time / 1000).toFixed(2)}s` : "--.--s"}
+                </Typography>
+              </Box>
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid>
-          <Rank value={value.ranking} />
-        </Grid>
-        <Grid>
-          <Box sx={{ display: "flex", gap: px(2), alignItems: "center" }}>
-            <QuestionMarkIcon fontSize="small" />
-            <Typography variant="h6" noWrap>
-              {value.score} / {NUMBER_QUESTIONS_CHALLENGE}
-            </Typography>
-          </Box>
-        </Grid>
-        <Grid>
-          <Box sx={{ display: "flex", gap: px(2), alignItems: "center" }}>
-            <AccessTimeIcon fontSize="small" />
-            <Typography variant="h6" noWrap>
-              {(value.time / 1000).toFixed(2)}s
-            </Typography>
-          </Box>
-        </Grid>
-        <Grid sx={{ display: "flex", minWidth: px(24) }}>
-          {showGame && <VisibilityIcon sx={{ color: "text.primary" }} />}
-        </Grid>
-        {isOpen && (
+        {isOpen ? (
           <Grid size={12}>
             <Grid container spacing={1}>
               {value.questions.map((el, index) => (
@@ -257,6 +253,16 @@ export const CardChallengeDay = ({ value }: CardChallengeDayProps) => {
               ))}
             </Grid>
           </Grid>
+        ) : (
+          <>
+            {showGame && (
+              <Grid size={12} sx={{ textAlign: "center" }}>
+                <Link>
+                  <Typography variant="body1">Voir la partie</Typography>
+                </Link>
+              </Grid>
+            )}
+          </>
         )}
       </Grid>
     </Paper>

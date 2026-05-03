@@ -549,6 +549,7 @@ export const RankingChallenge = () => {
                     date={date}
                     profile={profile}
                     avg={avg}
+                    total={total}
                   />
                 ),
                 week: (
@@ -556,6 +557,7 @@ export const RankingChallenge = () => {
                     date={date}
                     profile={profile}
                     avg={avg}
+                    total={total}
                   />
                 ),
                 month: (
@@ -563,10 +565,15 @@ export const RankingChallenge = () => {
                     date={date}
                     profile={profile}
                     avg={avg}
+                    total={total}
                   />
                 ),
                 alltime: (
-                  <ResultAllTimeChallengeBlock profile={profile} avg={avg} />
+                  <ResultAllTimeChallengeBlock
+                    profile={profile}
+                    avg={avg}
+                    total={total}
+                  />
                 ),
               }[tabTime]
             }

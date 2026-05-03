@@ -18,7 +18,6 @@ import { percent, px } from "csx";
 import moment from "moment";
 import {
   Fragment,
-  MutableRefObject,
   useCallback,
   useEffect,
   useMemo,
@@ -65,15 +64,9 @@ interface Props {
     link: string;
     label: string;
   };
-  lastItemRef?: MutableRefObject<HTMLTableRowElement | null>;
 }
 
-export const RankingTable = ({
-  data,
-  navigation,
-  loading = false,
-  lastItemRef,
-}: Props) => {
+export const RankingTable = ({ data, navigation, loading = false }: Props) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const { friends } = useApp();
@@ -90,11 +83,11 @@ export const RankingTable = ({
                   value.user2.id === profile.id
                     ? [...acc, value.user1.id]
                     : [...acc, value.user2.id],
-                [] as Array<string>
+                [] as Array<string>,
               ),
           ]
         : [],
-    [friends, profile]
+    [friends, profile],
   );
 
   const getIcon = (rank: number) => {
@@ -152,10 +145,9 @@ export const RankingTable = ({
                       sx={{
                         backgroundColor: color,
                       }}
-                      ref={index === data.length - 1 ? lastItemRef : null}
                     >
                       <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
-                        {getIcon(index + 1)}
+                        {getIcon(el.rank)}
                       </TableCell>
                       <TableCell sx={{ p: px(4), width: px(50) }}>
                         {el.profile ? (
@@ -329,7 +321,7 @@ export const RankingTableSoloDuel = ({
       mode === "ALL"
         ? [{ label: t("commun.solo") }, { label: t("commun.duel") }]
         : [],
-    [mode, t]
+    [mode, t],
   );
   const [data, setData] = useState<Array<DataRanking>>([]);
 
@@ -345,11 +337,11 @@ export const RankingTableSoloDuel = ({
                   value.user2.id === profile.id
                     ? [...acc, value.user1.id]
                     : [...acc, value.user2.id],
-                [] as Array<string>
+                [] as Array<string>,
               ),
           ]
         : [],
-    [friends, profile]
+    [friends, profile],
   );
 
   useEffect(() => {
@@ -372,7 +364,7 @@ export const RankingTableSoloDuel = ({
             })) as Array<DataRanking>;
             setData(newData);
             setIsLoading(false);
-          }
+          },
         );
       } else {
         selectRankingDuelByThemeAndProfile(theme.id, idProfile, max).then(
@@ -385,7 +377,7 @@ export const RankingTableSoloDuel = ({
             })) as Array<DataRanking>;
             setData(newData);
             setIsLoading(false);
-          }
+          },
         );
       }
     }
@@ -429,7 +421,7 @@ export const RankingTableSoloDuelPaginate = ({
       mode === "ALL"
         ? [{ label: t("commun.solo") }, { label: t("commun.duel") }]
         : [],
-    [mode, t]
+    [mode, t],
   );
 
   const [isLoading, setIsLoading] = useState(false);
@@ -453,14 +445,14 @@ export const RankingTableSoloDuelPaginate = ({
             })) as Array<DataRanking>;
             setIsEnd(result.length < ITEMPERPAGE);
             setData((prev) =>
-              page === 0 ? [...newData] : [...prev, ...newData]
+              page === 0 ? [...newData] : [...prev, ...newData],
             );
             setIsLoading(false);
-          }
+          },
         );
       }
     },
-    [isEnd, theme, isLoading]
+    [isEnd, theme, isLoading],
   );
 
   const getRankingSolo = useCallback(
@@ -481,14 +473,14 @@ export const RankingTableSoloDuelPaginate = ({
             })) as Array<DataRanking>;
             setIsEnd(result.length < ITEMPERPAGE);
             setData((prev) =>
-              page === 0 ? [...newData] : [...prev, ...newData]
+              page === 0 ? [...newData] : [...prev, ...newData],
             );
             setIsLoading(false);
-          }
+          },
         );
       }
     },
-    [isLoading, theme, isEnd, t]
+    [isLoading, theme, isEnd, t],
   );
 
   useEffect(() => {
@@ -542,8 +534,7 @@ export const RankingTableSoloDuelPaginate = ({
           }}
         />
       )}
-      <RankingTable data={data} loading={isLoading} lastItemRef={lastItemRef} />
+      <RankingTable data={data} loading={isLoading} />
     </Box>
   );
 };
-

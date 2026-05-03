@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { percent, px } from "csx";
 import moment from "moment";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useChallenge } from "src/context/ChallengeProvider";
 import {
@@ -11,7 +11,6 @@ import {
 import { Profile } from "src/models/Profile";
 import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 
-import { Link } from "react-router-dom";
 import crownalltime from "src/assets/crown/crownalltime.png";
 import crownday from "src/assets/crown/crownday.png";
 import crownmonth from "src/assets/crown/crownmonth.png";
@@ -22,11 +21,16 @@ import {
   ResultChallengeMonth,
   ResultChallengeWeek,
 } from "./ChallengeBlock";
+import { ChallengeProfilDialog } from "./ChallengeProfilDialog";
 
 export const WinnerChallengeBlock = () => {
   const { t } = useTranslation();
 
   const { winDay, winWeek, winMonth } = useChallenge();
+
+  const [profile, setProfile] = useState<
+    Profile | undefined
+  >(undefined);
 
   const getDate = (format: string, dateString?: string | Date) => {
     let result = "";
@@ -60,20 +64,28 @@ export const WinnerChallengeBlock = () => {
       <ResultChallengeBlock
         profile={winDay?.profile}
         label={t("commun.day")}
-        date={getDate("day", winDay?.date)}
+        date={getDate("day", winDay?.challenge.date)}
         extra={<ResultChallengeDay value={winDay} />}
+        onSelect={() => setProfile(winDay?.profile) }
       />
       <ResultChallengeBlock
         profile={winWeek?.profile}
         label={t("commun.week")}
         date={getDate("week", winWeek?.week)}
         extra={<ResultChallengeWeek value={winWeek} />}
+        onSelect={() => setProfile(winWeek?.profile) }
       />
       <ResultChallengeBlock
         profile={winMonth?.profile}
         label={t("commun.month")}
         date={getDate("month", winMonth?.month)}
         extra={<ResultChallengeMonth value={winMonth} />}
+        onSelect={() => setProfile(winMonth?.profile) }
+      />
+      <ChallengeProfilDialog
+        profileId={profile?.id}
+        close={() => setProfile(undefined)}
+        open={profile !== undefined}
       />
     </Grid>
   );
@@ -85,6 +97,7 @@ interface PropsWinnerBlock {
   date: string;
   image?: string;
   extra?: JSX.Element;
+  onSelect: () => void;
 }
 
 const ResultChallengeBlock = ({
@@ -93,13 +106,12 @@ const ResultChallengeBlock = ({
   date,
   image,
   extra,
+  onSelect,
 }: PropsWinnerBlock) => {
   return (
-    <Grid size={4}>
-      <Link
-        to={`/challenge/profil/${profile?.id}`}
-        style={{
-          textDecoration: "inherit",
+    <Grid size={4} sx={{ cursor: "pointer" }} onClick={onSelect}>
+      <Box
+        sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -129,7 +141,7 @@ const ResultChallengeBlock = ({
           </>
         )}
         {extra}
-      </Link>
+      </Box>
     </Grid>
   );
 };

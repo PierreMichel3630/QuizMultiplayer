@@ -28,8 +28,8 @@
     "rankingyear": "Classement Année",
     "rankingalltime": "Classement All Time",
     "games": "Parties",
-    "game_one": "{{count}} Partie",
-    "game_other": "{{count}} Parties",
+    "game_one": "<bold>{{count}}</bold> Partie",
+    "game_other": "<bold>{{count}}</bold> Parties",
     "devine": "Devine la réponse !",
     "startgame": "La partie va bientôt commencer",
     "start": "Commencer",
@@ -903,7 +903,9 @@
     "vote": "Votre vote a été pris en compte.",
     "addquestionpropose": "Votre proposition de question a été prise en compte.",
     "nochallengegame": "Cette langue ne dispose pas de Défis du Jour",
-    "sendemailtoallusers": "Attention cette email sera envoyé à tous les utilisateurs de l'application ayant un compte."
+    "sendemailtoallusers": "Attention cette email sera envoyé à tous les utilisateurs de l'application ayant un compte.",
+    "noresultsearch": "Aucun résultat ne correspond à votre recherche.",
+    "noresultgame": "Aucune partie jouée."
   },
   "confidentiality": {
     "title": "Politique de confidentialité",

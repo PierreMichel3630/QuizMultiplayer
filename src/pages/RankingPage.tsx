@@ -423,7 +423,7 @@ export default function RankingPage() {
         </Grid>
       )}
       <Grid sx={{ p: 1 }} size={12}>
-        <RankingTable data={data} loading={!isEnd} lastItemRef={lastItemRef} />
+        <RankingTable data={data} loading={!isEnd} />
       </Grid>
     </Grid>
   );

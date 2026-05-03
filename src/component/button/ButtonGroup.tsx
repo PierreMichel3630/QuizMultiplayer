@@ -128,19 +128,19 @@ export const GroupButtonAllGameMode = ({
     {
       icon: <EmojiEventsIcon />,
       label: t("commun.challenge"),
-      value: AllGameModeEnum.CHALLENGE,
+      value: AllGameModeEnum.challenge,
       color: Colors.green,
     },
     {
       icon: <PlayCircleIcon />,
       label: t("commun.solo"),
-      value: AllGameModeEnum.SOLO,
+      value: AllGameModeEnum.solo,
       color: Colors.blue2,
     },
     {
       icon: <OfflineBoltIcon />,
       label: t("commun.duel"),
-      value: AllGameModeEnum.DUEL,
+      value: AllGameModeEnum.duel,
       color: Colors.red,
     },
   ];

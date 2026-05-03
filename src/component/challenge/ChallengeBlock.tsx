@@ -3,13 +3,13 @@ import { px } from "csx";
 import { useTranslation } from "react-i18next";
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import {
-  ChallengeRankingDate,
+  ChallengeGame,
   ChallengeRankingMonth,
-  ChallengeRankingWeek,
+  ChallengeRankingWeek
 } from "src/models/Challenge";
 
 interface PropsResultChallengeDay {
-  value?: ChallengeRankingDate;
+  value?: ChallengeGame;
 }
 export const ResultChallengeDay = ({ value }: PropsResultChallengeDay) => {
   return (

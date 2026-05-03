@@ -26,6 +26,7 @@ import { countQuestionByTheme } from "src/api/question";
 import { countPlayersByTheme } from "src/api/score";
 import { selectThemeById } from "src/api/theme";
 import { ButtonColor } from "src/component/Button";
+import { GroupButtonAllTypeGame } from "src/component/button/ButtonGroup";
 import {
   DuelButton,
   SoloButton,
@@ -37,12 +38,14 @@ import { AvatarLanguageGroup } from "src/component/language/AvatarLanguageGroup"
 import { TextNameBlock } from "src/component/language/TextLanguageBlock";
 import { ProposeQuestionModal } from "src/component/modal/ProposeQuestionModal";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
-import { RankingTableSoloDuelPaginate } from "src/component/table/RankingTable";
+import { RankingDuel } from "src/component/ranking/RankingDuel";
+import { RankingSolo } from "src/component/ranking/RankingSolo";
 import { TitleBlock } from "src/component/title/Title";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
+import { GameModeEnum } from "src/models/enum/GameEnum";
 import { FavoriteInsert } from "src/models/Favorite";
 import { Profile } from "src/models/Profile";
 import { QuestionCount } from "src/models/Question";
@@ -69,6 +72,9 @@ export default function ThemePage() {
   const [theme, setTheme] = useState<Theme | undefined>(undefined);
   const [loadingTheme, setLoadingTheme] = useState(true);
   const [loadingQuestions, setLoadingQuestions] = useState(true);
+  const [typeRanking, setTypeRanking] = useState<GameModeEnum>(
+    GameModeEnum.solo,
+  );
 
   const loading = useMemo(
     () => loadingTheme || loadingQuestions,
@@ -512,9 +518,28 @@ export default function ThemePage() {
                 </Grid>
               </Grid>
             </Grid>
-            <Grid size={12}>
-              <RankingTableSoloDuelPaginate theme={theme} />
-            </Grid>
+            {theme && (
+              <Grid size={12} sx={{ p: 2 }}>
+                <Grid container spacing={1}>
+                  <Grid size={12}>
+                    <GroupButtonAllTypeGame
+                      selected={typeRanking}
+                      onChange={(value) => {
+                        setTypeRanking(value);
+                      }}
+                    />
+                  </Grid>
+                  <Grid size={12}>
+                    {
+                      {
+                        solo: <RankingSolo theme={theme.id} />,
+                        duel: <RankingDuel theme={theme.id} />,
+                      }[typeRanking]
+                    }
+                  </Grid>
+                </Grid>
+              </Grid>
+            )}
           </>
         ) : (
           <Grid size={12}>

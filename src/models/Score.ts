@@ -41,3 +41,8 @@ export interface Opposition {
   draw: number;
   defeat: number;
 }
+
+
+export interface ScoreAvg {
+  score: number;
+}

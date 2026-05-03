@@ -4,7 +4,7 @@ export enum GameModeEnum {
 }
 
 export enum AllGameModeEnum {
-  SOLO = "SOLO",
-  DUEL = "DUEL",
-  CHALLENGE = "CHALLENGE",
+  solo = "solo",
+  duel = "duel",
+  challenge = "challenge",
 }

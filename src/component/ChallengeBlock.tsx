@@ -1,5 +1,5 @@
-import { Box, Grid, Typography } from "@mui/material";
-import { px } from "csx";
+import { Box, Grid, Paper, Typography } from "@mui/material";
+import { padding, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
@@ -12,23 +12,23 @@ import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import {
   ChallengeAvg,
   ChallengeRankingAllTime,
+  ChallengeRankingDate,
   ChallengeRankingDay,
   ChallengeRankingMonth,
   ChallengeRankingWeek,
 } from "src/models/Challenge";
-import { Colors } from "src/style/Colors";
 
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
-import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import moment, { Moment } from "moment";
 import { Profile } from "src/models/Profile";
 import { Rank } from "./ranking/Rank";
 
 interface PropsBase {
   profile: Profile | null;
-  title?: string;
-  avg?: ChallengeAvg | null;
+  avg: ChallengeAvg | null;
+  total: number | null;
 }
 
 interface PropsResultDayChallengeBlock extends PropsBase {
@@ -38,14 +38,10 @@ interface PropsResultDayChallengeBlock extends PropsBase {
 export const ResultDayChallengeBlock = ({
   date,
   profile,
+  avg,
+  total,
 }: PropsResultDayChallengeBlock) => {
-  const { t } = useTranslation();
-
   const [stat, setStat] = useState<null | ChallengeRankingDay>(null);
-  const [avg, setAvg] = useState<null | ChallengeAvg>(null);
-  const [numberPlayers, setNumberPlayers] = useState<null | number>(null);
-
-  const isDisplay = useMemo(() => stat || avg, [avg, stat]);
 
   useEffect(() => {
     const valueDate = date ?? moment();
@@ -56,121 +52,14 @@ export const ResultDayChallengeBlock = ({
           profile.id,
         ).then(({ data }) => {
           const values: Array<ChallengeRankingDay> = data.data;
-          const avg: ChallengeAvg = data.avg;
-          const total: number = data.total;
           setStat(values[0] ?? null);
-          setAvg(avg);
-          setNumberPlayers(total);
         });
       }
     };
     getGame();
   }, [date, profile]);
 
-  const topPercent = useMemo(
-    () =>
-      stat && numberPlayers
-        ? ((stat.ranking / numberPlayers) * 100).toFixed(2)
-        : undefined,
-    [numberPlayers, stat],
-  );
-
-  return (
-    isDisplay && (
-      <Box
-        sx={{
-          backgroundColor: Colors.green3,
-          color: Colors.white,
-          borderRadius: px(10),
-          p: 1,
-        }}
-      >
-        <Grid container spacing={1}>
-          <Grid
-            sx={{
-              display: "flex",
-              gap: 1,
-              justifyContent: "center",
-              alignItems: "baseline",
-            }}
-            size={12}
-          >
-            {stat && numberPlayers ? (
-              <>
-                <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
-                  <Rank value={stat.ranking} />
-                  <Typography variant="h2" noWrap>
-                    / {numberPlayers}
-                  </Typography>
-                </Box>
-                <Typography variant="body1">
-                  ({t("commun.top")} : {topPercent}%)
-                </Typography>
-              </>
-            ) : (
-              numberPlayers && (
-                <Typography variant="h2">
-                  <Trans
-                    i18nKey={t("commun.player")}
-                    values={{
-                      count: numberPlayers,
-                    }}
-                  />
-                </Typography>
-              )
-            )}
-          </Grid>
-          <Grid
-            sx={{
-              display: "flex",
-              gap: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            size={6}
-          >
-            <QuestionMarkIcon />
-            <Box>
-              {stat && (
-                <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-                  {stat.score} / {NUMBER_QUESTIONS_CHALLENGE}
-                </Typography>
-              )}
-              {avg && (
-                <Typography variant="body1" noWrap>
-                  ({t("abrevation.average")} {avg.score.toFixed(2)}/
-                  {NUMBER_QUESTIONS_CHALLENGE})
-                </Typography>
-              )}
-            </Box>
-          </Grid>
-          <Grid
-            sx={{
-              display: "flex",
-              gap: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            size={6}
-          >
-            <AccessTimeIcon />
-            <Box>
-              {stat && (
-                <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-                  {(stat.time / 1000).toFixed(2)}s
-                </Typography>
-              )}
-              {avg && (
-                <Typography variant="body1" noWrap>
-                  ({t("abrevation.average")} {(avg.time / 1000).toFixed(2)}s)
-                </Typography>
-              )}
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-    )
-  );
+  return <ResultChallengeBlock stat={stat} avg={avg} total={total} />;
 };
 
 interface PropsResultWeekChallengeBlock extends PropsBase {
@@ -180,13 +69,10 @@ interface PropsResultWeekChallengeBlock extends PropsBase {
 export const ResultWeekChallengeBlock = ({
   date,
   profile,
+  avg,
+  total,
 }: PropsResultWeekChallengeBlock) => {
-  const { t } = useTranslation();
-
   const [stat, setStat] = useState<null | ChallengeRankingWeek>(null);
-  const [avg, setAvg] = useState<null | ChallengeAvg>(null);
-  const [numberPlayers, setNumberPlayers] = useState<null | number>(null);
-  const isDisplay = useMemo(() => stat || avg, [avg, stat]);
 
   useEffect(() => {
     const getStat = () => {
@@ -194,11 +80,7 @@ export const ResultWeekChallengeBlock = ({
         selectChallengeWeekByProfileId(date.format("WW/YYYY"), profile.id).then(
           ({ data }) => {
             const values: Array<ChallengeRankingWeek> = data.data;
-            const avg: ChallengeAvg = data.avg;
-            const total: number = data.total;
             setStat(values[0] ?? null);
-            setAvg(avg);
-            setNumberPlayers(total);
           },
         );
       }
@@ -206,139 +88,7 @@ export const ResultWeekChallengeBlock = ({
     getStat();
   }, [date, profile]);
 
-  const topPercent = useMemo(
-    () =>
-      stat && numberPlayers
-        ? ((stat.ranking / numberPlayers) * 100).toFixed(2)
-        : undefined,
-    [numberPlayers, stat],
-  );
-
-  return (
-    isDisplay && (
-      <Box
-        sx={{
-          backgroundColor: Colors.green3,
-          color: Colors.white,
-          borderRadius: px(10),
-          p: 1,
-        }}
-      >
-        <Grid container spacing={1}>
-          <Grid
-            sx={{
-              display: "flex",
-              gap: 1,
-              justifyContent: "center",
-              alignItems: "baseline",
-            }}
-            size={12}
-          >
-            {stat && numberPlayers ? (
-              <>
-                <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
-                  <Rank value={stat.ranking} />
-                  <Typography variant="h2" noWrap>
-                    / {numberPlayers}
-                  </Typography>
-                </Box>
-                <Typography variant="body1">
-                  ({t("commun.top")} : {topPercent}%)
-                </Typography>
-              </>
-            ) : (
-              numberPlayers && (
-                <Typography variant="h2">
-                  <Trans
-                    i18nKey={t("commun.player")}
-                    values={{
-                      count: numberPlayers,
-                    }}
-                  />
-                </Typography>
-              )
-            )}
-          </Grid>
-          <Grid
-            sx={{
-              display: "flex",
-              gap: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            size={12}
-          >
-            <SportsEsportsIcon />
-            {stat && (
-              <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-                <Trans
-                  i18nKey={t("commun.game")}
-                  values={{
-                    count: stat.games,
-                  }}
-                />
-              </Typography>
-            )}
-            {avg && (
-              <Box>
-                <Typography variant="body1" noWrap>
-                  ({t("abrevation.average")} {avg.games.toFixed(2)})
-                </Typography>
-              </Box>
-            )}
-          </Grid>
-          <Grid
-            sx={{
-              display: "flex",
-              gap: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            size={6}
-          >
-            <QuestionMarkIcon />
-            <Box>
-              {stat && (
-                <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-                  {stat.score} / {stat.games * NUMBER_QUESTIONS_CHALLENGE}
-                </Typography>
-              )}
-              {avg && (
-                <Typography variant="body1" noWrap>
-                  ({t("abrevation.average")} {avg.score.toFixed(2)})
-                </Typography>
-              )}
-            </Box>
-          </Grid>
-          <Grid
-            sx={{
-              display: "flex",
-              gap: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            size={6}
-          >
-            <AccessTimeIcon />
-            <Box>
-              {stat && (
-                <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-                  {(stat.time / 1000).toFixed(2)}s
-                </Typography>
-              )}
-              {avg && (
-                <Box>
-                  <Typography variant="body1" noWrap>
-                    ({t("abrevation.average")} {(avg.time / 1000).toFixed(2)}s)
-                  </Typography>
-                </Box>
-              )}
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-    )
-  );
+  return <ResultChallengeBlock stat={stat} avg={avg} total={total} />;
 };
 
 interface PropsResultMonthChallengeBlock extends PropsBase {
@@ -348,12 +98,10 @@ interface PropsResultMonthChallengeBlock extends PropsBase {
 export const ResultMonthChallengeBlock = ({
   date,
   profile,
+  avg,
+  total,
 }: PropsResultMonthChallengeBlock) => {
-  const { t } = useTranslation();
-
   const [stat, setStat] = useState<null | ChallengeRankingAllTime>(null);
-  const [avg, setAvg] = useState<null | ChallengeAvg>(null);
-  const [numberPlayers, setNumberPlayers] = useState<null | number>(null);
 
   useEffect(() => {
     const getStat = () => {
@@ -363,307 +111,124 @@ export const ResultMonthChallengeBlock = ({
           profile.id,
         ).then(({ data }) => {
           const values: Array<ChallengeRankingMonth> = data.data;
-          const avg: ChallengeAvg = data.avg;
-          const total: number = data.total;
           setStat(values[0] ?? null);
-          setAvg(avg);
-          setNumberPlayers(total);
         });
       }
     };
     getStat();
   }, [profile, date]);
 
-  const isDisplay = useMemo(() => stat || avg, [avg, stat]);
-
-  const topPercent = useMemo(
-    () =>
-      stat && numberPlayers
-        ? ((stat.ranking / numberPlayers) * 100).toFixed(2)
-        : undefined,
-    [numberPlayers, stat],
-  );
-
-  return (
-    isDisplay && (
-      <Box
-        sx={{
-          backgroundColor: Colors.green3,
-          color: Colors.white,
-          borderRadius: px(10),
-          p: 1,
-        }}
-      >
-        <Grid container spacing={1}>
-          <Grid
-            sx={{
-              display: "flex",
-              gap: 1,
-              justifyContent: "center",
-              alignItems: "baseline",
-            }}
-            size={12}
-          >
-            {stat && numberPlayers ? (
-              <>
-                <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
-                  <Rank value={stat.ranking} />
-                  <Typography variant="h2" noWrap>
-                    / {numberPlayers}
-                  </Typography>
-                </Box>
-                <Typography variant="body1">
-                  ({t("commun.top")} : {topPercent}%)
-                </Typography>
-              </>
-            ) : (
-              numberPlayers && (
-                <Typography variant="h2">
-                  <Trans
-                    i18nKey={t("commun.player")}
-                    values={{
-                      count: numberPlayers,
-                    }}
-                  />
-                </Typography>
-              )
-            )}
-          </Grid>
-          <Grid
-            sx={{
-              display: "flex",
-              gap: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            size={12}
-          >
-            <SportsEsportsIcon />
-            {stat && (
-              <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-                <Trans
-                  i18nKey={t("commun.game")}
-                  values={{
-                    count: stat.games,
-                  }}
-                />
-              </Typography>
-            )}
-            {avg && (
-              <Box>
-                <Typography variant="body1" noWrap>
-                  ({t("abrevation.average")} {avg.games.toFixed(2)})
-                </Typography>
-              </Box>
-            )}
-          </Grid>
-          <Grid
-            sx={{
-              display: "flex",
-              gap: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            size={6}
-          >
-            <QuestionMarkIcon />
-            <Box>
-              {stat && (
-                <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-                  {stat.score} / {stat.games * NUMBER_QUESTIONS_CHALLENGE}
-                </Typography>
-              )}
-              {avg && (
-                <Typography variant="body1" noWrap>
-                  ({t("abrevation.average")} {avg.score.toFixed(2)})
-                </Typography>
-              )}
-            </Box>
-          </Grid>
-          <Grid
-            sx={{
-              display: "flex",
-              gap: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            size={6}
-          >
-            <AccessTimeIcon />
-            <Box>
-              {stat && (
-                <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-                  {(stat.time / 1000).toFixed(2)}s
-                </Typography>
-              )}
-              {avg && (
-                <Box>
-                  <Typography variant="body1" noWrap>
-                    ({t("abrevation.average")} {(avg.time / 1000).toFixed(2)}s)
-                  </Typography>
-                </Box>
-              )}
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-    )
-  );
+  return <ResultChallengeBlock stat={stat} avg={avg} total={total} />;
 };
 
-export const ResultAllTimeChallengeBlock = ({ profile }: PropsBase) => {
-  const { t } = useTranslation();
-
+export const ResultAllTimeChallengeBlock = ({
+  profile,
+  avg,
+  total,
+}: PropsBase) => {
   const [stat, setStat] = useState<null | ChallengeRankingAllTime>(null);
-  const [avg, setAvg] = useState<null | ChallengeAvg>(null);
-  const [numberPlayers, setNumberPlayers] = useState<null | number>(null);
 
   useEffect(() => {
     const getStat = () => {
       if (profile) {
         selectChallengeAllTimeByProfile(profile.id).then(({ data }) => {
           const values: Array<ChallengeRankingAllTime> = data.data;
-          const avg: ChallengeAvg = data.avg;
-          const count: number = data.total;
           setStat(values[0] ?? null);
-          setAvg(avg);
-          setNumberPlayers(count);
         });
       }
     };
     getStat();
   }, [profile]);
 
-  const topPercent = useMemo(
-    () =>
-      stat && numberPlayers
-        ? ((stat.ranking / numberPlayers) * 100).toFixed(2)
-        : undefined,
-    [numberPlayers, stat],
-  );
+  return <ResultChallengeBlock stat={stat} avg={avg} total={total} />;
+};
+
+interface PropsResultChallengeBlock {
+  stat: ChallengeRankingDate | null;
+  avg: ChallengeAvg | null;
+  total: number | null;
+}
+export const ResultChallengeBlock = ({
+  stat,
+  avg,
+  total,
+}: PropsResultChallengeBlock) => {
+  const { t } = useTranslation();
+
+  console.log(total)
+
+  const numberQuestion = useMemo(() => NUMBER_QUESTIONS_CHALLENGE * (stat?.games ?? 1), [stat])
 
   return (
-    <Box
-      sx={{
-        backgroundColor: Colors.green3,
-        color: Colors.white,
-        borderRadius: px(10),
-        p: 1,
-      }}
-    >
-      <Grid container spacing={1}>
-        <Grid
-          sx={{
-            display: "flex",
-            gap: 1,
-            justifyContent: "center",
-            alignItems: "baseline",
-          }}
-          size={12}
-        >
-          {stat && numberPlayers ? (
-            <>
-              <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
+    <Grid container spacing={1} alignItems="center">
+      {avg !== null && total  !== null && (
+        <Grid size={12}>
+          <RecapAvgChallenge avg={avg} count={total} />
+        </Grid>
+      )}
+
+      {stat !== null && total !== null && (
+        <Grid size={12}>
+          <Paper
+            sx={{
+              p: padding(10, 20),
+            }}
+            elevation={8}
+          >
+            <Grid
+              container
+              spacing={1}
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Grid size={12} sx={{ textAlign: "center" }}>
+                <Typography variant="h4">{t("commun.myscore")} :</Typography>
+              </Grid>
+              <Grid>
                 <Rank value={stat.ranking} />
-                <Typography variant="h2" noWrap>
-                  / {numberPlayers}
-                </Typography>
-              </Box>
-              <Typography variant="body1">
-                ({t("commun.top")} : {topPercent}%)
-              </Typography>
-            </>
-          ) : (
-            avg && (
-              <Typography variant="h2">
-                <Trans
-                  i18nKey={t("commun.player")}
-                  values={{
-                    count: numberPlayers,
-                  }}
-                />
-              </Typography>
-            )
-          )}
+              </Grid>
+              <Grid>
+                <Box sx={{ display: "flex", gap: px(2), alignItems: "center" }}>
+                  <QuestionMarkIcon fontSize="small" />
+                  <Typography variant="h6" noWrap>
+                    {stat.score} / {numberQuestion}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid>
+                <Box sx={{ display: "flex", gap: px(2), alignItems: "center" }}>
+                  <AccessTimeIcon fontSize="small" />
+                  <Typography variant="h6" noWrap>
+                    {(stat.time / 1000).toFixed(2)}s
+                  </Typography>
+                </Box>
+              </Grid>
+              {!!(stat?.games) && (
+                <Grid>
+                  <Box
+                    sx={{ display: "flex", gap: px(2), alignItems: "center" }}
+                  >
+                    <SportsEsportsIcon fontSize="small" />
+                    <Typography
+                      variant="h6"
+                      noWrap
+                      sx={{ textAlign: "center" }}
+                    >
+                      <Trans
+                        i18nKey={t("commun.game")}
+                        values={{
+                          count: stat.games,
+                        }}
+                      />
+                    </Typography>
+                  </Box>
+                </Grid>
+              )}
+            </Grid>
+          </Paper>
         </Grid>
-        <Grid
-          sx={{
-            display: "flex",
-            gap: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          size={12}
-        >
-          <SportsEsportsIcon />
-          {stat && (
-            <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-              <Trans
-                i18nKey={t("commun.game")}
-                values={{
-                  count: stat.games,
-                }}
-              />
-            </Typography>
-          )}
-          {avg && (
-            <Box>
-              <Typography variant="body1" noWrap>
-                ({t("abrevation.average")} {avg.games.toFixed(2)})
-              </Typography>
-            </Box>
-          )}
-        </Grid>
-        <Grid
-          sx={{
-            display: "flex",
-            gap: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          size={6}
-        >
-          <QuestionMarkIcon />
-          <Box>
-            {stat && (
-              <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-                {stat.score} / {stat.games * NUMBER_QUESTIONS_CHALLENGE}
-              </Typography>
-            )}
-            {avg && (
-              <Typography variant="body1" noWrap>
-                ({t("abrevation.average")} {avg.score.toFixed(2)})
-              </Typography>
-            )}
-          </Box>
-        </Grid>
-        <Grid
-          sx={{
-            display: "flex",
-            gap: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          size={6}
-        >
-          <AccessTimeIcon />
-          <Box>
-            {stat && (
-              <Typography variant="h4" noWrap sx={{ textAlign: "center" }}>
-                {(stat.time / 1000).toFixed(2)}s
-              </Typography>
-            )}
-            {avg && (
-              <Box>
-                <Typography variant="body1" noWrap>
-                  ({t("abrevation.average")} {(avg.time / 1000).toFixed(2)}s)
-                </Typography>
-              </Box>
-            )}
-          </Box>
-        </Grid>
-      </Grid>
-    </Box>
+      )}
+    </Grid>
   );
 };
 

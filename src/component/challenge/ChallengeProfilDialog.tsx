@@ -19,6 +19,7 @@ import {
   selectRankingChallengeMonthByProfileId,
   selectRankingChallengeWeekByProfileId,
 } from "src/api/challenge";
+import { getProfilById } from "src/api/profile";
 import {
   ChallengeRankingAllTime,
   ChallengeRankingDay,
@@ -26,6 +27,7 @@ import {
   ChallengeRankingWeek,
 } from "src/models/Challenge";
 import { ClassementChallengeTimeListEnum } from "src/models/enum/ClassementEnum";
+import { Profile } from "src/models/Profile";
 import { GroupButtonChallengeTime } from "../button/ButtonGroup";
 import {
   CardChallengeAllTime,
@@ -35,16 +37,15 @@ import {
 } from "../card/CardChallenge";
 import { ProfileBlock } from "../profile/ProfileBlock";
 import { SkeletonChallenges } from "../skeleton/SkeletonChallenge";
-import { DataRankingChallenge } from "../table/RankingChallengeTable";
 import { RatingChallenge } from "./RatingChallenge";
 
 export interface Props {
-  data?: DataRankingChallenge;
+  profileId?: string;
   open: boolean;
   close: () => void;
 }
 
-export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
+export const ChallengeProfilDialog = ({ profileId, open, close }: Props) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -52,6 +53,7 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
   const ITEM_PER_PAGE = 20;
   const loaderRef = useRef(null);
 
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [tabTime, setTabTime] = useState(ClassementChallengeTimeListEnum.day);
   const [statDay, setStatDay] = useState<Array<ChallengeRankingDay>>([]);
   const [statMonth, setStatMonth] = useState<Array<ChallengeRankingMonth>>([]);
@@ -62,37 +64,39 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  
 
   useEffect(() => {
     setStatDay([]);
     setStatMonth([]);
     setStatWeek([]);
     setStatAllTime(null);
-    if (data) {
-      const profile = data.profile;
-      selectChallengeAllTimeByProfile(profile.id).then(({ data }) => {
+    if (profileId) {
+      selectChallengeAllTimeByProfile(profileId).then(({ data }) => {
         const values: Array<ChallengeRankingAllTime> = data.data;
         setStatAllTime(values[0] ?? null);
       });
+      getProfilById(profileId).then(({data}) => {
+        setProfile(data)
+      })
     }
-  }, [data]);
+  }, [profileId]);
 
   useEffect(() => {
-    if (!data) return;
+    if (!profileId) return;
 
     setPage(0);
     setHasMore(true);
     fetchData(0);
-  }, [tabTime, data]);
+  }, [tabTime, profileId]);
 
   const fetchData = async (pageToFetch = page) => {
     if (loading) return;
-    if (data) {
+    if (profileId) {
       setLoading(true);
-      const profile = data.profile;
       if (tabTime === ClassementChallengeTimeListEnum.day) {
         selectChallengeGameByProfileId(
-          profile.id,
+          profileId,
           pageToFetch,
           ITEM_PER_PAGE,
         ).then(({ data }) => {
@@ -113,7 +117,7 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
       } else if (tabTime === ClassementChallengeTimeListEnum.week) {
         setLoading(true);
         selectRankingChallengeWeekByProfileId(
-          profile.id,
+          profileId,
           pageToFetch,
           ITEM_PER_PAGE,
         ).then(({ data }) => {
@@ -133,7 +137,7 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
       } else if (tabTime === ClassementChallengeTimeListEnum.month) {
         setLoading(true);
         selectRankingChallengeMonthByProfileId(
-          profile.id,
+          profileId,
           pageToFetch,
           ITEM_PER_PAGE,
         ).then(({ data }) => {
@@ -155,7 +159,7 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
   };
 
   useEffect(() => {
-    if (data) {
+    if (profileId) {
       const observer = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting && hasMore) {
@@ -175,7 +179,7 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
 
       return () => observer.disconnect();
     }
-  }, [loading, hasMore, data]);
+  }, [loading, hasMore, profileId]);
 
   return (
     <Dialog onClose={close} open={open} maxWidth="md" fullScreen={fullScreen}>
@@ -189,11 +193,11 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <DialogContent>
-        {data && (
+      <DialogContent sx={{p: 2}}>
+        {profile && (
           <Grid container spacing={2}>
             <Grid size={12}>
-              <ProfileBlock profile={data.profile} />
+              <ProfileBlock profile={profile} />
             </Grid>
             {statAllTime && (
               <Grid size={12}>
@@ -214,7 +218,7 @@ export const ChallengeProfilDialog = ({ data, open, close }: Props) => {
                 day: (
                   <>
                     <Grid size={12}>
-                      <RatingChallenge profile={data.profile} />
+                      <RatingChallenge profile={profile} />
                     </Grid>
                     <Grid size={12}>
                       <Divider sx={{ borderBottomWidth: 5 }} />

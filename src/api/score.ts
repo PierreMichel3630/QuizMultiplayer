@@ -5,12 +5,13 @@ import { Moment } from "moment";
 
 export const SUPABASE_SCORE_TABLE = "score";
 export const SUPABASE_OPPOSITION_TABLE = "opposition";
+export const SUPABASE_GETLEADERBOARDGAME_FUNCTION = "get_leaderboard_game";
 
 export const selectScoresByTheme = (
   theme: number,
   order: string,
   itemperpage = 25,
-  page = 0
+  page = 0,
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
@@ -36,7 +37,7 @@ export const selectScoresByProfilePaginate = (
   uuid: string,
   order: string,
   page = 0,
-  itemperpage = 25
+  itemperpage = 25,
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
@@ -66,14 +67,14 @@ export const selectScore = (
   ids = [] as Array<number>,
   idsProfile = [] as Array<string>,
   start = undefined as Moment | undefined,
-  end = undefined as Moment | undefined
+  end = undefined as Moment | undefined,
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
   let query = supabase
     .from(SUPABASE_SCORE_TABLE)
     .select(
-      "*, profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))), theme(color,image ,themetranslation!inner(name, language(*))), uuidgame(uuid, created_at)"
+      "*, profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))), theme(color,image ,themetranslation!inner(name, language(*))), uuidgame(uuid, created_at)",
     )
     .not("profile", "in", `(${bots.join(",")})`)
     .not("theme", "is", null);
@@ -115,3 +116,25 @@ export const selectOppositionByOpponent = (player1: string, player2: string) =>
     .select("*")
     .eq("player1", player1)
     .eq("player2", player2);
+
+//
+
+export const selectScorePaginate = (
+  search: string = "",
+  page = 0,
+  itemperpage = 25,
+  sort = "points",
+  ascending = true,
+  idFriends?: Array<string>,
+  idTheme?: Array<number>,
+) => {
+  return supabase.rpc(SUPABASE_GETLEADERBOARDGAME_FUNCTION, {
+    p_search: search,
+    p_page: page,
+    p_itemperpage: itemperpage,
+    p_ids_profile: idFriends ?? null,
+    p_ascending: ascending,
+    p_sort: sort,
+    p_ids_theme: idTheme ?? null,
+  });
+};

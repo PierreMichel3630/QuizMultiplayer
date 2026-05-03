@@ -6,9 +6,9 @@ import {
   selectFirstRankingChallengeByDay,
 } from "src/api/challenge";
 import {
-  ChallengeRankingDay,
+  ChallengeGame,
   ChallengeRankingMonth,
-  ChallengeRankingWeek,
+  ChallengeRankingWeek
 } from "src/models/Challenge";
 import { useUser } from "./UserProvider";
 
@@ -17,7 +17,7 @@ type Props = {
 };
 
 const ChallengeContext = createContext<{
-  winDay: ChallengeRankingDay | undefined;
+  winDay: ChallengeGame | undefined;
   winWeek: ChallengeRankingWeek | undefined;
   winMonth: ChallengeRankingMonth | undefined;
 }>({
@@ -30,7 +30,7 @@ export const useChallenge = () => useContext(ChallengeContext);
 
 export const ChallengeProvider = ({ children }: Props) => {
   const { language } = useUser();
-  const [winDay, setWinDay] = useState<ChallengeRankingDay | undefined>(
+  const [winDay, setWinDay] = useState<ChallengeGame | undefined>(
     undefined,
   );
   const [winWeek, setWinWeek] = useState<ChallengeRankingWeek | undefined>(
