@@ -1,5 +1,5 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import { padding, px } from "csx";
+import { px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
@@ -18,9 +18,9 @@ import {
   ChallengeRankingWeek,
 } from "src/models/Challenge";
 
-import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import moment, { Moment } from "moment";
 import { Profile } from "src/models/Profile";
 import { Rank } from "./ranking/Rank";
@@ -153,15 +153,19 @@ export const ResultChallengeBlock = ({
   avg,
   total,
 }: PropsResultChallengeBlock) => {
-  const { t } = useTranslation();
-
-  console.log(total)
-
-  const numberQuestion = useMemo(() => NUMBER_QUESTIONS_CHALLENGE * (stat?.games ?? 1), [stat])
+  const numberQuestion = useMemo(
+    () => NUMBER_QUESTIONS_CHALLENGE * (stat?.games ?? 1),
+    [stat],
+  );
 
   return (
-    <Grid container spacing={1} alignItems="center">
-      {avg !== null && total  !== null && (
+    <Grid
+      container
+      spacing={1}
+      alignItems="center"
+      justifyContent="space-around"
+    >
+      {avg !== null && total !== null && (
         <Grid size={12}>
           <RecapAvgChallenge avg={avg} count={total} />
         </Grid>
@@ -171,19 +175,17 @@ export const ResultChallengeBlock = ({
         <Grid size={12}>
           <Paper
             sx={{
-              p: padding(10, 20),
+              p: px(5),
             }}
             elevation={8}
           >
             <Grid
               container
-              spacing={1}
+              columnSpacing={3}
+              rowSpacing={1}
               alignItems="center"
-              justifyContent="space-between"
+              justifyContent="center"
             >
-              <Grid size={12} sx={{ textAlign: "center" }}>
-                <Typography variant="h4">{t("commun.myscore")} :</Typography>
-              </Grid>
               <Grid>
                 <Rank value={stat.ranking} />
               </Grid>
@@ -203,7 +205,7 @@ export const ResultChallengeBlock = ({
                   </Typography>
                 </Box>
               </Grid>
-              {!!(stat?.games) && (
+              {!!stat?.games && (
                 <Grid>
                   <Box
                     sx={{ display: "flex", gap: px(2), alignItems: "center" }}
@@ -215,10 +217,12 @@ export const ResultChallengeBlock = ({
                       sx={{ textAlign: "center" }}
                     >
                       <Trans
-                        i18nKey={t("commun.game")}
+                        i18nKey={"commun.game"}
                         values={{
                           count: stat.games,
+                          formattedCount: stat.games,
                         }}
+                        components={{ bold: <strong /> }}
                       />
                     </Typography>
                   </Box>

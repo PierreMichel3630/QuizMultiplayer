@@ -2,7 +2,6 @@ import {
   Alert,
   Avatar,
   Box,
-  Button,
   Paper,
   Skeleton,
   Table,
@@ -25,7 +24,6 @@ import {
   useState,
 } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
 import {
   selectRankingDuelByThemeAndProfile,
   selectRankingSoloByThemeAndProfile,
@@ -56,21 +54,18 @@ export interface DataRanking {
   theme?: Theme;
   size?: number;
   rank: number;
+  data?: any;
 }
 interface Props {
   data: Array<DataRanking>;
+  onClick?: (value: any) => void;
   loading?: boolean;
-  navigation?: {
-    link: string;
-    label: string;
-  };
 }
 
-export const RankingTable = ({ data, navigation, loading = false }: Props) => {
+export const RankingTable = ({ data, onClick, loading = false }: Props) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const { friends } = useApp();
-  const navigate = useNavigate();
 
   const idFriend = useMemo(
     () =>
@@ -144,6 +139,10 @@ export const RankingTable = ({ data, navigation, loading = false }: Props) => {
                     <TableRow
                       sx={{
                         backgroundColor: color,
+                        cursor: onClick ? "pointer" : "default",
+                      }}
+                      onClick={() => {
+                        if (onClick) onClick(el.data);
                       }}
                     >
                       <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
@@ -151,15 +150,10 @@ export const RankingTable = ({ data, navigation, loading = false }: Props) => {
                       </TableCell>
                       <TableCell sx={{ p: px(4), width: px(50) }}>
                         {el.profile ? (
-                          <Link
-                            to={`/profil/${el.profile.id}`}
-                            style={{ textDecoration: "inherit" }}
-                          >
-                            <AvatarAccount
-                              avatar={el.profile.avatar.icon}
-                              size={40}
-                            />
-                          </Link>
+                          <AvatarAccount
+                            avatar={el.profile.avatar.icon}
+                            size={40}
+                          />
                         ) : (
                           <Avatar sx={{ bgcolor: Colors.black }}>I</Avatar>
                         )}
@@ -179,9 +173,8 @@ export const RankingTable = ({ data, navigation, loading = false }: Props) => {
                         >
                           {el.profile ? (
                             <>
-                              <Link
-                                to={`/profil/${el.profile.id}`}
-                                style={{
+                              <Box
+                                sx={{
                                   textDecoration: "inherit",
                                   display: "flex",
                                   gap: px(8),
@@ -196,7 +189,7 @@ export const RankingTable = ({ data, navigation, loading = false }: Props) => {
                                 <Typography variant="h6" noWrap>
                                   {el.profile.username}
                                 </Typography>
-                              </Link>
+                              </Box>
                               <ProfileTitleBlock
                                 titleprofile={el.profile.titleprofile}
                               />
@@ -211,14 +204,7 @@ export const RankingTable = ({ data, navigation, loading = false }: Props) => {
                               {moment(el.date).format("DD/MM/YYYY HH:mm")}
                             </Typography>
                           )}
-                          {el.theme && (
-                            <Link
-                              to={`/theme/${el.theme.id}`}
-                              style={{ textDecoration: "inherit" }}
-                            >
-                              <ThemeBlock theme={el.theme} />
-                            </Link>
-                          )}
+                          {el.theme && <ThemeBlock theme={el.theme} />}
                         </Box>
                       </TableCell>
                       <TableCell
@@ -267,30 +253,6 @@ export const RankingTable = ({ data, navigation, loading = false }: Props) => {
                     </TableCell>
                   </TableRow>
                 ))}
-              {navigation && (
-                <TableRow>
-                  <TableCell colSpan={4} sx={{ p: px(2) }}>
-                    <Button
-                      variant="outlined"
-                      sx={{
-                        minWidth: "auto",
-                        textTransform: "uppercase",
-                        "&:hover": {
-                          border: "2px solid currentColor",
-                        },
-                      }}
-                      color="secondary"
-                      size="small"
-                      fullWidth
-                      onClick={() => navigate(navigation.link)}
-                    >
-                      <Typography variant="h6" noWrap>
-                        {navigation.label}
-                      </Typography>
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              )}
             </TableBody>
           </Table>
         </TableContainer>

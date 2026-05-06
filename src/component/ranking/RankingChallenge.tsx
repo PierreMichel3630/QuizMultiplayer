@@ -93,6 +93,7 @@ export const RankingChallenge = () => {
     </Grid>
   );
 };
+
 interface QueryGlobal extends Query {
   typeglobal: ClassementChallengeGlobalTimeEnum;
 }

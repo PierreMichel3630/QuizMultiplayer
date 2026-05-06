@@ -1,6 +1,6 @@
 import { Box, Container, Divider, Grid, Typography } from "@mui/material";
 import moment, { Moment } from "moment";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { selectSoloGameByDate } from "src/api/game";
 import { selectScore } from "src/api/score";
@@ -8,7 +8,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import {
   ClassementScoreEnum,
-  ClassementSoloTimeEnum
+  ClassementSoloTimeEnum,
 } from "src/models/enum/ClassementEnum";
 import { AllGameModeEnum } from "src/models/enum/GameEnum";
 import { SoloGame } from "src/models/Game";
@@ -16,7 +16,7 @@ import { Score } from "src/models/Score";
 import {
   GroupButtonAllGameMode,
   GroupButtonTime,
-  GroupButtonTypeGame
+  GroupButtonTypeGame,
 } from "./button/ButtonGroup";
 import { RankingChallengePerDate } from "./ranking/RankingChallenge";
 import { DataRanking, RankingTable } from "./table/RankingTable";
@@ -83,10 +83,9 @@ export const RankingBlock = ({ themes }: Props) => {
 };
 
 export const RankingTop5Block = () => {
-
   const [tab, setTab] = useState(AllGameModeEnum.challenge);
 
-  const ITEM_PER_PAGE = 5
+  const ITEM_PER_PAGE = 5;
 
   return (
     <Container maxWidth="sm">
@@ -104,7 +103,12 @@ export const RankingTop5Block = () => {
             {
               duel: <RankingTop5BlockOther tab={tab} />,
               solo: <RankingTop5BlockOther tab={tab} />,
-              challenge: <RankingChallengePerDate itemPerPage={ITEM_PER_PAGE} canChangeDate={false} />,
+              challenge: (
+                <RankingChallengePerDate
+                  itemPerPage={ITEM_PER_PAGE}
+                  canChangeDate={false}
+                />
+              ),
             }[tab]
           }
         </Grid>
@@ -113,10 +117,10 @@ export const RankingTop5Block = () => {
   );
 };
 
-interface PropsRankingTop5BlockOther{
-  tab: AllGameModeEnum
+interface PropsRankingTop5BlockOther {
+  tab: AllGameModeEnum;
 }
-export const RankingTop5BlockOther = ({tab}: PropsRankingTop5BlockOther) => {
+export const RankingTop5BlockOther = ({ tab }: PropsRankingTop5BlockOther) => {
   const { t } = useTranslation();
   const { language } = useUser();
   const { hasPlayChallenge } = useAuth();
@@ -180,16 +184,6 @@ export const RankingTop5BlockOther = ({tab}: PropsRankingTop5BlockOther) => {
     }
   }, [tab, tabTimeSolo, t, language, hasPlayChallenge]);
 
-  const link = useMemo(() => {
-    let res = "";
-    if (tab === AllGameModeEnum.solo) {
-      res = `/ranking?sort=points&time=${tabTimeSolo}`;
-    } else if (tab === AllGameModeEnum.duel) {
-      res = `/ranking?sort=rank`;
-    }
-    return res;
-  }, [tab, tabTimeSolo]);
-
   return (
     <Container maxWidth="sm">
       <Grid container spacing={1} alignItems="center">
@@ -205,14 +199,7 @@ export const RankingTop5BlockOther = ({tab}: PropsRankingTop5BlockOther) => {
         )}
         <Grid size={12}>
           <Box sx={{ p: 1 }}>
-            <RankingTable
-              data={data}
-              loading={isLoading}
-              navigation={{
-                link: link,
-                label: t("commun.seemore"),
-              }}
-            />
+            <RankingTable data={data} loading={isLoading} />
           </Box>
         </Grid>
       </Grid>

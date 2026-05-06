@@ -111,10 +111,12 @@ export const CardChallenge = ({ profileId }: Props) => {
                   <SportsEsportsIcon />
                   <Typography variant="h4">
                     <Trans
-                      i18nKey={t("commun.game")}
+                      i18nKey={"commun.game"}
                       values={{
                         count: stat.games,
+                        formattedCount: stat.games,
                       }}
+                      components={{ bold: <strong /> }}
                     />
                   </Typography>
                 </Grid>
@@ -174,6 +176,7 @@ interface CardChallengeDayProps {
 }
 
 export const CardChallengeDay = ({ value }: CardChallengeDayProps) => {
+  const { t } = useTranslation();
   const { hasPlayChallenge } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -212,7 +215,7 @@ export const CardChallengeDay = ({ value }: CardChallengeDayProps) => {
               </Typography>
             </Grid>
             <Grid size={3} sx={{ display: "flex", justifyContent: "center" }}>
-              <Rank value={value.ranking} />
+              <Rank value={value.ranking} size={25} />
             </Grid>
             <Grid size={3} sx={{ display: "flex", justifyContent: "center" }}>
               <Box sx={{ display: "flex", gap: px(2), alignItems: "center" }}>
@@ -258,7 +261,7 @@ export const CardChallengeDay = ({ value }: CardChallengeDayProps) => {
             {showGame && (
               <Grid size={12} sx={{ textAlign: "center" }}>
                 <Link>
-                  <Typography variant="body1">Voir la partie</Typography>
+                  <Typography variant="body1">{t("commun.seegame")}</Typography>
                 </Link>
               </Grid>
             )}
@@ -304,7 +307,7 @@ export const CardChallengeWeek = ({ value }: CardChallengeWeekProps) => {
           <Typography variant="h6">
             {start.format("DD MMMM")} - {end.format("DD MMMM YYYY")}
           </Typography>
-          <Rank value={value.ranking} />
+          <Rank value={value.ranking} size={25} />
         </Grid>
         <Grid size={12}>
           <Box
@@ -321,10 +324,12 @@ export const CardChallengeWeek = ({ value }: CardChallengeWeekProps) => {
               <SportsEsportsIcon fontSize="small" />
               <Typography variant="h6">
                 <Trans
-                  i18nKey={t("commun.game")}
+                  i18nKey={"commun.game"}
                   values={{
                     count: value.games,
+                    formattedCount: value.games,
                   }}
+                  components={{ bold: <strong /> }}
                 />
               </Typography>
             </Box>
@@ -364,12 +369,7 @@ export const CardChallengeMonth = ({ value }: CardChallengeMonthProps) => {
       }}
       elevation={8}
     >
-      <Grid
-        container
-        spacing={1}
-        alignItems="center"
-        sx={{ textAlign: "center" }}
-      >
+      <Grid container spacing={1} alignItems="center">
         <Grid
           sx={{
             display: "flex",
@@ -382,7 +382,7 @@ export const CardChallengeMonth = ({ value }: CardChallengeMonthProps) => {
           <Typography variant="h6">
             {moment(value.month, "MM/YYYY").format("MMMM YYYY")}
           </Typography>
-          <Rank value={value.ranking} />
+          <Rank value={value.ranking} size={25} />
         </Grid>
         <Grid size={12}>
           <Box
@@ -399,10 +399,12 @@ export const CardChallengeMonth = ({ value }: CardChallengeMonthProps) => {
               <SportsEsportsIcon fontSize="small" />
               <Typography variant="h6">
                 <Trans
-                  i18nKey={t("commun.game")}
+                  i18nKey={"commun.game"}
                   values={{
                     count: value.games,
+                    formattedCount: value.games,
                   }}
+                  components={{ bold: <strong /> }}
                 />
               </Typography>
             </Box>
@@ -457,7 +459,7 @@ export const CardChallengeAllTime = ({ value }: CardChallengeAllTimeProps) => {
           }}
           size={12}
         >
-          <Rank value={value.ranking} />
+          <Rank value={value.ranking} size={25} />
         </Grid>
         <Grid size={12}>
           <Box
@@ -474,10 +476,12 @@ export const CardChallengeAllTime = ({ value }: CardChallengeAllTimeProps) => {
               <SportsEsportsIcon fontSize="small" />
               <Typography variant="h6">
                 <Trans
-                  i18nKey={t("commun.game")}
+                  i18nKey={"commun.game"}
                   values={{
                     count: value.games,
+                    formattedCount: value.games,
                   }}
+                  components={{ bold: <strong /> }}
                 />
               </Typography>
             </Box>

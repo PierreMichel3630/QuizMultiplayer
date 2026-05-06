@@ -29,6 +29,7 @@ export interface MyScore {
   duelgames: number;
   rank: number;
   xp: number;
+  ranking: number;
 }
 
 export interface Opposition {
@@ -42,7 +43,27 @@ export interface Opposition {
   defeat: number;
 }
 
-
 export interface ScoreAvg {
   score: number;
+  rank: number;
+  games: number;
+  duelgames: number;
+}
+
+export interface ScoreRanking {
+  profile: Profile;
+  points: number;
+  games: number;
+  duelgames: number;
+  rank: number;
+  ranking: number;
+}
+
+export interface ScoreRanking {
+  profile: Profile;
+  points: number;
+  games: number;
+  duelgames: number;
+  rank: number;
+  ranking: number;
 }

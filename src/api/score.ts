@@ -26,12 +26,23 @@ export const selectScoresByTheme = (
     .range(from, to);
 };
 
-export const selectScoresByProfile = (uuid: string) =>
-  supabase
+export const selectScoresByProfile = (uuid: string) => {
+  return supabase
     .from(SUPABASE_SCORE_TABLE)
     .select("*, theme(*, themetranslation(*))")
     .or("games.gt.0,duelgames.gt.0")
     .eq("profile", uuid);
+};
+
+export const selectScoresByProfileAndTheme = (uuid: string, theme: number) => {
+  return supabase
+    .from(SUPABASE_SCORE_TABLE)
+    .select("*, theme(*, themetranslation(*))")
+    .or("games.gt.0,duelgames.gt.0")
+    .eq("profile", uuid)
+    .eq("theme", theme)
+    .maybeSingle();
+};
 
 export const selectScoresByProfilePaginate = (
   uuid: string,
@@ -106,6 +117,7 @@ export const countPlayersByTheme = (theme: number) =>
     .from(SUPABASE_SCORE_TABLE)
     .select("*", { count: "exact", head: true })
     .eq("theme", theme)
+    .or("games.gt.0,duelgames.gt.0")
     .not("profile", "in", `(${bots.join(",")})`);
 
 //Opposition
@@ -136,5 +148,22 @@ export const selectScorePaginate = (
     p_ascending: ascending,
     p_sort: sort,
     p_ids_theme: idTheme ?? null,
+  });
+};
+
+export const selectScoreByProfileAndThemePaginate = (
+  profile: string,
+  theme: number,
+  sort = "points",
+  ascending = false,
+) => {
+  return supabase.rpc(SUPABASE_GETLEADERBOARDGAME_FUNCTION, {
+    p_search: "",
+    p_page: 0,
+    p_itemperpage: 1,
+    p_ids_profile: [profile],
+    p_ascending: ascending,
+    p_sort: sort,
+    p_ids_theme: [theme],
   });
 };

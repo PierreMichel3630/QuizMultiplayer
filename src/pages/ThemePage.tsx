@@ -23,7 +23,9 @@ import {
   matchmakingDuelGame,
 } from "src/api/game";
 import { countQuestionByTheme } from "src/api/question";
-import { countPlayersByTheme } from "src/api/score";
+import {
+  countPlayersByTheme
+} from "src/api/score";
 import { selectThemeById } from "src/api/theme";
 import { ButtonColor } from "src/component/Button";
 import { GroupButtonAllTypeGame } from "src/component/button/ButtonGroup";
@@ -532,7 +534,7 @@ export default function ThemePage() {
                   <Grid size={12}>
                     {
                       {
-                        solo: <RankingSolo theme={theme.id} />,
+                        solo: <RankingSolo theme={theme.id}  />,
                         duel: <RankingDuel theme={theme.id} />,
                       }[typeRanking]
                     }

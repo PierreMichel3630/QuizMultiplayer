@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { percent, px } from "csx";
 import { useMemo } from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 
 export interface Data {
   label: string | number;
@@ -13,10 +13,9 @@ interface Props {
   data: Array<Data>;
 }
 export const RatingChart = ({ data }: Props) => {
-  const { t } = useTranslation();
   const max = useMemo(
     () => Math.max(...[...data].map((el) => el.value)),
-    [data]
+    [data],
   );
   return (
     <Box sx={{ display: "flex", gap: 1, height: px(150) }}>
@@ -52,10 +51,12 @@ export const RatingChart = ({ data }: Props) => {
               sx={{ writingMode: "sideways-lr", transform: "scale(1)" }}
             >
               <Trans
-                i18nKey={t("commun.game")}
+                i18nKey={"commun.game"}
                 values={{
                   count: el.value,
+                  formattedCount: el.value,
                 }}
+                components={{ bold: <strong /> }}
               />
             </Typography>
           </Box>

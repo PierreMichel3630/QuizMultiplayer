@@ -64,7 +64,6 @@ export const ChallengeProfilDialog = ({ profileId, open, close }: Props) => {
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  
 
   useEffect(() => {
     setStatDay([]);
@@ -76,9 +75,9 @@ export const ChallengeProfilDialog = ({ profileId, open, close }: Props) => {
         const values: Array<ChallengeRankingAllTime> = data.data;
         setStatAllTime(values[0] ?? null);
       });
-      getProfilById(profileId).then(({data}) => {
-        setProfile(data)
-      })
+      getProfilById(profileId).then(({ data }) => {
+        setProfile(data);
+      });
     }
   }, [profileId]);
 
@@ -193,7 +192,7 @@ export const ChallengeProfilDialog = ({ profileId, open, close }: Props) => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <DialogContent sx={{p: 2}}>
+      <DialogContent sx={{ p: 2 }}>
         {profile && (
           <Grid container spacing={2}>
             <Grid size={12}>
