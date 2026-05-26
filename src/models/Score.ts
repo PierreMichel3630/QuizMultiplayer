@@ -57,13 +57,5 @@ export interface ScoreRanking {
   duelgames: number;
   rank: number;
   ranking: number;
-}
-
-export interface ScoreRanking {
-  profile: Profile;
-  points: number;
-  games: number;
-  duelgames: number;
-  rank: number;
-  ranking: number;
+  theme?: Theme
 }

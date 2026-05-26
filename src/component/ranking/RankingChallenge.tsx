@@ -4,7 +4,7 @@ import moment, { Moment } from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
-import { selectStatAccomplishment } from "src/api/accomplishment";
+import { selectStatAccomplishmentPaginate } from "src/api/accomplishment";
 import {
   selectChallengeAllTimePaginate,
   selectChallengeDayPaginate,
@@ -14,7 +14,7 @@ import {
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
-import { StatAccomplishment } from "src/models/Accomplishment";
+import { StatAccomplishmentWithRanking } from "src/models/Accomplishment";
 import {
   ChallengeAvg,
   ChallengeRankingAllTime,
@@ -51,6 +51,7 @@ import {
   DataRankingChallenge,
   RankingChallengeTable,
 } from "../table/RankingChallengeTable";
+import { ChallengeProfilDialog } from "../challenge/ChallengeProfilDialog";
 
 interface Sort {
   value: string;
@@ -119,6 +120,9 @@ export const RankingChallengeGlobal = () => {
   const [total, setTotal] = useState<null | number>(null);
   const [data, setData] = useState<Array<DataRankingChallenge>>([]);
   const [loading, setLoading] = useState(true);
+  const [dataRankingChallenge, setDataRankingChallenge] = useState<
+    DataRankingChallenge | undefined
+  >(undefined);
 
   const idFriends = useMemo(
     () =>
@@ -163,16 +167,17 @@ export const RankingChallengeGlobal = () => {
 
   useEffect(() => {
     const getRanking = () => {
-      selectStatAccomplishment(
+      selectStatAccomplishmentPaginate(
+        query.search,
         query.typeglobal,
+        false,
         query.page,
         query.rowsPerPage,
         query.friends,
-        query.search,
       ).then(({ data }) => {
-        const res = data as Array<StatAccomplishment>;
-        setTotal(res.length);
-        const newdata = res.map((el, index) => {
+        const res = data.data as Array<StatAccomplishmentWithRanking>;
+        const total = data.total;
+        const newdata = res.map((el) => {
           const champ = el[query.typeglobal];
           return {
             profile: el.profile,
@@ -187,11 +192,12 @@ export const RankingChallengeGlobal = () => {
                 <WinBlock value={champ} />
               </TableCell>
             ),
-            rank: query.page * query.rowsPerPage + index + 1,
+            rank: el.ranking,
           };
         });
         setData(newdata);
         setLoading(false);
+        setTotal(total);
       });
     };
     const timeout = setTimeout(getRanking, 200);
@@ -257,7 +263,11 @@ export const RankingChallengeGlobal = () => {
         )}
       </Grid>
       <Grid size={12}>
-        <RankingChallengeTable data={data} loading={loading} />
+        <RankingChallengeTable
+          data={data}
+          loading={loading}
+          onClick={setDataRankingChallenge}
+        />
         <Pagination
           total={total}
           page={query.page}
@@ -265,6 +275,11 @@ export const RankingChallengeGlobal = () => {
           rowsPerPage={query.rowsPerPage}
         />
       </Grid>
+      <ChallengeProfilDialog
+        profileId={dataRankingChallenge?.profile.id}
+        close={() => setDataRankingChallenge(undefined)}
+        open={dataRankingChallenge !== undefined}
+      />
     </Grid>
   );
 };
@@ -303,6 +318,9 @@ export const RankingChallengePerDate = ({
   const [avg, setAvg] = useState<null | ChallengeAvg>(null);
   const [data, setData] = useState<Array<DataRankingChallenge>>([]);
   const [loading, setLoading] = useState(true);
+  const [dataRankingChallenge, setDataRankingChallenge] = useState<
+    DataRankingChallenge | undefined
+  >(undefined);
 
   const hasSearch = useMemo(
     () => query.search !== "" || query.isOnlyFriend,
@@ -821,7 +839,11 @@ export const RankingChallengePerDate = ({
           </Alert>
         ) : (
           <>
-            <RankingChallengeTable data={data} loading={loading} />
+            <RankingChallengeTable
+              data={data}
+              loading={loading}
+              onClick={setDataRankingChallenge}
+            />
             <Pagination
               total={count}
               page={query.page}
@@ -831,6 +853,11 @@ export const RankingChallengePerDate = ({
           </>
         )}
       </Grid>
+      <ChallengeProfilDialog
+        profileId={dataRankingChallenge?.profile.id}
+        close={() => setDataRankingChallenge(undefined)}
+        open={dataRankingChallenge !== undefined}
+      />
     </Grid>
   );
 };

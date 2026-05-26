@@ -5,6 +5,13 @@ import { Banner } from "./Banner";
 import { Country } from "./Country";
 import { TitleProfile } from "./Title";
 
+export interface ProfileWithRanking {
+  ranking: number;
+  money: number;
+  streak: number;
+  profile: Profile;
+}
+
 export interface Profile {
   id: string;
   username: string;

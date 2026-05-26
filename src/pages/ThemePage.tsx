@@ -534,8 +534,8 @@ export default function ThemePage() {
                   <Grid size={12}>
                     {
                       {
-                        solo: <RankingSolo theme={theme.id}  />,
-                        duel: <RankingDuel theme={theme.id} />,
+                        solo: <RankingSolo theme={theme}  />,
+                        duel: <RankingDuel theme={theme} />,
                       }[typeRanking]
                     }
                   </Grid>

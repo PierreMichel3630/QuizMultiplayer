@@ -8,12 +8,12 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Typography
+  Typography,
 } from "@mui/material";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 
 import { percent, px } from "csx";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import rank1 from "src/assets/rank/rank1.png";
 import rank2 from "src/assets/rank/rank2.png";
 import rank3 from "src/assets/rank/rank3.png";
@@ -24,7 +24,8 @@ import { Colors } from "src/style/Colors";
 import { CountryImageBlock } from "../CountryBlock";
 
 import { Profile } from "src/models/Profile";
-import { ChallengeProfilDialog } from "../challenge/ChallengeProfilDialog";
+import { Theme } from "src/models/Theme";
+import { ThemeBlock } from "../theme/ThemeBlock";
 import { ProfileTitleBlock } from "../title/ProfileTitle";
 
 export interface DataRankingChallenge {
@@ -32,20 +33,19 @@ export interface DataRankingChallenge {
   value: JSX.Element;
   rank: number;
   uuid?: string;
+  theme?: Theme
+  data?: any
 }
 
 interface Props {
   data: Array<DataRankingChallenge>;
   loading?: boolean;
+  onClick?: (value: DataRankingChallenge) => void;
 }
 
-export const RankingChallengeTable = ({ data, loading = false }: Props) => {
+export const RankingChallengeTable = ({ data, onClick, loading = false }: Props) => {
   const { profile } = useAuth();
   const { friends } = useApp();
-
-  const [dataRankingChallenge, setDataRankingChallenge] = useState<
-    DataRankingChallenge | undefined
-  >(undefined);
 
   const idFriend = useMemo(
     () =>
@@ -111,11 +111,11 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                   key={index}
                   sx={{
                     backgroundColor: color,
-                    cursor: "pointer",
+                    cursor: onClick ? "pointer" : "default",
                     textDecoration: "inherit",
                   }}
                   onClick={() => {
-                    setDataRankingChallenge(el);
+                    if(onClick) onClick(el);
                   }}
                 >
                   <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
@@ -158,6 +158,7 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
                       <ProfileTitleBlock
                         titleprofile={el.profile.titleprofile}
                       />
+                      {el.theme && <ThemeBlock theme={el.theme} />}
                     </Box>
                   </TableCell>
                   {el.value}
@@ -184,11 +185,6 @@ export const RankingChallengeTable = ({ data, loading = false }: Props) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <ChallengeProfilDialog
-        profileId={dataRankingChallenge?.profile.id}
-        close={() => setDataRankingChallenge(undefined)}
-        open={dataRankingChallenge !== undefined}
-      />
     </Box>
   );
 };

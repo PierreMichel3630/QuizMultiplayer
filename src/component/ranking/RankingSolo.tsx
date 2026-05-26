@@ -10,7 +10,8 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { Page } from "src/models/Paginate";
 import { ScoreAvg, ScoreRanking } from "src/models/Score";
-import { DataRanking } from "../table/RankingTable";
+import { Theme } from "src/models/Theme";
+import { DataRankingChallenge } from "../table/RankingChallengeTable";
 import { RankingGame, Type } from "./RankGame";
 
 interface Sort {
@@ -29,7 +30,7 @@ interface Query {
 }
 
 interface Props {
-  theme?: number;
+  theme?: Theme;
 }
 
 export const RankingSolo = ({ theme }: Props) => {
@@ -46,12 +47,12 @@ export const RankingSolo = ({ theme }: Props) => {
     isOnlyFriend: false,
     friends: undefined,
     sort: { value: "points", ascending: false },
-    themes: theme ? [theme] : undefined,
+    themes: theme ? [theme.id] : undefined,
   });
   const [count, setCount] = useState<null | number>(null);
   const [total, setTotal] = useState<null | number>(null);
   const [avg, setAvg] = useState<null | ScoreAvg>(null);
-  const [data, setData] = useState<Array<DataRanking>>([]);
+  const [data, setData] = useState<Array<DataRankingChallenge>>([]);
   const [loading, setLoading] = useState(true);
 
   const [myScore, setMyScore] = useState<ScoreRanking | null>(null);
@@ -59,7 +60,7 @@ export const RankingSolo = ({ theme }: Props) => {
   useEffect(() => {
     const getMyScore = () => {
       if (theme && profile) {
-        selectScoreByProfileAndThemePaginate(profile.id, theme).then(
+        selectScoreByProfileAndThemePaginate(profile.id, theme.id).then(
           ({ data }) => {
             const result = data?.data ?? [];
             if (result.length === 1) {

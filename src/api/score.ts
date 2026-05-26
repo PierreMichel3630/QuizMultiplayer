@@ -157,13 +157,5 @@ export const selectScoreByProfileAndThemePaginate = (
   sort = "points",
   ascending = false,
 ) => {
-  return supabase.rpc(SUPABASE_GETLEADERBOARDGAME_FUNCTION, {
-    p_search: "",
-    p_page: 0,
-    p_itemperpage: 1,
-    p_ids_profile: [profile],
-    p_ascending: ascending,
-    p_sort: sort,
-    p_ids_theme: [theme],
-  });
+  return selectScorePaginate("", 0, 1, sort, ascending, [profile], [theme]);
 };

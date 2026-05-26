@@ -6,6 +6,7 @@ import { bots } from "./bots";
 
 export const SUPABASE_PROFILE_TABLE = "profiles";
 export const SUPABASE_UPDATEPROFIL_FUNCTION = "update-profil";
+export const SUPABASE_GETLEADERBOARDPROFILE_FUNCTION ="get_leaderboard_profile"
 
 export const getProfilById = (uuid: string) =>
   supabase
@@ -108,3 +109,24 @@ export const selectProfile = (
     .order("created_at", { ascending: true })
     .range(from, to);
 };
+
+
+
+export const selectProfilePaginate = (
+  search: string = "",
+  page = 0,
+  itemperpage = 25,
+  sort = "money",
+  ascending = true,
+  idFriends?: Array<string>
+) => {
+  return supabase.rpc(SUPABASE_GETLEADERBOARDPROFILE_FUNCTION, {
+    p_search: search,
+    p_page: page,
+    p_itemperpage: itemperpage,
+    p_ids_profile: idFriends ?? null,
+    p_ascending: ascending,
+    p_sort: sort
+  });
+};
+

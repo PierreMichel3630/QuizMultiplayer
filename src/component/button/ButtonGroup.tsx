@@ -1,9 +1,6 @@
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import PaidIcon from "@mui/icons-material/Paid";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import WhatshotIcon from "@mui/icons-material/Whatshot";
 import { Box, Typography } from "@mui/material";
 import { padding, px } from "csx";
 import { useMemo } from "react";
@@ -12,11 +9,10 @@ import { ChallengeTypeResultEnum } from "src/models/enum/ChallengeEnum";
 import {
   ClassementChallengeEnum,
   ClassementChallengeGlobalTimeEnum,
-  ClassementEnum,
-  ClassementOtherEnum,
   ClassementScoreEnum,
   ClassementSoloModeEnum,
-  ClassementSoloTimeEnum
+  ClassementSoloTimeEnum,
+  ClassementTypeEnum
 } from "src/models/enum/ClassementEnum";
 import { AllGameModeEnum, GameModeEnum } from "src/models/enum/GameEnum";
 import { Colors } from "src/style/Colors";
@@ -258,45 +254,6 @@ export const GroupButtonChallengeTime = ({
   );
 };
 
-interface PropsGroupButtonOthersClassement {
-  selected: ClassementOtherEnum;
-  onChange: (value: ClassementOtherEnum) => void;
-}
-export const GroupButtonOthersClassement = ({
-  selected,
-  onChange,
-}: PropsGroupButtonOthersClassement) => {
-  const { t } = useTranslation();
-
-  const options = useMemo(
-    () => [
-      {
-        label: t("commun.level"),
-        icon: <MilitaryTechIcon />,
-        value: ClassementOtherEnum.xp,
-      },
-      {
-        label: t("commun.streak"),
-        icon: <WhatshotIcon />,
-        value: ClassementOtherEnum.streak,
-      },
-      {
-        label: t("commun.money"),
-        icon: <PaidIcon />,
-        value: ClassementOtherEnum.money,
-      },
-    ],
-    [t],
-  );
-
-  return (
-    <GroupButton
-      options={options}
-      selected={selected}
-      onChange={(value) => onChange(value as ClassementOtherEnum)}
-    />
-  );
-};
 
 interface PropsGroupButtonChallengeGlobal {
   selected: ClassementChallengeGlobalTimeEnum;
@@ -336,8 +293,8 @@ export const GroupButtonChallengeGlobal = ({
 };
 
 interface PropsGroupButtonClassement {
-  selected: ClassementEnum;
-  onChange: (value: ClassementEnum) => void;
+  selected: ClassementTypeEnum;
+  onChange: (value: ClassementTypeEnum) => void;
 }
 export const GroupButtonClassement = ({
   selected,
@@ -350,24 +307,24 @@ export const GroupButtonClassement = ({
       {
         icon: <PlayCircleIcon />,
         label: t("commun.solo"),
-        value: ClassementEnum.points,
+        value: ClassementTypeEnum.solo,
         color: Colors.blue2,
       },
       {
         icon: <OfflineBoltIcon />,
         label: t("commun.duel"),
-        value: ClassementEnum.rank,
+        value: ClassementTypeEnum.duel,
         color: Colors.red,
       },
       {
         icon: <EmojiEventsIcon />,
         label: t("commun.challenge"),
-        value: ClassementEnum.challenge,
+        value: ClassementTypeEnum.challenge,
         color: Colors.green,
       },
       {
         label: t("commun.others"),
-        value: ClassementEnum.others,
+        value: ClassementTypeEnum.others,
         color: Colors.pink,
       },
     ],
@@ -378,7 +335,7 @@ export const GroupButtonClassement = ({
     <GroupButton
       options={options}
       selected={selected}
-      onChange={(value) => onChange(value as ClassementEnum)}
+      onChange={(value) => onChange(value as ClassementTypeEnum)}
     />
   );
 };
@@ -493,3 +450,4 @@ export const GroupButtonChallenge = ({
     />
   );
 };
+

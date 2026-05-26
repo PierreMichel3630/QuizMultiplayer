@@ -26,6 +26,10 @@ export interface AccomplishmentTranslation {
   language: Language;
 }
 
+export interface StatAccomplishmentWithRanking extends StatAccomplishment {
+  ranking: number;
+}
+
 export interface StatAccomplishment {
   profile: Profile;
   games: number;
@@ -33,10 +37,8 @@ export interface StatAccomplishment {
   gamestwentypts: number;
   gamesfiftypts: number;
   gameshundredpts: number;
-  themetenpts: number;
-  nbthemetenpts: number;
-  themetwentypts: number;
-  nbthemetwentypts: number;
+  themetenpts: Array<number>;
+  themetwentypts: Array<number>;
   duelgames: number;
   victoryduel: number;
   drawduel: number;
@@ -46,6 +48,7 @@ export interface StatAccomplishment {
   windaychallenge: number;
   winweekchallenge: number;
   winmonthchallenge: number;
+  pointssolo: number;
 }
 
 export enum StatAccomplishmentEnum {

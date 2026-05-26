@@ -367,6 +367,7 @@
     "time": "Temps",
     "save": "Enregistrer",
     "streak": "Série",
+    "currentstreak": "Série en cours",
     "money": "Argent",
     "translations": "Traductions",
     "totranslation": "À traduire",
@@ -422,7 +423,13 @@
     "norecordbroken": "Aucun record battu",
     "newrecord": "Nouveau Record",
     "warning": "Attention",
-    "position": "Position"
+    "pointssolo": "Points cumulés sur tous les thèmes",
+    "gameshundredpts": "Parties à + de 100 points",
+    "gamesfiftypts": "Parties à + de 50 points",
+    "gamestwentypts": "Parties à + de 20 points",
+    "gamestenpts": "Parties à + de 10 points",
+    "themetenpts": "Nombre de thèmes à + de 10 points",
+    "themetwentypts": "Nombre de thèmes à + de 20 points"
   },
   "abrevation": {
     "average": "Moy."
@@ -972,7 +979,20 @@
     "rank": "Trier par élo",
     "points": "Trier par points",
     "pointsavg": "Trier par score moy.",
-    "games": "Trier par nombre de partie"
+    "games": "Trier par nombre de parties",
+    "gamestenpts": "Trier par nombre de parties à + 10 points",
+    "gamestwentypts": "Trier par nombre de parties à + 20 points",
+    "gamesfiftypts": "Trier par nombre de parties à + 50 points",
+    "gameshundredpts": "Trier par nombre de parties à + 100 points",
+    "themetenpts": "Trier par nombre de thème à plus de 10 points",
+    "themetwentypts": "Trier par nombre de thème à plus de 20 points",
+    "duelgames": "Trier par nombre de parties",
+    "victoryduel": "Trier par nombre de victoires",
+    "drawduel": "Trier par nombre de matchs nuls",
+    "defeatduel": "Trier par nombre de défaites",
+    "xp": "Trier par niveau",
+    "streak": "Trier par série",
+    "money": "Trier par argent"
   },
   "tutorial": {
     "title": "Bienvenue sur QuizBattle",

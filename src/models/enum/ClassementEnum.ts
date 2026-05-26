@@ -1,4 +1,11 @@
-export enum ClassementEnum {
+export enum ClassementTypeEnum {
+  solo = "solo",
+  duel = "duel",
+  challenge = "challenge",
+  others = "others",
+}
+
+export enum AccomplishmentEnum {
   games = "games",
   gamestenpts = "gamestenpts",
   gamestwentypts = "gamestwentypts",
@@ -12,17 +19,12 @@ export enum ClassementEnum {
   defeatduel = "defeatduel",
   points = "points",
   rank = "rank",
-  challenge = "challenge",
   windaychallenge = "windaychallenge",
   winmonthchallenge = "winmonthchallenge",
   winweekchallenge = "winweekchallenge",
-  others = "others",
-}
-
-export enum ClassementOtherEnum {
-  xp = "xp",
-  streak = "streak",
-  money = "money",
+  xp="xp",
+  streak="streak",
+  money="money"
 }
 
 export enum ClassementScoreEnum {

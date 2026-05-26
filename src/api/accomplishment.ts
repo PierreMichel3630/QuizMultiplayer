@@ -1,11 +1,33 @@
-import { bots } from "./bots";
 import { supabase } from "./supabase";
 
 export const SUPABASE_VIEWACCOMPLISHMENT_TABLE = "viewaccomplishment";
 export const SUPABASE_ACCOMPLISHMENT_TABLE = "accomplishment";
 export const SUPABASE_STATACCOMPLISHMENT_TABLE = "stataccomplishment";
-export const SUPABASE_VIEWSTATACCOMPLISHMENT_TABLE = "viewstataccomplishment";
 export const SUPABASE_PROFILEACCOMPLISHMENT_TABLE = "profileaccomplishment";
+
+
+export const SUPABASE_GETLEADERBOARDACCOMPLISHMENT_FUNCTION =
+  "get_leaderboard_accomplishment";
+
+
+export const selectStatAccomplishmentPaginate = (
+  search: string = "",
+  sort: string = "score",
+  order = false,
+  page = 0,
+  itemperpage = 25,
+  idFriends?: Array<string>,
+) => {
+  return supabase.rpc(SUPABASE_GETLEADERBOARDACCOMPLISHMENT_FUNCTION, {
+    p_search: search,
+    p_page: page,
+    p_itemperpage: itemperpage,
+    p_ascending: order,
+    p_sort: sort,
+    p_ids_profile: idFriends ?? null,
+  });
+};
+
 
 export const selectAccomplishmentByProfile = (profile: string) =>
   supabase
@@ -87,52 +109,6 @@ export const selectStatAccomplishmentByProfile = (profile: string) =>
     .select("*,  profile(*, avatar(*))")
     .eq("profile", profile)
     .maybeSingle();
-
-export const selectStatAccomplishment = (
-  order: string,
-  page: number,
-  itemperpage = 25,
-  idsProfile = [] as Array<string>,
-  search = ""
-) => {
-  const from = page * itemperpage;
-  const to = from + itemperpage - 1;
-
-  let query = supabase
-    .from(SUPABASE_VIEWSTATACCOMPLISHMENT_TABLE)
-    .select(
-      "*, profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))))"
-    )
-    .gt(order, 0)
-    .ilike("profile.username", `%${search}%`)
-    .not("profile.id", "in", `(${bots.join(",")})`)
-    .not("profile", "is", null);
-  if (idsProfile.length > 0) {
-    query = query.in("profile.id", idsProfile).not("profile", "is", null);
-  }
-  return query
-    .order(order, { ascending: false })
-    .order("created_at", { ascending: true })
-    .range(from, to);
-};
-
-export const countStatAccomplishment = (
-  order: string,
-  search = "",
-  idsProfile: undefined | Array<string> = undefined
-) => {
-  let query = supabase
-    .from(SUPABASE_VIEWSTATACCOMPLISHMENT_TABLE)
-    .select("*, profile(*)", { count: "exact", head: true })
-    .gt(order, 0)
-    .ilike("profile.username", `%${search}%`)
-    .not("profile.id", "in", `(${bots.join(",")})`)
-    .not("profile", "is", null);
-  if (idsProfile) {
-    query = query.in("profile.id", idsProfile);
-  }
-  return query;
-};
 
 export const unlockAccomplishment = (id: number) =>
   supabase.functions.invoke("unlock-accomplishment-v2", {

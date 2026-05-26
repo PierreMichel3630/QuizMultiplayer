@@ -20,9 +20,12 @@ import { RecapProfileGameDialog } from "../modal/RecapGameDialog";
 import { Pagination } from "../page/Pagination";
 import { SortButton } from "../SortBlock";
 import { OnlyFriendSwitch } from "../switch/OnlyFriendSwitch";
-import { DataRanking, RankingTable } from "../table/RankingTable";
 import { ProfileTitleBlock } from "../title/ProfileTitle";
 import { RankBadge } from "./Rank";
+import {
+  DataRankingChallenge,
+  RankingChallengeTable,
+} from "../table/RankingChallengeTable";
 
 export enum Type {
   duel = "duel",
@@ -55,7 +58,7 @@ interface Props {
   total: number | null;
   avg: ScoreAvg | null;
   sorts: Array<Sort>;
-  data: Array<DataRanking>;
+  data: Array<DataRankingChallenge>;
   loading?: boolean;
   query: Query;
   setQuery: Dispatch<SetStateAction<Query>>;
@@ -77,7 +80,9 @@ export const RankingGame = ({
   const { profile } = useAuth();
   const { friends } = useApp();
 
-  const [dataRanking, setDataRanking] = useState<any>(undefined);
+  const [dataRanking, setDataRanking] = useState<ScoreRanking | undefined>(
+    undefined,
+  );
 
   const hasSearch = useMemo(
     () => query.search !== "" || query.isOnlyFriend,
@@ -194,10 +199,10 @@ export const RankingGame = ({
           </Alert>
         ) : (
           <>
-            <RankingTable
+            <RankingChallengeTable
               data={data}
               loading={loading}
-              onClick={setDataRanking}
+              onClick={(value) => setDataRanking(value.data)}
             />
             <Pagination
               total={count}
@@ -210,7 +215,7 @@ export const RankingGame = ({
       </Grid>
       <RecapProfileGameDialog
         profileId={dataRanking?.profile.id}
-        themeId={dataRanking?.theme}
+        themeId={dataRanking?.theme?.id}
         close={() => setDataRanking(undefined)}
         open={dataRanking !== undefined}
       />
@@ -224,7 +229,7 @@ interface PropsMyScore {
     rank: number;
     games: number;
     duelgames: number;
-    ranking: number;
+    ranking?: number;
     profile: Profile;
   };
   type: Type;
@@ -258,9 +263,11 @@ export const ScoreRankingBlock = ({ value, type, onClick }: PropsMyScore) => {
         if (onClick) onClick();
       }}
     >
-      <Box>
-        <RankBadge value={value.ranking} />
-      </Box>
+      {value.ranking && (
+        <Box>
+          <RankBadge value={value.ranking} />
+        </Box>
+      )}
       {profile && (
         <>
           <Box>

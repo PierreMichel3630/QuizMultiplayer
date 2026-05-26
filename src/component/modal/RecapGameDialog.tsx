@@ -1,5 +1,6 @@
 import CloseIcon from "@mui/icons-material/Close";
 import {
+  Alert,
   AppBar,
   Dialog,
   DialogContent,
@@ -118,50 +119,42 @@ export const RecapProfileGameDialog = ({
               </Grid>
             </>
           )}
-          {scoreSolo !== null && (
-            <>
-              <Grid size={12} sx={{ textAlign: "center" }}>
-                <Typography variant="h2">{t("commun.solo")}</Typography>
-              </Grid>
-              {avgSolo !== null && totalSolo !== null && (
-                <Grid size={12}>
-                  <RecapAvgGame
-                    type={Type.solo}
-                    avg={avgSolo}
-                    count={totalSolo}
-                  />
-                </Grid>
-              )}
-              {scoreSolo !== null && (
-                <Grid size={12}>
-                  <ScoreRankingBlock value={scoreSolo} type={Type.solo} />
-                </Grid>
-              )}
-            </>
+          <Grid size={12} sx={{ textAlign: "center" }}>
+            <Typography variant="h2">{t("commun.solo")}</Typography>
+          </Grid>
+          {avgSolo !== null && totalSolo !== null && (
+            <Grid size={12}>
+              <RecapAvgGame type={Type.solo} avg={avgSolo} count={totalSolo} />
+            </Grid>
+          )}
+          {scoreSolo === null ? (
+            <Grid size={12}>
+              <Alert severity="warning">{t("alert.noresultgame")}</Alert>
+            </Grid>
+          ) : (
+            <Grid size={12}>
+              <ScoreRankingBlock value={scoreSolo} type={Type.solo} />
+            </Grid>
           )}
           <Grid size={12}>
             <Divider />
           </Grid>
-          {scoreDuel !== null && (
-            <>
-              <Grid size={12} sx={{ textAlign: "center" }}>
-                <Typography variant="h2">{t("commun.duel")}</Typography>
-              </Grid>
-              {avgDuel !== null && totalDuel !== null && (
-                <Grid size={12}>
-                  <RecapAvgGame
-                    type={Type.duel}
-                    avg={avgDuel}
-                    count={totalDuel}
-                  />
-                </Grid>
-              )}
-              {scoreDuel !== null && (
-                <Grid size={12}>
-                  <ScoreRankingBlock value={scoreDuel} type={Type.duel} />
-                </Grid>
-              )}
-            </>
+          <Grid size={12} sx={{ textAlign: "center" }}>
+            <Typography variant="h2">{t("commun.duel")}</Typography>
+          </Grid>
+          {avgDuel !== null && totalDuel !== null && (
+            <Grid size={12}>
+              <RecapAvgGame type={Type.duel} avg={avgDuel} count={totalDuel} />
+            </Grid>
+          )}
+          {scoreDuel === null ? (
+            <Grid size={12}>
+              <Alert severity="warning">{t("alert.noresultgame")}</Alert>
+            </Grid>
+          ) : (
+            <Grid size={12}>
+              <ScoreRankingBlock value={scoreDuel} type={Type.duel} />
+            </Grid>
           )}
         </Grid>
       </DialogContent>

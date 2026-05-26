@@ -22,40 +22,42 @@ export const SortButton = ({ menus }: Props) => {
   };
 
   return (
-    <Fragment>
-      <Tooltip title="Account settings">
-        <IconButton
-          onClick={handleClick}
-          size="small"
-          aria-controls={open ? "account-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? "true" : undefined}
-        >
-          <SortIcon fontSize="large" />
-        </IconButton>
-      </Tooltip>
-      <Menu
-        anchorEl={anchorEl}
-        id="account-menu"
-        open={open}
-        sx={{ mt: "5px", pt: 0, pb: 0 }}
-        onClose={handleClose}
-        onClick={handleClose}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-      >
-        {menus.map((menu) => (
-          <MenuItem
-            key={menu.value}
-            onClick={() => {
-              handleClose();
-              menu.sort(menu.value);
-            }}
+    menus.length > 0 && (
+      <Fragment>
+        <Tooltip title="Account settings">
+          <IconButton
+            onClick={handleClick}
+            size="small"
+            aria-controls={open ? "account-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
           >
-            <Typography variant="body1">{menu.label}</Typography>
-          </MenuItem>
-        ))}
-      </Menu>
-    </Fragment>
+            <SortIcon fontSize="large" />
+          </IconButton>
+        </Tooltip>
+        <Menu
+          anchorEl={anchorEl}
+          id="account-menu"
+          open={open}
+          sx={{ mt: "5px", pt: 0, pb: 0 }}
+          onClose={handleClose}
+          onClick={handleClose}
+          transformOrigin={{ horizontal: "right", vertical: "top" }}
+          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        >
+          {menus.map((menu) => (
+            <MenuItem
+              key={menu.value}
+              onClick={() => {
+                handleClose();
+                menu.sort(menu.value);
+              }}
+            >
+              <Typography variant="body1">{menu.label}</Typography>
+            </MenuItem>
+          ))}
+        </Menu>
+      </Fragment>
+    )
   );
 };
