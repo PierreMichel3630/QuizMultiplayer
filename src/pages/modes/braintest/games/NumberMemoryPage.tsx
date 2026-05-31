@@ -190,6 +190,8 @@ export default function NumberMemoryPage() {
                         borderRadius: px(15),
                       }}
                       inputProps={{
+                        inputMode: "numeric",
+                        pattern: "[0-9]*",
                         style: {
                           textAlign: "center",
                           fontSize: px(40),

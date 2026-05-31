@@ -11,6 +11,7 @@ import { Colors } from "src/style/Colors";
 import { getExperienceByLevel, getLevel } from "src/utils/calcul";
 import { POINTGAME, POINTVICTORY } from "src/utils/config";
 import { AvatarAccountBadge } from "./avatar/AvatarAccount";
+import { BadgeLevel } from "src/icons/BadgeLevel";
 
 interface Props {
   xp: number;
@@ -18,9 +19,10 @@ interface Props {
 }
 
 export const ExperienceBlock = ({ xp, xpgain }: Props) => {
-  const { t } = useTranslation();
   const { mode } = useUser();
   const isDarkMode = useMemo(() => mode === "dark", [mode]);
+
+  const HEIGHT = 20;
 
   const xpTotal = useMemo(() => {
     return xpgain ?? 0;
@@ -55,64 +57,53 @@ export const ExperienceBlock = ({ xp, xpgain }: Props) => {
   }, [xpLevel, xpTotal]);
 
   return (
-    <Grid container spacing={1} justifyContent="center" alignItems="end">
-      <Grid>
-        <Typography variant="h4">
-          {t("commun.level")} {myLevel}
-        </Typography>
-      </Grid>
-      <Grid size={12}>
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Box sx={{ zIndex: 2}}>
+        <BadgeLevel level={myLevel} size={38} fontSize={17} />
+      </Box>
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          justifyContent: "center",
+          position: "relative",
+          height: px(HEIGHT),
+          marginLeft: "-10px",
+        }}
+      >
         <Box
           sx={{
+            width: percent(100),
+            backgroundColor: isDarkMode ? Colors.white : Colors.black2,
+            borderRadius: px(25),
             display: "flex",
             justifyContent: "center",
-            position: "relative",
+            alignItems: "center",
           }}
         >
           {xpLevel !== undefined && myXpLevel !== undefined && (
-            <Box
-              sx={{
-                position: "absolute",
-                right: 8,
-                zIndex: 1,
-                color: Colors.black,
-              }}
-            >
+            <Box sx={{ zIndex: 100 }}>
               <Typography
                 variant="h6"
                 component="span"
                 color={isDarkMode ? Colors.black2 : Colors.white}
               >
-                {xpLevel - myXpLevel}
-              </Typography>
-              <Typography
-                variant="caption"
-                component="span"
-                color={isDarkMode ? Colors.black2 : Colors.white}
-              >
-                {t("commun.xpnextlevel")}
+                {myXpLevel} / {xpLevel}
               </Typography>
             </Box>
           )}
           <Box
             sx={{
-              height: px(20),
-              width: percent(100),
-              backgroundColor: isDarkMode ? Colors.white : Colors.black2,
-              borderRadius: px(25),
-            }}
-          />
-          <Box
-            sx={{
               position: "absolute",
               left: 0,
+              height: percent(100),
               width: percent(100),
               display: "flex",
             }}
           >
             <Box
               sx={{
-                height: px(20),
+                height: percent(100),
                 width: percent(Math.max(pourcentage, 0)),
                 backgroundColor: Colors.colorApp,
                 borderTopLeftRadius: px(25),
@@ -121,7 +112,7 @@ export const ExperienceBlock = ({ xp, xpgain }: Props) => {
             />
             <Box
               sx={{
-                height: px(20),
+                height: percent(100),
                 width: percent(pourcentageGain),
                 backgroundColor: Colors.purple2,
                 borderTopLeftRadius: pourcentage > 0 ? "none" : px(25),
@@ -130,8 +121,8 @@ export const ExperienceBlock = ({ xp, xpgain }: Props) => {
             />
           </Box>
         </Box>
-      </Grid>
-    </Grid>
+      </Box>
+    </Box>
   );
 };
 
@@ -339,7 +330,7 @@ export const MyExperienceSoloBlock = ({ xp }: PropsSolo) => {
   }, [profile]);
 
   const xpTotal = useMemo(() => {
-    return xp ? (xp.match ?? 0) + (xp.matchscore ?? 0) +  (xp.record ?? 0) : 0;
+    return xp ? (xp.match ?? 0) + (xp.matchscore ?? 0) + (xp.record ?? 0) : 0;
   }, [xp]);
 
   const myLevel = useMemo(() => {
@@ -396,7 +387,7 @@ export const MyExperienceSoloBlock = ({ xp }: PropsSolo) => {
         title: t("commun.totalxp"),
         value: xpTotal,
       },
-    ].filter(Boolean) as Array<{color: string, title: string, value: number}>;
+    ].filter(Boolean) as Array<{ color: string; title: string; value: number }>;
   }, [t, xp, xpTotal]);
 
   return (

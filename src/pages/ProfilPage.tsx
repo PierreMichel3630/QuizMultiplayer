@@ -74,7 +74,6 @@ export default function ProfilPage() {
   const [isLoadingScore, setIsLoadingScore] = useState(false);
   const [isLoadingTitle, setIsLoadingTitle] = useState(true);
   const [isLoadingBadge, setIsLoadingBadge] = useState(true);
-  const [isLoadingOppositions, setIsLoadingOppositions] = useState(true);
   const [isLoadingFriends, setIsLoadingFriends] = useState(true);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [, setPage] = useState(0);
@@ -223,11 +222,9 @@ export default function ProfilPage() {
 
   useEffect(() => {
     const getOpposition = () => {
-      setIsLoadingOppositions(true);
       if (id && profile?.id !== id) {
         selectOppositionByOpponent(uuid, id).then(({ data }) => {
           setOppositions(data as Array<Opposition>);
-          setIsLoadingOppositions(false);
         });
       } else {
         setOppositions([]);
@@ -267,7 +264,7 @@ export default function ProfilPage() {
   );
 
   const goPersonalized = () => {
-    if (profile) {
+    if (profile && isMe) {
       navigate(`/personalized`);
     }
   };
@@ -384,8 +381,6 @@ export default function ProfilPage() {
             <Grid size={12}>
               <CardOpposition
                 opposition={totalOpposition}
-                opponent={profileUser}
-                loading={isLoadingOppositions}
               />
             </Grid>
           )}

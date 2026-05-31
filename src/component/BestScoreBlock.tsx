@@ -127,7 +127,7 @@ export const BestScoreBlockGameMode = ({
               gap: 1,
             }}
           >
-            <Typography variant="body1">{t("commun.position")} : </Typography>
+            <Typography variant="body1">{t("commun.ranking")} : </Typography>
             <Rank value={myScore.rank} />
           </Grid>
           <Grid
@@ -254,7 +254,7 @@ export const BestScoreBlock = ({
               gap: 1,
             }}
           >
-            <Typography variant="body1">{t("commun.position")} : </Typography>
+            <Typography variant="body1">{t("commun.ranking")} : </Typography>
             <Rank value={myScore.rank} />
           </Grid>
         )}

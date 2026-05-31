@@ -1,18 +1,8 @@
-import CloseIcon from "@mui/icons-material/Close";
 import {
-  AppBar,
-  Dialog,
-  DialogContent,
   Divider,
-  Grid,
-  IconButton,
-  Toolbar,
-  Typography,
-  useMediaQuery,
-  useTheme,
+  Grid
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
 import {
   selectChallengeAllTimeByProfile,
   selectChallengeGameByProfileId,
@@ -35,7 +25,7 @@ import {
   CardChallengeMonth,
   CardChallengeWeek,
 } from "../card/CardChallenge";
-import { ProfileBlock } from "../profile/ProfileBlock";
+import { BaseRecapDialog } from "../modal/commun/BaseRecapDialog";
 import { SkeletonChallenges } from "../skeleton/SkeletonChallenge";
 import { RatingChallenge } from "./RatingChallenge";
 
@@ -46,14 +36,11 @@ export interface Props {
 }
 
 export const ChallengeProfilDialog = ({ profileId, open, close }: Props) => {
-  const { t } = useTranslation();
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const ITEM_PER_PAGE = 20;
   const loaderRef = useRef(null);
 
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<Profile | undefined>(undefined);
   const [tabTime, setTabTime] = useState(ClassementChallengeTimeListEnum.day);
   const [statDay, setStatDay] = useState<Array<ChallengeRankingDay>>([]);
   const [statMonth, setStatMonth] = useState<Array<ChallengeRankingMonth>>([]);
@@ -181,79 +168,64 @@ export const ChallengeProfilDialog = ({ profileId, open, close }: Props) => {
   }, [loading, hasMore, profileId]);
 
   return (
-    <Dialog onClose={close} open={open} maxWidth="md" fullScreen={fullScreen}>
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.result")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <DialogContent sx={{ p: 2 }}>
-        {profile && (
-          <Grid container spacing={2}>
+    <BaseRecapDialog open={open} close={close} profile={profile}>
+      {profile && (
+        <Grid container spacing={2}>
+          {statAllTime && (
             <Grid size={12}>
-              <ProfileBlock profile={profile} />
+              <CardChallengeAllTime value={statAllTime} />
             </Grid>
-            {statAllTime && (
-              <Grid size={12}>
-                <CardChallengeAllTime value={statAllTime} />
-              </Grid>
-            )}
-            <Grid size={12}>
-              <GroupButtonChallengeTime
-                type={ClassementChallengeTimeListEnum}
-                selected={tabTime}
-                onChange={(value) => {
-                  setTabTime(value as ClassementChallengeTimeListEnum);
-                }}
-              />
-            </Grid>
-            {
-              {
-                day: (
-                  <>
-                    <Grid size={12}>
-                      <RatingChallenge profile={profile} />
-                    </Grid>
-                    <Grid size={12}>
-                      <Divider sx={{ borderBottomWidth: 5 }} />
-                    </Grid>
-                    {statDay.map((stat, index) => (
-                      <Grid key={index} size={12}>
-                        <CardChallengeDay value={stat} />
-                      </Grid>
-                    ))}
-                  </>
-                ),
-                week: (
-                  <>
-                    {statWeek.map((stat, index) => (
-                      <Grid key={index} size={12}>
-                        <CardChallengeWeek value={stat} />
-                      </Grid>
-                    ))}
-                  </>
-                ),
-                month: (
-                  <>
-                    {statMonth.map((stat, index) => (
-                      <Grid key={index} size={12}>
-                        <CardChallengeMonth value={stat} />
-                      </Grid>
-                    ))}
-                  </>
-                ),
-              }[tabTime]
-            }
-            <Grid size={12} ref={loaderRef} />
-            {hasMore && <SkeletonChallenges number={2} />}
+          )}
+          <Grid size={12}>
+            <GroupButtonChallengeTime
+              type={ClassementChallengeTimeListEnum}
+              selected={tabTime}
+              onChange={(value) => {
+                setTabTime(value as ClassementChallengeTimeListEnum);
+              }}
+            />
           </Grid>
-        )}
-      </DialogContent>
-    </Dialog>
+          {
+            {
+              day: (
+                <>
+                  <Grid size={12}>
+                    <RatingChallenge profile={profile} />
+                  </Grid>
+                  <Grid size={12}>
+                    <Divider sx={{ borderBottomWidth: 5 }} />
+                  </Grid>
+                  {statDay.map((stat, index) => (
+                    <Grid key={index} size={12}>
+                      <CardChallengeDay value={stat} />
+                    </Grid>
+                  ))}
+                </>
+              ),
+              week: (
+                <>
+                  {statWeek.map((stat, index) => (
+                    <Grid key={index} size={12}>
+                      <CardChallengeWeek value={stat} />
+                    </Grid>
+                  ))}
+                </>
+              ),
+              month: (
+                <>
+                  {statMonth.map((stat, index) => (
+                    <Grid key={index} size={12}>
+                      <CardChallengeMonth value={stat} />
+                    </Grid>
+                  ))}
+                </>
+              ),
+            }[tabTime]
+          }
+          <Grid size={12} ref={loaderRef} />
+          {hasMore && <SkeletonChallenges number={2} />}
+        </Grid>
+      )}
+    </BaseRecapDialog>
   );
 };

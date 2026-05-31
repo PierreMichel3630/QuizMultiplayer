@@ -1,16 +1,14 @@
 
 interface Props {
-  transform?: string;
   onPointerDown?: (event: React.MouseEvent<SVGSVGElement>) => void;
   size?: number
 }
 
-export const Target = ({ size = 100 , transform, onPointerDown }: Props) => {
+export const Target = ({ size = 100 , onPointerDown }: Props) => {
   return (
     <svg
       width={size}
       height={size}
-      transform={transform}
       onPointerDown={onPointerDown}
       style={{ cursor: "pointer" }}
       viewBox="0 0 200 200"

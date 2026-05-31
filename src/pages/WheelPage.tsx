@@ -20,6 +20,7 @@ import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
 import { ExperienceBlock } from "src/component/ExperienceBlock";
 import { StatAccomplishment } from "src/models/Accomplishment";
+import { percent, px } from "csx";
 
 export default function WheelPage() {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ export default function WheelPage() {
 
   const [open, setOpen] = useState(false);
   const [wheelResult, setWheelResult] = useState<undefined | WheelResult>(
-    undefined
+    undefined,
   );
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
@@ -170,18 +171,29 @@ export default function WheelPage() {
                 gap: 1,
               }}
             >
-              <AvatarAccountBadge
-                profile={profile}
-                size={80}
-                color={Colors.pink}
-              />
-              <ExperienceBlock xp={xp} xpgain={gainxp} />
-              <MoneyBlock
-                money={money}
-                variant="h2"
-                width={22}
-                color="text.primary"
-              />
+              <Box
+                sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                  width: percent(100),
+                  maxWidth: px(400),
+                }}
+              >
+                <AvatarAccountBadge
+                  profile={profile}
+                  size={80}
+                  color={Colors.pink}
+                />
+                <ExperienceBlock xp={xp} xpgain={gainxp} />
+                <MoneyBlock
+                  money={money}
+                  variant="h2"
+                  width={22}
+                  color="text.primary"
+                />
+              </Box>
             </Box>
           )}
           <Box
@@ -234,7 +246,7 @@ export default function WheelPage() {
                           const indexResult = options.findIndex(
                             (el) =>
                               el.value === res.option.value &&
-                              el.type === res.option.type
+                              el.type === res.option.type,
                           );
                           setPrizeNumber(indexResult);
                           setMustSpin(true);

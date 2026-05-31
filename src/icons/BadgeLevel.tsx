@@ -1,6 +1,5 @@
 import { Box, createSvgIcon, Typography } from "@mui/material";
-import { important, percent, px } from "csx";
-import { Colors } from "src/style/Colors";
+import { important, px } from "csx";
 
 interface Props {
   level: number;
@@ -11,11 +10,13 @@ export const BadgeLevel = ({ level, fontSize = 18, size = 40 }: Props) => (
   <Box sx={{ position: "relative", width: px(size), height: px(size) }}>
     <Box
       sx={{
-        color: Colors.white,
         position: "absolute",
-        top: percent(50),
-        left: percent(50),
-        transform: "translate(-50%, -50%)",
+        inset: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        pointerEvents: "none",
+        transform: "translate(1px, 1px)"
       }}
     >
       <Typography
@@ -47,5 +48,5 @@ const LevelIcon = createSvgIcon(
       fill="#BA68C8"
     />
   </svg>,
-  "Level"
+  "Level",
 );

@@ -3,7 +3,6 @@ import { Box, Divider, Grid, Link, Paper, Typography } from "@mui/material";
 import { padding, percent, px } from "csx";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import {
   ChallengeRankingAllTime,
@@ -20,6 +19,7 @@ import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import moment from "moment";
 import { selectChallengeAllTimeByProfile } from "src/api/challenge";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { ChallengeProfilDialog } from "../challenge/ChallengeProfilDialog";
 import { Rank } from "../ranking/Rank";
 import { CardSignalQuestion } from "./CardQuestion";
 
@@ -28,10 +28,10 @@ interface Props {
 }
 export const CardChallenge = ({ profileId }: Props) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const [numberPlayers, setNumberPlayers] = useState<null | number>(null);
   const [stat, setStat] = useState<null | ChallengeRankingAllTime>(null);
+  const [openDetail, setOpenDetail] = useState(false);
 
   useEffect(() => {
     if (profileId) {
@@ -79,10 +79,11 @@ export const CardChallenge = ({ profileId }: Props) => {
           sx={{
             display: "flex",
             p: 1,
+            width: percent(100),
           }}
           size={12}
         >
-          <Grid container spacing={1} justifyContent="center">
+          <Grid container spacing={2} justifyContent="center">
             {stat && (
               <>
                 <Grid
@@ -92,7 +93,6 @@ export const CardChallenge = ({ profileId }: Props) => {
                     alignItems: "center",
                     gap: 1,
                   }}
-                  size={6}
                 >
                   <Rank value={stat.ranking} />
                   <Typography variant="caption">
@@ -106,7 +106,6 @@ export const CardChallenge = ({ profileId }: Props) => {
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                  size={6}
                 >
                   <SportsEsportsIcon />
                   <Typography variant="h4">
@@ -127,7 +126,6 @@ export const CardChallenge = ({ profileId }: Props) => {
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                  size={6}
                 >
                   <QuestionMarkIcon />
                   <Typography variant="h4" noWrap>
@@ -144,7 +142,6 @@ export const CardChallenge = ({ profileId }: Props) => {
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                  size={6}
                 >
                   <AccessTimeIcon />
                   <Typography variant="h4" noWrap>
@@ -160,13 +157,18 @@ export const CardChallenge = ({ profileId }: Props) => {
                   label={t("commun.seestatchallenge")}
                   icon={EmojiEventsIcon}
                   variant="contained"
-                  onClick={() => navigate(`/challenge/profil/${profileId}`)}
+                  onClick={() => setOpenDetail(true)}
                 />
               </Grid>
             )}
           </Grid>
         </Grid>
       </Grid>
+      <ChallengeProfilDialog
+        profileId={profileId}
+        close={() => setOpenDetail(false)}
+        open={openDetail}
+      />
     </Paper>
   );
 };

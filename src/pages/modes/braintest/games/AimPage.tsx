@@ -192,15 +192,24 @@ export default function AimPage() {
                 }}
               >
                 {target && (
-                  <Target
-                    size={TARGET_SIZE}
-                    transform={`translate(${target.x}, ${target.y})`}
-                    onPointerDown={(event) => {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      handleClick();
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      left: target.x,
+                      top: target.y,
+                      width: TARGET_SIZE,
+                      height: TARGET_SIZE,
                     }}
-                  />
+                  >
+                    <Target
+                      size={TARGET_SIZE}
+                      onPointerDown={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        handleClick();
+                      }}
+                    />
+                  </Box>
                 )}
               </Box>
             </Box>
@@ -307,7 +316,7 @@ export const ExtraAim = ({ value }: PropsExtraAim) => {
                           </Typography>
                           <Box>
                             <Typography component="span">
-                              {t("commun.position")} :
+                              {t("commun.targetposition")} :
                             </Typography>
                             <Typography variant="h6" component="span">
                               {"  "}

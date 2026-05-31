@@ -1,16 +1,8 @@
-import CloseIcon from "@mui/icons-material/Close";
 import {
   Alert,
-  AppBar,
-  Dialog,
-  DialogContent,
   Divider,
   Grid,
-  IconButton,
-  Toolbar,
-  Typography,
-  useMediaQuery,
-  useTheme,
+  Typography
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -19,9 +11,8 @@ import { selectScoreByProfileAndThemePaginate } from "src/api/score";
 import { Page } from "src/models/Paginate";
 import { Profile } from "src/models/Profile";
 import { ScoreAvg, ScoreRanking } from "src/models/Score";
-import { ProfileBlock } from "../profile/ProfileBlock";
 import { RecapAvgGame, ScoreRankingBlock, Type } from "../ranking/RankGame";
-import { Link } from "react-router-dom";
+import { BaseRecapDialog } from "./commun/BaseRecapDialog";
 
 interface Props {
   profileId?: string;
@@ -36,10 +27,8 @@ export const RecapProfileGameDialog = ({
   close,
 }: Props) => {
   const { t } = useTranslation();
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<Profile | undefined>(undefined);
 
   const [scoreDuel, setScoreDuel] = useState<ScoreRanking | null>(null);
   const [avgDuel, setAvgDuel] = useState<ScoreAvg | null>(null);
@@ -84,80 +73,44 @@ export const RecapProfileGameDialog = ({
   }, [themeId, profileId]);
 
   return (
-    <Dialog onClose={close} open={open} maxWidth="md" fullScreen={fullScreen}>
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.result")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <DialogContent sx={{ p: 2 }}>
-        <Grid container spacing={2}>
-          {profile && (
-            <>
-              <Grid
-                size={12}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <ProfileBlock profile={profile} />
-                <Link to={`/profil/${profile.id}`}>
-                  <Typography variant="body1">
-                    {t("commun.seeprofile")}
-                  </Typography>
-                </Link>
-              </Grid>
-              <Grid size={12}>
-                <Divider />
-              </Grid>
-            </>
-          )}
-          <Grid size={12} sx={{ textAlign: "center" }}>
-            <Typography variant="h2">{t("commun.solo")}</Typography>
-          </Grid>
-          {avgSolo !== null && totalSolo !== null && (
-            <Grid size={12}>
-              <RecapAvgGame type={Type.solo} avg={avgSolo} count={totalSolo} />
-            </Grid>
-          )}
-          {scoreSolo === null ? (
-            <Grid size={12}>
-              <Alert severity="warning">{t("alert.noresultgame")}</Alert>
-            </Grid>
-          ) : (
-            <Grid size={12}>
-              <ScoreRankingBlock value={scoreSolo} type={Type.solo} />
-            </Grid>
-          )}
-          <Grid size={12}>
-            <Divider />
-          </Grid>
-          <Grid size={12} sx={{ textAlign: "center" }}>
-            <Typography variant="h2">{t("commun.duel")}</Typography>
-          </Grid>
-          {avgDuel !== null && totalDuel !== null && (
-            <Grid size={12}>
-              <RecapAvgGame type={Type.duel} avg={avgDuel} count={totalDuel} />
-            </Grid>
-          )}
-          {scoreDuel === null ? (
-            <Grid size={12}>
-              <Alert severity="warning">{t("alert.noresultgame")}</Alert>
-            </Grid>
-          ) : (
-            <Grid size={12}>
-              <ScoreRankingBlock value={scoreDuel} type={Type.duel} />
-            </Grid>
-          )}
+    <BaseRecapDialog open={open} close={close} profile={profile}>
+      <Grid size={12} sx={{ textAlign: "center" }}>
+        <Typography variant="h2">{t("commun.solo")}</Typography>
+      </Grid>
+      {avgSolo !== null && totalSolo !== null && (
+        <Grid size={12}>
+          <RecapAvgGame type={Type.solo} avg={avgSolo} count={totalSolo} />
         </Grid>
-      </DialogContent>
-    </Dialog>
+      )}
+      {scoreSolo === null ? (
+        <Grid size={12}>
+          <Alert severity="warning">{t("alert.noresultgame")}</Alert>
+        </Grid>
+      ) : (
+        <Grid size={12}>
+          <ScoreRankingBlock value={scoreSolo} type={Type.solo} />
+        </Grid>
+      )}
+      <Grid size={12}>
+        <Divider />
+      </Grid>
+      <Grid size={12} sx={{ textAlign: "center" }}>
+        <Typography variant="h2">{t("commun.duel")}</Typography>
+      </Grid>
+      {avgDuel !== null && totalDuel !== null && (
+        <Grid size={12}>
+          <RecapAvgGame type={Type.duel} avg={avgDuel} count={totalDuel} />
+        </Grid>
+      )}
+      {scoreDuel === null ? (
+        <Grid size={12}>
+          <Alert severity="warning">{t("alert.noresultgame")}</Alert>
+        </Grid>
+      ) : (
+        <Grid size={12}>
+          <ScoreRankingBlock value={scoreDuel} type={Type.duel} />
+        </Grid>
+      )}
+    </BaseRecapDialog>
   );
 };

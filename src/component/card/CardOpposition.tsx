@@ -3,21 +3,13 @@ import { percent, px } from "csx";
 import { useTranslation } from "react-i18next";
 import { Colors } from "src/style/Colors";
 import { BarVictory } from "../chart/BarVictory";
-import { Link } from "react-router-dom";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import { useAuth } from "src/context/AuthProviderSupabase";
-import { Profile } from "src/models/Profile";
-import { GameModeEnum } from "src/models/enum/GameEnum";
 
 interface Props {
   opposition: { games: number; victory: number; draw: number; defeat: number };
-  opponent: Profile;
-  loading?: boolean;
 }
 
-export const CardOpposition = ({ opposition, opponent }: Props) => {
+export const CardOpposition = ({ opposition }: Props) => {
   const { t } = useTranslation();
-  const { profile } = useAuth();
 
   return (
     <Paper
@@ -42,29 +34,16 @@ export const CardOpposition = ({ opposition, opponent }: Props) => {
           <Typography variant="h2" color="text.secondary">
             {t("commun.opposition")}
           </Typography>
-          <Link
-            to={`/games`}
-            state={{
-              player: profile,
-              type: GameModeEnum.duel,
-              opponent: opponent,
-            }}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <VisibilityIcon fontSize="large" sx={{ color: "white" }} />
-          </Link>
         </Grid>
         <Grid size={12}>
           <Box
             sx={{
               display: "flex",
               p: 1,
+              width: percent(100)
             }}
           >
-            <Grid container spacing={1}>
+            <Grid container spacing={1} sx={{ width: percent(100) }}>
               <Grid sx={{ textAlign: "center" }} size={12}>
                 <Typography variant="body1" component="span">
                   {t("commun.games")} {" : "}
