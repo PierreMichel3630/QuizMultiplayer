@@ -23,7 +23,7 @@ export const generateQuestion = (
   theme: number,
   qcm?: boolean,
   points?: number,
-  difficulty?: string
+  difficulty?: string,
 ) => {
   let question: any = undefined;
   switch (theme) {
@@ -43,7 +43,7 @@ export const generateQuestion = (
         Operator.MULTIPLY,
         qcm,
         points,
-        difficulty
+        difficulty,
       );
       break;
     case 553:
@@ -52,7 +52,7 @@ export const generateQuestion = (
         Operator.ADDITION,
         qcm,
         points,
-        difficulty
+        difficulty,
       );
       break;
     case 554:
@@ -61,7 +61,7 @@ export const generateQuestion = (
         Operator.SUBSTRACTION,
         qcm,
         points,
-        difficulty
+        difficulty,
       );
       break;
     case 555:
@@ -70,7 +70,7 @@ export const generateQuestion = (
         Operator.DIVISION,
         qcm,
         points,
-        difficulty
+        difficulty,
       );
       break;
     /* OPERATION SIMPLE MATH */
@@ -79,7 +79,7 @@ export const generateQuestion = (
         theme,
         Operator.MULTIPLY,
         qcm,
-        points
+        points,
       );
       break;
     case 552:
@@ -87,7 +87,7 @@ export const generateQuestion = (
         theme,
         Operator.DIVISION,
         qcm,
-        points
+        points,
       );
       break;
     case 550:
@@ -95,7 +95,7 @@ export const generateQuestion = (
         theme,
         Operator.ADDITION,
         qcm,
-        points
+        points,
       );
       break;
     case 551:
@@ -103,7 +103,7 @@ export const generateQuestion = (
         theme,
         Operator.SUBSTRACTION,
         qcm,
-        points
+        points,
       );
       break;
     case 270:
@@ -182,13 +182,13 @@ const generateQuestionEquationSimple = (
   theme: number,
   qcm?: boolean,
   points?: number,
-  difficulty?: string
+  difficulty?: string,
 ) => {
   const isqcm = points
     ? points < 10
     : qcm === undefined
-    ? Math.random() < 0.5
-    : qcm;
+      ? Math.random() < 0.5
+      : qcm;
   const difficultyQuestion = difficulty ?? getRandomDifficulties();
 
   const operators = [Operator.ADDITION, Operator.SUBSTRACTION];
@@ -243,13 +243,13 @@ const generateQuestionOperation = (
   operator: Operator,
   qcm?: boolean,
   points?: number,
-  difficulty?: string
+  difficulty?: string,
 ) => {
   const isqcm = points
     ? points < 10
     : qcm === undefined
-    ? Math.random() < 0.5
-    : qcm;
+      ? Math.random() < 0.5
+      : qcm;
   const difficultyQuestion = difficulty ?? getRandomDifficulties();
 
   let operation = generateMultiplication(difficultyQuestion);
@@ -305,13 +305,13 @@ const generateQuestionOperationSimple = (
   theme: number,
   operator: Operator,
   qcm?: boolean,
-  points?: number
+  points?: number,
 ) => {
   const isqcm = points
     ? points < 10
     : qcm === undefined
-    ? Math.random() < 0.5
-    : qcm;
+      ? Math.random() < 0.5
+      : qcm;
 
   let operation = generateMultiplication("FACILE");
   switch (operator) {
@@ -369,7 +369,7 @@ const generateQuestionMath = (
   theme: number,
   qcm?: boolean,
   points?: number,
-  difficulty?: string
+  difficulty?: string,
 ) => {
   const operators = [
     Operator.ADDITION,
@@ -384,7 +384,7 @@ const generateQuestionMath = (
 const generateQuestionMathSimple = (
   theme: number,
   qcm?: boolean,
-  points?: number
+  points?: number,
 ) => {
   const operators = [
     Operator.ADDITION,
@@ -465,7 +465,7 @@ const generateSubstraction = (difficulty: string): Operation => {
 
   return {
     value: convertToString(operation),
-    result: eval(operation),
+    result: number1 - number2,
     operator,
     number1,
     number2,
@@ -503,7 +503,7 @@ const generateAddition = (difficulty: string): Operation => {
 
   return {
     value: convertToString(operation),
-    result: eval(operation),
+    result: number1 + number2,
     operator,
     number1,
     number2,
@@ -541,37 +541,44 @@ const generateMultiplication = (difficulty: string): Operation => {
 
   return {
     value: convertToString(operation),
-    result: eval(operation),
+    result: number1 * number2,
     operator,
     number1,
     number2,
   };
 };
 
-const getResponseMathQCM = (operation: Operation) => {
-  const operator = operation.operator;
-  const number1 = operation.number1;
-  const number2 = operation.number2;
-  const correctResult = eval(`${number1} ${operator} ${number2}`);
+const mathOperations: Record<string, (a: number, b: number) => number> = {
+  [Operator.ADDITION]: (a, b) => a + b,
+  [Operator.SUBSTRACTION]: (a, b) => a - b,
+  [Operator.MULTIPLY]: (a, b) => a * b,
+  [Operator.DIVISION]: (a, b) => a / b,
+};
+
+export const getResponseMathQCM = (operation: Operation) => {
+  const { operator, number1, number2 } = operation;
+
+  const execute = mathOperations[operator];
+  const correctResult = execute ? execute(number1, number2) : 0;
+
   const results: Array<number> = [];
+
   if (operator === Operator.MULTIPLY) {
     const randomChiffre = [1, 2, -1, -2];
     const randomSomme = [-10, -2, 2, 10];
+
     randomChiffre.forEach((value) => {
-      const operation1 = `${number1 + value} ${operator} ${number2}`;
-      results.push(eval(operation1));
-      const operation2 = `${number1} ${operator} ${number2 + value}`;
-      results.push(eval(operation2));
+      results.push((number1 + value) * number2);
+      results.push(number1 * (number2 + value));
     });
+
     randomSomme.forEach((value) => {
       results.push(correctResult + value);
     });
-  } else if (operator === Operator.SUBSTRACTION) {
-    const randomSomme = [-10, -5, -2, -1, 1, 2, 5, 10];
-    randomSomme.forEach((value) => {
-      results.push(correctResult + value);
-    });
-  } else if (operator === Operator.ADDITION) {
+  } else if (
+    operator === Operator.SUBSTRACTION ||
+    operator === Operator.ADDITION
+  ) {
     const randomSomme = [-10, -5, -2, -1, 1, 2, 5, 10];
     randomSomme.forEach((value) => {
       results.push(correctResult + value);
@@ -583,38 +590,32 @@ const getResponseMathQCM = (operation: Operation) => {
     randomSomme.forEach((value) => {
       const res = correctResult + value;
       if (res > 0) {
-        results.push(correctResult + value);
+        results.push(res);
       }
     });
   } else {
-    results.push(randomIntFromInterval(1, 1000));
-    results.push(randomIntFromInterval(1, 1000));
-    results.push(randomIntFromInterval(1, 1000));
+    results.push(
+      randomIntFromInterval(1, 1000),
+      randomIntFromInterval(1, 1000),
+      randomIntFromInterval(1, 1000),
+    );
   }
-  const suffleResult = [...results].sort(() => Math.random() - 0.5);
-  const response1 = suffleResult[0];
-  const response2 = suffleResult[1];
-  const response3 = suffleResult[2];
-  const responses = [
-    {
-      "de-DE": response1,
-      "en-US": response1,
-      "es-ES": response1,
-      "fr-FR": response1,
+
+  const filteredResults = results.filter((res) => res !== correctResult);
+  const shuffleResult = [...filteredResults].sort(() => Math.random() - 0.5);
+
+  const locales = ["de-DE", "en-US", "es-ES", "fr-FR"];
+  const responses = [shuffleResult[0], shuffleResult[1], shuffleResult[2]].map(
+    (responseValue) => {
+      return locales.reduce(
+        (acc, lang) => {
+          acc[lang] = responseValue;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
     },
-    {
-      "de-DE": response2,
-      "en-US": response2,
-      "es-ES": response2,
-      "fr-FR": response2,
-    },
-    {
-      "de-DE": response3,
-      "en-US": response3,
-      "es-ES": response3,
-      "fr-FR": response3,
-    },
-  ];
+  );
 
   return responses;
 };

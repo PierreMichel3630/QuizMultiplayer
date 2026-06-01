@@ -45,7 +45,7 @@ export const selectScore = (
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
-  let query = supabase
+  let query: any = supabase
     .from(SUPABASE_SCORE_TABLE)
     .select(
       "*, profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))), theme(color,image ,themetranslation!inner(name, language(*))), uuidgame(uuid, created_at)",

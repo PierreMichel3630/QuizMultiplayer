@@ -1,4 +1,7 @@
-import Lottie from "react-lottie";
+import LottieComponent from "react-lottie";
+
+// Vite résout parfois l'import sous forme d'objet { default: Component }
+const Lottie = (LottieComponent as any).default || LottieComponent;
 
 interface Props {
   data: any;

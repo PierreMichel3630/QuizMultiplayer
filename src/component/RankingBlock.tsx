@@ -36,7 +36,7 @@ export const RankingBlock = ({ themes }: Props) => {
     setData([]);
     const ids = themes ?? [];
     if (language) {
-      selectScore(tab, 0, 3, language, ids).then(({ data }) => {
+      selectScore(tab, 0, 3, language, ids).then(({ data }: any) => {
         const res = data as Array<Score>;
         const newdata = res.map((el, index) => {
           const champ = el[tab];
@@ -134,7 +134,7 @@ const RankingTop5BlockOther = ({ tab }: PropsRankingTop5BlockOther) => {
     setData([]);
     if (language) {
       if (tab === AllGameModeEnum.duel) {
-        selectScore("rank", 0, 5, language).then(({ data }) => {
+        selectScore("rank", 0, 5, language).then(({ data }: any) => {
           const res = data as Array<Score>;
           const newdata = res.map((el, index) => {
             const champ = el.rank;
