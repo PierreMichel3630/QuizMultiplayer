@@ -11,7 +11,7 @@ export interface WheelData {
   type: TypeWheelEnum;
 }
 
-export interface ImageProps {
+interface ImageProps {
   uri: string;
   offsetX?: number;
   offsetY?: number;

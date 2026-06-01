@@ -7,17 +7,7 @@ export enum OrderGameModeScore {
   GAMES = "games",
 }
 
-export interface GameMode {
-  id: number;
-  image: string | JSX.Element;
-  color: string;
-  name: string;
-  order: number;
-  created_at: Date;
-  onClick: () => void;
-}
-
-export interface GameModeScoreNotConnect {
+interface GameModeScoreNotConnect {
   type: TypeGameMode;
   score: number;
   extra?: any;
@@ -31,14 +21,6 @@ export interface GameModeScore {
   games: number;
   rank: number;
   extra?: any;
-}
-
-export interface GameModeScoreInsert {
-  type: TypeGameMode;
-  profile: string;
-  score: number;
-  average: number;
-  games: number;
 }
 
 export interface ResultGameModeScore {

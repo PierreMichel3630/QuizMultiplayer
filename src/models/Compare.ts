@@ -5,7 +5,7 @@ export interface ComparePlayers {
   opposition: CompareOpposition | null;
 }
 
-export interface CompareTheme {
+interface CompareTheme {
   id: number;
   color: string;
   image?: string;
@@ -22,7 +22,7 @@ export interface ComparePlayerInfos {
   points: number;
 }
 
-export interface CompareOpposition {
+interface CompareOpposition {
   games: number;
   victory: number;
   draw: number;

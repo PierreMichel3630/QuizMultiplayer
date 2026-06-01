@@ -11,7 +11,7 @@ interface Props {
   color: string;
 }
 
-export const Bar = ({ value, max, color }: Props) => {
+const Bar = ({ value, max, color }: Props) => {
   const percentValue = useMemo(() => (value / max) * 100, [value, max]);
 
   return (
@@ -44,7 +44,7 @@ export const BarAccomplishment = ({ value }: PropsBarAccomplishment) => {
   const { nbPlayers } = useApp();
   const percentText = useMemo(
     () => (nbPlayers ? ((value / nbPlayers) * 100).toFixed(1) : 0),
-    [value, nbPlayers]
+    [value, nbPlayers],
   );
 
   return (

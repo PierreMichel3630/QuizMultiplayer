@@ -1,8 +1,8 @@
 import { BannerInsert, BannerUpdate } from "src/models/Banner";
 import { supabase } from "./supabase";
 
-export const SUPABASE_BANNERPROFILE_TABLE = "bannerprofile";
-export const SUPABASE_BANNER_TABLE = "banner";
+const SUPABASE_BANNERPROFILE_TABLE = "bannerprofile";
+const SUPABASE_BANNER_TABLE = "banner";
 
 export const selectBanners = () =>
   supabase

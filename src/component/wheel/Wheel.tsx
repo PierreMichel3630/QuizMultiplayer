@@ -93,7 +93,7 @@ export const Wheel = ({
       startSpinning();
       const finalRotationDegreesCalculated = getRotationDegrees(
         prizeNumber,
-        data.length
+        data.length,
       );
       setFinalRotationDegrees(finalRotationDegreesCalculated);
     }
@@ -193,7 +193,7 @@ export const Wheel = ({
   );
 };
 
-export const RotationContainer = styled("div")<{
+const RotationContainer = styled("div")<{
   startSpinningTime: number;
   continueSpinningTime: number;
   stopSpinningTime: number;
@@ -257,5 +257,5 @@ export const RotationContainer = styled("div")<{
         transform: `rotate(${1440 + finalRotationDegrees}deg)`,
       },
     },
-  })
+  }),
 );

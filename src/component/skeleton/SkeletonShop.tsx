@@ -10,7 +10,7 @@ export const SkeletonTitles = ({ number }: Props) => {
   ));
 };
 
-export const SkeletonTitle = () => (
+const SkeletonTitle = () => (
   <Box sx={{ width: px(140) }}>
     <Skeleton variant="rectangular" animation="wave" width={150} height={45} />
   </Box>
@@ -22,7 +22,7 @@ export const SkeletonBanners = ({ number }: Props) => {
   ));
 };
 
-export const SkeletonBanner = () => (
+const SkeletonBanner = () => (
   <Box sx={{ maxWidth: px(140) }}>
     <Skeleton variant="rectangular" animation="wave" width={140} height={80} />
     <Skeleton />
@@ -35,7 +35,7 @@ export const SkeletonAvatars = ({ number }: Props) => {
   ));
 };
 
-export const SkeletonAvatar = () => (
+const SkeletonAvatar = () => (
   <Box sx={{ maxWidth: px(80) }}>
     <Skeleton variant="circular" animation="wave" width={60} height={60} />
     <Skeleton />
@@ -44,11 +44,11 @@ export const SkeletonAvatar = () => (
 
 export const SkeletonBadges = ({ number }: Props) => {
   return Array.from(new Array(number)).map((_, index) => (
-    <SkeletonAvatar key={index} />
+    <SkeletonBadge key={index} />
   ));
 };
 
-export const SkeletonBadge = () => (
+const SkeletonBadge = () => (
   <Box sx={{ maxWidth: px(80) }}>
     <Skeleton variant="circular" animation="wave" width={60} height={60} />
     <Skeleton />

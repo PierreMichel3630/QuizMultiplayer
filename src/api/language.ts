@@ -1,6 +1,6 @@
 import { supabase } from "./supabase";
 
-export const SUPABASE_LANGUAGE_TABLE = "language";
+const SUPABASE_LANGUAGE_TABLE = "language";
 
 export const selectLanguages = () =>
   supabase

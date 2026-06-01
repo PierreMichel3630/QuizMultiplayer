@@ -1,14 +1,12 @@
 import { supabase } from "./supabase";
 
-export const SUPABASE_VIEWACCOMPLISHMENT_TABLE = "viewaccomplishment";
-export const SUPABASE_ACCOMPLISHMENT_TABLE = "accomplishment";
-export const SUPABASE_STATACCOMPLISHMENT_TABLE = "stataccomplishment";
-export const SUPABASE_PROFILEACCOMPLISHMENT_TABLE = "profileaccomplishment";
+const SUPABASE_VIEWACCOMPLISHMENT_TABLE = "viewaccomplishment";
+const SUPABASE_ACCOMPLISHMENT_TABLE = "accomplishment";
+const SUPABASE_STATACCOMPLISHMENT_TABLE = "stataccomplishment";
+const SUPABASE_PROFILEACCOMPLISHMENT_TABLE = "profileaccomplishment";
 
-
-export const SUPABASE_GETLEADERBOARDACCOMPLISHMENT_FUNCTION =
+const SUPABASE_GETLEADERBOARDACCOMPLISHMENT_FUNCTION =
   "get_leaderboard_accomplishment";
-
 
 export const selectStatAccomplishmentPaginate = (
   search: string = "",
@@ -28,29 +26,19 @@ export const selectStatAccomplishmentPaginate = (
   });
 };
 
-
 export const selectAccomplishmentByProfile = (profile: string) =>
   supabase
     .from(SUPABASE_PROFILEACCOMPLISHMENT_TABLE)
     .select(
-      "*, accomplishment(*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*))"
+      "*, accomplishment(*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*))",
     )
     .eq("profile", profile);
-
-export const selectUnlockAccomplishmentByProfile = (profile: string) =>
-  supabase
-    .from(SUPABASE_PROFILEACCOMPLISHMENT_TABLE)
-    .select(
-      "*, accomplishment(*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*))"
-    )
-    .eq("profile", profile)
-    .eq("validate", false);
 
 export const selectAccomplishment = () =>
   supabase
     .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
     .select(
-      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))"
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))",
     )
     .order("id", { ascending: true });
 
@@ -58,7 +46,7 @@ export const selectAccomplishmentById = (id: number) =>
   supabase
     .from(SUPABASE_ACCOMPLISHMENT_TABLE)
     .select(
-      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))"
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))",
     )
     .eq("id", id)
     .maybeSingle();
@@ -67,7 +55,7 @@ export const selectAccomplishmentByAvatar = (avatar: number) =>
   supabase
     .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
     .select(
-      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))"
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))",
     )
     .eq("avatar.id", avatar)
     .not("avatar", "is", null)
@@ -77,7 +65,7 @@ export const selectAccomplishmentByBadge = (id: number) =>
   supabase
     .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
     .select(
-      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))"
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))",
     )
     .eq("badge.id", id)
     .not("badge", "is", null)
@@ -87,7 +75,7 @@ export const selectAccomplishmentByTitle = (id: number) =>
   supabase
     .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
     .select(
-      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))"
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))",
     )
     .eq("title.id", id)
     .not("title", "is", null)
@@ -97,7 +85,7 @@ export const selectAccomplishmentByBanner = (id: number) =>
   supabase
     .from(SUPABASE_VIEWACCOMPLISHMENT_TABLE)
     .select(
-      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))"
+      "*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), accomplishmenttranslation(*, language(*))",
     )
     .eq("banner.id", id)
     .not("banner", "is", null)

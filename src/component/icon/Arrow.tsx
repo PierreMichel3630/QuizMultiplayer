@@ -19,7 +19,7 @@ interface Props {
   color?: string;
 }
 
-export const ArrowIcon = ({
+const ArrowIcon = ({
   size = 20,
   color = "currentColor",
   isRight = false,

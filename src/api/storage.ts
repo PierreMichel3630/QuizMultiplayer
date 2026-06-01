@@ -8,6 +8,3 @@ export const URL_STORAGE =
 
 export const storeFile = (bucket: string, filePath: string, file: File) =>
   supabase.storage.from(bucket).upload(filePath, file);
-
-export const getUrlPublic = (bucket: string, filePath: string) =>
-  URL_STORAGE + bucket + "/" + filePath;

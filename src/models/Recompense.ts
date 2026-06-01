@@ -5,7 +5,7 @@ export interface StreakDayRecompense {
   recompenses: Array<StreakRecompense>;
 }
 
-export interface StreakRecompense {
+interface StreakRecompense {
   type: TypeRecompense;
   value: number;
 }

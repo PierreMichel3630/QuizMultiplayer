@@ -19,7 +19,7 @@ export const SkeletonThemesGrid = ({ number }: Props) => {
   ));
 };
 
-export const SkeletonTheme = () => {
+const SkeletonTheme = () => {
   return (
     <Box sx={{ maxWidth: px(100) }}>
       <Skeleton variant="rectangular" animation="wave" width={90} height={90} />
@@ -47,7 +47,8 @@ export const SkeletonCardTheme = () => {
             alignItems: "center",
             justifyContent: "flex-start",
           }}
-          size="grow">
+          size="grow"
+        >
           <Skeleton
             variant="rectangular"
             animation="wave"
@@ -64,12 +65,6 @@ export const SkeletonCardTheme = () => {
       </Grid>
     </Paper>
   );
-};
-
-export const SkeletonProfilThemes = ({ number }: Props) => {
-  return Array.from(new Array(number)).map((_, index) => (
-    <SkeletonProfilTheme key={index} />
-  ));
 };
 
 export const SkeletonProfilTheme = () => {
@@ -89,7 +84,8 @@ export const SkeletonProfilTheme = () => {
             backgroundColor: Colors.colorApp,
             p: px(5),
           }}
-          size={12}>
+          size={12}
+        >
           <Skeleton
             variant="rectangular"
             animation="wave"

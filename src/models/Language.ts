@@ -11,10 +11,6 @@ export interface JsonLanguage {
   [iso: string]: string;
 }
 
-export interface JsonLanguageArray {
-  [iso: string]: Array<string>;
-}
-
 export interface JsonLanguageArrayOrString {
   [iso: string]: Array<string> | string;
 }

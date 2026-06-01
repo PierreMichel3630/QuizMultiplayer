@@ -5,14 +5,12 @@ import { Box, Typography } from "@mui/material";
 import { padding, px } from "csx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { ChallengeTypeResultEnum } from "src/models/enum/ChallengeEnum";
 import {
   ClassementChallengeEnum,
   ClassementChallengeGlobalTimeEnum,
   ClassementScoreEnum,
-  ClassementSoloModeEnum,
   ClassementSoloTimeEnum,
-  ClassementTypeEnum
+  ClassementTypeEnum,
 } from "src/models/enum/ClassementEnum";
 import { AllGameModeEnum, GameModeEnum } from "src/models/enum/GameEnum";
 import { Colors } from "src/style/Colors";
@@ -28,7 +26,7 @@ interface Props {
   onChange: (value: string) => void;
 }
 
-export const GroupButton = ({ options, selected, onChange }: Props) => {
+const GroupButton = ({ options, selected, onChange }: Props) => {
   return (
     <Box
       sx={{
@@ -254,7 +252,6 @@ export const GroupButtonChallengeTime = ({
   );
 };
 
-
 interface PropsGroupButtonChallengeGlobal {
   selected: ClassementChallengeGlobalTimeEnum;
   onChange: (value: ClassementChallengeGlobalTimeEnum) => void;
@@ -340,82 +337,6 @@ export const GroupButtonClassement = ({
   );
 };
 
-interface PropsGroupButtonSoloRanking {
-  selected: ClassementSoloModeEnum;
-  onChange: (value: ClassementSoloModeEnum) => void;
-}
-export const GroupButtonSoloRanking = ({
-  selected,
-  onChange,
-}: PropsGroupButtonSoloRanking) => {
-  const { t } = useTranslation();
-
-  const options = useMemo(
-    () => [
-      {
-        label: t("commun.week"),
-        value: ClassementSoloTimeEnum.week,
-      },
-      {
-        label: t("commun.month"),
-        value: ClassementSoloTimeEnum.month,
-      },
-      {
-        label: t("commun.alltime"),
-        value: ClassementSoloTimeEnum.alltime,
-      },
-      {
-        label: t("commun.finishtheme"),
-        value: ClassementSoloModeEnum.finishtheme,
-      },
-    ],
-    [t],
-  );
-
-  return (
-    <GroupButton
-      options={options}
-      selected={selected}
-      onChange={(value) => onChange(value as ClassementSoloModeEnum)}
-    />
-  );
-};
-
-interface PropsGroupButtonResultChallenge {
-  selected: ChallengeTypeResultEnum;
-  onChange: (value: ChallengeTypeResultEnum) => void;
-}
-export const GroupButtonResultChallenge = ({
-  selected,
-  onChange,
-}: PropsGroupButtonResultChallenge) => {
-  const { t } = useTranslation();
-
-  const options = useMemo(
-    () => [
-      {
-        label: t("challenge.result.winner"),
-        value: ChallengeTypeResultEnum.winner,
-        color: Colors.green,
-      },
-      {
-        label: t("challenge.result.alltime"),
-        value: ChallengeTypeResultEnum.loser,
-        color: Colors.red,
-      },
-    ],
-    [t],
-  );
-
-  return (
-    <GroupButton
-      options={options}
-      selected={selected}
-      onChange={(value) => onChange(value as ChallengeTypeResultEnum)}
-    />
-  );
-};
-
 interface PropsGroupButtonChallenge {
   selected: ClassementChallengeEnum;
   onChange: (value: ClassementChallengeEnum) => void;
@@ -450,4 +371,3 @@ export const GroupButtonChallenge = ({
     />
   );
 };
-

@@ -16,11 +16,10 @@ import {
   selectAnswerByAnswerset,
   selectAnswerById,
 } from "src/api/answer";
-import { AnswerForm, ResponseImageForm } from "src/form/AnswerForm";
+import { AnswerForm } from "src/form/AnswerForm";
 import { Answer } from "src/models/Answer";
 import { Language } from "src/models/Language";
 import { QuestionAdmin } from "src/models/Question";
-import { ResponseImageUpdate } from "src/models/Response";
 import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
 import { CardAdminAnswer } from "../card/CardAnswer";
@@ -52,14 +51,14 @@ export const CreateEditAnswersDialog = ({
   const [mode, setMode] = useState(Mode.SEARCH);
 
   const [correctAnswers, setCorrectAnswers] = useState<Answer | undefined>(
-    undefined
+    undefined,
   );
   const [answers, setAnswers] = useState<Array<Answer>>([]);
   const [answer, setAnswer] = useState<undefined | Answer>(undefined);
 
   const answerset = useMemo(
     () => question.answerset ?? question.questionanswer[0].answer.answerset,
-    [question]
+    [question],
   );
 
   const refreshAnswer = useCallback(() => {
@@ -163,48 +162,6 @@ export const CreateEditAnswersDialog = ({
               />
             </Grid>
           )}
-        </Grid>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-interface PropsImage {
-  type: string;
-  response: ResponseImageUpdate | undefined;
-  open: boolean;
-  close: () => void;
-}
-
-export const CreateEditResponseImageDialog = ({
-  response,
-  type,
-  open,
-  close,
-}: PropsImage) => {
-  const { t } = useTranslation();
-
-  return (
-    <Dialog onClose={close} open={open} fullWidth fullScreen>
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {response ? t("commun.editresponse") : t("commun.addresponse")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <DialogContent>
-        <Grid container spacing={2}>
-          <Grid size={12}>
-            <ResponseImageForm
-              type={type}
-              response={response}
-              validate={close}
-            />
-          </Grid>
         </Grid>
       </DialogContent>
     </Dialog>

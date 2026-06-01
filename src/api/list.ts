@@ -1,17 +1,15 @@
-import moment from "moment";
 import { Language } from "src/models/Language";
 import { ListAnswerPlay, OrderListScore } from "src/models/List";
-import { MAX_DAY_NEW_THEME } from "src/utils/config";
 import { removeAccentsAndLowercase } from "src/utils/string";
 import { supabase } from "./supabase";
 
-export const SUPABASE_LIST_TABLE = "list";
-export const SUPABASE_LISTTRANSLATION_TABLE = "listtranslation";
-export const SUPABASE_LISTANSWER_TABLE = "listanswer";
-export const SUPABASE_LISTSCORE_TABLE = "listscore";
-export const SUPABASE_SAVESCORELIST_FUNCTION = "savescorelist";
+const SUPABASE_LIST_TABLE = "list";
+const SUPABASE_LISTTRANSLATION_TABLE = "listtranslation";
+const SUPABASE_LISTANSWER_TABLE = "listanswer";
+const SUPABASE_LISTSCORE_TABLE = "listscore";
+const SUPABASE_SAVESCORELIST_FUNCTION = "savescorelist";
 
-export const SUPABASE_LISTSCORERANKING_VIEW = "viewlistscoreranking";
+const SUPABASE_LISTSCORERANKING_VIEW = "viewlistscoreranking";
 
 export const selectListById = (id: number | string) =>
   supabase
@@ -42,25 +40,10 @@ export const searchListPaginate = (
     .order(`namelower`, { ascending: true });
 };
 
-export const countList = (language: Language, search = "") =>
-  supabase
-    .from(SUPABASE_LISTTRANSLATION_TABLE)
-    .select("*", { count: "exact", head: true })
-    .ilike(`namelower`, `%${search}%`)
-    .eq("language", language.id);
-
 export const selectListAnswerByListId = (id: number | string) =>
   supabase
     .from(SUPABASE_LISTANSWER_TABLE)
     .select("*, listanswertranslation(*, language(*))")
-    .eq("list", id);
-
-export const selectListScoreByListId = (id: number | string) =>
-  supabase
-    .from(SUPABASE_LISTSCORE_TABLE)
-    .select(
-      "*, profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))))",
-    )
     .eq("list", id);
 
 export const selectListScoreByListIdAndProfile = (
@@ -83,16 +66,6 @@ export const saveScoreList = (
   supabase.functions.invoke(SUPABASE_SAVESCORELIST_FUNCTION, {
     body: { answers, time, attempts, list },
   });
-
-export const getListByDate = (language: Language, day = MAX_DAY_NEW_THEME) => {
-  const date = moment().subtract(day, "day").format("YYYY-MM-DD");
-  return supabase
-    .from(SUPABASE_LISTTRANSLATION_TABLE)
-    .select("*")
-    .eq("language", language.id)
-    .gte("created_at", date)
-    .order(`created_at`, { ascending: false });
-};
 
 export const countListScore = (
   list: number,
@@ -142,9 +115,8 @@ export const selectListScorePaginate = (
   return query.range(from, to).order(sort, { ascending: true });
 };
 
-
-
-export const selectListScoreByProfile = (profile: string) => supabase
+export const selectListScoreByProfile = (profile: string) =>
+  supabase
     .from(SUPABASE_LISTSCORE_TABLE)
     .select("*, list(*)")
     .eq("profile", profile);

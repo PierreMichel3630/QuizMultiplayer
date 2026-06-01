@@ -20,7 +20,7 @@ export interface Accomplishment {
   accomplishmenttranslation: Array<AccomplishmentTranslation>;
 }
 
-export interface AccomplishmentTranslation {
+interface AccomplishmentTranslation {
   id: number;
   name: string;
   language: Language;

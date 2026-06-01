@@ -42,11 +42,6 @@ export interface AnswerTranslationUpdate {
   answer: number;
 }
 
-export interface AnswerSet {
-  id: number;
-  name: string | null;
-}
-
 export interface AnswerSetInsert {
   name: string | null;
 }

@@ -11,7 +11,6 @@ import { TypeGameMode } from "src/models/enum/GameMode";
 import { Order } from "src/models/enum/Order";
 import { FRIENDSTATUS } from "src/models/Friend";
 import { GameModeScore, OrderGameModeScore } from "src/models/GameMode";
-import { Profile } from "src/models/Profile";
 import { BasicSearchInput } from "../../Input";
 import { SortButton } from "../../SortBlock";
 import { RankingGameModeTable } from "./RankingGameModeTable";
@@ -29,13 +28,6 @@ interface Query {
   isOnlyFriend: boolean;
   friends?: Array<string>;
   sort: Sort;
-}
-
-export interface DataRankingListScore {
-  profile: Profile;
-  value: JSX.Element;
-  extra?: JSX.Element;
-  rank: number;
 }
 
 interface Props {

@@ -13,7 +13,7 @@ interface Props {
   text: string;
 }
 
-export const BadgeText = ({ color, icon, text }: Props) => (
+const BadgeText = ({ color, icon, text }: Props) => (
   <Box
     sx={{
       padding: padding(0, 5),

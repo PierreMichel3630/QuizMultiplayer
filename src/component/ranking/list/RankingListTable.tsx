@@ -28,7 +28,7 @@ import { CountryImageBlock } from "../../CountryBlock";
 import { Profile } from "src/models/Profile";
 import { ProfileTitleBlock } from "../../title/ProfileTitle";
 
-export interface DataRanking {
+interface DataRanking {
   profile: Profile;
   value: JSX.Element;
   extra?: JSX.Element;

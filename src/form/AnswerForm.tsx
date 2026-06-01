@@ -22,9 +22,8 @@ import {
   updateAnswer,
   updateAnswerTranslation,
 } from "src/api/answer";
-import { insertResponseImage, updateResponseImage } from "src/api/response";
 import { ButtonColor } from "src/component/Button";
-import { ImageQCMBlock, ImageQuestionBlock } from "src/component/ImageBlock";
+import { ImageQCMBlock } from "src/component/ImageBlock";
 import { SelectLanguage } from "src/component/Select";
 import { useMessage } from "src/context/MessageProvider";
 import { useUser } from "src/context/UserProvider";
@@ -34,7 +33,6 @@ import {
   AnswerTranslationUpdate,
 } from "src/models/Answer";
 import { Language } from "src/models/Language";
-import { ResponseImageInsert, ResponseImageUpdate } from "src/models/Response";
 import { Colors } from "src/style/Colors";
 import * as Yup from "yup";
 
@@ -115,7 +113,7 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
         const translationsToModify = [...newTranslations]
           .filter((el) => {
             const isExist = [...previousTranslations].find(
-              (previous) => previous.id === el.id
+              (previous) => previous.id === el.id,
             );
             return isExist;
           })
@@ -128,12 +126,12 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
                 label: el.label,
                 language: el.language.id,
                 otherlabel: el.otherlabel,
-              } as AnswerTranslationUpdate)
+              }) as AnswerTranslationUpdate,
           );
         const translationsToDelete = [...previousTranslations]
           .filter((el) => {
             const isExist = [...newTranslations].find(
-              (previous) => previous.id === el.id
+              (previous) => previous.id === el.id,
             );
             return !isExist;
           })
@@ -193,10 +191,10 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
             <FieldArray name="answertranslation">
               {({ push, remove }) => {
                 const idLanguageUsed = [...formik.values.answertranslation].map(
-                  (el) => el.language.id
+                  (el) => el.language.id,
                 );
                 const languageNotUsed = [...languages].filter(
-                  (lang) => !idLanguageUsed.includes(lang.id)
+                  (lang) => !idLanguageUsed.includes(lang.id),
                 );
                 return (
                   <Grid container spacing={2}>
@@ -212,14 +210,15 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
                               justifyContent: "space-between",
                               alignItems: "center",
                             }}
-                            size={12}>
+                            size={12}
+                          >
                             <SelectLanguage
                               value={value.language}
                               languages={languageNotUsed}
                               onChange={(value) =>
                                 formik.setFieldValue(
                                   `themetranslation.${index}.language`,
-                                  value
+                                  value,
                                 )
                               }
                             />
@@ -251,11 +250,11 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
                                   name="otherLabel"
                                   value={value.tempOtherLabel ?? ""}
                                   onChange={(
-                                    event: React.ChangeEvent<HTMLInputElement>
+                                    event: React.ChangeEvent<HTMLInputElement>,
                                   ) =>
                                     formik.setFieldValue(
                                       `answertranslation.${index}.tempOtherLabel`,
-                                      event.target.value
+                                      event.target.value,
                                     )
                                   }
                                   onKeyDown={(e) => {
@@ -267,11 +266,11 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
                                       if (newValue && newValue !== "") {
                                         formik.setFieldValue(
                                           `answertranslation.${index}.otherlabel`,
-                                          [...value.otherlabel, newValue]
+                                          [...value.otherlabel, newValue],
                                         );
                                         formik.setFieldValue(
                                           `answertranslation.${index}.tempOtherLabel`,
-                                          ""
+                                          "",
                                         );
                                       }
                                     }
@@ -285,11 +284,11 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
                                       label={el}
                                       onDelete={() => {
                                         const newList = value.otherlabel.filter(
-                                          (_, idx) => idx !== i
+                                          (_, idx) => idx !== i,
                                         );
                                         formik.setFieldValue(
                                           `answertranslation.${index}.otherlabel`,
-                                          newList
+                                          newList,
                                         );
                                       }}
                                     />
@@ -345,130 +344,5 @@ export const AnswerForm = ({ validate, answer, answerset }: Props) => {
         </Grid>
       </form>
     </FormikProvider>
-  );
-};
-
-interface PropsImage {
-  type: string;
-  response: ResponseImageUpdate | undefined;
-  validate: () => void;
-}
-
-export const ResponseImageForm = ({ validate, response, type }: PropsImage) => {
-  const { t } = useTranslation();
-  const { setMessage, setSeverity } = useMessage();
-
-  const initialValue: {
-    response: string;
-    image: string;
-  } = {
-    response: response ? response.response["fr-FR"] : "",
-    image: response ? response.image : "",
-  };
-
-  const validationSchema = Yup.object().shape({
-    response: Yup.string().required(t("form.createresponse.requiredvalue")),
-    image: Yup.string(),
-  });
-
-  const formik = useFormik({
-    initialValues: initialValue,
-    validationSchema: validationSchema,
-    onSubmit: async (values) => {
-      try {
-        const newValue = {
-          id: response ? response.id : undefined,
-          type: type,
-          usvalue: values.response,
-          response: {
-            "fr-FR": values.response,
-          },
-          image: values.image,
-        };
-
-        const { error } = response
-          ? await updateResponseImage(newValue as ResponseImageUpdate)
-          : await insertResponseImage(newValue as ResponseImageInsert);
-        if (error) {
-          setSeverity("error");
-          setMessage(t("commun.error"));
-        } else {
-          validate();
-        }
-      } catch (err) {
-        setSeverity("error");
-        setMessage(t("commun.error"));
-      }
-    },
-  });
-
-  return (
-    <form onSubmit={formik.handleSubmit}>
-      <Grid container spacing={2} alignItems="center" justifyContent="center">
-        <Grid size={12}>
-          <FormControl
-            fullWidth
-            error={Boolean(formik.touched.response && formik.errors.response)}
-          >
-            <InputLabel htmlFor="response-input">
-              {t("form.createresponse.value")}
-            </InputLabel>
-            <OutlinedInput
-              id="response-input"
-              type="text"
-              value={formik.values.response}
-              name="response"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              label={t("form.createresponse.value")}
-              inputProps={{}}
-            />
-            {formik.touched.response && formik.errors.response && (
-              <FormHelperText error id="error-response">
-                {formik.errors.response}
-              </FormHelperText>
-            )}
-          </FormControl>
-        </Grid>
-        <Grid size={12}>
-          <FormControl
-            fullWidth
-            error={Boolean(formik.touched.image && formik.errors.image)}
-          >
-            <InputLabel htmlFor="value-input">
-              {t("form.createresponse.image")}
-            </InputLabel>
-            <OutlinedInput
-              id="image-input"
-              type="text"
-              value={formik.values.image}
-              name="image"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              label={t("form.createresponse.image")}
-              inputProps={{}}
-            />
-            {formik.touched.image && formik.errors.image && (
-              <FormHelperText error id="error-image">
-                {formik.errors.image}
-              </FormHelperText>
-            )}
-          </FormControl>
-        </Grid>
-        {formik.values.image !== "" && (
-          <Grid sx={{ height: px(200) }}>
-            <ImageQuestionBlock src={formik.values.image} />
-          </Grid>
-        )}
-        <Grid size={12}>
-          <ButtonColor
-            value={Colors.green}
-            label={t("commun.validate")}
-            variant="contained"
-            type="submit"
-          />
-        </Grid>
-      </Grid>
-    </form>
   );
 };

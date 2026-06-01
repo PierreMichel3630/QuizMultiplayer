@@ -8,7 +8,7 @@ import {
   TableBody,
 } from "@mui/material";
 
-export interface Column {
+interface Column {
   label: string;
   key: string;
 }

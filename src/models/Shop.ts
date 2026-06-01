@@ -29,7 +29,7 @@ export interface ThemeShopInsert {
   name: JsonLanguage;
 }
 
-export interface ThemeShopTranslation {
+interface ThemeShopTranslation {
   id: number;
   name: string;
   language: Language;

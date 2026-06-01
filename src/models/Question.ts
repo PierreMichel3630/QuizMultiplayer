@@ -1,11 +1,6 @@
 import { Point } from "react-simple-maps";
 import { Answer } from "./Answer";
-import {
-  JsonLanguage,
-  JsonLanguageArray,
-  JsonLanguageArrayOrString,
-  Language,
-} from "./Language";
+import { JsonLanguage, JsonLanguageArrayOrString, Language } from "./Language";
 import { Theme } from "./Theme";
 import { TypeDataEnum } from "./enum/TypeDataEnum";
 import { TypeQuestionEnum } from "./enum/TypeQuestionEnum";
@@ -23,19 +18,6 @@ export interface QuestionPropose {
   questionanswer: Array<QuestionAnswer>;
   questiontheme: Array<QuestionTheme>;
   answerset: number;
-}
-
-export interface QuestionEnd {
-  image?: string;
-  question: JsonLanguage;
-  difficulty: string;
-  response: JsonLanguageArrayOrString;
-}
-
-export interface QuestionPosition {
-  question: number;
-  isRight: boolean;
-  position?: number;
 }
 
 export interface QuestionAdmin {
@@ -60,19 +42,6 @@ export interface QuestionTranslation {
   extra: string;
 }
 
-export interface QuestionInsertAdmin {
-  difficulty: string;
-  question: JsonLanguage;
-  image: string | null;
-  response: JsonLanguageArray;
-  responses?: Array<JsonLanguage>;
-  typeResponse: string | null;
-  isqcm: boolean | null;
-  typequestion: string;
-  allresponse: boolean;
-  exact: boolean;
-}
-
 export interface QuestionInsert {
   difficulty: string;
   question: JsonLanguage;
@@ -88,7 +57,7 @@ export interface QuestionInsert {
   proposeby?: string;
 }
 
-export interface QuestionTheme {
+interface QuestionTheme {
   question: number;
   theme: Theme;
   id: number;
@@ -99,7 +68,7 @@ export interface QuestionThemeInsert {
   theme: number;
 }
 
-export interface QuestionAnswer {
+interface QuestionAnswer {
   id: number;
   answer: Answer;
 }
@@ -192,17 +161,17 @@ export interface Question {
 
 // V1 Game
 
-export interface ResponseLanguageStringV1 {
+interface ResponseLanguageStringV1 {
   [iso: string]: string;
 }
 
-export interface ResponseQCMV1 {
+interface ResponseQCMV1 {
   label?: ResponseLanguageStringV1;
   image?: string;
   extra?: ExtraResponseV1;
 }
 
-export interface ExtraResponseV1 {
+interface ExtraResponseV1 {
   value: string;
   type: TypeDataEnum;
   format: string;

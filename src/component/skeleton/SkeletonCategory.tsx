@@ -13,7 +13,7 @@ export const SkeletonCategories = ({ number }: Props) => {
   ));
 };
 
-export const SkeletonCategory = () => {
+const SkeletonCategory = () => {
   return (
     <Grid container spacing={1}>
       <Grid
@@ -22,7 +22,8 @@ export const SkeletonCategory = () => {
           alignItems: "center",
           justifyContent: "space-between",
         }}
-        size={12}>
+        size={12}
+      >
         <Skeleton variant="rectangular" width="35%" height={15} />
         <Skeleton variant="rectangular" width="25%" height={30} />
       </Grid>

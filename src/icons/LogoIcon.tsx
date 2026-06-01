@@ -18,7 +18,7 @@ export const LogoIcon = createSvgIcon(
       strokeLinejoin="round"
     />
   </svg>,
-  "Logo"
+  "Logo",
 );
 
 export const LogoIconRound = () => {
@@ -36,26 +36,6 @@ export const LogoIconRound = () => {
     >
       <LogoIcon
         sx={{ color: Colors.white, ml: "2px", mt: "3px", fontSize: 40 }}
-      />
-    </Box>
-  );
-};
-
-export const LogoIconSquare = () => {
-  return (
-    <Box
-      sx={{
-        backgroundColor: Colors.colorApp,
-        width: px(30),
-        height: px(25),
-        borderRadius: px(5),
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <LogoIcon
-        sx={{ color: Colors.white, ml: "2px", mt: "3px", fontSize: 20 }}
       />
     </Box>
   );

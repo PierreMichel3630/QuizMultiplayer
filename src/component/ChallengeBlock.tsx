@@ -148,7 +148,7 @@ interface PropsResultChallengeBlock {
   avg: ChallengeAvg | null;
   total: number | null;
 }
-export const ResultChallengeBlock = ({
+const ResultChallengeBlock = ({
   stat,
   avg,
   total,
@@ -241,7 +241,7 @@ interface PropsRecapAvgChallenge {
   count: number;
 }
 
-export const RecapAvgChallenge = ({ avg, count }: PropsRecapAvgChallenge) => {
+const RecapAvgChallenge = ({ avg, count }: PropsRecapAvgChallenge) => {
   const { t } = useTranslation();
   return (
     <Box

@@ -32,17 +32,3 @@ export interface DuelGameChange {
   status: StatusGameDuel;
   questions: Array<Question>;
 }
-
-export interface ExtraDuelGame {
-  delta: number;
-  eloPlayer1: number;
-  eloPlayer2: number;
-  xpplayer1: ExtraDuelGameXP;
-  xpplayer2: ExtraDuelGameXP;
-}
-
-export interface ExtraDuelGameXP {
-  matchscore: number;
-  victorybonus: number;
-  match: number;
-}

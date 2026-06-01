@@ -120,7 +120,7 @@ export const RankingTop5Block = () => {
 interface PropsRankingTop5BlockOther {
   tab: AllGameModeEnum;
 }
-export const RankingTop5BlockOther = ({ tab }: PropsRankingTop5BlockOther) => {
+const RankingTop5BlockOther = ({ tab }: PropsRankingTop5BlockOther) => {
   const { t } = useTranslation();
   const { language } = useUser();
   const { hasPlayChallenge } = useAuth();

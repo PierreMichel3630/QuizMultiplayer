@@ -12,14 +12,17 @@ export const SkeletonGames = ({ number }: Props) => {
   ));
 };
 
-export const SkeletonGame = () => {
+const SkeletonGame = () => {
   return (
     <Paper sx={{ p: 1 }}>
       <Grid container spacing={1} alignItems="center">
         <Grid size={2}>
           <Skeleton variant="rectangular" width="100%" height={60} />
         </Grid>
-        <Grid sx={{ display: "flex", gap: 1, flexDirection: "column" }} size={7}>
+        <Grid
+          sx={{ display: "flex", gap: 1, flexDirection: "column" }}
+          size={7}
+        >
           <Skeleton variant="rectangular" width="70%" height={25} />
           <Skeleton variant="rectangular" width="30%" height={15} />
         </Grid>

@@ -6,10 +6,10 @@ import {
 } from "src/models/Title";
 import { supabase } from "./supabase";
 
-export const SUPABASE_TITLEPROFILE_TABLE = "titleprofile";
+const SUPABASE_TITLEPROFILE_TABLE = "titleprofile";
 
-export const SUPABASE_TITLE_TABLE = "title";
-export const SUPABASE_TITLE_TRANSLATION_TABLE = "titletranslation";
+const SUPABASE_TITLE_TABLE = "title";
+const SUPABASE_TITLE_TRANSLATION_TABLE = "titletranslation";
 
 export const selectTitles = () =>
   supabase
@@ -61,11 +61,11 @@ export const updateTitle = (value: TitleUpdate) =>
     .single();
 
 export const insertTitleTranslations = (
-  values: Array<TitleTranslationInsert>
+  values: Array<TitleTranslationInsert>,
 ) => supabase.from(SUPABASE_TITLE_TRANSLATION_TABLE).insert(values);
 
 export const updateTitleTranslations = (
-  values: Array<TitleTranslationUpdate>
+  values: Array<TitleTranslationUpdate>,
 ) => supabase.from(SUPABASE_TITLE_TRANSLATION_TABLE).upsert(values);
 
 export const deleteTitleTranslations = (ids: Array<number>) =>

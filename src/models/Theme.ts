@@ -1,19 +1,7 @@
 import { CategoryTheme } from "./Category";
-import { Difficulty } from "./enum/DifficultyEnum";
 import { Language } from "./Language";
 
-export interface ProposeTheme {
-  id: number;
-  title: string;
-  language: string;
-  image?: string;
-  color: string;
-  enabled: boolean;
-  created_at: Date;
-  modify_at: Date;
-}
-
-export interface ThemeTranslation {
+interface ThemeTranslation {
   id: number;
   name: string;
   namelower: string;
@@ -75,19 +63,8 @@ export interface ThemeUpdate {
   color?: string;
 }
 
-export interface ThemeDifficulty {
-  theme: Theme;
-  difficultymin: Difficulty;
-  difficultymax: Difficulty;
-}
-
 export interface QuestionTheme {
   id: number;
   question: number;
   theme: Theme;
-}
-
-export interface QuestionThemeInsert {
-  question: number;
-  theme: number;
 }

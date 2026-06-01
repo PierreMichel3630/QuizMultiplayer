@@ -9,18 +9,10 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { FRIENDSTATUS } from "src/models/Friend";
 import { List, ListScoreWithRanking, OrderListScore } from "src/models/List";
-import { Profile } from "src/models/Profile";
 import { BasicSearchInput } from "../../Input";
 import { SortButton } from "../../SortBlock";
 import { OnlyFriendSwitch } from "../../switch/OnlyFriendSwitch";
 import { RankingListTable } from "./RankingListTable";
-
-export interface DataRankingListScore {
-  profile: Profile;
-  value: JSX.Element;
-  extra?: JSX.Element;
-  rank: number;
-}
 
 interface Props {
   list: List;

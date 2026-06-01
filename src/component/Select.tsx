@@ -25,7 +25,6 @@ import { Colors } from "src/style/Colors";
 import { AutocompleteInputTheme } from "./Autocomplete";
 import { ICardImage } from "./card/CardImage";
 import { ImageThemeBlock } from "./ImageThemeBlock";
-import { BasicSearchInput } from "./Input";
 import { LanguageIcon } from "./language/LanguageBlock";
 import { TextNameBlock } from "./language/TextLanguageBlock";
 
@@ -269,67 +268,6 @@ export const SelectLanguage = ({
         ))}
       </Menu>
     </>
-  );
-};
-
-interface PropsAutocompleteNumber {
-  label: string;
-  value: Array<number>;
-  onChange: (value: Array<number>) => void;
-}
-
-export const AutocompleteNumber = ({
-  label,
-  value,
-  onChange,
-}: PropsAutocompleteNumber) => {
-  const [search, setSearch] = useState("");
-
-  const deleteValue = (id: number) => {
-    let newValue: Array<number> = [...value];
-    newValue = newValue.filter((el) => el !== id);
-    onChange(newValue);
-  };
-
-  return (
-    <Grid container spacing={1} alignItems="center">
-      <Grid size={12}>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            onChange([...value, Number(search)]);
-            setSearch("");
-          }}
-        >
-          <BasicSearchInput
-            label={label}
-            onChange={(value) => setSearch(value)}
-            value={search}
-            clear={() => setSearch("")}
-          />
-        </form>
-      </Grid>
-      {value.map((v, index) => (
-        <Grid key={index}>
-          <Paper
-            variant="outlined"
-            sx={{
-              p: padding(2, 10),
-              display: "flex",
-              gap: 1,
-              alignItems: "center",
-              borderRadius: px(50),
-            }}
-          >
-            <Typography variant="h6">{v}</Typography>
-            <ClearIcon
-              sx={{ width: 15, height: 15, cursor: "pointer" }}
-              onClick={() => deleteValue(v)}
-            />
-          </Paper>
-        </Grid>
-      ))}
-    </Grid>
   );
 };
 

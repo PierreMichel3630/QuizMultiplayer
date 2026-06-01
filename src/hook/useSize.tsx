@@ -1,10 +1,5 @@
 import { useTheme, useMediaQuery } from "@mui/material";
 
-export function useIsMobile() {
-  const theme = useTheme();
-  return useMediaQuery(theme.breakpoints.down("sm"));
-}
-
 export function useIsMobileOrTablet() {
   const theme = useTheme();
   return useMediaQuery(theme.breakpoints.down("lg"));

@@ -16,7 +16,7 @@ export const SkeletonPlayers = ({ number }: Props) => {
   );
 };
 
-export const SkeletonPlayer = () => (
+const SkeletonPlayer = () => (
   <Paper
     sx={{
       display: "flex",

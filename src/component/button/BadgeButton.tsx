@@ -18,7 +18,7 @@ interface PropsBadgeIconButton {
   onClick: () => void;
 }
 
-export const BadgeIconButton = ({ icon, onClick }: PropsBadgeIconButton) => {
+const BadgeIconButton = ({ icon, onClick }: PropsBadgeIconButton) => {
   const theme = useTheme();
   const isDark = useMemo(() => theme.palette.mode === "dark", [theme]);
   return (
@@ -58,7 +58,7 @@ interface PropsBadgeButton {
   value: ButtonValue;
 }
 
-export const BadgeButton = ({ value }: PropsBadgeButton) => {
+const BadgeButton = ({ value }: PropsBadgeButton) => {
   const theme = useTheme();
   const isDark = useMemo(() => theme.palette.mode === "dark", [theme]);
   return (
@@ -115,7 +115,7 @@ export const BadgeButton = ({ value }: PropsBadgeButton) => {
 interface PropsBadgeButtonGroup {
   values: Array<ButtonValue>;
 }
-export const BadgeButtonGroup = ({ values }: PropsBadgeButtonGroup) => (
+const BadgeButtonGroup = ({ values }: PropsBadgeButtonGroup) => (
   <Grid
     container
     spacing={1}

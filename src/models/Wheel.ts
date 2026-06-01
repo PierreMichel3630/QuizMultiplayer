@@ -12,7 +12,7 @@ export interface WheelResult {
   option: WheelOption;
 }
 
-export interface WheelOption {
+interface WheelOption {
   value: string;
   color: string;
   text: string;

@@ -8,9 +8,9 @@ import {
 import { Language } from "src/models/Language";
 import { supabase } from "./supabase";
 
-export const SUPABASE_CATEGORY_TABLE = "category";
-export const SUPABASE_CATEGORYTRANSLATION_TABLE = "categorytranslation";
-export const SUPABASE_CATEGORYTHEME_TABLE = "categorytheme";
+const SUPABASE_CATEGORY_TABLE = "category";
+const SUPABASE_CATEGORYTRANSLATION_TABLE = "categorytranslation";
+const SUPABASE_CATEGORYTHEME_TABLE = "categorytheme";
 
 export const selectCategoryById = (id: string | number) =>
   supabase
@@ -18,12 +18,6 @@ export const selectCategoryById = (id: string | number) =>
     .select("*, categorytranslation!inner(id, name, language(*))")
     .eq("id", id)
     .maybeSingle();
-
-export const selectCategoriesByIds = (ids: Array<string | number>) =>
-  supabase
-    .from(SUPABASE_CATEGORY_TABLE)
-    .select("*, categorytranslation!inner(id, name, language(*))")
-    .in("id", ids);
 
 export const insertCategoryTheme = (values: Array<CategoryThemeInsert>) =>
   supabase.from(SUPABASE_CATEGORYTHEME_TABLE).insert(values);
@@ -57,15 +51,6 @@ export const deleteCategoryTranslationById = (ids: Array<number>) =>
 
 export const deleteCategoryById = (id: number) =>
   supabase.from(SUPABASE_CATEGORY_TABLE).delete().eq("id", id);
-
-export const deleteCategoryByIds = (ids: Array<number>) =>
-  supabase.from(SUPABASE_CATEGORY_TABLE).delete().in("id", ids);
-
-export const countCategoryByLanguage = (language: Language) =>
-  supabase
-    .from(SUPABASE_CATEGORYTRANSLATION_TABLE)
-    .select("id", { count: "exact", head: true })
-    .eq("language", language.id);
 
 export const searchCategories = (
   language: Language,

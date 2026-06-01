@@ -35,16 +35,6 @@ export interface ChallengeGameUpdate {
   questions: Array<QuestionResult>;
 }
 
-export interface ChallengeRanking {
-  id: number;
-  uuid: string;
-  ranking: number;
-  challenge: Challenge;
-  profile: Profile;
-  score: number;
-  time: number;
-}
-
 export interface ChallengeRankingDate {
   profile: Profile;
   score: number;
@@ -58,10 +48,6 @@ export interface ChallengeRankingAllTime extends ChallengeRankingDate {}
 
 export interface ChallengeRankingMonth extends ChallengeRankingDate {
   month: string;
-}
-
-export interface ChallengeRankingYear extends ChallengeRankingDate {
-  year: string;
 }
 
 export interface ChallengeRankingWeek extends ChallengeRankingDate {
@@ -79,7 +65,7 @@ export interface ExtraChallenge {
   xp?: ValueExtraChallenge;
 }
 
-export interface ValueExtraChallenge {
+interface ValueExtraChallenge {
   value: number;
   previousValue: number;
   newValue: number;

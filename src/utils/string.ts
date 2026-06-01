@@ -1,11 +1,5 @@
 import { compareTwoStrings } from "string-similarity";
 
-export const formatNumber = (n: number) => {
-  const parts = n.toString().split(".");
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-  return parts.join(".");
-};
-
 const stopwords = [
   "the",
   "of",
@@ -21,9 +15,9 @@ const stopwords = [
   "et",
   "and",
 ];
-export const normalizeString = (value: string) =>
+const normalizeString = (value: string) =>
   removeStopWord(
-    value.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
   ).toLowerCase();
 
 const removeStopWord = (value: string) =>
@@ -36,7 +30,7 @@ const removeStopWord = (value: string) =>
 export const compareString = (a: string, b: string) =>
   compareTwoStrings(
     normalizeString(a.toLowerCase()),
-    normalizeString(b.toString().toLowerCase())
+    normalizeString(b.toString().toLowerCase()),
   );
 
 export const searchString = (search: string, value: string) => {

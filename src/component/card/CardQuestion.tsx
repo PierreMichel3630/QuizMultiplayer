@@ -83,7 +83,7 @@ export const CardAdminQuestion = ({ question, refresh }: Props) => {
 
   const languages = useMemo(
     () => [...question.questiontranslation].map((el) => el.language),
-    [question]
+    [question],
   );
 
   useEffect(() => {
@@ -96,14 +96,14 @@ export const CardAdminQuestion = ({ question, refresh }: Props) => {
   const questionTranslation = useMemo(
     () =>
       [...question.questiontranslation].find(
-        (el) => el.language.id === languageQuestion?.id
+        (el) => el.language.id === languageQuestion?.id,
       ),
-    [question.questiontranslation, languageQuestion]
+    [question.questiontranslation, languageQuestion],
   );
 
   const answer = useMemo(
     () => question.questionanswer[0].answer,
-    [question.questionanswer]
+    [question.questionanswer],
   );
 
   useEffect(() => {
@@ -122,7 +122,7 @@ export const CardAdminQuestion = ({ question, refresh }: Props) => {
 
   const themes = useMemo(
     () => [...question.questiontheme].map((el) => el.theme),
-    [question]
+    [question],
   );
 
   return (
@@ -322,7 +322,7 @@ interface PropsCardSignalQuestionV2 {
   report?: () => void;
   color?: string;
 }
-export const CardSignalQuestionV2 = ({
+const CardSignalQuestionV2 = ({
   question,
   report,
   color = "text.primary",

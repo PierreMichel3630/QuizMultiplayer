@@ -31,7 +31,7 @@ import rank3 from "src/assets/rank/rank3.png";
 import { GameModeScore } from "src/models/GameMode";
 import { sortByRankAsc } from "src/utils/sort";
 
-export interface DataRanking {
+interface DataRanking {
   profile: Profile;
   value: JSX.Element;
   extra?: JSX.Element;

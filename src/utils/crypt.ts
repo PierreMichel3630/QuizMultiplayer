@@ -2,10 +2,6 @@ import CryptoJS from "crypto-js";
 
 const key = import.meta.env.VITE_CRYPT_SECRET;
 
-export const encrypt = (text: string) => {
-  return CryptoJS.AES.encrypt(text, key).toString();
-};
-
 export const decrypt = (encryptedBase64: string) => {
   const decrypted = CryptoJS.AES.decrypt(encryptedBase64, key);
   if (decrypted) {

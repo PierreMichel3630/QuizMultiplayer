@@ -20,18 +20,6 @@ export interface Score {
   xp: number;
 }
 
-export interface MyScore {
-  id: number;
-  profile: string;
-  theme: number;
-  points: number;
-  games: number;
-  duelgames: number;
-  rank: number;
-  xp: number;
-  ranking: number;
-}
-
 export interface Opposition {
   id: number;
   player1: string;
@@ -57,5 +45,5 @@ export interface ScoreRanking {
   duelgames: number;
   rank: number;
   ranking: number;
-  theme?: Theme
+  theme?: Theme;
 }

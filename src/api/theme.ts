@@ -9,10 +9,10 @@ import { supabase } from "./supabase";
 import { Moment } from "moment";
 import { Language } from "src/models/Language";
 
-export const SUPABASE_THEME_TABLE = "theme";
-export const SUPABASE_THEME_TRANSLATION_TABLE = "themetranslation";
-export const SUPABASE_VUEMOSTPLAYEDTHEME_TABLE = "viewmostplayedtheme";
-export const SUPABASE_VUETHEME_TABLE = "viewthemev3";
+const SUPABASE_THEME_TABLE = "theme";
+const SUPABASE_THEME_TRANSLATION_TABLE = "themetranslation";
+const SUPABASE_VUEMOSTPLAYEDTHEME_TABLE = "viewmostplayedtheme";
+const SUPABASE_VUETHEME_TABLE = "viewthemev3";
 
 export const selectMostPlayedTheme = (language: Language, limit = 10) => {
   return supabase
@@ -34,15 +34,6 @@ export const selectThemesByModifiedAt = (modify_at: Moment) =>
     .eq("enabled", true)
     .gte("modify_at", modify_at.toISOString())
     .order("modify_at", { ascending: false });
-
-export const selectThemesByCreatedAt = (created_at: Moment) =>
-  supabase
-    .from(SUPABASE_THEME_TABLE)
-    .select("*")
-    .eq("validate", true)
-    .eq("enabled", true)
-    .gte("created_at", created_at.toISOString())
-    .order("created_at", { ascending: false });
 
 export const selectThemesByIds = (ids: Array<string | number>) =>
   supabase.from(SUPABASE_THEME_TABLE).select().in("id", ids);

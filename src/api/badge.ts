@@ -1,7 +1,7 @@
 import { supabase } from "./supabase";
 
-export const SUPABASE_BADGEPROFILE_TABLE = "badgeprofile";
-export const SUPABASE_BADGE_TABLE = "badge";
+const SUPABASE_BADGEPROFILE_TABLE = "badgeprofile";
+const SUPABASE_BADGE_TABLE = "badge";
 
 export const selectBadges = () => supabase.from(SUPABASE_BADGE_TABLE).select();
 

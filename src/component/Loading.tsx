@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Grid } from "@mui/material";
-import { percent, px } from "csx";
+import { px } from "csx";
 import { useMemo } from "react";
 import { useUser } from "src/context/UserProvider";
 import { Colors } from "src/style/Colors";
@@ -8,23 +8,11 @@ export const CircularLoading = () => (
   <Grid container>
     <Grid
       sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-      size={12}>
+      size={12}
+    >
       <CircularProgress size={100} color="secondary" />
     </Grid>
   </Grid>
-);
-
-export const Loading = () => (
-  <Box
-    style={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      height: percent(100),
-    }}
-  >
-    <CircularProgress color="inherit" size={60} />
-  </Box>
 );
 
 interface PropsLoadingDot {
@@ -37,7 +25,7 @@ export const LoadingDot = ({ color, width = 60 }: PropsLoadingDot) => {
   const isDarkMode = useMemo(() => mode === "dark", [mode]);
   const colorDot = useMemo(
     () => color ?? (isDarkMode ? Colors.white : Colors.black2),
-    [isDarkMode, color]
+    [isDarkMode, color],
   );
 
   return (

@@ -8,7 +8,7 @@ type Props = {
   children: string | JSX.Element | JSX.Element[];
 };
 
-export const UserContext = createContext<{
+const UserContext = createContext<{
   uuid: string;
   setUuid: (uuid: string) => void;
   language?: Language;
@@ -42,13 +42,13 @@ export const UserProvider = ({ children }: Props) => {
   const [uuid, setUuid] = useState(
     localStorage.getItem("uuid") !== null
       ? (localStorage.getItem("uuid")! as string)
-      : crypto.randomUUID()
+      : crypto.randomUUID(),
   );
 
   const [mode, setMode] = useState<"light" | "dark">(
     localStorage.getItem("mode") !== null
       ? (localStorage.getItem("mode")! as "light" | "dark")
-      : "dark"
+      : "dark",
   );
 
   const [languages, setLanguages] = useState<Array<Language>>([]);
@@ -56,7 +56,7 @@ export const UserProvider = ({ children }: Props) => {
   const [sound, setSound] = useState<number>(
     localStorage.getItem("sound") !== null
       ? Number(localStorage.getItem("sound")!)
-      : 20
+      : 20,
   );
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export const UserProvider = ({ children }: Props) => {
 
     if (localStorage.getItem("language") !== null) {
       const newLanguage = JSON.parse(
-        localStorage.getItem("language")!
+        localStorage.getItem("language")!,
       ) as Language;
       if (newLanguage.id) {
         setLanguage(newLanguage);
@@ -132,7 +132,7 @@ export const UserProvider = ({ children }: Props) => {
       setMode,
       mode,
     }),
-    [uuid, languages, language, sound, mode]
+    [uuid, languages, language, sound, mode],
   );
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

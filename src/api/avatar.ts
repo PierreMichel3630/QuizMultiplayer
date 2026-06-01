@@ -1,8 +1,8 @@
 import { AvatarInsert, AvatarUpdate } from "src/models/Avatar";
 import { supabase } from "./supabase";
 
-export const SUPABASE_AVATARPROFILE_TABLE = "avatarprofile";
-export const SUPABASE_AVATAR_TABLE = "avatar";
+const SUPABASE_AVATARPROFILE_TABLE = "avatarprofile";
+const SUPABASE_AVATAR_TABLE = "avatar";
 
 export const selectAvatar = () =>
   supabase

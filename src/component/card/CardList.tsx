@@ -174,7 +174,7 @@ interface PropsValueAnswerList {
   type?: TypeList;
 }
 
-export const ValueAnswerList = ({ value, type }: PropsValueAnswerList) => {
+const ValueAnswerList = ({ value, type }: PropsValueAnswerList) => {
   const label = useMemo(() => {
     let result = undefined;
     if (type === TypeList.DATE) {

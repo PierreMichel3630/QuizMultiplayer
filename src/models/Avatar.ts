@@ -22,9 +22,3 @@ export interface AvatarInsert {
   isaccomplishment: boolean;
   theme: number | null;
 }
-
-export interface AvatarProfile {
-  id: number;
-  profile: string;
-  avatar: Avatar;
-}

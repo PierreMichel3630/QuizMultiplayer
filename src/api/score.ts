@@ -3,46 +3,9 @@ import { bots } from "./bots";
 import { supabase } from "./supabase";
 import { Moment } from "moment";
 
-export const SUPABASE_SCORE_TABLE = "score";
-export const SUPABASE_OPPOSITION_TABLE = "opposition";
-export const SUPABASE_GETLEADERBOARDGAME_FUNCTION = "get_leaderboard_game";
-
-export const selectScoresByTheme = (
-  theme: number,
-  order: string,
-  itemperpage = 25,
-  page = 0,
-) => {
-  const from = page * itemperpage;
-  const to = from + itemperpage - 1;
-  return supabase
-    .from(SUPABASE_SCORE_TABLE)
-    .select("*, profile(*, avatar(*)), uuidgame(uuid, created_at)")
-    .gt(order, 0)
-    .eq("theme", theme)
-    .not("profile", "in", `(${bots.join(",")})`)
-    .order(order, { ascending: false })
-    .order("uuidgame(created_at)", { ascending: false })
-    .range(from, to);
-};
-
-export const selectScoresByProfile = (uuid: string) => {
-  return supabase
-    .from(SUPABASE_SCORE_TABLE)
-    .select("*, theme(*, themetranslation(*))")
-    .or("games.gt.0,duelgames.gt.0")
-    .eq("profile", uuid);
-};
-
-export const selectScoresByProfileAndTheme = (uuid: string, theme: number) => {
-  return supabase
-    .from(SUPABASE_SCORE_TABLE)
-    .select("*, theme(*, themetranslation(*))")
-    .or("games.gt.0,duelgames.gt.0")
-    .eq("profile", uuid)
-    .eq("theme", theme)
-    .maybeSingle();
-};
+const SUPABASE_SCORE_TABLE = "score";
+const SUPABASE_OPPOSITION_TABLE = "opposition";
+const SUPABASE_GETLEADERBOARDGAME_FUNCTION = "get_leaderboard_game";
 
 export const selectScoresByProfilePaginate = (
   uuid: string,

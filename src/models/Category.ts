@@ -1,15 +1,8 @@
 import { Language } from "./Language";
-import { Theme } from "./Theme";
 
 export interface Category {
   id: number;
   categorytranslation: Array<CategoryTranslation>;
-}
-
-export interface CategoryUpdate {
-  id: number;
-  title?: string;
-  language?: string;
 }
 
 export interface CategoryInsert {}
@@ -41,14 +34,7 @@ export interface CategoryThemeUpdate {
   isfirst?: boolean;
 }
 
-export interface CategoryWithThemes {
-  id: number;
-  title: string;
-  language: string;
-  themes: Array<Theme>;
-}
-
-export interface CategoryTranslation {
+interface CategoryTranslation {
   id: number;
   name: string;
   language: Language;

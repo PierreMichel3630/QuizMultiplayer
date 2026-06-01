@@ -211,7 +211,7 @@ interface PropsQcmBlockDuelResultBlockV1 {
   question: QuestionResultV1;
 }
 
-export const QcmBlockDuelResultBlockV1 = ({
+const QcmBlockDuelResultBlockV1 = ({
   question,
 }: PropsQcmBlockDuelResultBlockV1) => {
   const { mode } = useUser();

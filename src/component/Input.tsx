@@ -4,17 +4,16 @@ import {
   InputBase,
   InputBaseProps,
   OutlinedInput,
-  TextField,
 } from "@mui/material";
 import { padding, percent, px } from "csx";
 
 import ClearIcon from "@mui/icons-material/Clear";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, BoxProps } from "@mui/system";
-import { Colors } from "src/style/Colors";
 import { useUser } from "src/context/UserProvider";
+import { Colors } from "src/style/Colors";
 
 interface PropsBaseInput extends InputBaseProps {
   value: string;
@@ -134,30 +133,5 @@ export const BasicSearchInput = ({
         </Box>
       </Box>
     </form>
-  );
-};
-
-interface PropsInputEnter {
-  label: string;
-  onChange: (value: string) => void;
-}
-
-export const InputEnter = ({ onChange, label }: PropsInputEnter) => {
-  const [value, setValue] = useState("");
-
-  return (
-    <TextField
-      value={value}
-      fullWidth
-      onChange={(event) => setValue(event.target.value)}
-      label={label}
-      onKeyPress={(ev) => {
-        if (ev.key === "Enter") {
-          onChange(value);
-          setValue("");
-          ev.preventDefault();
-        }
-      }}
-    />
   );
 };

@@ -1,77 +1,10 @@
 import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
-import { Badge, Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { padding, percent, px } from "csx";
-import { useCallback } from "react";
-import { useTranslation } from "react-i18next";
 import { Title, TitleProfile } from "src/models/Title";
 import { Colors } from "src/style/Colors";
 import { TextNameBlock } from "./language/TextLanguageBlock";
 import { TitleText } from "./title/Title";
-
-interface Props {
-  value: string;
-}
-export const BadgeDifficulty = ({ value }: Props) => {
-  const { t } = useTranslation();
-
-  const getColor = useCallback(() => {
-    let color: string = Colors.black;
-    if (value === "FACILE") {
-      color = Colors.green;
-    } else if (value === "MOYEN") {
-      color = Colors.orange2;
-    } else if (value === "DIFFICILE") {
-      color = Colors.red;
-    }
-    return color;
-  }, [value]);
-
-  return (
-    <Box
-      sx={{
-        p: padding(2, 8),
-        backgroundColor: getColor(),
-        borderRadius: px(10),
-        width: "fit-content",
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
-      <Typography variant="h4" sx={{ color: "white" }}>
-        {t(`enum.difficulty.${value}`)}
-      </Typography>
-    </Box>
-  );
-};
-
-interface PropsBadgeAccountActive {
-  online: boolean;
-  children: string | JSX.Element | JSX.Element[];
-}
-
-export const BadgeAccountActive = ({
-  online,
-  children,
-}: PropsBadgeAccountActive) => (
-  <Badge
-    sx={{
-      "& .MuiBadge-badge": {
-        backgroundColor: online ? Colors.green : Colors.red,
-        color: online ? Colors.green : Colors.red,
-        height: px(10),
-        width: px(10),
-      },
-    }}
-    anchorOrigin={{
-      vertical: "bottom",
-      horizontal: "right",
-    }}
-    overlap="circular"
-    variant="dot"
-  >
-    {children}
-  </Badge>
-);
 
 interface PropsBadgeTitle {
   title: Title;

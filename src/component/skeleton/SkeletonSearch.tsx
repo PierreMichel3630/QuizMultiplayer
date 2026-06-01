@@ -11,7 +11,7 @@ export const SkeletonSearchs = ({ number }: Props) => {
   ));
 };
 
-export const SkeletonSearch = () => {
+const SkeletonSearch = () => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
       <Skeleton

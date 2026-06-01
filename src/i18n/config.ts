@@ -9,9 +9,9 @@ import deDE from "./locales/de-DE.json";
 
 const defaultLanguage = "fr-FR";
 
-export const defaultNamespace = "default";
+const defaultNamespace = "default";
 
-export const resources = {
+const resources = {
   en: {
     [defaultNamespace]: enGB,
   },

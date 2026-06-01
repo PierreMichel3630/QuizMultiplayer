@@ -4,9 +4,10 @@ import moment from "moment";
 import { VERSION_APP } from "src/utils/config";
 import { bots } from "./bots";
 
-export const SUPABASE_PROFILE_TABLE = "profiles";
-export const SUPABASE_UPDATEPROFIL_FUNCTION = "update-profil";
-export const SUPABASE_GETLEADERBOARDPROFILE_FUNCTION ="get_leaderboard_profile"
+const SUPABASE_PROFILE_TABLE = "profiles";
+
+const SUPABASE_UPDATEPROFIL_FUNCTION = "update-profil";
+const SUPABASE_GETLEADERBOARDPROFILE_FUNCTION = "get_leaderboard_profile";
 
 export const getProfilById = (uuid: string) =>
   supabase
@@ -29,14 +30,6 @@ export const updateSelectProfil = (profil: ProfileUpdate) =>
       "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))",
     )
     .single();
-
-export const searchProfile = (search: string, notin: Array<string>) =>
-  supabase
-    .from(SUPABASE_PROFILE_TABLE)
-    .select("*, avatar(*)")
-    .ilike("username", `%${search}%`)
-    .not("id", "in", `(${notin.join(",")})`)
-    .order("username", { ascending: true });
 
 export const searchProfilePagination = (
   search: string,
@@ -110,15 +103,13 @@ export const selectProfile = (
     .range(from, to);
 };
 
-
-
 export const selectProfilePaginate = (
   search: string = "",
   page = 0,
   itemperpage = 25,
   sort = "money",
   ascending = true,
-  idFriends?: Array<string>
+  idFriends?: Array<string>,
 ) => {
   return supabase.rpc(SUPABASE_GETLEADERBOARDPROFILE_FUNCTION, {
     p_search: search,
@@ -126,7 +117,6 @@ export const selectProfilePaginate = (
     p_itemperpage: itemperpage,
     p_ids_profile: idFriends ?? null,
     p_ascending: ascending,
-    p_sort: sort
+    p_sort: sort,
   });
 };
-

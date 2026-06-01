@@ -17,7 +17,7 @@ export enum TypeList {
 export interface List {
   id: number;
   order: null | Order;
-  elements: number
+  elements: number;
   type: TypeList;
   listtranslation: Array<ListTranslation>;
   format?: string;
@@ -43,7 +43,7 @@ export interface ListAnswer {
   listanswertranslation: Array<ListAnswerTranslation>;
 }
 
-export interface ListAnswerTranslation {
+interface ListAnswerTranslation {
   id: number;
   language: Language;
   name: string;
@@ -61,7 +61,7 @@ export interface ListScore {
   attempts_recordtime: number;
   time_recordattempts: number;
   time_recordtime: number;
-  list: List
+  list: List;
   finish: boolean;
 }
 

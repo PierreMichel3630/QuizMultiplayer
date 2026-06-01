@@ -15,20 +15,12 @@ import { AvatarAccount } from "../avatar/AvatarAccount";
 
 import { percent, px } from "csx";
 import moment from "moment";
-import {
-  Fragment,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   selectRankingDuelByThemeAndProfile,
   selectRankingSoloByThemeAndProfile,
 } from "src/api/ranking";
-import { selectScore } from "src/api/score";
 import rank1 from "src/assets/rank/rank1.png";
 import rank2 from "src/assets/rank/rank2.png";
 import rank3 from "src/assets/rank/rank3.png";
@@ -344,146 +336,6 @@ export const RankingTableSoloDuel = ({
       }
     }
   }, [theme, tab, t, idProfile, max]);
-
-  return (
-    <Box sx={{ p: 1 }}>
-      {tabs.length > 1 && (
-        <DefaultTabs
-          values={tabs}
-          tab={tab}
-          onChange={(value) => {
-            setTab(value);
-          }}
-        />
-      )}
-      <RankingTable data={data} loading={isLoading} />
-    </Box>
-  );
-};
-
-interface PropsSoloDuel {
-  theme?: Theme;
-  mode?: "ALL" | "DUEL" | "SOLO";
-}
-
-export const RankingTableSoloDuelPaginate = ({
-  theme,
-  mode = "ALL",
-}: PropsSoloDuel) => {
-  const { t } = useTranslation();
-
-  const observer = useRef<IntersectionObserver | null>(null);
-  const lastItemRef = useRef<HTMLTableRowElement | null>(null);
-
-  const ITEMPERPAGE = 30;
-
-  const [tab, setTab] = useState(mode === "DUEL" ? 1 : 0);
-  const tabs = useMemo(
-    () =>
-      mode === "ALL"
-        ? [{ label: t("commun.solo") }, { label: t("commun.duel") }]
-        : [],
-    [mode, t],
-  );
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [, setPage] = useState(0);
-  const [isEnd, setIsEnd] = useState(false);
-  const [data, setData] = useState<Array<DataRanking>>([]);
-
-  const getRankingDuel = useCallback(
-    (page: number) => {
-      if (isLoading) return;
-      if (theme && (page === 0 || !isEnd)) {
-        setIsLoading(true);
-        selectScore("rank", page, ITEMPERPAGE, undefined, [theme.id]).then(
-          ({ data }) => {
-            const result = data as Array<Ranking>;
-            const newData = result.map((el) => ({
-              profile: el.profile,
-              value: el.rank,
-              rank: el.ranking,
-              size: 70,
-            })) as Array<DataRanking>;
-            setIsEnd(result.length < ITEMPERPAGE);
-            setData((prev) =>
-              page === 0 ? [...newData] : [...prev, ...newData],
-            );
-            setIsLoading(false);
-          },
-        );
-      }
-    },
-    [isEnd, theme, isLoading],
-  );
-
-  const getRankingSolo = useCallback(
-    (page: number) => {
-      if (isLoading) return;
-      if (theme && (page === 0 || !isEnd)) {
-        setIsLoading(true);
-        selectScore("points", page, ITEMPERPAGE, undefined, [theme.id]).then(
-          ({ data }) => {
-            const result = data as Array<Ranking>;
-            const newData = result.map((el) => ({
-              profile: el.profile,
-              value: el.points,
-              uuid: el.uuidgame === null ? undefined : el.uuidgame.uuid,
-              extra: t("commun.pointsabbreviation"),
-              rank: el.ranking,
-              size: 70,
-            })) as Array<DataRanking>;
-            setIsEnd(result.length < ITEMPERPAGE);
-            setData((prev) =>
-              page === 0 ? [...newData] : [...prev, ...newData],
-            );
-            setIsLoading(false);
-          },
-        );
-      }
-    },
-    [isLoading, theme, isEnd, t],
-  );
-
-  useEffect(() => {
-    setTab(mode === "DUEL" ? 1 : 0);
-  }, [mode]);
-
-  useEffect(() => {
-    setPage(0);
-    setData([]);
-    setIsEnd(false);
-    if (tab === 1) {
-      getRankingDuel(0);
-    } else {
-      getRankingSolo(0);
-    }
-  }, [tab, theme]);
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    if (observer.current) observer.current.disconnect();
-
-    observer.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && !isEnd) {
-        setPage((prev) => {
-          if (tab === 1) {
-            getRankingDuel(prev + 1);
-          } else {
-            getRankingSolo(prev + 1);
-          }
-          return prev + 1;
-        });
-      }
-    });
-
-    if (lastItemRef.current) {
-      observer.current.observe(lastItemRef.current);
-    }
-
-    return () => observer.current?.disconnect();
-  }, [data, isLoading, isEnd, getRankingDuel, getRankingSolo, tab]);
 
   return (
     <Box sx={{ p: 1 }}>

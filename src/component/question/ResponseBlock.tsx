@@ -20,14 +20,6 @@ import { ImageQCMBlock } from "../ImageBlock";
 import { TextLabelBlock } from "../language/TextLanguageBlock";
 import { ExtraResponseBlock } from "../response/ExtraResponseBlock";
 
-export interface ResponseLanguage {
-  [iso: string]: Array<string> | string;
-}
-
-export interface ResponseLanguageString {
-  [iso: string]: string;
-}
-
 export interface AnswerUser {
   uuid: string;
   value?: string | number;
@@ -287,7 +279,7 @@ interface ResponseQCMBlockProps {
   onSubmit: (value: AnswerUser) => void;
 }
 
-export const ResponseQCMBlock = ({
+const ResponseQCMBlock = ({
   index,
   color,
   borderColor = Colors.white,
@@ -588,7 +580,7 @@ interface ResponseQCMAdminBlockProps {
   language: Language;
 }
 
-export const ResponseQCMAdminBlock = ({
+const ResponseQCMAdminBlock = ({
   color = "text.primary",
   borderColor = Colors.white,
   image,

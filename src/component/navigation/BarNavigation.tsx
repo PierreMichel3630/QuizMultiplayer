@@ -52,7 +52,3 @@ export const BarNavigation = ({ title, content, quit }: Props) => {
     </Box>
   );
 };
-
-export const ToolbarBarNavigation = () => (
-  <Box sx={{ height: px(BarNavigationSize) }} />
-);

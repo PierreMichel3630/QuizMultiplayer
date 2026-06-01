@@ -22,9 +22,3 @@ export interface BannerInsert {
   isaccomplishment: boolean;
   theme: number | null;
 }
-
-export interface BannerProfile {
-  id: number;
-  profile: string;
-  banner: Banner;
-}

@@ -5,9 +5,9 @@ import { MAX_DAY_NEW_THEME } from "src/utils/config";
 import { removeAccentsAndLowercase } from "src/utils/string";
 import { supabase } from "./supabase";
 
-export const SUPABASE_VIEWSEARCH_TABLE = "viewsearchv2";
-export const SUPABASE_GETITEMS_FUNCTION = "get_category_items";
-export const SUPABASE_SEARCH_FUNCTION = "search"
+const SUPABASE_VIEWSEARCH_TABLE = "viewsearchv2";
+const SUPABASE_GETITEMS_FUNCTION = "get_category_items";
+const SUPABASE_SEARCH_FUNCTION = "search";
 
 export const searchThemesAndCategoriesPaginate = (
   language: Language,
@@ -139,13 +139,12 @@ export const selectItemsByCategory = (
   });
 };
 
-
 export const search = (
   language: Language,
   search = "",
   page = 0,
   itemperpage = 25,
-  type?: SearchType
+  type?: SearchType,
 ) => {
   const offset = page * itemperpage;
 

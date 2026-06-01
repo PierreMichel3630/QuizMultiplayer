@@ -21,7 +21,5 @@ export const RECOMPENSES_STREAK: Array<StreakDayRecompense> = [
   },
 ];
 
-export const MAX_DAY_RECOMPENSES_STREAK = 10;
-
 /* CHALLENGE */
 export const NUMBER_QUESTIONS_CHALLENGE = 10;

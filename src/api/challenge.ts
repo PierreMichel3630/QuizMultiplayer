@@ -3,14 +3,13 @@ import { ChallengeGameInsert, ChallengeGameUpdate } from "src/models/Challenge";
 import { VERSION_QUESTION } from "src/utils/config";
 import { supabase } from "./supabase";
 
-export const SUPABASE_CHALLENGE_TABLE = "challenge";
-export const SUPABASE_CHALLENGEGAME_TABLE = "challengegame";
-export const SUPABASE_CHALLENGEAVGGAMEDAY_VIEW = "viewavgchallengeday";
-export const SUPABASE_RANKINGCHALLENGE_VIEW = "rankingchallenge";
+const SUPABASE_CHALLENGE_TABLE = "challenge";
+const SUPABASE_CHALLENGEGAME_TABLE = "challengegame";
+const SUPABASE_RANKINGCHALLENGE_VIEW = "rankingchallenge";
 
-export const SUPABASE_LAUNCHCHALLENGE_FUNCTION = "launch-challengeV3";
-export const SUPABASE_ENDCHALLENGE_FUNCTION = "end-challenge";
-export const SUPABASE_CREATECHALLENGE_FUNCTION = "create-challenge";
+const SUPABASE_LAUNCHCHALLENGE_FUNCTION = "launch-challengeV3";
+const SUPABASE_ENDCHALLENGE_FUNCTION = "end-challenge";
+const SUPABASE_CREATECHALLENGE_FUNCTION = "create-challenge";
 
 export const createChallenge = (date: string) =>
   supabase.functions.invoke(SUPABASE_CREATECHALLENGE_FUNCTION, {
@@ -70,19 +69,6 @@ export const countChallengeGameByDateAndProfileId = (
     .not("challenge", "is", null)
     .eq("challenge.date", date.format("YYYY-MM-DD"));
 
-export const selectChallengeGameByDateAndProfileId = (
-  date: Moment,
-  id: string,
-) =>
-  supabase
-    .from(SUPABASE_CHALLENGEGAME_TABLE)
-    .select("* , challenge(*)")
-    .eq("profile", id)
-    .not("profile", "is", null)
-    .not("challenge", "is", null)
-    .eq("challenge.date", date.format("YYYY-MM-DD"))
-    .maybeSingle();
-
 export const selectChallengeGameByDatePaginate = (
   date: Moment,
   search: string,
@@ -130,14 +116,6 @@ export const selectChallengeGameByProfileIdGroupByRanking = (id: string) =>
     .eq("profile", id);
 
 //DAY
-export const selectAvgChallengeByDate = (date: Moment) => {
-  return supabase
-    .from(SUPABASE_CHALLENGEAVGGAMEDAY_VIEW)
-    .select("*, challenge(date)")
-    .eq("challenge.date", date.format("YYYY-MM-DD"))
-    .not("challenge", "is", null)
-    .maybeSingle();
-};
 
 export const selectFirstRankingChallengeByDay = (
   date: string, // Format YYYY-MM-DD
@@ -156,36 +134,7 @@ export const selectFirstRankingChallengeByDay = (
     .maybeSingle();
 };
 
-export const selectBestRankingChallengeByDay = () => {
-  return supabase
-    .from(SUPABASE_CHALLENGEGAME_TABLE)
-    .select(
-      "*, profile(*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), country(*)), challenge(*)",
-    )
-    .not("challenge", "is", null)
-    .not("profile", "is", null)
-    .order("score", { ascending: false })
-    .order("time", { ascending: true })
-    .limit(1)
-    .maybeSingle();
-};
-
 // AUTRE
-
-export const selectRankingChallengeByDateAndProfileId = (
-  date: Moment,
-  profileId: string,
-) =>
-  supabase
-    .from(SUPABASE_RANKINGCHALLENGE_VIEW)
-    .select(
-      "*, profile(*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), country(*)), challenge(*)",
-    )
-    .eq("challenge.date", date.format("YYYY-MM-DD"))
-    .eq("profile.id", profileId)
-    .not("profile", "is", null)
-    .not("challenge", "is", null)
-    .maybeSingle();
 
 export const launchChallenge = (date: string, language: number) =>
   supabase.functions.invoke(SUPABASE_LAUNCHCHALLENGE_FUNCTION, {
@@ -207,13 +156,13 @@ export const endChallenge = (questions: Array<unknown>, gameUuid: string) =>
 /***************   NEW    *************/
 
 // Global
-export const SUPABASE_GETLEADERBOARDCHALLENGEDAY_FUNCTION =
+const SUPABASE_GETLEADERBOARDCHALLENGEDAY_FUNCTION =
   "get_leaderboard_challenge_day";
-export const SUPABASE_GETLEADERBOARDCHALLENGEWEEK_FUNCTION =
+const SUPABASE_GETLEADERBOARDCHALLENGEWEEK_FUNCTION =
   "get_leaderboard_challenge_week";
-export const SUPABASE_GETLEADERBOARDCHALLENGEMONTH_FUNCTION =
+const SUPABASE_GETLEADERBOARDCHALLENGEMONTH_FUNCTION =
   "get_leaderboard_challenge_month";
-export const SUPABASE_GETLEADERBOARDCHALLENGEALLTIME_FUNCTION =
+const SUPABASE_GETLEADERBOARDCHALLENGEALLTIME_FUNCTION =
   "get_leaderboard_challenge_alltime";
 
 export const selectChallengeAllTimeByProfile = (profileId: string) => {
@@ -351,11 +300,11 @@ export const selectChallengeDayByProfileId = (
 };
 
 // Par profile
-export const SUPABASE_GETCHALLENGEWEEKLYRANKING_FUNCTION =
+const SUPABASE_GETCHALLENGEWEEKLYRANKING_FUNCTION =
   "get_challenge_weekly_ranking";
-export const SUPABASE_GETCHALLENGEMONTHLYRANKING_FUNCTION =
+const SUPABASE_GETCHALLENGEMONTHLYRANKING_FUNCTION =
   "get_challenge_monthly_ranking";
-export const SUPABASE_GETCHALLENGEDAILYRANKING_FUNCTION =
+const SUPABASE_GETCHALLENGEDAILYRANKING_FUNCTION =
   "get_challenge_daily_ranking";
 
 export const selectRankingChallengeWeekByProfileId = (

@@ -8,19 +8,6 @@ export interface Friend {
   created_at: Date;
 }
 
-export interface FriendNotJoin {
-  id: string;
-  user1: string;
-  user2: string;
-  status: FRIENDSTATUS;
-  created_at: Date;
-}
-
-export interface FriendInsert {
-  user1: string;
-  user2: string;
-}
-
 export interface FriendUpdate {
   id: string;
   status: FRIENDSTATUS;

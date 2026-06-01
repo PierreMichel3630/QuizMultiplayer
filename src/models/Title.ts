@@ -8,7 +8,7 @@ export interface Title {
   ismultiple: boolean;
 }
 
-export interface TitleTranslation {
+interface TitleTranslation {
   id: number;
   name: string;
   language: Language;

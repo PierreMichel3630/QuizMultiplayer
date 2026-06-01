@@ -1,21 +1,12 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { percent, px } from "csx";
+import { percent } from "csx";
 import moment from "moment";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useChallenge } from "src/context/ChallengeProvider";
-import {
-  ChallengeDateEnum,
-  ChallengeTypeResultEnum,
-} from "src/models/enum/ChallengeEnum";
 import { Profile } from "src/models/Profile";
 import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 
-import crownalltime from "src/assets/crown/crownalltime.png";
-import crownday from "src/assets/crown/crownday.png";
-import crownmonth from "src/assets/crown/crownmonth.png";
-import crownweek from "src/assets/crown/crownweek.png";
-import poop from "src/assets/crown/poop.png";
 import {
   ResultChallengeDay,
   ResultChallengeMonth,
@@ -28,9 +19,7 @@ export const WinnerChallengeBlock = () => {
 
   const { winDay, winWeek, winMonth } = useChallenge();
 
-  const [profile, setProfile] = useState<
-    Profile | undefined
-  >(undefined);
+  const [profile, setProfile] = useState<Profile | undefined>(undefined);
 
   const getDate = (format: string, dateString?: string | Date) => {
     let result = "";
@@ -66,21 +55,21 @@ export const WinnerChallengeBlock = () => {
         label={t("commun.day")}
         date={getDate("day", winDay?.challenge.date)}
         extra={<ResultChallengeDay value={winDay} />}
-        onSelect={() => setProfile(winDay?.profile) }
+        onSelect={() => setProfile(winDay?.profile)}
       />
       <ResultChallengeBlock
         profile={winWeek?.profile}
         label={t("commun.week")}
         date={getDate("week", winWeek?.week)}
         extra={<ResultChallengeWeek value={winWeek} />}
-        onSelect={() => setProfile(winWeek?.profile) }
+        onSelect={() => setProfile(winWeek?.profile)}
       />
       <ResultChallengeBlock
         profile={winMonth?.profile}
         label={t("commun.month")}
         date={getDate("month", winMonth?.month)}
         extra={<ResultChallengeMonth value={winMonth} />}
-        onSelect={() => setProfile(winMonth?.profile) }
+        onSelect={() => setProfile(winMonth?.profile)}
       />
       <ChallengeProfilDialog
         profileId={profile?.id}
@@ -143,69 +132,5 @@ const ResultChallengeBlock = ({
         {extra}
       </Box>
     </Grid>
-  );
-};
-
-interface PropsWinnerTextBlock {
-  type: ChallengeTypeResultEnum;
-  date: ChallengeDateEnum;
-  profile?: Profile | null;
-}
-export const ResultTextBlock = ({
-  date,
-  profile,
-  type,
-}: PropsWinnerTextBlock) => {
-  const { t } = useTranslation();
-
-  const image = useMemo(() => {
-    let result = poop;
-    if (type === ChallengeTypeResultEnum.winner) {
-      switch (date) {
-        case ChallengeDateEnum.day:
-          result = crownday;
-          break;
-        case ChallengeDateEnum.week:
-          result = crownweek;
-          break;
-        case ChallengeDateEnum.month:
-          result = crownmonth;
-          break;
-        case ChallengeDateEnum.alltime:
-          result = crownalltime;
-          break;
-      }
-    }
-    return result;
-  }, [date, type]);
-
-  const label = useMemo(() => {
-    let result = t(`challenge.${type}.alltime`);
-    if (date === ChallengeDateEnum.day) {
-      const date = moment().subtract(1, "day").format("DD/MM/YYYY");
-      result = t(`challenge.${type}.day`, { value: date });
-    } else if (date === ChallengeDateEnum.week) {
-      const date = moment().subtract(1, "weeks").format("WW");
-      result = t(`challenge.${type}.week`, { value: date });
-    } else if (date === ChallengeDateEnum.month) {
-      const date = moment().subtract(1, "month").format("MMMM");
-      result = t(`challenge.${type}.month`, { value: date });
-    }
-    return result;
-  }, [type, date, t]);
-
-  return (
-    profile && (
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: px(4),
-        }}
-      >
-        <img src={image} width={20} alt="crown" />
-        <Typography variant="caption">{label}</Typography>
-      </Box>
-    )
   );
 };

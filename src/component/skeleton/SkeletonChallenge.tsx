@@ -13,7 +13,7 @@ export const SkeletonChallenges = ({ number }: Props) => {
   ));
 };
 
-export const SkeletonChallenge = () => {
+const SkeletonChallenge = () => {
   return (
     <Paper
       sx={{
@@ -53,7 +53,7 @@ export const SkeletonChallenge = () => {
             </Typography>
           </Box>
         </Grid>
-        <Grid size={2} sx={{display: "flex", justifyContent: "center"}}>
+        <Grid size={2} sx={{ display: "flex", justifyContent: "center" }}>
           <Skeleton variant="rectangular" width="70%" height={20} />
         </Grid>
       </Grid>
