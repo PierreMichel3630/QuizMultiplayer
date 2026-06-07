@@ -20,12 +20,13 @@ import { RecapProfileGameDialog } from "../modal/RecapGameDialog";
 import { Pagination } from "../page/Pagination";
 import { SortButton } from "../SortBlock";
 import { OnlyFriendSwitch } from "../switch/OnlyFriendSwitch";
-import { ProfileTitleBlock } from "../title/ProfileTitle";
-import { RankBadge } from "./Rank";
 import {
   DataRankingChallenge,
   RankingChallengeTable,
 } from "../table/RankingChallengeTable";
+import { ProfileTitleBlock } from "../title/ProfileTitle";
+import { RankBadge } from "./Rank";
+import { RankingAverage } from "./RankingAverage";
 
 export enum Type {
   duel = "duel",
@@ -215,7 +216,7 @@ export const RankingGame = ({
       </Grid>
       <RecapProfileGameDialog
         profileId={dataRanking?.profile.id}
-        themeId={dataRanking?.theme?.id}
+        theme={dataRanking?.theme}
         close={() => setDataRanking(undefined)}
         open={dataRanking !== undefined}
       />
@@ -335,7 +336,6 @@ interface PropsRecapAvgGame {
 }
 
 export const RecapAvgGame = ({ type, avg, count }: PropsRecapAvgGame) => {
-  const { t } = useTranslation();
 
   const score = useMemo(
     () => (type === Type.solo ? avg.score : avg.rank),
@@ -348,43 +348,26 @@ export const RecapAvgGame = ({ type, avg, count }: PropsRecapAvgGame) => {
   );
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        gap: 1,
-        justifyContent: "center",
-      }}
-    >
-      <Typography variant="h4">
-        <Trans
-          i18nKey={t("commun.player")}
-          values={{
-            count: count,
-          }}
-        />
-      </Typography>
-      <Box>
-        <Typography variant="body1" component="span">
-          {`( ${t("abrevation.average")} `}
-        </Typography>
-        <Typography variant="h6" component="span">
-          {`${score.toFixed(2)} - `}
-        </Typography>
-        <Typography component="span">
-          <Trans
-            i18nKey={"commun.game"}
-            values={{
-              count: games,
-              formattedCount: games.toFixed(2),
-            }}
-            components={{ bold: <strong /> }}
-          />
-        </Typography>
-        <Typography variant="body1" component="span">
-          {` )`}
-        </Typography>
-      </Box>
-    </Box>
+    <RankingAverage
+      value={score}
+      count={count}
+      extra={
+        <>
+          <Typography variant="body1" component="span">
+            {` - `}
+          </Typography>
+          <Typography component="span">
+            <Trans
+              i18nKey={"commun.game"}
+              values={{
+                count: games,
+                formattedCount: games.toFixed(2),
+              }}
+              components={{ bold: <strong /> }}
+            />
+          </Typography>
+        </>
+      }
+    />
   );
 };

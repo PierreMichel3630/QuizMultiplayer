@@ -22,7 +22,7 @@ export const SortButton = ({ menus }: Props) => {
   };
 
   return (
-    menus.length > 0 && (
+    menus.length > 1 && (
       <Fragment>
         <Tooltip title="Account settings">
           <IconButton

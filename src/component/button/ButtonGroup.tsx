@@ -198,6 +198,10 @@ export const GroupButtonTime = ({
   const options = useMemo(
     () => [
       {
+        label: t("commun.day"),
+        value: ClassementSoloTimeEnum.day,
+      },
+      {
         label: t("commun.week"),
         value: ClassementSoloTimeEnum.week,
       },

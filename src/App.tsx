@@ -1,17 +1,16 @@
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 import { useEffect, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
+import { Outlet } from "react-router-dom";
+import { AppBarProvider } from "./context/AppBarProvider";
 import { AppProvider } from "./context/AppProvider";
 import { AuthProviderSupabase } from "./context/AuthProviderSupabase";
 import { MessageProvider } from "./context/MessageProvider";
+import { RealtimeProvider } from "./context/NotificationProvider";
 import { UserProvider, useUser } from "./context/UserProvider";
 import { useViewportHeight } from "./hook/useViewportHeight";
 import "./i18n/config";
 import { getTheme } from "./style/ThemeBlock";
-import ScrollToTop from "./component/navigation/ScrollToTop";
-import { Outlet } from "react-router-dom";
-import { RealtimeProvider } from "./context/NotificationProvider";
-import { AppBarProvider } from "./context/AppBarProvider";
 
 function App() {
   return (
@@ -49,7 +48,6 @@ const Body = () => {
         <ThemeProvider theme={theme}>
           <MessageProvider>
             <CssBaseline />
-            <ScrollToTop />
             <Helmet
               htmlAttributes={{
                 lang: language?.iso,

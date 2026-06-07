@@ -32,6 +32,8 @@ export interface Profile {
   streak: number;
   lastchallengeplay: Date;
   lastplay: Date;
+  isbot: boolean
+  multicompte: boolean
 }
 
 export interface ProfileUpdate {
@@ -43,4 +45,5 @@ export interface ProfileUpdate {
   isonline?: boolean;
   lastconnection?: Moment;
   lastchallengeplay?: string;
+  multicompte?: boolean
 }

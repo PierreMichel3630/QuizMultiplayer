@@ -4,22 +4,21 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { FavoriteBlock } from "src/component/FavoriteBlock";
 
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { CategoriesBlock } from "src/component/CategoriesBlock";
 import { GameModeBlock } from "src/component/GameModeBlock";
-import { NewBlock } from "src/component/NewBlock";
-import { RankingTop5Block } from "src/component/RankingBlock";
-
-import { useNavigate } from "react-router-dom";
 import { HeaderApp } from "src/component/header/HeaderApp";
 import { MostPlayedThemeBlock } from "src/component/MostPlayedThemeBlock";
+import { NewBlock } from "src/component/NewBlock";
 import { PreviousGameBlock } from "src/component/PreviousGameBlock";
+import { RankingHomeBlock } from "src/component/ranking/RankingHomeBlock";
 import { CategoriesScrollBlock } from "src/component/scroll/CategoriesScrollBlock";
 import { SearchBlock } from "src/component/search/SearchBlock";
 import { ShopBlock } from "src/component/ShopBlock";
 import { UpdatedThemeBlock } from "src/component/theme/UpdatedThemeBlock";
 import { useAppBar } from "src/context/AppBarProvider";
 import { useIsMobileOrTablet } from "src/hook/useSize";
-import { useEffect } from "react";
 import { removeHistoryLocalStorage } from "src/utils/localStorage";
 
 export default function ThemesPage() {
@@ -105,7 +104,7 @@ export default function ThemesPage() {
               <ShopBlock />
             </Grid>
             <Grid size={12}>
-              <RankingTop5Block />
+              <RankingHomeBlock />
             </Grid>
             <Grid size={12}>
               <CategoriesScrollBlock />

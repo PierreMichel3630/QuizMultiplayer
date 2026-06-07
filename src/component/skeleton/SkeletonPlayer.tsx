@@ -1,14 +1,16 @@
 import { Box, Grid, Paper, Skeleton } from "@mui/material";
+import { GridSize, ResponsiveStyleValue } from "@mui/system";
 import { px } from "csx";
 
 interface Props {
   number: number;
+  size?: ResponsiveStyleValue<GridSize>;
 }
-export const SkeletonPlayers = ({ number }: Props) => {
+export const SkeletonPlayers = ({ number, size = 12 }: Props) => {
   return (
     <>
       {Array.from(new Array(number)).map((_, index) => (
-        <Grid key={index} size={12}>
+        <Grid key={index} size={size}>
           <SkeletonPlayer key={index} />
         </Grid>
       ))}

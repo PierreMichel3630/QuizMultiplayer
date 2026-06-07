@@ -9,17 +9,20 @@ const SUPABASE_PROFILE_TABLE = "profiles";
 const SUPABASE_UPDATEPROFIL_FUNCTION = "update-profil";
 const SUPABASE_GETLEADERBOARDPROFILE_FUNCTION = "get_leaderboard_profile";
 
+
+const selectQueryProfile = "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))"
+
 export const getProfilById = (uuid: string) =>
   supabase
     .from(SUPABASE_PROFILE_TABLE)
     .select(
-      "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))",
+      selectQueryProfile
     )
     .eq("id", uuid)
     .single();
 
 export const updateProfil = (profil: ProfileUpdate) =>
-  supabase.from(SUPABASE_PROFILE_TABLE).update(profil).eq("id", profil.id);
+  supabase.from(SUPABASE_PROFILE_TABLE).update(profil).eq("id", profil.id).select(selectQueryProfile).maybeSingle();
 
 export const updateSelectProfil = (profil: ProfileUpdate) =>
   supabase
@@ -27,7 +30,7 @@ export const updateSelectProfil = (profil: ProfileUpdate) =>
     .update(profil)
     .eq("id", profil.id)
     .select(
-      "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))",
+      selectQueryProfile
     )
     .single();
 
@@ -50,11 +53,12 @@ export const searchProfilePagination = (
     .range(from, to);
 };
 
-export const countProfile = (search = "") =>
+export const countProfile = (search = "", notin: Array<string> = []) =>
   supabase
     .from(SUPABASE_PROFILE_TABLE)
     .select("*", { count: "exact", head: true })
-    .ilike("username", `%${search}%`);
+    .ilike("username", `%${search}%`)
+    .not("id", "in", `(${notin.join(",")})`);
 
 export const countPlayers = () =>
   supabase

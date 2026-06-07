@@ -25,6 +25,15 @@ export interface SoloGame {
   version: number;
 }
 
+
+export interface SoloGameRanking extends  SoloGame {
+  ranking: number;
+}
+
+export interface SoloGameAvg {
+  points: number;
+}
+
 export interface SoloGameResult extends SoloGame {
   questions: Array<QuestionResult>;
 }

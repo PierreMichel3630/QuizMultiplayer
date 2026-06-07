@@ -4,6 +4,9 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { padding, px } from "csx";
+import { Colors } from "src/style/Colors";
+import { useIsMobileOrTablet } from "src/hook/useSize";
 
 import EditIcon from "@mui/icons-material/Edit";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
@@ -12,9 +15,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import ReportIcon from "@mui/icons-material/Report";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
-import { padding, px } from "csx";
-import { Colors } from "src/style/Colors";
-import { useIsMobileOrTablet } from "src/hook/useSize";
+import PeopleIcon from "@mui/icons-material/People";
 
 interface Setting {
   name: string;
@@ -35,6 +36,11 @@ export const AdminButton = () => {
     () =>
       profile?.isadmin
         ? [
+            {
+              name: t("commun.users"),
+              icon: <PeopleIcon />,
+              url: "/administration/users",
+            },
             {
               name: t("commun.propose"),
               icon: <EmojiObjectsIcon />,
@@ -72,7 +78,7 @@ export const AdminButton = () => {
             },
           ]
         : [],
-    [profile, t]
+    [profile, t],
   );
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {

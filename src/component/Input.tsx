@@ -90,7 +90,7 @@ export const BasicSearchInput = ({
         <Box
           sx={{
             borderRadius: "40px 0px 0px 40px",
-            p: padding(5, 10, 5, 20),
+            p: padding(2, 10, 2, 20),
             width: percent(100),
             display: "flex",
             alignItems: "center",

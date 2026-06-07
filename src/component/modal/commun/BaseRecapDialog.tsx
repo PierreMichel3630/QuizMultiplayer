@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogContent,
   Divider,
+  Fab,
   Grid,
   IconButton,
   Toolbar,
@@ -11,15 +12,18 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { percent } from "csx";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { ExperienceBlock } from "src/component/ExperienceBlock";
+import ScrollTop from "src/component/navigation/ScrollToTop";
 import { ProfileBlock } from "src/component/profile/ProfileBlock";
 import { ProfileAction } from "src/component/ProfileAction";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Profile } from "src/models/Profile";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 interface BaseRecapDialogProps {
   open: boolean;
@@ -39,6 +43,9 @@ export const BaseRecapDialog = ({
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
+  const dialogContentRef = useRef<HTMLDivElement | null>(null);
+  const topAnchorRef = useRef<HTMLDivElement | null>(null);
+
   const [xp, setXp] = useState<number | undefined>(undefined);
 
   useEffect(() => {
@@ -50,7 +57,7 @@ export const BaseRecapDialog = ({
   }, [profile]);
 
   const isMe = useMemo(
-    () => user && profile && user.id === profile.id,
+    () => user && user.id === profile?.id,
     [user, profile],
   );
 
@@ -66,7 +73,9 @@ export const BaseRecapDialog = ({
           </IconButton>
         </Toolbar>
       </AppBar>
-      <DialogContent sx={{ p: 2 }}>
+      <DialogContent ref={dialogContentRef} 
+        sx={{ p: 2, position: "relative", overflowY: "auto" }} >
+        <div ref={topAnchorRef} />
         <Grid container spacing={1}>
           {profile && (
             <>
@@ -80,7 +89,7 @@ export const BaseRecapDialog = ({
               >
                 <Link
                   to={`/profil/${profile.id}`}
-                  style={{ textDecoration: "none" }}
+                  style={{ textDecoration: "none", width: percent(100) }}
                 >
                   <ProfileBlock profile={profile} />
                 </Link>
@@ -107,6 +116,14 @@ export const BaseRecapDialog = ({
           )}
           {children}
         </Grid>
+        <ScrollTop 
+          window={() => dialogContentRef.current} 
+          anchorRef={topAnchorRef}
+        >
+          <Fab size="small" >
+            <KeyboardArrowUpIcon />
+          </Fab>
+        </ScrollTop>
       </DialogContent>
     </Dialog>
   );

@@ -3,6 +3,7 @@ import AdminNotificationPage from "src/pages/admin/AdminNotificationPage";
 import AdminProposePage from "src/pages/admin/AdminProposePage";
 import AdminQuestionPage from "src/pages/admin/AdminQuestionPage";
 import AdminReportPage from "src/pages/admin/AdminReportPage";
+import AdminUsersPage from "src/pages/admin/AdminUsersPage";
 import AdminEditCategoryPage from "src/pages/admin/Edit/AdminEditCategoryPage";
 import AdminEditChallengePage from "src/pages/admin/Edit/AdminEditChallengePage";
 import AdminEditPage from "src/pages/admin/Edit/AdminEditPage";
@@ -26,6 +27,10 @@ export const AdminRoutes = [
   {
     path: "games",
     element: <AdminGamesPage />,
+  },
+  {
+    path: "users",
+    element: <AdminUsersPage />,
   },
   {
     path: "propose",

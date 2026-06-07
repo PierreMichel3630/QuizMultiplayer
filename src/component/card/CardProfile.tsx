@@ -1,14 +1,24 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Button, Card, Grid, Paper, Typography } from "@mui/material";
+import {
+  Button,
+  Card,
+  FormControlLabel,
+  Grid,
+  Paper,
+  Switch,
+  Typography,
+} from "@mui/material";
 import { px } from "csx";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Profile } from "src/models/Profile";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 import { FriendButton } from "../FriendButton";
-import { ProfileBlock } from "../profile/ProfileBlock";
+import { ProfileAdminBlock, ProfileBlock } from "../profile/ProfileBlock";
 import { StatusProfileBlock } from "../StatusProfileBlock";
+import { updateProfil } from "src/api/profile";
+
 interface Props {
   profile: Profile;
   addToFriend?: () => void;
@@ -136,5 +146,46 @@ export const BasicCardFriendProfile = ({ profile }: PropsBasic) => {
         avatarSize={45}
       />
     </Paper>
+  );
+};
+
+interface PropsCardAdminProfile {
+  profile: Profile;
+  refresh: (profile: Profile) => void
+}
+
+export const CardAdminProfile = ({ profile, refresh }: PropsCardAdminProfile) => {
+  const onChangeMulticompte = (
+    _event: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean,
+  ) => {
+    const newProfile = {
+      id: profile.id,
+      multicompte: checked,
+    };
+
+    updateProfil(newProfile).then(({ data }) => {
+      refresh(data);
+    });
+  };
+  return (
+    <Card sx={{ p: 1 }} variant="outlined">
+      <Grid container spacing={2} alignItems="center" justifyContent="center">
+        <Grid size="grow">
+          <ProfileAdminBlock variant="h6" profile={profile} avatarSize={45} />
+        </Grid>
+        <Grid>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={profile.multicompte}
+                onChange={onChangeMulticompte}
+              />
+            }
+            label="Multicompte"
+          />
+        </Grid>
+      </Grid>
+    </Card>
   );
 };

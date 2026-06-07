@@ -237,7 +237,7 @@ export const CardChallengeDay = ({ value }: CardChallengeDayProps) => {
             </Grid>
           </Grid>
         </Grid>
-        {isOpen ? (
+        {isOpen && (
           <Grid size={12}>
             <Grid container spacing={1}>
               {value.questions.map((el, index) => (
@@ -258,16 +258,15 @@ export const CardChallengeDay = ({ value }: CardChallengeDayProps) => {
               ))}
             </Grid>
           </Grid>
-        ) : (
-          <>
-            {showGame && (
-              <Grid size={12} sx={{ textAlign: "center" }}>
-                <Link>
-                  <Typography variant="body1">{t("commun.seegame")}</Typography>
-                </Link>
-              </Grid>
-            )}
-          </>
+        )}
+        {showGame && (
+          <Grid size={12} sx={{ textAlign: "center" }}>
+            <Link>
+              <Typography variant="body1">
+                {isOpen ? t("commun.closegame") : t("commun.seegame")}
+              </Typography>
+            </Link>
+          </Grid>
         )}
       </Grid>
     </Paper>

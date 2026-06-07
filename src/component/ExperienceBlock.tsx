@@ -58,7 +58,7 @@ export const ExperienceBlock = ({ xp, xpgain }: Props) => {
 
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Box sx={{ zIndex: 2}}>
+      <Box sx={{ zIndex: 2 }}>
         <BadgeLevel level={myLevel} size={38} fontSize={17} />
       </Box>
       <Box
@@ -82,7 +82,7 @@ export const ExperienceBlock = ({ xp, xpgain }: Props) => {
           }}
         >
           {xpLevel !== undefined && myXpLevel !== undefined && (
-            <Box sx={{ zIndex: 100 }}>
+            <Box sx={{ zIndex: 100, position: "absolute" }}>
               <Typography
                 variant="h6"
                 component="span"
@@ -94,7 +94,6 @@ export const ExperienceBlock = ({ xp, xpgain }: Props) => {
           )}
           <Box
             sx={{
-              position: "absolute",
               left: 0,
               height: percent(100),
               width: percent(100),

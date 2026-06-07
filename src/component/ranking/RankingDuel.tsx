@@ -10,7 +10,6 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { Page } from "src/models/Paginate";
 import { ScoreAvg, ScoreRanking } from "src/models/Score";
-import { Theme } from "src/models/Theme";
 import { DataRankingChallenge } from "../table/RankingChallengeTable";
 import { RankingGame, Type } from "./RankGame";
 
@@ -30,24 +29,23 @@ interface Query {
 }
 
 interface Props {
-  theme?: Theme;
+  itemPerPage?: number;
+   themes?: Array<number>;
 }
 
-export const RankingDuel = ({ theme }: Props) => {
+export const RankingDuel = ({ itemPerPage = 10, themes }: Props) => {
   const { t } = useTranslation();
   const { language } = useUser();
   const { profile } = useAuth();
 
-  const ROWS_PER_PAGE = 10;
-
   const [query, setQuery] = useState<Query>({
     page: 0,
-    rowsPerPage: ROWS_PER_PAGE,
+    rowsPerPage: itemPerPage,
     search: "",
     isOnlyFriend: false,
     friends: undefined,
     sort: { value: "rank", ascending: false },
-    themes: theme ? [theme.id] : undefined,
+    themes: themes ?? undefined,
   });
   const [count, setCount] = useState<null | number>(null);
   const [total, setTotal] = useState<null | number>(null);
@@ -58,8 +56,8 @@ export const RankingDuel = ({ theme }: Props) => {
 
   useEffect(() => {
     const getMyScore = () => {
-      if (theme && profile) {
-        selectScoreByProfileAndThemePaginate(profile.id, theme.id, "rank").then(
+      if (themes?.length === 1 && profile) {
+        selectScoreByProfileAndThemePaginate(profile.id, themes[0], "rank").then(
           ({ data }) => {
             const result = data?.data ?? [];
             if (result.length === 1) {
@@ -70,7 +68,7 @@ export const RankingDuel = ({ theme }: Props) => {
       }
     };
     getMyScore();
-  }, [theme, profile]);
+  }, [themes, profile]);
 
   const sorts = useMemo(
     () => [
@@ -116,6 +114,7 @@ export const RankingDuel = ({ theme }: Props) => {
           profile: el.profile,
           data: el,
           rank: el.ranking,
+          theme: el.theme,
           value: (
             <TableCell
               sx={{
@@ -123,7 +122,7 @@ export const RankingDuel = ({ theme }: Props) => {
                 color: "inherit",
                 textAlign: "center",
               }}
-              width={100}
+              width={85}
             >
               <Typography variant="h4" noWrap>
                 {el.rank}

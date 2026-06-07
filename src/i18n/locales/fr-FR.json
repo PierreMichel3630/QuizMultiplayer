@@ -17,6 +17,7 @@
     "image": "Image",
     "seeallproposequestion": "Voir mes propositions de questions",
     "seegame": "Voir la partie",
+    "closegame": "Fermer la partie",
     "seeprofile": "Voir le profil complet",
     "questionwithimage": "Questions avec image",
     "mygames": "Mes parties",
@@ -36,8 +37,8 @@
     "start": "Commencer",
     "keyboardmessage": "À vos claviers !",
     "noplayer": "Aucun joueur",
-    "player_one": "{{count}} joueur",
-    "player_other": "{{count}} joueurs",
+    "player_one": "<bold>{{formattedCount}}</bold> Joueurs",
+    "player_other": "<bold>{{formattedCount}}</bold> Joueurs",
     "targetposition": "Position",
     "position_one": "{{count}}<sup>er</sup>",
     "position_other": "{{count}}<sup>ème</sup>",
@@ -431,7 +432,8 @@
     "gamestwentypts": "Parties à + de 20 points",
     "gamestenpts": "Parties à + de 10 points",
     "themetenpts": "Nombre de thèmes à + de 10 points",
-    "themetwentypts": "Nombre de thèmes à + de 20 points"
+    "themetwentypts": "Nombre de thèmes à + de 20 points",
+    "users": "Utilisateurs"
   },
   "abrevation": {
     "average": "Moy."

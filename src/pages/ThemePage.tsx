@@ -41,7 +41,7 @@ import { TextNameBlock } from "src/component/language/TextLanguageBlock";
 import { ProposeQuestionModal } from "src/component/modal/ProposeQuestionModal";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { RankingDuel } from "src/component/ranking/RankingDuel";
-import { RankingSolo } from "src/component/ranking/RankingSolo";
+import { RankingGlobalSolo } from "src/component/ranking/RankingSolo";
 import { TitleBlock } from "src/component/title/Title";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
@@ -534,8 +534,8 @@ export default function ThemePage() {
                   <Grid size={12}>
                     {
                       {
-                        solo: <RankingSolo theme={theme}  />,
-                        duel: <RankingDuel theme={theme} />,
+                        solo: <RankingGlobalSolo themes={[theme.id]}  />,
+                        duel: <RankingDuel themes={[theme.id]} />,
                       }[typeRanking]
                     }
                   </Grid>

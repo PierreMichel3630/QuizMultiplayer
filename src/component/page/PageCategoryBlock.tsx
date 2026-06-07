@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { SearchType } from "src/models/enum/TypeCardEnum";
 import { CardImage, ICardImage } from "../card/CardImage";
-import { RankingBlock } from "../RankingBlock";
+import { RankingCategoryBlock } from "../ranking/RankingCategoryBlock";
 import { SkeletonThemesGrid } from "../skeleton/SkeletonTheme";
 import { TitleBlock } from "../title/Title";
 
@@ -76,7 +76,7 @@ export const PageCategoryBlock = ({
         </Grid>
         {idThemes.length > 0 && (
           <Grid size={12}>
-            <RankingBlock themes={idThemes} />
+            <RankingCategoryBlock themes={idThemes} />
           </Grid>
         )}
         {values.map((value, index) => (

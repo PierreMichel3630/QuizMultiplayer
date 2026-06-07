@@ -389,7 +389,7 @@ export const RankingAccomplishment = ({ defaultSort, sorts = [] }: Props) => {
           theme: (
             <RecapProfileGameDialog
               profileId={dataModal?.profile.id}
-              themeId={dataModal?.theme?.id}
+              theme={dataModal?.theme}
               close={() => setDataModal(undefined)}
               open={dataModal !== undefined}
             />

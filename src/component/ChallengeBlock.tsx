@@ -1,7 +1,7 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { px } from "csx";
 import { useEffect, useMemo, useState } from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 import {
   selectChallengeAllTimeByProfile,
   selectChallengeDayByProfileId,
@@ -24,6 +24,7 @@ import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import moment, { Moment } from "moment";
 import { Profile } from "src/models/Profile";
 import { Rank } from "./ranking/Rank";
+import { RankingAverage } from "./ranking/RankingAverage";
 
 interface PropsBase {
   profile: Profile | null;
@@ -242,36 +243,21 @@ interface PropsRecapAvgChallenge {
 }
 
 const RecapAvgChallenge = ({ avg, count }: PropsRecapAvgChallenge) => {
-  const { t } = useTranslation();
   return (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        gap: 1,
-        justifyContent: "center",
-      }}
-    >
-      <Typography variant="h4">
-        <Trans
-          i18nKey={t("commun.player")}
-          values={{
-            count: count,
-          }}
-        />
-      </Typography>
-      <Box>
-        <Typography variant="body1" component="span">
-          {`( ${t("abrevation.average")} `}
-        </Typography>
-        <Typography variant="h6" component="span">
-          {`${avg.score.toFixed(2)} - ${(avg.time / 1000).toFixed(2)}s`}
-        </Typography>
-        <Typography variant="body1" component="span">
-          {` )`}
-        </Typography>
-      </Box>
-    </Box>
+    <RankingAverage
+      value={avg.score}
+      count={count}
+      extra={
+        <>
+          <Typography variant="body1" component="span">
+            {` - `}
+          </Typography>
+          <Typography variant="h6" component="span">
+            {`${(avg.time / 1000).toFixed(2)}s`}
+          </Typography>
+        </>
+      }
+    />
   );
 };
 

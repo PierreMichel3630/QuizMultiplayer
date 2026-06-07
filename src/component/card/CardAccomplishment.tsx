@@ -172,7 +172,7 @@ export const CardAccomplishment = ({
         {accomplishment.value && (
           <Grid sx={{ textAlign: "end" }} size="grow">
             <Typography variant="h2" component="span">
-              {value > accomplishment.value ? accomplishment.value : value}
+              {Math.min(value, accomplishment.value)}
             </Typography>
             <Typography variant="body1" component="span">
               {`/ ${accomplishment.value}`}

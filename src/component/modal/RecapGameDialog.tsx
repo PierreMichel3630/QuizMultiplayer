@@ -1,10 +1,5 @@
-import {
-  Alert,
-  Divider,
-  Grid,
-  Typography
-} from "@mui/material";
-import { useEffect, useState } from "react";
+import { Alert, Divider, Grid, Typography } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getProfilById } from "src/api/profile";
 import { selectScoreByProfileAndThemePaginate } from "src/api/score";
@@ -13,16 +8,19 @@ import { Profile } from "src/models/Profile";
 import { ScoreAvg, ScoreRanking } from "src/models/Score";
 import { RecapAvgGame, ScoreRankingBlock, Type } from "../ranking/RankGame";
 import { BaseRecapDialog } from "./commun/BaseRecapDialog";
+import { Theme } from "src/models/Theme";
+import { ImageThemeBlock } from "../ImageThemeBlock";
+import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   profileId?: string;
-  themeId?: number;
+  theme?: Theme;
   open: boolean;
   close: () => void;
 }
 export const RecapProfileGameDialog = ({
   profileId,
-  themeId,
+  theme,
   open,
   close,
 }: Props) => {
@@ -37,6 +35,8 @@ export const RecapProfileGameDialog = ({
   const [scoreSolo, setScoreSolo] = useState<ScoreRanking | null>(null);
   const [avgSolo, setAvgSolo] = useState<ScoreAvg | null>(null);
   const [totalSolo, setTotalSolo] = useState<number | null>(null);
+
+  const themeId = useMemo(() => theme?.id, [theme]);
 
   const getScore = (profileId: string, theme: number) => {
     selectScoreByProfileAndThemePaginate(profileId, theme, "points").then(
@@ -74,6 +74,24 @@ export const RecapProfileGameDialog = ({
 
   return (
     <BaseRecapDialog open={open} close={close} profile={profile}>
+      {theme && (
+        <Grid
+          sx={{
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          size={12}
+        >
+          <ImageThemeBlock theme={theme} size={40} />
+          <TextNameBlock
+            variant="h4"
+            sx={{ textAlign: "center" }}
+            values={theme.themetranslation}
+          />
+        </Grid>
+      )}
       <Grid size={12} sx={{ textAlign: "center" }}>
         <Typography variant="h2">{t("commun.solo")}</Typography>
       </Grid>
