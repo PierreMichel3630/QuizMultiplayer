@@ -7,6 +7,7 @@ import { ProfileTitleBlock } from "../title/ProfileTitle";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { px } from "csx";
+import moment from "moment";
 interface Props {
   profile: Profile;
   extra?: JSX.Element;
@@ -101,6 +102,11 @@ export const ProfileAdminBlock = ({
           )}
         </Box>
         <ProfileTitleBlock titleprofile={profile.titleprofile} />
+        <Box>
+          <Typography variant="caption">
+            {moment(profile.created_at).format("DD/MM/YYYY HH:mm")}
+          </Typography>
+        </Box>
       </Box>
       {extra && <Box sx={{ flex: "0 0 auto" }}>{extra}</Box>}
     </Box>

@@ -5,6 +5,7 @@ import {
   Card,
   FormControlLabel,
   Grid,
+  IconButton,
   Paper,
   Switch,
   Typography,
@@ -18,6 +19,8 @@ import { FriendButton } from "../FriendButton";
 import { ProfileAdminBlock, ProfileBlock } from "../profile/ProfileBlock";
 import { StatusProfileBlock } from "../StatusProfileBlock";
 import { updateProfil } from "src/api/profile";
+
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 interface Props {
   profile: Profile;
@@ -151,10 +154,15 @@ export const BasicCardFriendProfile = ({ profile }: PropsBasic) => {
 
 interface PropsCardAdminProfile {
   profile: Profile;
-  refresh: (profile: Profile) => void
+  refresh: (profile: Profile) => void;
+  select: (profile: Profile) => void;
 }
 
-export const CardAdminProfile = ({ profile, refresh }: PropsCardAdminProfile) => {
+export const CardAdminProfile = ({
+  profile,
+  refresh,
+  select
+}: PropsCardAdminProfile) => {
   const onChangeMulticompte = (
     _event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
@@ -174,7 +182,7 @@ export const CardAdminProfile = ({ profile, refresh }: PropsCardAdminProfile) =>
         <Grid size="grow">
           <ProfileAdminBlock variant="h6" profile={profile} avatarSize={45} />
         </Grid>
-        <Grid>
+        <Grid sx={{ display: "flex", alignItems: "center" }}>
           <FormControlLabel
             control={
               <Switch
@@ -184,6 +192,9 @@ export const CardAdminProfile = ({ profile, refresh }: PropsCardAdminProfile) =>
             }
             label="Multicompte"
           />
+          <IconButton aria-label="detail" onClick={() => select(profile)}>
+            <VisibilityIcon fontSize="inherit" />
+          </IconButton>
         </Grid>
       </Grid>
     </Card>

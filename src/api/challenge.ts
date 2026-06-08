@@ -183,6 +183,7 @@ export const selectChallengeAllTimePaginate = (
   page = 0,
   itemperpage = 25,
   idFriends?: Array<string>,
+  multicompte?: boolean,
 ) => {
   return supabase.rpc(SUPABASE_GETLEADERBOARDCHALLENGEALLTIME_FUNCTION, {
     p_search: search,
@@ -191,6 +192,7 @@ export const selectChallengeAllTimePaginate = (
     p_ascending: order,
     p_sort: sort,
     p_ids_profile: idFriends ?? null,
+    p_multicompte: multicompte ?? null,
   });
 };
 
@@ -202,6 +204,7 @@ export const selectChallengeMonthPaginate = (
   page = 0,
   itemperpage = 25,
   idFriends?: Array<string>,
+  multicompte?: boolean,
 ) => {
   return supabase.rpc(SUPABASE_GETLEADERBOARDCHALLENGEMONTH_FUNCTION, {
     p_date: date,
@@ -211,6 +214,7 @@ export const selectChallengeMonthPaginate = (
     p_ascending: order,
     p_sort: sort,
     p_ids_profile: idFriends ?? null,
+    p_multicompte: multicompte ?? null,
   });
 };
 
@@ -237,6 +241,7 @@ export const selectChallengeWeekPaginate = (
   page = 0,
   itemperpage = 25,
   idFriends?: Array<string>,
+  multicompte?: boolean,
 ) => {
   return supabase.rpc(SUPABASE_GETLEADERBOARDCHALLENGEWEEK_FUNCTION, {
     p_date: date,
@@ -246,6 +251,7 @@ export const selectChallengeWeekPaginate = (
     p_ascending: order,
     p_sort: sort,
     p_ids_profile: idFriends ?? null,
+    p_multicompte: multicompte ?? null,
   });
 };
 
@@ -272,6 +278,7 @@ export const selectChallengeDayPaginate = (
   page = 0,
   itemperpage = 25,
   idFriends?: Array<string>,
+  multicompte?: boolean,
 ) => {
   return supabase.rpc(SUPABASE_GETLEADERBOARDCHALLENGEDAY_FUNCTION, {
     p_date: date.format("YYYY-MM-DD"),
@@ -281,6 +288,7 @@ export const selectChallengeDayPaginate = (
     p_ascending: order,
     p_sort: sort,
     p_ids_profile: idFriends ?? null,
+    p_multicompte: multicompte ?? null,
   });
 };
 

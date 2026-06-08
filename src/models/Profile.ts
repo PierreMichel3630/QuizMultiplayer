@@ -47,3 +47,9 @@ export interface ProfileUpdate {
   lastchallengeplay?: string;
   multicompte?: boolean
 }
+
+
+export interface ProfileAccount {
+  profile: string
+  profileconnect: Profile
+}

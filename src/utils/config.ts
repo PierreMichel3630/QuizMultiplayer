@@ -21,7 +21,7 @@ export const POINTVICTORY = 50;
 // CSS
 export const drawerWidth = 300;
 export const drawerMinWidth = 100;
-export const headerSizePC = 55;
+export const headerSizePC = 50;
 export const headerSizeNoUser = 48;
 export const headerSizeUser = 72;
 export const BarNavigationSize = 50;

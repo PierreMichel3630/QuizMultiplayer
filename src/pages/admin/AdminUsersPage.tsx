@@ -8,6 +8,7 @@ import { BasicSearchInput } from "src/component/Input";
 import { Pagination } from "src/component/page/Pagination";
 import { SkeletonPlayers } from "src/component/skeleton/SkeletonPlayer";
 import { Profile } from "src/models/Profile";
+import { DetailProfileAdminModal } from "src/component/modal/DetailProfileAdminModal";
 
 interface Query {
   search: string;
@@ -25,6 +26,7 @@ export default function AdminUsersPage() {
   const [profiles, setProfiles] = useState<Array<Profile>>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [count, setCount] = useState<number | null>(null);
+  const [profile, setProfile] = useState<Profile | undefined>(undefined);
 
   useEffect(() => {
     setIsLoading(true);
@@ -62,6 +64,10 @@ export default function AdminUsersPage() {
     );
   };
 
+  const selectProfile = (value: Profile) => {
+    setProfile(value);
+  };
+
   return (
     <Grid container spacing={1}>
       <Grid size={12}>
@@ -89,7 +95,11 @@ export default function AdminUsersPage() {
           <Grid container spacing={1}>
             {profiles.map((profile) => (
               <Grid key={profile.id} size={{ xs: 12, lg: 6 }}>
-                <CardAdminProfile profile={profile} refresh={refreshProfile} />
+                <CardAdminProfile
+                  profile={profile}
+                  refresh={refreshProfile}
+                  select={selectProfile}
+                />
               </Grid>
             ))}
             {isLoading && (
@@ -114,6 +124,11 @@ export default function AdminUsersPage() {
           </Grid>
         </Box>
       </Grid>
+      <DetailProfileAdminModal
+        profile={profile}
+        open={profile !== undefined}
+        close={() => setProfile(undefined)}
+      />
     </Grid>
   );
 }

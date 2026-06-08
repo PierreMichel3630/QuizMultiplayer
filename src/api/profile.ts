@@ -5,6 +5,7 @@ import { VERSION_APP } from "src/utils/config";
 import { bots } from "./bots";
 
 const SUPABASE_PROFILE_TABLE = "profiles";
+const SUPABASE_PROFILEACCOUNT_TABLE = "profileaccount";
 
 const SUPABASE_UPDATEPROFIL_FUNCTION = "update-profil";
 const SUPABASE_GETLEADERBOARDPROFILE_FUNCTION = "get_leaderboard_profile";
@@ -80,6 +81,27 @@ export const updateProfilByFunction = (accounts?: Array<string>) =>
     },
   });
 
+
+export const selectProfilePaginate = (
+  search: string = "",
+  page = 0,
+  itemperpage = 25,
+  sort = "money",
+  ascending = true,
+  idFriends?: Array<string>,
+) => {
+  return supabase.rpc(SUPABASE_GETLEADERBOARDPROFILE_FUNCTION, {
+    p_search: search,
+    p_page: page,
+    p_itemperpage: itemperpage,
+    p_ids_profile: idFriends ?? null,
+    p_ascending: ascending,
+    p_sort: sort,
+  });
+};
+
+
+
 export const selectProfile = (
   order: { value: string; ascending: boolean },
   page: number,
@@ -107,20 +129,17 @@ export const selectProfile = (
     .range(from, to);
 };
 
-export const selectProfilePaginate = (
-  search: string = "",
-  page = 0,
-  itemperpage = 25,
-  sort = "money",
-  ascending = true,
-  idFriends?: Array<string>,
+
+// Profile ACCOUNT
+
+export const selectProfileAccountByProfile = (
+  uuid: string
 ) => {
-  return supabase.rpc(SUPABASE_GETLEADERBOARDPROFILE_FUNCTION, {
-    p_search: search,
-    p_page: page,
-    p_itemperpage: itemperpage,
-    p_ids_profile: idFriends ?? null,
-    p_ascending: ascending,
-    p_sort: sort,
-  });
+
+  return supabase
+    .from(SUPABASE_PROFILEACCOUNT_TABLE)
+    .select(
+      "*, profileconnect(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))))",
+    )
+    .eq("profile", uuid)
 };

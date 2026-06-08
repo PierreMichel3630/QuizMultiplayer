@@ -433,7 +433,8 @@
     "gamestenpts": "Parties à + de 10 points",
     "themetenpts": "Nombre de thèmes à + de 10 points",
     "themetwentypts": "Nombre de thèmes à + de 20 points",
-    "users": "Utilisateurs"
+    "users": "Utilisateurs",
+    "profileconnect": "Comptes associés"
   },
   "abrevation": {
     "average": "Moy."
@@ -868,6 +869,7 @@
     }
   },
   "modal": {
+    "detailaccount": "Détail du compte",
     "quitchallenge": "Êtes-vous sûr de vouloir quitter la partie ?",
     "quitchallengetext": "Votre partie sera enregistrée avec votre score actuelle et sans possibilité de la reprendre plus tard",
     "delete": "Êtes-vous sûr de vouloir supprimer ?",

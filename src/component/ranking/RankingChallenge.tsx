@@ -66,6 +66,7 @@ interface Query {
   isOnlyFriend: boolean;
   friends?: Array<string>;
   sort: Sort;
+  multicompte?: boolean;
 }
 
 export const RankingChallenge = () => {
@@ -115,6 +116,7 @@ export const RankingChallengeGlobal = () => {
     search: "",
     isOnlyFriend: false,
     friends: undefined,
+    multicompte: profile?.multicompte ? undefined : false,
     sort: { value: "score", ascending: false },
   });
   const [total, setTotal] = useState<null | number>(null);
@@ -142,6 +144,15 @@ export const RankingChallengeGlobal = () => {
         : [],
     [friends, profile],
   );
+
+  useEffect(() => {
+    if (profile) {
+      setQuery((prev) => ({
+        ...prev,
+        multicompte: profile?.multicompte ? undefined : false,
+      }));
+    }
+  }, [profile]);
 
   const handleChangePage = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
@@ -311,6 +322,7 @@ export const RankingChallengePerDate = ({
     search: "",
     isOnlyFriend: false,
     friends: undefined,
+    multicompte: profile?.multicompte ? undefined : false,
     sort: { value: "score", ascending: false },
   });
   const [count, setCount] = useState<null | number>(null);
@@ -416,6 +428,15 @@ export const RankingChallengePerDate = ({
     [t, query],
   );
 
+  useEffect(() => {
+    if (profile) {
+      setQuery((prev) => ({
+        ...prev,
+        multicompte: profile?.multicompte ? undefined : false,
+      }));
+    }
+  }, [profile]);
+
   const handleChangePage = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number,
@@ -450,6 +471,7 @@ export const RankingChallengePerDate = ({
             query.page,
             query.rowsPerPage,
             query.friends,
+            query.multicompte,
           ).then(({ data }) => {
             const values: Array<ChallengeRankingDay> = data.data;
             const count: number = data.count;
@@ -494,6 +516,7 @@ export const RankingChallengePerDate = ({
           query.page,
           query.rowsPerPage,
           query.friends,
+          query.multicompte,
         ).then(({ data }) => {
           const values: Array<ChallengeRankingMonth> = data.data;
           const count: number = data.count;
@@ -565,6 +588,7 @@ export const RankingChallengePerDate = ({
           query.page,
           query.rowsPerPage,
           query.friends,
+          query.multicompte,
         ).then(({ data }) => {
           const values: Array<ChallengeRankingWeek> = data.data;
           const count: number = data.count;
@@ -635,6 +659,7 @@ export const RankingChallengePerDate = ({
           query.page,
           query.rowsPerPage,
           query.friends,
+          query.multicompte,
         ).then(({ data }) => {
           const values: Array<ChallengeRankingAllTime> = data.data;
           const count: number = data.count;
