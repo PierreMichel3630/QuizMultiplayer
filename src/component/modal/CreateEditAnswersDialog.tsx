@@ -1,14 +1,5 @@
 import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
-import {
-  AppBar,
-  Dialog,
-  DialogContent,
-  Grid,
-  IconButton,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { Dialog, DialogContent, Grid } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -24,6 +15,7 @@ import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
 import { CardAdminAnswer } from "../card/CardAnswer";
 import { LanguagesIcon } from "../language/LanguageBlock";
+import { TitleModal } from "./commun/TitleModal";
 
 enum Mode {
   EDIT,
@@ -86,16 +78,7 @@ export const CreateEditAnswersDialog = ({
 
   return (
     <Dialog onClose={close} open={open} maxWidth="md" fullWidth>
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.editresponses")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <TitleModal title={t("commun.editresponses")} close={close} />
       <DialogContent>
         <Grid container spacing={2}>
           {mode === Mode.SEARCH ? (
@@ -135,7 +118,7 @@ export const CreateEditAnswersDialog = ({
                 </Grid>
               )}
               {answers.map((answer) => (
-                <Grid size={12}>
+                <Grid size={12} key={answer.id}>
                   <CardAdminAnswer
                     answer={answer}
                     language={languageResponse}

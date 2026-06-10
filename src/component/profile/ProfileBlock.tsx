@@ -8,6 +8,7 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { px } from "csx";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 interface Props {
   profile: Profile;
   extra?: JSX.Element;
@@ -62,6 +63,7 @@ export const ProfileAdminBlock = ({
   variant = "h2",
   extra,
 }: Props) => {
+  const { t } = useTranslation();
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
       <Box sx={{ flex: "0 0 auto" }}>
@@ -104,7 +106,9 @@ export const ProfileAdminBlock = ({
         <ProfileTitleBlock titleprofile={profile.titleprofile} />
         <Box>
           <Typography variant="caption">
-            {moment(profile.created_at).format("DD/MM/YYYY HH:mm")}
+            {t("commun.createdat", {
+              date: moment(profile.created_at).format("DD/MM/YYYY HH:mm:ss"),
+            })}
           </Typography>
         </Box>
       </Box>

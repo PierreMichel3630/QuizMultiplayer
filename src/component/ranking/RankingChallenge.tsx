@@ -102,7 +102,7 @@ interface QueryGlobal extends Query {
 
 export const RankingChallengeGlobal = () => {
   const { t } = useTranslation();
-  const { profile, hasPlayChallenge } = useAuth();
+  const { profile, hasPlayChallenge, multicompte } = useAuth();
   const { friends } = useApp();
   const { language } = useUser();
 
@@ -116,7 +116,7 @@ export const RankingChallengeGlobal = () => {
     search: "",
     isOnlyFriend: false,
     friends: undefined,
-    multicompte: profile?.multicompte ? undefined : false,
+    multicompte: multicompte,
     sort: { value: "score", ascending: false },
   });
   const [total, setTotal] = useState<null | number>(null);
@@ -146,13 +146,11 @@ export const RankingChallengeGlobal = () => {
   );
 
   useEffect(() => {
-    if (profile) {
-      setQuery((prev) => ({
-        ...prev,
-        multicompte: profile?.multicompte ? undefined : false,
-      }));
-    }
-  }, [profile]);
+    setQuery((prev) => ({
+      ...prev,
+      multicompte: multicompte,
+    }));
+  }, [multicompte]);
 
   const handleChangePage = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
@@ -185,6 +183,7 @@ export const RankingChallengeGlobal = () => {
         query.page,
         query.rowsPerPage,
         query.friends,
+        query.multicompte
       ).then(({ data }) => {
         const res = data.data as Array<StatAccomplishmentWithRanking>;
         const total = data.total;
@@ -307,7 +306,7 @@ export const RankingChallengePerDate = ({
   canChangeDate = true,
 }: PropsRankingChallengePerDate) => {
   const { t } = useTranslation();
-  const { profile, hasPlayChallenge } = useAuth();
+  const { profile, hasPlayChallenge, multicompte } = useAuth();
   const { friends } = useApp();
   const { language } = useUser();
   const [searchParams] = useSearchParams();
@@ -322,7 +321,7 @@ export const RankingChallengePerDate = ({
     search: "",
     isOnlyFriend: false,
     friends: undefined,
-    multicompte: profile?.multicompte ? undefined : false,
+    multicompte: multicompte,
     sort: { value: "score", ascending: false },
   });
   const [count, setCount] = useState<null | number>(null);
@@ -429,13 +428,11 @@ export const RankingChallengePerDate = ({
   );
 
   useEffect(() => {
-    if (profile) {
-      setQuery((prev) => ({
-        ...prev,
-        multicompte: profile?.multicompte ? undefined : false,
-      }));
-    }
-  }, [profile]);
+    setQuery((prev) => ({
+      ...prev,
+      multicompte: multicompte,
+    }));
+  }, [multicompte]);
 
   const handleChangePage = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
@@ -451,12 +448,13 @@ export const RankingChallengePerDate = ({
     (value: boolean) => {
       setQuery((prev) => ({
         ...prev,
+        multicompte: value ? undefined : multicompte,
         friends: value ? [...idFriends] : undefined,
         isOnlyFriend: !prev.isOnlyFriend,
         page: 0,
       }));
     },
-    [idFriends],
+    [idFriends, multicompte],
   );
 
   useEffect(() => {

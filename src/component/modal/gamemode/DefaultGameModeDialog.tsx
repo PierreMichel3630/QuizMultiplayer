@@ -1,12 +1,8 @@
-import CloseIcon from "@mui/icons-material/Close";
 import {
-  AppBar,
   Box,
   Dialog,
   DialogContent,
   Grid,
-  IconButton,
-  Toolbar,
   Typography,
   useMediaQuery,
   useTheme
@@ -18,6 +14,7 @@ import { CountryBlock } from "src/component/CountryBlock";
 import { ProfileTitleBlock } from "src/component/title/ProfileTitle";
 import { GameModeScore } from "src/models/GameMode";
 import { Colors } from "src/style/Colors";
+import { TitleModal } from "../commun/TitleModal";
 
 export interface PropsDialogGameMode {
   data?: GameModeScore;
@@ -46,16 +43,7 @@ export const DefaultGameModeDialog = ({
 
   return (
     <Dialog onClose={close} open={open} maxWidth="md" fullScreen={fullScreen}>
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.result")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <TitleModal title={t("commun.result")} close={close} />
       <DialogContent>
         {data && (
           <Grid container spacing={2}>
@@ -131,7 +119,7 @@ export const DefaultGameModeDialog = ({
                 flexDirection: "column",
               }}
             >
-              <Box sx={{textAlign: "center"}}>
+              <Box sx={{ textAlign: "center" }}>
                 <Typography variant="subtitle1" component="span">
                   {t("gamemode.record")} :
                 </Typography>

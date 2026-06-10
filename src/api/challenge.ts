@@ -115,24 +115,6 @@ export const selectChallengeGameByProfileIdGroupByRanking = (id: string) =>
     .select("value:ranking.count(), label:ranking")
     .eq("profile", id);
 
-//DAY
-
-export const selectFirstRankingChallengeByDay = (
-  date: string, // Format YYYY-MM-DD
-) => {
-  return supabase
-    .from(SUPABASE_CHALLENGEGAME_TABLE)
-    .select(
-      "*, profile(*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), country(*)), challenge(*)",
-    )
-    .eq("challenge.date", date)
-    .not("challenge", "is", null)
-    .not("profile", "is", null)
-    .order("score", { ascending: false })
-    .order("time", { ascending: true })
-    .limit(1)
-    .maybeSingle();
-};
 
 // AUTRE
 

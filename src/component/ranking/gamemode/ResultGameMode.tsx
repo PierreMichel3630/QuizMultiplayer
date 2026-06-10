@@ -90,7 +90,7 @@ export const ResultGameMode = ({
                 )}
                 <Grid size={12}>
                   <MyExperienceSoloBlock
-                    xp={{
+                    xpExtra={{
                       match: 50,
                       record: result.hasrecord ? 100 : undefined,
                     }}

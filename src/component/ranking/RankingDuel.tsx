@@ -30,10 +30,15 @@ interface Query {
 
 interface Props {
   itemPerPage?: number;
-   themes?: Array<number>;
+  themes?: Array<number>;
+  hasMyScore?: boolean;
 }
 
-export const RankingDuel = ({ itemPerPage = 10, themes }: Props) => {
+export const RankingDuel = ({
+  itemPerPage = 10,
+  hasMyScore = true,
+  themes,
+}: Props) => {
   const { t } = useTranslation();
   const { language } = useUser();
   const { profile } = useAuth();
@@ -56,19 +61,21 @@ export const RankingDuel = ({ itemPerPage = 10, themes }: Props) => {
 
   useEffect(() => {
     const getMyScore = () => {
-      if (themes?.length === 1 && profile) {
-        selectScoreByProfileAndThemePaginate(profile.id, themes[0], "rank").then(
-          ({ data }) => {
-            const result = data?.data ?? [];
-            if (result.length === 1) {
-              setMyScore(result[0]);
-            }
-          },
-        );
+      if (themes?.length === 1 && profile && hasMyScore === true) {
+        selectScoreByProfileAndThemePaginate(
+          profile.id,
+          themes[0],
+          "rank",
+        ).then(({ data }) => {
+          const result = data?.data ?? [];
+          if (result.length === 1) {
+            setMyScore(result[0]);
+          }
+        });
       }
     };
     getMyScore();
-  }, [themes, profile]);
+  }, [themes, profile, hasMyScore]);
 
   const sorts = useMemo(
     () => [
@@ -114,7 +121,7 @@ export const RankingDuel = ({ itemPerPage = 10, themes }: Props) => {
           profile: el.profile,
           data: el,
           rank: el.ranking,
-          theme: el.theme,
+          theme: themes && themes.length > 1 ? el.theme : undefined,
           value: (
             <TableCell
               sx={{

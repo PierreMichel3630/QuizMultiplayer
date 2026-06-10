@@ -1,25 +1,21 @@
 import {
-  AppBar,
   Dialog,
   DialogContent,
   Divider,
   Grid,
-  IconButton,
-  Toolbar,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { important } from "csx";
 import { Profile, ProfileAccount } from "src/models/Profile";
 
-import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { selectProfileAccountByProfile } from "src/api/profile";
 import { NoResultAlert } from "../alert/NoResultAlert";
 import { ProfileAdminBlock } from "../profile/ProfileBlock";
 import { SkeletonPlayers } from "../skeleton/SkeletonPlayer";
+import { TitleModal } from "./commun/TitleModal";
 
 interface Props {
   open: boolean;
@@ -53,16 +49,7 @@ export const DetailProfileAdminModal = ({ open, close, profile }: Props) => {
       fullWidth
       fullScreen={fullScreen}
     >
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar sx={{ minHeight: important("auto") }}>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("modal.detailaccount")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <TitleModal title={t("modal.detailaccount")} close={close} />
       <DialogContent sx={{ p: 1 }}>
         <Grid container spacing={1}>
           {profile && (

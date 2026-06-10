@@ -1,12 +1,7 @@
-import CloseIcon from "@mui/icons-material/Close";
 import {
-  AppBar,
   Dialog,
   DialogContent,
-  Grid,
-  IconButton,
-  Toolbar,
-  Typography,
+  Grid
 } from "@mui/material";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -20,6 +15,7 @@ import { Theme } from "src/models/Theme";
 import { AutocompleteInputTheme } from "../Autocomplete";
 import { ICardImage } from "../card/CardImage";
 import { ChipThemeEdit } from "../chip/ChipTheme";
+import { TitleModal } from "./commun/TitleModal";
 
 interface Props {
   open: boolean;
@@ -35,7 +31,7 @@ export const CreateEditThemeQuestionDialog = ({
   const { t } = useTranslation();
 
   const [themes, setThemes] = useState<Array<Theme>>(
-    [...question.questiontheme].map((el) => el.theme)
+    [...question.questiontheme].map((el) => el.theme),
   );
 
   const refresh = () => {
@@ -52,7 +48,10 @@ export const CreateEditThemeQuestionDialog = ({
   };
 
   const onInsert = (theme: ICardImage) => {
-    insertQuestionTheme({ question: question.id, theme: Number(theme.id) }).then(() => {
+    insertQuestionTheme({
+      question: question.id,
+      theme: Number(theme.id),
+    }).then(() => {
       refresh();
     });
   };
@@ -67,16 +66,7 @@ export const CreateEditThemeQuestionDialog = ({
         sx: { minHeight: "50vh" },
       }}
     >
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.editthethemes")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <TitleModal title={t("commun.editthethemes")} close={close} />
       <DialogContent>
         <Grid container spacing={1}>
           <Grid size={12}>

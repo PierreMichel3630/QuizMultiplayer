@@ -49,10 +49,12 @@ interface Query {
 interface PropsRankingGlobalSolo {
   themes?: Array<number>;
   itemPerPage?: number;
+  hasMyScore?: boolean
 }
 
 export const RankingGlobalSolo = ({
   itemPerPage = 10,
+  hasMyScore = true,
   themes,
 }: PropsRankingGlobalSolo) => {
   const { t } = useTranslation();
@@ -78,7 +80,7 @@ export const RankingGlobalSolo = ({
 
   useEffect(() => {
     const getMyScore = () => {
-      if (themes?.length === 1 && profile) {
+      if (themes?.length === 1 && profile && hasMyScore === true) {
         selectScoreByProfileAndThemePaginate(profile.id, themes[0]).then(
           ({ data }) => {
             const result = data?.data ?? [];
@@ -90,7 +92,7 @@ export const RankingGlobalSolo = ({
       }
     };
     getMyScore();
-  }, [themes, profile]);
+  }, [themes, profile, hasMyScore]);
 
   const sorts = useMemo(
     () => [
@@ -136,7 +138,7 @@ export const RankingGlobalSolo = ({
           profile: el.profile,
           data: el,
           rank: el.ranking,
-          theme: el.theme,
+          theme: themes && themes.length > 1 ?  el.theme : undefined,
           value: (
             <TableCell
               sx={{

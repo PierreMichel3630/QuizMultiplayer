@@ -1,8 +1,8 @@
-import { ExtraChallenge } from "src/models/Challenge";
-import { XpBar } from "../ExperienceBlock";
 import { Box } from "@mui/material";
-import { AddMoneyBlock } from "../MoneyBlock";
 import { percent } from "csx";
+import { ExtraChallenge } from "src/models/Challenge";
+import { ExperienceBlock } from "../ExperienceBlock";
+import { AddMoneyBlock } from "../MoneyBlock";
 import { AddXpImageBlock } from "../XpBlock";
 
 interface PropsExtraBlock {
@@ -20,9 +20,7 @@ export const ExtraBlock = ({ value }: PropsExtraBlock) => {
       }}
     >
       <Box sx={{ width: percent(100) }}>
-        {value.xp && (
-          <XpBar previousxp={value.xp.previousValue} value={value.xp.value} />
-        )}
+        {value.xp && <ExperienceBlock xp={value.xp.previousValue} xpgain={200} />}
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
         {value.xp && (

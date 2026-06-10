@@ -11,7 +11,6 @@ import { px } from "csx";
 import { useNavigate } from "react-router-dom";
 import { launchDuelGame, matchmakingDuelGame } from "src/api/game";
 import { ButtonColor } from "../Button";
-import { ImageThemeBlock } from "../ImageThemeBlock";
 
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
@@ -24,9 +23,8 @@ import { CardSignalQuestion } from "../card/CardQuestion";
 import { ExperienceDuelBlock } from "../ExperienceBlock";
 import { ReportModal } from "../modal/ReportModal";
 import { AddMoneyBlock } from "../MoneyBlock";
-import { RankingTableSoloDuel } from "../table/RankingTable";
+import { RankingDuel } from "../ranking/RankingDuel";
 import { ProfileTitleBlock } from "../title/ProfileTitle";
-import { TextNameBlock } from "../language/TextLanguageBlock";
 
 interface Props {
   game: DuelGame;
@@ -41,7 +39,7 @@ export const EndDuelGameBlock = ({ game }: Props) => {
   const { getMyAccomplishments } = useApp();
 
   const [question, setQuestion] = useState<QuestionResult | undefined>(
-    undefined
+    undefined,
   );
 
   useEffect(() => {
@@ -67,7 +65,7 @@ export const EndDuelGameBlock = ({ game }: Props) => {
       isPlayer1
         ? game.ptsplayer1 > game.ptsplayer2
         : game.ptsplayer2 > game.ptsplayer1,
-    [isPlayer1, game]
+    [isPlayer1, game],
   );
   const equality = useMemo(() => game.ptsplayer2 === game.ptsplayer1, [game]);
   const money = useMemo(
@@ -75,9 +73,9 @@ export const EndDuelGameBlock = ({ game }: Props) => {
       isPlayer1
         ? game.ptsplayer1 / 2
         : isPlayer2
-        ? game.ptsplayer2 / 2
-        : undefined,
-    [game, isPlayer1, isPlayer2]
+          ? game.ptsplayer2 / 2
+          : undefined,
+    [game, isPlayer1, isPlayer2],
   );
 
   const revenge = () => {
@@ -98,7 +96,7 @@ export const EndDuelGameBlock = ({ game }: Props) => {
         const { data } = await matchmakingDuelGame(
           uuid,
           game.theme.id,
-          language
+          language,
         );
         navigate(`/duel/${data.uuid}`);
       }
@@ -142,32 +140,15 @@ export const EndDuelGameBlock = ({ game }: Props) => {
   }, []);
 
   return (
-    <Box sx={{ mb: gamebattle !== null ? px(50) : px(140) }}>
+    <Box sx={{ mb: gamebattle === null ? px(140) : px(50) }}>
       <Grid container spacing={2}>
-        <Grid
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 1,
-          }}
-          size={12}>
-          <Box sx={{ width: px(70) }}>
-            <ImageThemeBlock theme={game.theme} />
-          </Box>
-          <TextNameBlock
-            variant="h2"
-            sx={{ wordBreak: "break-all" }}
-            values={game.theme.themetranslation}
-          />
-        </Grid>
         <Grid sx={{ textAlign: "center" }} size={12}>
           <Typography variant="h1">
             {equality
               ? t("commun.equality")
               : hasWin
-              ? t("commun.win")
-              : t("commun.loose")}
+                ? t("commun.win")
+                : t("commun.loose")}
           </Typography>
         </Grid>
         <Grid
@@ -177,7 +158,8 @@ export const EndDuelGameBlock = ({ game }: Props) => {
             alignItems: "flex-end",
             gap: 1,
           }}
-          size={5}>
+          size={5}
+        >
           <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
             <Typography
               variant="h2"
@@ -218,7 +200,8 @@ export const EndDuelGameBlock = ({ game }: Props) => {
             justifyContent: "center",
             alignItems: "center",
           }}
-          size={2}>
+          size={2}
+        >
           <BoltIcon sx={{ fontSize: 50, color: "text.primary" }} />
         </Grid>
         <Grid
@@ -228,7 +211,8 @@ export const EndDuelGameBlock = ({ game }: Props) => {
             alignItems: "flex-start",
             gap: 1,
           }}
-          size={5}>
+          size={5}
+        >
           {game.player2 && (
             <>
               <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
@@ -277,11 +261,11 @@ export const EndDuelGameBlock = ({ game }: Props) => {
         )}
         {money && (
           <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
-            <AddMoneyBlock money={Math.round(money)} />
+            <AddMoneyBlock money={Math.round(money)} variant="h4" width={25} />
           </Grid>
         )}
         <Grid size={12}>
-          <RankingTableSoloDuel theme={game.theme} max={3} mode="DUEL" />
+          <RankingDuel themes={[game.theme.id]} itemPerPage={3} hasMyScore={false}  />
         </Grid>
         <Grid size={12}>
           <Divider

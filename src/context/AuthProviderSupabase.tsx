@@ -36,6 +36,7 @@ type Props = {
 const AuthContext = createContext<{
   user: User | null;
   profile: Profile | null;
+  multicompte?: boolean;
   streak: undefined | number;
   hasPlayChallenge: boolean;
   refreshHasPlayChallenge: () => void;
@@ -56,6 +57,7 @@ const AuthContext = createContext<{
     localStorage.getItem("user") === null
       ? null
       : (JSON.parse(localStorage.getItem("user")!) as User),
+  multicompte: undefined,
   streak: undefined,
   hasPlayChallenge: false,
   refreshHasPlayChallenge: () => {},
@@ -81,6 +83,11 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     localStorage.getItem("user") === null
       ? null
       : (JSON.parse(localStorage.getItem("user")!) as User),
+  );
+
+  const multicompte = useMemo(
+    () => (profile === null || profile?.multicompte) ? undefined : false,
+    [profile],
   );
 
   const login = (email: string, password: string) =>
@@ -195,6 +202,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
   const value = useMemo(
     () => ({
       streak,
+      multicompte,
       setStreak,
       profile,
       setProfile,
@@ -210,6 +218,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     }),
     [
       deleteAccount,
+      multicompte,
       hasPlayChallenge,
       refreshHasPlayChallenge,
       logout,

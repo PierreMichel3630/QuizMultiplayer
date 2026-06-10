@@ -60,6 +60,8 @@ export default function ChallengeGamePage() {
   useEffect(() => {
     if (game && location.state !== null && location.state.isEnd === true) {
       const streak = game.profile.streak;
+
+      console.log(game.profile)
       setStreak(streak);
       setStreakChallenge(streak);
     }
@@ -67,9 +69,12 @@ export default function ChallengeGamePage() {
 
   useEffect(() => {
     if (location.state?.extra) {
+      console.log(location.state.extra)
       setExtra(location.state.extra as ExtraChallenge);
     }
   }, [location]);
+
+
 
   return (
     <Grid container className="page" alignContent="flex-start">

@@ -5,28 +5,28 @@ import { useTranslation } from "react-i18next";
 import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
+import { BadgeLevel } from "src/icons/BadgeLevel";
 import { StatAccomplishment } from "src/models/Accomplishment";
 import { ExtraSoloGameXP } from "src/models/Game";
 import { Colors } from "src/style/Colors";
 import { getExperienceByLevel, getLevel } from "src/utils/calcul";
 import { POINTGAME, POINTVICTORY } from "src/utils/config";
-import { AvatarAccountBadge } from "./avatar/AvatarAccount";
-import { BadgeLevel } from "src/icons/BadgeLevel";
+import { ProfileBlock } from "./profile/ProfileBlock";
+
+import { motion, useAnimationControls } from "framer-motion";
 
 interface Props {
   xp: number;
   xpgain?: number;
 }
 
-export const ExperienceBlock = ({ xp, xpgain }: Props) => {
+export const ExperienceBlock = ({ xp, xpgain = 0 }: Props) => {
   const { mode } = useUser();
   const isDarkMode = useMemo(() => mode === "dark", [mode]);
 
   const HEIGHT = 20;
 
-  const xpTotal = useMemo(() => {
-    return xpgain ?? 0;
-  }, [xpgain]);
+  const totalXp = useMemo(() => xp + xpgain, [xp, xpgain]);
 
   const myLevel = useMemo(() => {
     return getLevel(xp);
@@ -43,18 +43,19 @@ export const ExperienceBlock = ({ xp, xpgain }: Props) => {
   const myXpLevel = useMemo(() => {
     const lvlCurrent =
       myLevel === undefined ? 0 : getExperienceByLevel(myLevel);
-    return myLevel === undefined ? undefined : xp - lvlCurrent;
-  }, [myLevel, xp]);
+    console.log(lvlCurrent);
+    return myLevel === undefined ? undefined : totalXp - lvlCurrent;
+  }, [myLevel, totalXp]);
 
   const pourcentage = useMemo(() => {
     return xpLevel !== undefined && myXpLevel !== undefined
-      ? ((myXpLevel - xpTotal) / xpLevel) * 100
+      ? ((myXpLevel - xpgain) / xpLevel) * 100
       : 0;
-  }, [xpLevel, myXpLevel, xpTotal]);
+  }, [xpLevel, myXpLevel, xpgain]);
 
   const pourcentageGain = useMemo(() => {
-    return xpLevel === undefined ? 0 : (xpTotal / xpLevel) * 100;
-  }, [xpLevel, xpTotal]);
+    return xpLevel === undefined ? 0 : (xpgain / xpLevel) * 100;
+  }, [xpLevel, xpgain]);
 
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -76,6 +77,7 @@ export const ExperienceBlock = ({ xp, xpgain }: Props) => {
             width: percent(100),
             backgroundColor: isDarkMode ? Colors.white : Colors.black2,
             borderRadius: px(25),
+            overflow: "hidden",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -136,16 +138,17 @@ export const ExperienceDuelBlock = ({
 }: PropsExperienceDuelBlock) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
-  const { mode } = useUser();
-  const isDarkMode = useMemo(() => mode === "dark", [mode]);
 
-  const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
+  const [xp, setXp] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     const getMyStat = () => {
       if (profile) {
         selectStatAccomplishmentByProfile(profile.id).then(({ data }) => {
-          setStat(data as StatAccomplishment);
+          if (data) {
+            const res = data as StatAccomplishment;
+            setXp(res.xp);
+          }
         });
       }
     };
@@ -158,36 +161,6 @@ export const ExperienceDuelBlock = ({
       : POINTGAME + score;
     return points;
   }, [victory, score]);
-
-  const myLevel = useMemo(() => {
-    return stat === undefined ? undefined : getLevel(stat.xp);
-  }, [stat]);
-
-  const xpLevel = useMemo(() => {
-    const lvlCurrent =
-      myLevel === undefined ? 0 : getExperienceByLevel(myLevel);
-    const lvlNext =
-      myLevel === undefined ? 0 : getExperienceByLevel(myLevel + 1);
-    return myLevel === undefined ? undefined : lvlNext - lvlCurrent;
-  }, [myLevel]);
-
-  const myXpLevel = useMemo(() => {
-    const lvlCurrent =
-      myLevel === undefined ? 0 : getExperienceByLevel(myLevel);
-    return myLevel !== undefined && stat !== undefined
-      ? stat.xp - lvlCurrent
-      : undefined;
-  }, [myLevel, stat]);
-
-  const pourcentage = useMemo(() => {
-    return xpLevel !== undefined && myXpLevel !== undefined
-      ? ((myXpLevel - xpTotal) / xpLevel) * 100
-      : 0;
-  }, [xpLevel, myXpLevel, xpTotal]);
-
-  const pourcentageGain = useMemo(() => {
-    return xpLevel === undefined ? 0 : (xpTotal / xpLevel) * 100;
-  }, [xpLevel, xpTotal]);
 
   const duelXp = useMemo(
     () => [
@@ -217,81 +190,11 @@ export const ExperienceDuelBlock = ({
 
   return (
     <Grid container spacing={1} justifyContent="center" alignItems="end">
-      <Grid>
-        <Typography variant="h4">
-          {t("commun.level")} {myLevel}
-        </Typography>
-      </Grid>
-      <Grid size={12}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            position: "relative",
-          }}
-        >
-          {xpLevel !== undefined && myXpLevel !== undefined && (
-            <Box
-              sx={{
-                position: "absolute",
-                right: 8,
-                zIndex: 1,
-                color: Colors.black,
-              }}
-            >
-              <Typography
-                variant="h6"
-                component="span"
-                color={isDarkMode ? Colors.black2 : Colors.white}
-              >
-                {xpLevel - myXpLevel}
-              </Typography>
-              <Typography
-                variant="caption"
-                component="span"
-                color={isDarkMode ? Colors.black2 : Colors.white}
-              >
-                {t("commun.xpnextlevel")}
-              </Typography>
-            </Box>
-          )}
-          <Box
-            sx={{
-              height: px(20),
-              width: percent(100),
-              backgroundColor: isDarkMode ? Colors.white : Colors.black2,
-              borderRadius: px(25),
-            }}
-          />
-          <Box
-            sx={{
-              position: "absolute",
-              left: 0,
-              width: percent(100),
-              display: "flex",
-            }}
-          >
-            <Box
-              sx={{
-                height: px(20),
-                width: percent(Math.max(pourcentage, 0)),
-                backgroundColor: Colors.colorApp,
-                borderTopLeftRadius: px(25),
-                borderBottomLeftRadius: px(25),
-              }}
-            />
-            <Box
-              sx={{
-                height: px(20),
-                width: percent(pourcentageGain),
-                backgroundColor: Colors.purple2,
-                borderTopLeftRadius: pourcentage > 0 ? "none" : px(25),
-                borderBottomLeftRadius: pourcentage > 0 ? "none" : px(25),
-              }}
-            />
-          </Box>
-        </Box>
-      </Grid>
+      {xp !== undefined && (
+        <Grid size={12}>
+          <ExperienceBlock xp={xp} xpgain={xpTotal} />
+        </Grid>
+      )}
       {duelXp.map((el, index) => (
         <Grid key={index} size={3}>
           <ExperienceGainBlock
@@ -306,22 +209,23 @@ export const ExperienceDuelBlock = ({
 };
 
 interface PropsSolo {
-  xp?: ExtraSoloGameXP;
+  xpExtra?: ExtraSoloGameXP;
 }
 
-export const MyExperienceSoloBlock = ({ xp }: PropsSolo) => {
+export const MyExperienceSoloBlock = ({ xpExtra }: PropsSolo) => {
   const { t } = useTranslation();
   const { profile } = useAuth();
-  const { mode } = useUser();
-  const isDarkMode = useMemo(() => mode === "dark", [mode]);
 
-  const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
+  const [xp, setXp] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     const getMyStat = () => {
       if (profile) {
         selectStatAccomplishmentByProfile(profile.id).then(({ data }) => {
-          setStat(data as StatAccomplishment);
+          if (data) {
+            const res = data as StatAccomplishment;
+            setXp(res.xp);
+          }
         });
       }
     };
@@ -329,57 +233,29 @@ export const MyExperienceSoloBlock = ({ xp }: PropsSolo) => {
   }, [profile]);
 
   const xpTotal = useMemo(() => {
-    return xp ? (xp.match ?? 0) + (xp.matchscore ?? 0) + (xp.record ?? 0) : 0;
-  }, [xp]);
-
-  const myLevel = useMemo(() => {
-    return stat === undefined ? undefined : getLevel(stat.xp);
-  }, [stat]);
-
-  const xpLevel = useMemo(() => {
-    const lvlCurrent =
-      myLevel === undefined ? 0 : getExperienceByLevel(myLevel);
-    const lvlNext =
-      myLevel === undefined ? 0 : getExperienceByLevel(myLevel + 1);
-    return myLevel === undefined ? undefined : lvlNext - lvlCurrent;
-  }, [myLevel]);
-
-  const myXpLevel = useMemo(() => {
-    const lvlCurrent =
-      myLevel === undefined ? 0 : getExperienceByLevel(myLevel);
-    return myLevel !== undefined && stat !== undefined
-      ? stat.xp - lvlCurrent
-      : undefined;
-  }, [myLevel, stat]);
-
-  const pourcentage = useMemo(() => {
-    return xpLevel !== undefined && myXpLevel !== undefined
-      ? ((myXpLevel - xpTotal) / xpLevel) * 100
+    return xpExtra
+      ? (xpExtra.match ?? 0) + (xpExtra.matchscore ?? 0) + (xpExtra.record ?? 0)
       : 0;
-  }, [xpLevel, myXpLevel, xpTotal]);
-
-  const pourcentageGain = useMemo(() => {
-    return xpLevel === undefined ? 0 : (xpTotal / xpLevel) * 100;
-  }, [xpLevel, xpTotal]);
+  }, [xpExtra]);
 
   const duelXp = useMemo(() => {
-    if (!xp) return [];
+    if (!xpExtra) return [];
 
     return [
-      xp.record !== undefined && {
+      xpExtra.record !== undefined && {
         color: Colors.green,
         title: t("commun.record"),
-        value: xp.record,
+        value: xpExtra.record,
       },
-      xp.match !== undefined && {
+      xpExtra.match !== undefined && {
         color: Colors.pink,
         title: t("commun.match"),
-        value: xp.match,
+        value: xpExtra.match,
       },
-      xp.matchscore !== undefined && {
+      xpExtra.matchscore !== undefined && {
         color: Colors.yellow,
         title: t("commun.matchscore"),
-        value: xp.matchscore,
+        value: xpExtra.matchscore,
       },
       {
         color: Colors.purple2,
@@ -387,95 +263,22 @@ export const MyExperienceSoloBlock = ({ xp }: PropsSolo) => {
         value: xpTotal,
       },
     ].filter(Boolean) as Array<{ color: string; title: string; value: number }>;
-  }, [t, xp, xpTotal]);
+  }, [t, xpExtra, xpTotal]);
 
   return (
     xp &&
     profile !== null && (
       <Grid container spacing={1} justifyContent="center" alignItems="end">
         {profile && (
-          <Grid sx={{ display: "flex", justifyContent: "center" }} size={12}>
-            <AvatarAccountBadge
-              profile={profile}
-              size={100}
-              color={Colors.pink}
-            />
+          <Grid size={12}>
+            <ProfileBlock profile={profile} />
           </Grid>
         )}
-        <Grid>
-          <Typography variant="h4">
-            {t("commun.level")} {myLevel}
-          </Typography>
-        </Grid>
-        <Grid size={12}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              position: "relative",
-            }}
-          >
-            {xpLevel !== undefined && myXpLevel !== undefined && (
-              <Box
-                sx={{
-                  position: "absolute",
-                  right: 8,
-                  zIndex: 1,
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  component="span"
-                  color={isDarkMode ? Colors.black2 : Colors.white}
-                >
-                  {xpLevel - myXpLevel}
-                </Typography>
-                <Typography
-                  variant="caption"
-                  component="span"
-                  color={isDarkMode ? Colors.black2 : Colors.white}
-                >
-                  {t("commun.xpnextlevel")}
-                </Typography>
-              </Box>
-            )}
-            <Box
-              sx={{
-                height: px(20),
-                width: percent(100),
-                backgroundColor: isDarkMode ? Colors.white : Colors.black2,
-                borderRadius: px(25),
-              }}
-            />
-            <Box
-              sx={{
-                position: "absolute",
-                left: 0,
-                width: percent(100),
-                display: "flex",
-              }}
-            >
-              <Box
-                sx={{
-                  height: px(20),
-                  width: percent(Math.max(pourcentage, 0)),
-                  backgroundColor: Colors.colorApp,
-                  borderTopLeftRadius: px(25),
-                  borderBottomLeftRadius: px(25),
-                }}
-              />
-              <Box
-                sx={{
-                  height: px(20),
-                  width: percent(pourcentageGain),
-                  backgroundColor: Colors.purple2,
-                  borderTopLeftRadius: pourcentage > 0 ? "none" : px(25),
-                  borderBottomLeftRadius: pourcentage > 0 ? "none" : px(25),
-                }}
-              />
-            </Box>
-          </Box>
-        </Grid>
+        {xp !== undefined && (
+          <Grid size={12}>
+            <ExperienceBlock xp={xp} xpgain={xpTotal} />
+          </Grid>
+        )}
         {duelXp.map((el, index) => (
           <Grid key={index} size={12 / duelXp.length}>
             <ExperienceGainBlock
@@ -531,127 +334,136 @@ const ExperienceGainBlock = ({
   );
 };
 
-interface PropsXpBar {
-  previousxp: number;
-  value: number;
-}
+const XP_PER_LEVEL = 1000;
 
-export const XpBar = ({ previousxp, value }: PropsXpBar) => {
-  const { t } = useTranslation();
+export const XPBar = ({ xp, xpgain = 0 }: Props) => {
   const { mode } = useUser();
   const isDarkMode = useMemo(() => mode === "dark", [mode]);
 
-  const newXp = useMemo(() => value + previousxp, [previousxp, value]);
+  const [level, setLevel] = useState(getLevel(xp));
+  const controlsBlue = useAnimationControls();
+  const controlsPurple = useAnimationControls();
 
-  const myLevel = useMemo(() => getLevel(newXp), [newXp]);
+  const HEIGHT = 20;
 
-  const experienceLevel = useMemo(
-    () => getExperienceByLevel(myLevel),
-    [myLevel],
-  );
-  const experienceNextLevel = useMemo(
-    () => getExperienceByLevel(myLevel + 1),
-    [myLevel],
-  );
+  // Calcul des pourcentages initiaux
+  const currentXPPct = (xp / XP_PER_LEVEL) * 100;
 
-  const xpLevel = useMemo(() => {
-    return experienceNextLevel - experienceLevel;
-  }, [experienceNextLevel, experienceLevel]);
+  useEffect(() => {
+    if (xpgain > 0) {
+      setInterval(() => {
+        animateXP();
+      }, 10000);
+    }
+  }, [xpgain]);
 
-  const myXpLevel = useMemo(() => {
-    return previousxp - experienceLevel;
-  }, [previousxp, experienceLevel]);
+  const animateXP = async () => {
+    let remainingXPToAnimate = xpgain;
+    let currentXP = xp;
+    let currentLevel = getLevel(xp);
 
-  const gainXpLevel = useMemo(() => {
-    return previousxp < experienceLevel
-      ? value - (experienceLevel - previousxp)
-      : value;
-  }, [value, experienceLevel, previousxp]);
+    // 1. Initialiser la barre bleue à sa position actuelle (sans animation)
+    controlsBlue.set({ width: `${currentXPPct}%` });
+    controlsPurple.set({ width: `${currentXPPct}%`, opacity: 0 });
 
-  const pourcentage = useMemo(() => {
-    return (myXpLevel / xpLevel) * 100;
-  }, [xpLevel, myXpLevel]);
+    // Attendre un court instant avant de lancer l'animation du gain
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-  const pourcentageGain = useMemo(() => {
-    return (gainXpLevel / xpLevel) * 100;
-  }, [gainXpLevel, xpLevel]);
+    // Boucle au cas où le gain d'XP fait monter de plusieurs niveaux
+    while (remainingXPToAnimate > 0) {
+      const xpNeededForNextLevel = XP_PER_LEVEL - currentXP;
+
+      // Est-ce qu'on va monter de niveau ?
+      if (remainingXPToAnimate >= xpNeededForNextLevel) {
+        // Étape A: Animer la barre violette jusqu'au bout du niveau (100%)
+        controlsPurple.set({ opacity: 1 });
+        await controlsPurple.start({
+          width: "100%",
+          transition: { duration: 0.8, ease: "easeOut" },
+        });
+
+        // Étape B: Level UP ! On met à jour l'état visuel
+        currentLevel += 1;
+        setLevel(currentLevel);
+        remainingXPToAnimate -= xpNeededForNextLevel;
+        currentXP = 0;
+
+        // Étape C: Réinitialisation flash des deux barres à 0%
+        controlsBlue.set({ width: "0%" });
+        controlsPurple.set({ width: "0%", opacity: 0 });
+      } else {
+        // Pas de level up, on anime juste le reste du gain
+        const finalXPInLevel = currentXP + remainingXPToAnimate;
+        const finalPct = (finalXPInLevel / XP_PER_LEVEL) * 100;
+
+        // On affiche la barre violette et on l'anime jusqu'à la destination finale
+        controlsPurple.set({ opacity: 1 });
+        await controlsPurple.start({
+          width: `${finalPct}%`,
+          transition: { duration: 0.6, ease: "easeOut" },
+        });
+
+        // Une fois l'animation violette finie, la barre bleue "absorbe" cette XP
+        controlsBlue.set({ width: `${finalPct}%` });
+        controlsPurple.set({ opacity: 0 });
+
+        remainingXPToAnimate = 0;
+      }
+    }
+  };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: px(5),
-        alignItems: "center",
-      }}
-    >
-      <Typography variant="h4">
-        {t("commun.level")} {myLevel}
-      </Typography>
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Box sx={{ zIndex: 2 }}>
+        <BadgeLevel level={level} size={38} fontSize={17} />
+      </Box>
       <Box
         sx={{
+          flex: 1,
           display: "flex",
           justifyContent: "center",
           position: "relative",
-          width: percent(100),
+          height: px(HEIGHT),
+          marginLeft: "-10px",
         }}
       >
-        {xpLevel !== undefined && myXpLevel !== undefined && (
-          <Box
-            sx={{
-              position: "absolute",
-              right: 8,
-              zIndex: 1,
-            }}
-          >
-            <Typography
-              variant="h6"
-              component="span"
-              color={isDarkMode ? Colors.black2 : Colors.white}
-            >
-              {experienceNextLevel - newXp}
-            </Typography>
-            <Typography
-              variant="caption"
-              component="span"
-              color={isDarkMode ? Colors.black2 : Colors.white}
-            >
-              {t("commun.xpnextlevel")}
-            </Typography>
-          </Box>
-        )}
         <Box
           sx={{
-            height: px(20),
             width: percent(100),
             backgroundColor: isDarkMode ? Colors.white : Colors.black2,
             borderRadius: px(25),
-          }}
-        />
-        <Box
-          sx={{
-            position: "absolute",
-            left: 0,
-            width: percent(100),
             display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "relative",
+            overflow: "hidden",
           }}
         >
           <Box
+            component={motion.div}
+            animate={controlsBlue}
             sx={{
-              height: px(20),
-              width: percent(Math.max(pourcentage, 0)),
               backgroundColor: Colors.colorApp,
-              borderTopLeftRadius: px(25),
-              borderBottomLeftRadius: px(25),
+              height: percent(100),
+              position: "absolute",
+              top: 0,
+              left: 0,
+              borderRadius: "12px",
+              zIndex: 2,
             }}
           />
+
           <Box
+            component={motion.div}
+            animate={controlsPurple}
             sx={{
-              height: px(20),
-              width: percent(pourcentageGain),
+              height: percent(100),
               backgroundColor: Colors.purple2,
-              borderTopLeftRadius: pourcentage > 0 ? "none" : px(25),
-              borderBottomLeftRadius: pourcentage > 0 ? "none" : px(25),
+              position: "absolute",
+              top: 0,
+              left: 0,
+              borderRadius: "12px",
+              zIndex: 2,
             }}
           />
         </Box>

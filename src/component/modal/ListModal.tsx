@@ -93,7 +93,7 @@ export const DialogResultListModal = ({
               <>
                 <Grid size={12}>
                   <MyExperienceSoloBlock
-                    xp={{
+                    xpExtra={{
                       match: 50,
                       matchscore: 5 * result.score,
                       record: hasNewRecord ? 100 : undefined,

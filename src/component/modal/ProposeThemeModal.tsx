@@ -1,16 +1,8 @@
-import {
-  AppBar,
-  Dialog,
-  DialogContent,
-  Grid,
-  IconButton,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { Dialog, DialogContent, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import CloseIcon from "@mui/icons-material/Close";
 import { ProposeThemeForm } from "src/form/ProposeThemeForm";
+import { TitleModal } from "./commun/TitleModal";
 
 interface Props {
   open: boolean;
@@ -22,16 +14,7 @@ export const ProposeThemeModal = ({ open, close }: Props) => {
 
   return (
     <Dialog onClose={close} open={open} maxWidth="sm" fullWidth>
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.proposetheme")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <TitleModal title={t("commun.proposetheme")} close={close} />
       <DialogContent>
         <Grid container spacing={1}>
           <Grid size={12}>

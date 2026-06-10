@@ -53,7 +53,7 @@ export const WinnerChallengeBlock = () => {
       <ResultChallengeBlock
         profile={winDay?.profile}
         label={t("commun.day")}
-        date={getDate("day", winDay?.challenge.date)}
+        date={moment().subtract(1, "day").format("DD/MM/YYYY")}
         extra={<ResultChallengeDay value={winDay} />}
         onSelect={() => setProfile(winDay?.profile)}
       />

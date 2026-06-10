@@ -1,19 +1,15 @@
 import {
-  AppBar,
   Dialog,
   DialogContent,
   Grid,
-  IconButton,
-  Toolbar,
-  Typography,
   useMediaQuery,
-  useTheme,
+  useTheme
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ValidateProposeQuestionForm } from "src/form/ValidateProposeQuestionForm";
 import { QuestionAdmin } from "src/models/Question";
 
-import CloseIcon from "@mui/icons-material/Close";
+import { TitleModal } from "./commun/TitleModal";
 
 interface PropsValidationProposeQuestion {
   question: QuestionAdmin;
@@ -38,16 +34,7 @@ export const ValidationProposeQuestion = ({
       fullWidth
       fullScreen={fullScreen}
     >
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.proposequestion")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <TitleModal title={t("commun.proposequestion")} close={close} />
       <DialogContent>
         <Grid container spacing={1}>
           <Grid size={12}>

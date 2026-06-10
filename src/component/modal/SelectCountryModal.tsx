@@ -1,20 +1,16 @@
 import {
-  AppBar,
   Box,
   Dialog,
   DialogContent,
   Divider,
   Grid,
-  IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Toolbar,
-  Typography,
   useMediaQuery,
-  useTheme,
+  useTheme
 } from "@mui/material";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -22,7 +18,6 @@ import { BasicSearchInput } from "../Input";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CloseIcon from "@mui/icons-material/Close";
 import { selectCountries } from "src/api/country";
 import { useUser } from "src/context/UserProvider";
 import { Country } from "src/models/Country";
@@ -30,6 +25,7 @@ import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
 import { sortByLanguageName } from "src/utils/sort";
 import { searchString } from "src/utils/string";
+import { TitleModal } from "./commun/TitleModal";
 
 interface Props {
   open: boolean;
@@ -71,7 +67,7 @@ export const SelectCountryModal = ({
       if (language) {
         if (value === "") {
           setCountriesFilter(
-            [...countries].sort((a, b) => sortByLanguageName(language, a, b))
+            [...countries].sort((a, b) => sortByLanguageName(language, a, b)),
           );
         } else {
           const countriesFilter = [...countries]
@@ -113,16 +109,7 @@ export const SelectCountryModal = ({
       fullWidth
       fullScreen={fullScreen}
     >
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.myorigincountry")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <TitleModal title={t("commun.myorigincountry")} close={close} />
       <DialogContent sx={{ p: 0, m: 0 }} ref={ref}>
         <Grid container spacing={1}>
           <Grid

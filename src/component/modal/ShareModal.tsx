@@ -1,26 +1,23 @@
 import {
-  AppBar,
   Dialog,
   DialogContent,
   Grid,
-  IconButton,
-  Toolbar,
   Typography,
   useMediaQuery,
-  useTheme,
+  useTheme
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import CloseIcon from "@mui/icons-material/Close";
 import ShareIcon from "@mui/icons-material/Share";
-import { important, px } from "csx";
+import { px } from "csx";
 import { useMemo } from "react";
 import googleplay from "src/assets/google-play.png";
 import logo from "src/assets/logo.svg";
 import { Colors } from "src/style/Colors";
+import { urlGooglePlay, urlPc } from "src/utils/config";
 import { ButtonColor } from "../Button";
 import { CopyTextBlock } from "../CopyTextBlock";
-import { urlGooglePlay, urlPc } from "src/utils/config";
+import { TitleModal } from "./commun/TitleModal";
 
 interface Props {
   open: boolean;
@@ -38,7 +35,7 @@ export const ShareModal = ({ open, close }: Props) => {
       text: t("share.text"),
       url: urlPc,
     }),
-    [t]
+    [t],
   );
 
   const canBrowserShareData = useMemo(() => {
@@ -65,16 +62,7 @@ export const ShareModal = ({ open, close }: Props) => {
       fullWidth
       fullScreen={fullScreen}
     >
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar sx={{ minHeight: important("auto") }}>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.share")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <TitleModal title={t("commun.share")} close={close} />
       <DialogContent sx={{ p: 2, pt: 3 }}>
         <Grid container spacing={1} alignItems="center">
           <Grid sx={{ mb: 2 }} size={12}>

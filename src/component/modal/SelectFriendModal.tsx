@@ -1,14 +1,10 @@
 import {
   Alert,
-  AppBar,
   Dialog,
   DialogContent,
   Grid,
-  IconButton,
-  Toolbar,
-  Typography,
   useMediaQuery,
-  useTheme,
+  useTheme
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
@@ -23,10 +19,11 @@ import { useUser } from "src/context/UserProvider";
 import { FRIENDSTATUS } from "src/models/Friend";
 import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
+import { sortByUsername } from "src/utils/sort";
 import { ButtonColor } from "../Button";
 import { BasicSearchInput } from "../Input";
 import { CardProfile } from "../card/CardProfile";
-import { sortByUsername } from "src/utils/sort";
+import { TitleModal } from "./commun/TitleModal";
 interface Props {
   title?: string;
   withMe?: boolean;
@@ -59,7 +56,7 @@ export const SelectFriendModal = ({
       .filter((el) =>
         search !== ""
           ? el.username.toLowerCase().includes(search.toLowerCase())
-          : true
+          : true,
       );
     const res =
       withMe && profile !== null ? [profile, ...profileFriend] : profileFriend;
@@ -75,16 +72,7 @@ export const SelectFriendModal = ({
       fullScreen={fullScreen}
       sx={{ backgroundColor: "inherit" }}
     >
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {title ?? t("commun.myfriends")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <TitleModal title={title ?? t("commun.myfriends")} close={close} />
       <DialogContent sx={{ p: 1 }}>
         <Grid container spacing={1}>
           <Grid size={12}>
@@ -104,8 +92,9 @@ export const SelectFriendModal = ({
                   sm: 6,
                   md: 4,
                   lg: 3,
-                  xl: 3
-                }}>
+                  xl: 3,
+                }}
+              >
                 <CardProfile
                   profile={profile}
                   onSelect={() => onValid(profile)}
@@ -126,8 +115,9 @@ export const SelectFriendModal = ({
                   <Grid
                     size={{
                       xs: 12,
-                      sm: 6
-                    }}>
+                      sm: 6,
+                    }}
+                  >
                     <ButtonColor
                       value={Colors.blue}
                       label={t("commun.addfriend")}
@@ -142,8 +132,9 @@ export const SelectFriendModal = ({
                   <Grid
                     size={{
                       xs: 12,
-                      sm: 6
-                    }}>
+                      sm: 6,
+                    }}
+                  >
                     <ButtonColor
                       value={Colors.red}
                       label={t("commun.leave")}

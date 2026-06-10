@@ -15,6 +15,7 @@ export const selectStatAccomplishmentPaginate = (
   page = 0,
   itemperpage = 25,
   idFriends?: Array<string>,
+  multicompte?: boolean,
 ) => {
   return supabase.rpc(SUPABASE_GETLEADERBOARDACCOMPLISHMENT_FUNCTION, {
     p_search: search,
@@ -23,6 +24,7 @@ export const selectStatAccomplishmentPaginate = (
     p_ascending: order,
     p_sort: sort,
     p_ids_profile: idFriends ?? null,
+    p_multicompte: multicompte ?? null,
   });
 };
 

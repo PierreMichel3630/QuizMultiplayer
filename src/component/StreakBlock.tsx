@@ -118,7 +118,7 @@ export const StreakRecompense = ({
               }[el.type]
             }
             <Typography variant="h2" component="p">
-              x{el.value}
+              +{el.value}
             </Typography>
           </Box>
         ))}

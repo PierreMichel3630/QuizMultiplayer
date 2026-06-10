@@ -1,15 +1,16 @@
 import moment from "moment";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
+  selectChallengeDayPaginate,
   selectChallengeMonthPaginate,
-  selectChallengeWeekPaginate,
-  selectFirstRankingChallengeByDay,
+  selectChallengeWeekPaginate
 } from "src/api/challenge";
 import {
   ChallengeGame,
   ChallengeRankingMonth,
-  ChallengeRankingWeek
+  ChallengeRankingWeek,
 } from "src/models/Challenge";
+import { useAuth } from "./AuthProviderSupabase";
 import { useUser } from "./UserProvider";
 
 type Props = {
@@ -30,9 +31,8 @@ export const useChallenge = () => useContext(ChallengeContext);
 
 export const ChallengeProvider = ({ children }: Props) => {
   const { language } = useUser();
-  const [winDay, setWinDay] = useState<ChallengeGame | undefined>(
-    undefined,
-  );
+  const { multicompte } = useAuth();
+  const [winDay, setWinDay] = useState<ChallengeGame | undefined>(undefined);
   const [winWeek, setWinWeek] = useState<ChallengeRankingWeek | undefined>(
     undefined,
   );
@@ -43,11 +43,20 @@ export const ChallengeProvider = ({ children }: Props) => {
   useEffect(() => {
     const getRankingDay = () => {
       const date = moment().subtract(1, "day");
-      selectFirstRankingChallengeByDay(date.format("YYYY-MM-DD")).then(
-        ({ data }) => {
-          setWinDay(data);
-        },
-      );
+      selectChallengeDayPaginate(
+        date,
+        "",
+        "score",
+        false,
+        0,
+        1,
+        undefined,
+        multicompte,
+      ).then(({ data }) => {
+        if (data?.data.length === 1) {
+          setWinDay(data?.data[0]);
+        }
+      });
     };
     const getRankingWeek = () => {
       const date = moment().subtract(1, "weeks");
@@ -58,6 +67,8 @@ export const ChallengeProvider = ({ children }: Props) => {
         false,
         0,
         1,
+        undefined,
+        multicompte
       ).then(({ data }) => {
         if (data?.data.length === 1) {
           setWinWeek(data?.data[0]);
@@ -73,6 +84,8 @@ export const ChallengeProvider = ({ children }: Props) => {
         false,
         0,
         1,
+        undefined,
+        multicompte
       ).then(({ data }) => {
         if (data?.data.length === 1) {
           setWinMonth(data?.data[0]);
@@ -82,7 +95,7 @@ export const ChallengeProvider = ({ children }: Props) => {
     getRankingDay();
     getRankingWeek();
     getRankingMonth();
-  }, [language]);
+  }, [language, multicompte]);
 
   const value = useMemo(
     () => ({

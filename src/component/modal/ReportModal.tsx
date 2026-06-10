@@ -1,21 +1,15 @@
 import {
-  AppBar,
   Dialog,
   DialogContent,
   Grid,
-  IconButton,
   MenuItem,
   TextField,
-  Toolbar,
-  Typography,
   useMediaQuery,
-  useTheme,
+  useTheme
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-import CloseIcon from "@mui/icons-material/Close";
 import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
-import { important } from "csx";
 import { useState } from "react";
 import { insertReport } from "src/api/report";
 import { useApp } from "src/context/AppProvider";
@@ -29,6 +23,7 @@ import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
 import { JsonLanguageBlock } from "../JsonLanguageBlock";
 import { CardSignalQuestion } from "../card/CardQuestion";
+import { TitleModal } from "./commun/TitleModal";
 
 interface Props {
   open: boolean;
@@ -98,16 +93,10 @@ export const ReportModal = ({
       fullWidth
       fullScreen={fullScreen}
     >
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar sx={{ minHeight: important("auto") }}>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {question ? t("commun.reportquestion") : t("commun.report")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <TitleModal
+        title={question ? t("commun.reportquestion") : t("commun.report")}
+        close={close}
+      />
       <DialogContent sx={{ p: 1 }}>
         <Grid container spacing={3}>
           {question && (

@@ -1,23 +1,20 @@
 import {
   Alert,
-  AppBar,
   Box,
   CircularProgress,
   Dialog,
   DialogContent,
   Grid,
-  IconButton,
-  Toolbar,
   Typography,
   useMediaQuery,
-  useTheme,
+  useTheme
 } from "@mui/material";
-import { useTranslation } from "react-i18next";
-import CloseIcon from "@mui/icons-material/Close";
-import { UpdateAppButton } from "../button/UpdateAppButton";
-import { useRealtime } from "src/context/NotificationProvider";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useRealtime } from "src/context/NotificationProvider";
 import { useRegisterSW } from "virtual:pwa-register/react";
+import { UpdateAppButton } from "../button/UpdateAppButton";
+import { TitleModal } from "./commun/TitleModal";
 
 interface Props {
   versionMin?: string;
@@ -61,16 +58,7 @@ export const VersionModal = ({
       fullWidth
       fullScreen={fullScreen}
     >
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.installupdatetitle")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <TitleModal title={t("commun.installupdatetitle")} close={close} />
       <DialogContent>
         <Grid container spacing={1}>
           <Grid size={12}>

@@ -1,16 +1,12 @@
-import CloseIcon from "@mui/icons-material/Close";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
-  AppBar,
   Dialog,
   DialogContent,
   Divider,
   Fab,
   Grid,
-  IconButton,
-  Toolbar,
-  Typography,
   useMediaQuery,
-  useTheme,
+  useTheme
 } from "@mui/material";
 import { percent } from "csx";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
@@ -23,7 +19,7 @@ import { ProfileBlock } from "src/component/profile/ProfileBlock";
 import { ProfileAction } from "src/component/ProfileAction";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { Profile } from "src/models/Profile";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { TitleModal } from "./TitleModal";
 
 interface BaseRecapDialogProps {
   open: boolean;
@@ -63,16 +59,7 @@ export const BaseRecapDialog = ({
 
   return (
     <Dialog onClose={close} open={open} maxWidth="md" fullScreen={fullScreen}>
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.result")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <TitleModal title={t("commun.result")} close={close} />
       <DialogContent ref={dialogContentRef} 
         sx={{ p: 2, position: "relative", overflowY: "auto" }} >
         <div ref={topAnchorRef} />

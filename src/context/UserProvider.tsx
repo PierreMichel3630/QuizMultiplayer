@@ -40,23 +40,23 @@ export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }: Props) => {
   const [uuid, setUuid] = useState(
-    localStorage.getItem("uuid") !== null
-      ? (localStorage.getItem("uuid")! as string)
-      : crypto.randomUUID(),
+    localStorage.getItem("uuid") === null
+      ? crypto.randomUUID()
+      : localStorage.getItem("uuid")!,
   );
 
   const [mode, setMode] = useState<"light" | "dark">(
-    localStorage.getItem("mode") !== null
-      ? (localStorage.getItem("mode")! as "light" | "dark")
-      : "dark",
+    localStorage.getItem("mode") === null
+      ? "dark"
+      : (localStorage.getItem("mode")! as "light" | "dark"),
   );
 
   const [languages, setLanguages] = useState<Array<Language>>([]);
   const [language, setLanguage] = useState<Language | undefined>(undefined);
   const [sound, setSound] = useState<number>(
-    localStorage.getItem("sound") !== null
-      ? Number(localStorage.getItem("sound")!)
-      : 20,
+    localStorage.getItem("sound") === null
+      ? 20
+      : Number(localStorage.getItem("sound")!),
   );
 
   useEffect(() => {

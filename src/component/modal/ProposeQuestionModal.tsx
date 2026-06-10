@@ -1,24 +1,24 @@
 import AttachFileIcon from "@mui/icons-material/AttachFile";
-import CloseIcon from "@mui/icons-material/Close";
 import DynamicFormIcon from "@mui/icons-material/DynamicForm";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   Alert,
-  AppBar,
   Box,
   Dialog,
   DialogContent,
   Divider,
   Grid,
-  IconButton,
   LinearProgress,
-  Toolbar,
   Typography,
   useMediaQuery,
-  useTheme,
+  useTheme
 } from "@mui/material";
 import { percent } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import {
   insertAnswers,
   insertAnswerSet,
@@ -42,10 +42,7 @@ import {
   ExportCsvProposeQuestion,
 } from "../file/ExportCsvProposeQuestion";
 import { UploadButton } from "../file/ImportCsv";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import { useNavigate } from "react-router-dom";
+import { TitleModal } from "./commun/TitleModal";
 
 interface Props {
   open: boolean;
@@ -89,7 +86,7 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
       const lines = text.split(/\r\n|\n/);
       const questions = [...lines].filter(
         (line, index) =>
-          !(index < 2 && line === linesTemplate[index]) && line !== ""
+          !(index < 2 && line === linesTemplate[index]) && line !== "",
       );
 
       setNumberQuestions(questions.length);
@@ -216,7 +213,7 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
   const progress = useMemo(
     () =>
       ((numberQuestionsSave + numberQuestionsError) / numberQuestions) * 100,
-    [numberQuestionsSave, numberQuestionsError, numberQuestions]
+    [numberQuestionsSave, numberQuestionsError, numberQuestions],
   );
 
   useEffect(() => {
@@ -233,16 +230,7 @@ export const ProposeQuestionModal = ({ theme, open, close }: Props) => {
       fullWidth
       fullScreen={fullScreen}
     >
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.proposequestion")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <TitleModal title={t("commun.proposequestion")} close={close} />
       <DialogContent>
         <Grid container spacing={1}>
           <>

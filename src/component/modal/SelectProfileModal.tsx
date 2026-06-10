@@ -1,12 +1,8 @@
 import {
   Alert,
-  AppBar,
   Dialog,
   DialogContent,
   Grid,
-  IconButton,
-  Toolbar,
-  Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -22,6 +18,7 @@ import { Colors } from "src/style/Colors";
 import { ButtonColor } from "../Button";
 import { BasicSearchInput } from "../Input";
 import { CardProfile } from "../card/CardProfile";
+import { TitleModal } from "./commun/TitleModal";
 interface Props {
   open: boolean;
   close: () => void;
@@ -45,7 +42,7 @@ export const SelectProfileModal = ({ open, close, onValid }: Props) => {
       page,
       ITEMPERPAGE,
       [],
-      search
+      search,
     ).then(({ data }) => {
       const res = data ?? ([] as Array<Profile>);
       setProfiles(res);
@@ -65,16 +62,7 @@ export const SelectProfileModal = ({ open, close, onValid }: Props) => {
       fullScreen={fullScreen}
       sx={{ backgroundColor: "inherit" }}
     >
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-            {t("commun.players")}
-          </Typography>
-          <IconButton color="inherit" onClick={close} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <TitleModal title={t("commun.players")} close={close} />
       <DialogContent sx={{ p: 1 }}>
         <Grid container spacing={1}>
           <Grid size={12}>
@@ -94,8 +82,9 @@ export const SelectProfileModal = ({ open, close, onValid }: Props) => {
                   sm: 6,
                   md: 4,
                   lg: 3,
-                  xl: 3
-                }}>
+                  xl: 3,
+                }}
+              >
                 <CardProfile
                   profile={profile}
                   onSelect={() => onValid(profile)}
@@ -116,8 +105,9 @@ export const SelectProfileModal = ({ open, close, onValid }: Props) => {
                   <Grid
                     size={{
                       xs: 12,
-                      sm: 6
-                    }}>
+                      sm: 6,
+                    }}
+                  >
                     <ButtonColor
                       value={Colors.blue}
                       label={t("commun.addfriend")}
@@ -132,8 +122,9 @@ export const SelectProfileModal = ({ open, close, onValid }: Props) => {
                   <Grid
                     size={{
                       xs: 12,
-                      sm: 6
-                    }}>
+                      sm: 6,
+                    }}
+                  >
                     <ButtonColor
                       value={Colors.red}
                       label={t("commun.leave")}

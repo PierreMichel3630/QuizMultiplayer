@@ -15,12 +15,13 @@ import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { launchSoloGame, selectSoloGameById } from "src/api/game";
 import { BestScoreBlockTheme } from "src/component/BestScoreBlock";
-import { MyExperienceSoloBlock } from "src/component/ExperienceBlock";
+import {
+  MyExperienceSoloBlock
+} from "src/component/ExperienceBlock";
 import { AddMoneyBlock } from "src/component/MoneyBlock";
-import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { ConnectAlert } from "src/component/alert/ConnectAlert";
 import { ReportModal } from "src/component/modal/ReportModal";
-import { RankingTableSoloDuel } from "src/component/table/RankingTable";
+import { RankingGlobalSolo } from "src/component/ranking/RankingSolo";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
@@ -116,9 +117,6 @@ export default function RecapSoloPage() {
         {game && (
           <>
             <Grid container spacing={1}>
-              <Grid size={12}>
-                <ScoreThemeBlock theme={game.theme} />
-              </Grid>
               {allquestion && (
                 <Grid size={12}>
                   <Alert severity="warning">
@@ -126,35 +124,37 @@ export default function RecapSoloPage() {
                   </Alert>
                 </Grid>
               )}
-              <Grid size={12}>
-                <MyExperienceSoloBlock
-                  xp={{
-                    match: 50,
-                    matchscore: 10 * game.points,
-                  }}
-                />
-              </Grid>
               {profile === null ? (
                 <Grid size={12}>
                   <ConnectAlert />
                 </Grid>
               ) : (
-                <Grid
-                  sx={{ display: "flex", justifyContent: "center" }}
-                  size={12}
-                >
-                  <AddMoneyBlock
-                    money={game.points * 10}
-                    variant="h4"
-                    width={25}
-                  />
-                </Grid>
+                <>
+                  <Grid size={12}>
+                    <MyExperienceSoloBlock
+                      xpExtra={{
+                        match: 50,
+                        matchscore: 10 * game.points,
+                      }}
+                    />
+                  </Grid>
+                  <Grid
+                    sx={{ display: "flex", justifyContent: "center" }}
+                    size={12}
+                  >
+                    <AddMoneyBlock
+                      money={game.points * 10}
+                      variant="h4"
+                      width={25}
+                    />
+                  </Grid>
+                </>
               )}
               <Grid size={12}>
                 <BestScoreBlockTheme theme={game.theme} points={game.points} />
               </Grid>
               <Grid size={12}>
-                <RankingTableSoloDuel theme={game.theme} max={3} mode="SOLO" />
+                <RankingGlobalSolo themes={[game.theme.id]} itemPerPage={3} hasMyScore={false} />
               </Grid>
               <Grid size={12}>
                 <Grid container spacing={1}>
