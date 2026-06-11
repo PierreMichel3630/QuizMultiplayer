@@ -20,7 +20,6 @@ import { UpdatedThemeBlock } from "src/component/theme/UpdatedThemeBlock";
 import { useAppBar } from "src/context/AppBarProvider";
 import { useIsMobileOrTablet } from "src/hook/useSize";
 import { removeHistoryLocalStorage } from "src/utils/localStorage";
-import { XPBar } from "src/component/ExperienceBlock";
 
 export default function ThemesPage() {
   const isMobileOrTablet = useIsMobileOrTablet();
@@ -80,9 +79,6 @@ export default function ThemesPage() {
           }}
         >
           <Grid container spacing={1}>
-            <Grid size={12}>
-              <XPBar xp={1530} xpgain={20} />
-            </Grid>
             <Grid size={12}>
               <NewBlock />
             </Grid>

@@ -15,6 +15,12 @@ import { ProfileBlock } from "./profile/ProfileBlock";
 
 import { motion, useAnimationControls } from "framer-motion";
 
+type XPSegment = {
+  fromPercent: number;
+  toPercent: number;
+  level: number;
+};
+
 interface Props {
   xp: number;
   xpgain?: number;
@@ -23,44 +29,107 @@ interface Props {
 export const ExperienceBlock = ({ xp, xpgain = 0 }: Props) => {
   const { mode } = useUser();
   const isDarkMode = useMemo(() => mode === "dark", [mode]);
-
   const HEIGHT = 20;
 
-  const totalXp = useMemo(() => xp + xpgain, [xp, xpgain]);
+  const controls = useAnimationControls();
 
-  const myLevel = useMemo(() => {
-    return getLevel(xp);
-  }, [xp]);
+  const [level, setLevel] = useState(getLevel(xp));
+  const [percentXpBase, setPercentXpBase] = useState(0);
+  const [labelXp, setLabelXp] = useState("");
+  const [animationIsFinish, setAnimationIsFinish] = useState(false);
 
-  const xpLevel = useMemo(() => {
+  useEffect(() => {
+    const myLevel = getLevel(xp);
+    console.log(myLevel);
     const lvlCurrent =
       myLevel === undefined ? 0 : getExperienceByLevel(myLevel);
     const lvlNext =
       myLevel === undefined ? 0 : getExperienceByLevel(myLevel + 1);
-    return myLevel === undefined ? undefined : lvlNext - lvlCurrent;
-  }, [myLevel]);
 
-  const myXpLevel = useMemo(() => {
-    const lvlCurrent =
-      myLevel === undefined ? 0 : getExperienceByLevel(myLevel);
+    const xpLevel = lvlNext - lvlCurrent;
     console.log(lvlCurrent);
-    return myLevel === undefined ? undefined : totalXp - lvlCurrent;
-  }, [myLevel, totalXp]);
+    console.log(xp);
+    console.log(xpLevel);
 
-  const pourcentage = useMemo(() => {
-    return xpLevel !== undefined && myXpLevel !== undefined
-      ? ((myXpLevel - xpgain) / xpLevel) * 100
-      : 0;
-  }, [xpLevel, myXpLevel, xpgain]);
+    const myXpLevel = xp - lvlCurrent;
+    setLabelXp(`${myXpLevel} / ${xpLevel}`);
 
-  const pourcentageGain = useMemo(() => {
-    return xpLevel === undefined ? 0 : (xpgain / xpLevel) * 100;
-  }, [xpLevel, xpgain]);
+    const pourcentage = (myXpLevel / xpLevel) * 100;
+    setPercentXpBase(pourcentage);
+  }, [xp]);
+
+  const buildXPSegments = (xp: number, xpGain: number) => {
+    const segments: XPSegment[] = [];
+
+    let remaining = xpGain;
+    let currentXp = xp;
+
+    while (remaining > 0) {
+      const level = getLevel(currentXp);
+
+      const start = getExperienceByLevel(level);
+      const end = getExperienceByLevel(level + 1);
+
+      const xpInLevel = currentXp - start;
+      const xpLeftInLevel = end - currentXp;
+
+      const gainInThisLevel = Math.min(remaining, xpLeftInLevel);
+
+      const fromPercent = (xpInLevel / (end - start)) * 100;
+      const toPercent = ((xpInLevel + gainInThisLevel) / (end - start)) * 100;
+
+      segments.push({
+        level,
+        fromPercent,
+        toPercent,
+      });
+
+      remaining -= gainInThisLevel;
+      currentXp += gainInThisLevel;
+    }
+
+    return segments;
+  };
+
+  useEffect(() => {
+    const segments = buildXPSegments(xp, xpgain);
+
+    async function run() {
+      setAnimationIsFinish(false);
+      for (const [index, seg] of segments.entries()) {
+        if (index === segments.length - 1) {
+          setAnimationIsFinish(true);
+        }
+        const target = seg.toPercent - seg.fromPercent;
+        setLevel(seg.level);
+
+        controls.set({
+          width: "0%",
+          left: `${seg.fromPercent}%`,
+        });
+
+        await new Promise(requestAnimationFrame);
+
+        await controls.start({
+          width: `${target}%`,
+          transition: {
+            duration: 2,
+            ease: "easeOut",
+          },
+        });
+        if (segments.length > 1) {
+          setPercentXpBase(0);
+        }
+      }
+    }
+
+    run();
+  }, [controls, xp, xpgain]);
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
+    <Box sx={{ display: "flex", alignItems: "center", pl: 1, pr: 1 }}>
       <Box sx={{ zIndex: 2 }}>
-        <BadgeLevel level={myLevel} size={38} fontSize={17} />
+        <BadgeLevel level={level} size={38} fontSize={17} />
       </Box>
       <Box
         sx={{
@@ -74,6 +143,7 @@ export const ExperienceBlock = ({ xp, xpgain = 0 }: Props) => {
       >
         <Box
           sx={{
+            position: "relative",
             width: percent(100),
             backgroundColor: isDarkMode ? Colors.white : Colors.black2,
             borderRadius: px(25),
@@ -83,44 +153,37 @@ export const ExperienceBlock = ({ xp, xpgain = 0 }: Props) => {
             alignItems: "center",
           }}
         >
-          {xpLevel !== undefined && myXpLevel !== undefined && (
+          {animationIsFinish && (
             <Box sx={{ zIndex: 100, position: "absolute" }}>
               <Typography
                 variant="h6"
                 component="span"
                 color={isDarkMode ? Colors.black2 : Colors.white}
               >
-                {myXpLevel} / {xpLevel}
+                {labelXp}
               </Typography>
             </Box>
           )}
           <Box
             sx={{
+              position: "absolute",
               left: 0,
+              bottom: 0,
               height: percent(100),
-              width: percent(100),
-              display: "flex",
+              width: percent(Math.max(percentXpBase, 0)),
+              backgroundColor: Colors.colorApp,
             }}
-          >
-            <Box
-              sx={{
-                height: percent(100),
-                width: percent(Math.max(pourcentage, 0)),
-                backgroundColor: Colors.colorApp,
-                borderTopLeftRadius: px(25),
-                borderBottomLeftRadius: px(25),
-              }}
-            />
-            <Box
-              sx={{
-                height: percent(100),
-                width: percent(pourcentageGain),
-                backgroundColor: Colors.purple2,
-                borderTopLeftRadius: pourcentage > 0 ? "none" : px(25),
-                borderBottomLeftRadius: pourcentage > 0 ? "none" : px(25),
-              }}
-            />
-          </Box>
+          />
+          <motion.div
+            animate={controls}
+            initial={false}
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              backgroundColor: Colors.purple2,
+            }}
+          />
         </Box>
       </Box>
     </Box>
@@ -329,144 +392,6 @@ const ExperienceGainBlock = ({
         <Typography variant="caption" sx={{ color: color }} component="span">
           {t("commun.xpabbreviation")}
         </Typography>
-      </Box>
-    </Box>
-  );
-};
-
-const XP_PER_LEVEL = 1000;
-
-export const XPBar = ({ xp, xpgain = 0 }: Props) => {
-  const { mode } = useUser();
-  const isDarkMode = useMemo(() => mode === "dark", [mode]);
-
-  const [level, setLevel] = useState(getLevel(xp));
-  const controlsBlue = useAnimationControls();
-  const controlsPurple = useAnimationControls();
-
-  const HEIGHT = 20;
-
-  // Calcul des pourcentages initiaux
-  const currentXPPct = (xp / XP_PER_LEVEL) * 100;
-
-  useEffect(() => {
-    if (xpgain > 0) {
-      setInterval(() => {
-        animateXP();
-      }, 10000);
-    }
-  }, [xpgain]);
-
-  const animateXP = async () => {
-    let remainingXPToAnimate = xpgain;
-    let currentXP = xp;
-    let currentLevel = getLevel(xp);
-
-    // 1. Initialiser la barre bleue à sa position actuelle (sans animation)
-    controlsBlue.set({ width: `${currentXPPct}%` });
-    controlsPurple.set({ width: `${currentXPPct}%`, opacity: 0 });
-
-    // Attendre un court instant avant de lancer l'animation du gain
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Boucle au cas où le gain d'XP fait monter de plusieurs niveaux
-    while (remainingXPToAnimate > 0) {
-      const xpNeededForNextLevel = XP_PER_LEVEL - currentXP;
-
-      // Est-ce qu'on va monter de niveau ?
-      if (remainingXPToAnimate >= xpNeededForNextLevel) {
-        // Étape A: Animer la barre violette jusqu'au bout du niveau (100%)
-        controlsPurple.set({ opacity: 1 });
-        await controlsPurple.start({
-          width: "100%",
-          transition: { duration: 0.8, ease: "easeOut" },
-        });
-
-        // Étape B: Level UP ! On met à jour l'état visuel
-        currentLevel += 1;
-        setLevel(currentLevel);
-        remainingXPToAnimate -= xpNeededForNextLevel;
-        currentXP = 0;
-
-        // Étape C: Réinitialisation flash des deux barres à 0%
-        controlsBlue.set({ width: "0%" });
-        controlsPurple.set({ width: "0%", opacity: 0 });
-      } else {
-        // Pas de level up, on anime juste le reste du gain
-        const finalXPInLevel = currentXP + remainingXPToAnimate;
-        const finalPct = (finalXPInLevel / XP_PER_LEVEL) * 100;
-
-        // On affiche la barre violette et on l'anime jusqu'à la destination finale
-        controlsPurple.set({ opacity: 1 });
-        await controlsPurple.start({
-          width: `${finalPct}%`,
-          transition: { duration: 0.6, ease: "easeOut" },
-        });
-
-        // Une fois l'animation violette finie, la barre bleue "absorbe" cette XP
-        controlsBlue.set({ width: `${finalPct}%` });
-        controlsPurple.set({ opacity: 0 });
-
-        remainingXPToAnimate = 0;
-      }
-    }
-  };
-
-  return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Box sx={{ zIndex: 2 }}>
-        <BadgeLevel level={level} size={38} fontSize={17} />
-      </Box>
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          justifyContent: "center",
-          position: "relative",
-          height: px(HEIGHT),
-          marginLeft: "-10px",
-        }}
-      >
-        <Box
-          sx={{
-            width: percent(100),
-            backgroundColor: isDarkMode ? Colors.white : Colors.black2,
-            borderRadius: px(25),
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          <Box
-            component={motion.div}
-            animate={controlsBlue}
-            sx={{
-              backgroundColor: Colors.colorApp,
-              height: percent(100),
-              position: "absolute",
-              top: 0,
-              left: 0,
-              borderRadius: "12px",
-              zIndex: 2,
-            }}
-          />
-
-          <Box
-            component={motion.div}
-            animate={controlsPurple}
-            sx={{
-              height: percent(100),
-              backgroundColor: Colors.purple2,
-              position: "absolute",
-              top: 0,
-              left: 0,
-              borderRadius: "12px",
-              zIndex: 2,
-            }}
-          />
-        </Box>
       </Box>
     </Box>
   );
