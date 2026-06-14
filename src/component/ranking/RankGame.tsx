@@ -22,8 +22,8 @@ import { SortButton } from "../SortBlock";
 import { OnlyFriendSwitch } from "../switch/OnlyFriendSwitch";
 import {
   DataRankingChallenge,
-  RankingChallengeTable,
-} from "../table/RankingChallengeTable";
+  RankingTable,
+} from "../table/RankingTable";
 import { ProfileTitleBlock } from "../title/ProfileTitle";
 import { RankBadge } from "./Rank";
 import { RankingAverage } from "./RankingAverage";
@@ -200,7 +200,7 @@ export const RankingGame = ({
           </Alert>
         ) : (
           <>
-            <RankingChallengeTable
+            <RankingTable
               data={data}
               loading={loading}
               onClick={(value) => setDataRanking(value.data)}

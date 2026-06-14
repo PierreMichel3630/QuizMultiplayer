@@ -1,7 +1,5 @@
-import { Language } from "src/models/Language";
 import { bots } from "./bots";
 import { supabase } from "./supabase";
-import { Moment } from "moment";
 
 const SUPABASE_SCORE_TABLE = "score";
 const SUPABASE_OPPOSITION_TABLE = "opposition";
@@ -33,47 +31,7 @@ export const selectScoreByThemeAndPlayer = (player: string, theme: number) =>
     .eq("theme", theme)
     .maybeSingle();
 
-export const selectScore = (
-  order: string,
-  page: number,
-  itemperpage = 25,
-  language?: Language,
-  ids = [] as Array<number>,
-  idsProfile = [] as Array<string>,
-  start = undefined as Moment | undefined,
-  end = undefined as Moment | undefined,
-) => {
-  const from = page * itemperpage;
-  const to = from + itemperpage - 1;
-  let query: any = supabase
-    .from(SUPABASE_SCORE_TABLE)
-    .select(
-      "*, profile(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))), theme(color,image ,themetranslation!inner(name, language(*))), uuidgame(uuid, created_at)",
-    )
-    .not("profile", "in", `(${bots.join(",")})`)
-    .not("theme", "is", null);
-  if (ids.length > 0) {
-    query = query.in("theme", ids);
-  }
-  if (idsProfile.length > 0) {
-    query = query.in("profile", idsProfile);
-  }
-  if (start) {
-    query = query.gte("created_at", start.toISOString());
-  }
-  if (end) {
-    query = query.lte("created_at", end.toISOString());
-  }
-  if (language) {
-    query = query
-      .eq("theme.themetranslation.language", language.id)
-      .not("theme.themetranslation.language", "is", null);
-  }
-  return query
-    .order(order, { ascending: false })
-    .order("uuidgame(created_at)", { ascending: false })
-    .range(from, to);
-};
+
 
 export const countPlayersByTheme = (theme: number) =>
   supabase

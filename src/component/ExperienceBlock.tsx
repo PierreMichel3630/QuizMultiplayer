@@ -40,16 +40,12 @@ export const ExperienceBlock = ({ xp, xpgain = 0 }: Props) => {
 
   useEffect(() => {
     const myLevel = getLevel(xp);
-    console.log(myLevel);
     const lvlCurrent =
       myLevel === undefined ? 0 : getExperienceByLevel(myLevel);
     const lvlNext =
       myLevel === undefined ? 0 : getExperienceByLevel(myLevel + 1);
 
     const xpLevel = lvlNext - lvlCurrent;
-    console.log(lvlCurrent);
-    console.log(xp);
-    console.log(xpLevel);
 
     const myXpLevel = xp - lvlCurrent;
     setLabelXp(`${myXpLevel} / ${xpLevel}`);
@@ -123,7 +119,11 @@ export const ExperienceBlock = ({ xp, xpgain = 0 }: Props) => {
       }
     }
 
-    run();
+    if (segments.length > 0) {
+      run();
+    } else {
+      setAnimationIsFinish(true);
+    }
   }, [controls, xp, xpgain]);
 
   return (

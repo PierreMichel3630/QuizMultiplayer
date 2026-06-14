@@ -1144,6 +1144,16 @@
     "ordinal_other": "ème"
   },
   "patchnote": {
+    "2.2.8": {
+      "version": "2.2.8",
+      "date": "14/06/2026",
+      "changes": [
+        "Refonte des classements (recherche, filtre et trie).",
+        "Changement de la gestion des niveaux et de l'expérience."
+      ],
+      "bug": [
+      ]
+    },
     "2.2.7": {
       "version": "2.2.7",
       "date": "26/04/2026",

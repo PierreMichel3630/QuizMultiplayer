@@ -10,7 +10,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { Page } from "src/models/Paginate";
 import { ScoreAvg, ScoreRanking } from "src/models/Score";
-import { DataRankingChallenge } from "../table/RankingChallengeTable";
+import { DataRankingChallenge } from "../table/RankingTable";
 import { RankingGame, Type } from "./RankGame";
 
 interface Sort {

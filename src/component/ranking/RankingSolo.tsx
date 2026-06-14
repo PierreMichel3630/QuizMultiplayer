@@ -24,8 +24,8 @@ import { SortButton } from "../SortBlock";
 import { OnlyFriendSwitch } from "../switch/OnlyFriendSwitch";
 import {
   DataRankingChallenge,
-  RankingChallengeTable,
-} from "../table/RankingChallengeTable";
+  RankingTable,
+} from "../table/RankingTable";
 import { RankingGame, Type } from "./RankGame";
 import { RankingAverage } from "./RankingAverage";
 
@@ -346,7 +346,7 @@ export const RankingSolo = ({ itemPerPage = 10 }: Props) => {
         dateStart = moment().subtract(1, "month");
         break;
     }
-    setQuery((prev) => ({ ...prev, dateStart }));
+    setQuery((prev) => ({ ...prev, dateStart, page: 0 }));
   };
 
   return (
@@ -414,7 +414,7 @@ export const RankingSolo = ({ itemPerPage = 10 }: Props) => {
           </Alert>
         ) : (
           <>
-            <RankingChallengeTable
+            <RankingTable
               data={data}
               loading={loading}
               onClick={(value) => setDataModal(value.data)}

@@ -1,4 +1,3 @@
-import { Moment } from "moment";
 import { BattleGameInsert, BattleGameUpdate } from "src/models/BattleGame";
 import { Language } from "src/models/Language";
 import { FilterGame } from "src/pages/HistoryGamePage";
@@ -120,27 +119,6 @@ export const selectSoloGameById = (uuid: string) =>
     .eq("uuid", uuid)
     .maybeSingle();
 
-export const selectSoloGameByDate = (
-  language: Language,
-  page: number,
-  itemperpage = 25,
-  start = undefined as Moment | undefined,
-) => {
-  const from = page * itemperpage;
-  const to = from + itemperpage - 1;
-  let query = supabase
-    .from(SUPABASE_SOLOGAME_TABLE)
-    .select(
-      "*, profile(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))), badge(*), banner(*), country(*)), theme!sologame_themequestion_fkey(color,image ,themetranslation!inner(name, language(*)))",
-    )
-    .not("theme", "is", null)
-    .eq("theme.themetranslation.language", language.id)
-    .not("theme.themetranslation.language", "is", null);
-  if (start) {
-    query = query.gte("created_at", start.toISOString());
-  }
-  return query.order("points", { ascending: false }).range(from, to);
-};
 
 //DUEL GAME
 

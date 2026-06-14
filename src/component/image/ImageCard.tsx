@@ -10,7 +10,7 @@ import BoltIcon from "@mui/icons-material/Bolt";
 import NoPhotographyIcon from "@mui/icons-material/NoPhotography";
 import ListMode from "src/assets/mode/list.png";
 
-export interface ImageCardValue {
+interface ImageCardValue {
   image?: string | JSX.Element;
   color?: string;
   created_at?: Date;

@@ -25,8 +25,8 @@ import { StreakBlock } from "../StreakBlock";
 import { OnlyFriendSwitch } from "../switch/OnlyFriendSwitch";
 import {
   DataRankingChallenge,
-  RankingChallengeTable,
-} from "../table/RankingChallengeTable";
+  RankingTable,
+} from "../table/RankingTable";
 import { RecapProfileAccomplishmentDialog } from "../modal/RecapProfileAccomplishmentDialog";
 import { ProfileWithRanking } from "src/models/Profile";
 import { RecapProfileDialog } from "../modal/RecapProfileDialog";
@@ -358,7 +358,7 @@ export const RankingAccomplishment = ({ defaultSort, sorts = [] }: Props) => {
         )}
       </Grid>
       <Grid size={12}>
-        <RankingChallengeTable
+        <RankingTable
           data={data}
           loading={loading}
           onClick={setDataModal}

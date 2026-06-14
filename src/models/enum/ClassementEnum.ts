@@ -27,11 +27,6 @@ export enum AccomplishmentEnum {
   money = "money",
 }
 
-export enum ClassementScoreEnum {
-  points = "points",
-  rank = "rank",
-}
-
 export enum ClassementSoloTimeEnum {
   alltime = "alltime",
   day = "day",

@@ -8,9 +8,8 @@ import { useTranslation } from "react-i18next";
 import {
   ClassementChallengeEnum,
   ClassementChallengeGlobalTimeEnum,
-  ClassementScoreEnum,
   ClassementSoloTimeEnum,
-  ClassementTypeEnum,
+  ClassementTypeEnum
 } from "src/models/enum/ClassementEnum";
 import { AllGameModeEnum, GameModeEnum } from "src/models/enum/GameEnum";
 import { Colors } from "src/style/Colors";
@@ -71,42 +70,6 @@ const GroupButton = ({ options, selected, onChange }: Props) => {
   );
 };
 
-interface PropsGroupButtonTypeGame {
-  selected: ClassementScoreEnum;
-  onChange: (value: ClassementScoreEnum) => void;
-}
-export const GroupButtonTypeGame = ({
-  selected,
-  onChange,
-}: PropsGroupButtonTypeGame) => {
-  const { t } = useTranslation();
-
-  const options = useMemo(
-    () => [
-      {
-        icon: <PlayCircleIcon />,
-        label: t("commun.solo"),
-        value: ClassementScoreEnum.points,
-        color: Colors.blue2,
-      },
-      {
-        icon: <OfflineBoltIcon />,
-        label: t("commun.duel"),
-        value: ClassementScoreEnum.rank,
-        color: Colors.red,
-      },
-    ],
-    [t],
-  );
-
-  return (
-    <GroupButton
-      options={options}
-      selected={selected}
-      onChange={(value) => onChange(value as ClassementScoreEnum)}
-    />
-  );
-};
 
 interface PropsGroupButtonAllGameMode {
   selected: AllGameModeEnum;

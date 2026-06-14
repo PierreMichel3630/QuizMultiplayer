@@ -1,5 +1,4 @@
 import {
-  Alert,
   Avatar,
   Box,
   Paper,
@@ -13,49 +12,38 @@ import {
 } from "@mui/material";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 
-import { percent, px } from "csx";
-import moment from "moment";
-import { Fragment, useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import {
-  selectRankingDuelByThemeAndProfile,
-  selectRankingSoloByThemeAndProfile,
-} from "src/api/ranking";
+import { important, percent, px } from "csx";
+import { useMemo } from "react";
 import rank1 from "src/assets/rank/rank1.png";
 import rank2 from "src/assets/rank/rank2.png";
 import rank3 from "src/assets/rank/rank3.png";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { FRIENDSTATUS } from "src/models/Friend";
-import { Profile } from "src/models/Profile";
-import { Ranking } from "src/models/Ranking";
-import { Theme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
-import { isStringOrNumber } from "src/utils/type";
 import { CountryImageBlock } from "../CountryBlock";
-import { DefaultTabs } from "../Tabs";
+
+import { Profile } from "src/models/Profile";
+import { Theme } from "src/models/Theme";
 import { ThemeBlock } from "../theme/ThemeBlock";
 import { ProfileTitleBlock } from "../title/ProfileTitle";
 
-export interface DataRanking {
-  profile: Profile | null;
-  value: number | string | JSX.Element;
-  uuid?: string;
-  extra?: string;
-  date?: Date;
-  theme?: Theme;
-  size?: number;
+export interface DataRankingChallenge {
+  profile: Profile;
+  value: JSX.Element;
   rank: number;
+  uuid?: string;
+  theme?: Theme;
   data?: any;
 }
+
 interface Props {
-  data: Array<DataRanking>;
-  onClick?: (value: any) => void;
+  data: Array<DataRankingChallenge>;
   loading?: boolean;
+  onClick?: (value: DataRankingChallenge) => void;
 }
 
 export const RankingTable = ({ data, onClick, loading = false }: Props) => {
-  const { t } = useTranslation();
   const { profile } = useAuth();
   const { friends } = useApp();
 
@@ -78,22 +66,28 @@ export const RankingTable = ({ data, onClick, loading = false }: Props) => {
   );
 
   const getIcon = (rank: number) => {
+    const fontSize = rank.toString().length > 3 ? 9 : 13;
+
     let icon = (
-      <Avatar sx={{ bgcolor: Colors.grey4, width: 25, height: 25 }}>
-        <Typography variant="h6" color="text.secondary">
+      <Avatar sx={{ bgcolor: Colors.grey4, width: 30, height: 30 }}>
+        <Typography
+          variant="h6"
+          color="text.secondary"
+          sx={{ fontSize: important(px(fontSize)) }}
+        >
           {rank}
         </Typography>
       </Avatar>
     );
     switch (rank) {
       case 1:
-        icon = <img alt="rank icon" src={rank1} width={30} loading="lazy" />;
+        icon = <img alt="rank icon" src={rank1} width={35} loading="lazy" />;
         break;
       case 2:
-        icon = <img alt="rank icon" src={rank2} width={30} loading="lazy" />;
+        icon = <img alt="rank icon" src={rank2} width={35} loading="lazy" />;
         break;
       case 3:
-        icon = <img alt="rank icon" src={rank3} width={30} loading="lazy" />;
+        icon = <img alt="rank icon" src={rank3} width={35} loading="lazy" />;
         break;
     }
     return icon;
@@ -101,254 +95,102 @@ export const RankingTable = ({ data, onClick, loading = false }: Props) => {
 
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
-      {data.length === 0 && !loading ? (
-        <Alert severity="warning" sx={{ width: percent(100) }}>
-          {t("commun.noresultgame")}
-        </Alert>
-      ) : (
-        <TableContainer
-          component={Paper}
-          sx={{
-            bgcolor: Colors.grey,
-            width: percent(100),
-            borderTopLeftRadius: px(0),
-            borderTopRightRadius: px(0),
-          }}
-          elevation={8}
-        >
-          <Table size="small" sx={{ tableLayout: "fixed" }}>
-            <TableBody>
-              {data.map((el, index) => {
-                const isMe = profile && el.profile?.id === profile.id;
-                const isFriend = el.profile
-                  ? idFriend.includes(el.profile.id)
-                  : false;
-                const colorFriend = isFriend ? Colors.purple : "initial";
-                const color = isMe ? Colors.colorApp : colorFriend;
+      <TableContainer
+        component={Paper}
+        sx={{
+          bgcolor: Colors.grey,
+          width: percent(100),
+          borderTopLeftRadius: px(0),
+          borderTopRightRadius: px(0),
+        }}
+      >
+        <Table size="small" sx={{ tableLayout: "fixed" }}>
+          <TableBody>
+            {data.map((el, index) => {
+              const isMe = el.profile.id === profile?.id;
+              const isFriend = idFriend.includes(el.profile.id);
+              const colorFriend = isFriend ? Colors.purple : "initial";
+              const color = isMe ? Colors.colorApp : colorFriend;
 
-                return (
-                  <Fragment key={index}>
-                    <TableRow
+              return (
+                <TableRow
+                  key={index}
+                  sx={{
+                    backgroundColor: color,
+                    cursor: onClick ? "pointer" : "default",
+                    textDecoration: "inherit",
+                  }}
+                  onClick={() => {
+                    if (onClick) onClick(el);
+                  }}
+                >
+                  <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
+                    {getIcon(el.rank)}
+                  </TableCell>
+                  <TableCell sx={{ p: px(4), width: px(45) }}>
+                    <AvatarAccount avatar={el.profile.avatar.icon} size={38} />
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    sx={{
+                      p: px(4),
+                    }}
+                  >
+                    <Box
                       sx={{
-                        backgroundColor: color,
-                        cursor: onClick ? "pointer" : "default",
-                      }}
-                      onClick={() => {
-                        if (onClick) onClick(el.data);
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: px(4),
                       }}
                     >
-                      <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
-                        {getIcon(el.rank)}
-                      </TableCell>
-                      <TableCell sx={{ p: px(4), width: px(50) }}>
-                        {el.profile ? (
-                          <AvatarAccount
-                            avatar={el.profile.avatar.icon}
-                            size={40}
+                      <Box
+                        sx={{
+                          textDecoration: "inherit",
+                          display: "flex",
+                          gap: px(4),
+                          alignItems: "center",
+                        }}
+                      >
+                        {el.profile.country && (
+                          <CountryImageBlock
+                            country={el.profile.country}
+                            size={20}
                           />
-                        ) : (
-                          <Avatar sx={{ bgcolor: Colors.black }}>I</Avatar>
                         )}
-                      </TableCell>
-                      <TableCell
-                        align="left"
-                        sx={{
-                          p: px(4),
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: px(4),
-                          }}
-                        >
-                          {el.profile ? (
-                            <>
-                              <Box
-                                sx={{
-                                  textDecoration: "inherit",
-                                  display: "flex",
-                                  gap: px(8),
-                                  alignItems: "center",
-                                }}
-                              >
-                                {el.profile.country && (
-                                  <CountryImageBlock
-                                    country={el.profile.country}
-                                  />
-                                )}
-                                <Typography variant="h6" noWrap>
-                                  {el.profile.username}
-                                </Typography>
-                              </Box>
-                              <ProfileTitleBlock
-                                titleprofile={el.profile.titleprofile}
-                              />
-                            </>
-                          ) : (
-                            <Typography variant="h6" noWrap>
-                              {t("commun.notconnect")}
-                            </Typography>
-                          )}
-                          {el.date && (
-                            <Typography variant="caption">
-                              {moment(el.date).format("DD/MM/YYYY HH:mm")}
-                            </Typography>
-                          )}
-                          {el.theme && <ThemeBlock theme={el.theme} />}
-                        </Box>
-                      </TableCell>
-                      <TableCell
-                        align="right"
-                        sx={{
-                          p: px(4),
-                        }}
-                        width={el.size ?? 90}
-                      >
-                        <Box
-                          sx={{ display: "flex", justifyContent: "flex-end" }}
-                        >
-                          {isStringOrNumber(el.value) ? (
-                            <Typography variant="h2" component="span" noWrap>
-                              {el.value}
-                            </Typography>
-                          ) : (
-                            el.value
-                          )}
-
-                          {el.extra && (
-                            <Typography variant="body1" component="span">
-                              {el.extra}
-                            </Typography>
-                          )}
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  </Fragment>
-                );
-              })}
-              {loading &&
-                Array.from(new Array(5)).map((_, index) => (
-                  <TableRow key={index}>
-                    <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
-                      <Skeleton variant="circular" width={30} height={30} />
-                    </TableCell>
-                    <TableCell align="left" sx={{ p: px(4), width: px(50) }}>
-                      <Skeleton variant="circular" width={30} height={30} />
-                    </TableCell>
-                    <TableCell align="left" sx={{ p: px(4) }}>
-                      <Skeleton variant="rectangular" width={100} height={20} />
-                    </TableCell>
-                    <TableCell align="right" sx={{ p: px(4), width: px(60) }}>
-                      <Skeleton variant="rectangular" width={40} height={25} />
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
-    </Box>
-  );
-};
-
-interface PropsSoloDuel {
-  theme?: Theme;
-  max?: number;
-  mode?: "ALL" | "DUEL" | "SOLO";
-}
-
-export const RankingTableSoloDuel = ({
-  theme,
-  max = 5,
-  mode = "ALL",
-}: PropsSoloDuel) => {
-  const { t } = useTranslation();
-  const { friends } = useApp();
-  const { profile } = useAuth();
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [tab, setTab] = useState(mode === "DUEL" ? 1 : 0);
-  const tabs = useMemo(
-    () =>
-      mode === "ALL"
-        ? [{ label: t("commun.solo") }, { label: t("commun.duel") }]
-        : [],
-    [mode, t],
-  );
-  const [data, setData] = useState<Array<DataRanking>>([]);
-
-  const idProfile = useMemo(
-    () =>
-      profile
-        ? [
-            profile.id,
-            ...friends
-              .filter((el) => el.status === FRIENDSTATUS.VALID)
-              .reduce(
-                (acc, value) =>
-                  value.user2.id === profile.id
-                    ? [...acc, value.user1.id]
-                    : [...acc, value.user2.id],
-                [] as Array<string>,
-              ),
-          ]
-        : [],
-    [friends, profile],
-  );
-
-  useEffect(() => {
-    setTab(mode === "DUEL" ? 1 : 0);
-  }, [mode]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    if (theme) {
-      if (tab === 0) {
-        selectRankingSoloByThemeAndProfile(theme.id, idProfile, max).then(
-          (res) => {
-            const ranking = res.data as Array<Ranking>;
-            const newData = ranking.map((el) => ({
-              profile: el.profile,
-              value: el.points,
-              uuid: el.uuidgame !== null ? el.uuidgame.uuid : undefined,
-              extra: t("commun.pointsabbreviation"),
-              rank: el.ranking,
-            })) as Array<DataRanking>;
-            setData(newData);
-            setIsLoading(false);
-          },
-        );
-      } else {
-        selectRankingDuelByThemeAndProfile(theme.id, idProfile, max).then(
-          (res) => {
-            const ranking = res.data as Array<Ranking>;
-            const newData = ranking.map((el) => ({
-              profile: el.profile,
-              value: el.rank,
-              rank: el.ranking,
-            })) as Array<DataRanking>;
-            setData(newData);
-            setIsLoading(false);
-          },
-        );
-      }
-    }
-  }, [theme, tab, t, idProfile, max]);
-
-  return (
-    <Box sx={{ p: 1 }}>
-      {tabs.length > 1 && (
-        <DefaultTabs
-          values={tabs}
-          tab={tab}
-          onChange={(value) => {
-            setTab(value);
-          }}
-        />
-      )}
-      <RankingTable data={data} loading={isLoading} />
+                        <Typography variant={"h6"} noWrap>
+                          {el.profile.username}
+                        </Typography>
+                      </Box>
+                      <ProfileTitleBlock
+                        titleprofile={el.profile.titleprofile}
+                      />
+                      {el.theme && <ThemeBlock theme={el.theme} />}
+                    </Box>
+                  </TableCell>
+                  {el.value}
+                </TableRow>
+              );
+            })}
+            {loading &&
+              Array.from(new Array(5)).map((_, index) => (
+                <TableRow key={index}>
+                  <TableCell align="left" sx={{ p: px(4), width: px(40) }}>
+                    <Skeleton variant="circular" width={30} height={30} />
+                  </TableCell>
+                  <TableCell align="left" sx={{ p: px(4), width: px(50) }}>
+                    <Skeleton variant="circular" width={30} height={30} />
+                  </TableCell>
+                  <TableCell align="left" sx={{ p: px(4) }}>
+                    <Skeleton variant="rectangular" width={100} height={20} />
+                  </TableCell>
+                  <TableCell align="right" sx={{ p: px(4), width: px(60) }}>
+                    <Skeleton variant="rectangular" width={40} height={25} />
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 };

@@ -49,8 +49,8 @@ import { SortButton } from "../SortBlock";
 import { OnlyFriendSwitch } from "../switch/OnlyFriendSwitch";
 import {
   DataRankingChallenge,
-  RankingChallengeTable,
-} from "../table/RankingChallengeTable";
+  RankingTable,
+} from "../table/RankingTable";
 import { ChallengeProfilDialog } from "../challenge/ChallengeProfilDialog";
 
 interface Sort {
@@ -273,7 +273,7 @@ export const RankingChallengeGlobal = () => {
         )}
       </Grid>
       <Grid size={12}>
-        <RankingChallengeTable
+        <RankingTable
           data={data}
           loading={loading}
           onClick={setDataRankingChallenge}
@@ -862,7 +862,7 @@ export const RankingChallengePerDate = ({
           </Alert>
         ) : (
           <>
-            <RankingChallengeTable
+            <RankingTable
               data={data}
               loading={loading}
               onClick={setDataRankingChallenge}
