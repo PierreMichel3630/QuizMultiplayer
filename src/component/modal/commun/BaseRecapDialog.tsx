@@ -6,7 +6,7 @@ import {
   Fab,
   Grid,
   useMediaQuery,
-  useTheme
+  useTheme,
 } from "@mui/material";
 import { percent } from "csx";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
@@ -52,16 +52,15 @@ export const BaseRecapDialog = ({
     }
   }, [profile]);
 
-  const isMe = useMemo(
-    () => user && user.id === profile?.id,
-    [user, profile],
-  );
+  const isMe = useMemo(() => user && user.id === profile?.id, [user, profile]);
 
   return (
     <Dialog onClose={close} open={open} maxWidth="md" fullScreen={fullScreen}>
       <TitleModal title={t("commun.result")} close={close} />
-      <DialogContent ref={dialogContentRef} 
-        sx={{ p: 2, position: "relative", overflowY: "auto" }} >
+      <DialogContent
+        ref={dialogContentRef}
+        sx={{ p: 2, position: "relative", overflowY: "auto" }}
+      >
         <div ref={topAnchorRef} />
         <Grid container spacing={1}>
           {profile && (
@@ -101,13 +100,13 @@ export const BaseRecapDialog = ({
               )}
             </>
           )}
-          {children}
+          <Grid size={12}>{children}</Grid>
         </Grid>
-        <ScrollTop 
-          window={() => dialogContentRef.current} 
+        <ScrollTop
+          window={() => dialogContentRef.current}
           anchorRef={topAnchorRef}
         >
-          <Fab size="small" >
+          <Fab size="small">
             <KeyboardArrowUpIcon />
           </Fab>
         </ScrollTop>

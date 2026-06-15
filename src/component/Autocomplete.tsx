@@ -2,12 +2,12 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import { percent, px } from "csx";
 import { useEffect, useRef, useState } from "react";
-import { ICardImage } from "./card/CardImage";
+import { ThemeTranslationWithTheme } from "src/models/Theme";
 import { ThemeListScrollBlock } from "./scroll/ThemeScroll";
 
 interface PropsAutocompleteInput {
   placeholder: string;
-  onSelect: (value: ICardImage) => void;
+  onSelect: (value: ThemeTranslationWithTheme ) => void;
 }
 
 export const AutocompleteInputTheme = ({

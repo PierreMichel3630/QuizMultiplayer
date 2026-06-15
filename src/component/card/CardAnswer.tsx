@@ -29,7 +29,7 @@ export const CardAdminAnswer = ({
   const translation = useMemo(() => {
     const translations = [...answer.answertranslation];
     const translation = translations.find(
-      (el) => el.language.id === language.id
+      (el) => el.language.id === language.id,
     );
 
     return translation ?? undefined;
@@ -40,6 +40,9 @@ export const CardAdminAnswer = ({
       sx={{ p: 1, border: isCorrect ? `4px solid ${Colors.green}` : "primary" }}
     >
       <Grid container spacing={1} alignItems="center">
+        <Grid>
+          <Typography variant="h4">{answer.id}</Typography>
+        </Grid>
         <Grid size="grow">
           {answer.image ? (
             <Box sx={{ height: px(150) }}>

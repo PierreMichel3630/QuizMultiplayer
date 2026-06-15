@@ -38,3 +38,23 @@ export const sortByIds = (
   a: { id: number },
   b: { id: number },
 ) => idsTheme.indexOf(a.id) - idsTheme.indexOf(b.id);
+
+interface Answer {
+  id: number;
+  answertranslation: {
+    label: string;
+    language: {
+      id: number;
+    };
+  }[];
+}
+
+export const sortByAnswerTranslation = (language: Language, a: Answer, b: Answer) => {
+  const labelA =
+    a.answertranslation.find((t) => t.language.id === language.id)?.label ?? "";
+
+  const labelB =
+    b.answertranslation.find((t) => t.language.id === language.id)?.label ?? "";
+
+  return labelA.localeCompare(labelB);
+};

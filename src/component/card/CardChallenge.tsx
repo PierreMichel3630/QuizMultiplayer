@@ -77,9 +77,7 @@ export const CardChallenge = ({ profileId }: Props) => {
         </Grid>
         <Grid
           sx={{
-            display: "flex",
             p: 1,
-            width: percent(100),
           }}
           size={12}
         >
@@ -151,7 +149,7 @@ export const CardChallenge = ({ profileId }: Props) => {
               </>
             )}
             {profileId && (
-              <Grid size={12}>
+              <Grid size={12} sx={{display: "flex", justifyContent: "center"}}>
                 <ButtonColor
                   value={Colors.blue2}
                   label={t("commun.seestatchallenge")}

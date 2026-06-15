@@ -37,7 +37,7 @@ export const CardReport = ({ report, onDelete }: Props) => {
           </Typography>
           {report.profile && (
             <Grid sx={{ textAlign: "center" }} size={12}>
-              <Link to={`/profile/${report.profile.id}`}>
+              <Link to={`/profil/${report.profile.id}`}>
                 <Typography variant="h6" component="span">
                   {`${t("commun.per")} ${report.profile.username}`}
                 </Typography>

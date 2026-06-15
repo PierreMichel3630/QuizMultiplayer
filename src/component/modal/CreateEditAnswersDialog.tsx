@@ -12,6 +12,7 @@ import { Answer } from "src/models/Answer";
 import { Language } from "src/models/Language";
 import { QuestionAdmin } from "src/models/Question";
 import { Colors } from "src/style/Colors";
+import { sortByAnswerTranslation } from "src/utils/sort";
 import { ButtonColor } from "../Button";
 import { CardAdminAnswer } from "../card/CardAnswer";
 import { LanguagesIcon } from "../language/LanguageBlock";
@@ -76,6 +77,10 @@ export const CreateEditAnswersDialog = ({
     });
   };
 
+  const orderAnswer = useMemo(() => {
+    return [...answers].sort((a,b) => sortByAnswerTranslation(language, a ,b))
+  }, [language, answers])
+
   return (
     <Dialog onClose={close} open={open} maxWidth="md" fullWidth>
       <TitleModal title={t("commun.editresponses")} close={close} />
@@ -117,7 +122,7 @@ export const CreateEditAnswersDialog = ({
                   />
                 </Grid>
               )}
-              {answers.map((answer) => (
+              {orderAnswer.map((answer) => (
                 <Grid size={12} key={answer.id}>
                   <CardAdminAnswer
                     answer={answer}

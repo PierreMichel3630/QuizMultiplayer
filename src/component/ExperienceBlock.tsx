@@ -48,7 +48,7 @@ export const ExperienceBlock = ({ xp, xpgain = 0 }: Props) => {
     const xpLevel = lvlNext - lvlCurrent;
 
     const myXpLevel = xp - lvlCurrent;
-    setLabelXp(`${myXpLevel} / ${xpLevel}`);
+    setLabelXp(`${Math.floor(myXpLevel)} / ${Math.floor(xpLevel)}`);
 
     const pourcentage = (myXpLevel / xpLevel) * 100;
     setPercentXpBase(pourcentage);

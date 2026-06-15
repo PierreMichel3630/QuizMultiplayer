@@ -21,9 +21,9 @@ import { useUser } from "src/context/UserProvider";
 import { colorDifficulty, Difficulty } from "src/models/enum/DifficultyEnum";
 import { Language } from "src/models/Language";
 import { ThemeShop } from "src/models/Shop";
+import { ThemeTranslationWithTheme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 import { AutocompleteInputTheme } from "./Autocomplete";
-import { ICardImage } from "./card/CardImage";
 import { ImageThemeBlock } from "./ImageThemeBlock";
 import { LanguageIcon } from "./language/LanguageBlock";
 import { TextNameBlock } from "./language/TextLanguageBlock";
@@ -130,8 +130,8 @@ export const SelectDifficulty = ({ value, onSelect }: Props) => {
 };
 
 interface PropsAutocompleteTheme {
-  value: Array<ICardImage>;
-  onChange: (value: Array<ICardImage>) => void;
+  value: Array<ThemeTranslationWithTheme>;
+  onChange: (value: Array<ThemeTranslationWithTheme>) => void;
 }
 
 export const AutocompleteTheme = ({
@@ -141,7 +141,7 @@ export const AutocompleteTheme = ({
   const { t } = useTranslation();
 
   const deleteTheme = (id: number | string) => {
-    let newValue: Array<ICardImage> = [...value];
+    let newValue: Array<ThemeTranslationWithTheme> = [...value];
     newValue = newValue.filter((el) => el.id !== id);
     onChange(newValue);
   };
@@ -166,7 +166,7 @@ export const AutocompleteTheme = ({
               borderRadius: px(50),
             }}
           >
-            <ImageThemeBlock theme={v} size={30} />
+            <ImageThemeBlock theme={v.theme} size={30} />
             <Typography variant="h6">{v.name}</Typography>
             <ClearIcon
               sx={{ width: 15, height: 15, cursor: "pointer" }}

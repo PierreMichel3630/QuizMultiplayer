@@ -23,6 +23,20 @@ export interface ThemeTranslationUpdate {
   theme: number;
 }
 
+export interface ThemeTranslationWithTheme {
+  id: number;
+  name: string;
+  namelower: string;
+  language: Language;
+  theme: {
+    id: number;
+    color: string;
+    image?: string;
+    enabled: boolean;
+    validate: boolean;
+  };
+}
+
 export interface Theme {
   id: number;
   image?: string;

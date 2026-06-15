@@ -6,7 +6,6 @@ import { useLocation } from "react-router-dom";
 import { selectDuelGames, selectSoloGames } from "src/api/game";
 import { GroupButtonAllTypeGame } from "src/component/button/ButtonGroup";
 import { CardHistoryGame } from "src/component/card/CardHistoryGame";
-import { ICardImage } from "src/component/card/CardImage";
 import { SelectFriendModal } from "src/component/modal/SelectFriendModal";
 import { SkeletonGames } from "src/component/skeleton/SkeletonGame";
 import { useAppBar } from "src/context/AppBarProvider";
@@ -15,10 +14,11 @@ import { DuelGame } from "src/models/DuelGame";
 import { GameModeEnum } from "src/models/enum/GameEnum";
 import { HistoryGame, SoloGame } from "src/models/Game";
 import { Profile } from "src/models/Profile";
+import { ThemeTranslationWithTheme } from "src/models/Theme";
 
 export interface FilterGame {
   type: GameModeEnum;
-  themes: Array<ICardImage>;
+  themes: Array<ThemeTranslationWithTheme>;
   player: Profile | null;
   opponent?: Profile;
 }

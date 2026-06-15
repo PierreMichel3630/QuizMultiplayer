@@ -11,9 +11,8 @@ import {
   selectQuestionThemeByQuestion,
 } from "src/api/question";
 import { QuestionAdmin } from "src/models/Question";
-import { Theme } from "src/models/Theme";
+import { Theme, ThemeTranslationWithTheme } from "src/models/Theme";
 import { AutocompleteInputTheme } from "../Autocomplete";
-import { ICardImage } from "../card/CardImage";
 import { ChipThemeEdit } from "../chip/ChipTheme";
 import { TitleModal } from "./commun/TitleModal";
 
@@ -47,10 +46,10 @@ export const CreateEditThemeQuestionDialog = ({
     });
   };
 
-  const onInsert = (theme: ICardImage) => {
+  const onInsert = (value: ThemeTranslationWithTheme) => {
     insertQuestionTheme({
       question: question.id,
-      theme: Number(theme.id),
+      theme: Number(value.theme.id),
     }).then(() => {
       refresh();
     });

@@ -153,5 +153,33 @@ export const searchThemes = (
       .ilike("themetranslation.name", `%${search}%`);
   }
 
-  return query.range(from, to).order("id");
+  return query
+    .range(from, to)
+    .order("id");
+};
+
+
+export const searchThemesTranslation = (
+  language: Language,
+  search: string,
+  page = 0,
+  itemperpage = 20,
+) => {
+  const from = page * itemperpage;
+  const to = from + itemperpage - 1;
+  let query = supabase
+    .from(SUPABASE_THEME_TRANSLATION_TABLE)
+    .select("*, theme(id, color, image, enabled, validate)");
+
+  if (search !== "") {
+    query = query
+      .eq("language", language.id)
+      .not("language", "is", null)
+      .ilike("name", `%${search}%`);
+  }
+
+  return query
+    .order("name")
+    .range(from, to)
+    .order("id");
 };

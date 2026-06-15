@@ -9,6 +9,7 @@ const SUPABASE_VIEWSEARCH_TABLE = "viewsearchv2";
 const SUPABASE_GETITEMS_FUNCTION = "get_category_items";
 const SUPABASE_SEARCH_FUNCTION = "search";
 
+
 export const searchThemesAndCategoriesPaginate = (
   language: Language,
   search = "",
@@ -156,3 +157,4 @@ export const search = (
     p_offset: offset,
   });
 };
+

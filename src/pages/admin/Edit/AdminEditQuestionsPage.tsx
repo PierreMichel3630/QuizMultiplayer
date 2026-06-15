@@ -1,6 +1,13 @@
 import AddIcon from "@mui/icons-material/Add";
-import { Box, Grid, Pagination } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import {
+  Box,
+  Grid,
+  Pagination,
+  Paper,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
@@ -9,13 +16,13 @@ import {
   selectQuestion,
 } from "src/api/question";
 import { ButtonColor } from "src/component/Button";
-import { ICardImage } from "src/component/card/CardImage";
 import { CardAdminQuestion } from "src/component/card/CardQuestion";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import { CreateEditQuestionDialog } from "src/component/modal/CreateEditQuestionDialog";
 import { AutocompleteTheme } from "src/component/Select";
 import { useMessage } from "src/context/MessageProvider";
 import { QuestionAdmin } from "src/models/Question";
+import { ThemeTranslationWithTheme } from "src/models/Theme";
 import { Colors } from "src/style/Colors";
 
 export interface FilterQuestion {
@@ -27,15 +34,17 @@ export default function AdminEditQuestionsPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { setMessage, setSeverity } = useMessage();
+  const theme = useTheme();
+  const smallScreen = useMediaQuery(theme.breakpoints.down("lg"));
 
   const ITEMPERPAGE = 29;
 
-  const [themes, setThemes] = useState<Array<ICardImage>>([]);
+  const [themes, setThemes] = useState<Array<ThemeTranslationWithTheme>>([]);
   const [count, setCount] = useState<number>(1);
   const [page, setPage] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Array<QuestionAdmin>>([]);
   const [question, setQuestion] = useState<QuestionAdmin | undefined>(
-    undefined
+    undefined,
   );
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [openModal, setOpenModal] = useState(false);
@@ -43,6 +52,8 @@ export default function AdminEditQuestionsPage() {
     theme: undefined,
     ids: [],
   });
+
+  const bottom = useMemo(() => (smallScreen ? 58 : 0), [smallScreen]);
 
   useEffect(() => {
     const question = searchParams.get("ids") as string | null;
@@ -107,7 +118,7 @@ export default function AdminEditQuestionsPage() {
             onChange={(value) => {
               setThemes(value);
               if (value.length > 0) {
-                const id = value[0].id;
+                const id = value[0].theme.id;
                 navigate(`/administration/edit/questions?page=1&theme=${id}`);
               } else {
                 navigate(`/administration/edit/questions?page=1`);
@@ -130,19 +141,20 @@ export default function AdminEditQuestionsPage() {
             size={{
               xs: 12,
               sm: 6,
-              md: 4
-            }}>
+              md: 4,
+            }}
+          >
             <CardAdminQuestion question={question} refresh={getPage} />
           </Grid>
         ))}
-        <Box
+        <Paper
           sx={{
             position: "fixed",
-            bottom: 80,
-            left: 5,
-            right: 5,
+            bottom: bottom,
             display: "flex",
             justifyContent: "center",
+            p: 1,
+            width: "100%",
           }}
         >
           {page !== null && (
@@ -151,7 +163,7 @@ export default function AdminEditQuestionsPage() {
               page={page}
               onChange={(_event: React.ChangeEvent<unknown>, value: number) =>
                 navigate(
-                  `/administration/edit/questions?page=${value}&theme=${filter.theme}`
+                  `/administration/edit/questions?page=${value}&theme=${filter.theme}`,
                 )
               }
               variant="outlined"
@@ -161,7 +173,7 @@ export default function AdminEditQuestionsPage() {
               }}
             />
           )}
-        </Box>
+        </Paper>
       </Grid>
       <ConfirmDialog
         title={t("modal.delete")}

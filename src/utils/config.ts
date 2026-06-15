@@ -1,4 +1,4 @@
-export const VERSION_APP = "2.2.8";
+export const VERSION_APP = "2.2.9";
 
 export const MAX_DAY_NEW_THEME = 14;
 export const MAX_DAY_UPDATED_THEME = 14;

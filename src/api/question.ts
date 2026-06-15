@@ -65,7 +65,6 @@ export const selectQuestion = (
       .not("questiontheme.theme", "is", null);
   }
   query = query
-    .not("image", "is", null)
     .order("id", { ascending: true })
     .range(from, to);
   return query;

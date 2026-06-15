@@ -1,14 +1,19 @@
-import { Box, Grid, Typography } from "@mui/material";
-import { padding } from "csx";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { searchThemesPaginate } from "src/api/search";
+import { Box, Grid, Typography, useTheme } from "@mui/material";
+import { padding, percent } from "csx";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { searchThemesTranslation } from "src/api/theme";
 import { useUser } from "src/context/UserProvider";
-import { ICardImage } from "../card/CardImage";
+import { ThemeTranslationWithTheme } from "src/models/Theme";
 import { ImageThemeBlock } from "../ImageThemeBlock";
+
+import ClearIcon from "@mui/icons-material/Clear";
+import CheckIcon from "@mui/icons-material/Check";
+import { useTranslation } from "react-i18next";
+import { Colors } from "src/style/Colors";
 
 interface PropsThemeListScrollBlock {
   search: string;
-  onSelect: (value: ICardImage) => void;
+  onSelect: (value: ThemeTranslationWithTheme) => void;
 }
 
 export const ThemeListScrollBlock = ({
@@ -16,6 +21,8 @@ export const ThemeListScrollBlock = ({
   onSelect,
 }: PropsThemeListScrollBlock) => {
   const { language } = useUser();
+  const theme = useTheme();
+  const isDark = useMemo(() => theme.palette.mode === "dark", [theme]);
 
   const observer = useRef<IntersectionObserver | null>(null);
   const lastItemRef = useRef<HTMLTableRowElement | null>(null);
@@ -25,26 +32,28 @@ export const ThemeListScrollBlock = ({
   const [isLoading, setIsLoading] = useState(false);
   const [, setPage] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
-  const [itemsSearch, setItemsSearch] = useState<Array<ICardImage>>([]);
+  const [itemsSearch, setItemsSearch] = useState<
+    Array<ThemeTranslationWithTheme>
+  >([]);
 
   const getThemes = useCallback(
     (page: number) => {
       if (isLoading) return;
       if (language && (page === 0 || !isEnd)) {
         setIsLoading(true);
-        searchThemesPaginate(language, search, page, ITEMPERPAGE).then(
+        searchThemesTranslation(language, search, page, ITEMPERPAGE).then(
           ({ data }) => {
             const result = data ?? [];
             setIsEnd(result.length < ITEMPERPAGE);
             setItemsSearch((prev) =>
-              page === 0 ? [...result] : [...prev, ...result]
+              page === 0 ? [...result] : [...prev, ...result],
             );
             setIsLoading(false);
-          }
+          },
         );
       }
     },
-    [isLoading, language, isEnd, search]
+    [isLoading, language, isEnd, search],
   );
 
   useEffect(() => {
@@ -76,13 +85,23 @@ export const ThemeListScrollBlock = ({
   }, [isLoading, isEnd, getThemes]);
 
   return (
-    <Grid container spacing={1} justifyContent="center">
+    <Grid container justifyContent="center" sx={{ width: percent(100) }}>
       {itemsSearch.map((item, index) => (
         <Grid
           key={index}
           ref={index === itemsSearch.length - 1 ? lastItemRef : null}
           onClick={() => onSelect(item)}
-          size={12}>
+          size={12}
+          sx={{
+            p: padding(2, 5),
+            cursor: "pointer",
+            "&:hover": {
+              backgroundColor: isDark
+                ? theme.palette.grey[700]
+                : theme.palette.grey[400],
+            },
+          }}
+        >
           <Box
             sx={{
               display: "flex",
@@ -91,11 +110,51 @@ export const ThemeListScrollBlock = ({
               p: padding(2, 15),
             }}
           >
-            <ImageThemeBlock theme={item} size={40} />
-            <Typography variant="h4">{item.name}</Typography>
+            <ImageThemeBlock theme={item.theme} size={40} />
+            <Typography variant="h4" sx={{ flex: 1 }}>
+              {item.name}
+            </Typography>
+            <StatusTheme
+              enabled={item.theme.enabled}
+              validate={item.theme.validate}
+            />
           </Box>
         </Grid>
       ))}
     </Grid>
+  );
+};
+
+interface PropsStatusTheme {
+  enabled: boolean;
+  validate: boolean;
+}
+const StatusTheme = ({ validate, enabled }: PropsStatusTheme) => {
+  const { t } = useTranslation();
+
+  const isValide = useMemo(() => validate && enabled, [validate, enabled]);
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        color: isValide ? Colors.green : Colors.red,
+      }}
+    >
+      {isValide ? (
+        <>
+          <CheckIcon />
+          <Typography variant="h6">{t("commun.enabled")}</Typography>
+        </>
+      ) : (
+        <>
+          <ClearIcon />
+          <Typography variant="h6">
+            {enabled ? t("commun.notvalidate") : t("commun.notenabled")}
+          </Typography>
+        </>
+      )}
+    </Box>
   );
 };
