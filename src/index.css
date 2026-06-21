@@ -40,16 +40,28 @@ a {
 /*Animation*/
 @keyframes l3 {
   20% {
-    background-position: 0% 0%, 50% 50%, 100% 50%;
+    background-position:
+      0% 0%,
+      50% 50%,
+      100% 50%;
   }
   40% {
-    background-position: 0% 100%, 50% 0%, 100% 50%;
+    background-position:
+      0% 100%,
+      50% 0%,
+      100% 50%;
   }
   60% {
-    background-position: 0% 50%, 50% 100%, 100% 0%;
+    background-position:
+      0% 50%,
+      50% 100%,
+      100% 0%;
   }
   80% {
-    background-position: 0% 50%, 50% 50%, 100% 100%;
+    background-position:
+      0% 50%,
+      50% 50%,
+      100% 100%;
   }
 }
 
@@ -73,14 +85,40 @@ a {
   padding-right: env(safe-area-inset-right);
 }
 
-
 .page {
-  flex: 1 1 0
+  flex: 1 1 0;
 }
-
 
 /** INFINITE SCROLL **/
 
 .infinite-scroll-component__outerdiv {
   width: 100% !important;
+}
+
+::-webkit-scrollbar {
+  width: 8px; 
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(
+    150,
+    150,
+    150,
+    0.5
+  ); /* Gris foncé semi-transparent par défaut */
+  border-radius: 10px;
+  transition: background-color 0.3s ease; /* Transition douce */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(
+    150,
+    150,
+    150,
+    1
+  )
 }

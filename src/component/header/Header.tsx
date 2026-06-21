@@ -6,7 +6,7 @@ import { useAuth } from "src/context/AuthProviderSupabase";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { px } from "csx";
+import { percent, px } from "csx";
 import logo from "src/assets/logo.svg";
 import { useAppBar } from "src/context/AppBarProvider";
 import { useIsMobileOrTablet } from "src/hook/useSize";
@@ -30,6 +30,7 @@ export const Header = () => {
     <Box
       sx={{
         flex: 1,
+        width: percent(100)
       }}
     >
       {isMobileOrTablet ? (

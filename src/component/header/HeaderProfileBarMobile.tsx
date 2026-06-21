@@ -51,10 +51,14 @@ export const HeaderProfileBarMobile = () => {
         width: percent(100),
         p: px(5),
         gap: 1,
+        minWidth: 0,
       }}
     >
       {profile ? (
-        <Link to={`/personalized`} style={{ textDecoration: "none" }}>
+        <Link
+          to={`/personalized`}
+          style={{ textDecoration: "none", flexShrink: 0 }}
+        >
           <AvatarAccountBadge
             avatar={profile.avatar.icon}
             size={60}
@@ -81,30 +85,37 @@ export const HeaderProfileBarMobile = () => {
             gap: 1,
             alignItems: "center",
             justifyContent: "space-between",
+            minWidth: 0,
           }}
         >
-          <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+          <Box
+            sx={{ display: "flex", gap: 1, alignItems: "center", minWidth: 0, overflow: "hidden" }}
+          >
             {profile?.country && (
-              <Link to={`/personalized`} style={{ textDecoration: "none" }}>
+              <Link
+                to={`/personalized`}
+                style={{ textDecoration: "none", flexShrink: 0 }}
+              >
                 <CountryImageBlock country={profile.country} size={30} />
               </Link>
             )}
             <Link
               to={profile ? `/profil/${profile.id}` : "/login"}
-              style={{ textDecoration: "none", maxWidth: "calc(100% -30px)" }}
+              style={{
+                textDecoration: "none",
+                minWidth: 0,
+                flex: 1,
+              }}
             >
               {profile ? (
                 <Typography
                   variant="h2"
                   color="text.secondary"
                   sx={{
-                    overflow: "hidden",
-                    display: "block",
-                    lineClamp: 1,
-                    boxOrient: "vertical",
-                    textOverflow: "ellipsis",
                     fontSize: important(px(20)),
+                    width: "100%",
                   }}
+                  noWrap
                 >
                   {profile.username}
                 </Typography>
@@ -113,7 +124,11 @@ export const HeaderProfileBarMobile = () => {
               )}
             </Link>
           </Box>
-          {streak !== undefined && <StreakBlock value={streak} />}
+          {streak !== undefined && (
+            <Box sx={{ flexShrink: 0 }}>
+              <StreakBlock value={streak} />
+            </Box>
+          )}
         </Box>
         <Box
           sx={{

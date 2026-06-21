@@ -10,29 +10,30 @@ const SUPABASE_PROFILEACCOUNT_TABLE = "profileaccount";
 const SUPABASE_UPDATEPROFIL_FUNCTION = "update-profil";
 const SUPABASE_GETLEADERBOARDPROFILE_FUNCTION = "get_leaderboard_profile";
 
-
-const selectQueryProfile = "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))"
+const selectQueryProfile =
+  "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))";
 
 export const getProfilById = (uuid: string) =>
   supabase
     .from(SUPABASE_PROFILE_TABLE)
-    .select(
-      selectQueryProfile
-    )
+    .select(selectQueryProfile)
     .eq("id", uuid)
     .single();
 
 export const updateProfil = (profil: ProfileUpdate) =>
-  supabase.from(SUPABASE_PROFILE_TABLE).update(profil).eq("id", profil.id).select(selectQueryProfile).maybeSingle();
+  supabase
+    .from(SUPABASE_PROFILE_TABLE)
+    .update(profil)
+    .eq("id", profil.id)
+    .select(selectQueryProfile)
+    .maybeSingle();
 
 export const updateSelectProfil = (profil: ProfileUpdate) =>
   supabase
     .from(SUPABASE_PROFILE_TABLE)
     .update(profil)
     .eq("id", profil.id)
-    .select(
-      selectQueryProfile
-    )
+    .select(selectQueryProfile)
     .single();
 
 export const searchProfilePagination = (
@@ -40,18 +41,23 @@ export const searchProfilePagination = (
   notin: Array<string>,
   page: number,
   itemperpage: number,
+  multicompte?: boolean,
 ) => {
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
-  return supabase
+  let query = supabase
     .from(SUPABASE_PROFILE_TABLE)
     .select(
       "*, avatar(*), badge(*),country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))",
     )
     .ilike("username", `%${search}%`)
-    .not("id", "in", `(${notin.join(",")})`)
-    .order("lower_name", { ascending: true })
-    .range(from, to);
+    .not("id", "in", `(${notin.join(",")})`);
+
+  if (multicompte !== undefined) {
+    query = query.eq("multicompte", multicompte);
+  }
+
+  return query.order("lower_name", { ascending: true }).range(from, to);
 };
 
 export const countProfile = (search = "", notin: Array<string> = []) =>
@@ -81,7 +87,6 @@ export const updateProfilByFunction = (accounts?: Array<string>) =>
     },
   });
 
-
 export const selectProfilePaginate = (
   search: string = "",
   page = 0,
@@ -99,8 +104,6 @@ export const selectProfilePaginate = (
     p_sort: sort,
   });
 };
-
-
 
 export const selectProfile = (
   order: { value: string; ascending: boolean },
@@ -129,17 +132,13 @@ export const selectProfile = (
     .range(from, to);
 };
 
-
 // Profile ACCOUNT
 
-export const selectProfileAccountByProfile = (
-  uuid: string
-) => {
-
+export const selectProfileAccountByProfile = (uuid: string) => {
   return supabase
     .from(SUPABASE_PROFILEACCOUNT_TABLE)
     .select(
       "*, profileconnect(*, avatar(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))))",
     )
-    .eq("profile", uuid)
+    .eq("profile", uuid);
 };

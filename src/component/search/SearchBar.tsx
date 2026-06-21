@@ -2,6 +2,7 @@ import {
   Alert,
   Box,
   ClickAwayListener,
+  Divider,
   Paper,
   Typography,
 } from "@mui/material";
@@ -20,10 +21,13 @@ import { BasicSearchInput } from "../Input";
 import { SkeletonSearchs } from "../skeleton/SkeletonSearch";
 
 import { getLink } from "src/utils/link";
+import { useGameModes } from "src/hook/useGameModes";
+import { searchString } from "src/utils/string";
 
 export const SearchBar = () => {
   const { t } = useTranslation();
   const { language } = useUser();
+  const { themes, modes } = useGameModes();
   const navigate = useNavigate();
   const ITEM_PER_PAGE = 10;
 
@@ -35,7 +39,7 @@ export const SearchBar = () => {
   const getSearch = useCallback(
     (page: number, searchValue: string) => {
       setItemsSearch([]);
-      if (language) {
+      if (language && searchValue !== "") {
         searchThemesAndCategoriesPaginate(
           language,
           searchValue,
@@ -46,6 +50,8 @@ export const SearchBar = () => {
           setItemsSearch([...result]);
           setLoading(false);
         });
+      } else {
+        setLoading(false);
       }
     },
     [language],
@@ -78,14 +84,31 @@ export const SearchBar = () => {
     });
   };
 
+  const onChangeSearch = (value: string) => {
+    if (value === "") {
+      setItemsSearch([]);
+    }
+    setSearch(value);
+  };
+
+  const modesDisplay = useMemo(() => {
+    const modesFilter = [...modes].filter((el) =>
+      searchString(search, el.name),
+    );
+    const themesFilter = [...themes].filter((el) =>
+      searchString(search, el.name),
+    );
+    return [...modesFilter, ...themesFilter];
+  }, [modes, themes, search]);
+
   return (
     <ClickAwayListener onClickAway={() => setSearchOpen(false)}>
       <Box sx={{ maxWidth: px(640), flex: 1, position: "relative" }}>
         <BasicSearchInput
           label={t("commun.search")}
-          onChange={setSearch}
+          onChange={onChangeSearch}
           onFocus={() => setSearchOpen(true)}
-          clear={() => setSearch("")}
+          clear={() => onChangeSearch("")}
           handleSubmit={handleSubmit}
           value={search}
         />
@@ -106,8 +129,18 @@ export const SearchBar = () => {
               <SkeletonSearchs number={ITEM_PER_PAGE} />
             ) : (
               <>
-                {itemsSearch.length > 0 ? (
+                {itemsSearch.length > 0 || modesDisplay.length > 0 ? (
                   <>
+                    {modesDisplay.map((el, index) => (
+                      <SearchResult
+                        key={index}
+                        value={el}
+                        onSelect={() => setSearchOpen(false)}
+                      />
+                    ))}
+                    {modesDisplay.length > 0 && itemsSearch.length > 0 && (
+                      <Divider />
+                    )}
                     {itemsSearch.map((el, index) => (
                       <SearchResult
                         key={index}

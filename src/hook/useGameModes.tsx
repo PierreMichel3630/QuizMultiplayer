@@ -94,7 +94,7 @@ export const useGameModes = () => {
             image: el.image,
             color: el.color,
             link: `/theme/${el.id}`,
-            type: SearchType.THEME,
+            type: SearchType.GAMEMODE,
             order: 3,
             created_at: el.created_at,
           })),

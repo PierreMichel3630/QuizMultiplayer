@@ -437,7 +437,9 @@
     "themetwentypts": "Nombre de thèmes à + de 20 points",
     "users": "Utilisateurs",
     "profileconnect": "Comptes associés",
-    "createdat": "Créé le {{date}}"
+    "createdat": "Créé le {{date}}",
+    "multiaccountactivate": "Multicompte activé",
+    "multiaccountdesactivate": "Multicompte désactivé"
   },
   "abrevation": {
     "average": "Moy."

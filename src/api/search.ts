@@ -9,7 +9,6 @@ const SUPABASE_VIEWSEARCH_TABLE = "viewsearchv2";
 const SUPABASE_GETITEMS_FUNCTION = "get_category_items";
 const SUPABASE_SEARCH_FUNCTION = "search";
 
-
 export const searchThemesAndCategoriesPaginate = (
   language: Language,
   search = "",
@@ -26,6 +25,7 @@ export const searchThemesAndCategoriesPaginate = (
     .select("*")
     .ilike(`namelower`, `%${searchLower}%`)
     .eq("language", language.id)
+    .not("id", "in", `(${[271, 272].join(",")})`)
     .range(from, to)
     .order(`namelower`, { ascending: true });
 };
@@ -157,4 +157,3 @@ export const search = (
     p_offset: offset,
   });
 };
-

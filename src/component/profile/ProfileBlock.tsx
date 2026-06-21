@@ -103,7 +103,6 @@ export const ProfileAdminBlock = ({
             </Box>
           )}
         </Box>
-        <ProfileTitleBlock titleprofile={profile.titleprofile} />
         <Box>
           <Typography variant="caption">
             {t("commun.createdat", {

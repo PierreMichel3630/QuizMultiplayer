@@ -1,4 +1,4 @@
-import { Alert, Box, Grid } from "@mui/material";
+import { Alert, Box, Divider, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { useEffect, useState } from "react";
@@ -9,11 +9,13 @@ import { Pagination } from "src/component/page/Pagination";
 import { SkeletonPlayers } from "src/component/skeleton/SkeletonPlayer";
 import { Profile } from "src/models/Profile";
 import { DetailProfileAdminModal } from "src/component/modal/DetailProfileAdminModal";
+import { MultiAccountSwitch } from "src/component/switch/MultiAccountSwitch";
 
 interface Query {
   search: string;
   page: number;
   itemPerPage: number;
+  multicompte: boolean;
 }
 export default function AdminUsersPage() {
   const { t } = useTranslation();
@@ -22,6 +24,7 @@ export default function AdminUsersPage() {
     search: "",
     page: 0,
     itemPerPage: 20,
+    multicompte: false,
   });
   const [profiles, setProfiles] = useState<Array<Profile>>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,6 +39,7 @@ export default function AdminUsersPage() {
       [],
       query.page,
       query.itemPerPage,
+      query.multicompte
     ).then(({ data }) => {
       setIsLoading(false);
       setProfiles(data ?? []);
@@ -89,6 +93,22 @@ export default function AdminUsersPage() {
             }));
           }}
         />
+      </Grid>
+      <Grid size={12}>
+        <MultiAccountSwitch
+          multicompte={query.multicompte}
+          onChange={(value) => {
+            setQuery((prev) => ({
+              ...prev,
+              page: 0,
+              multicompte: value,
+            }));
+          }}
+        />
+      </Grid>
+
+      <Grid size={12}>
+        <Divider />
       </Grid>
       <Grid size={12}>
         <Box sx={{ p: 1 }}>

@@ -3,24 +3,23 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Button,
   Card,
-  FormControlLabel,
   Grid,
   IconButton,
   Paper,
-  Switch,
-  Typography,
+  Typography
 } from "@mui/material";
 import { px } from "csx";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { updateProfil } from "src/api/profile";
 import { Profile } from "src/models/Profile";
 import { AvatarAccount } from "../avatar/AvatarAccount";
 import { FriendButton } from "../FriendButton";
 import { ProfileAdminBlock, ProfileBlock } from "../profile/ProfileBlock";
 import { StatusProfileBlock } from "../StatusProfileBlock";
-import { updateProfil } from "src/api/profile";
 
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { MultiAccountSwitch } from "../switch/MultiAccountSwitch";
 
 interface Props {
   profile: Profile;
@@ -161,15 +160,12 @@ interface PropsCardAdminProfile {
 export const CardAdminProfile = ({
   profile,
   refresh,
-  select
+  select,
 }: PropsCardAdminProfile) => {
-  const onChangeMulticompte = (
-    _event: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean,
-  ) => {
+  const onChangeMulticompte = (value: boolean) => {
     const newProfile = {
       id: profile.id,
-      multicompte: checked,
+      multicompte: value,
     };
 
     updateProfil(newProfile).then(({ data }) => {
@@ -183,14 +179,9 @@ export const CardAdminProfile = ({
           <ProfileAdminBlock variant="h6" profile={profile} avatarSize={45} />
         </Grid>
         <Grid sx={{ display: "flex", alignItems: "center" }}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={profile.multicompte}
-                onChange={onChangeMulticompte}
-              />
-            }
-            label="Multicompte"
+          <MultiAccountSwitch
+            multicompte={profile.multicompte}
+            onChange={onChangeMulticompte}
           />
           <IconButton aria-label="detail" onClick={() => select(profile)}>
             <VisibilityIcon fontSize="inherit" />

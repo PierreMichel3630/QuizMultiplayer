@@ -76,6 +76,8 @@ const AppBarDefault = () => {
       <Toolbar
         sx={{
           background: isDarkMode ? Colors.black : Colors.colorApp,
+          minWidth: 0,
+          width: "100%",
         }}
         disableGutters={isMobileOrTablet}
       >
