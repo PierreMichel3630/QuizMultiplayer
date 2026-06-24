@@ -26,6 +26,7 @@ export const HeaderProfileBarMobile = () => {
 
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
 
+
   useEffect(() => {
     const getMyStat = () => {
       if (profile) {

@@ -1,7 +1,7 @@
 import { Alert, Divider, Grid, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getProfilById } from "src/api/profile";
+import { selectProfilById } from "src/api/profile";
 import { selectScoreByProfileAndThemePaginate } from "src/api/score";
 import { Page } from "src/models/Paginate";
 import { Profile } from "src/models/Profile";
@@ -60,7 +60,7 @@ export const RecapProfileGameDialog = ({
 
   useEffect(() => {
     if (profileId) {
-      getProfilById(profileId).then(({ data }) => {
+      selectProfilById(profileId).then(({ data }) => {
         setProfile(data);
       });
     }
@@ -73,7 +73,7 @@ export const RecapProfileGameDialog = ({
   }, [themeId, profileId]);
 
   return (
-    <BaseRecapDialog open={open} close={close} profile={profile}>
+    <BaseRecapDialog open={open} close={close} profileId={profile?.id}>
       {theme && (
         <Grid
           sx={{

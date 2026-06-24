@@ -14,22 +14,18 @@ import { StatAccomplishmentWithRanking } from "src/models/Accomplishment";
 import { AccomplishmentEnum } from "src/models/enum/ClassementEnum";
 import { FRIENDSTATUS } from "src/models/Friend";
 import { Page } from "src/models/Paginate";
+import { ProfileWithRanking } from "src/models/Profile";
 import { ScoreAvg, ScoreRanking } from "src/models/Score";
 import { getLevel } from "src/utils/calcul";
 import { BasicSearchInput } from "../Input";
 import { RecapProfileGameDialog } from "../modal/RecapGameDialog";
+import { RecapProfileAccomplishmentDialog } from "../modal/RecapProfileAccomplishmentDialog";
 import { MoneyArrondieBlock } from "../MoneyBlock";
 import { Pagination } from "../page/Pagination";
 import { SortButton } from "../SortBlock";
 import { StreakBlock } from "../StreakBlock";
 import { OnlyFriendSwitch } from "../switch/OnlyFriendSwitch";
-import {
-  DataRankingChallenge,
-  RankingTable,
-} from "../table/RankingTable";
-import { RecapProfileAccomplishmentDialog } from "../modal/RecapProfileAccomplishmentDialog";
-import { ProfileWithRanking } from "src/models/Profile";
-import { RecapProfileDialog } from "../modal/RecapProfileDialog";
+import { DataRankingChallenge, RankingTable } from "../table/RankingTable";
 
 interface Sort {
   value: AccomplishmentEnum;
@@ -232,11 +228,7 @@ export const RankingAccomplishment = ({ defaultSort, sorts = [] }: Props) => {
           setData(newdata);
           setLoading(false);
         });
-      } else if (
-        [AccomplishmentEnum.money, AccomplishmentEnum.streak].includes(
-          query.sort.value,
-        )
-      ) {
+      } else if ([AccomplishmentEnum.money].includes(query.sort.value)) {
         selectProfilePaginate(
           query.search,
           query.page,
@@ -358,11 +350,7 @@ export const RankingAccomplishment = ({ defaultSort, sorts = [] }: Props) => {
         )}
       </Grid>
       <Grid size={12}>
-        <RankingTable
-          data={data}
-          loading={loading}
-          onClick={setDataModal}
-        />
+        <RankingTable data={data} loading={loading} onClick={setDataModal} />
         <Pagination
           total={count}
           page={query.page}
@@ -373,7 +361,7 @@ export const RankingAccomplishment = ({ defaultSort, sorts = [] }: Props) => {
       {
         {
           profile: (
-            <RecapProfileDialog
+            <RecapProfileAccomplishmentDialog
               data={dataModal?.data}
               close={() => setDataModal(undefined)}
               open={dataModal !== undefined}

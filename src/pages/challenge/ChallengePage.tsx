@@ -10,7 +10,6 @@ import moment from "moment";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { launchChallenge } from "src/api/challenge";
-import { updateProfil } from "src/api/profile";
 import { ButtonColor } from "src/component/Button";
 import { WinnerChallengeBlock } from "src/component/challenge/WinnerChallengeBlock";
 import { RankingChallenge } from "src/component/ranking/RankingChallenge";
@@ -29,11 +28,6 @@ export default function ChallengePage() {
     if (profile && language) {
       const date = moment().format("YYYY-MM-DD");
       launchChallenge(date, language.id).then(async ({ data }) => {
-        const newProfile = {
-          id: profile.id,
-          lastchallengeplay: date,
-        };
-        await updateProfil(newProfile);
         navigate(`/challenge/${data.uuid}`);
       });
     } else {

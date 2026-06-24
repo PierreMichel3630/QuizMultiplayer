@@ -13,7 +13,7 @@ const SUPABASE_GETLEADERBOARDPROFILE_FUNCTION = "get_leaderboard_profile";
 const selectQueryProfile =
   "*, avatar(*), badge(*), banner(*), country(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*))))";
 
-export const getProfilById = (uuid: string) =>
+export const selectProfilById = (uuid: string) =>
   supabase
     .from(SUPABASE_PROFILE_TABLE)
     .select(selectQueryProfile)

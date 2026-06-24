@@ -95,7 +95,7 @@ export const selectChallengeGameByUuid = (uuid: string) =>
   supabase
     .from(SUPABASE_CHALLENGEGAME_TABLE)
     .select(
-      "*, profile(*, title(*, titletranslation(*, language(*))), avatar(*), badge(*), banner(*), country(*)), challenge(*)",
+      "*, profile(*, avatar(*), titleprofile!profiles_titleprofile_fkey(*,title(*, titletranslation(*, language(*)))), badge(*), banner(*), country(*)), challenge(*)",
     )
     .eq("uuid", uuid)
     .maybeSingle();

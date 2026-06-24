@@ -49,6 +49,7 @@ export interface StatAccomplishment {
   winweekchallenge: number;
   winmonthchallenge: number;
   pointssolo: number;
+  streak: number
 }
 
 export enum StatAccomplishmentEnum {

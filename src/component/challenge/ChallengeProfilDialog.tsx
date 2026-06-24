@@ -9,7 +9,7 @@ import {
   selectRankingChallengeMonthByProfileId,
   selectRankingChallengeWeekByProfileId,
 } from "src/api/challenge";
-import { getProfilById } from "src/api/profile";
+import { selectProfilById } from "src/api/profile";
 import {
   ChallengeRankingAllTime,
   ChallengeRankingDay,
@@ -62,7 +62,7 @@ export const ChallengeProfilDialog = ({ profileId, open, close }: Props) => {
         const values: Array<ChallengeRankingAllTime> = data.data;
         setStatAllTime(values[0] ?? null);
       });
-      getProfilById(profileId).then(({ data }) => {
+      selectProfilById(profileId).then(({ data }) => {
         setProfile(data);
       });
     }
@@ -168,7 +168,7 @@ export const ChallengeProfilDialog = ({ profileId, open, close }: Props) => {
   }, [loading, hasMore, profileId]);
 
   return (
-    <BaseRecapDialog open={open} close={close} profile={profile}>
+    <BaseRecapDialog open={open} close={close} profileId={profileId}>
       {profile && (
         <Grid container spacing={2}>
           {statAllTime && (

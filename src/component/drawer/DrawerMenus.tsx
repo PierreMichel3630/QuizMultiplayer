@@ -120,7 +120,13 @@ const DrawerContent = ({
                 }}
               >
                 <Box
-                  sx={{ p: 1, display: "flex", gap: 1, alignItems: "center" }}
+                  sx={{
+                    p: 1,
+                    display: "flex",
+                    gap: 1,
+                    alignItems: "center",
+                    minWidth: 0,
+                  }}
                 >
                   <Link
                     to={`/personalized`}
@@ -136,13 +142,26 @@ const DrawerContent = ({
                     />
                   </Link>
                   <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 1,
+                      minWidth: 0,
+                    }}
                   >
-                    <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: 1,
+                        alignItems: "center",
+                        minWidth: 0,
+                        overflow: "hidden",
+                      }}
+                    >
                       {profile.country && (
                         <Link
                           to={`/personalized`}
-                          style={{ textDecoration: "none" }}
+                          style={{ textDecoration: "none", flexShrink: 0 }}
                           onClick={onRedirect}
                         >
                           <CountryImageBlock
@@ -155,19 +174,17 @@ const DrawerContent = ({
                         to={profile ? `/profil/${profile.id}` : "/login"}
                         style={{
                           textDecoration: "none",
-                          maxWidth: "calc(100% -30px)",
+                          minWidth: 0,
+                          flex: 1,
                         }}
                         onClick={onRedirect}
                       >
                         <Typography
                           variant="h4"
                           sx={{
-                            overflow: "hidden",
-                            display: "block",
-                            lineClamp: 1,
-                            boxOrient: "vertical",
-                            textOverflow: "ellipsis",
+                            width: "100%",
                           }}
+                          noWrap
                         >
                           {profile.username}
                         </Typography>

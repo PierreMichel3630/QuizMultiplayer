@@ -29,11 +29,7 @@ export default function NotificationOutlet() {
   useEffect(() => {
     const handleVisibility = async () => {
       if (profile?.id && !document.hidden) {
-        updateProfilByFunction().then(({ data }) => {
-          if (data !== null) {
-            setStreak(data.streak);
-          }
-        });
+        await updateProfilByFunction()
       }
     };
     document.addEventListener("visibilitychange", handleVisibility);

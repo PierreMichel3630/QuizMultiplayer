@@ -11,30 +11,23 @@ import { Colors } from "src/style/Colors";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import { selectChallengeGameByUuid } from "src/api/challenge";
 import { ButtonColor } from "src/component/Button";
-import { BarNavigation } from "src/component/navigation/BarNavigation";
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import { ChallengeGame, ExtraChallenge } from "src/models/Challenge";
 
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
-import { StreakBlock } from "src/component/StreakBlock";
 import { ExtraBlock } from "src/component/extra/ExtraBlock";
-import { HeaderProfile } from "src/component/profile/HeaderProfile";
-import { useAuth } from "src/context/AuthProviderSupabase";
+import { ProfileBlock } from "src/component/profile/ProfileBlock";
 import { QuestionResult, QuestionResultV1 } from "src/models/Question";
 
 export default function ChallengeGamePage() {
   const { t } = useTranslation();
   const { uuid } = useParams();
-  const { setStreak } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const [game, setGame] = useState<undefined | ChallengeGame>(undefined);
   const [extra, setExtra] = useState<undefined | ExtraChallenge>(undefined);
-  const [streakChallenge, setStreakChallenge] = useState<undefined | number>(
-    undefined
-  );
   const [questions, setQuestions] = useState<
     Array<QuestionResult | QuestionResultV1>
   >([]);
@@ -58,30 +51,16 @@ export default function ChallengeGamePage() {
   }, [uuid]);
 
   useEffect(() => {
-    if (game && location.state !== null && location.state.isEnd === true) {
-      const streak = game.profile.streak;
-
-      console.log(game.profile)
-      setStreak(streak);
-      setStreakChallenge(streak);
-    }
-  }, [location, game, setStreak]);
-
-  useEffect(() => {
     if (location.state?.extra) {
-      console.log(location.state.extra)
       setExtra(location.state.extra as ExtraChallenge);
     }
   }, [location]);
-
-
 
   return (
     <Grid container className="page" alignContent="flex-start">
       <Helmet>
         <title>{`${t("commun.daychallenge")} - ${t("appname")}`}</title>
       </Helmet>
-      <BarNavigation title={t("commun.daychallenge")} />
       <Grid size={12}>
         <Container maxWidth="md">
           <Box
@@ -92,25 +71,11 @@ export default function ChallengeGamePage() {
           >
             {game && (
               <Grid container spacing={1}>
-                <Grid
-                  sx={{
-                    display: "flex",
-                    justifyContent: streakChallenge
-                      ? "space-between"
-                      : "center",
-                    alignItems: "center",
-                    gap: 1,
-                  }}
-                  size={12}>
-                  <HeaderProfile profile={game.profile} />
-                  {streakChallenge && (
-                    <StreakBlock
-                      value={streakChallenge}
-                      logoSize={30}
-                      textSize={20}
-                    />
-                  )}
-                </Grid>
+                {game.profile && (
+                  <Grid size={12}>
+                    <ProfileBlock profile={game.profile} />
+                  </Grid>
+                )}
                 {extra && (
                   <>
                     <Grid size={12}>
@@ -128,7 +93,8 @@ export default function ChallengeGamePage() {
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                  size={6}>
+                  size={6}
+                >
                   <QuestionMarkIcon />
                   <Typography variant="h4" noWrap>
                     {game.score} / {NUMBER_QUESTIONS_CHALLENGE}
@@ -141,7 +107,8 @@ export default function ChallengeGamePage() {
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                  size={6}>
+                  size={6}
+                >
                   <AccessTimeIcon />
                   <Typography variant="h4" noWrap>
                     {(game.time / 1000).toFixed(2)}s
@@ -179,7 +146,12 @@ export default function ChallengeGamePage() {
           right: 0,
         }}
       >
-        <Container maxWidth="md">
+        <Container
+          maxWidth="md"
+          sx={{
+            backgroundColor: "background.paper",
+          }}
+        >
           <Box
             sx={{
               display: "flex",

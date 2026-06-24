@@ -2,7 +2,7 @@ import { Alert, Box, Grid, Paper, Typography } from "@mui/material";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProfilById } from "src/api/profile";
+import { selectProfilById } from "src/api/profile";
 import { CountryBlock } from "src/component/CountryBlock";
 import { AvatarAccountBadge } from "src/component/avatar/AvatarAccount";
 import { Profile } from "src/models/Profile";
@@ -237,7 +237,7 @@ export default function ProfilPage() {
     const getProfile = () => {
       setIsLoadingProfile(true);
       if (id) {
-        getProfilById(id).then(({ data }) => {
+        selectProfilById(id).then(({ data }) => {
           setProfileUser(data as Profile);
           setIsLoadingProfile(false);
         });

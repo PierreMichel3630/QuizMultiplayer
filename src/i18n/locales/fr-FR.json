@@ -372,6 +372,7 @@
     "time": "Temps",
     "save": "Enregistrer",
     "streak": "Série",
+    "beststreak": "Meilleur Série",
     "currentstreak": "Série en cours",
     "money": "Argent",
     "translations": "Traductions",
@@ -1002,7 +1003,7 @@
     "drawduel": "Trier par nombre de matchs nuls",
     "defeatduel": "Trier par nombre de défaites",
     "xp": "Trier par niveau",
-    "streak": "Trier par série",
+    "streak": "Trier par série 'Défis du jour'",
     "money": "Trier par argent"
   },
   "tutorial": {

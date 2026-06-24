@@ -15,7 +15,7 @@ import {
 } from "react";
 import { countChallengeGameByDateAndProfileId } from "src/api/challenge";
 import {
-  getProfilById,
+  selectProfilById,
   updateProfil,
   updateProfilByFunction,
 } from "src/api/profile";
@@ -86,7 +86,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
   );
 
   const multicompte = useMemo(
-    () => (profile === null || profile?.multicompte) ? undefined : false,
+    () => (profile === null || profile?.multicompte ? undefined : false),
     [profile],
   );
 
@@ -96,15 +96,16 @@ export const AuthProviderSupabase = ({ children }: Props) => {
   useEffect(() => {
     const getProfilUser = async () => {
       if (user) {
-        getProfilById(user.id).then(({ data }) => {
+        selectProfilById(user.id).then(async ({ data }) => {
           const res = data as Profile;
           setProfile(res);
           const accounts = saveAccountConnect(res);
-          updateProfilByFunction(accounts).then(({ data }) => {
-            if (data !== null) {
-              setStreak(data.streak);
-            }
-          });
+
+          const dateLastPlayChallenge = moment(res.lastchallengeplay);
+          const diffDays = moment().diff(dateLastPlayChallenge, "days");
+
+          setStreak(diffDays > 1 ? 0 : res.streak);
+          await updateProfilByFunction(accounts);
         });
       } else {
         setProfile(null);
@@ -193,7 +194,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
 
   const refreshProfil = useCallback(() => {
     if (profile) {
-      getProfilById(profile.id).then(({ data }) => {
+      selectProfilById(profile.id).then(({ data }) => {
         setProfile(data as Profile);
       });
     }

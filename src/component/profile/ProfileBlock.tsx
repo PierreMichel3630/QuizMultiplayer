@@ -9,6 +9,7 @@ import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { px } from "csx";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
+import { StreakBlock } from "../StreakBlock";
 interface Props {
   profile: Profile;
   extra?: JSX.Element;
@@ -49,6 +50,9 @@ export const ProfileBlock = ({
           >
             {profile.username}
           </Typography>
+          {!!(profile.streak) && (
+            <StreakBlock value={profile.streak} logoSize={30} textSize={20} />
+          )}
         </Box>
         <ProfileTitleBlock titleprofile={profile.titleprofile} />
       </Box>
