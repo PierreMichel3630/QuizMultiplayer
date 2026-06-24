@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useBlocker, useNavigate, useParams } from "react-router-dom";
 import { QuestionSolo } from "src/models/Question";
 
 import { Box, Container, Typography } from "@mui/material";
-import { percent } from "csx";
+import { important, percent, px } from "csx";
 import { endChallenge, selectChallengeGameByUuid } from "src/api/challenge";
 import { ImageCard } from "src/component/image/ImageCard";
 import { LoadingDot } from "src/component/Loading";
@@ -50,6 +50,12 @@ export default function PlayChallengePage() {
     typeof useBlocker
   > | null>(null);
 
+  //Gestion du chrono
+  const startTimeRef = useRef<number | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timerRef = useRef<HTMLSpanElement | null>(null);
+  const elapsedRef = useRef(0);
+
   const scrollTop = () => {
     window.scrollTo(0, 0);
   };
@@ -86,35 +92,43 @@ export default function PlayChallengePage() {
         responsePlayer1: myResponseValue,
         resultPlayer1: result,
       });
-      setTimeout(() => {
-        scrollTop();
-        const indexNextQuestion = questionsgame.length;
-        if (indexNextQuestion < questions.length) {
+      const indexNextQuestion = questionsgame.length;
+      if (indexNextQuestion < questions.length) {
+        setTimeout(() => {
+          scrollTop();
           setResponse(undefined);
           setQuestion(questions[indexNextQuestion]);
-        } else {
-          end();
-        }
-      }, DELAY_BETWEEN_QUESTION);
+        }, DELAY_BETWEEN_QUESTION);
+      } else {
+        end();
+      }
     }
   };
 
   const end = useCallback(() => {
     if (uuidGame) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      const timedMs = elapsedRef.current;
+
       setIsEnd(true);
       blockerState?.reset?.();
       const questionsgame: Array<unknown> = JSON.parse(
         localStorage.getItem(uuidGame) ?? "[]",
       );
-      endChallenge(questionsgame, uuidGame).then(({ data }) => {
-        navigate(`/challenge/game/${uuidGame}`, {
-          state: {
-            previousPath: "/challenge",
-            isEnd: true,
-            extra: data,
-          },
+      setTimeout(() => {
+        endChallenge(questionsgame, uuidGame, timedMs).then(({ data }) => {
+          navigate(`/challenge/game/${uuidGame}`, {
+            state: {
+              previousPath: "/challenge",
+              isEnd: true,
+              extra: data,
+            },
+          });
         });
-      });
+      }, DELAY_BETWEEN_QUESTION *2 );
     }
   }, [blockerState, navigate, uuidGame]);
 
@@ -148,16 +162,16 @@ export default function PlayChallengePage() {
             responsePlayer1: undefined,
             resultPlayer1: result,
           });
-          setTimeout(() => {
-            scrollTop();
-            const indexNextQuestion = questionsgame.length;
-            if (indexNextQuestion < questions.length) {
+          const indexNextQuestion = questionsgame.length;
+          if (indexNextQuestion < questions.length) {
+            setTimeout(() => {
+              scrollTop();
               setResponse(undefined);
               setQuestion(questions[indexNextQuestion]);
-            } else {
-              end();
-            }
-          }, DELAY_BETWEEN_QUESTION);
+            }, DELAY_BETWEEN_QUESTION);
+          } else {
+            end();
+          }
         }
       }, timerTimeout);
       setTimeoutQuestion(newtimeoutQuestion);
@@ -221,6 +235,16 @@ export default function PlayChallengePage() {
             preloadAllImages(images).then(() => {
               setTimeout(() => {
                 setQuestion(questions[0]);
+                startTimeRef.current = Date.now();
+                intervalRef.current = setInterval(() => {
+                  if (!startTimeRef.current || !timerRef.current) return;
+                  const ms = Date.now() - startTimeRef.current;
+                  elapsedRef.current = ms;
+
+                  if (timerRef.current) {
+                    timerRef.current.innerText = `${(ms / 1000).toFixed(3)}s`;
+                  }
+                }, 40);
               }, DELAY_START);
             });
           }
@@ -228,7 +252,7 @@ export default function PlayChallengePage() {
       }
     };
     getGame();
-  }, [uuidGame]);
+  }, [navigate, uuidGame]);
 
   const shouldBlock = useCallback(() => !isEnd, [isEnd]);
   const blocker = useBlocker(shouldBlock);
@@ -308,6 +332,11 @@ export default function PlayChallengePage() {
                 {correctAnswer} / {numberQuestions}
               </Typography>
             </Box>
+          </Box>
+          <Box>
+            <Typography variant="h2" component="span" sx={{fontSize: important(px(35))}} ref={timerRef}>
+              0.000s
+            </Typography>
           </Box>
         </Box>
         <Box

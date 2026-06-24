@@ -93,10 +93,10 @@ export const BaseRecapDialog = ({
         <TitleModal title={t("commun.result")} close={close} />
         <DialogContent
           ref={dialogContentRef}
-          sx={{ p: 2, position: "relative", overflowY: "auto" }}
+          sx={{ p: 2,  position: "relative", overflowY: "auto" }}
         >
           <div ref={topAnchorRef} />
-          <Grid container spacing={1}>
+          <Grid container spacing={1} sx={{mb: 5}}>
             {profile && (
               <>
                 <Grid

@@ -20,7 +20,7 @@ export const ExtraBlock = ({ value }: PropsExtraBlock) => {
       }}
     >
       <Box sx={{ width: percent(100) }}>
-        {value.xp && <ExperienceBlock xp={value.xp.previousValue} xpgain={200} />}
+        {value.xp && <ExperienceBlock xp={value.xp.previousValue} xpgain={value.xp.value} />}
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
         {value.xp && (

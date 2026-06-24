@@ -1,4 +1,4 @@
-import { Box, Container, Divider, Grid, Typography } from "@mui/material";
+import { Box, Container, Divider, Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 import { px } from "csx";
@@ -11,14 +11,13 @@ import { Colors } from "src/style/Colors";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import { selectChallengeGameByUuid } from "src/api/challenge";
 import { ButtonColor } from "src/component/Button";
-import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import { ChallengeGame, ExtraChallenge } from "src/models/Challenge";
 
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import { ExtraBlock } from "src/component/extra/ExtraBlock";
 import { ProfileBlock } from "src/component/profile/ProfileBlock";
+import { RankingChallengeResult } from "src/component/ranking/RankingChallenge";
 import { QuestionResult, QuestionResultV1 } from "src/models/Question";
+
 
 export default function ChallengeGamePage() {
   const { t } = useTranslation();
@@ -86,33 +85,8 @@ export default function ChallengeGamePage() {
                     </Grid>
                   </>
                 )}
-                <Grid
-                  sx={{
-                    display: "flex",
-                    gap: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                  size={6}
-                >
-                  <QuestionMarkIcon />
-                  <Typography variant="h4" noWrap>
-                    {game.score} / {NUMBER_QUESTIONS_CHALLENGE}
-                  </Typography>
-                </Grid>
-                <Grid
-                  sx={{
-                    display: "flex",
-                    gap: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                  size={6}
-                >
-                  <AccessTimeIcon />
-                  <Typography variant="h4" noWrap>
-                    {(game.time / 1000).toFixed(2)}s
-                  </Typography>
+                <Grid size={12}>
+                  <RankingChallengeResult />
                 </Grid>
                 {questions.map((el, index) => (
                   <Fragment key={index}>

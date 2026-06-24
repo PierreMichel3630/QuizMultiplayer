@@ -75,7 +75,7 @@ const RecapProfileAccomplishmentDialogBody = () => {
             {stat.games}
           </Typography>
         </Grid>
-        <Grid>
+        <Grid size={12}>
           <Typography variant="body1" component="span">
             {t("commun.pointssolo")} {" : "}
           </Typography>
@@ -83,7 +83,7 @@ const RecapProfileAccomplishmentDialogBody = () => {
             {stat.pointssolo}
           </Typography>
         </Grid>
-        <Grid>
+        <Grid size={12}>
           <Typography variant="body1" component="span">
             {t("commun.gameshundredpts")} {" : "}
           </Typography>
@@ -91,7 +91,7 @@ const RecapProfileAccomplishmentDialogBody = () => {
             {stat.gameshundredpts}
           </Typography>
         </Grid>
-        <Grid>
+        <Grid size={12}>
           <Typography variant="body1" component="span">
             {t("commun.gamesfiftypts")} {" : "}
           </Typography>
@@ -99,7 +99,7 @@ const RecapProfileAccomplishmentDialogBody = () => {
             {stat.gamesfiftypts}
           </Typography>
         </Grid>
-        <Grid>
+        <Grid size={12}>
           <Typography variant="body1" component="span">
             {t("commun.gamestwentypts")} {" : "}
           </Typography>
@@ -107,7 +107,7 @@ const RecapProfileAccomplishmentDialogBody = () => {
             {stat.gamestwentypts}
           </Typography>
         </Grid>
-        <Grid>
+        <Grid size={12}>
           <Typography variant="body1" component="span">
             {t("commun.gamestenpts")} {" : "}
           </Typography>
@@ -115,7 +115,7 @@ const RecapProfileAccomplishmentDialogBody = () => {
             {stat.gamestenpts}
           </Typography>
         </Grid>
-        <Grid>
+        <Grid size={12}>
           <Typography variant="body1" component="span">
             {t("commun.themetenpts")} {" : "}
           </Typography>
@@ -123,7 +123,7 @@ const RecapProfileAccomplishmentDialogBody = () => {
             {stat.themetenpts.length}
           </Typography>
         </Grid>
-        <Grid>
+        <Grid size={12}>
           <Typography variant="body1" component="span">
             {t("commun.themetwentypts")} {" : "}
           </Typography>

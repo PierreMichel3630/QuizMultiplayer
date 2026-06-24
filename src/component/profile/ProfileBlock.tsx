@@ -46,6 +46,7 @@ export const ProfileBlock = ({
               overflow: "hidden",
               textOverflow: "ellipsis",
               minWidth: 0,
+              flex:1
             }}
           >
             {profile.username}

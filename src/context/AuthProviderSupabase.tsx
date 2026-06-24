@@ -93,26 +93,32 @@ export const AuthProviderSupabase = ({ children }: Props) => {
   const login = (email: string, password: string) =>
     signInWithEmail(email, password);
 
+  const getProfilUser = useCallback(async () => {
+    if (user !== null) {
+      selectProfilById(user.id).then(async ({ data }) => {
+        const res = data as Profile;
+        setProfile(res);
+        const accounts = saveAccountConnect(res);
+
+        const today = moment().format("YYYY-MM-DD");
+        const lastPlay = moment(res.lastchallengeplay).format("YYYY-MM-DD");
+
+        const diffDays = moment(today).diff(moment(lastPlay), "days");
+
+        setStreak(diffDays > 1 ? 0 : res.streak);
+        await updateProfilByFunction(accounts);
+      });
+    } else {
+      setProfile(null);
+    }
+  }, [user]);
+
   useEffect(() => {
-    const getProfilUser = async () => {
-      if (user) {
-        selectProfilById(user.id).then(async ({ data }) => {
-          const res = data as Profile;
-          setProfile(res);
-          const accounts = saveAccountConnect(res);
-
-          const dateLastPlayChallenge = moment(res.lastchallengeplay);
-          const diffDays = moment().diff(dateLastPlayChallenge, "days");
-
-          setStreak(diffDays > 1 ? 0 : res.streak);
-          await updateProfilByFunction(accounts);
-        });
-      } else {
-        setProfile(null);
-      }
-    };
-    localStorage.setItem("user", JSON.stringify(user));
     getProfilUser();
+  }, [getProfilUser]);
+
+  useEffect(() => {
+    localStorage.setItem("user", JSON.stringify(user));
   }, [user]);
 
   const saveAccountConnect = (profile: Profile) => {

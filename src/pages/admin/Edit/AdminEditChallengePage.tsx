@@ -22,7 +22,7 @@ import { BasicSearchInput } from "src/component/Input";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
 import { EditChallengeGameModal } from "src/component/modal/EditChallengeGameModal";
 import { SeeChallengeModal } from "src/component/modal/SeeChallengeModal";
-import { ProfileBlock } from "src/component/profile/ProfileBlock";
+import { ProfileAdminBlock, ProfileBlock } from "src/component/profile/ProfileBlock";
 import { useMessage } from "src/context/MessageProvider";
 import { DateFormat } from "src/models/enum/DateEnum";
 import { Colors } from "src/style/Colors";
@@ -61,7 +61,7 @@ export default function AdminEditChallengePage() {
   const data = useMemo(() => {
     return [...challengeGames].map((el) => ({
       profile: (
-        <ProfileBlock profile={el.profile} variant="h4" avatarSize={50} />
+        <ProfileAdminBlock profile={el.profile} variant="h4" avatarSize={50} />
       ),
       score: (
         <Typography variant="h4" noWrap>

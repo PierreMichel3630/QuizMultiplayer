@@ -2,7 +2,7 @@ import { Container, Grid } from "@mui/system";
 import { useState } from "react";
 import { AllGameModeEnum } from "src/models/enum/GameEnum";
 import { GroupButtonAllGameMode } from "../button/ButtonGroup";
-import { RankingChallengePerDate } from "./RankingChallenge";
+import { RankingChallengeHome } from "./RankingChallenge";
 import { RankingDuel } from "./RankingDuel";
 import { RankingSolo } from "./RankingSolo";
 
@@ -30,9 +30,8 @@ export const RankingHomeBlock = () => {
               duel: <RankingDuel itemPerPage={ITEM_PER_PAGE} />,
               solo: <RankingSolo itemPerPage={ITEM_PER_PAGE} />,
               challenge: (
-                <RankingChallengePerDate
+                <RankingChallengeHome
                   itemPerPage={ITEM_PER_PAGE}
-                  canChangeDate={false}
                 />
               ),
             }[tab]

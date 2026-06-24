@@ -1,27 +1,13 @@
-import { Alert, Box, Grid, TableCell, Typography } from "@mui/material";
+import { Alert, Box, Grid, TableCell } from "@mui/material";
 import { percent, px } from "csx";
-import moment, { Moment } from "moment";
+import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
 import { selectStatAccomplishmentPaginate } from "src/api/accomplishment";
-import {
-  selectChallengeAllTimePaginate,
-  selectChallengeDayPaginate,
-  selectChallengeMonthPaginate,
-  selectChallengeWeekPaginate,
-} from "src/api/challenge";
 import { useApp } from "src/context/AppProvider";
 import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
 import { StatAccomplishmentWithRanking } from "src/models/Accomplishment";
-import {
-  ChallengeAvg,
-  ChallengeRankingAllTime,
-  ChallengeRankingDay,
-  ChallengeRankingMonth,
-  ChallengeRankingWeek,
-} from "src/models/Challenge";
 import {
   ClassementChallengeEnum,
   ClassementChallengeGlobalTimeEnum,
@@ -29,45 +15,33 @@ import {
 } from "src/models/enum/ClassementEnum";
 import { DateFormat } from "src/models/enum/DateEnum";
 import { FRIENDSTATUS } from "src/models/Friend";
+import { Profile } from "src/models/Profile";
 import {
   GroupButtonChallenge,
   GroupButtonChallengeGlobal,
   GroupButtonChallengeTime,
 } from "../button/ButtonGroup";
+import { ChallengeProfilDialog } from "../challenge/ChallengeProfilDialog";
 import { WinBlock } from "../challenge/WinBlock";
 import {
-  CellRankingChallengeDay,
+  RecapAvgChallenge,
   ResultAllTimeChallengeBlock,
   ResultDayChallengeBlock,
   ResultMonthChallengeBlock,
-  ResultWeekChallengeBlock,
+  ResultWeekChallengeBlock
 } from "../ChallengeBlock";
 import { ChangeDateBlock } from "../date/ChangeDateBlock";
 import { BasicSearchInput } from "../Input";
 import { Pagination } from "../page/Pagination";
 import { SortButton } from "../SortBlock";
 import { OnlyFriendSwitch } from "../switch/OnlyFriendSwitch";
+import { DataRankingChallenge, RankingTable } from "../table/RankingTable";
 import {
-  DataRankingChallenge,
-  RankingTable,
-} from "../table/RankingTable";
-import { ChallengeProfilDialog } from "../challenge/ChallengeProfilDialog";
-
-interface Sort {
-  value: string;
-  ascending: boolean;
-}
-
-interface Query {
-  date: Moment;
-  page: number;
-  rowsPerPage: number;
-  search: string;
-  isOnlyFriend: boolean;
-  friends?: Array<string>;
-  sort: Sort;
-  multicompte?: boolean;
-}
+  QueryGlobal,
+  QueryPerDate,
+  RankingHookData,
+  useRankingChallengePerDate,
+} from "./hook/RankingHook";
 
 export const RankingChallenge = () => {
   const [type, setType] = useState<ClassementChallengeEnum>(
@@ -95,10 +69,6 @@ export const RankingChallenge = () => {
     </Grid>
   );
 };
-
-interface QueryGlobal extends Query {
-  typeglobal: ClassementChallengeGlobalTimeEnum;
-}
 
 export const RankingChallengeGlobal = () => {
   const { t } = useTranslation();
@@ -183,7 +153,7 @@ export const RankingChallengeGlobal = () => {
         query.page,
         query.rowsPerPage,
         query.friends,
-        query.multicompte
+        query.multicompte,
       ).then(({ data }) => {
         const res = data.data as Array<StatAccomplishmentWithRanking>;
         const total = data.total;
@@ -294,48 +264,179 @@ export const RankingChallengeGlobal = () => {
   );
 };
 
-interface QueryPerDate extends Query {
-  typeperdate: ClassementChallengeTimeEnum;
-}
+// Page Challenge
 interface PropsRankingChallengePerDate {
   itemPerPage?: number;
-  canChangeDate?: boolean;
 }
-export const RankingChallengePerDate = ({
+const RankingChallengePerDate = ({
   itemPerPage = 10,
-  canChangeDate = true,
 }: PropsRankingChallengePerDate) => {
-  const { t } = useTranslation();
-  const { profile, hasPlayChallenge, multicompte } = useAuth();
-  const { friends } = useApp();
-  const { language } = useUser();
-  const [searchParams] = useSearchParams();
+  const ranking = useRankingChallengePerDate(itemPerPage);
+  const { profile } = useAuth();
 
-  const [query, setQuery] = useState<QueryPerDate>({
-    date: moment(),
-    typeperdate: searchParams.has("time")
-      ? (searchParams.get("time") as ClassementChallengeTimeEnum)
-      : ClassementChallengeTimeEnum.day,
-    page: 0,
-    rowsPerPage: itemPerPage,
-    search: "",
-    isOnlyFriend: false,
-    friends: undefined,
-    multicompte: multicompte,
-    sort: { value: "score", ascending: false },
-  });
-  const [count, setCount] = useState<null | number>(null);
-  const [total, setTotal] = useState<null | number>(null);
-  const [avg, setAvg] = useState<null | ChallengeAvg>(null);
-  const [data, setData] = useState<Array<DataRankingChallenge>>([]);
-  const [loading, setLoading] = useState(true);
+  return (
+    <Grid container spacing={1}>
+      <Grid size={12}>
+        <RankingChallengeFilters
+          query={ranking.query}
+          setQuery={ranking.setQuery}
+        />
+      </Grid>
+      {profile && (
+        <Grid size={12}>
+          <RankingChallengeSummary profile={profile} query={ranking.query} />
+        </Grid>
+      )}
+      <Grid size={12}>
+        <BaseRankingChallenge ranking={ranking} />
+      </Grid>
+    </Grid>
+  );
+};
+
+// Page Home
+interface PropsRankingChallengeHome {
+  itemPerPage?: number;
+}
+export const RankingChallengeHome = ({
+  itemPerPage = 5,
+}: PropsRankingChallengeHome) => {
+  const ranking = useRankingChallengePerDate(itemPerPage);
+  const { profile } = useAuth();
+
+  return (
+    <Grid container spacing={1}>
+      <Grid size={12}>
+        <RankingChallengeFilters
+          query={ranking.query}
+          setQuery={ranking.setQuery}
+        />
+      </Grid>
+      {profile && (
+        <Grid size={12}>
+          <RankingChallengeSummary profile={profile} query={ranking.query} />
+        </Grid>
+      )}
+      <Grid size={12}>
+        <BaseRankingChallenge ranking={ranking} />
+      </Grid>
+    </Grid>
+  );
+};
+
+// Page de resultat du defis du jour
+interface PropsRankingChallengeResult {
+  itemPerPage?: number;
+}
+export const RankingChallengeResult = ({
+  itemPerPage = 3,
+}: PropsRankingChallengeResult) => {
+  const ranking = useRankingChallengePerDate(itemPerPage);
+  const { profile } = useAuth();
+
+  return (
+    <Grid container spacing={1}>
+      {profile && (
+        <Grid size={12}>
+          <RankingChallengeSummary profile={profile} query={ranking.query} />
+        </Grid>
+      )}
+      <Grid size={12}>
+        <BaseRankingChallenge ranking={ranking} />
+      </Grid>
+    </Grid>
+  );
+};
+
+interface RankingChallengeFiltersProps {
+  query: QueryPerDate;
+  setQuery: React.Dispatch<React.SetStateAction<QueryPerDate>>;
+}
+
+const RankingChallengeFilters = ({
+  query,
+  setQuery,
+}: RankingChallengeFiltersProps) => {
+  return (
+    <>
+      <Grid size={12}>
+        <GroupButtonChallengeTime
+          type={ClassementChallengeTimeEnum}
+          selected={query.typeperdate}
+          onChange={(value) => {
+            setQuery((prev) => ({
+              ...prev,
+              sort:
+                value === ClassementChallengeTimeEnum.day
+                  ? { value: "score", ascending: false }
+                  : prev.sort,
+              typeperdate: value as ClassementChallengeTimeEnum,
+              page: 0,
+              date: moment(),
+            }));
+          }}
+        />
+      </Grid>
+
+      <ChangeDateBlock
+        date={query.date}
+        format={query.typeperdate as unknown as DateFormat}
+        onChange={(value) =>
+          setQuery((prev) => ({
+            ...prev,
+            page: 0,
+            date: value,
+          }))
+        }
+      />
+    </>
+  );
+};
+
+interface RankingChallengeSummaryProps {
+  query: QueryPerDate;
+  profile: Profile;
+}
+
+const RankingChallengeSummary = ({
+  query,
+  profile,
+}: RankingChallengeSummaryProps) => {
+  return (
+    <Grid>
+      {
+        {
+          day: <ResultDayChallengeBlock date={query.date} profile={profile} />,
+          week: (
+            <ResultWeekChallengeBlock date={query.date} profile={profile} />
+          ),
+          month: (
+            <ResultMonthChallengeBlock date={query.date} profile={profile} />
+          ),
+          alltime: <ResultAllTimeChallengeBlock profile={profile} />,
+        }[query.typeperdate]
+      }
+    </Grid>
+  );
+};
+
+interface PropsBaseRankingChallenge {
+  ranking: RankingHookData;
+}
+const BaseRankingChallenge = ({
+  ranking,
+}: PropsBaseRankingChallenge) => {
+  const { t } = useTranslation();
+  const { profile, multicompte } = useAuth();
+  const { friends } = useApp();
+
   const [dataRankingChallenge, setDataRankingChallenge] = useState<
     DataRankingChallenge | undefined
   >(undefined);
 
   const hasSearch = useMemo(
-    () => query.search !== "" || query.isOnlyFriend,
-    [query],
+    () => ranking.query.search !== "" || ranking.query.isOnlyFriend,
+    [ranking.query],
   );
 
   const idFriends = useMemo(
@@ -357,78 +458,8 @@ export const RankingChallengePerDate = ({
     [friends, profile],
   );
 
-  const sorts = useMemo(
-    () =>
-      query.typeperdate === ClassementChallengeTimeEnum.day
-        ? [
-            {
-              value: "score",
-              label: t("sort.score"),
-              sort: () =>
-                setQuery((prev) => ({
-                  ...prev,
-                  page: 0,
-                  sort: { value: "score", ascending: false },
-                })),
-            },
-            {
-              value: "time",
-              label: t("sort.time"),
-              sort: () =>
-                setQuery((prev) => ({
-                  ...prev,
-                  page: 0,
-                  sort: { value: "time", ascending: true },
-                })),
-            },
-          ]
-        : [
-            {
-              value: "score",
-              label: t("sort.score"),
-              sort: () =>
-                setQuery((prev) => ({
-                  ...prev,
-                  page: 0,
-                  sort: { value: "score", ascending: false },
-                })),
-            },
-            {
-              value: "time",
-              label: t("sort.time"),
-              sort: () =>
-                setQuery((prev) => ({
-                  ...prev,
-                  page: 0,
-                  sort: { value: "time", ascending: true },
-                })),
-            },
-            {
-              value: "pointsavg",
-              label: t("sort.pointsavg"),
-              sort: () =>
-                setQuery((prev) => ({
-                  ...prev,
-                  page: 0,
-                  sort: { value: "scoreavg", ascending: false },
-                })),
-            },
-            {
-              value: "games",
-              label: t("sort.games"),
-              sort: () =>
-                setQuery((prev) => ({
-                  ...prev,
-                  page: 0,
-                  sort: { value: "games", ascending: false },
-                })),
-            },
-          ],
-    [t, query],
-  );
-
   useEffect(() => {
-    setQuery((prev) => ({
+    ranking.setQuery((prev) => ({
       ...prev,
       multicompte: multicompte,
     }));
@@ -438,7 +469,7 @@ export const RankingChallengePerDate = ({
     _event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number,
   ) => {
-    setQuery((prev) => ({
+    ranking.setQuery((prev) => ({
       ...prev,
       page: newPage,
     }));
@@ -446,7 +477,7 @@ export const RankingChallengePerDate = ({
 
   const onChangeIsOnlyFriend = useCallback(
     (value: boolean) => {
-      setQuery((prev) => ({
+      ranking.setQuery((prev) => ({
         ...prev,
         multicompte: value ? undefined : multicompte,
         friends: value ? [...idFriends] : undefined,
@@ -457,360 +488,8 @@ export const RankingChallengePerDate = ({
     [idFriends, multicompte],
   );
 
-  useEffect(() => {
-    const getRanking = () => {
-      if (query.typeperdate === ClassementChallengeTimeEnum.day) {
-        if (language) {
-          selectChallengeDayPaginate(
-            query.date,
-            query.search,
-            query.sort.value,
-            query.sort.ascending,
-            query.page,
-            query.rowsPerPage,
-            query.friends,
-            query.multicompte,
-          ).then(({ data }) => {
-            const values: Array<ChallengeRankingDay> = data.data;
-            const count: number = data.count;
-            const total: number = data.total;
-            const avg: ChallengeAvg = data.avg;
-            const canSeeDayChallenge =
-              hasPlayChallenge ||
-              query.date.diff(moment(), "day") < 0 ||
-              profile?.isadmin;
-            const newdata = values.map((el) => {
-              return {
-                profile: el.profile,
-                value: canSeeDayChallenge ? (
-                  <TableCell
-                    sx={{
-                      p: px(4),
-                      color: "inherit",
-                    }}
-                    width={70}
-                  >
-                    <CellRankingChallengeDay value={el} />
-                  </TableCell>
-                ) : (
-                  <></>
-                ),
-                rank: el.ranking,
-              };
-            });
-            setCount(count);
-            setTotal(total);
-            setAvg(avg);
-            setData(newdata);
-            setLoading(false);
-          });
-        }
-      } else if (query.typeperdate === ClassementChallengeTimeEnum.month) {
-        selectChallengeMonthPaginate(
-          query.date.format("MM/YYYY"),
-          query.search,
-          query.sort.value,
-          query.sort.ascending,
-          query.page,
-          query.rowsPerPage,
-          query.friends,
-          query.multicompte,
-        ).then(({ data }) => {
-          const values: Array<ChallengeRankingMonth> = data.data;
-          const count: number = data.count;
-          const total: number = data.total;
-          const avg: ChallengeAvg = data.avg;
-          const newdata = values.map((el) => {
-            return {
-              profile: el.profile,
-              value: (
-                <TableCell
-                  sx={{
-                    p: px(4),
-                    color: "inherit",
-                  }}
-                  width={92}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Box>
-                      <Typography variant="h6" noWrap>
-                        {el.score} {t("commun.pointsabbreviation")} (
-                        {el.scoreavg.toFixed(1)})
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="h6" noWrap>
-                        {(el.time / 1000).toFixed(2)}s
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        gap: px(4),
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Typography variant="h6" noWrap>
-                        {el.games}
-                      </Typography>
-                      <Typography variant="body1" noWrap>
-                        {t("commun.games")}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </TableCell>
-              ),
-              rank: el.ranking,
-            };
-          });
-          setCount(count);
-          setTotal(total);
-          setAvg(avg);
-          setData(newdata);
-          setLoading(false);
-        });
-      } else if (query.typeperdate === ClassementChallengeTimeEnum.week) {
-        selectChallengeWeekPaginate(
-          query.date.format("WW/YYYY"),
-          query.search,
-          query.sort.value,
-          query.sort.ascending,
-          query.page,
-          query.rowsPerPage,
-          query.friends,
-          query.multicompte,
-        ).then(({ data }) => {
-          const values: Array<ChallengeRankingWeek> = data.data;
-          const count: number = data.count;
-          const total: number = data.total;
-          const avg: ChallengeAvg = data.avg;
-          const newdata = values.map((el) => {
-            return {
-              profile: el.profile,
-              value: (
-                <TableCell
-                  sx={{
-                    p: px(4),
-                    color: "inherit",
-                  }}
-                  width={92}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Box>
-                      <Typography variant="h6" noWrap>
-                        {el.score} {t("commun.pointsabbreviation")} (
-                        {el.scoreavg.toFixed(1)})
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="h6" noWrap>
-                        {(el.time / 1000).toFixed(2)}s
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        gap: px(4),
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Typography variant="h6" noWrap>
-                        {el.games}
-                      </Typography>
-                      <Typography variant="body1" noWrap>
-                        {t("commun.games")}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </TableCell>
-              ),
-              rank: el.ranking,
-            };
-          });
-          setCount(count);
-          setTotal(total);
-          setAvg(avg);
-          setData(newdata);
-          setLoading(false);
-        });
-      } else if (query.typeperdate === ClassementChallengeTimeEnum.alltime) {
-        selectChallengeAllTimePaginate(
-          query.search,
-          query.sort.value,
-          query.sort.ascending,
-          query.page,
-          query.rowsPerPage,
-          query.friends,
-          query.multicompte,
-        ).then(({ data }) => {
-          const values: Array<ChallengeRankingAllTime> = data.data;
-          const count: number = data.count;
-          const total: number = data.total;
-          const avg: ChallengeAvg = data.avg;
-          const newdata = values.map((el) => {
-            return {
-              profile: el.profile,
-              value: (
-                <TableCell
-                  sx={{
-                    p: px(4),
-                    color: "inherit",
-                  }}
-                  width={100}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Box>
-                      <Typography variant="h6" noWrap>
-                        {el.score} {t("commun.pointsabbreviation")} (
-                        {el.scoreavg.toFixed(1)})
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="h6" noWrap>
-                        {(el.time / 1000).toFixed(2)}s
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        gap: px(4),
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Typography variant="h6" noWrap>
-                        {el.games}
-                      </Typography>
-                      <Typography variant="body1" noWrap>
-                        {t("commun.games")}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </TableCell>
-              ),
-              rank: el.ranking,
-            };
-          });
-          setCount(count);
-          setTotal(total);
-          setAvg(avg);
-          setData(newdata);
-          setLoading(false);
-        });
-      }
-    };
-    const timeout = setTimeout(getRanking, 200);
-    return () => clearTimeout(timeout);
-  }, [query, t, language, hasPlayChallenge]);
-
-  const dateDisplay = useMemo(() => {
-    let result = undefined;
-    const date = query.date;
-    if (query.typeperdate === ClassementChallengeTimeEnum.day) {
-      result = date.format("DD/MM/YYYY");
-    } else if (query.typeperdate === ClassementChallengeTimeEnum.month) {
-      result = date.format("MM/YYYY");
-    } else if (query.typeperdate === ClassementChallengeTimeEnum.week) {
-      const start = date.clone().weekday(1);
-      const end = date.clone().weekday(7);
-      result = `${start.format("DD MMM")} - ${end.format("DD MMM YYYY")}`;
-    }
-    return result;
-  }, [query]);
-
   return (
-    <Grid container spacing={1} justifyContent="center">
-      <Grid size={12}>
-        <GroupButtonChallengeTime
-          type={ClassementChallengeTimeEnum}
-          selected={query.typeperdate}
-          onChange={(value) => {
-            setQuery((prev) => ({
-              ...prev,
-              sort:
-                value === ClassementChallengeTimeEnum.day
-                  ? { value: "score", ascending: false }
-                  : prev.sort,
-              typeperdate: value as ClassementChallengeTimeEnum,
-              page: 0,
-              date: moment(),
-            }));
-          }}
-        />
-      </Grid>
-      {canChangeDate && dateDisplay && (
-        <ChangeDateBlock
-          date={query.date}
-          format={query.typeperdate as unknown as DateFormat}
-          onChange={(value) => {
-            setQuery((prev) => ({
-              ...prev,
-              page: 0,
-              date: value,
-            }));
-          }}
-        />
-      )}
-      <Grid>
-        {
-          {
-            day: (
-              <ResultDayChallengeBlock
-                date={query.date}
-                avg={avg}
-                total={total}
-                profile={profile}
-              />
-            ),
-            week: (
-              <ResultWeekChallengeBlock
-                date={query.date}
-                profile={profile}
-                avg={avg}
-                total={total}
-              />
-            ),
-            month: (
-              <ResultMonthChallengeBlock
-                date={query.date}
-                profile={profile}
-                avg={avg}
-                total={total}
-              />
-            ),
-            alltime: (
-              <ResultAllTimeChallengeBlock
-                profile={profile}
-                avg={avg}
-                total={total}
-              />
-            ),
-          }[query.typeperdate]
-        }
-      </Grid>
+    <Grid container spacing={1}>
       <Grid
         sx={{
           display: "flex",
@@ -831,47 +510,52 @@ export const RankingChallengePerDate = ({
           <BasicSearchInput
             label={t("commun.searchplayer")}
             onChange={(value) => {
-              setQuery((prev) => ({
+              ranking.setQuery((prev) => ({
                 ...prev,
                 search: value,
                 page: 0,
               }));
             }}
-            value={query.search}
+            value={ranking.query.search}
             clear={() => {
-              setQuery((prev) => ({
+              ranking.setQuery((prev) => ({
                 ...prev,
                 search: "",
                 page: 0,
               }));
             }}
           />
-          <SortButton menus={sorts} />
+          <SortButton menus={ranking.sorts} />
         </Box>
         {profile && (
           <OnlyFriendSwitch
-            isOnlyFriend={query.isOnlyFriend}
+            isOnlyFriend={ranking.query.isOnlyFriend}
             onChange={onChangeIsOnlyFriend}
           />
         )}
       </Grid>
+      {ranking.avg !== null && ranking.total !== null && (
+        <Grid size={12}>
+          <RecapAvgChallenge avg={ranking.avg} count={ranking.total} />
+        </Grid>
+      )}
       <Grid size={12}>
-        {data.length === 0 && !loading ? (
+        {ranking.data.length === 0 && !ranking.loading ? (
           <Alert severity="warning" sx={{ width: percent(100) }}>
             {t(hasSearch ? "alert.noresultsearch" : "alert.noresultgame")}
           </Alert>
         ) : (
           <>
             <RankingTable
-              data={data}
-              loading={loading}
+              data={ranking.data}
+              loading={ranking.loading}
               onClick={setDataRankingChallenge}
             />
             <Pagination
-              total={count}
-              page={query.page}
+              total={ranking.count}
+              page={ranking.query.page}
               handleChangePage={handleChangePage}
-              rowsPerPage={query.rowsPerPage}
+              rowsPerPage={ranking.query.rowsPerPage}
             />
           </>
         )}

@@ -21,15 +21,15 @@ export default function NotificationOutlet() {
         (el) =>
           (el.type === NotificationType.duel_request ||
             el.type === NotificationType.battle_request) &&
-          !el.isread
+          !el.isread,
       ),
-    [notifications]
+    [notifications],
   );
 
   useEffect(() => {
     const handleVisibility = async () => {
       if (profile?.id && !document.hidden) {
-        await updateProfilByFunction()
+        await updateProfilByFunction();
       }
     };
     document.addEventListener("visibilitychange", handleVisibility);
@@ -50,7 +50,7 @@ export default function NotificationOutlet() {
           gap: 2,
           alignItems: "end",
           flexDirection: "column",
-          zIndex: 20,
+          zIndex: 2000,
           maxWidth: percent(100),
           margin: px(5),
         }}

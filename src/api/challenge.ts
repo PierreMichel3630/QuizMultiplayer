@@ -127,11 +127,12 @@ export const launchChallenge = (date: string, language: number) =>
     },
   });
 
-export const endChallenge = (questions: Array<unknown>, gameUuid: string) =>
+export const endChallenge = (questions: Array<unknown>, gameUuid: string, time: number) =>
   supabase.functions.invoke(SUPABASE_ENDCHALLENGE_FUNCTION, {
     body: {
       questions,
       gameUuid,
+      time
     },
   });
 

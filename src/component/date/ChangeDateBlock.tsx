@@ -55,29 +55,31 @@ export const ChangeDateBlock = ({
   }, [date, format, onChange]);
 
   return (
-    <Grid size={12}>
-      <Box
-        sx={{
-          display: "flex",
-          gap: 2,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <IconButton onClick={substractDate} size="small">
-          <KeyboardArrowLeftIcon fontSize="large" />
-        </IconButton>
-        <Typography variant="h4" sx={{ textAlign: "center" }}>
-          {dateDisplay}
-        </Typography>
-        <IconButton
-          onClick={addDate}
-          disabled={isDisabledDate ? isDisabledNextDay : false}
-          size="small"
+    dateDisplay && (
+      <Grid size={12}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          <KeyboardArrowRightIcon fontSize="large" />
-        </IconButton>
-      </Box>
-    </Grid>
+          <IconButton onClick={substractDate} size="small">
+            <KeyboardArrowLeftIcon fontSize="large" />
+          </IconButton>
+          <Typography variant="h4" sx={{ textAlign: "center" }}>
+            {dateDisplay}
+          </Typography>
+          <IconButton
+            onClick={addDate}
+            disabled={isDisabledDate ? isDisabledNextDay : false}
+            size="small"
+          >
+            <KeyboardArrowRightIcon fontSize="large" />
+          </IconButton>
+        </Box>
+      </Grid>
+    )
   );
 };

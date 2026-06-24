@@ -1,5 +1,5 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import { px } from "csx";
+import { padding, px } from "csx";
 import { useEffect, useMemo, useState } from "react";
 import { Trans } from "react-i18next";
 import {
@@ -28,8 +28,6 @@ import { RankingAverage } from "./ranking/RankingAverage";
 
 interface PropsBase {
   profile: Profile | null;
-  avg: ChallengeAvg | null;
-  total: number | null;
 }
 
 interface PropsResultDayChallengeBlock extends PropsBase {
@@ -39,8 +37,6 @@ interface PropsResultDayChallengeBlock extends PropsBase {
 export const ResultDayChallengeBlock = ({
   date,
   profile,
-  avg,
-  total,
 }: PropsResultDayChallengeBlock) => {
   const [stat, setStat] = useState<null | ChallengeRankingDay>(null);
 
@@ -60,7 +56,7 @@ export const ResultDayChallengeBlock = ({
     getGame();
   }, [date, profile]);
 
-  return <ResultChallengeBlock stat={stat} avg={avg} total={total} />;
+  return <ResultChallengeBlock stat={stat} />;
 };
 
 interface PropsResultWeekChallengeBlock extends PropsBase {
@@ -69,9 +65,7 @@ interface PropsResultWeekChallengeBlock extends PropsBase {
 
 export const ResultWeekChallengeBlock = ({
   date,
-  profile,
-  avg,
-  total,
+  profile
 }: PropsResultWeekChallengeBlock) => {
   const [stat, setStat] = useState<null | ChallengeRankingWeek>(null);
 
@@ -89,7 +83,7 @@ export const ResultWeekChallengeBlock = ({
     getStat();
   }, [date, profile]);
 
-  return <ResultChallengeBlock stat={stat} avg={avg} total={total} />;
+  return <ResultChallengeBlock stat={stat} />;
 };
 
 interface PropsResultMonthChallengeBlock extends PropsBase {
@@ -98,9 +92,7 @@ interface PropsResultMonthChallengeBlock extends PropsBase {
 
 export const ResultMonthChallengeBlock = ({
   date,
-  profile,
-  avg,
-  total,
+  profile
 }: PropsResultMonthChallengeBlock) => {
   const [stat, setStat] = useState<null | ChallengeRankingAllTime>(null);
 
@@ -119,13 +111,11 @@ export const ResultMonthChallengeBlock = ({
     getStat();
   }, [profile, date]);
 
-  return <ResultChallengeBlock stat={stat} avg={avg} total={total} />;
+  return <ResultChallengeBlock stat={stat} />;
 };
 
 export const ResultAllTimeChallengeBlock = ({
-  profile,
-  avg,
-  total,
+  profile
 }: PropsBase) => {
   const [stat, setStat] = useState<null | ChallengeRankingAllTime>(null);
 
@@ -141,18 +131,14 @@ export const ResultAllTimeChallengeBlock = ({
     getStat();
   }, [profile]);
 
-  return <ResultChallengeBlock stat={stat} avg={avg} total={total} />;
+  return <ResultChallengeBlock stat={stat} />;
 };
 
 interface PropsResultChallengeBlock {
   stat: ChallengeRankingDate | null;
-  avg: ChallengeAvg | null;
-  total: number | null;
 }
 const ResultChallengeBlock = ({
   stat,
-  avg,
-  total,
 }: PropsResultChallengeBlock) => {
   const numberQuestion = useMemo(
     () => NUMBER_QUESTIONS_CHALLENGE * (stat?.games ?? 1),
@@ -166,17 +152,11 @@ const ResultChallengeBlock = ({
       alignItems="center"
       justifyContent="space-around"
     >
-      {avg !== null && total !== null && (
-        <Grid size={12}>
-          <RecapAvgChallenge avg={avg} count={total} />
-        </Grid>
-      )}
-
-      {stat !== null && total !== null && (
+      {stat !== null  && (
         <Grid size={12}>
           <Paper
             sx={{
-              p: px(5),
+              p: padding(5, 15),
             }}
             elevation={8}
           >
@@ -185,7 +165,7 @@ const ResultChallengeBlock = ({
               columnSpacing={3}
               rowSpacing={1}
               alignItems="center"
-              justifyContent="center"
+              justifyContent="space-between"
             >
               <Grid>
                 <Rank value={stat.ranking} />
@@ -242,7 +222,7 @@ interface PropsRecapAvgChallenge {
   count: number;
 }
 
-const RecapAvgChallenge = ({ avg, count }: PropsRecapAvgChallenge) => {
+export const RecapAvgChallenge = ({ avg, count }: PropsRecapAvgChallenge) => {
   return (
     <RankingAverage
       value={avg.score}
