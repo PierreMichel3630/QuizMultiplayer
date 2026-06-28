@@ -9,7 +9,7 @@ export interface QuestionPropose {
   id: number;
   image?: string;
   audio?: string;
-  typequestion: string;
+  typequestion: TypeQuestionEnum;
   difficulty: string;
   isqcm: boolean | null;
   validate: boolean;
@@ -24,7 +24,7 @@ export interface QuestionAdmin {
   id: number;
   image?: string;
   audio?: string;
-  typequestion: string;
+  typequestion: TypeQuestionEnum;
   difficulty: string;
   isqcm: boolean | null;
   validate: boolean;

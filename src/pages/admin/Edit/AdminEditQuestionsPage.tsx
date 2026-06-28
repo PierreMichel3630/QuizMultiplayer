@@ -37,7 +37,7 @@ export default function AdminEditQuestionsPage() {
   const theme = useTheme();
   const smallScreen = useMediaQuery(theme.breakpoints.down("lg"));
 
-  const ITEMPERPAGE = 29;
+  const ITEMPERPAGE = 50;
 
   const [themes, setThemes] = useState<Array<ThemeTranslationWithTheme>>([]);
   const [count, setCount] = useState<number>(1);
@@ -81,7 +81,7 @@ export default function AdminEditQuestionsPage() {
     setQuestions([]);
     setQuestion(undefined);
     if (page !== null) {
-      selectQuestion(page - 1, ITEMPERPAGE, filter).then(({ data }) => {
+      selectQuestion(page - 1, ITEMPERPAGE, filter).then((data) => {
         setQuestions(data ?? []);
       });
     }

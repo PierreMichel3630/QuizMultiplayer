@@ -43,7 +43,7 @@ export const selectQuestionThemeByQuestion = (question: number) =>
 export const deleteQuestionThemeById = (id: number) =>
   supabase.from(SUPABASE_QUESTIONTHEME_TABLE).delete().eq("id", id);
 
-export const selectQuestion = (
+export const selectQuestion = async (
   page: number,
   itemperpage: number,
   filter: FilterQuestion,
@@ -51,23 +51,68 @@ export const selectQuestion = (
   const from = page * itemperpage;
   const to = from + itemperpage - 1;
 
-  let query = supabase
+  // 1. Récupération des ids uniquement
+  let idQuery = supabase
+    .from(SUPABASE_QUESTIONTHEME_TABLE)
+    .select("*")
+    .order("id", { ascending: true });
+
+  if (filter.ids.length > 0) {
+    idQuery = idQuery.in("question", filter.ids);
+  }
+
+  if (filter.theme) {
+    idQuery = idQuery.eq("theme", filter.theme).not("theme", "is", null);
+  }
+
+  const { data: ids, error: idsError } = await idQuery.range(from, to);
+
+  if (idsError) throw idsError;
+
+  const questionIds = ids.map((q) => q.question);
+
+  if (questionIds.length === 0) {
+    return [];
+  }
+  // 2. Récupération complète uniquement des questions de la page
+  const { data: questions, error } = await supabase
     .from(SUPABASE_QUESTION_TABLE)
     .select(
-      "*, questiontranslation(*, language(*)), questionanswer(*, answer(*, answertranslation(*, language(*)))), questiontheme!inner(*, theme(id, color,image ,themetranslation!inner(name, language(*))))",
-    );
-  if (filter.ids.length > 0) {
-    query = query.in("id", filter.ids);
-  }
-  if (filter.theme) {
-    query = query
-      .eq("questiontheme.theme.id", filter.theme)
-      .not("questiontheme.theme", "is", null);
-  }
-  query = query
-    .order("id", { ascending: true })
-    .range(from, to);
-  return query;
+      `
+      *,
+      questiontranslation(
+        *, language(*)
+      ),
+      questionanswer(
+        *,
+        answer(
+          *,
+          answertranslation(
+            *,
+            language(*)
+          )
+        )
+      ),
+      questiontheme(
+        *,
+        theme(
+          id,
+          color,
+          image,
+          themetranslation(
+            name,
+            language(*)
+          )
+        )
+      )
+    `,
+    )
+    .in("id", questionIds)
+    .order("id");
+
+  if (error) throw error;
+
+  return questions;
 };
 
 export const insertQuestionTheme = (value: QuestionThemeInsert) =>
@@ -115,7 +160,7 @@ export const countQuestions = (filter: FilterQuestion) => {
   if (filter.theme) {
     query = query.eq("theme", filter.theme);
   }
-  return query.not("question.image", "is", null);
+  return query;
 };
 
 export const selectQuestionsPropose = () =>
