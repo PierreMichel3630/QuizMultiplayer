@@ -242,9 +242,9 @@ export default function PlayChallengePage() {
                   elapsedRef.current = ms;
 
                   if (timerRef.current) {
-                    timerRef.current.innerText = `${(ms / 1000).toFixed(3)}s`;
+                    timerRef.current.innerText = `${Math.floor(ms / 1000)}s`;
                   }
-                }, 40);
+                }, 1000);
               }, DELAY_START);
             });
           }
@@ -335,7 +335,7 @@ export default function PlayChallengePage() {
           </Box>
           <Box>
             <Typography variant="h2" component="span" sx={{fontSize: important(px(35))}} ref={timerRef}>
-              0.000s
+              0s
             </Typography>
           </Box>
         </Box>

@@ -19,9 +19,11 @@ import { decryptToNumber } from "src/utils/crypt";
 import { PreloadImages } from "src/utils/preload";
 import { verifyResponseCrypt } from "src/utils/response";
 import { PREFIX_LOCALSTORAGE_GAME } from "src/utils/config";
+import { useAuth } from "src/context/AuthProviderSupabase";
 
 export default function SoloPage() {
   const { t } = useTranslation();
+  const { profile } = useAuth();
   const { language, sound } = useUser();
   const { uuidGame } = useParams();
   const navigate = useNavigate();
@@ -244,9 +246,9 @@ export default function SoloPage() {
           gap: 1,
         }}
       >
-        {game && (
+        {profile && (
           <Box>
-            <ScoreThemeBlock theme={game.theme} score={score} />
+            <ScoreThemeBlock profile={profile} score={score} />
           </Box>
         )}
         <Box

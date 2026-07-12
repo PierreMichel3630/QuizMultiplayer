@@ -60,8 +60,8 @@ export const Colors = {
   silver: grey[500],
   bronze: "#CD7F32",
 
-  correctanswer: "#08c469",
-  correctanswerborder: green["A200"],
+  correctanswer: green[500],
+  correctanswerborder: green[800],
   wronganswer: "#fc4a3d",
   wronganswerborder: red[500],
   sameanswer: yellow[200],

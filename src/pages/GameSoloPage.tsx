@@ -16,10 +16,12 @@ import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
 import { SkeletonQuestion } from "src/component/skeleton/SkeletonQuestion";
 import { SoloGame } from "src/models/Game";
 import { QuestionResult, QuestionResultV1 } from "src/models/Question";
+import { useAuth } from "src/context/AuthProviderSupabase";
 
 export default function GameSoloPage() {
   const { t } = useTranslation();
   const { uuid } = useParams();
+  const { profile } = useAuth();
   const navigate = useNavigate();
 
   const [game, setGame] = useState<undefined | SoloGame>(undefined);
@@ -100,9 +102,11 @@ export default function GameSoloPage() {
           >
             {game && (
               <Grid container spacing={1}>
-                <Grid sx={{ mb: 1 }} size={12}>
-                  <ScoreThemeBlock theme={game.theme} score={game.points} />
-                </Grid>
+                {profile && (
+                  <Grid sx={{ mb: 1 }} size={12}>
+                    <ScoreThemeBlock profile={profile} score={game.points} />
+                  </Grid>
+                )}
                 {questionsDisplay.map((el, index) => (
                   <Fragment key={index}>
                     <Grid size={12}>

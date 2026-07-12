@@ -11,19 +11,34 @@ import { QuestionResult } from "src/models/Question";
 import { Colors } from "src/style/Colors";
 
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import { PREFIX_LOCALSTORAGE_GAME } from "src/utils/config";
+import { HeaderTrainingGame } from "./HeaderTrainingGame";
+import { Profile } from "src/models/Profile";
+import { ImageThemeBlock } from "src/component/ImageThemeBlock";
+import { TextNameBlock } from "src/component/language/TextLanguageBlock";
 
 interface Props {
   isAllQuestion?: boolean;
   game?: TrainingGame;
+  goodAnswer: number;
+  badAnswer: number;
+  profile: Profile | null;
 }
 
 export const EndTrainingGameBlock = ({
   game,
   isAllQuestion = false,
+  goodAnswer,
+  badAnswer,
+  profile,
 }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const localStorageId = useMemo(() => `game-training-${game?.uuid}`, [game]);
+
+  const localStorageId = useMemo(
+    () => `${PREFIX_LOCALSTORAGE_GAME}${game?.uuid}`,
+    [game],
+  );
 
   const [maxIndex, setMaxIndex] = useState(5);
   const [questionReport, setQuestionReport] = useState<
@@ -32,7 +47,7 @@ export const EndTrainingGameBlock = ({
 
   const questions = useMemo(
     () => JSON.parse(localStorage.getItem(localStorageId) ?? "[]"),
-    [localStorageId]
+    [localStorageId],
   );
 
   useEffect(() => {
@@ -61,6 +76,28 @@ export const EndTrainingGameBlock = ({
   return (
     <Box sx={{ display: "flex", width: percent(100), mb: 6 }}>
       <Grid container spacing={1}>
+        <Grid size={12}>
+          <HeaderTrainingGame
+            profile={profile}
+            goodAnswer={goodAnswer}
+            badAnswer={badAnswer}
+          />
+        </Grid>
+        {game?.theme && (
+          <Grid
+            size={12}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <ImageThemeBlock theme={game.theme} size={30} />
+
+            <TextNameBlock variant="h4" values={game.theme.themetranslation} />
+          </Grid>
+        )}
         {isAllQuestion && (
           <Grid size={12}>
             <Alert severity="warning" sx={{ width: percent(100) }}>
@@ -68,15 +105,6 @@ export const EndTrainingGameBlock = ({
             </Alert>
           </Grid>
         )}
-        <Grid size={12}>
-          <Divider
-            sx={{
-              borderBottomWidth: 5,
-              borderColor: Colors.white,
-              borderRadius: px(5),
-            }}
-          />
-        </Grid>
         <Grid size={12}>
           <Grid container spacing={1}>
             {questionsDisplay.map((el, index) => (

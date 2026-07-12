@@ -15,7 +15,7 @@ export const InfoBlock = ({ title, value, content }: Props) => {
 
   const color = useMemo(
     () => (mode === "dark" ? Colors.lightgrey2 : Colors.grey5),
-    [mode]
+    [mode],
   );
 
   return (
@@ -33,6 +33,29 @@ export const InfoBlock = ({ title, value, content }: Props) => {
       {content !== undefined && (
         <Box sx={{ display: "flex", justifyContent: "center" }}>{content}</Box>
       )}
+    </Box>
+  );
+};
+
+export const InvertInfoBlock = ({ title, value }: Props) => {
+  const { mode } = useUser();
+
+  const color = useMemo(
+    () => (mode === "dark" ? Colors.lightgrey2 : Colors.grey5),
+    [mode],
+  );
+
+  return (
+    <Box sx={{ p: px(2), textAlign: "center" }}>
+      {value !== undefined && <Typography variant="h2">{value}</Typography>}
+      <Typography
+        variant="h6"
+        sx={{
+          color: color,
+        }}
+      >
+        {title}
+      </Typography>
     </Box>
   );
 };

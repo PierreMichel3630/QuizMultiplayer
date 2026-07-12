@@ -22,9 +22,11 @@ import { getResponse, verifyResponseCrypt } from "src/utils/response";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import { PREFIX_LOCALSTORAGE_GAME } from "src/utils/config";
+import { useAuth } from "src/context/AuthProviderSupabase";
 
 export default function TrainingPage() {
   const { t } = useTranslation();
+  const { profile } = useAuth();
   const { sound, language } = useUser();
   const { uuidGame } = useParams();
   const navigate = useNavigate();
@@ -66,7 +68,12 @@ export default function TrainingPage() {
     );
     setIsLoadingQuestion(true);
     getQuestionTrainingGame(uuid, questionsgame).then(({ data }) => {
-      if (data !== null) {
+      if (data === null) {
+        setIsEnd(true);
+        setIsAllQuestion(true);
+        setIsNextAllQuestion(true);
+        setIsLoading(false);
+      } else {
         const questionSolo = data as QuestionTraining;
         let urls: Array<string> = [];
         if (questionSolo.image) {
@@ -94,11 +101,6 @@ export default function TrainingPage() {
             setIsLoading(false);
           }, 1500);
         }
-      } else {
-        setIsEnd(true);
-        setIsAllQuestion(true);
-        setIsNextAllQuestion(true);
-        setIsLoading(false);
       }
       setIsLoadingQuestion(false);
     });
@@ -162,11 +164,11 @@ export default function TrainingPage() {
     const getGame = () => {
       if (uuidGame) {
         selectTrainingGameById(uuidGame).then(({ data }) => {
-          if (data !== null) {
+          if (data === null) {
+            navigate("/");
+          } else {
             setGame(data as SoloGame);
             getQuestion(uuidGame, true);
-          } else {
-            navigate("/");
           }
         });
       }
@@ -205,11 +207,6 @@ export default function TrainingPage() {
           gap: 1,
         }}
       >
-        <HeaderTrainingGame
-          theme={game?.theme}
-          goodAnswer={goodAnswer}
-          badAnswer={badAnswer}
-        />
         <Box
           sx={{
             flexGrow: 1,
@@ -242,11 +239,19 @@ export default function TrainingPage() {
             <>
               {isEnd ? (
                 <EndTrainingGameBlock
+                  profile={profile}
+                  goodAnswer={goodAnswer}
+                  badAnswer={badAnswer}
                   game={game}
                   isAllQuestion={isAllQuestion}
                 />
               ) : (
                 <>
+                  <HeaderTrainingGame
+                    profile={profile}
+                    goodAnswer={goodAnswer}
+                    badAnswer={badAnswer}
+                  />
                   <QuestionResponseBlock
                     response={response}
                     question={question}

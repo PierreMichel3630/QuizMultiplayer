@@ -1149,6 +1149,17 @@
     "ordinal_other": "ème"
   },
   "patchnote": {
+    "2.2.12": {
+      "version": "2.2.12",
+      "date": "06/07/2026",
+      "changes": [
+        "Défis du jour: Affichage du temps global avec juste les secondes"
+      ],
+      "bug": [
+        "Rajout des questions avec la carte du monde",
+        "Mode entraînement : Pas de récapitulatif en fin de partie"
+      ]
+    },
     "2.2.9": {
       "version": "2.2.9",
       "date": "24/06/2026",

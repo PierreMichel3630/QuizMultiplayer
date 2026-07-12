@@ -8,6 +8,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useUser } from "src/context/UserProvider";
 import { Answer } from "src/models/Answer";
+import { ResponseStatus } from "src/models/enum/Response";
 import { TypeQuestionEnum } from "src/models/enum/TypeQuestionEnum";
 import { TypeResponseEnum } from "src/models/enum/TypeResponseEnum";
 import { Language } from "src/models/Language";
@@ -15,10 +16,11 @@ import { Question } from "src/models/Question";
 import { ExtraResponse } from "src/models/Response";
 import { decryptToNumber } from "src/utils/crypt";
 import { shuffle } from "src/utils/sort";
-import { ArrowLeft, ArrowRight } from "../icon/Arrow";
 import { ImageQCMBlock } from "../ImageBlock";
 import { TextLabelBlock } from "../language/TextLanguageBlock";
 import { ExtraResponseBlock } from "../response/ExtraResponseBlock";
+
+const LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
 export interface AnswerUser {
   uuid: string;
@@ -47,9 +49,6 @@ export const ResponsesQCMBlock = ({
   response,
   onSubmit,
 }: ResponsesQCMBlockProps) => {
-  const { mode } = useUser();
-
-  const isDarkMode = useMemo(() => mode === "dark", [mode]);
   const [hasAnswer, setHasAnswer] = useState(false);
 
   useEffect(() => {
@@ -68,13 +67,8 @@ export const ResponsesQCMBlock = ({
 
   const columns = useMemo(() => {
     const responsesImage = [...question.answers].filter((el) => el.image);
-    const isPairResponses = question.answers.length % 2 === 0;
-    return question.typequestion !== TypeQuestionEnum.ORDER &&
-      (hasImage || responsesImage.length > 0) &&
-      isPairResponses
-      ? 2
-      : 1;
-  }, [question, hasImage]);
+    return responsesImage.length > 0 ? 2 : 1;
+  }, [question]);
 
   const rows = useMemo(() => {
     return question.answers.length / columns;
@@ -102,7 +96,7 @@ export const ResponsesQCMBlock = ({
         mb: 1,
       }}
     >
-      {answers.map((r) => {
+      {answers.map((r, displayIndex) => {
         const index = r.id;
         const isCorrectResponse = response && Number(response.answer) === index;
         const isAnswerP1 =
@@ -111,30 +105,23 @@ export const ResponsesQCMBlock = ({
         const isAnswerP2 =
           response?.result !== undefined &&
           Number(response?.responsePlayer2) === index;
-        const colorOrder = index === 0 ? Colors.blue4 : Colors.pink2;
-        const colorBase = isDarkMode ? Colors.black2 : Colors.white;
 
-        let color: string = isQuestionOrder ? colorOrder : colorBase;
-        let borderColor: string = isDarkMode ? Colors.white : Colors.black2;
+        let status: ResponseStatus = ResponseStatus.DEFAULT;
         if (isCorrectResponse) {
-          color = Colors.correctanswer;
-          borderColor = Colors.correctanswerborder;
+          status = ResponseStatus.CORRECT;
         } else if (isAnswerP1 || isAnswerP2) {
-          color = Colors.wronganswer;
-          borderColor = Colors.wronganswerborder;
+          status = ResponseStatus.WRONG;
         }
 
         return (
           <ResponseQCMBlock
             key={index}
-            color={color}
-            borderColor={borderColor}
+            status={status}
+            letter={LETTERS[displayIndex]}
             index={index}
             labels={r.answertranslation}
             extra={response ? r.extra : undefined}
             image={r.image}
-            answer1={isAnswerP1}
-            answer2={isAnswerP2}
             hasAnswer={hasAnswer}
             type={
               isQuestionOrder
@@ -167,10 +154,6 @@ export const ResponsesQCMEditBlock = ({
   response,
   onSubmit,
 }: ResponsesQCMEditBlockProps) => {
-  const { mode } = useUser();
-
-  const isDarkMode = useMemo(() => mode === "dark", [mode]);
-
   const answer = decryptToNumber(question.answer);
 
   const isQuestionOrder = useMemo(
@@ -215,7 +198,7 @@ export const ResponsesQCMEditBlock = ({
         mb: 1,
       }}
     >
-      {question.answers.map((res) => {
+      {question.answers.map((res, displayIndex) => {
         const index = res.id;
         const isCorrectResponse = Number(answer) === index;
 
@@ -223,28 +206,23 @@ export const ResponsesQCMEditBlock = ({
           responseplayer1 !== undefined && Number(responseplayer1) === index;
         const isArrowLeft =
           responseplayer2 !== undefined && Number(responseplayer2) === index;
-        let color: string = isDarkMode ? Colors.black2 : Colors.white;
-        let borderColor: string = isDarkMode ? Colors.white : Colors.black2;
+        let status: ResponseStatus = ResponseStatus.DEFAULT;
 
         if (isCorrectResponse) {
-          color = Colors.correctanswer;
-          borderColor = Colors.correctanswerborder;
+          status = ResponseStatus.CORRECT;
         } else if (isArrowRight || isArrowLeft) {
-          color = Colors.wronganswer;
-          borderColor = Colors.wronganswerborder;
+          status = ResponseStatus.WRONG;
         }
 
         return (
           <ResponseQCMBlock
             key={index}
-            color={color}
-            borderColor={borderColor}
             index={index}
+            letter={LETTERS[displayIndex]}
+            status={status}
             labels={res.answertranslation}
             extra={response ? res.extra : undefined}
             image={res.image}
-            answer1={isArrowRight}
-            answer2={isArrowLeft}
             hasAnswer={false}
             type={
               isQuestionOrder
@@ -262,7 +240,8 @@ export const ResponsesQCMEditBlock = ({
 };
 
 interface ResponseQCMBlockProps {
-  color: string;
+  status: ResponseStatus;
+  letter: string;
   image?: string;
   labels: Array<{
     id: number;
@@ -270,10 +249,7 @@ interface ResponseQCMBlockProps {
     language: Language;
   }>;
   extra?: ExtraResponse;
-  borderColor?: string;
   index: number;
-  answer1: boolean;
-  answer2: boolean;
   hasAnswer: boolean;
   type: TypeResponseEnum;
   onSubmit: (value: AnswerUser) => void;
@@ -281,30 +257,34 @@ interface ResponseQCMBlockProps {
 
 const ResponseQCMBlock = ({
   index,
-  color,
-  borderColor = Colors.white,
+  status,
+  letter,
   image,
   labels,
   extra,
-  answer1 = false,
-  answer2 = false,
   hasAnswer = false,
   type = TypeResponseEnum.DEFAULT,
   onSubmit,
 }: ResponseQCMBlockProps) => {
-  const { uuid, mode } = useUser();
+  const { mode } = useUser();
+  const { uuid } = useUser();
 
-  const isDarkMode = useMemo(() => mode === "dark", [mode]);
-
-  const padding = type === TypeResponseEnum.DEFAULT && !image ? "4px 12px" : 0;
+  const padding = type === TypeResponseEnum.DEFAULT && !image ? "8px 12px" : 0;
   const isOrder = type === TypeResponseEnum.ORDER;
   const backgroundImage = isOrder ? image : undefined;
   const textShadow = isOrder ? "1px 1px 10px black" : "none";
   const imageDisplay = isOrder ? undefined : image;
 
-  const arrowColor: string = useMemo(
-    () => (isDarkMode ? Colors.white : Colors.black2),
-    [isDarkMode],
+  const isDarkMode = useMemo(() => mode === "dark", [mode]);
+
+  const color = useMemo(
+    () =>
+      ({
+        [ResponseStatus.CORRECT]: Colors.correctanswer,
+        [ResponseStatus.WRONG]: Colors.wronganswer,
+        [ResponseStatus.DEFAULT]: isDarkMode ? Colors.black2 : Colors.white,
+      })[status],
+    [status, isDarkMode],
   );
 
   return (
@@ -317,19 +297,19 @@ const ResponseQCMBlock = ({
         alignItems: "center",
         justifyContent: "center",
         position: "relative",
-        backgroundColor: color,
-        borderColor: borderColor,
+        backgroundColor: `color-mix(in srgb, ${color} 40%, black)`,
+        borderColor: color,
         backgroundImage: `url("${backgroundImage}")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        borderWidth: isOrder ? 10 : 1,
+        borderWidth: isOrder ? 10 : 2,
         borderStyle: "solid",
         height: percent(100),
         userSelect: "none",
         "&:hover": {
           cursor: "pointer",
         },
-        minHeight: px(50),
+        minHeight: px(45),
       }}
       variant="outlined"
       onClick={(event) => {
@@ -342,21 +322,27 @@ const ResponseQCMBlock = ({
         }
       }}
     >
-      {answer1 && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: percent(50),
-            translate: "0 -50%",
-            left: 0,
-            display: "flex",
-          }}
-        >
-          <ArrowRight size={18} color={arrowColor} />
-        </Box>
-      )}
+      <Box
+        sx={{
+          position: imageDisplay ? "absolute" : "initial",
+          top: 8,
+          left: 8,
+          width: 28,
+          height: 28,
+          borderRadius: "50%",
+          backgroundColor: color,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontWeight: "bold",
+          fontSize: 16,
+          mr: 1,
+        }}
+      >
+        <Typography variant="h6">{letter}</Typography>
+      </Box>
       {imageDisplay && <ImageQCMBlock src={imageDisplay} />}
-      <Box>
+      <Box sx={{ flex: 1, textAlign: imageDisplay ? "center" : "left" }}>
         {labels.length > 0 && (
           <TextLabelBlock
             variant="h3"
@@ -372,19 +358,6 @@ const ResponseQCMBlock = ({
         )}
         {extra && <ExtraResponseBlock extra={extra} />}
       </Box>
-      {answer2 && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: percent(50),
-            translate: "0 -50%",
-            right: 0,
-            display: "flex",
-          }}
-        >
-          <ArrowLeft size={18} color={arrowColor} />
-        </Box>
-      )}
     </Paper>
   );
 };
@@ -497,7 +470,7 @@ export const CorrectAnswerBlock = ({ question }: CorrectAnswerBlockProps) => {
 };
 
 interface PropsResponsesBlockAdmin {
-  answer: Answer;
+  answer?: Answer;
   wrongAnswers: Array<Answer>;
   language: Language;
 }
@@ -512,10 +485,12 @@ export const ResponsesBlockAdmin = ({
   const color = isDarkMode ? Colors.black2 : Colors.white;
   const borderColor = isDarkMode ? Colors.white : Colors.black2;
 
-  const numberAnswer = useMemo(
-    () => [answer, ...wrongAnswers].length,
+  const answers = useMemo(
+    () => (answer ? [answer, ...wrongAnswers] : wrongAnswers),
     [answer, wrongAnswers],
   );
+
+  const numberAnswer = useMemo(() => answers.length, [answers]);
 
   const columns = useMemo(() => {
     const isPairResponses = numberAnswer % 2 === 0;
@@ -540,21 +515,23 @@ export const ResponsesBlockAdmin = ({
         mb: 1,
       }}
     >
-      <ResponseQCMAdminBlock
-        color={Colors.correctanswer}
-        borderColor={Colors.correctanswerborder}
-        labels={answer.answertranslation}
-        image={answer.image}
-        extra={answer.extra}
-        type={TypeResponseEnum.DEFAULT}
-        language={language}
-      />
+      {answer && (
+        <ResponseQCMAdminBlock
+          color={Colors.correctanswer}
+          borderColor={Colors.correctanswerborder}
+          labels={answer.answertranslation}
+          image={answer.image}
+          extra={answer.extra}
+          type={TypeResponseEnum.DEFAULT}
+          language={language}
+        />
+      )}
       {wrongAnswers.map((wrongAnswer, index) => (
         <Fragment key={index}>
           <ResponseQCMAdminBlock
             color={color}
             borderColor={borderColor}
-            image={answer.image}
+            image={wrongAnswer.image}
             labels={wrongAnswer.answertranslation}
             extra={wrongAnswer.extra}
             type={TypeResponseEnum.DEFAULT}

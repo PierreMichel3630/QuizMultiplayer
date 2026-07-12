@@ -1,37 +1,28 @@
-import { Typography } from "@mui/material";
 import { useMemo } from "react";
 import { ScoreThemeBlock } from "src/component/ScoreThemeBlock";
-
-import { Theme } from "src/models/Theme";
+import { Profile } from "src/models/Profile";
 
 interface Props {
   goodAnswer: number;
   badAnswer: number;
-  theme?: Theme;
+  profile: Profile | null;
 }
 
-export const HeaderTrainingGame = ({ theme, goodAnswer, badAnswer }: Props) => {
+export const HeaderTrainingGame = ({
+  profile,
+  goodAnswer,
+  badAnswer,
+}: Props) => {
   const numberQuestions = useMemo(
     () => goodAnswer + badAnswer,
-    [goodAnswer, badAnswer]
+    [goodAnswer, badAnswer],
   );
 
   return (
-    theme && (
+    profile && (
       <ScoreThemeBlock
-        theme={theme}
-        extra={
-          numberQuestions > 0 ? (
-            <>
-              <Typography variant="h2">
-                {goodAnswer} / {numberQuestions}
-              </Typography>
-              <Typography variant="body1">
-                ({((goodAnswer / numberQuestions) * 100).toFixed(0)} %)
-              </Typography>
-            </>
-          ) : undefined
-        }
+        profile={profile}
+        score={`${goodAnswer} / ${numberQuestions} `}
       />
     )
   );

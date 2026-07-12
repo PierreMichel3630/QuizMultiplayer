@@ -6,7 +6,6 @@ import {
   AnswerUpdate,
 } from "src/models/Answer";
 import { Language } from "src/models/Language";
-import { QuestionAdmin } from "src/models/Question";
 import { supabase } from "./supabase";
 
 const SUPABASE_ANSWERTRANSLATION_TABLE = "answertranslation";
@@ -68,15 +67,12 @@ export const insertAnswerTranslations = (
   values: Array<AnswerTranslationInsert>,
 ) => supabase.from(SUPABASE_ANSWERTRANSLATION_TABLE).insert(values).select();
 
-export const getWrongAnswer = (question: QuestionAdmin) => {
-  const answerset =
-    question.answerset ?? question.questionanswer[0].answer.answerset;
-  const idsAnswers = [...question.questionanswer].map((el) => el.answer.id);
+export const getWrongAnswer = (answerset: number, ids: Array<number> ) => {
   return supabase
     .from(SUPABASE_ANSWER_TABLE)
     .select("*, answertranslation(*, language(*))")
     .eq("answerset", answerset)
-    .not("id", "in", `(${idsAnswers.join(",")})`)
+    .not("id", "in", `(${ids.join(",")})`)
     .limit(3);
 };
 

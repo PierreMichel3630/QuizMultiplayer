@@ -13,6 +13,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { selectStatAccomplishmentByProfile } from "src/api/accomplishment";
 import { countChallengeGameByDateAndProfileId } from "src/api/challenge";
 import {
   selectProfilById,
@@ -27,7 +28,9 @@ import {
   updatePassword,
 } from "src/api/supabase";
 import { deleteAccountUser } from "src/api/user";
+import { StatAccomplishment } from "src/models/Accomplishment";
 import { Profile } from "src/models/Profile";
+import { getLevel } from "src/utils/calcul";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[];
@@ -36,8 +39,9 @@ type Props = {
 const AuthContext = createContext<{
   user: User | null;
   profile: Profile | null;
+  level?: number;
   multicompte?: boolean;
-  streak: undefined | number;
+  streak?: number;
   hasPlayChallenge: boolean;
   refreshHasPlayChallenge: () => void;
   setStreak: (value: undefined | number) => void;
@@ -58,6 +62,7 @@ const AuthContext = createContext<{
       ? null
       : (JSON.parse(localStorage.getItem("user")!) as User),
   multicompte: undefined,
+  level: undefined,
   streak: undefined,
   hasPlayChallenge: false,
   refreshHasPlayChallenge: () => {},
@@ -78,6 +83,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
   const [hasPlayChallenge, setHasPlayChallenge] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [streak, setStreak] = useState<undefined | number>(undefined);
+  const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
 
   const [user, setUser] = useState<User | null>(
     localStorage.getItem("user") === null
@@ -89,6 +95,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     () => (profile === null || profile?.multicompte ? undefined : false),
     [profile],
   );
+  const level = useMemo(() => (stat ? getLevel(stat.xp) : undefined), [stat]);
 
   const login = (email: string, password: string) =>
     signInWithEmail(email, password);
@@ -130,6 +137,18 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     }
     return accounts;
   };
+
+  const getMyStat = useCallback(() => {
+    if (user) {
+      selectStatAccomplishmentByProfile(user.id).then(({ data }) => {
+        setStat(data as StatAccomplishment);
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    getMyStat();
+  }, [getMyStat]);
 
   const refreshHasPlayChallenge = useCallback(() => {
     if (user) {
@@ -210,6 +229,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     () => ({
       streak,
       multicompte,
+      level,
       setStreak,
       profile,
       setProfile,
@@ -225,6 +245,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
     }),
     [
       deleteAccount,
+      level,
       multicompte,
       hasPlayChallenge,
       refreshHasPlayChallenge,

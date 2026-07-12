@@ -101,17 +101,27 @@ export const CardAdminQuestion = ({ question, refresh }: Props) => {
     [question.questiontranslation, languageQuestion],
   );
 
-  const answer = useMemo(
-    () => question.questionanswer[0].answer,
+  const answers = useMemo(
+    () => question.questionanswer,
     [question.questionanswer],
   );
 
+  const answer = useMemo(
+    () => (answers.length > 0 ? answers[0].answer : undefined),
+    [answers],
+  );
+
   useEffect(() => {
-    getWrongAnswer(question).then(({ data }) => {
-      const res = data ?? [];
-      setWrongAnswers(res);
-    });
-  }, [question]);
+    if (answers.length > 0) {
+      const answerSet = answers[0].answer.answerset;
+      const idsAnswer = answers.map((el) => el.answer.id);
+
+      getWrongAnswer(answerSet, idsAnswer).then(({ data }) => {
+        const res = data ?? [];
+        setWrongAnswers(res);
+      });
+    }
+  }, [answers]);
 
   const deleteQuestion = () => {
     deleteQuestionById(question.id).then(() => {
@@ -445,10 +455,14 @@ export const CardProposeQuestion = ({ question }: CardProposeQuestionProps) => {
   const [wrongAnswers, setWrongAnswers] = useState<Array<Answer>>([]);
 
   useEffect(() => {
-    getWrongAnswer(question).then(({ data }) => {
-      const res = data ?? [];
-      setWrongAnswers(res);
-    });
+    const questionanswer = question.questionanswer[0];
+    if (questionanswer) {
+      const ids = [...question.questionanswer].map((el) => el.answer.id);
+      getWrongAnswer(questionanswer.answer.answerset, ids).then(({ data }) => {
+        const res = data ?? [];
+        setWrongAnswers(res);
+      });
+    }
   }, [question]);
 
   const status = useMemo(() => {

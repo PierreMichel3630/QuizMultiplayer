@@ -1,81 +1,73 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import { percent } from "csx";
 import { useTranslation } from "react-i18next";
-import { Theme } from "src/models/Theme";
-import { ImageThemeBlock } from "./ImageThemeBlock";
-import { TextNameBlock } from "./language/TextLanguageBlock";
+import { Profile } from "src/models/Profile";
+import { Colors } from "src/style/Colors";
+import { AvatarAccountBadge } from "./avatar/AvatarAccount";
+import { CountryImageBlock } from "./CountryBlock";
+import { InvertInfoBlock } from "./InfoBlock";
 
 interface Props {
-  theme: Theme;
-  score?: number;
-  extra?: JSX.Element;
-  color?: string;
+  score?: string | number;
+  profile: Profile;
 }
 
-export const ScoreThemeBlock = ({
-  theme,
-  score,
-  extra,
-  color = "text.primary",
-}: Props) => {
+export const ScoreThemeBlock = ({ score, profile }: Props) => {
   const { t } = useTranslation();
 
   return (
-    <Grid container spacing={3} alignItems="center">
-      <Grid
-        size={{
-          xs: 3,
-          sm: 3,
-          md: 2
-        }}>
-        <ImageThemeBlock theme={theme} />
-      </Grid>
-      <Grid
-        size={{
-          xs: 9,
-          sm: 9,
-          md: 10
-        }}>
-        <TextNameBlock
-          variant="h1"
-          color={color}
-          sx={{
-            fontSize: 30,
-            overflow: "hidden",
-            display: "block",
-            lineClamp: 1,
-            boxOrient: "vertical",
-          }}
-          noWrap
-          values={theme.themetranslation}
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+        width: percent(100),
+      }}
+    >
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          minWidth: 0,
+        }}
+      >
+        <AvatarAccountBadge
+          avatar={profile.avatar.icon}
+          size={50}
+          profile={profile}
+          color={Colors.blue4}
         />
-        {score !== undefined && (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            <Typography variant="h6" color={color}>
-              {t("commun.score")} :{" "}
-            </Typography>
-            <Typography variant="h2" color={color}>
-              {score}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            overflow: "hidden",
+          }}
+        >
+          {profile.country && (
+            <Box sx={{ flexShrink: 0 }}>
+              <CountryImageBlock country={profile.country} size={25} />
+            </Box>
+          )}
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Typography
+              variant="h4"
+              sx={{
+                width: "100%",
+              }}
+              noWrap
+            >
+              {profile.username}
             </Typography>
           </Box>
-        )}
-        {extra && (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            {extra}
-          </Box>
-        )}
-      </Grid>
-    </Grid>
+        </Box>
+      </Box>
+      <Box>
+        <InvertInfoBlock title={t("commun.score")} value={score} />
+      </Box>
+    </Box>
   );
 };

@@ -4,6 +4,8 @@ import { JsonLanguage, JsonLanguageArrayOrString, Language } from "./Language";
 import { Theme } from "./Theme";
 import { TypeDataEnum } from "./enum/TypeDataEnum";
 import { TypeQuestionEnum } from "./enum/TypeQuestionEnum";
+import { Difficulty } from "./enum/DifficultyEnum";
+import { Category } from "./Category";
 
 export interface QuestionPropose {
   id: number;
@@ -146,7 +148,8 @@ export interface Question {
   isqcm: boolean;
   time: number;
   theme: Theme;
-  difficulty: string;
+  category: Category;
+  difficulty: Difficulty;
   answerset?: number;
   data: null | {
     code: string;
