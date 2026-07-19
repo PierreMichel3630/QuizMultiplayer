@@ -246,11 +246,9 @@ export default function SoloPage() {
           gap: 1,
         }}
       >
-        {profile && (
-          <Box>
-            <ScoreThemeBlock profile={profile} score={score} />
-          </Box>
-        )}
+        <Box>
+          <ScoreThemeBlock profile={profile} score={score} />
+        </Box>
         <Box
           sx={{
             flexGrow: 1,

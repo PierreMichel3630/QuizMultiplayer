@@ -8,9 +8,12 @@ import {
   ResponsesQCMBlock,
   ResponsesQCMEditBlock,
 } from "./ResponseBlock";
+import { Profile } from "src/models/Profile";
 
 interface Props {
   question?: Question;
+  player1?: Profile;
+  player2?: Profile;
   response?: Response;
   timer?: number;
   onSubmit: (value: AnswerUser) => void;
@@ -18,6 +21,8 @@ interface Props {
 
 export const QuestionResponseBlock = ({
   question,
+  player1,
+  player2,
   response,
   timer,
   onSubmit,
@@ -35,6 +40,8 @@ export const QuestionResponseBlock = ({
             <ResponsesQCMBlock
               response={response}
               question={question}
+              player1={player1}
+              player2={player2}
               onSubmit={onSubmit}
             />
           ) : (

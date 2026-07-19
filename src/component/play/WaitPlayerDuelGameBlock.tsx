@@ -26,12 +26,12 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
   const [loadingP2, setLoadingP2] = useState(true);
   const [scoreP2, setScoreP2] = useState<Score | null>(null);
   const [statP2, setStatP2] = useState<StatAccomplishment | undefined>(
-    undefined
+    undefined,
   );
   const [loadingP1, setLoadingP1] = useState(true);
   const [scoreP1, setScoreP1] = useState<Score | null>(null);
   const [statP1, setStatP1] = useState<StatAccomplishment | undefined>(
-    undefined
+    undefined,
   );
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           const res = data as Score;
           setScoreP1(res);
           setLoadingP1(false);
-        }
+        },
       );
     };
     const getLevel = () => {
@@ -61,7 +61,7 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
             const res = data as Score;
             setScoreP2(res);
             setLoadingP2(false);
-          }
+          },
         );
       }
     };
@@ -78,11 +78,11 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
 
   const lvlP1 = useMemo(
     () => (statP1 ? getLevel(statP1.xp) : undefined),
-    [statP1]
+    [statP1],
   );
   const lvlP2 = useMemo(
     () => (statP2 ? getLevel(statP2.xp) : undefined),
-    [statP2]
+    [statP2],
   );
 
   return (
@@ -116,13 +116,22 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           color={Colors.white}
           level={lvlP1}
         />
-        <Box>
+        <Box
+          sx={{
+            textAlign: "start",
+            width: percent(100),
+            overflow: "hidden",
+          }}
+        >
           <Typography
             variant="h2"
             color="text.secondary"
             sx={{
               textShadow: "1px 1px 2px black",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
             }}
+            noWrap
           >
             {game.player1.username}
           </Typography>
@@ -166,12 +175,6 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
           }}
         >
           <ImageThemeBlock theme={game.theme} size={90} />
-          {/*<TextNameBlock
-            variant="h4"
-            sx={{ textAlign: "center" }}
-            color="text.secondary"
-            values={game.theme.themetranslation}
-          />*/}
         </Box>
       </Box>
       <Box
@@ -197,17 +200,27 @@ export const WaitPlayerDuelGameBlock = ({ game, players }: Props) => {
             p: 5,
             gap: 2,
             justifyContent: "flex-end",
+            width: percent(100),
           }}
         >
           {game.player2 ? (
             <>
-              <Box sx={{ textAlign: "left" }}>
+              <Box
+                sx={{
+                  textAlign: "left",
+                  width: percent(100),
+                  overflow: "hidden",
+                }}
+              >
                 <Typography
                   variant="h2"
                   color="text.secondary"
                   sx={{
                     textShadow: "1px 1px 2px black",
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
                   }}
+                  noWrap
                 >
                   {game.player2.username}
                 </Typography>

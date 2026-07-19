@@ -57,10 +57,7 @@ const AuthContext = createContext<{
   >;
   updatePassword: (password: string) => Promise<UserResponse>;
 }>({
-  user:
-    localStorage.getItem("user") === null
-      ? null
-      : (JSON.parse(localStorage.getItem("user")!) as User),
+  user: null,
   multicompte: undefined,
   level: undefined,
   streak: undefined,
@@ -85,11 +82,7 @@ export const AuthProviderSupabase = ({ children }: Props) => {
   const [streak, setStreak] = useState<undefined | number>(undefined);
   const [stat, setStat] = useState<StatAccomplishment | undefined>(undefined);
 
-  const [user, setUser] = useState<User | null>(
-    localStorage.getItem("user") === null
-      ? null
-      : (JSON.parse(localStorage.getItem("user")!) as User),
-  );
+  const [user, setUser] = useState<User | null>(null);
 
   const multicompte = useMemo(
     () => (profile === null || profile?.multicompte ? undefined : false),
@@ -123,10 +116,6 @@ export const AuthProviderSupabase = ({ children }: Props) => {
   useEffect(() => {
     getProfilUser();
   }, [getProfilUser]);
-
-  useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(user));
-  }, [user]);
 
   const saveAccountConnect = (profile: Profile) => {
     const accounts = JSON.parse(localStorage.getItem("accounts") || "[]");
@@ -180,34 +169,37 @@ export const AuthProviderSupabase = ({ children }: Props) => {
 
   const clearLocalStorage = () => {
     localStorage.removeItem("user");
-    localStorage.removeItem("username");
   };
 
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN") {
-        if (session === null) {
-          setProfile(null);
-          setUser(null);
-          setStreak(undefined);
-        } else {
-          updateProfil({
-            id: session.user.id,
-            isonline: true,
-            lastconnection: moment(),
-          }).then(() => {
-            setUser(session.user);
-          });
-        }
-      } else if (event === "SIGNED_OUT") {
-        setUser(null);
+    const init = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      setUser(session?.user ?? null);
+    };
+
+    init();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session === null) {
         setProfile(null);
+        setUser(null);
         setStreak(undefined);
+      } else {
+        updateProfil({
+          id: session.user.id,
+          isonline: true,
+          lastconnection: moment(),
+        }).then(() => {
+          setUser(session.user);
+        });
       }
     });
-    return () => {
-      data.subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   const deleteAccount = useCallback(async () => {

@@ -1,6 +1,6 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { RealtimeChannel, RealtimePresenceState } from "@supabase/supabase-js";
-import { px } from "csx";
+import { percent, px } from "csx";
 import moment, { Moment } from "moment";
 import {
   Dispatch,
@@ -459,14 +459,22 @@ export default function DuelPage() {
                         size={50}
                         color={Colors.colorDuel1}
                       />
-                      <Box>
+                      <Box
+                        sx={{
+                          textAlign: "start",
+                          width: percent(100),
+                          overflow: "hidden",
+                        }}
+                      >
                         <Typography
                           variant="h6"
                           sx={{
                             color: Colors.colorDuel1,
-                            wordBreak: "break-all",
+                            textOverflow: "ellipsis",
+                            overflow: "hidden",
                             fontSize: 9,
                           }}
+                          noWrap
                         >
                           {game.player1.username}
                         </Typography>
@@ -500,14 +508,22 @@ export default function DuelPage() {
                       }}
                       size={5}
                     >
-                      <Box>
+                      <Box
+                        sx={{
+                          textAlign: "end",
+                          width: percent(100),
+                          overflow: "hidden",
+                        }}
+                      >
                         <Typography
                           variant="h6"
                           sx={{
                             color: Colors.colorDuel2,
-                            textAlign: "right",
+                            textOverflow: "ellipsis",
+                            overflow: "hidden",
                             fontSize: 9,
                           }}
+                          noWrap
                         >
                           {game.player2?.username}
                         </Typography>
@@ -565,6 +581,8 @@ export default function DuelPage() {
                       <QuestionResponseBlock
                         response={response}
                         question={question}
+                        player1={game.player1}
+                        player2={game.player2}
                         onSubmit={validateResponse}
                       />
                     </Box>

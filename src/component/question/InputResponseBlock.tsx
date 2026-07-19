@@ -35,7 +35,7 @@ export const InputResponseBlock = ({ onSubmit, answerset }: Props) => {
           ({ data }) => {
             const res: Array<AnswerTranslation> = data ?? [];
             setResponses(res.map((el) => el.label));
-          }
+          },
         );
       } else {
         setResponses([]);
@@ -90,7 +90,7 @@ export const InputResponseBlock = ({ onSubmit, answerset }: Props) => {
         }}
         variant="outlined"
       >
-        <Grid container spacing={1} alignItems="center">
+        <Grid container spacing={1} alignItems="center" sx={{ flex: 1 }}>
           <Grid size="grow">
             <form
               noValidate

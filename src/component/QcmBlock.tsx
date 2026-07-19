@@ -1,41 +1,46 @@
-import { Box, Paper } from "@mui/material";
+import { Box } from "@mui/material";
 import { useMemo } from "react";
-import { Colors } from "src/style/Colors";
-import { ImageQCMBlock } from "./ImageBlock";
 
-import { percent, px } from "csx";
+import { px } from "csx";
 import { QuestionResult } from "src/models/Question";
 
-import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { useUser } from "src/context/UserProvider";
-import { TextLabelBlock } from "./language/TextLanguageBlock";
-import { ExtraResponseResultBlock } from "./response/ExtraResponseBlock";
+import { ResponseStatus } from "src/models/enum/Response";
+import { TypeQuestionEnum } from "src/models/enum/TypeQuestionEnum";
+import { TypeResponseEnum } from "src/models/enum/TypeResponseEnum";
 import { decryptToNumber } from "src/utils/crypt";
+import { LETTERS, ResponseQCMBlock } from "./question/ResponseBlock";
+import { Profile } from "src/models/Profile";
+import { Colors } from "src/style/Colors";
 
 interface PropsQcmBlockDuelResultBlock {
   question: QuestionResult;
+  player1?: Profile;
+  player2?: Profile;
 }
 
 export const QcmBlockDuelResultBlock = ({
   question,
+  player1,
+  player2,
 }: PropsQcmBlockDuelResultBlock) => {
-  const { mode } = useUser();
-
-  const isDarkMode = useMemo(() => mode === "dark", [mode]);
   const answer = decryptToNumber(question.answer);
 
   const responsePlayer1 = question.responsePlayer1;
   const responsePlayer2 = question.responsePlayer2;
 
   const columns = useMemo(() => {
-    const modulo = question.answers.length % 2;
-    return modulo === 0 ? 2 : 1;
-  }, [question.answers.length]);
+    const responsesImage = [...question.answers].filter((el) => el.image);
+    return responsesImage.length > 0 ? 2 : 1;
+  }, [question]);
 
   const rows = useMemo(() => {
     return question.answers.length / columns;
   }, [question.answers.length, columns]);
+
+  const isQuestionOrder = useMemo(
+    () => question.typequestion === TypeQuestionEnum.ORDER,
+    [question],
+  );
 
   return (
     <Box
@@ -46,84 +51,48 @@ export const QcmBlockDuelResultBlock = ({
         gap: px(4),
       }}
     >
-      {[...question.answers].map((res) => {
+      {[...question.answers].map((res, displayIndex) => {
         const index = res.id;
         const isCorrectResponse = Number(answer) === index;
 
-        const isArrowRight =
+        const responsePlayer1Display =
           responsePlayer1 !== undefined && Number(responsePlayer1) === index;
-        const isArrowLeft =
+        const responsePlayer2Display =
           responsePlayer2 !== undefined && Number(responsePlayer2) === index;
-        let color: string = isDarkMode ? Colors.black2 : Colors.white;
-        const arrowColor: string = isDarkMode ? Colors.white : Colors.black2;
-        let borderColor: string = isDarkMode ? Colors.white : Colors.black2;
 
+        let status: ResponseStatus = ResponseStatus.DEFAULT;
         if (isCorrectResponse) {
-          color = Colors.correctanswer;
-          borderColor = Colors.correctanswerborder;
-        } else if (isArrowRight || isArrowLeft) {
-          color = Colors.wronganswer;
-          borderColor = Colors.wronganswerborder;
+          status = ResponseStatus.CORRECT;
+        } else if (responsePlayer1Display || responsePlayer2Display) {
+          status = ResponseStatus.WRONG;
         }
 
+        const avatars = [
+          ...(responsePlayer1Display && player1?.avatar?.icon
+            ? [{ icon: player1.avatar.icon, color: Colors.colorDuel1 }]
+            : []),
+          ...(responsePlayer2Display && player2?.avatar?.icon
+            ? [{ icon: player2.avatar.icon, color: Colors.colorDuel2 }]
+            : []),
+        ];
+
         return (
-          <Paper
+          <ResponseQCMBlock
             key={index}
-            sx={{
-              p: "4px 10px",
-              textAlign: "center",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              position: "relative",
-              cursor: "default",
-              borderColor: borderColor,
-              borderStyle: "solid",
-              borderWidth: 1,
-              backgroundColor: color,
-              height: percent(100),
-              userSelect: "none",
-              minHeight: px(50),
-            }}
-          >
-            {isArrowRight && (
-              <ArrowRightIcon
-                viewBox="10 7 5 10"
-                sx={{
-                  fontSize: 15,
-                  position: "absolute",
-                  top: percent(50),
-                  translate: "0 -50%",
-                  left: 0,
-                  color: arrowColor,
-                }}
-              />
-            )}
-            <Box sx={{ width: percent(100) }}>
-              {res.image && <ImageQCMBlock src={res.image} />}
-              {res.answertranslation.length > 0 && (
-                <TextLabelBlock
-                  variant="h3"
-                  component="p"
-                  values={res.answertranslation}
-                />
-              )}
-              {res.extra && <ExtraResponseResultBlock extra={res.extra} />}
-            </Box>
-            {isArrowLeft && (
-              <ArrowLeftIcon
-                viewBox="10 7 5 10"
-                sx={{
-                  fontSize: 15,
-                  position: "absolute",
-                  top: percent(50),
-                  translate: "0 -50%",
-                  right: 0,
-                  color: arrowColor,
-                }}
-              />
-            )}
-          </Paper>
+            index={index}
+            letter={LETTERS[displayIndex]}
+            status={status}
+            labels={res.answertranslation}
+            extra={res.extra}
+            image={res.image}
+            hasAnswer={false}
+            avatars={avatars}
+            type={
+              isQuestionOrder
+                ? TypeResponseEnum.ORDER
+                : TypeResponseEnum.DEFAULT
+            }
+          />
         );
       })}
     </Box>

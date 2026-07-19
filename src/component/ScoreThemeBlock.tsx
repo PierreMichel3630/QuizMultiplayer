@@ -9,7 +9,7 @@ import { InvertInfoBlock } from "./InfoBlock";
 
 interface Props {
   score?: string | number;
-  profile: Profile;
+  profile: Profile | null;
 }
 
 export const ScoreThemeBlock = ({ score, profile }: Props) => {
@@ -34,7 +34,6 @@ export const ScoreThemeBlock = ({ score, profile }: Props) => {
         }}
       >
         <AvatarAccountBadge
-          avatar={profile.avatar.icon}
           size={50}
           profile={profile}
           color={Colors.blue4}
@@ -47,7 +46,7 @@ export const ScoreThemeBlock = ({ score, profile }: Props) => {
             overflow: "hidden",
           }}
         >
-          {profile.country && (
+          {profile?.country && (
             <Box sx={{ flexShrink: 0 }}>
               <CountryImageBlock country={profile.country} size={25} />
             </Box>
@@ -60,7 +59,7 @@ export const ScoreThemeBlock = ({ score, profile }: Props) => {
               }}
               noWrap
             >
-              {profile.username}
+              {profile?.username ?? t("commun.unknown")}
             </Typography>
           </Box>
         </Box>

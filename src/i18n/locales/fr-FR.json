@@ -1149,6 +1149,17 @@
     "ordinal_other": "ème"
   },
   "patchnote": {
+    "3.0.0": {
+      "version": "3.0.0",
+      "date": "19/07/2026",
+      "changes": [
+        "Défis du jour: Ajout de plusieurs thèmes pour les questions.",
+        "Refonte graphique de l'affichage des questions et score"
+      ],
+      "bug": [
+        "Affichage de nom trop long en mode duel"
+      ]
+    },
     "2.2.12": {
       "version": "2.2.12",
       "date": "06/07/2026",

@@ -182,7 +182,7 @@ const HeaderBlock = ({ question }: ThemeBlockProps) => {
               display: "block",
               lineClamp: 1,
               boxOrient: "vertical",
-              color: `color-mix(in srgb, ${color} 80%, black)`,
+              color: `color-mix(in srgb, ${color} 70%, black)`,
             }}
             noWrap
             values={question.category.categorytranslation}
@@ -194,7 +194,7 @@ const HeaderBlock = ({ question }: ThemeBlockProps) => {
               display: "block",
               lineClamp: 1,
               boxOrient: "vertical",
-              color: `color-mix(in srgb, ${color} 80%, black)`,
+              color: `color-mix(in srgb, ${color} 70%, black)`,
             }}
             noWrap
             values={question.theme.themetranslation}

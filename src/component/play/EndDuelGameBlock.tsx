@@ -7,7 +7,7 @@ import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 
 import BoltIcon from "@mui/icons-material/Bolt";
 import HomeIcon from "@mui/icons-material/Home";
-import { px } from "csx";
+import { percent, px } from "csx";
 import { useNavigate } from "react-router-dom";
 import { launchDuelGame, matchmakingDuelGame } from "src/api/game";
 import { ButtonColor } from "../Button";
@@ -47,17 +47,20 @@ export const EndDuelGameBlock = ({ game }: Props) => {
   }, []);
 
   const gamebattle = useMemo(() => game.battlegame, [game]);
+
   const isPlayer1 = useMemo(() => game.player1.id === uuid, [uuid, game]);
   const isPlayer2 = useMemo(() => game.player2?.id === uuid, [uuid, game]);
 
   const resultPlayer1 = useMemo(() => {
     const draw = game.ptsplayer1 === game.ptsplayer2;
-    return draw ? 0.5 : game.ptsplayer1 > game.ptsplayer2 ? 1 : 0;
+    const diffScore = game.ptsplayer1 > game.ptsplayer2 ? 1 : 0;
+    return draw ? 0.5 : diffScore;
   }, [game]);
 
   const resultPlayer2 = useMemo(() => {
     const draw = game.ptsplayer1 === game.ptsplayer2;
-    return draw ? 0.5 : game.ptsplayer2 > game.ptsplayer1 ? 1 : 0;
+    const diffScore = game.ptsplayer2 > game.ptsplayer1 ? 1 : 0;
+    return draw ? 0.5 : diffScore;
   }, [game]);
 
   const hasWin = useMemo(
@@ -173,8 +176,18 @@ export const EndDuelGameBlock = ({ game }: Props) => {
               color={Colors.colorDuel1}
             />
           </Box>
-          <Box sx={{ textAlign: "end" }}>
-            <Typography variant="h4" sx={{ color: Colors.colorDuel1 }}>
+          <Box
+            sx={{ textAlign: "end", width: percent(100), overflow: "hidden" }}
+          >
+            <Typography
+              variant="h4"
+              sx={{
+                color: Colors.colorDuel1,
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+              }}
+              noWrap
+            >
               {game.player1.username}
             </Typography>
             <ProfileTitleBlock titleprofile={game.player1.titleprofile} />
@@ -228,8 +241,22 @@ export const EndDuelGameBlock = ({ game }: Props) => {
                   {game.ptsplayer2}
                 </Typography>
               </Box>
-              <Box>
-                <Typography variant="h4" sx={{ color: Colors.colorDuel2 }}>
+              <Box
+                sx={{
+                  textAlign: "start",
+                  width: percent(100),
+                  overflow: "hidden",
+                }}
+              >
+                <Typography
+                  variant="h4"
+                  sx={{
+                    color: Colors.colorDuel2,
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                  }}
+                  noWrap
+                >
                   {game.player2.username}
                 </Typography>
                 <ProfileTitleBlock titleprofile={game.player2.titleprofile} />
@@ -265,7 +292,11 @@ export const EndDuelGameBlock = ({ game }: Props) => {
           </Grid>
         )}
         <Grid size={12}>
-          <RankingDuel themes={[game.theme.id]} itemPerPage={3} hasMyScore={false}  />
+          <RankingDuel
+            themes={[game.theme.id]}
+            itemPerPage={3}
+            hasMyScore={false}
+          />
         </Grid>
         <Grid size={12}>
           <Divider
@@ -281,6 +312,8 @@ export const EndDuelGameBlock = ({ game }: Props) => {
             <Grid size={12}>
               <CardSignalQuestion
                 question={el}
+                player1={game.player1}
+                player2={game.player2}
                 report={() => setQuestion(el)}
               />
             </Grid>

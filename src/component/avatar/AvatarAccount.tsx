@@ -1,8 +1,10 @@
 import { Avatar, Badge, Box } from "@mui/material";
 import { percent } from "csx";
+import { useMemo } from "react";
 import { BadgeLevel } from "src/icons/BadgeLevel";
 import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
+import { DEFAULT_AVATAR } from "src/utils/config";
 
 interface Props {
   avatar: string;
@@ -32,7 +34,7 @@ export const AvatarAccount = ({
 };
 
 interface PropsAvatarAccountBadge {
-  profile: Profile;
+  profile: Profile | null;
   avatar?: string;
   badge?: string;
   size?: number;
@@ -50,21 +52,23 @@ export const AvatarAccountBadge = ({
   color = Colors.black2,
   level,
 }: PropsAvatarAccountBadge) => {
-  return badge || profile.badge ? (
+
+  const urlAvatar = useMemo(() => avatar ?? (profile?.avatar.icon ?? DEFAULT_AVATAR), [avatar, profile])
+  return badge || profile?.badge ? (
     <Badge
       overlap="circular"
       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       badgeContent={
         <Avatar
           sx={{ width: size / 2.5, height: size / 2.5 }}
-          src={badge ?? profile.badge!.icon}
+          src={badge ?? profile?.badge!.icon}
         />
       }
     >
       <Box sx={{ position: "relative" }}>
         <Avatar
           alt="Avatar"
-          src={avatar ?? profile.avatar.icon}
+          src={urlAvatar}
           sx={{
             width: size,
             height: size,
@@ -94,7 +98,7 @@ export const AvatarAccountBadge = ({
     <Box sx={{ position: "relative" }}>
       <Avatar
         alt="Avatar"
-        src={avatar ?? profile.avatar.icon}
+        src={urlAvatar}
         sx={{
           width: size,
           height: size,

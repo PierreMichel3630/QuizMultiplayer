@@ -43,6 +43,7 @@ import {
 import { ThemesList } from "../theme/ThemesList";
 import { CardSignalQuestionV1 } from "./CardQuestionV1";
 import { ExtraQuestionBlock } from "../question/ExtraQuestionBlock";
+import { Profile } from "src/models/Profile";
 
 interface Props {
   question: QuestionAdmin;
@@ -298,6 +299,8 @@ export const CardAdminQuestion = ({ question, refresh }: Props) => {
 
 interface PropsCardSignalQuestion {
   question: QuestionResult | QuestionResultV1;
+  player1?: Profile
+  player2?: Profile
   version?: number;
   report?: () => void;
   color?: string;
@@ -305,6 +308,8 @@ interface PropsCardSignalQuestion {
 export const CardSignalQuestion = ({
   version = 2,
   question,
+  player1,
+  player2,
   report,
   color = "text.primary",
 }: PropsCardSignalQuestion) => {
@@ -319,6 +324,8 @@ export const CardSignalQuestion = ({
       ) : (
         <CardSignalQuestionV2
           question={question as QuestionResult}
+          player1={player1}
+          player2={player2}
           report={report}
           color={color}
         />
@@ -329,11 +336,15 @@ export const CardSignalQuestion = ({
 
 interface PropsCardSignalQuestionV2 {
   question: QuestionResult;
+  player1?: Profile
+  player2?: Profile
   report?: () => void;
   color?: string;
 }
 const CardSignalQuestionV2 = ({
   question,
+  player1,
+  player2,
   report,
   color = "text.primary",
 }: PropsCardSignalQuestionV2) => {
@@ -372,7 +383,7 @@ const CardSignalQuestionV2 = ({
         )}
         <Grid sx={{ textAlign: "center" }} size={12}>
           {question.isqcm ? (
-            <QcmBlockDuelResultBlock question={question} />
+            <QcmBlockDuelResultBlock question={question} player1={player1} player2={player2} />
           ) : (
             <Box sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
               <Paper

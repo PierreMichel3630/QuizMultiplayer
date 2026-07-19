@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Avatar, AvatarGroup, Box, Paper, Typography } from "@mui/material";
 import { important, percent, px, viewHeight } from "csx";
 import { Colors } from "src/style/Colors";
 
@@ -20,7 +20,11 @@ import { ImageQCMBlock } from "../ImageBlock";
 import { TextLabelBlock } from "../language/TextLanguageBlock";
 import { ExtraResponseBlock } from "../response/ExtraResponseBlock";
 
-const LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H"];
+import CheckIcon from "@mui/icons-material/Check";
+import ClearIcon from "@mui/icons-material/Clear";
+import { Profile } from "src/models/Profile";
+
+export const LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
 export interface AnswerUser {
   uuid: string;
@@ -40,12 +44,16 @@ export interface Response {
 
 interface ResponsesQCMBlockProps {
   question: Question;
+  player1?: Profile;
+  player2?: Profile;
   onSubmit: (value: AnswerUser) => void;
   response?: Response;
 }
 
 export const ResponsesQCMBlock = ({
   question,
+  player1,
+  player2,
   response,
   onSubmit,
 }: ResponsesQCMBlockProps) => {
@@ -99,19 +107,28 @@ export const ResponsesQCMBlock = ({
       {answers.map((r, displayIndex) => {
         const index = r.id;
         const isCorrectResponse = response && Number(response.answer) === index;
-        const isAnswerP1 =
+        const responsePlayer1Display =
           response?.result !== undefined &&
           Number(response?.responsePlayer1) === index;
-        const isAnswerP2 =
+        const responsePlayer2Display =
           response?.result !== undefined &&
           Number(response?.responsePlayer2) === index;
 
         let status: ResponseStatus = ResponseStatus.DEFAULT;
         if (isCorrectResponse) {
           status = ResponseStatus.CORRECT;
-        } else if (isAnswerP1 || isAnswerP2) {
+        } else if (responsePlayer1Display || responsePlayer2Display) {
           status = ResponseStatus.WRONG;
         }
+
+        const avatars = [
+          ...(responsePlayer1Display && player1?.avatar?.icon
+            ? [{ icon: player1.avatar.icon, color: Colors.colorDuel1 }]
+            : []),
+          ...(responsePlayer2Display && player2?.avatar?.icon
+            ? [{ icon: player2.avatar.icon, color: Colors.colorDuel2 }]
+            : []),
+        ];
 
         return (
           <ResponseQCMBlock
@@ -123,6 +140,7 @@ export const ResponsesQCMBlock = ({
             extra={response ? r.extra : undefined}
             image={r.image}
             hasAnswer={hasAnswer}
+            avatars={avatars}
             type={
               isQuestionOrder
                 ? TypeResponseEnum.ORDER
@@ -248,20 +266,22 @@ interface ResponseQCMBlockProps {
     label: string;
     language: Language;
   }>;
+  avatars?: Array<{ icon: string; color: string }>;
   extra?: ExtraResponse;
   index: number;
   hasAnswer: boolean;
   type: TypeResponseEnum;
-  onSubmit: (value: AnswerUser) => void;
+  onSubmit?: (value: AnswerUser) => void;
 }
 
-const ResponseQCMBlock = ({
+export const ResponseQCMBlock = ({
   index,
   status,
   letter,
   image,
   labels,
   extra,
+  avatars = [],
   hasAnswer = false,
   type = TypeResponseEnum.DEFAULT,
   onSubmit,
@@ -282,9 +302,23 @@ const ResponseQCMBlock = ({
       ({
         [ResponseStatus.CORRECT]: Colors.correctanswer,
         [ResponseStatus.WRONG]: Colors.wronganswer,
-        [ResponseStatus.DEFAULT]: isDarkMode ? Colors.black2 : Colors.white,
+        [ResponseStatus.DEFAULT]: isDarkMode ? Colors.grey8 : Colors.grey3,
       })[status],
     [status, isDarkMode],
+  );
+
+  const icon = useMemo(
+    () =>
+      ({
+        [ResponseStatus.CORRECT]: (
+          <CheckIcon sx={{ color: Colors.correctanswer }} />
+        ),
+        [ResponseStatus.WRONG]: (
+          <ClearIcon sx={{ color: Colors.wronganswer }} />
+        ),
+        [ResponseStatus.DEFAULT]: undefined,
+      })[status],
+    [status],
   );
 
   return (
@@ -297,7 +331,9 @@ const ResponseQCMBlock = ({
         alignItems: "center",
         justifyContent: "center",
         position: "relative",
-        backgroundColor: `color-mix(in srgb, ${color} 40%, black)`,
+        backgroundColor: isDarkMode
+          ? `color-mix(in srgb, ${color} 40%, black)`
+          : `color-mix(in srgb, ${color} 30%, white)`,
         borderColor: color,
         backgroundImage: `url("${backgroundImage}")`,
         backgroundSize: "cover",
@@ -314,7 +350,7 @@ const ResponseQCMBlock = ({
       variant="outlined"
       onClick={(event) => {
         event.preventDefault();
-        if (!hasAnswer) {
+        if (!hasAnswer && onSubmit) {
           onSubmit({
             uuid: uuid,
             value: index,
@@ -358,6 +394,46 @@ const ResponseQCMBlock = ({
         )}
         {extra && <ExtraResponseBlock extra={extra} />}
       </Box>
+      {avatars.length > 0 ? (
+        <Box
+          sx={{
+            display: "flex",
+            top: imageDisplay ? 8 : undefined,
+            right: imageDisplay ? 8 : undefined,
+            position: imageDisplay ? "absolute" : "relative",
+          }}
+        >
+          <AvatarGroup spacing="medium">
+            {avatars.map((avatar, index) => (
+              <Avatar
+                key={index}
+                src={avatar.icon}
+                sx={{
+                  width: 30,
+                  height: 30,
+                  border: important(`2px solid ${avatar.color}`),
+                  backgroundColor: "white",
+                }}
+              />
+            ))}
+          </AvatarGroup>
+        </Box>
+      ) : (
+        <>
+          {icon && (
+            <Box
+              sx={{
+                display: "flex",
+                top: imageDisplay ? 8 : undefined,
+                right: imageDisplay ? 8 : undefined,
+                position: imageDisplay ? "absolute" : "relative",
+              }}
+            >
+              {icon}
+            </Box>
+          )}
+        </>
+      )}
     </Paper>
   );
 };

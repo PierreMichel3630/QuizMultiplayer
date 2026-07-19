@@ -19,11 +19,9 @@ export const HeaderTrainingGame = ({
   );
 
   return (
-    profile && (
-      <ScoreThemeBlock
-        profile={profile}
-        score={`${goodAnswer} / ${numberQuestions} `}
-      />
-    )
+    <ScoreThemeBlock
+      profile={profile}
+      score={`${goodAnswer} / ${numberQuestions} `}
+    />
   );
 };

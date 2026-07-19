@@ -1,5 +1,5 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { px } from "csx";
+import { percent, px } from "csx";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { DuelGame } from "src/models/DuelGame";
@@ -40,7 +40,7 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
           const res = data as Score;
           setScoreP1(res);
           setLoadingP1(false);
-        }
+        },
       );
     };
     getRank();
@@ -54,7 +54,7 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
             const res = data as Score;
             setScoreP2(res);
             setLoadingP2(false);
-          }
+          },
         );
       }
     };
@@ -71,7 +71,8 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
             justifyContent: "center",
             gap: 1,
           }}
-          size={12}>
+          size={12}
+        >
           <Box sx={{ width: px(70) }}>
             <ImageThemeBlock theme={game.theme} />
           </Box>
@@ -96,15 +97,32 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
             alignItems: "flex-end",
             gap: 1,
           }}
-          size={5}>
+          size={5}
+        >
           <AvatarAccountBadge
             profile={game.player1}
             size={80}
             color={Colors.colorDuel1}
           />
-          <Typography variant="h4" sx={{ color: Colors.colorDuel1 }}>
-            {game.player1.username}
-          </Typography>
+          <Box
+            sx={{
+              textAlign: "end",
+              width: percent(100),
+              overflow: "hidden",
+            }}
+          >
+            <Typography
+              variant="h4"
+              sx={{
+                color: Colors.colorDuel1,
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+              }}
+              noWrap
+            >
+              {game.player1.username}
+            </Typography>
+          </Box>
           <ProfileTitleBlock titleprofile={game.player1.titleprofile} />
           <LabelRankBlock loading={loadingP1} score={scoreP1} />
         </Grid>
@@ -114,7 +132,8 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
             justifyContent: "center",
             alignItems: "center",
           }}
-          size={2}>
+          size={2}
+        >
           <BoltIcon sx={{ fontSize: 50, color: Colors.white }} />
         </Grid>
         <Grid
@@ -124,7 +143,8 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
             alignItems: "flex-start",
             gap: 1,
           }}
-          size={5}>
+          size={5}
+        >
           {game.player2 && (
             <>
               <AvatarAccountBadge
@@ -132,9 +152,25 @@ export const CancelDuelGameBlock = ({ game }: Props) => {
                 size={80}
                 color={Colors.colorDuel2}
               />
-              <Typography variant="h4" sx={{ color: Colors.colorDuel2 }}>
-                {game.player2.username}
-              </Typography>
+              <Box
+                sx={{
+                  textAlign: "end",
+                  width: percent(100),
+                  overflow: "hidden",
+                }}
+              >
+                <Typography
+                  variant="h4"
+                  sx={{
+                    color: Colors.colorDuel2,
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                  }}
+                  noWrap
+                >
+                  {game.player2.username}
+                </Typography>
+              </Box>
               <ProfileTitleBlock titleprofile={game.player2.titleprofile} />
               <LabelRankBlock loading={loadingP2} score={scoreP2} />
             </>

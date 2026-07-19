@@ -1,4 +1,4 @@
-export const VERSION_APP = "2.2.11";
+export const VERSION_APP = "3.0.0";
 
 export const MAX_DAY_NEW_THEME = 14;
 export const MAX_DAY_UPDATED_THEME = 14;
@@ -28,3 +28,7 @@ export const BarNavigationSize = 50;
 
 // LOCAL STORAGE
 export const PREFIX_LOCALSTORAGE_GAME = "game_";
+
+// Avatar
+export const DEFAULT_AVATAR =
+  "https://cperjgnbmoqyyqgkyqws.supabase.co/storage/v1/object/public/avatar/avatar-36.png";
