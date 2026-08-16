@@ -37,7 +37,16 @@ export const InfoBlock = ({ title, value, content }: Props) => {
   );
 };
 
-export const InvertInfoBlock = ({ title, value }: Props) => {
+interface PropsInvertInfoBlock {
+  title: string;
+  value?: number | string;
+  minWidth?: number;
+}
+export const InvertInfoBlock = ({
+  title,
+  value,
+  minWidth,
+}: PropsInvertInfoBlock) => {
   const { mode } = useUser();
 
   const color = useMemo(
@@ -47,7 +56,14 @@ export const InvertInfoBlock = ({ title, value }: Props) => {
 
   return (
     <Box sx={{ p: px(2), textAlign: "center" }}>
-      {value !== undefined && <Typography variant="h2">{value}</Typography>}
+      {value !== undefined && (
+        <Typography
+          variant="h2"
+          sx={{ minWidth: minWidth ? px(minWidth) : "auto" }}
+        >
+          {value}
+        </Typography>
+      )}
       <Typography
         variant="h6"
         sx={{

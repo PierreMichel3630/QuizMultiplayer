@@ -29,12 +29,12 @@ export const TimeLeftBlock = ({ intervalHours, lastDate, onLaunch }: Props) => {
 
   const diffSecondsDefault = useMemo(
     () => (lastDate ? moment().diff(moment(lastDate), "seconds") : 0),
-    [lastDate]
+    [lastDate],
   );
 
   const isDisplay = useMemo(
     () => (lastDate ? diffSeconds > 0 : false),
-    [lastDate, diffSeconds]
+    [lastDate, diffSeconds],
   );
 
   const hours = useMemo(() => {
@@ -144,12 +144,12 @@ export const TimeLeftLabel = ({
 
   const diffSecondsDefault = useMemo(
     () => (lastDate ? moment().diff(moment(lastDate), "seconds") : 0),
-    [lastDate]
+    [lastDate],
   );
 
   const isDisplay = useMemo(
     () => (lastDate ? diffSeconds > 0 : false),
-    [lastDate, diffSeconds]
+    [lastDate, diffSeconds],
   );
 
   const hours = useMemo(() => {
@@ -311,9 +311,7 @@ export const TimeLeftToNextDayLabel = ({
   size = "medium",
   label,
 }: PropsTimeLeftToNextDayLabel) => {
-  const { mode } = useUser();
   const DELAY = 1000;
-  const isDarkMode = useMemo(() => mode === "dark", [mode]);
   const [diffSeconds, setDiffSeconds] = useState(0);
 
   const diffSecondsDefault = useMemo(() => {
@@ -362,9 +360,7 @@ export const TimeLeftToNextDayLabel = ({
         alignContent: "center",
         justifyContent: "center",
         gap: px(2),
-        borderRadius: px(50),
         p: padding(2, 5),
-        border: `2px solid ${isDarkMode ? Colors.white : Colors.black}`,
       }}
     >
       {label && <Typography variant="h6">{label}</Typography>}

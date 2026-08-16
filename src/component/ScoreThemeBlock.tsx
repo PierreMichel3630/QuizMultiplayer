@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 import { percent } from "csx";
 import { useTranslation } from "react-i18next";
 import { Profile } from "src/models/Profile";
@@ -10,9 +10,10 @@ import { InvertInfoBlock } from "./InfoBlock";
 interface Props {
   score?: string | number;
   profile: Profile | null;
+  extra?: JSX.Element;
 }
 
-export const ScoreThemeBlock = ({ score, profile }: Props) => {
+export const ScoreThemeBlock = ({ score, profile, extra }: Props) => {
   const { t } = useTranslation();
 
   return (
@@ -33,11 +34,7 @@ export const ScoreThemeBlock = ({ score, profile }: Props) => {
           minWidth: 0,
         }}
       >
-        <AvatarAccountBadge
-          size={50}
-          profile={profile}
-          color={Colors.blue4}
-        />
+        <AvatarAccountBadge size={50} profile={profile} color={Colors.blue4} />
         <Box
           sx={{
             display: "flex",
@@ -67,6 +64,12 @@ export const ScoreThemeBlock = ({ score, profile }: Props) => {
       <Box>
         <InvertInfoBlock title={t("commun.score")} value={score} />
       </Box>
+      {extra && (
+        <>
+          <Divider orientation="vertical" variant="middle" flexItem sx={{ borderRightWidth: 2 }}/>
+          <Box>{extra}</Box>
+        </>
+      )}
     </Box>
   );
 };

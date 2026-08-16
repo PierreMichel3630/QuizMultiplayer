@@ -1,32 +1,32 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useBlocker, useNavigate, useParams } from "react-router-dom";
 import { QuestionSolo } from "src/models/Question";
 
 import { Box, Container, Typography } from "@mui/material";
-import { important, percent, px } from "csx";
+import { percent } from "csx";
 import { endChallenge, selectChallengeGameByUuid } from "src/api/challenge";
-import { ImageCard } from "src/component/image/ImageCard";
 import { LoadingDot } from "src/component/Loading";
 import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
 import { AnswerUser, Response } from "src/component/question/ResponseBlock";
 import { ChallengeGame } from "src/models/Challenge";
-import { Colors } from "src/style/Colors";
 
-import challengeIcon from "src/assets/challenge.png";
 import { ConfirmDialog } from "src/component/modal/ConfirmModal";
+import { HeaderChallengeGame } from "src/component/play/HeaderScore";
+import { useAuth } from "src/context/AuthProviderSupabase";
 import { useUser } from "src/context/UserProvider";
+import { DEFAULT_TIME_QUESTION } from "src/utils/config";
 import { decryptToNumber } from "src/utils/crypt";
 import { preloadAllImages } from "src/utils/preload";
 import { getResponse, verifyResponseCrypt } from "src/utils/response";
-import { DEFAULT_TIME_QUESTION } from "src/utils/config";
 import { shuffle } from "src/utils/sort";
 
 export default function PlayChallengePage() {
   const { t } = useTranslation();
   const { uuidGame } = useParams();
   const { language } = useUser();
+  const { profile } = useAuth();
   const navigate = useNavigate();
 
   const DELAY_START = 500;
@@ -52,18 +52,11 @@ export default function PlayChallengePage() {
 
   //Gestion du chrono
   const startTimeRef = useRef<number | null>(null);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const timerRef = useRef<HTMLSpanElement | null>(null);
-  const elapsedRef = useRef(0);
+  const [running, setRunning] = useState(false);
 
   const scrollTop = () => {
     window.scrollTo(0, 0);
   };
-
-  const numberQuestions = useMemo(
-    () => correctAnswer + wrongAnswer,
-    [correctAnswer, wrongAnswer],
-  );
 
   const validateResponse = (value?: AnswerUser) => {
     clearTimeout(timeoutQuestion);
@@ -107,11 +100,8 @@ export default function PlayChallengePage() {
 
   const end = useCallback(() => {
     if (uuidGame) {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-      const timedMs = elapsedRef.current;
+      setRunning(false)
+      const timedMs = Math.floor((Date.now() - startTimeRef.current!))
 
       setIsEnd(true);
       blockerState?.reset?.();
@@ -128,7 +118,7 @@ export default function PlayChallengePage() {
             },
           });
         });
-      }, DELAY_BETWEEN_QUESTION *2 );
+      }, DELAY_BETWEEN_QUESTION * 2);
     }
   }, [blockerState, navigate, uuidGame]);
 
@@ -236,15 +226,7 @@ export default function PlayChallengePage() {
               setTimeout(() => {
                 setQuestion(questions[0]);
                 startTimeRef.current = Date.now();
-                intervalRef.current = setInterval(() => {
-                  if (!startTimeRef.current || !timerRef.current) return;
-                  const ms = Date.now() - startTimeRef.current;
-                  elapsedRef.current = ms;
-
-                  if (timerRef.current) {
-                    timerRef.current.innerText = `${Math.floor(ms / 1000)}s`;
-                  }
-                }, 1000);
+                setRunning(true)
               }, DELAY_START);
             });
           }
@@ -312,32 +294,13 @@ export default function PlayChallengePage() {
             gap: 1,
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <ImageCard
-              value={{
-                image: challengeIcon,
-                color: Colors.blue,
-              }}
-              size={80}
-            />
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 1,
-              }}
-            >
-              <Typography variant="h2">{t("commun.daychallenge")}</Typography>
-              <Typography variant="h2">
-                {correctAnswer} / {numberQuestions}
-              </Typography>
-            </Box>
-          </Box>
-          <Box>
-            <Typography variant="h2" component="span" sx={{fontSize: important(px(35))}} ref={timerRef}>
-              0s
-            </Typography>
-          </Box>
+          <HeaderChallengeGame
+            goodAnswer={correctAnswer}
+            badAnswer={wrongAnswer}
+            profile={profile}
+            startTimeRef={startTimeRef}
+            running={running}
+          />
         </Box>
         <Box
           sx={{

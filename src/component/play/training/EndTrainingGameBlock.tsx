@@ -12,10 +12,10 @@ import { Colors } from "src/style/Colors";
 
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { PREFIX_LOCALSTORAGE_GAME } from "src/utils/config";
-import { HeaderTrainingGame } from "./HeaderTrainingGame";
 import { Profile } from "src/models/Profile";
 import { ImageThemeBlock } from "src/component/ImageThemeBlock";
 import { TextNameBlock } from "src/component/language/TextLanguageBlock";
+import { HeaderTrainingGame } from "../HeaderScore";
 
 interface Props {
   isAllQuestion?: boolean;

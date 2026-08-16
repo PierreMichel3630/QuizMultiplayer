@@ -11,7 +11,6 @@ import { percent } from "csx";
 import { ButtonColor } from "src/component/Button";
 import { LoadingDot } from "src/component/Loading";
 import { EndTrainingGameBlock } from "src/component/play/training/EndTrainingGameBlock";
-import { HeaderTrainingGame } from "src/component/play/training/HeaderTrainingGame";
 import { QuestionResponseBlock } from "src/component/question/QuestionResponseBlock";
 import { AnswerUser, Response } from "src/component/question/ResponseBlock";
 import { SoloGame, TrainingGame } from "src/models/Game";
@@ -21,8 +20,9 @@ import { getResponse, verifyResponseCrypt } from "src/utils/response";
 
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import LastPageIcon from "@mui/icons-material/LastPage";
-import { PREFIX_LOCALSTORAGE_GAME } from "src/utils/config";
+import { HeaderTrainingGame } from "src/component/play/HeaderScore";
 import { useAuth } from "src/context/AuthProviderSupabase";
+import { PREFIX_LOCALSTORAGE_GAME } from "src/utils/config";
 
 export default function TrainingPage() {
   const { t } = useTranslation();

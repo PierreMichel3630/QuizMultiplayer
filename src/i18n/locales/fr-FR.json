@@ -1149,6 +1149,16 @@
     "ordinal_other": "ème"
   },
   "patchnote": {
+    "3.0.1": {
+      "version": "3.0.1",
+      "date": "21/07/2026",
+      "changes": [
+        "Défis du jour: changement du style de l'entête (score, temps) lors d'une partie."
+      ],
+      "bug": [
+        "Défis du jour: Problème le temps des parties étaient arrondi à la seconde."
+      ]
+    },
     "3.0.0": {
       "version": "3.0.0",
       "date": "19/07/2026",

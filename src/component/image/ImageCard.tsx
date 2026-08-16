@@ -79,7 +79,7 @@ interface ImageCardProps {
   size?: string | number;
 }
 
-export const ImageCard = ({ value, size = percent(100) }: ImageCardProps) => {
+const ImageCard = ({ value, size = percent(100) }: ImageCardProps) => {
   const { mode } = useUser();
 
   const borderColor = useMemo(
