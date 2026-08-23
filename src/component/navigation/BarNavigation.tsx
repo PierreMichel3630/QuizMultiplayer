@@ -6,7 +6,7 @@ import { percent, px } from "csx";
 import { BarNavigationSize } from "src/utils/config";
 
 interface Props {
-  title?: string;
+  title?: string | JSX.Element;
   content?: JSX.Element;
   quit?: () => void;
 }

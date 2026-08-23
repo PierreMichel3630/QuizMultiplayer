@@ -52,6 +52,7 @@ export default function PlayChallengePage() {
 
   //Gestion du chrono
   const startTimeRef = useRef<number | null>(null);
+  const questionStartTimeRef = useRef<number | null>(null);
   const [running, setRunning] = useState(false);
 
   const scrollTop = () => {
@@ -61,6 +62,11 @@ export default function PlayChallengePage() {
   const validateResponse = (value?: AnswerUser) => {
     clearTimeout(timeoutQuestion);
     setTimer(undefined);
+
+    const timePlayer1 = questionStartTimeRef.current
+      ? Date.now() - questionStartTimeRef.current
+      : 0;
+
     const myResponseValue = value?.value ?? undefined;
     if (question && language && uuidGame) {
       const result = value
@@ -75,6 +81,7 @@ export default function PlayChallengePage() {
         response: response,
         resultPlayer1: result,
         responsePlayer1: myResponseValue,
+        timePlayer1,
       });
       localStorage.setItem(uuidGame, JSON.stringify(questionsgame));
       setCorrectAnswer((prev) => (result ? prev + 1 : prev));
@@ -84,6 +91,7 @@ export default function PlayChallengePage() {
         result: result,
         responsePlayer1: myResponseValue,
         resultPlayer1: result,
+        timePlayer1,
       });
       const indexNextQuestion = questionsgame.length;
       if (indexNextQuestion < questions.length) {
@@ -100,8 +108,8 @@ export default function PlayChallengePage() {
 
   const end = useCallback(() => {
     if (uuidGame) {
-      setRunning(false)
-      const timedMs = Math.floor((Date.now() - startTimeRef.current!))
+      setRunning(false);
+      const timedMs = Math.floor(Date.now() - startTimeRef.current!);
 
       setIsEnd(true);
       blockerState?.reset?.();
@@ -110,7 +118,7 @@ export default function PlayChallengePage() {
       );
       setTimeout(() => {
         endChallenge(questionsgame, uuidGame, timedMs).then(({ data }) => {
-          navigate(`/challenge/game/${uuidGame}`, {
+          navigate(`/challenge/recapgame/${uuidGame}`, {
             state: {
               previousPath: "/challenge",
               isEnd: true,
@@ -125,6 +133,7 @@ export default function PlayChallengePage() {
   useEffect(() => {
     let newtimeoutQuestion: number | undefined = undefined;
     if (question) {
+      questionStartTimeRef.current = Date.now();
       const time = Number(question.time);
       const timerTimeout = Number.isNaN(time)
         ? DEFAULT_TIME_QUESTION * 10000
@@ -133,6 +142,7 @@ export default function PlayChallengePage() {
       newtimeoutQuestion = setTimeout(async () => {
         if (question && uuidGame) {
           const result = false;
+
           const response = decryptToNumber(question.response);
           const questionsgame: Array<unknown> = JSON.parse(
             localStorage.getItem(uuidGame) ?? "[]",
@@ -142,6 +152,7 @@ export default function PlayChallengePage() {
             response: response,
             resultPlayer1: result,
             responsePlayer1: undefined,
+            timePlayer1: question.time,
           });
           localStorage.setItem(uuidGame, JSON.stringify(questionsgame));
           setCorrectAnswer((prev) => (result ? prev + 1 : prev));
@@ -151,6 +162,7 @@ export default function PlayChallengePage() {
             result: result,
             responsePlayer1: undefined,
             resultPlayer1: result,
+            timePlayer1: question.time,
           });
           const indexNextQuestion = questionsgame.length;
           if (indexNextQuestion < questions.length) {
@@ -211,7 +223,7 @@ export default function PlayChallengePage() {
             if (indexNextQuestion < questions.length - 1) {
               setQuestion(questionsGame[indexNextQuestion]);
             } else {
-              navigate(`/challenge/game/${uuidGame}`, {
+              navigate(`/challenge/recapgame/${uuidGame}`, {
                 state: {
                   previousPath: "/challenge",
                 },
@@ -226,7 +238,7 @@ export default function PlayChallengePage() {
               setTimeout(() => {
                 setQuestion(questions[0]);
                 startTimeRef.current = Date.now();
-                setRunning(true)
+                setRunning(true);
               }, DELAY_START);
             });
           }

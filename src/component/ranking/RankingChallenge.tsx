@@ -21,14 +21,13 @@ import {
   GroupButtonChallengeGlobal,
   GroupButtonChallengeTime,
 } from "../button/ButtonGroup";
-import { ChallengeProfilDialog } from "../challenge/ChallengeProfilDialog";
 import { WinBlock } from "../challenge/WinBlock";
 import {
   RecapAvgChallenge,
   ResultAllTimeChallengeBlock,
   ResultDayChallengeBlock,
   ResultMonthChallengeBlock,
-  ResultWeekChallengeBlock
+  ResultWeekChallengeBlock,
 } from "../ChallengeBlock";
 import { ChangeDateBlock } from "../date/ChangeDateBlock";
 import { BasicSearchInput } from "../Input";
@@ -42,6 +41,7 @@ import {
   RankingHookData,
   useRankingChallengePerDate,
 } from "./hook/RankingHook";
+import { useNavigate } from "react-router-dom";
 
 export const RankingChallenge = () => {
   const [type, setType] = useState<ClassementChallengeEnum>(
@@ -75,6 +75,7 @@ export const RankingChallengeGlobal = () => {
   const { profile, hasPlayChallenge, multicompte } = useAuth();
   const { friends } = useApp();
   const { language } = useUser();
+  const navigate = useNavigate();
 
   const ROWS_PER_PAGE = 10;
 
@@ -92,9 +93,6 @@ export const RankingChallengeGlobal = () => {
   const [total, setTotal] = useState<null | number>(null);
   const [data, setData] = useState<Array<DataRankingChallenge>>([]);
   const [loading, setLoading] = useState(true);
-  const [dataRankingChallenge, setDataRankingChallenge] = useState<
-    DataRankingChallenge | undefined
-  >(undefined);
 
   const idFriends = useMemo(
     () =>
@@ -246,7 +244,9 @@ export const RankingChallengeGlobal = () => {
         <RankingTable
           data={data}
           loading={loading}
-          onClick={setDataRankingChallenge}
+          onClick={(value) =>
+            navigate(`/profile/${value.profile.id}/challenge`)
+          }
         />
         <Pagination
           total={total}
@@ -255,11 +255,6 @@ export const RankingChallengeGlobal = () => {
           rowsPerPage={query.rowsPerPage}
         />
       </Grid>
-      <ChallengeProfilDialog
-        profileId={dataRankingChallenge?.profile.id}
-        close={() => setDataRankingChallenge(undefined)}
-        open={dataRankingChallenge !== undefined}
-      />
     </Grid>
   );
 };
@@ -423,16 +418,11 @@ const RankingChallengeSummary = ({
 interface PropsBaseRankingChallenge {
   ranking: RankingHookData;
 }
-const BaseRankingChallenge = ({
-  ranking,
-}: PropsBaseRankingChallenge) => {
+const BaseRankingChallenge = ({ ranking }: PropsBaseRankingChallenge) => {
   const { t } = useTranslation();
   const { profile, multicompte } = useAuth();
   const { friends } = useApp();
-
-  const [dataRankingChallenge, setDataRankingChallenge] = useState<
-    DataRankingChallenge | undefined
-  >(undefined);
+  const navigate = useNavigate();
 
   const hasSearch = useMemo(
     () => ranking.query.search !== "" || ranking.query.isOnlyFriend,
@@ -549,7 +539,9 @@ const BaseRankingChallenge = ({
             <RankingTable
               data={ranking.data}
               loading={ranking.loading}
-              onClick={setDataRankingChallenge}
+              onClick={(value) =>
+                navigate(`/profile/${value.profile.id}/challenge`)
+              }
             />
             <Pagination
               total={ranking.count}
@@ -560,11 +552,6 @@ const BaseRankingChallenge = ({
           </>
         )}
       </Grid>
-      <ChallengeProfilDialog
-        profileId={dataRankingChallenge?.profile.id}
-        close={() => setDataRankingChallenge(undefined)}
-        open={dataRankingChallenge !== undefined}
-      />
     </Grid>
   );
 };

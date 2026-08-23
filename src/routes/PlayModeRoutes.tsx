@@ -1,4 +1,4 @@
-import ChallengeGamePage from "src/pages/challenge/ChallengeGamePage";
+import ChallengeRecapGamePage from "src/pages/challenge/ChallengeRecapGamePage";
 import PlayChallengePage from "src/pages/challenge/PlayChallengePage";
 import GameDuelPage from "src/pages/GameDuelPage";
 import GameSoloPage from "src/pages/GameSoloPage";
@@ -14,6 +14,8 @@ import ReactionTimePage from "src/pages/modes/braintest/games/ReactionTimePage";
 import NumberMemoryPage from "src/pages/modes/braintest/games/NumberMemoryPage";
 import SequenceMemoryPage from "src/pages/modes/braintest/games/SequenceMemoryPage";
 import AimPage from "src/pages/modes/braintest/games/AimPage";
+import ChallengeGamePage from "src/pages/challenge/ChallengeGamePage";
+import { ChallengeProfilPage } from "src/pages/challenge/ChallengeProfilPage";
 
 export const PlayModeRoutes = [
   {
@@ -49,8 +51,16 @@ export const PlayModeRoutes = [
     element: <GameSoloPage />,
   },
   {
+    path: "/challenge/recapgame/:uuid",
+    element: <ChallengeRecapGamePage />,
+  },
+  {
     path: "/challenge/game/:uuid",
     element: <ChallengeGamePage />,
+  },
+  {
+    path: "/profile/:uuid/challenge",
+    element: <ChallengeProfilPage />,
   },
   {
     path: "/game/duel/:uuid",

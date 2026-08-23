@@ -352,6 +352,7 @@
     "seestatchallenge": "Voir les statistiques",
     "nextdaychallenge": "Prochain Défi du jour dans",
     "challenge": "Défis",
+    "challengeof": "Défis du {{date}}",
     "challengeexplain": "10 questions vont vous être posées, répondez à un maximum le plus rapidement possible.",
     "challengeexplain2": "Attention 1 tentative maximum par jour.",
     "createaccount": "Créer un compte",
@@ -440,7 +441,9 @@
     "profileconnect": "Comptes associés",
     "createdat": "Créé le {{date}}",
     "multiaccountactivate": "Multicompte activé",
-    "multiaccountdesactivate": "Multicompte désactivé"
+    "multiaccountdesactivate": "Multicompte désactivé",
+    "fastesttime": "Meilleur temps",
+    "avgtime": "Temps moyen"
   },
   "abrevation": {
     "average": "Moy."
@@ -1149,6 +1152,13 @@
     "ordinal_other": "ème"
   },
   "patchnote": {
+    "3.0.2": {
+      "version": "3.0.2",
+      "date": "23/08/2026",
+      "changes": [
+        "Défis du jour: affichage des % de réponses des questions et des temps de réponses"
+      ]
+    },
     "3.0.1": {
       "version": "3.0.1",
       "date": "21/07/2026",

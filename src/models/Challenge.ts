@@ -35,6 +35,13 @@ export interface ChallengeGameUpdate {
   questions: Array<QuestionResult>;
 }
 
+export interface ChallengeGameAnswer {
+  id: number;
+  question: number;
+  answer: number;
+  time: number;
+}
+
 export interface ChallengeRankingDate {
   profile: Profile;
   score: number;
@@ -55,6 +62,8 @@ export interface ChallengeRankingWeek extends ChallengeRankingDate {
 }
 
 export interface ChallengeRankingDay extends ChallengeRankingDate {
+  uuid: string
+  id: number
   date: Date;
   questions: Array<QuestionResult>;
   version: number;
@@ -75,4 +84,20 @@ export interface ChallengeAvg {
   score: number;
   time: number;
   games: number;
+}
+
+
+export interface ChallengeQuestionStats {
+  answered: number 
+  total_answers: number 
+  correct_answers: number
+  correct_percentage: number
+  average_time: number
+  fastest_time: number
+  slowest_time: number
+  answers: Array<{
+    answer: number,
+    percent: number
+  }>
+  question: number
 }

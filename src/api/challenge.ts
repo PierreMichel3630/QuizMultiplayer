@@ -5,11 +5,13 @@ import { supabase } from "./supabase";
 
 const SUPABASE_CHALLENGE_TABLE = "challenge";
 const SUPABASE_CHALLENGEGAME_TABLE = "challengegame";
+const SUPABASE_CHALLENGEGAMEANSWER_TABLE = "challengegameanswer";
 const SUPABASE_RANKINGCHALLENGE_VIEW = "rankingchallenge";
 
 const SUPABASE_LAUNCHCHALLENGE_FUNCTION = "launch-challengeV3";
-const SUPABASE_ENDCHALLENGE_FUNCTION = "end-challenge";
+const SUPABASE_ENDCHALLENGE_FUNCTION = "end-challenge-v2";
 const SUPABASE_CREATECHALLENGE_FUNCTION = "create-challenge";
+const SUPABASE_STATSCHALLENGE_FUNCTION = "get_challenge_question_stats";
 
 export const createChallenge = (date: string) =>
   supabase.functions.invoke(SUPABASE_CREATECHALLENGE_FUNCTION, {
@@ -35,6 +37,17 @@ export const selectChallengeByDate = (date: Moment) =>
     .select()
     .eq("date", date.format("YYYY-MM-DD"))
     .maybeSingle();
+
+export const selectChallengeById = (id: number) =>
+  supabase.from(SUPABASE_CHALLENGE_TABLE).select().eq("id", id).maybeSingle();
+
+export const selectChallengeGameAnswerById = (id: number) =>
+  supabase.from(SUPABASE_CHALLENGEGAMEANSWER_TABLE).select().eq("game", id);
+
+export const selectStatsChallengeById = (challengeId: number) =>
+  supabase.rpc(SUPABASE_STATSCHALLENGE_FUNCTION, {
+    p_challenge_id: challengeId,
+  });
 
 export const countChallengeGameByDate = (
   date: Moment,
@@ -115,7 +128,6 @@ export const selectChallengeGameByProfileIdGroupByRanking = (id: string) =>
     .select("value:ranking.count(), label:ranking")
     .eq("profile", id);
 
-
 // AUTRE
 
 export const launchChallenge = (date: string, language: number) =>
@@ -127,12 +139,16 @@ export const launchChallenge = (date: string, language: number) =>
     },
   });
 
-export const endChallenge = (questions: Array<unknown>, gameUuid: string, time: number) =>
+export const endChallenge = (
+  questions: Array<unknown>,
+  gameUuid: string,
+  time: number,
+) =>
   supabase.functions.invoke(SUPABASE_ENDCHALLENGE_FUNCTION, {
     body: {
       questions,
       gameUuid,
-      time
+      time,
     },
   });
 

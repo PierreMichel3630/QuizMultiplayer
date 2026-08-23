@@ -1,40 +1,45 @@
 import { Box, Container, Divider, Grid } from "@mui/material";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 import { px } from "csx";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { CardSignalQuestion } from "src/component/card/CardQuestion";
 import { Colors } from "src/style/Colors";
 
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import {
   selectChallengeById,
   selectChallengeGameAnswerById,
   selectChallengeGameByUuid,
   selectStatsChallengeById,
 } from "src/api/challenge";
+import { ButtonColor } from "src/component/Button";
 import {
   Challenge,
   ChallengeGame,
   ChallengeGameAnswer,
   ChallengeQuestionStats,
+  ExtraChallenge,
 } from "src/models/Challenge";
 
+import { ExtraBlock } from "src/component/extra/ExtraBlock";
 import { ProfileBlock } from "src/component/profile/ProfileBlock";
+import { RankingChallengeResult } from "src/component/ranking/RankingChallenge";
 import { QuestionResult } from "src/models/Question";
-import { BarNavigation } from "src/component/navigation/BarNavigation";
-import moment from "moment";
 
-export default function ChallengeGamePage() {
+export default function ChallengeRecapGamePage() {
   const { t } = useTranslation();
   const { uuid } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [game, setGame] = useState<undefined | ChallengeGame>(undefined);
+  const [extra, setExtra] = useState<undefined | ExtraChallenge>(undefined);
   const [challenge, setChallenge] = useState<Challenge | undefined>(undefined);
   const [answers, setAnswers] = useState<Array<ChallengeGameAnswer>>([]);
-  const [stats, setStats] = useState<Array<ChallengeQuestionStats>>([]);
+  const [stats, setStats]= useState<Array<ChallengeQuestionStats>>([])
 
   const questions: Array<QuestionResult> = useMemo(() => {
     const questionsChallenge = challenge ? challenge.questionsv2 : [];
@@ -65,7 +70,7 @@ export default function ChallengeGamePage() {
   const loadStats = (game: ChallengeGame) => {
     if (game) {
       selectStatsChallengeById(game.challenge.id).then(({ data }) => {
-        setStats(data ?? []);
+        setStats(data ?? [])
       });
     }
   };
@@ -84,24 +89,17 @@ export default function ChallengeGamePage() {
     getGame();
   }, [uuid]);
 
+  useEffect(() => {
+    if (location.state?.extra) {
+      setExtra(location.state.extra as ExtraChallenge);
+    }
+  }, [location]);
+
   return (
     <Grid container className="page" alignContent="flex-start">
       <Helmet>
         <title>{`${t("commun.daychallenge")} - ${t("appname")}`}</title>
       </Helmet>
-      <BarNavigation
-        title={
-          <Trans
-            i18nKey={t("commun.challengeof")}
-            values={{
-              date: challenge
-                ? moment(challenge.date).format("DD/MM/YYYY")
-                : moment().format("DD/MM/YYYY"),
-            }}
-          />
-        }
-        quit={() => navigate(-1)}
-      />
       <Grid size={12}>
         <Container maxWidth="md">
           <Box
@@ -117,6 +115,19 @@ export default function ChallengeGamePage() {
                     <ProfileBlock profile={game.profile} />
                   </Grid>
                 )}
+                {extra && (
+                  <>
+                    <Grid size={12}>
+                      <ExtraBlock value={extra} />
+                    </Grid>
+                    <Grid size={12}>
+                      <Divider sx={{ borderBottomWidth: 5 }} />
+                    </Grid>
+                  </>
+                )}
+                <Grid size={12}>
+                  <RankingChallengeResult />
+                </Grid>
                 {questions.map((el, index) => (
                   <Fragment key={index}>
                     <Grid size={12}>
@@ -142,6 +153,42 @@ export default function ChallengeGamePage() {
           </Box>
         </Container>
       </Grid>
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+        }}
+      >
+        <Container
+          maxWidth="md"
+          sx={{
+            backgroundColor: "background.paper",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              gap: 1,
+              p: 1,
+              flexDirection: "column",
+            }}
+          >
+            <ButtonColor
+              value={Colors.blue}
+              label={t("commun.return")}
+              icon={KeyboardReturnIcon}
+              onClick={() => {
+                const path =
+                  location.state !== null && location.state.previousPath;
+                navigate(path ? location.state.previousPath : "/challenge");
+              }}
+              variant="contained"
+            />
+          </Box>
+        </Container>
+      </Box>
     </Grid>
   );
 }

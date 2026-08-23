@@ -268,6 +268,7 @@ interface ResponseQCMBlockProps {
   }>;
   avatars?: Array<{ icon: string; color: string }>;
   extra?: ExtraResponse;
+  percent?: number;
   index: number;
   hasAnswer: boolean;
   type: TypeResponseEnum;
@@ -281,6 +282,7 @@ export const ResponseQCMBlock = ({
   image,
   labels,
   extra,
+  percent,
   avatars = [],
   hasAnswer = false,
   type = TypeResponseEnum.DEFAULT,
@@ -289,7 +291,7 @@ export const ResponseQCMBlock = ({
   const { mode } = useUser();
   const { uuid } = useUser();
 
-  const padding = type === TypeResponseEnum.DEFAULT && !image ? "8px 12px" : 0;
+  const padding = type === TypeResponseEnum.DEFAULT && !image ? "5px 10px" : 0;
   const isOrder = type === TypeResponseEnum.ORDER;
   const backgroundImage = isOrder ? image : undefined;
   const textShadow = isOrder ? "1px 1px 10px black" : "none";
@@ -340,7 +342,7 @@ export const ResponseQCMBlock = ({
         backgroundPosition: "center",
         borderWidth: isOrder ? 10 : 2,
         borderStyle: "solid",
-        height: percent(100),
+        height: "100%",
         userSelect: "none",
         "&:hover": {
           cursor: "pointer",
@@ -394,33 +396,13 @@ export const ResponseQCMBlock = ({
         )}
         {extra && <ExtraResponseBlock extra={extra} />}
       </Box>
-      {avatars.length > 0 ? (
-        <Box
-          sx={{
-            display: "flex",
-            top: imageDisplay ? 8 : undefined,
-            right: imageDisplay ? 8 : undefined,
-            position: imageDisplay ? "absolute" : "relative",
-          }}
-        >
-          <AvatarGroup spacing="medium">
-            {avatars.map((avatar, index) => (
-              <Avatar
-                key={index}
-                src={avatar.icon}
-                sx={{
-                  width: 30,
-                  height: 30,
-                  border: important(`2px solid ${avatar.color}`),
-                  backgroundColor: "white",
-                }}
-              />
-            ))}
-          </AvatarGroup>
+      {percent !== undefined ? (
+        <Box sx={{ml: px(5)}}>
+          <Typography variant="h6">{Number(percent.toFixed(2))}%</Typography>
         </Box>
       ) : (
         <>
-          {icon && (
+          {avatars.length > 0 ? (
             <Box
               sx={{
                 display: "flex",
@@ -429,8 +411,36 @@ export const ResponseQCMBlock = ({
                 position: imageDisplay ? "absolute" : "relative",
               }}
             >
-              {icon}
+              <AvatarGroup spacing="medium">
+                {avatars.map((avatar, index) => (
+                  <Avatar
+                    key={index}
+                    src={avatar.icon}
+                    sx={{
+                      width: 30,
+                      height: 30,
+                      border: important(`2px solid ${avatar.color}`),
+                      backgroundColor: "white",
+                    }}
+                  />
+                ))}
+              </AvatarGroup>
             </Box>
+          ) : (
+            <>
+              {icon && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    top: imageDisplay ? 8 : undefined,
+                    right: imageDisplay ? 8 : undefined,
+                    position: imageDisplay ? "absolute" : "relative",
+                  }}
+                >
+                  {icon}
+                </Box>
+              )}
+            </>
           )}
         </>
       )}

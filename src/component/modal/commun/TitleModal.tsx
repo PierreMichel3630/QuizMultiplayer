@@ -5,7 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 interface Props {
     close: () => void
-    title: string
+    title: string |JSX.Element
 }
 export const TitleModal = ({title , close} :Props) => {
   return (

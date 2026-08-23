@@ -1,25 +1,23 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { percent } from "csx";
 import moment from "moment";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useChallenge } from "src/context/ChallengeProvider";
 import { Profile } from "src/models/Profile";
 import { AvatarAccountBadge } from "../avatar/AvatarAccount";
 
+import { useNavigate } from "react-router-dom";
 import {
   ResultChallengeDay,
   ResultChallengeMonth,
   ResultChallengeWeek,
 } from "./ChallengeBlock";
-import { ChallengeProfilDialog } from "./ChallengeProfilDialog";
 
 export const WinnerChallengeBlock = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const { winDay, winWeek, winMonth } = useChallenge();
-
-  const [profile, setProfile] = useState<Profile | undefined>(undefined);
 
   const getDate = (format: string, dateString?: string | Date) => {
     let result = "";
@@ -55,26 +53,21 @@ export const WinnerChallengeBlock = () => {
         label={t("commun.day")}
         date={moment().subtract(1, "day").format("DD/MM/YYYY")}
         extra={<ResultChallengeDay value={winDay} />}
-        onSelect={() => setProfile(winDay?.profile)}
+        onSelect={() => navigate(`/profile/${winDay?.profile.id}/challenge`)}
       />
       <ResultChallengeBlock
         profile={winWeek?.profile}
         label={t("commun.week")}
         date={getDate("week", winWeek?.week)}
         extra={<ResultChallengeWeek value={winWeek} />}
-        onSelect={() => setProfile(winWeek?.profile)}
+        onSelect={() => navigate(`/profile/${winWeek?.profile.id}/challenge`)}
       />
       <ResultChallengeBlock
         profile={winMonth?.profile}
         label={t("commun.month")}
         date={getDate("month", winMonth?.month)}
         extra={<ResultChallengeMonth value={winMonth} />}
-        onSelect={() => setProfile(winMonth?.profile)}
-      />
-      <ChallengeProfilDialog
-        profileId={profile?.id}
-        close={() => setProfile(undefined)}
-        open={profile !== undefined}
+        onSelect={() => navigate(`/profile/${winMonth?.profile.id}/challenge`)}
       />
     </Grid>
   );

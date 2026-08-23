@@ -1,10 +1,13 @@
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { Box, Divider, Grid, Link, Paper, Typography } from "@mui/material";
 import { padding, percent, px } from "csx";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { NUMBER_QUESTIONS_CHALLENGE } from "src/configuration/configuration";
 import {
+  Challenge,
+  ChallengeGameAnswer,
+  ChallengeQuestionStats,
   ChallengeRankingAllTime,
   ChallengeRankingDay,
   ChallengeRankingMonth,
@@ -17,21 +20,27 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import moment from "moment";
-import { selectChallengeAllTimeByProfile } from "src/api/challenge";
+import {
+  selectChallengeAllTimeByProfile,
+  selectChallengeByDate,
+  selectChallengeGameAnswerById,
+  selectStatsChallengeById,
+} from "src/api/challenge";
 import { useAuth } from "src/context/AuthProviderSupabase";
-import { ChallengeProfilDialog } from "../challenge/ChallengeProfilDialog";
+import { QuestionResult } from "src/models/Question";
 import { Rank } from "../ranking/Rank";
 import { CardSignalQuestion } from "./CardQuestion";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   profileId: string | undefined;
 }
 export const CardChallenge = ({ profileId }: Props) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [numberPlayers, setNumberPlayers] = useState<null | number>(null);
   const [stat, setStat] = useState<null | ChallengeRankingAllTime>(null);
-  const [openDetail, setOpenDetail] = useState(false);
 
   useEffect(() => {
     if (profileId) {
@@ -149,24 +158,22 @@ export const CardChallenge = ({ profileId }: Props) => {
               </>
             )}
             {profileId && (
-              <Grid size={12} sx={{display: "flex", justifyContent: "center"}}>
+              <Grid
+                size={12}
+                sx={{ display: "flex", justifyContent: "center" }}
+              >
                 <ButtonColor
                   value={Colors.blue2}
                   label={t("commun.seestatchallenge")}
                   icon={EmojiEventsIcon}
                   variant="contained"
-                  onClick={() => setOpenDetail(true)}
+                  onClick={() => navigate(`/profile/${profileId}/challenge`)}
                 />
               </Grid>
             )}
           </Grid>
         </Grid>
       </Grid>
-      <ChallengeProfilDialog
-        profileId={profileId}
-        close={() => setOpenDetail(false)}
-        open={openDetail}
-      />
     </Paper>
   );
 };
@@ -180,12 +187,53 @@ export const CardChallengeDay = ({ value }: CardChallengeDayProps) => {
   const { hasPlayChallenge } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [challenge, setChallenge] = useState<Challenge | undefined>(undefined);
+  const [answers, setAnswers] = useState<Array<ChallengeGameAnswer>>([]);
+  const [stats, setStats] = useState<Array<ChallengeQuestionStats>>([]);
 
   const showGame = useMemo(() => {
     const result =
       hasPlayChallenge || moment(value.date).diff(moment(), "day") < 0;
     return result;
   }, [hasPlayChallenge, value]);
+
+  const questions: Array<QuestionResult> = useMemo(() => {
+    const questionsChallenge = challenge ? challenge.questionsv2 : [];
+    return answers.length > 0 && questionsChallenge.length > 0
+      ? answers.map((el) => {
+          const questionPlayer = questionsChallenge.find(
+            (q) => q.id === el.question,
+          );
+          return {
+            ...questionPlayer,
+            responsePlayer1: el.answer,
+          } as QuestionResult;
+        })
+      : [];
+  }, [challenge, answers]);
+
+  const loadGame = useCallback(() => {
+    const date = moment(value.date);
+    selectChallengeByDate(date).then(({ data }) => {
+      setChallenge(data);
+      loadStats(data);
+    });
+    selectChallengeGameAnswerById(value.id).then(({ data }) => {
+      setAnswers(data ?? []);
+    });
+  }, [value]);
+
+  const loadStats = (challenge: Challenge) => {
+    selectStatsChallengeById(challenge.id).then(({ data }) => {
+      setStats(data ?? []);
+    });
+  };
+
+  useEffect(() => {
+    if (isOpen && challenge === undefined) {
+      loadGame();
+    }
+  }, [challenge, isOpen, loadGame]);
 
   return (
     <Paper
@@ -238,10 +286,10 @@ export const CardChallengeDay = ({ value }: CardChallengeDayProps) => {
         {isOpen && (
           <Grid size={12}>
             <Grid container spacing={1}>
-              {value.questions.map((el, index) => (
+              {questions.map((el, index) => (
                 <Fragment key={index}>
                   <Grid size={12}>
-                    <CardSignalQuestion question={el} version={value.version} />
+                    <CardSignalQuestion question={el} stats={stats} />
                   </Grid>
                   <Grid size={12}>
                     <Divider

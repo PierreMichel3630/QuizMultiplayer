@@ -112,8 +112,10 @@ export interface QuestionResult extends Question {
   response: string | number;
   resultPlayer1?: boolean;
   responsePlayer1?: string | number;
+  timePlayer1?: number;
   responsePlayer2?: string | number;
   resultPlayer2?: boolean;
+  timePlayer2?: number;
 }
 
 export interface QuestionTraining extends Question {

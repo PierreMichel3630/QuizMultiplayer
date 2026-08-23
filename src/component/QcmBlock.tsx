@@ -11,17 +11,20 @@ import { decryptToNumber } from "src/utils/crypt";
 import { LETTERS, ResponseQCMBlock } from "./question/ResponseBlock";
 import { Profile } from "src/models/Profile";
 import { Colors } from "src/style/Colors";
+import { ChallengeQuestionStats } from "src/models/Challenge";
 
 interface PropsQcmBlockDuelResultBlock {
   question: QuestionResult;
   player1?: Profile;
   player2?: Profile;
+  stat?: ChallengeQuestionStats;
 }
 
 export const QcmBlockDuelResultBlock = ({
   question,
   player1,
   player2,
+  stat,
 }: PropsQcmBlockDuelResultBlock) => {
   const answer = decryptToNumber(question.answer);
 
@@ -76,6 +79,9 @@ export const QcmBlockDuelResultBlock = ({
             : []),
         ];
 
+        const statAnswer = stat?.answers.find((a) => a.answer === index);
+        const percent = stat ? (statAnswer?.percent ?? 0) : undefined;
+
         return (
           <ResponseQCMBlock
             key={index}
@@ -87,6 +93,7 @@ export const QcmBlockDuelResultBlock = ({
             image={res.image}
             hasAnswer={false}
             avatars={avatars}
+            percent={percent}
             type={
               isQuestionOrder
                 ? TypeResponseEnum.ORDER

@@ -23,7 +23,9 @@ import { getWrongAnswer } from "src/api/answer";
 import { deleteQuestionById, updateQuestion } from "src/api/question";
 import { useUser } from "src/context/UserProvider";
 import { Answer } from "src/models/Answer";
+import { ChallengeQuestionStats } from "src/models/Challenge";
 import { Language } from "src/models/Language";
+import { Profile } from "src/models/Profile";
 import { Difficulty } from "src/models/enum/DifficultyEnum";
 import { StatusPropose } from "src/models/enum/Propose";
 import { MapPositionBlock } from "../MapPositionBlock";
@@ -36,14 +38,14 @@ import { CreateEditAnswersDialog } from "../modal/CreateEditAnswersDialog";
 import { CreateEditQuestionDialog } from "../modal/CreateEditQuestionDialog";
 import { CreateEditThemeQuestionDialog } from "../modal/CreateEditThemeQuestionDialog";
 import { ValidationProposeQuestion } from "../modal/ValidateQuestionModal";
+import { ExtraQuestionBlock } from "../question/ExtraQuestionBlock";
 import {
   CorrectAnswerBlock,
   ResponsesBlockAdmin,
 } from "../question/ResponseBlock";
+import { TimeMSTextBlock } from "../text/TimeTextBlock";
 import { ThemesList } from "../theme/ThemesList";
 import { CardSignalQuestionV1 } from "./CardQuestionV1";
-import { ExtraQuestionBlock } from "../question/ExtraQuestionBlock";
-import { Profile } from "src/models/Profile";
 
 interface Props {
   question: QuestionAdmin;
@@ -299,8 +301,9 @@ export const CardAdminQuestion = ({ question, refresh }: Props) => {
 
 interface PropsCardSignalQuestion {
   question: QuestionResult | QuestionResultV1;
-  player1?: Profile
-  player2?: Profile
+  player1?: Profile;
+  player2?: Profile;
+  stats?: Array<ChallengeQuestionStats>;
   version?: number;
   report?: () => void;
   color?: string;
@@ -310,6 +313,7 @@ export const CardSignalQuestion = ({
   question,
   player1,
   player2,
+  stats,
   report,
   color = "text.primary",
 }: PropsCardSignalQuestion) => {
@@ -328,6 +332,7 @@ export const CardSignalQuestion = ({
           player2={player2}
           report={report}
           color={color}
+          stats={stats}
         />
       )}
     </>
@@ -336,8 +341,9 @@ export const CardSignalQuestion = ({
 
 interface PropsCardSignalQuestionV2 {
   question: QuestionResult;
-  player1?: Profile
-  player2?: Profile
+  player1?: Profile;
+  player2?: Profile;
+  stats?: Array<ChallengeQuestionStats>;
   report?: () => void;
   color?: string;
 }
@@ -345,10 +351,16 @@ const CardSignalQuestionV2 = ({
   question,
   player1,
   player2,
+  stats = [],
   report,
   color = "text.primary",
 }: PropsCardSignalQuestionV2) => {
   const { t } = useTranslation();
+
+  const statsQuestion = useMemo(() => {
+    const result = [...stats].find((el) => el.question === question.id);
+    return result;
+  }, [stats, question]);
 
   return (
     <Box
@@ -381,9 +393,20 @@ const CardSignalQuestionV2 = ({
             <ImageQuestionBlock src={question.image} />
           </Grid>
         )}
+        {statsQuestion && (
+          <Grid size={12} sx={{display: "flex", gap: 1, justifyContent: "center"}}>
+            <TimeMSTextBlock title={`${t("commun.avgtime")} : `} value={statsQuestion.average_time}/> 
+            <TimeMSTextBlock title={`${t("commun.fastesttime")} : `} value={statsQuestion.fastest_time}/> 
+          </Grid>
+        )}
         <Grid sx={{ textAlign: "center" }} size={12}>
           {question.isqcm ? (
-            <QcmBlockDuelResultBlock question={question} player1={player1} player2={player2} />
+            <QcmBlockDuelResultBlock
+              question={question}
+              player1={player1}
+              player2={player2}
+              stat={statsQuestion}
+            />
           ) : (
             <Box sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
               <Paper
